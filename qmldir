@@ -1,2 +1,2 @@
 plugin launcher_plugin launcher_plugin/lib
-plugin QtGConf ../libQtGConf/lib
+plugin QtGConf ../libQtGConf
