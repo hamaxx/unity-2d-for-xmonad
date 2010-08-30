@@ -34,6 +34,7 @@ public:
 
     /* setters */
     void setDesktopFile(QString desktop_file);
+    void setBamfApplication(BamfApplication *application);
 
     /* methods */
     Q_INVOKABLE QBool launch();
@@ -50,13 +51,12 @@ signals:
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
 
-public slots:
-
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
-
-    void setBamfApplication(BamfApplication *application);
 };
+
+Q_DECLARE_METATYPE(QLauncherApplication*)
+
 
 #endif // LAUNCHERAPPLICATION_H

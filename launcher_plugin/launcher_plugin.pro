@@ -15,9 +15,11 @@ MOC_DIR = tmp
 HEADERS += \
     launcherplugin.h \
     launcherapplication.h \
-    iconimageprovider.h
+    iconimageprovider.h \
+    launcherapplicationslist.h
 
 SOURCES += \
     launcherplugin.cpp \
     launcherapplication.cpp \
-    iconimageprovider.cpp
+    iconimageprovider.cpp \
+    launcherapplicationslist.cpp

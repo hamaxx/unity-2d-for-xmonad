@@ -9,26 +9,17 @@ Item {
         source: "artwork/honeycomb.png"
     }
 
-    GConfItem {
-        id: gconf_favorites
-        key: "/desktop/unity/launcher/favorites/favorites_list"
-    }
-
     ListView {
         anchors.fill: parent
         focus: true
 
-        model: gconf_favorites.value
+        model: launcher_applications
 
         delegate: Application {
-            property variant app: QLauncherApplication {
-                desktop_file: "/usr/share/applications/"+model.modelData+".desktop"
-            }
-
             width: 60; height: 60
-            icon: "image://icons/"+app.icon
-            running: app.running
-            onClicked: app.launch()
+            icon: "image://icons/"+application.icon
+            running: application.running
+            onClicked: application.launch()
         }
     }
 }

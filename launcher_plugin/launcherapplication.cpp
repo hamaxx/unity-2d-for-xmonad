@@ -1,12 +1,10 @@
 #include "launcherapplication.h"
 #include "bamf-matcher.h"
 
-
 QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject(parent), m_application(NULL), m_appInfo(NULL)
 {
 }
-
 
 QLauncherApplication::~QLauncherApplication()
 {
@@ -155,6 +153,7 @@ QLauncherApplication::launch()
     GdkAppLaunchContext *context;
     GTimeVal timeval;
 
+    g_get_current_time (&timeval);
     context = gdk_app_launch_context_new();
     gdk_app_launch_context_set_screen(context, gdk_screen_get_default());
     gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
