@@ -2,8 +2,8 @@ TEMPLATE = lib
 CONFIG += qt link_pkgconfig
 QT += declarative
 PKGCONFIG = gtk+-2.0 gio-2.0
-INCLUDEPATH += ../../bamf-qt/src/libQtBamf
-LIBS += -L../../bamf-qt/src/libQtBamf -lQtBamf
+INCLUDEPATH += ../../bamf-qt/src/libQtBamf ../../libQtGConf
+LIBS += -L../../bamf-qt/src/libQtBamf -lQtBamf -L../../libQtGConf -lQtGConf
 
 TARGET = launcher_plugin
 

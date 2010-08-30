@@ -16,6 +16,7 @@ public:
 
 private:
     void reload();
+    QString desktopFilePathFromFavorite(QString favorite_id);
     QList<QLauncherApplication*> m_applications;
 };
 

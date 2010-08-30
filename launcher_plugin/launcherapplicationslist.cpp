@@ -2,6 +2,7 @@
 #include "launcherapplicationslist.h"
 #include "bamf-matcher.h"
 #include "bamf-application.h"
+#include "libgq-fremantle/gconf/gconfitem.h"
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -13,10 +14,21 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     reload();
 }
 
+QString
+LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
+{
+    return QString("/usr/share/applications/")+favorite_id+QString(".desktop");
+}
+
 void
 LauncherApplicationsList::reload()
 {
-//        key: "/desktop/unity/launcher/favorites/favorites_list"
+    /* FIXME: applications should be sorted depending on their priority */
+    GConfItem gconf_favorites("/desktop/unity/launcher/favorites/favorites_list");
+    QStringList favorites = gconf_favorites.value().toStringList();
+
+    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
+        *iter = desktopFilePathFromFavorite(*iter);
 
     BamfMatcher& matcher = BamfMatcher::get_default();
     BamfApplicationList* running_applications = matcher.running_applications();
@@ -26,8 +38,16 @@ LauncherApplicationsList::reload()
     for(int i=0; i<running_applications->size(); i++)
     {
         bamf_application = running_applications->at(i);
+        favorites.removeAll(bamf_application->desktop_file());
         application = new QLauncherApplication;
         application->setBamfApplication(bamf_application);
+        m_applications.append(application);
+    }
+
+    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
+    {
+        application = new QLauncherApplication;
+        application->setDesktopFile(*iter);
         m_applications.append(application);
     }
 }
