@@ -1,4 +1,6 @@
 #include "launcherapplication.h"
+#include "bamf-matcher.h"
+
 
 QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject(parent), m_application(NULL), m_appInfo(NULL)
@@ -19,51 +21,77 @@ QLauncherApplication::~QLauncherApplication()
 }
 
 bool
+QLauncherApplication::active() const
+{
+    if(m_application != NULL)
+        return m_application->active();
+
+    return false;
+}
+
+bool
 QLauncherApplication::running() const
 {
-    if(m_appInfo == NULL) return QBool(false);
+    if(m_application != NULL)
+        return m_application->running();
 
-//    return launcher_application_get_running(m_appInfo);
+    return false;
+}
+
+bool
+QLauncherApplication::urgent() const
+{
+    if(m_application != NULL)
+        return m_application->urgent();
+
+    return false;
 }
 
 QString
 QLauncherApplication::name() const
 {
-    if(m_appInfo == NULL) return QString("");
+    if(m_application != NULL)
+        return m_application->name();
 
-//    const gchar *name = launcher_application_get_name(m_appInfo);
-//    return QString::fromUtf8(name);
+    if(m_appInfo != NULL)
+        return QString::fromUtf8(g_app_info_get_name((GAppInfo*)m_appInfo));
+
+    return QString("");
 }
-
 
 QString
-QLauncherApplication::icon_name() const
+QLauncherApplication::icon() const
 {
-    if(m_appInfo == NULL) return QString("");
+    if(m_application != NULL)
+        return m_application->icon();
 
-    return g_icon_to_string(g_app_info_get_icon((GAppInfo*)m_appInfo));
+    if(m_appInfo != NULL)
+        return QString::fromUtf8(g_icon_to_string(g_app_info_get_icon((GAppInfo*)m_appInfo)));
 
-/*    const gchar* name = launcher_application_get_icon_name(m_appInfo);
-    if(name == NULL)
-        return QString("");
-    else
-        return QString::fromUtf8(name);*/
+    return QString("");
 }
 
+QString
+QLauncherApplication::application_type() const
+{
+    if(m_application != NULL)
+        return m_application->application_type();
+
+    return QString("");
+}
 
 QString
 QLauncherApplication::desktop_file() const
 {
-    if(m_appInfo == NULL) return QString("");
+    if(m_application != NULL)
+        return m_application->desktop_file();
 
-//    return QString::fromUtf8(launcher_application_get_desktop_file(m_appInfo));
+    if(m_appInfo != NULL)
+        return QString::fromUtf8(g_desktop_app_info_get_filename(m_appInfo));
+
+    return QString("");
 }
 
-QString
-QLauncherApplication::type() const
-{
-    if(m_appInfo == NULL) return QString("");
-}
 
 void
 QLauncherApplication::setDesktopFile(QString desktop_file)
@@ -73,18 +101,49 @@ QLauncherApplication::setDesktopFile(QString desktop_file)
        into '/home/john') */
 //    desktop_file = QUrl(desktop_file).path();
 
+    /* FIXME: should check/interact properly with an m_application != NULL */
+
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
     m_appInfo = g_desktop_app_info_new_from_filename(file);
 
-    /* Emit the Changed signal on all properties because m_appInfo is new */
-    emit desktopFileChanged();
+    /* FIXME: temporary code */
+    BamfMatcher& matcher = BamfMatcher::get_default();
+    BamfApplicationList* running_applications = matcher.running_applications();
+    BamfApplication* app;
+    for(int i=0; i<running_applications->size(); i++)
+    {
+        app = running_applications->at(i);
+        if(app->desktop_file() == desktop_file)
+        {
+            setBamfApplication(app);
+            break;
+        }
+    }
 
-    emit runningChanged();
-    emit nameChanged();
-    emit iconNameChanged();
-    emit typeChanged();
+    /* Emit the Changed signal on all properties that can depend on m_appInfo */
+    emit desktopFileChanged(desktop_file);
+    emit nameChanged(name());
+    emit iconChanged(icon());
+}
+
+void
+QLauncherApplication::setBamfApplication(BamfApplication *application)
+{
+    m_application = application;
+
+    QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
+    QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
+    QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
+
+    emit activeChanged(active());
+    emit runningChanged(running());
+    emit urgentChanged(urgent());
+    emit nameChanged(name());
+    emit iconChanged(icon());
+    emit applicationTypeChanged(application_type());
+    emit desktopFileChanged(desktop_file());
 }
 
 QBool
@@ -92,8 +151,15 @@ QLauncherApplication::launch()
 {
     if(m_appInfo == NULL) return QBool(false);
 
-//    GError *error = NULL;
-//    return (QBool)launcher_application_launch(m_appInfo, parameter.toUtf8().data(), &error);
+/*    GError** error;
+    GdkAppLaunchContext *context;
+    GTimeVal timeval;
+
+    context = gdk_app_launch_context_new();
+    gdk_app_launch_context_set_screen(context, gdk_screen_get_default());
+    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
+
+    g_app_info_launch((GAppInfo*)m_app, NULL, (GAppLaunchContext*)context, error);*/
 }
 
 void

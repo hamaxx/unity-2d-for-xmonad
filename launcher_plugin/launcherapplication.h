@@ -10,22 +10,27 @@ class QLauncherApplication : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
+    Q_PROPERTY(bool urgent READ urgent NOTIFY urgentChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-    Q_PROPERTY(QString icon_name READ icon_name NOTIFY iconNameChanged)
+    Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
+
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
-    Q_PROPERTY(QString type READ type NOTIFY typeChanged)
 
 public:
     QLauncherApplication(QObject *parent = 0);
     ~QLauncherApplication();
 
     /* getters */
+    bool active() const;
     bool running() const;
+    bool urgent() const;
     QString name() const;
-    QString icon_name() const;
+    QString icon() const;
+    QString application_type() const;
     QString desktop_file() const;
-    QString type() const;
 
     /* setters */
     void setDesktopFile(QString desktop_file);
@@ -37,17 +42,21 @@ public:
 
 
 signals:
-    void runningChanged();
-    void nameChanged();
-    void iconNameChanged();
-    void desktopFileChanged();
-    void typeChanged();
+    void activeChanged(bool);
+    void runningChanged(bool);
+    void urgentChanged(bool);
+    void nameChanged(QString);
+    void iconChanged(QString);
+    void applicationTypeChanged(QString);
+    void desktopFileChanged(QString);
 
 public slots:
 
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
+
+    void setBamfApplication(BamfApplication *application);
 };
 
 #endif // LAUNCHERAPPLICATION_H

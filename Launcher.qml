@@ -26,7 +26,7 @@ Item {
             }
 
             width: 60; height: 60
-            icon: "image://icons/"+app.icon_name
+            icon: "image://icons/"+app.icon
             running: app.running
             onClicked: app.launch()
         }
