@@ -51,9 +51,7 @@ LauncherApplicationsList::load()
     {
         bamf_application = running_applications->at(i);
         favorites.removeAll(bamf_application->desktop_file());
-        application = new QLauncherApplication;
-        application->setBamfApplication(bamf_application);
-        m_applications.append(application);
+        insertBamfApplication(bamf_application);
     }
 
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
@@ -62,6 +60,44 @@ LauncherApplicationsList::load()
         application->setDesktopFile(*iter);
         m_applications.append(application);
     }
+
+    QObject::connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(onBamfViewOpened(BamfView*)));
+}
+
+void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
+{
+    QLauncherApplication* application = new QLauncherApplication;
+    application->setBamfApplication(bamf_application);
+
+    beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
+    m_applications.append(application);
+    endInsertRows();
+
+    QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
+}
+
+void LauncherApplicationsList::onApplicationClosed()
+{
+    QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
+    int index = m_applications.indexOf(application);
+
+    beginRemoveRows(QModelIndex(), index, index);
+    m_applications.removeAt(index);
+    endRemoveRows();
+
+    delete application;
+}
+
+void
+LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
+{
+    BamfApplication* bamf_application;
+    bamf_application = dynamic_cast<BamfApplication*>(bamf_view);
+
+    if(bamf_application == NULL)
+        return;
+
+    insertBamfApplication(bamf_application);
 }
 
 int

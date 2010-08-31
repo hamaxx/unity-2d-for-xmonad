@@ -120,6 +120,9 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
+    /* FIXME: a bug somewhere makes connecting to the Closed() signal not work even though
+              the emit Closed() in bamf-view.cpp is reached. */
+    QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SLOT(onBamfApplicationClosed(bool)));
 
     emit activeChanged(active());
     emit runningChanged(running());
@@ -128,6 +131,18 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     emit iconChanged(icon());
     emit applicationTypeChanged(application_type());
     emit desktopFileChanged(desktop_file());
+}
+
+void
+QLauncherApplication::onBamfApplicationClosed(bool running)
+{
+    if(running)
+       return;
+
+    //BamfApplication* application = static_cast<BamfApplication*>(sender());
+    /* FIXME: should we disconnect from application's signals? */
+    m_application = NULL;
+    emit closed();
 }
 
 QBool

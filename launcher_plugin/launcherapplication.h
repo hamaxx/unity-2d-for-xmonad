@@ -50,6 +50,10 @@ signals:
     void iconChanged(QString);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
+    void closed();
+
+private slots:
+    void onBamfApplicationClosed(bool running);
 
 private:
     BamfApplication *m_application;

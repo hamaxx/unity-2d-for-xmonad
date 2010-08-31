@@ -17,8 +17,13 @@ public:
 
 private:
     void load();
+    void insertBamfApplication(BamfApplication* bamf_application);
     QString desktopFilePathFromFavorite(QString favorite_id);
     QList<QLauncherApplication*> m_applications;
+
+private slots:
+    void onApplicationClosed();
+    void onBamfViewOpened(BamfView* bamf_view);
 };
 
 #endif // LAUNCHERAPPLICATIONSLIST_H
