@@ -66,7 +66,22 @@ LauncherApplicationsList::load()
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
-    QLauncherApplication* application = new QLauncherApplication;
+    QLauncherApplication* application;
+    QList<QLauncherApplication*>::iterator iter;
+    for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
+    {
+        application = *iter;
+        if(application->desktop_file() == bamf_application->desktop_file())
+        {
+            /* There is an already existing QLauncherApplication corresponding
+               to bamf_application */
+            application->setBamfApplication(bamf_application);
+            return;
+        }
+    }
+
+    /* Create a new QLauncherApplication for bamf_application */
+    application = new QLauncherApplication;
     application->setBamfApplication(bamf_application);
 
     beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
