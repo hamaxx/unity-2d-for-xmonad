@@ -53,6 +53,9 @@ LauncherApplicationsList::load()
     for(int i=0; i<running_applications->size(); i++)
     {
         bamf_application = running_applications->at(i);
+        if(!bamf_application->user_visible())
+            continue;
+
         favorites.removeAll(bamf_application->desktop_file());
         application = new QLauncherApplication;
         application->setBamfApplication(bamf_application);
@@ -72,6 +75,9 @@ LauncherApplicationsList::load()
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
+    if(!bamf_application->user_visible())
+        return;
+
     QLauncherApplication* application;
     QList<QLauncherApplication*>::iterator iter;
     for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
