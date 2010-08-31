@@ -14,6 +14,15 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     reload();
 }
 
+LauncherApplicationsList::~LauncherApplicationsList()
+{
+    QList<QLauncherApplication*>::iterator iter;
+    for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
+    {
+        delete *iter;
+    }
+}
+
 QString
 LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
 {
