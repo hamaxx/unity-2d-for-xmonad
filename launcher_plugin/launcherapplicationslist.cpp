@@ -35,8 +35,9 @@ LauncherApplicationsList::load()
     /* Assume m_applications is empty */
 
     /* FIXME: applications should be sorted depending on their priority */
-    GConfItem gconf_favorites("/desktop/unity/launcher/favorites/favorites_list");
-    QStringList favorites = gconf_favorites.value().toStringList();
+    GConfItemQmlWrapper gconf_favorites;
+    gconf_favorites.setKey("/desktop/unity/launcher/favorites/favorites_list");
+    QStringList favorites = gconf_favorites.getValue().toStringList();
 
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
         *iter = desktopFilePathFromFavorite(*iter);
