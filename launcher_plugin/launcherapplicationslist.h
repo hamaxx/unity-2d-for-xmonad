@@ -16,7 +16,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
 private:
-    void reload();
+    void load();
     QString desktopFilePathFromFavorite(QString favorite_id);
     QList<QLauncherApplication*> m_applications;
 };

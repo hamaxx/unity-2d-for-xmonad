@@ -11,7 +11,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     roles[0] = "application";
     setRoleNames(roles);
 
-    reload();
+    load();
 }
 
 LauncherApplicationsList::~LauncherApplicationsList()
@@ -30,8 +30,10 @@ LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
 }
 
 void
-LauncherApplicationsList::reload()
+LauncherApplicationsList::load()
 {
+    /* Assume m_applications is empty */
+
     /* FIXME: applications should be sorted depending on their priority */
     GConfItem gconf_favorites("/desktop/unity/launcher/favorites/favorites_list");
     QStringList favorites = gconf_favorites.value().toStringList();
