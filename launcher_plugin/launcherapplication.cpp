@@ -1,3 +1,4 @@
+#include <gdk/gdk.h>
 #include "launcherapplication.h"
 #include "bamf-matcher.h"
 
@@ -161,18 +162,19 @@ QLauncherApplication::priority() const
 QBool
 QLauncherApplication::launch()
 {
-    if(m_appInfo == NULL) return QBool(false);
+    if(m_appInfo == NULL || m_application != NULL) return QBool(false);
 
-/*    GError** error;
+    GError** error;
     GdkAppLaunchContext *context;
-    GTimeVal timeval;
+//    GTimeVal timeval;
 
-    g_get_current_time (&timeval);
+//    g_get_current_time (&timeval);
     context = gdk_app_launch_context_new();
     gdk_app_launch_context_set_screen(context, gdk_screen_get_default());
-    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
+//    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
+    gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
 
-    g_app_info_launch((GAppInfo*)m_app, NULL, (GAppLaunchContext*)context, error);*/
+    g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, error);
 }
 
 void

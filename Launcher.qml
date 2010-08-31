@@ -19,7 +19,7 @@ Item {
             width: 60; height: 60
             icon: "image://icons/"+application.icon
             running: application.running
-            onClicked: application.launch()
+            onClicked: if(!running) application.launch()
         }
     }
 }
