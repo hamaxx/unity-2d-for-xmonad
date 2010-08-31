@@ -32,9 +32,10 @@ LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
 void
 LauncherApplicationsList::load()
 {
+    /* FIXME: applications should be sorted depending on their priority */
+
     /* Assume m_applications is empty */
 
-    /* FIXME: applications should be sorted depending on their priority */
     GConfItemQmlWrapper gconf_favorites;
     gconf_favorites.setKey("/desktop/unity/launcher/favorites/favorites_list");
     QStringList favorites = gconf_favorites.getValue().toStringList();
@@ -47,13 +48,17 @@ LauncherApplicationsList::load()
     BamfApplication* bamf_application;
     QLauncherApplication* application;
 
+    /* Insert running applications from Bamf */
     for(int i=0; i<running_applications->size(); i++)
     {
         bamf_application = running_applications->at(i);
         favorites.removeAll(bamf_application->desktop_file());
-        insertBamfApplication(bamf_application);
+        application = new QLauncherApplication;
+        application->setBamfApplication(bamf_application);
+        m_applications.append(application);
     }
 
+    /* Insert remaining favorites that are not running */
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
     {
         application = new QLauncherApplication;
@@ -106,6 +111,7 @@ void LauncherApplicationsList::onApplicationClosed()
 void
 LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
 {
+    /* Make sure bamf_view is in fact a BamfApplication */
     BamfApplication* bamf_application;
     bamf_application = dynamic_cast<BamfApplication*>(bamf_view);
 
