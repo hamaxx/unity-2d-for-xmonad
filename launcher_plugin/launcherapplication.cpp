@@ -106,20 +106,6 @@ QLauncherApplication::setDesktopFile(QString desktop_file)
 
     m_appInfo = g_desktop_app_info_new_from_filename(file);
 
-    /* FIXME: temporary code */
-    BamfMatcher& matcher = BamfMatcher::get_default();
-    BamfApplicationList* running_applications = matcher.running_applications();
-    BamfApplication* app;
-    for(int i=0; i<running_applications->size(); i++)
-    {
-        app = running_applications->at(i);
-        if(app->desktop_file() == desktop_file)
-        {
-            setBamfApplication(app);
-            break;
-        }
-    }
-
     /* Emit the Changed signal on all properties that can depend on m_appInfo */
     emit desktopFileChanged(desktop_file);
     emit nameChanged(name());
