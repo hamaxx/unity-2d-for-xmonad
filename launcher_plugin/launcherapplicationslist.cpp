@@ -2,7 +2,7 @@
 #include "launcherapplicationslist.h"
 #include "bamf-matcher.h"
 #include "bamf-application.h"
-#include "libgq-fremantle/gconf/gconfitem.h"
+#include "gconfitem-qml-wrapper.h"
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
