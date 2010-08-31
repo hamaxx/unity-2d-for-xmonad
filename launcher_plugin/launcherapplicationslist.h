@@ -4,6 +4,9 @@
 #include "launcherapplication.h"
 #include <QAbstractListModel>
 #include <QList>
+#include <QVariant>
+#include <QString>
+#include <QObject>
 
 class LauncherApplicationsList : public QAbstractListModel
 {

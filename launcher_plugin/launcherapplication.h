@@ -4,6 +4,9 @@
 #include <gio/gdesktopappinfo.h>
 #include <QObject>
 #include <QUrl>
+#include <QMetaType>
+#include <QString>
+
 #include "bamf-application.h"
 
 class QLauncherApplication : public QObject

@@ -3,6 +3,7 @@
 #include "bamf-matcher.h"
 #include "bamf-application.h"
 #include "gconfitem-qml-wrapper.h"
+#include <QStringList>
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
