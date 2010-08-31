@@ -145,6 +145,19 @@ QLauncherApplication::onBamfApplicationClosed(bool running)
     emit closed();
 }
 
+void
+QLauncherApplication::onDesktopFileChanged(QString desktop_file)
+{
+    /* FIXME: should retrieve its value in GConf */
+    m_priority = 1;
+}
+
+int
+QLauncherApplication::priority() const
+{
+    return m_priority;
+}
+
 QBool
 QLauncherApplication::launch()
 {

@@ -18,6 +18,7 @@ class QLauncherApplication : public QObject
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
 
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
+    Q_PROPERTY(bool priority READ priority NOTIFY priorityChanged)
 
 public:
     QLauncherApplication(QObject *parent = 0);
@@ -31,6 +32,7 @@ public:
     QString icon() const;
     QString application_type() const;
     QString desktop_file() const;
+    int priority() const;
 
     /* setters */
     void setDesktopFile(QString desktop_file);
@@ -50,14 +52,18 @@ signals:
     void iconChanged(QString);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
+    void priorityChanged(int);
+
     void closed();
 
 private slots:
     void onBamfApplicationClosed(bool running);
+    void onDesktopFileChanged(QString desktop_file);
 
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
+    int m_priority;
 };
 
 Q_DECLARE_METATYPE(QLauncherApplication*)
