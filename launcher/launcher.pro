@@ -19,9 +19,14 @@ TEMPLATE = app
 CONFIG += qt
 QT += declarative
 
+TARGET = unity-qt-launcher
+
 DESTDIR = bin
 OBJECTS_DIR = tmp
 MOC_DIR = tmp
 
 SOURCES += launcher.cpp
+
+target.path = /usr/bin
+INSTALLS = target
 

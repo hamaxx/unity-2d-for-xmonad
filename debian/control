@@ -1,0 +1,17 @@
+Source: unity-qt-launcher
+Section: gnome
+Priority: optional
+Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
+Build-Depends: debhelper (>= 7), quilt,
+               qt4-qmake, libqt4-dev,
+               libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
+               libqtgconf-dev, libqtbamf-dev
+Standards-Version: 3.8.3
+Vcs-Bzr: lp:~watuppa-team/watuppa/launcher
+
+Package: unity-qt-launcher
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Unity Qt Launcher
+ The Unity Qt launcher displays a list of running applications as well as a
+ list of favorite applications in a panel at the left of the screen.
