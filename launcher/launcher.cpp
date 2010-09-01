@@ -18,14 +18,22 @@
  */
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QDeclarativeView>
+#include <QDeclarativeEngine>
 
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
     QDeclarativeView view;
-    view.setSource(QUrl("./Launcher.qml"));
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.setFocus();
+    view.engine()->setBaseUrl(QUrl::fromLocalFile("/usr/share/unity-qt/"));
+    // This is showing the whole unity desktop, not just the launcher:
+    view.setSource(QUrl("./unity_qt.qml"));
+    view.resize(QApplication::desktop()->size());
+    view.show();
 
     return application.exec();
 }
