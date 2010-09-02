@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     QDeclarativeView view;
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     /* FIXME: possible optimisations */
 //    view.setAttribute(Qt::WA_OpaquePaintEvent);
 //    view.setAttribute(Qt::WA_NoSystemBackground);
