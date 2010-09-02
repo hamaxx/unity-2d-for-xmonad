@@ -25,6 +25,7 @@ Item {
             icon: "image://icons/"+application.icon
             running: application.running
             active: application.active
+            urgent: application.urgent
             onClicked: if(!running) application.launch()
         }
     }

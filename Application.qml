@@ -22,6 +22,7 @@ Item {
     property alias label: label.text
     property bool running: false
     property bool active: false
+    property bool urgent: false
 
     signal clicked
 
@@ -57,6 +58,24 @@ Item {
         asynchronous: true
         opacity: status == Image.Ready ? 1 : 0
         Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+
+        SequentialAnimation {
+            id: nudging
+            SequentialAnimation {
+                loops: 30
+                NumberAnimation { target: icon; property: "rotation"; to: 20; duration: 150 }
+                NumberAnimation { target: icon; property: "rotation"; to: -20; duration: 150 }
+            }
+            NumberAnimation { target: icon; property: "rotation"; to: 0; duration: 75 }
+        }
+
+        NumberAnimation { id: end_nudging; target: icon; property: "rotation"; to: 0; duration: 75 }
+
+    }
+
+    onUrgentChanged: {
+        if (urgent) nudging.running = true
+        else { nudging.running = false; end_nudging.running = true }
     }
 
     Image {
