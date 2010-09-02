@@ -21,6 +21,12 @@ SOURCES += \
     iconimageprovider.cpp \
     launcherapplicationslist.cpp
 
-target.path = /usr/lib/qt4/imports/launcher
-INSTALLS = target
+INSTALL_PATH = /usr/lib/qt4/imports/launcher
+
+target.path = $$INSTALL_PATH
+
+qmldir.files = qmldir
+qmldir.path = $$INSTALL_PATH
+
+INSTALLS = target qmldir
 
