@@ -5,6 +5,8 @@
 #include "gconfitem-qml-wrapper.h"
 #include <QStringList>
 
+#define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
+
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -27,7 +29,9 @@ LauncherApplicationsList::~LauncherApplicationsList()
 QString
 LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
 {
-    return QString("/usr/share/applications/")+favorite_id+QString(".desktop");
+    GConfItemQmlWrapper favorite;
+    favorite.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
+    return favorite.getValue().toString();
 }
 
 void
@@ -38,7 +42,7 @@ LauncherApplicationsList::load()
     /* Assume m_applications is empty */
 
     GConfItemQmlWrapper gconf_favorites;
-    gconf_favorites.setKey("/desktop/unity/launcher/favorites/favorites_list");
+    gconf_favorites.setKey(FAVORITES_KEY + "favorites_list");
     QStringList favorites = gconf_favorites.getValue().toStringList();
 
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
