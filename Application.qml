@@ -61,6 +61,7 @@ Item {
 
         SequentialAnimation {
             id: nudging
+            running: urgent
             SequentialAnimation {
                 loops: 30
                 NumberAnimation { target: icon; property: "rotation"; to: 20; duration: 150 }
@@ -69,13 +70,15 @@ Item {
             NumberAnimation { target: icon; property: "rotation"; to: 0; duration: 75 }
         }
 
-        NumberAnimation { id: end_nudging; target: icon; property: "rotation"; to: 0; duration: 75 }
+        NumberAnimation {
+            id: end_nudging
+            running: !urgent
+            target: icon
+            property: "rotation"
+            to: 0
+            duration: 75
+        }
 
-    }
-
-    onUrgentChanged: {
-        if (urgent) nudging.running = true
-        else { nudging.running = false; end_nudging.running = true }
     }
 
     Image {
