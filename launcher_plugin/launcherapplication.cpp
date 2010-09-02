@@ -164,7 +164,7 @@ QLauncherApplication::launch()
 {
     if(m_appInfo == NULL || m_application != NULL) return QBool(false);
 
-    GError** error;
+    GError* error;
     GdkAppLaunchContext *context;
 //    GTimeVal timeval;
 
@@ -174,7 +174,8 @@ QLauncherApplication::launch()
 //    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
     gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
 
-    g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, error);
+    g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
+    return QBool(true);
 }
 
 void
