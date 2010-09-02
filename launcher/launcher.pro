@@ -16,8 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 TEMPLATE = app
-CONFIG += qt
+CONFIG += qt link_pkgconfig
 QT += declarative
+PKGCONFIG = x11
 
 TARGET = unity-qt-launcher
 
