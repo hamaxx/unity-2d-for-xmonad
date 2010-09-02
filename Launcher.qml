@@ -2,6 +2,9 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
+    width: 60
+    height: 1024
+
     Image {
         id: background
 

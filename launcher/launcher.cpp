@@ -27,6 +27,10 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     QDeclarativeView view;
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+    /* FIXME: possible optimisations */
+//    view.setAttribute(Qt::WA_OpaquePaintEvent);
+//    view.setAttribute(Qt::WA_NoSystemBackground);
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
@@ -43,9 +47,9 @@ int main(int argc, char *argv[])
     }
 
     /* This is showing the whole unity desktop, not just the launcher: */
-    view.setSource(QUrl("./unity_qt.qml"));
+    view.setSource(QUrl("./Launcher.qml"));
 
-    view.resize(QApplication::desktop()->size());
+    view.resize(60, QApplication::desktop()->size().height());
     view.show();
 
     return application.exec();
