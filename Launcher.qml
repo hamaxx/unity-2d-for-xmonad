@@ -1,5 +1,5 @@
 import Qt 4.7
-import launcher 1.0
+import UnityApplications 1.0
 
 Item {
     Image {
@@ -14,7 +14,8 @@ Item {
         anchors.fill: parent
         focus: true
 
-        model: launcher_applications
+        /* applications is exposed by UnityApplications */
+        model: applications
 
         delegate: Application {
             width: 60; height: 60

@@ -3,25 +3,24 @@ CONFIG += qt link_pkgconfig
 QT += declarative
 PKGCONFIG = gdk-2.0 gio-2.0 libwnck-1.0 libqtbamf libqtgconf
 
-TARGET = launcher_plugin
+TARGET = UnityApplications
 
-DESTDIR = lib
 OBJECTS_DIR = tmp
 MOC_DIR = tmp
 
 HEADERS += \
-    launcherplugin.h \
+    plugin.h \
     launcherapplication.h \
     iconimageprovider.h \
     launcherapplicationslist.h
 
 SOURCES += \
-    launcherplugin.cpp \
+    plugin.cpp \
     launcherapplication.cpp \
     iconimageprovider.cpp \
     launcherapplicationslist.cpp
 
-INSTALL_PATH = /usr/lib/qt4/imports/launcher
+INSTALL_PATH = /usr/lib/qt4/imports/$$TARGET
 
 target.path = $$INSTALL_PATH
 

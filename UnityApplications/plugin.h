@@ -1,9 +1,9 @@
-#ifndef LAUNCHERPLUGIN_H
-#define LAUNCHERPLUGIN_H
+#ifndef UNITYAPPLICATIONSPLUGIN_H
+#define UNITYAPPLICATIONSPLUGIN_H
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
-class LauncherPlugin : public QDeclarativeExtensionPlugin
+class UnityApplicationsPlugin : public QDeclarativeExtensionPlugin
 {
     Q_OBJECT
 public:
@@ -12,4 +12,4 @@ public:
 };
 
 
-#endif // LAUNCHERPLUGIN_H
+#endif // UNITYAPPLICATIONSPLUGIN_H

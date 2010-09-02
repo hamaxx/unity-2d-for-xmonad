@@ -1,0 +1,5 @@
+Running unity-qt-launcher
+=========================
+
+qmake && make
+./launcher/bin/unity-qt-launcher

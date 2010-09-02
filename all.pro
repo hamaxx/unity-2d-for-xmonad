@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = launcher_plugin launcher
+SUBDIRS = UnityApplications launcher
 
 INSTALL_PATH = /usr/share/unity-qt
 

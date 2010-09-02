@@ -32,11 +32,17 @@ int main(int argc, char *argv[])
 
     if (QCoreApplication::applicationDirPath() == "/usr/bin")
     {
-        // Running installed
+        /* Running installed */
         view.engine()->setBaseUrl(QUrl::fromLocalFile("/usr/share/unity-qt/"));
     }
+    else
+    {
+        /* Uninstalled: make sure local plugins such as UnityApplications are
+           importable */
+        view.engine()->addImportPath(QString("."));
+    }
 
-    // This is showing the whole unity desktop, not just the launcher:
+    /* This is showing the whole unity desktop, not just the launcher: */
     view.setSource(QUrl("./unity_qt.qml"));
 
     view.resize(QApplication::desktop()->size());
