@@ -24,6 +24,7 @@ Item {
             width: 60; height: 60
             icon: "image://icons/"+application.icon
             running: application.running
+            active: application.active
             onClicked: if(!running) application.launch()
         }
     }

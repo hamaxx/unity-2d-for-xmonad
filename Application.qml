@@ -21,6 +21,7 @@ Item {
     property alias icon: icon.source
     property alias label: label.text
     property bool running: false
+    property bool active: false
 
     signal clicked
 
@@ -67,6 +68,19 @@ Item {
         anchors.verticalCenter: icon.verticalCenter
         opacity: running ? 1.0 : 0.0
         source: "/usr/share/unity/themes/application-running.png"
+
+        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+    }
+
+    Image {
+        id: active_arrow
+
+        width: sourceSize.width
+        height: sourceSize.height
+        anchors.left: icon.right
+        anchors.verticalCenter: icon.verticalCenter
+        opacity: active ? 1.0 : 0.0
+        source: "/usr/share/unity/themes/application-selected.png"
 
         Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
     }
