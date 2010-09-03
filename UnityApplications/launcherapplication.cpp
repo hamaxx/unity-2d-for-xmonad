@@ -11,6 +11,7 @@
 QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject(parent), m_application(NULL), m_appInfo(NULL)
 {
+    QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
 QLauncherApplication::~QLauncherApplication()
@@ -222,7 +223,6 @@ QLauncherApplication::launch()
     m_launching_timer.setSingleShot(true);
     m_launching_timer.start(8000);
     emit launchingChanged(true);
-    QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 
     return QBool(true);
 }
