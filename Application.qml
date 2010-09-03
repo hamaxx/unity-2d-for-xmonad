@@ -43,37 +43,65 @@ Item {
 
     //    Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 
-    Image {
-        id: icon
+    Item {
+        id: container
 
         width: 48
         height: 48
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        fillMode: Image.PreserveAspectFit
-        sourceSize.width: width
-        sourceSize.height: height
-        smooth: true
 
-        asynchronous: true
-        opacity: status == Image.Ready ? 1 : 0
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+        Image {
+            id: background
+
+            width: 48
+            height: 48
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            fillMode: Image.PreserveAspectFit
+            sourceSize.width: width
+            sourceSize.height: height
+            smooth: true
+
+            source: "/usr/share/unity/themes/prism_icon_background.png"
+
+            asynchronous: true
+            opacity: status == Image.Ready ? 1 : 0
+            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+        }
+
+        Image {
+            id: icon
+
+            width: 30
+            height: 30
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            fillMode: Image.PreserveAspectFit
+            sourceSize.width: width
+            sourceSize.height: height
+            smooth: true
+
+            asynchronous: true
+            opacity: status == Image.Ready ? 1 : 0
+            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+        }
 
         SequentialAnimation {
             id: nudging
             running: urgent
             SequentialAnimation {
                 loops: 30
-                NumberAnimation { target: icon; property: "rotation"; to: 20; duration: 150 }
-                NumberAnimation { target: icon; property: "rotation"; to: -20; duration: 150 }
+                NumberAnimation { target: container; property: "rotation"; to: 20; duration: 150 }
+                NumberAnimation { target: container; property: "rotation"; to: -20; duration: 150 }
             }
-            NumberAnimation { target: icon; property: "rotation"; to: 0; duration: 75 }
+            NumberAnimation { target: container; property: "rotation"; to: 0; duration: 75 }
         }
 
         NumberAnimation {
             id: end_nudging
             running: !urgent
-            target: icon
+            target: container
             property: "rotation"
             to: 0
             duration: 75
@@ -86,8 +114,8 @@ Item {
 
         width: sourceSize.width
         height: sourceSize.height
-        anchors.right: icon.left
-        anchors.verticalCenter: icon.verticalCenter
+        anchors.right: container.left
+        anchors.verticalCenter: container.verticalCenter
         opacity: running ? 1.0 : 0.0
         source: "/usr/share/unity/themes/application-running.png"
 
@@ -99,8 +127,8 @@ Item {
 
         width: sourceSize.width
         height: sourceSize.height
-        anchors.left: icon.right
-        anchors.verticalCenter: icon.verticalCenter
+        anchors.left: container.right
+        anchors.verticalCenter: container.verticalCenter
         opacity: active ? 1.0 : 0.0
         source: "/usr/share/unity/themes/application-selected.png"
 
