@@ -28,11 +28,11 @@ Item {
     signal clicked
 
     MouseArea {
+        id: mouse
+
         hoverEnabled: true
         anchors.fill: parent
         onClicked: parent.clicked()
-//        onEntered: background.opacity = 1.0
-//        onExited: background.opacity = 0.7
     }
 
     Keys.onPressed: {
@@ -57,6 +57,7 @@ Item {
 
             width: 48
             height: 48
+            opacity: mouse.containsMouse ? 1.0 : 0.7
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             fillMode: Image.PreserveAspectFit
@@ -67,8 +68,7 @@ Item {
             source: "/usr/share/unity/themes/prism_icon_background.png"
 
             asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+            Behavior on opacity {NumberAnimation {duration: 150; easing.type: Easing.InOutQuad}}
         }
 
         Image {
