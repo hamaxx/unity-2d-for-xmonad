@@ -23,6 +23,7 @@ Item {
     property bool running: false
     property bool active: false
     property bool urgent: false
+    property bool launching: false
 
     signal clicked
 

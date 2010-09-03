@@ -164,6 +164,8 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     emit iconChanged(icon());
     emit applicationTypeChanged(application_type());
     emit desktopFileChanged(desktop_file());
+    m_launching_timer.stop();
+    emit launchingChanged(launching());
 }
 
 void
@@ -191,6 +193,13 @@ QLauncherApplication::priority() const
     return m_priority;
 }
 
+bool
+QLauncherApplication::launching() const
+{
+    return m_launching_timer.isActive();
+}
+
+
 QBool
 QLauncherApplication::launch()
 {
@@ -207,7 +216,21 @@ QLauncherApplication::launch()
     gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
 
     g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
+
+    /* 'launching' property becomes true for a maximum of 8 seconds and becomes
+       false as soon as the application is launched */
+    m_launching_timer.setSingleShot(true);
+    m_launching_timer.start(8000);
+    emit launchingChanged(true);
+    QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
+
     return QBool(true);
+}
+
+void
+QLauncherApplication::onLaunchingTimeouted()
+{
+    emit launchingChanged(false);
 }
 
 void

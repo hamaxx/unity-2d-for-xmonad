@@ -6,6 +6,7 @@
 #include <QUrl>
 #include <QMetaType>
 #include <QString>
+#include <QTimer>
 
 #include "bamf-application.h"
 
@@ -22,6 +23,7 @@ class QLauncherApplication : public QObject
 
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(bool priority READ priority NOTIFY priorityChanged)
+    Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
 
 public:
     QLauncherApplication(QObject *parent = 0);
@@ -36,6 +38,7 @@ public:
     QString application_type() const;
     QString desktop_file() const;
     int priority() const;
+    bool launching() const;
 
     /* setters */
     void setActive(bool active);
@@ -57,17 +60,20 @@ signals:
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
     void priorityChanged(int);
+    void launchingChanged(bool);
 
     void closed();
 
 private slots:
     void onBamfApplicationClosed(bool running);
     void onDesktopFileChanged(QString desktop_file);
+    void onLaunchingTimeouted();
 
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
     int m_priority;
+    QTimer m_launching_timer;
 };
 
 Q_DECLARE_METATYPE(QLauncherApplication*)
