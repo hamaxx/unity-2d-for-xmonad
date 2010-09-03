@@ -19,18 +19,15 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QDeclarativeView>
 #include <QDeclarativeEngine>
-#include <QX11Info>
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
+#include "launcherview.h"
 
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    QDeclarativeView view;
+    LauncherView view;
     view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     /* FIXME: possible optimisations */
 //    view.setAttribute(Qt::WA_OpaquePaintEvent);
@@ -53,21 +50,10 @@ int main(int argc, char *argv[])
     /* This is showing the whole unity desktop, not just the launcher: */
     view.setSource(QUrl("./Launcher.qml"));
 
-    QDesktopWidget* desktop = QApplication::desktop();
-    const QRect screen = desktop->screenGeometry(&view);
-    const QRect available = desktop->availableGeometry(&view);
-    view.resize(60, available.height());
-    view.move(available.x(), available.y());
     view.show();
-
-    /* Reserve space at the left edge of the screen (the launcher is a panel) */
-    Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
-    uint struts[12] = {available.x() + view.size().width(), 0, 0, 0,
-                       available.y(), view.size().height(), 0, 0,
-                       0, 0, 0, 0};
-    XChangeProperty(QX11Info::display(), view.effectiveWinId(), atom,
-                    XA_CARDINAL, 32, PropModeReplace,
-                    (unsigned char *) &struts, 12);
+    QDesktopWidget* desktop = QApplication::desktop();
+    view.workAreaResized(desktop->screenNumber(&view));
+    QObject::connect(desktop, SIGNAL(workAreaResized(int)), &view, SLOT(workAreaResized(int)));
 
     return application.exec();
 }

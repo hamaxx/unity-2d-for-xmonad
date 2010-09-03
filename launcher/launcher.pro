@@ -26,7 +26,8 @@ DESTDIR = bin
 OBJECTS_DIR = tmp
 MOC_DIR = tmp
 
-SOURCES += launcher.cpp
+HEADERS += launcherview.h
+SOURCES += launcherview.cpp launcher.cpp
 
 target.path = /usr/bin
 INSTALLS = target
