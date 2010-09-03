@@ -87,6 +87,25 @@ Item {
             Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
         }
 
+        Image {
+            id: foreground
+
+            width: 48
+            height: 48
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            fillMode: Image.PreserveAspectFit
+            sourceSize.width: width
+            sourceSize.height: height
+            smooth: true
+
+            source: "/usr/share/unity/themes/prism_icon_foreground.png"
+
+            asynchronous: true
+            opacity: status == Image.Ready ? 1 : 0
+            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+        }
+
         SequentialAnimation {
             id: nudging
             running: urgent
