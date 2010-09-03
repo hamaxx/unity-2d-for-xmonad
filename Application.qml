@@ -92,8 +92,8 @@ Item {
             running: urgent
             SequentialAnimation {
                 loops: 30
-                NumberAnimation { target: container; property: "rotation"; to: 20; duration: 150 }
-                NumberAnimation { target: container; property: "rotation"; to: -20; duration: 150 }
+                NumberAnimation { target: container; property: "rotation"; to: 15; duration: 150 }
+                NumberAnimation { target: container; property: "rotation"; to: -15; duration: 150 }
             }
             NumberAnimation { target: container; property: "rotation"; to: 0; duration: 75 }
         }
