@@ -53,13 +53,18 @@ int main(int argc, char *argv[])
     /* This is showing the whole unity desktop, not just the launcher: */
     view.setSource(QUrl("./Launcher.qml"));
 
-    view.resize(60, QApplication::desktop()->size().height());
+    QDesktopWidget* desktop = QApplication::desktop();
+    const QRect screen = desktop->screenGeometry(&view);
+    const QRect available = desktop->availableGeometry(&view);
+    view.resize(60, available.height());
+    view.move(available.x(), available.y());
     view.show();
 
     /* Reserve space at the left edge of the screen (the launcher is a panel) */
     Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
-    uint struts[12] = {view.size().width(), 0, 0, 0, 0, view.size().height(),
-                       0, 0, 0, 0, 0, 0};
+    uint struts[12] = {available.x() + view.size().width(), 0, 0, 0,
+                       available.y(), view.size().height(), 0, 0,
+                       0, 0, 0, 0};
     XChangeProperty(QX11Info::display(), view.effectiveWinId(), atom,
                     XA_CARDINAL, 32, PropModeReplace,
                     (unsigned char *) &struts, 12);
