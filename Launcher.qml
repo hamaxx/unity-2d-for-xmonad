@@ -26,7 +26,7 @@ Item {
             running: application.running
             active: application.active
             urgent: application.urgent
-            onClicked: if(!running) application.launch()
+            onClicked: { if(running) application.active = true; else application.launch(); }
         }
     }
 }

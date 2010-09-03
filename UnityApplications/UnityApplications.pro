@@ -2,6 +2,7 @@ TEMPLATE = lib
 CONFIG += qt link_pkgconfig
 QT += declarative
 PKGCONFIG = gdk-2.0 gio-2.0 libwnck-1.0 libqtbamf libqtgconf
+DEFINES += WNCK_I_KNOW_THIS_IS_UNSTABLE
 
 TARGET = UnityApplications
 

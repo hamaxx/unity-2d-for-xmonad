@@ -1,6 +1,12 @@
+/* Those have to be included before any QObject-style header to avoid
+   compilation errors. */
 #include <gdk/gdk.h>
+#include <libwnck/libwnck.h>
+
 #include "launcherapplication.h"
 #include "bamf-matcher.h"
+
+#include <X11/X.h>
 
 QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject(parent), m_application(NULL), m_appInfo(NULL)
@@ -91,6 +97,32 @@ QLauncherApplication::desktop_file() const
     return QString("");
 }
 
+
+void
+QLauncherApplication::setActive(bool active)
+{
+    if (!active)
+        return;
+
+    /* FIXME: pick the most important window, not just the first one */
+    uint xid = m_application->xids()->at(0);
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+    GList* windows = wnck_screen_get_windows(screen);
+    
+    for(GList* li = windows; li != NULL; li = g_list_next(li))
+    {
+        WnckWindow* window = (WnckWindow*) li->data;
+        if (wnck_window_get_xid(window) == xid)
+        {
+            WnckWorkspace* workspace = wnck_window_get_workspace(window);
+            wnck_workspace_activate(workspace, CurrentTime);
+            wnck_window_activate(window, CurrentTime);
+            break;
+        }
+    }
+}
 
 void
 QLauncherApplication::setDesktopFile(QString desktop_file)
