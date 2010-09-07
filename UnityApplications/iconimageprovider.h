@@ -7,7 +7,7 @@ class IconImageProvider : public QDeclarativeImageProvider
 {
 public:
     IconImageProvider();
-    virtual QImage request(const QString &id, QSize *size, const QSize &requestedSize);
+    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 
 signals:
 

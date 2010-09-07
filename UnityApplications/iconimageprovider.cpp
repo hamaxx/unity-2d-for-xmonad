@@ -3,7 +3,7 @@
 #include "iconimageprovider.h"
 
 
-IconImageProvider::IconImageProvider() : QDeclarativeImageProvider()
+IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
 }
 
@@ -12,7 +12,7 @@ IconImageProvider::IconImageProvider() : QDeclarativeImageProvider()
 
           : QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap)
 */
-QImage IconImageProvider::request(const QString &id, QSize *size, const QSize &requestedSize)
+QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     /* Dealing with case where id is an absolute path to the icon file */
     if(id.startsWith("/"))
