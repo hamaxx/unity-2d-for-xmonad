@@ -143,6 +143,8 @@ LauncherApplicationsList::rowCount(const QModelIndex &parent) const
 QVariant
 LauncherApplicationsList::data(const QModelIndex &index, int role) const
 {
+    Q_UNUSED(role);
+
     if (!index.isValid())
         return QVariant();
 

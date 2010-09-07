@@ -13,6 +13,8 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
+    Q_UNUSED(uri);
+
     engine->addImageProvider(QString("icons"), new IconImageProvider);
 
     LauncherApplicationsList* applications = new LauncherApplicationsList;
