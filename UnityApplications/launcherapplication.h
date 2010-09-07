@@ -14,7 +14,7 @@ class QLauncherApplication : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
     Q_PROPERTY(bool urgent READ urgent NOTIFY urgentChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
@@ -41,7 +41,6 @@ public:
     bool launching() const;
 
     /* setters */
-    void setActive(bool active);
     void setDesktopFile(QString desktop_file);
     void setBamfApplication(BamfApplication *application);
 

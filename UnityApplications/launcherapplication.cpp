@@ -100,32 +100,6 @@ QLauncherApplication::desktop_file() const
 
 
 void
-QLauncherApplication::setActive(bool active)
-{
-    if (!active)
-        return;
-
-    /* FIXME: pick the most important window, not just the first one */
-    uint xid = m_application->xids()->at(0);
-
-    WnckScreen* screen = wnck_screen_get_default();
-    wnck_screen_force_update(screen);
-    GList* windows = wnck_screen_get_windows(screen);
-    
-    for(GList* li = windows; li != NULL; li = g_list_next(li))
-    {
-        WnckWindow* window = (WnckWindow*) li->data;
-        if (wnck_window_get_xid(window) == xid)
-        {
-            WnckWorkspace* workspace = wnck_window_get_workspace(window);
-            wnck_workspace_activate(workspace, CurrentTime);
-            wnck_window_activate(window, CurrentTime);
-            break;
-        }
-    }
-}
-
-void
 QLauncherApplication::setDesktopFile(QString desktop_file)
 {
     /* Accept fully formed URL and truncate anything else that is not the actual
@@ -244,7 +218,24 @@ QLauncherApplication::close()
 void
 QLauncherApplication::show()
 {
-    if(m_appInfo == NULL) return;
+    if(m_application == NULL) return;
 
-//    launcher_application_show(m_appInfo);
+    /* FIXME: pick the most important window, not just the first one */
+    uint xid = m_application->xids()->at(0);
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+    GList* windows = wnck_screen_get_windows(screen);
+
+    for(GList* li = windows; li != NULL; li = g_list_next(li))
+    {
+        WnckWindow* window = (WnckWindow*) li->data;
+        if (wnck_window_get_xid(window) == xid)
+        {
+            WnckWorkspace* workspace = wnck_window_get_workspace(window);
+            wnck_workspace_activate(workspace, CurrentTime);
+            wnck_window_activate(window, CurrentTime);
+            break;
+        }
+    }
 }
