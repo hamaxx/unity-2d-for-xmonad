@@ -126,6 +126,7 @@ void
 QLauncherApplication::setBamfApplication(BamfApplication *application)
 {
     m_application = application;
+    setDesktopFile(m_application->desktop_file());
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
