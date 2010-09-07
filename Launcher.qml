@@ -28,7 +28,9 @@ Item {
             urgent: application.urgent
             launching: application.launching
             onClicked: {
-                if (running)
+                if (active)
+                    application.expose()
+                else if (running)
                     application.show()
                 else
                     application.launch()

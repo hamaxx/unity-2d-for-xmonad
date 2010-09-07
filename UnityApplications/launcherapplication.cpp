@@ -8,6 +8,8 @@
 
 #include <X11/X.h>
 
+#include <QDebug>
+
 QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject(parent), m_application(NULL), m_appInfo(NULL)
 {
@@ -239,3 +241,11 @@ QLauncherApplication::show()
         }
     }
 }
+
+void
+QLauncherApplication::expose()
+{
+    /* IMPLEMENT ME: see unity’s expose manager */
+    qDebug() << "FIXME: Expose mode not implemented yet.";
+}
+

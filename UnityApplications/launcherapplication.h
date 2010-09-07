@@ -48,6 +48,7 @@ public:
     Q_INVOKABLE QBool launch();
     Q_INVOKABLE void show();
     Q_INVOKABLE void close();
+    Q_INVOKABLE void expose();
 
 
 signals:
