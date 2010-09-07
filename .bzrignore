@@ -1,7 +1,7 @@
-launcher/Makefile
-launcher/bin
-launcher/tmp
-launcher_plugin/Makefile
-launcher_plugin/lib
-launcher_plugin/tmp
 Makefile
+UnityApplications/Makefile
+UnityApplications/tmp
+UnityApplications/libUnityApplications.so*
+launcher/Makefile
+launcher/tmp
+launcher/bin
