@@ -13,13 +13,15 @@ HEADERS += \
     plugin.h \
     launcherapplication.h \
     iconimageprovider.h \
-    launcherapplicationslist.h
+    launcherapplicationslist.h \
+    launchertooltip.h
 
 SOURCES += \
     plugin.cpp \
     launcherapplication.cpp \
     iconimageprovider.cpp \
-    launcherapplicationslist.cpp
+    launcherapplicationslist.cpp \
+    launchertooltip.cpp
 
 INSTALL_PATH = /usr/lib/qt4/imports/$$TARGET
 

@@ -35,6 +35,10 @@ Item {
                 else
                     application.launch()
             }
+
+            /* tooltip is exposed by UnityApplications */
+            onEntered: tooltip.show(y + height / 2, application.name)
+            onExited: tooltip.hide()
         }
     }
 }

@@ -26,6 +26,8 @@ Item {
     property bool launching: false
 
     signal clicked
+    signal entered
+    signal exited
 
     MouseArea {
         id: mouse
@@ -33,6 +35,8 @@ Item {
         hoverEnabled: true
         anchors.fill: parent
         onClicked: parent.clicked()
+        onEntered: parent.entered()
+        onExited: parent.exited()
     }
 
     Keys.onPressed: {
