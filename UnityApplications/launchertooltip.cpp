@@ -69,6 +69,7 @@ QLauncherTooltip::hide()
     }
 
     m_menu = false;
+    m_animation->stop();
     QMainWindow::hide();
 }
 
