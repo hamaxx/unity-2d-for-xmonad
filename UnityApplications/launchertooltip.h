@@ -21,6 +21,7 @@
 #define LAUNCHERTOOLTIP_H
 
 #include <QMainWindow>
+#include <QPropertyAnimation>
 
 class QLauncherTooltip : public QMainWindow
 {
@@ -36,6 +37,7 @@ public:
 
 private:
     bool m_menu;
+    QPropertyAnimation* m_animation;
 };
 
 #endif // LAUNCHERTOOLTIP_H

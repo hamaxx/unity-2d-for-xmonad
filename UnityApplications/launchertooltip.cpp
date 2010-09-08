@@ -30,10 +30,14 @@ QLauncherTooltip::QLauncherTooltip(QObject *parent):
     QLabel* label = new QLabel(this);
     label->setMargin(5);
     setCentralWidget(label);
+
+    m_animation = new QPropertyAnimation(this, "size");
+    m_animation->setDuration(100);
 }
 
 QLauncherTooltip::~QLauncherTooltip()
 {
+    delete m_animation;
 }
 
 void
@@ -73,8 +77,13 @@ QLauncherTooltip::show_menu()
 {
     QLabel* label = (QLabel*) centralWidget();
     const QSize min = label->minimumSizeHint();
+
     // FIXME: show an actual contextual menu
-    resize(min.width(), min.height() + 100);
+
+    m_animation->setStartValue(min);
+    m_animation->setEndValue(QSize(min.width(), min.height() + 100));
+    m_animation->start();
+
     m_menu = true;
 }
 
