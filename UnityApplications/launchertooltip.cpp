@@ -22,8 +22,10 @@
 #include <QLabel>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QCursor>
 
-QLauncherTooltip::QLauncherTooltip(QObject *parent): QMainWindow(0, Qt::ToolTip)
+QLauncherTooltip::QLauncherTooltip(QObject *parent):
+    QMainWindow(0, Qt::ToolTip), m_menu(false)
 {
     QLabel* label = new QLabel(this);
     label->setMargin(5);
@@ -37,6 +39,9 @@ QLauncherTooltip::~QLauncherTooltip()
 void
 QLauncherTooltip::show(int y, const QString& name)
 {
+    if (m_menu)
+        return;
+
     QLabel* label = (QLabel*) centralWidget();
     label->setText(name);
 
@@ -46,3 +51,30 @@ QLauncherTooltip::show(int y, const QString& name)
     QMainWindow::show();
     resize(label->minimumSizeHint());
 }
+
+void
+QLauncherTooltip::hide()
+{
+    if (m_menu)
+    {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const QRect available = desktop->availableGeometry(this);
+        QPoint cursor = QCursor::pos();
+        if (cursor.x() >= available.x())
+            return;
+    }
+
+    m_menu = false;
+    QMainWindow::hide();
+}
+
+void
+QLauncherTooltip::show_menu()
+{
+    QLabel* label = (QLabel*) centralWidget();
+    const QSize min = label->minimumSizeHint();
+    // FIXME: show an actual contextual menu
+    resize(min.width(), min.height() + 100);
+    m_menu = true;
+}
+

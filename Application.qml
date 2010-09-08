@@ -25,16 +25,17 @@ Item {
     property bool urgent: false
     property bool launching: false
 
-    signal clicked
+    signal clicked(variant mouse)
     signal entered
     signal exited
 
     MouseArea {
         id: mouse
 
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         hoverEnabled: true
         anchors.fill: parent
-        onClicked: parent.clicked()
+        onClicked: parent.clicked(mouse)
         onEntered: parent.entered()
         onExited: parent.exited()
     }

@@ -31,6 +31,11 @@ public:
     ~QLauncherTooltip();
 
     Q_INVOKABLE void show(int y, const QString& name);
+    Q_INVOKABLE void hide();
+    Q_INVOKABLE void show_menu();
+
+private:
+    bool m_menu;
 };
 
 #endif // LAUNCHERTOOLTIP_H

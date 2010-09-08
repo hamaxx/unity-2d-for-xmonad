@@ -28,12 +28,17 @@ Item {
             urgent: application.urgent
             launching: application.launching
             onClicked: {
-                if (active)
-                    application.expose()
-                else if (running)
-                    application.show()
-                else
-                    application.launch()
+                if (mouse.button == Qt.LeftButton) {
+                    tooltip.hide()
+                    if (active)
+                        application.expose()
+                    else if (running)
+                        application.show()
+                    else
+                        application.launch()
+                }
+                else if (mouse.button == Qt.RightButton)
+                    tooltip.show_menu()
             }
 
             /* tooltip is exposed by UnityApplications */
