@@ -28,6 +28,8 @@
 QLauncherTooltip::QLauncherTooltip(QObject *parent):
     QMainWindow(0, Qt::ToolTip), m_menu(false)
 {
+    Q_UNUSED(parent);
+
     QLabel* label = new QLabel(this);
     label->setMargin(5);
     setCentralWidget(label);
