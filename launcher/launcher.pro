@@ -18,7 +18,7 @@
 TEMPLATE = app
 CONFIG += qt link_pkgconfig
 QT += declarative
-PKGCONFIG = x11
+PKGCONFIG = x11 gtk+-2.0
 
 TARGET = unity-qt-launcher
 

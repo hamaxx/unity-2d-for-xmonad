@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <gtk/gtk.h>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
@@ -25,6 +26,10 @@
 
 int main(int argc, char *argv[])
 {
+    /* UnityApplications plugin uses GTK APIs to retrieve theme icons
+       (gtk_icon_theme_get_defaul) and requires a call to gtk_init */
+    gtk_init(&argc, &argv);
+
     QApplication application(argc, argv);
 
     LauncherView view;
