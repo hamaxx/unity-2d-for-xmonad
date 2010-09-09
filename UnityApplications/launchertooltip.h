@@ -20,6 +20,8 @@
 #ifndef LAUNCHERTOOLTIP_H
 #define LAUNCHERTOOLTIP_H
 
+#include "launcherapplication.h"
+
 #include <QMainWindow>
 #include <QVariant>
 #include <QPropertyAnimation>
@@ -38,6 +40,7 @@ public:
 
 private:
     bool m_menu;
+    QLauncherApplication* m_application;
     QPropertyAnimation* m_animation;
 };
 

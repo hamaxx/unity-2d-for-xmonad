@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launcherapplication.h"
 #include "launchertooltip.h"
 
 #include <QLabel>
@@ -26,7 +25,7 @@
 #include <QCursor>
 
 QLauncherTooltip::QLauncherTooltip(QObject *parent):
-    QMainWindow(0, Qt::ToolTip), m_menu(false)
+    QMainWindow(0, Qt::ToolTip), m_menu(false), m_application(NULL)
 {
     Q_UNUSED(parent);
 
@@ -46,12 +45,19 @@ QLauncherTooltip::~QLauncherTooltip()
 void
 QLauncherTooltip::show(int y, const QVariant& application)
 {
-    if (m_menu)
-        // FIXME: need to check for which application the menu is currently shown.
-        //        If not the one under the mouse cursor, then need to hide and show again.
-        return;
-
     QLauncherApplication* app = (QLauncherApplication*) application.value<QObject*>();
+
+    if (m_menu)
+    {
+        // The contextual menu is already visible, check whether it’s for
+        // the current application
+        if (m_application != app)
+            hide();
+        else
+            return;
+    }
+
+    m_application = app;
 
     QLabel* label = (QLabel*) centralWidget();
     label->setText(app->name());
@@ -76,6 +82,7 @@ QLauncherTooltip::hide()
     }
 
     m_menu = false;
+    m_application = NULL;
     m_animation->stop();
     QMainWindow::hide();
 }
