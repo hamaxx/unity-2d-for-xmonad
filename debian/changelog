@@ -1,3 +1,9 @@
+unity-qt-launcher (0.0~bzr66) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Thu, 09 Sep 2010 15:34:31 +0200
+
 unity-qt-launcher (0.0~bzr53) maverick; urgency=low
 
   * Snapshot release.
