@@ -27,6 +27,7 @@ class QLauncherApplication : public QObject
 
 public:
     QLauncherApplication(QObject *parent = 0);
+    QLauncherApplication(const QLauncherApplication& other);
     ~QLauncherApplication();
 
     /* getters */

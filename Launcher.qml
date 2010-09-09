@@ -42,7 +42,7 @@ Item {
             }
 
             /* tooltip is exposed by UnityApplications */
-            onEntered: tooltip.show(y + height / 2, application.name)
+            onEntered: tooltip.show(y + height / 2, application)
             onExited: tooltip.hide()
         }
     }

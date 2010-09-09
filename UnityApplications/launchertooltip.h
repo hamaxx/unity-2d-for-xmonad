@@ -21,6 +21,7 @@
 #define LAUNCHERTOOLTIP_H
 
 #include <QMainWindow>
+#include <QVariant>
 #include <QPropertyAnimation>
 
 class QLauncherTooltip : public QMainWindow
@@ -31,7 +32,7 @@ public:
     QLauncherTooltip(QObject *parent = 0);
     ~QLauncherTooltip();
 
-    Q_INVOKABLE void show(int y, const QString& name);
+    Q_INVOKABLE void show(int y, const QVariant& application);
     Q_INVOKABLE void hide();
     Q_INVOKABLE void show_menu();
 

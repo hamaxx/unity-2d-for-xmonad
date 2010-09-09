@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "launcherapplication.h"
 #include "launchertooltip.h"
 
 #include <QLabel>
@@ -41,13 +42,17 @@ QLauncherTooltip::~QLauncherTooltip()
 }
 
 void
-QLauncherTooltip::show(int y, const QString& name)
+QLauncherTooltip::show(int y, const QVariant& application)
 {
     if (m_menu)
+        // FIXME: need to check for which application the menu is currently shown.
+        //        If not the one under the mouse cursor, then need to hide and show again.
         return;
 
+    QLauncherApplication* app = (QLauncherApplication*) application.value<QObject*>();
+
     QLabel* label = (QLabel*) centralWidget();
-    label->setText(name);
+    label->setText(app->name());
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);

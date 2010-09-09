@@ -16,6 +16,15 @@ QLauncherApplication::QLauncherApplication(QObject *parent) :
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
+QLauncherApplication::QLauncherApplication(const QLauncherApplication& other) :
+    QObject(other.parent()), m_application(NULL), m_appInfo(NULL)
+{
+    QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
+    if (other.m_application != NULL)
+        setBamfApplication(other.m_application);
+    m_priority = other.m_priority;
+}
+
 QLauncherApplication::~QLauncherApplication()
 {
     if(m_application != NULL)
