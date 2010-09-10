@@ -1,3 +1,9 @@
+unity-qt-launcher (0.0~bzr68) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Olivier Tilloy <olivier.tilloy@canonical.com>  Fri, 10 Sep 2010 13:40:52 +0200
+
 unity-qt-launcher (0.0~bzr66) maverick; urgency=low
 
   * Snapshot release.
