@@ -142,7 +142,7 @@ Item {
         anchors.right: container.left
         anchors.verticalCenter: container.verticalCenter
         opacity: running ? 1.0 : 0.0
-        source: "/usr/share/unity/themes/application-running.png"
+        source: urgent ? "/usr/share/unity/themes/application-running-notify.png" : "/usr/share/unity/themes/application-running.png"
 
         Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
     }
