@@ -48,7 +48,7 @@ LauncherView::workAreaResized(int screen)
     {
         const QRect screen = desktop->screenGeometry(this);
         const QRect available = desktop->availableGeometry(this);
-        this->resize(60, available.height());
+        this->resize(this->size().width(), available.height());
         uint left = available.x();
         /* This assumes that we are the only panel on the left of the screen */
         if (m_reserved) left -= this->size().width();

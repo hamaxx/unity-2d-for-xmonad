@@ -52,17 +52,16 @@ Item {
     Item {
         id: container
 
-        width: 48
-        height: 48
+        width: 50
+        height: 50
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
         Image {
             id: background
 
-            width: 48
-            height: 48
             opacity: mouse.containsMouse ? 1.0 : 0.7
+            anchors.fill: parent
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             fillMode: Image.PreserveAspectFit
@@ -96,8 +95,7 @@ Item {
         Image {
             id: foreground
 
-            width: 48
-            height: 48
+            anchors.fill: parent
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             fillMode: Image.PreserveAspectFit
@@ -137,8 +135,10 @@ Item {
     Image {
         id: running_arrow
 
+        z: -1
         width: sourceSize.width
         height: sourceSize.height
+        anchors.rightMargin: -2
         anchors.right: container.left
         anchors.verticalCenter: container.verticalCenter
         opacity: running ? 1.0 : 0.0
@@ -150,8 +150,10 @@ Item {
     Image {
         id: active_arrow
 
+        z: -1
         width: sourceSize.width
         height: sourceSize.height
+        anchors.leftMargin: -2
         anchors.left: container.right
         anchors.verticalCenter: container.verticalCenter
         opacity: active ? 1.0 : 0.0

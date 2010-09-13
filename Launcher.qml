@@ -2,7 +2,7 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
-    width: 60
+    width: 58
     height: 1024
 
     Image {
@@ -21,7 +21,7 @@ Item {
         model: applications
 
         delegate: Application {
-            width: 60; height: 60
+            width: 58; height: 54
             icon: "image://icons/"+application.icon
             running: application.running
             active: application.active
