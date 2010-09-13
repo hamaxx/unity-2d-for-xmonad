@@ -47,7 +47,11 @@ Item {
         }
     }
 
-    //    Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+    Image {
+        id: shadow
+        source: "artwork/shadow.png"
+        asynchronous: true
+    }
 
     Item {
         id: container
