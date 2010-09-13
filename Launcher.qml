@@ -9,8 +9,8 @@ Item {
         id: background
 
         anchors.fill: parent
-        fillMode: Image.Tile
-        source: "artwork/honeycomb.png"
+        fillMode: Image.TileVertically
+        source: "/usr/share/unity/themes/launcher_background_middle.png"
     }
 
     ListView {
