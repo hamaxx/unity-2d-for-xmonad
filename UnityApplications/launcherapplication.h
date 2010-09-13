@@ -17,6 +17,7 @@ class QLauncherApplication : public QObject
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
     Q_PROPERTY(bool urgent READ urgent NOTIFY urgentChanged)
+    Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
@@ -34,6 +35,7 @@ public:
     bool active() const;
     bool running() const;
     bool urgent() const;
+    bool sticky() const;
     QString name() const;
     QString icon() const;
     QString application_type() const;
@@ -42,6 +44,7 @@ public:
     bool launching() const;
 
     /* setters */
+    void setSticky(bool sticky);
     void setDesktopFile(QString desktop_file);
     void setBamfApplication(BamfApplication *application);
 
@@ -56,6 +59,7 @@ signals:
     void activeChanged(bool);
     void runningChanged(bool);
     void urgentChanged(bool);
+    void stickyChanged(bool);
     void nameChanged(QString);
     void iconChanged(QString);
     void applicationTypeChanged(QString);
@@ -73,6 +77,7 @@ private slots:
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
+    bool m_sticky;
     int m_priority;
     QTimer m_launching_timer;
 };

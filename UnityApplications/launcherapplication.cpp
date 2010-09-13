@@ -64,6 +64,12 @@ QLauncherApplication::urgent() const
     return false;
 }
 
+bool
+QLauncherApplication::sticky() const
+{
+    return m_sticky;
+}
+
 QString
 QLauncherApplication::name() const
 {
@@ -109,6 +115,26 @@ QLauncherApplication::desktop_file() const
     return QString("");
 }
 
+
+void
+QLauncherApplication::setSticky(bool sticky)
+{
+    if (sticky == m_sticky)
+        return;
+
+    m_sticky = sticky;
+
+    if (sticky)
+    {
+        // TODO: add to favorites
+    }
+    else
+    {
+        // TODO: remove from favorites
+    }   
+
+    emit stickyChanged(sticky);
+}
 
 void
 QLauncherApplication::setDesktopFile(QString desktop_file)
