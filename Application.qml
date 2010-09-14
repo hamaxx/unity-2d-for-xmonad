@@ -49,8 +49,28 @@ Item {
 
     Image {
         id: shadow
+
         source: "artwork/shadow.png"
         asynchronous: true
+    }
+
+    Image {
+        id: glow
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+
+        source: "artwork/glow.png"
+        asynchronous: true
+        opacity: 0.0
+
+        SequentialAnimation on opacity {
+            loops: Animation.Infinite
+            alwaysRunToEnd: true
+            running: launching
+            NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
+            NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
+        }
     }
 
     Item {
