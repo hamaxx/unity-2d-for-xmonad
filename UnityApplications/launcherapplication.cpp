@@ -194,12 +194,13 @@ QLauncherApplication::launch()
 
     GError* error;
     GdkAppLaunchContext *context;
-//    GTimeVal timeval;
+    GTimeVal timeval;
 
-//    g_get_current_time (&timeval);
+    g_get_current_time (&timeval);
     context = gdk_app_launch_context_new();
-//    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
-    gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
+    /* Using GDK_CURRENT_TIME doesn’t seem to work, launched windows
+       sometimes don’t get focus (see https://launchpad.net/bugs/643616). */
+    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
 
     g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
     g_object_unref(context);
