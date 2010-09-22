@@ -203,6 +203,7 @@ QLauncherApplication::launch()
     gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
 
     g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
+    g_object_unref(context);
 
     /* 'launching' property becomes true for a maximum of 8 seconds and becomes
        false as soon as the application is launched */
