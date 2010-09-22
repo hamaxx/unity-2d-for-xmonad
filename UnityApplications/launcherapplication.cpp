@@ -198,7 +198,6 @@ QLauncherApplication::launch()
 
 //    g_get_current_time (&timeval);
     context = gdk_app_launch_context_new();
-    gdk_app_launch_context_set_screen(context, gdk_screen_get_default());
 //    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
     gdk_app_launch_context_set_timestamp(context, GDK_CURRENT_TIME);
 
