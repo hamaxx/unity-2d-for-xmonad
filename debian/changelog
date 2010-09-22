@@ -1,3 +1,10 @@
+unity-qt-launcher (0.0~bzr81) maverick; urgency=low
+
+  * make unity-qt-launcher.desktop OnlyShowIn=XFCE for now until
+    we correctly add it to unity-qt-default-settings and rm from here 
+
+ -- Bill Filler <bill.filler@canonical.com>  Wed, 22 Sep 2010 13:25:29 -0400
+
 unity-qt-launcher (0.0~bzr80) maverick; urgency=low
 
   * Snapshot release.

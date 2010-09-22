@@ -11,3 +11,4 @@ X-Ubuntu-Gettext-Domain=unity-qt-launcher
 X-GNOME-Autostart-Phase=Desktop
 X-GNOME-Autostart-Notify=false
 X-GNOME-Autorestart=true
+OnlyShowIn=XFCE;
