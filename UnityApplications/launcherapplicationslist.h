@@ -2,11 +2,14 @@
 #define LAUNCHERAPPLICATIONSLIST_H
 
 #include "launcherapplication.h"
+
 #include <QAbstractListModel>
 #include <QList>
 #include <QVariant>
 #include <QString>
 #include <QObject>
+
+#include "gconfitem-qml-wrapper.h"
 
 class LauncherApplicationsList : public QAbstractListModel
 {
@@ -23,8 +26,10 @@ private:
     void insertBamfApplication(BamfApplication* bamf_application);
     QString desktopFilePathFromFavorite(QString favorite_id);
     QList<QLauncherApplication*> m_applications;
+    GConfItemQmlWrapper* m_favorites_list;
 
 private slots:
+    void onFavoritesListChanged();
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
 };

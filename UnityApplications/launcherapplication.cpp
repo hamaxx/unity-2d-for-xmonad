@@ -123,16 +123,6 @@ QLauncherApplication::setSticky(bool sticky)
         return;
 
     m_sticky = sticky;
-
-    if (sticky)
-    {
-        // TODO: add to favorites
-    }
-    else
-    {
-        // TODO: remove from favorites
-    }   
-
     emit stickyChanged(sticky);
 }
 

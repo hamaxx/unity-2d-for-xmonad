@@ -1,8 +1,9 @@
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
+
 #include "bamf-matcher.h"
 #include "bamf-application.h"
-#include "gconfitem-qml-wrapper.h"
+
 #include <QStringList>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
@@ -41,9 +42,9 @@ LauncherApplicationsList::load()
 
     /* Assume m_applications is empty */
 
-    GConfItemQmlWrapper gconf_favorites;
-    gconf_favorites.setKey(FAVORITES_KEY + "favorites_list");
-    QStringList favorites = gconf_favorites.getValue().toStringList();
+    m_favorites_list = new GConfItemQmlWrapper;
+    m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
+    QStringList favorites = m_favorites_list->getValue().toStringList();
 
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
         *iter = desktopFilePathFromFavorite(*iter);
@@ -60,9 +61,10 @@ LauncherApplicationsList::load()
         if(!bamf_application->user_visible())
             continue;
 
-        favorites.removeAll(bamf_application->desktop_file());
+        int favorite = favorites.removeAll(bamf_application->desktop_file());
         application = new QLauncherApplication;
         application->setBamfApplication(bamf_application);
+        application->setSticky(favorite > 0);
         m_applications.append(application);
     }
 
@@ -71,10 +73,78 @@ LauncherApplicationsList::load()
     {
         application = new QLauncherApplication;
         application->setDesktopFile(*iter);
+        application->setSticky(true);
         m_applications.append(application);
     }
 
+    QObject::connect(m_favorites_list, SIGNAL(valueChanged()), SLOT(onFavoritesListChanged()));
+    // FIXME: watch all the QLauncherApplications’ stickyChanged signal and
+    // update the gconf entries accordingly
     QObject::connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(onBamfViewOpened(BamfView*)));
+}
+
+void
+LauncherApplicationsList::onFavoritesListChanged()
+{
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    /* 1/ Find out if the sticky status changed for the applications currently
+       displayed in the launcher. */
+    for (int i = 0; i < m_applications.size(); ++i)
+    {
+        QLauncherApplication* application = m_applications.at(i);
+        bool sticky = false;
+        for (int j = 0; j < favorites.size(); ++j)
+        {
+            QString desktop_file = desktopFilePathFromFavorite(favorites.at(j));
+            if (desktop_file == application->desktop_file())
+            {
+                sticky = true;
+                break;
+            }
+        }
+        if (sticky != application->sticky())
+        {
+            application->setSticky(sticky);
+            if (!sticky && !application->running())
+            {
+                int index = m_applications.indexOf(application);
+                beginRemoveRows(QModelIndex(), index, index);
+                m_applications.removeAt(index);
+                endRemoveRows();
+            }
+        }
+    }
+
+    /* 2/ Find out whether new favorites that are not currently displayed in
+       the launcher have been added. */
+    for (int i = 0; i < favorites.size(); ++i)
+    {
+        QString desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+        bool in = false;
+        for (int j = 0; j < m_applications.size(); ++j)
+        {
+            QLauncherApplication* application = m_applications.at(j);
+            if (desktop_file == application->desktop_file())
+            {
+                in = true;
+                break;
+            }
+        }
+        if (!in)
+        {
+            /* New favorite */
+            QLauncherApplication* application = new QLauncherApplication;
+            application->setDesktopFile(desktop_file);
+            application->setSticky(true);
+            /* FIXME: it should probably be inserted at the right position,
+                      not just appended. */
+            int index = m_applications.size();
+            beginInsertRows(QModelIndex(), index, index);
+            m_applications.append(application);
+            endInsertRows();
+        }
+    }
 }
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
