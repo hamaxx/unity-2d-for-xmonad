@@ -138,11 +138,15 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     setDesktopFile(m_application->desktop_file());
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
-    QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
-    QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
+
     /* FIXME: a bug somewhere makes connecting to the Closed() signal not work even though
               the emit Closed() in bamf-view.cpp is reached. */
+    /* Connect first the onBamfApplicationClosed slot, then the runningChanged
+       signal, to avoid a race condition when an application is closed.
+       See https://launchpad.net/bugs/634057 */
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SLOT(onBamfApplicationClosed(bool)));
+    QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
+    QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
 
     emit activeChanged(active());
     emit runningChanged(running());
