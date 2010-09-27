@@ -22,7 +22,7 @@ class QLauncherApplication : public QObject
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
 
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
-    Q_PROPERTY(bool priority READ priority NOTIFY priorityChanged)
+    Q_PROPERTY(int priority READ priority NOTIFY priorityChanged)
     Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
 
 public:
