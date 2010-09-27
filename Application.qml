@@ -1,4 +1,5 @@
 import Qt 4.7
+import UnityApplications 1.0
 
 /* Item displaying an application.
 
@@ -84,16 +85,29 @@ Item {
         Image {
             id: background
 
-            opacity: mouse.containsMouse ? 1.0 : 0.7
-            anchors.fill: parent
+            width: 46
+            height: 46
+            opacity: mouse.containsMouse ? 1.0 : 0.9
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            fillMode: Image.PreserveAspectFit
-            sourceSize.width: width
-            sourceSize.height: height
-            smooth: true
+            fillMode: Image.PreserveAspectCrop
+            smooth: false
 
-            source: "/usr/share/unity/themes/prism_icon_background.png"
+            /* Trick to draw a background of the average color of the application
+               icon. Reuse the icon but downscale it to 1x1 pixels.
+               Apply a slight blur so that it fits with the shape of the
+               foreground.
+
+               FIXME: replace that with the proper computation of background
+                      color as per unity/icon-postprocessor.vala:get_average_color()
+            */
+            source: icon.source
+            sourceSize.width: 1
+            sourceSize.height: 1
+            /* WARNING: that might incur significant performance costs. It needs
+                        to be profiled on an ARM based device.
+            */
+            effect: Blur { blurRadius: 2 }
 
             asynchronous: true
             Behavior on opacity {NumberAnimation {duration: 150; easing.type: Easing.InOutQuad}}

@@ -6,10 +6,12 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QGraphicsBlurEffect>
 
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QLauncherApplication>(uri, 0, 1, "QLauncherApplication");
+    qmlRegisterType<QGraphicsBlurEffect>(uri, 0, 1, "Blur");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
