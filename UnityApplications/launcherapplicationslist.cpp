@@ -5,6 +5,7 @@
 #include "bamf-application.h"
 
 #include <QStringList>
+#include <QDir>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
 
@@ -33,6 +34,12 @@ LauncherApplicationsList::desktopFilePathFromFavorite(QString favorite_id)
     GConfItemQmlWrapper favorite;
     favorite.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
     return favorite.getValue().toString();
+}
+
+QString
+LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
+{
+    return QString("app-") + QDir(desktop_file).dirName();
 }
 
 void
@@ -66,6 +73,7 @@ LauncherApplicationsList::load()
         application->setBamfApplication(bamf_application);
         application->setSticky(favorite > 0);
         m_applications.append(application);
+        monitorApplicationStickiness(application);
     }
 
     /* Insert remaining favorites that are not running */
@@ -75,11 +83,10 @@ LauncherApplicationsList::load()
         application->setDesktopFile(*iter);
         application->setSticky(true);
         m_applications.append(application);
+        monitorApplicationStickiness(application);
     }
 
     QObject::connect(m_favorites_list, SIGNAL(valueChanged()), SLOT(onFavoritesListChanged()));
-    // FIXME: watch all the QLauncherApplications’ stickyChanged signal and
-    // update the gconf entries accordingly
     QObject::connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(onBamfViewOpened(BamfView*)));
 }
 
@@ -174,6 +181,8 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
     m_applications.append(application);
     endInsertRows();
 
+    application->setSticky(false);
+    monitorApplicationStickiness(application);
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
 }
 
@@ -200,6 +209,69 @@ LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
         return;
 
     insertBamfApplication(bamf_application);
+}
+
+void
+LauncherApplicationsList::monitorApplicationStickiness(QLauncherApplication* application)
+{
+    /* Start monitoring application’s stickyChanged signal and update the gconf
+       entries accordingly. */
+    QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
+}
+
+void LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
+{
+    QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
+
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    if (sticky)
+    {
+        /* If not in favorites yet, add it. */
+        bool in = false;
+        for (int i = 0; i < favorites.size(); ++i)
+        {
+            QString desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+            if (application->desktop_file() == desktop_file)
+            {
+                in = true;
+                break;
+            }
+        }
+        if (!in)
+        {
+            QString favorite_id = favoriteFromDesktopFilePath(application->desktop_file());
+            favorites << favorite_id;
+            m_favorites_list->blockSignals(true);
+            m_favorites_list->setValue(QVariant(favorites));
+            m_favorites_list->blockSignals(false);
+            GConfItemQmlWrapper desktop_file;
+            desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
+            desktop_file.setValue(QVariant(application->desktop_file()));
+            GConfItemQmlWrapper type;
+            type.setKey(FAVORITES_KEY + favorite_id + "/type");
+            type.setValue(QVariant(application->application_type()));
+            GConfItemQmlWrapper priority;
+            priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+            priority.setValue(QVariant(application->priority()));
+        }
+    }
+    else
+    {
+        /* If in favorites, remove it. */
+        for (int i = 0; i < favorites.size(); ++i)
+        {
+            QString desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+            if (application->desktop_file() == desktop_file)
+            {
+                favorites.removeAt(i);
+                m_favorites_list->blockSignals(true);
+                m_favorites_list->setValue(QVariant(favorites));
+                m_favorites_list->blockSignals(false);
+                break;
+            }
+        }
+    }
 }
 
 int

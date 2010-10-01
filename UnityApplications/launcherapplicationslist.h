@@ -24,7 +24,9 @@ public:
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
-    QString desktopFilePathFromFavorite(QString favorite_id);
+    static QString desktopFilePathFromFavorite(QString favorite_id);
+    static QString favoriteFromDesktopFilePath(QString desktop_file);
+    void monitorApplicationStickiness(QLauncherApplication* application);
     QList<QLauncherApplication*> m_applications;
     GConfItemQmlWrapper* m_favorites_list;
 
@@ -32,6 +34,7 @@ private slots:
     void onFavoritesListChanged();
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
+    void onApplicationStickyChanged(bool sticky);
 };
 
 #endif // LAUNCHERAPPLICATIONSLIST_H
