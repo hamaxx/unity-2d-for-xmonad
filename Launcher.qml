@@ -26,6 +26,7 @@ Item {
             running: application.running
             active: application.active
             urgent: application.urgent
+            sticky: application.sticky
             launching: application.launching
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
@@ -37,8 +38,14 @@ Item {
                     else
                         application.launch()
                 }
-                else if (mouse.button == Qt.RightButton)
+                else if (mouse.button == Qt.RightButton) {
                     tooltip.show_menu()
+                }
+                else if (mouse.button == Qt.MiddleButton) {
+                    /* Temporary means of testing (un)favoriting applications,
+                       until the contextual menus are fully implemented. */
+                    application.sticky = !sticky
+                }
             }
 
             /* tooltip is exposed by UnityApplications */

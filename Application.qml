@@ -23,6 +23,7 @@ Item {
     property bool running: false
     property bool active: false
     property bool urgent: false
+    property bool sticky: false
     property bool launching: false
 
     signal clicked(variant mouse)
@@ -32,7 +33,7 @@ Item {
     MouseArea {
         id: mouse
 
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         hoverEnabled: true
         anchors.fill: parent
         onClicked: parent.clicked(mouse)
