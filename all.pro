@@ -11,7 +11,7 @@ artwork.files = artwork/*.png artwork/*.jpg
 artwork.path = $$INSTALL_PATH/artwork
 
 autostart.files = unity-qt-launcher.desktop
-autostart.path = /etc/xdg/autostart
+autostart.path = /etc/xdg/xdg-unity-qt/autostart
 
 INSTALLS = qmls artwork autostart
 

@@ -1,3 +1,28 @@
+unity-qt-launcher (0.0~bzr87) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Olivier Tilloy <olivier.tilloy@canonical.com>  Tue, 28 Sep 2010 19:26:25 +0200
+
+unity-qt-launcher (0.0~bzr81) maverick; urgency=low
+
+  * make unity-qt-launcher.desktop OnlyShowIn=XFCE for now until
+    we correctly add it to unity-qt-default-settings and rm from here 
+
+ -- Bill Filler <bill.filler@canonical.com>  Wed, 22 Sep 2010 13:25:29 -0400
+
+unity-qt-launcher (0.0~bzr80) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Olivier Tilloy <olivier.tilloy@canonical.com>  Wed, 22 Sep 2010 17:47:48 +0200
+
+unity-qt-launcher (0.0~bzr78) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Olivier Tilloy <olivier.tilloy@canonical.com>  Wed, 22 Sep 2010 11:13:52 +0200
+
 unity-qt-launcher (0.0~bzr68) maverick; urgency=low
 
   * Snapshot release.

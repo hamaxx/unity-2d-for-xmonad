@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "upgrade" ]; then
+    # Versions of the package pre 0.0~bzr80 installed the desktop file for all
+    # sessions (in /etc/xdg/autostart/).
+    # Remove it first (see https://launchpad.net/bugs/645416).
+    if [ -f /etc/xdg/autostart/unity-qt-launcher.desktop ]; then
+        rm -f /etc/xdg/autostart/unity-qt-launcher.desktop || true
+    fi
+    exit 0
+fi

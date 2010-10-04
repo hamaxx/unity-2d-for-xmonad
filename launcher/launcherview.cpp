@@ -58,8 +58,8 @@ LauncherView::workAreaResized(int screen)
 
         /* Reserve space at the left edge of the screen (the launcher is a panel) */
         Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
-        uint struts[12] = {left + this->size().width(), 0, 0, 0,
-                           available.y(), this->size().height(), 0, 0,
+        ulong struts[12] = {left + this->size().width(), 0, 0, 0,
+                           available.y(), available.y() + available.height(), 0, 0,
                            0, 0, 0, 0};
         XChangeProperty(QX11Info::display(), this->effectiveWinId(), atom,
                         XA_CARDINAL, 32, PropModeReplace,
