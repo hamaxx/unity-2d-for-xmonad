@@ -100,16 +100,7 @@ LauncherApplicationsList::onFavoritesListChanged()
     for (int i = 0; i < m_applications.size(); ++i)
     {
         QLauncherApplication* application = m_applications.at(i);
-        bool sticky = false;
-        for (int j = 0; j < favorites.size(); ++j)
-        {
-            QString desktop_file = desktopFilePathFromFavorite(favorites.at(j));
-            if (desktop_file == application->desktop_file())
-            {
-                sticky = true;
-                break;
-            }
-        }
+        bool sticky = isApplicationInFavorites(application->desktop_file());
         if (sticky != application->sticky())
         {
             application->setSticky(sticky);
