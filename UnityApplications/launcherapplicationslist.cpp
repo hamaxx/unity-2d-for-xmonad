@@ -236,22 +236,31 @@ LauncherApplicationsList::isApplicationFavorite(QString desktop_file)
 void
 LauncherApplicationsList::addApplicationToFavorites(QLauncherApplication* application)
 {
-    QStringList favorites = m_favorites_list->getValue().toStringList();
-
     QString favorite_id = favoriteFromDesktopFilePath(application->desktop_file());
+
+    /* Set GConf values corresponding to the favorite id for:
+        - desktop file
+        - type
+        - priority
+    */
+    GConfItemQmlWrapper desktop_file;
+    desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
+    desktop_file.setValue(QVariant(application->desktop_file()));
+
+    GConfItemQmlWrapper type;
+    type.setKey(FAVORITES_KEY + favorite_id + "/type");
+    type.setValue(QVariant(application->application_type()));
+
+    GConfItemQmlWrapper priority;
+    priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+    priority.setValue(QVariant(application->priority()));
+
+    /* Add the favorite id to the GConf list of favorites */
+    QStringList favorites = m_favorites_list->getValue().toStringList();
     favorites << favorite_id;
     m_favorites_list->blockSignals(true);
     m_favorites_list->setValue(QVariant(favorites));
     m_favorites_list->blockSignals(false);
-    GConfItemQmlWrapper desktop_file;
-    desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
-    desktop_file.setValue(QVariant(application->desktop_file()));
-    GConfItemQmlWrapper type;
-    type.setKey(FAVORITES_KEY + favorite_id + "/type");
-    type.setValue(QVariant(application->application_type()));
-    GConfItemQmlWrapper priority;
-    priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-    priority.setValue(QVariant(application->priority()));
 }
 
 void
