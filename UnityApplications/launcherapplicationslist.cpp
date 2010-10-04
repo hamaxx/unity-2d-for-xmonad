@@ -104,7 +104,10 @@ LauncherApplicationsList::onFavoritesListChanged()
 
         if (application->sticky() && !isApplicationInFavorites(application->desktop_file()))
         {
+            /* Update the sticky property */
             application->setSticky(false);
+
+            /* Remove the application from the list if it is not running. */
             if (!application->running())
             {
                 int index = m_applications.indexOf(application);
