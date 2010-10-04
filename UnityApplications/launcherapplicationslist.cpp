@@ -97,21 +97,29 @@ LauncherApplicationsList::onFavoritesListChanged()
 
     /* 1/ Find out if the sticky status changed for the applications currently
        displayed in the launcher. */
-    for (int i = 0; i < m_applications.size(); ++i)
+    QList<QLauncherApplication*>::iterator i = m_applications.begin();
+    while (i != m_applications.end())
     {
-        QLauncherApplication* application = m_applications.at(i);
-        bool sticky = isApplicationInFavorites(application->desktop_file());
-        if (sticky != application->sticky())
+        QLauncherApplication* application = *i;
+
+        if (application->sticky() && !isApplicationInFavorites(application->desktop_file()))
         {
-            application->setSticky(sticky);
-            if (!sticky && !application->running())
+            application->setSticky(false);
+            if (!application->running())
             {
                 int index = m_applications.indexOf(application);
+
                 beginRemoveRows(QModelIndex(), index, index);
-                m_applications.removeAt(index);
+                delete application;
+                i = m_applications.erase(i);
                 endRemoveRows();
+
+                /* Avoid incrementing the iterator as it's already been done
+                   by erase */
+                continue;
             }
         }
+        i++;
     }
 
     /* 2/ Find out whether new favorites that are not currently displayed in
