@@ -278,6 +278,8 @@ LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
             m_favorites_list->blockSignals(true);
             m_favorites_list->setValue(QVariant(favorites));
             m_favorites_list->blockSignals(false);
+            /* The iterator 'i' is invalid but since we break off the loop
+               nothing nasty happens. */
             break;
         }
     }
