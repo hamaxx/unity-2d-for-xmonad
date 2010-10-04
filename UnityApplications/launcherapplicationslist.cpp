@@ -253,7 +253,9 @@ LauncherApplicationsList::addApplicationToFavorites(QLauncherApplication* applic
 
     GConfItemQmlWrapper priority;
     priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-    priority.setValue(QVariant(application->priority()));
+    /* FIXME: unity expects floats and not ints; it crashes at startup
+              otherwise */
+    priority.setValue(QVariant(float(application->priority())));
 
     /* Add the favorite id to the GConf list of favorites */
     QStringList favorites = m_favorites_list->getValue().toStringList();
