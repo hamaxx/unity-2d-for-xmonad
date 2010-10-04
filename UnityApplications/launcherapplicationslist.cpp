@@ -220,7 +220,7 @@ LauncherApplicationsList::monitorApplicationStickiness(QLauncherApplication* app
 }
 
 bool
-LauncherApplicationsList::isApplicationFavorite(QString desktop_file)
+LauncherApplicationsList::isApplicationInFavorites(QString desktop_file)
 {
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
@@ -291,7 +291,7 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 
     if (sticky)
     {
-        if (!isApplicationFavorite(application->desktop_file()))
+        if (!isApplicationInFavorites(application->desktop_file()))
         {
             addApplicationToFavorites(application);
         }
