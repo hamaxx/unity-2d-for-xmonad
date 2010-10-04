@@ -27,6 +27,10 @@ private:
     static QString desktopFilePathFromFavorite(QString favorite_id);
     static QString favoriteFromDesktopFilePath(QString desktop_file);
     void monitorApplicationStickiness(QLauncherApplication* application);
+    bool isApplicationFavorite(QString desktop_file);
+    void addApplicationToFavorites(QLauncherApplication* application);
+    void removeApplicationFromFavorites(QString desktop_file);
+
     QList<QLauncherApplication*> m_applications;
     GConfItemQmlWrapper* m_favorites_list;
 

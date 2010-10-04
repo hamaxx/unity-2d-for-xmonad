@@ -219,58 +219,76 @@ LauncherApplicationsList::monitorApplicationStickiness(QLauncherApplication* app
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
 }
 
+bool
+LauncherApplicationsList::isApplicationFavorite(QString desktop_file)
+{
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    for (int i = 0; i < favorites.size(); ++i)
+    {
+        QString current_desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+        if (current_desktop_file == desktop_file)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void
+LauncherApplicationsList::addApplicationToFavorites(QLauncherApplication* application)
+{
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    QString favorite_id = favoriteFromDesktopFilePath(application->desktop_file());
+    favorites << favorite_id;
+    m_favorites_list->blockSignals(true);
+    m_favorites_list->setValue(QVariant(favorites));
+    m_favorites_list->blockSignals(false);
+    GConfItemQmlWrapper desktop_file;
+    desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
+    desktop_file.setValue(QVariant(application->desktop_file()));
+    GConfItemQmlWrapper type;
+    type.setKey(FAVORITES_KEY + favorite_id + "/type");
+    type.setValue(QVariant(application->application_type()));
+    GConfItemQmlWrapper priority;
+    priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+    priority.setValue(QVariant(application->priority()));
+}
+
+void
+LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
+{
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    for (int i = 0; i < favorites.size(); ++i)
+    {
+        QString current_desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+        if (current_desktop_file == desktop_file)
+        {
+            favorites.removeAt(i);
+            m_favorites_list->blockSignals(true);
+            m_favorites_list->setValue(QVariant(favorites));
+            m_favorites_list->blockSignals(false);
+            break;
+        }
+    }
+}
+
 void LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 {
     QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
 
-    QStringList favorites = m_favorites_list->getValue().toStringList();
-
     if (sticky)
     {
-        /* If not in favorites yet, add it. */
-        bool in = false;
-        for (int i = 0; i < favorites.size(); ++i)
+        if (!isApplicationFavorite(application->desktop_file()))
         {
-            QString desktop_file = desktopFilePathFromFavorite(favorites.at(i));
-            if (application->desktop_file() == desktop_file)
-            {
-                in = true;
-                break;
-            }
-        }
-        if (!in)
-        {
-            QString favorite_id = favoriteFromDesktopFilePath(application->desktop_file());
-            favorites << favorite_id;
-            m_favorites_list->blockSignals(true);
-            m_favorites_list->setValue(QVariant(favorites));
-            m_favorites_list->blockSignals(false);
-            GConfItemQmlWrapper desktop_file;
-            desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
-            desktop_file.setValue(QVariant(application->desktop_file()));
-            GConfItemQmlWrapper type;
-            type.setKey(FAVORITES_KEY + favorite_id + "/type");
-            type.setValue(QVariant(application->application_type()));
-            GConfItemQmlWrapper priority;
-            priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-            priority.setValue(QVariant(application->priority()));
+            addApplicationToFavorites(application);
         }
     }
     else
     {
-        /* If in favorites, remove it. */
-        for (int i = 0; i < favorites.size(); ++i)
-        {
-            QString desktop_file = desktopFilePathFromFavorite(favorites.at(i));
-            if (application->desktop_file() == desktop_file)
-            {
-                favorites.removeAt(i);
-                m_favorites_list->blockSignals(true);
-                m_favorites_list->setValue(QVariant(favorites));
-                m_favorites_list->blockSignals(false);
-                break;
-            }
-        }
+        removeApplicationFromFavorites(application->desktop_file());
     }
 }
 
