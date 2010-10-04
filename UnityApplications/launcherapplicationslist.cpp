@@ -282,7 +282,8 @@ LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
     }
 }
 
-void LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
+void
+LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 {
     QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
 
