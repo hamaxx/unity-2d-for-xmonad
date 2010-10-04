@@ -224,13 +224,11 @@ LauncherApplicationsList::isApplicationFavorite(QString desktop_file)
 {
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
-    for (int i = 0; i < favorites.size(); ++i)
+    for (QStringList::const_iterator i = favorites.begin(); i != favorites.end(); i++ )
     {
-        QString current_desktop_file = desktopFilePathFromFavorite(favorites.at(i));
+        QString current_desktop_file = desktopFilePathFromFavorite(*i);
         if (current_desktop_file == desktop_file)
-        {
             return true;
-        }
     }
     return false;
 }
