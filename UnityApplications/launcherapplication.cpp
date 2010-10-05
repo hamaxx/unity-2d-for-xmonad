@@ -250,7 +250,7 @@ QLauncherApplication::close()
 void
 QLauncherApplication::show()
 {
-    if(m_application == NULL) return;
+    if(m_application == NULL || m_application->xids()->size() < 1) return;
 
     /* FIXME: pick the most important window, not just the first one */
     uint xid = m_application->xids()->at(0);
