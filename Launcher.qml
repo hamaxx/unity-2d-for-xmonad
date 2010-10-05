@@ -44,7 +44,7 @@ Item {
                 else if (mouse.button == Qt.MiddleButton) {
                     /* Temporary means of testing (un)favoriting applications,
                        until the contextual menus are fully implemented. */
-                    application.sticky = !sticky
+                    application.sticky = !application.sticky
                 }
             }
 
