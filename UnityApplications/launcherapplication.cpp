@@ -11,7 +11,7 @@
 #include <QDebug>
 
 QLauncherApplication::QLauncherApplication(QObject *parent) :
-    QObject(parent), m_application(NULL), m_appInfo(NULL)
+    QObject(parent), m_application(NULL), m_appInfo(NULL), m_sticky(false)
 {
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
@@ -19,6 +19,7 @@ QLauncherApplication::QLauncherApplication(QObject *parent) :
 QLauncherApplication::QLauncherApplication(const QLauncherApplication& other) :
     QObject(other.parent()), m_application(NULL), m_appInfo(NULL)
 {
+    /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
     if (other.m_application != NULL)
         setBamfApplication(other.m_application);
@@ -62,6 +63,12 @@ QLauncherApplication::urgent() const
         return m_application->urgent();
 
     return false;
+}
+
+bool
+QLauncherApplication::sticky() const
+{
+    return m_sticky;
 }
 
 QString
@@ -109,6 +116,15 @@ QLauncherApplication::desktop_file() const
     return QString("");
 }
 
+void
+QLauncherApplication::setSticky(bool sticky)
+{
+    if (sticky == m_sticky)
+        return;
+
+    m_sticky = sticky;
+    emit stickyChanged(sticky);
+}
 
 void
 QLauncherApplication::setDesktopFile(QString desktop_file)
@@ -135,7 +151,6 @@ void
 QLauncherApplication::setBamfApplication(BamfApplication *application)
 {
     m_application = application;
-    setDesktopFile(m_application->desktop_file());
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
@@ -260,7 +275,7 @@ QLauncherApplication::show()
 void
 QLauncherApplication::expose()
 {
-    /* IMPLEMENT ME: see unity’s expose manager */
+    /* IMPLEMENT ME: see unity’s expose manager */
     qDebug() << "FIXME: Expose mode not implemented yet.";
 }
 
