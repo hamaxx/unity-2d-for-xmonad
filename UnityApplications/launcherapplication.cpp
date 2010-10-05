@@ -11,7 +11,7 @@
 #include <QDebug>
 
 QLauncherApplication::QLauncherApplication(QObject *parent) :
-    QObject(parent), m_application(NULL), m_appInfo(NULL), m_sticky(false)
+    QObject(parent), m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
 {
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
@@ -162,6 +162,7 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SLOT(onBamfApplicationClosed(bool)));
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SIGNAL(runningChanged(bool)));
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
+    QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
 
     emit activeChanged(active());
     emit runningChanged(running());
@@ -172,6 +173,7 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
     emit desktopFileChanged(desktop_file());
     m_launching_timer.stop();
     emit launchingChanged(launching());
+    updateHasVisibleWindow();
 }
 
 void
@@ -205,11 +207,25 @@ QLauncherApplication::launching() const
     return m_launching_timer.isActive();
 }
 
+void
+QLauncherApplication::updateHasVisibleWindow()
+{
+    bool prev = m_has_visible_window;
+    m_has_visible_window = m_application->xids()->size() > 0;
+    if (m_has_visible_window != prev)
+        emit hasVisibleWindowChanged(m_has_visible_window);
+}
+
+bool
+QLauncherApplication::has_visible_window() const
+{
+    return m_has_visible_window;
+}
 
 QBool
 QLauncherApplication::launch()
 {
-    if(m_appInfo == NULL || m_application != NULL) return QBool(false);
+    if(m_appInfo == NULL) return QBool(false);
 
     GError* error;
     GdkAppLaunchContext *context;

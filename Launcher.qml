@@ -33,7 +33,7 @@ Item {
                     tooltip.hide()
                     if (active)
                         application.expose()
-                    else if (running)
+                    else if (running && application.has_visible_window)
                         application.show()
                     else
                         application.launch()

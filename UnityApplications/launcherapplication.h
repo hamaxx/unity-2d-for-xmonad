@@ -25,6 +25,7 @@ class QLauncherApplication : public QObject
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(int priority READ priority NOTIFY priorityChanged)
     Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
+    Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
 
 public:
     QLauncherApplication(QObject *parent = 0);
@@ -42,6 +43,7 @@ public:
     QString desktop_file() const;
     int priority() const;
     bool launching() const;
+    bool has_visible_window() const;
 
     /* setters */
     void setSticky(bool sticky);
@@ -66,6 +68,7 @@ signals:
     void desktopFileChanged(QString);
     void priorityChanged(int);
     void launchingChanged(bool);
+    void hasVisibleWindowChanged(bool);
 
     void closed();
 
@@ -73,6 +76,7 @@ private slots:
     void onBamfApplicationClosed(bool running);
     void onDesktopFileChanged(QString desktop_file);
     void onLaunchingTimeouted();
+    void updateHasVisibleWindow();
 
 private:
     BamfApplication *m_application;
@@ -80,6 +84,7 @@ private:
     bool m_sticky;
     int m_priority;
     QTimer m_launching_timer;
+    bool m_has_visible_window;
 };
 
 Q_DECLARE_METATYPE(QLauncherApplication*)
