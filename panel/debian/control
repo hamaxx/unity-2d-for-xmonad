@@ -1,0 +1,12 @@
+Source: unity-qt-panel
+Section: x11
+Priority: optional
+Maintainer: Unity Qt Developers <unity-qt@lists.ubuntu.com>
+Build-Depends: cdbs, debhelper (>= 7.0.50~), cmake, libqtbamf-dev, libqt4-dev, pkg-config, libdbusmenu-qt-dev (>= 0.6.0)
+Standards-Version: 3.8.4
+
+Package: unity-qt-panel
+Architecture: any
+Depends: ${misc:Depends}
+Description: Unity Qt panel
+ This package contains the panel used in Unity Qt.

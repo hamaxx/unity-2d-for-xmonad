@@ -1,0 +1,17 @@
+unity-qt-panel (0.0~bzr23) maverick; urgency=low
+
+  * New upstream snapshot.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Mon, 04 Oct 2010 15:37:19 +0200
+
+unity-qt-panel (0.0~bzr15) maverick; urgency=low
+
+  * Added missing build-dep.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Fri, 01 Oct 2010 18:10:33 +0200
+
+unity-qt-panel (0.0~bzr13) maverick; urgency=low
+
+  * Initial release.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Fri, 01 Oct 2010 17:26:56 +0200

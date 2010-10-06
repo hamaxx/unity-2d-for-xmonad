@@ -1,0 +1,4 @@
+usr/bin/unity-qt-panel
+usr/lib/libunity-qt-gui.so*
+usr/lib/unity-qt/panel-applets
+usr/include/unity-qt-gui
