@@ -11,5 +11,15 @@ configure_file(config.h.in config.h)
 include(FindPkgConfig)
 find_package(Qt4 REQUIRED)
 
+include_directories(
+    ${CMAKE_BINARY_DIR}
+    ${QT_INCLUDE_DIR}
+    ${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTDBUS_INCLUDE_DIR}
+    ${QT_QTDECLARATIVE_INCLUDE_DIR}
+    ${QT_QTXML_INCLUDE_DIR}
+    ${QT_QTGUI_INCLUDE_DIR}
+    )
+
 # Source
 add_subdirectory(launcher)

@@ -35,9 +35,6 @@ set_target_properties(UnityApplications PROPERTIES
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR}
-    ${QT_QTDECLARATIVE_INCLUDE_DIR}
     ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
     ${GDK_INCLUDE_DIRS}
