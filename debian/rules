@@ -5,7 +5,7 @@
 export DH_VERBOSE=1
 
 Makefile:
-	cmake -DCMAKE_INSTALL_PREFIX=/usr $(CURDIR)
+	cmake -DCMAKE_INSTALL_PREFIX=/usr -DAUTOSTART_DIR=/etc/xdg/xdg-unity-qt/autostart $(CURDIR)
 
 build: build-stamp
 

@@ -13,9 +13,8 @@ add_subdirectory(launcher)
 file(GLOB launcher_QML *.qml)
 
 # Install
-set (UNITY_QT_DIR share/unity-qt)
-# FIXME: hardcoded
-set (AUTOSTART_DIR /etc/xdg/xdg-unity-qt/autostart)
+set(UNITY_QT_DIR share/unity-qt)
+set(AUTOSTART_DIR share/autostart CACHE PATH "The directory where autostart files should be installed")
 
 install(FILES ${launcher_QML}
     DESTINATION ${UNITY_QT_DIR}
