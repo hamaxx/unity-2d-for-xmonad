@@ -5,3 +5,4 @@ UnityApplications/libUnityApplications.so*
 launcher/Makefile
 launcher/tmp
 launcher/bin
+.bzr-repo
