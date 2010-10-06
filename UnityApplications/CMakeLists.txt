@@ -1,0 +1,70 @@
+# Dependencies
+pkg_check_modules(QTBAMF REQUIRED libqtbamf)
+pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+pkg_check_modules(GDK REQUIRED gdk-2.0)
+pkg_check_modules(GIO REQUIRED gio-2.0)
+pkg_check_modules(WNCK REQUIRED libwnck-1.0)
+
+add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
+
+# Sources
+set(UnityApplications_SRCS
+    iconimageprovider.cpp
+    launcherapplication.cpp
+    launcherapplicationslist.cpp
+    launchertooltip.cpp
+    plugin.cpp
+    )
+
+set(UnityApplications_MOC_HDRS
+    iconimageprovider.h
+    launcherapplication.h
+    launcherapplicationslist.h
+    launchertooltip.h
+    plugin.h
+    )
+
+qt4_wrap_cpp(UnityApplications_MOC_SRCS ${UnityApplications_MOC_HDRS})
+
+# Build
+add_library(UnityApplications SHARED ${UnityApplications_SRCS} ${UnityApplications_MOC_SRCS})
+
+set_target_properties(UnityApplications PROPERTIES
+    SOVERSION 1
+    VERSION 1.0.0
+    )
+
+include_directories(
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTGUI_INCLUDE_DIR}
+    ${QT_QTDECLARATIVE_INCLUDE_DIR}
+    ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
+    ${GDK_INCLUDE_DIRS}
+    ${GIO_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
+    )
+
+target_link_libraries(UnityApplications
+    ${QT_QTCORE_LIBRARIES}
+    ${QT_QTGUI_LIBRARIES}
+    ${QT_QTDECLARATIVE_LIBRARIES}
+    ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
+    ${GDK_LDFLAGS}
+    ${GIO_LDFLAGS}
+    ${WNCK_LDFLAGS}
+    )
+
+# Install
+set(IMPORT_INSTALL_DIR lib/qt4/imports/UnityApplications)
+
+install(TARGETS UnityApplications
+    LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
+    )
+
+install(FILES qmldir
+    DESTINATION ${IMPORT_INSTALL_DIR}
+    )
+

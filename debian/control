@@ -3,7 +3,7 @@ Section: gnome
 Priority: optional
 Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: debhelper (>= 7),
-               qt4-qmake, libqt4-dev,
+               cmake, libqt4-dev,
                libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev,
                libx11-dev
