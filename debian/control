@@ -1,14 +1,14 @@
-Source: unity-qt-launcher
+Source: unity-qt
 Section: gnome
 Priority: optional
 Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
-Build-Depends: debhelper (>= 7),
+Build-Depends: cdbs, debhelper (>= 7),
                cmake, libqt4-dev,
                libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev,
                libx11-dev
 Standards-Version: 3.8.3
-Vcs-Bzr: lp:~watuppa-team/watuppa/launcher
+Vcs-Bzr: lp:~upicek-team/upicek/trunk
 
 Package: unity-qt-launcher
 Architecture: any

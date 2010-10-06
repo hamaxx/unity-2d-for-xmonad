@@ -1,59 +1,59 @@
-unity-qt-launcher (0.0~bzr94) maverick; urgency=low
+unity-qt (0.0~bzr94) maverick; urgency=low
 
   * Snapshot release.
 
  -- Florian Boucault <florian.boucault@canonical.com>  Tue, 05 Oct 2010 17:26:28 +0200
 
-unity-qt-launcher (0.0~bzr87) maverick; urgency=low
+unity-qt (0.0~bzr87) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Tue, 28 Sep 2010 19:26:25 +0200
 
-unity-qt-launcher (0.0~bzr81) maverick; urgency=low
+unity-qt (0.0~bzr81) maverick; urgency=low
 
   * make unity-qt-launcher.desktop OnlyShowIn=XFCE for now until
     we correctly add it to unity-qt-default-settings and rm from here 
 
  -- Bill Filler <bill.filler@canonical.com>  Wed, 22 Sep 2010 13:25:29 -0400
 
-unity-qt-launcher (0.0~bzr80) maverick; urgency=low
+unity-qt (0.0~bzr80) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Wed, 22 Sep 2010 17:47:48 +0200
 
-unity-qt-launcher (0.0~bzr78) maverick; urgency=low
+unity-qt (0.0~bzr78) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Wed, 22 Sep 2010 11:13:52 +0200
 
-unity-qt-launcher (0.0~bzr68) maverick; urgency=low
+unity-qt (0.0~bzr68) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Fri, 10 Sep 2010 13:40:52 +0200
 
-unity-qt-launcher (0.0~bzr66) maverick; urgency=low
+unity-qt (0.0~bzr66) maverick; urgency=low
 
   * Snapshot release.
 
  -- Florian Boucault <florian.boucault@canonical.com>  Thu, 09 Sep 2010 15:34:31 +0200
 
-unity-qt-launcher (0.0~bzr53) maverick; urgency=low
+unity-qt (0.0~bzr53) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Tue, 07 Sep 2010 10:11:43 +0200
 
-unity-qt-launcher (0.0~bzr35) maverick; urgency=low
+unity-qt (0.0~bzr35) maverick; urgency=low
 
   * Snapshot release.
 
  -- Olivier Tilloy <olivier.tilloy@canonical.com>  Thu, 02 Sep 2010 17:15:46 +0200
 
-unity-qt-launcher (0.0~bzr7) maverick; urgency=low
+unity-qt (0.0~bzr7) maverick; urgency=low
 
   * Initial Release.
 
