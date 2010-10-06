@@ -12,7 +12,7 @@ find_package(Qt4 REQUIRED)
 
 # Source
 add_subdirectory(UnityApplications)
-add_subdirectory(launcher)
+add_subdirectory(app)
 
 file(GLOB launcher_QML *.qml)
 
