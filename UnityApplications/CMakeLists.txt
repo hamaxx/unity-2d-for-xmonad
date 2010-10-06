@@ -5,8 +5,6 @@ pkg_check_modules(GDK REQUIRED gdk-2.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 
-add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
-
 # Sources
 set(UnityApplications_SRCS
     iconimageprovider.cpp
@@ -17,7 +15,6 @@ set(UnityApplications_SRCS
     )
 
 set(UnityApplications_MOC_HDRS
-    iconimageprovider.h
     launcherapplication.h
     launcherapplicationslist.h
     launchertooltip.h
@@ -27,6 +24,8 @@ set(UnityApplications_MOC_HDRS
 qt4_wrap_cpp(UnityApplications_MOC_SRCS ${UnityApplications_MOC_HDRS})
 
 # Build
+add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
+
 add_library(UnityApplications SHARED ${UnityApplications_SRCS} ${UnityApplications_MOC_SRCS})
 
 set_target_properties(UnityApplications PROPERTIES
