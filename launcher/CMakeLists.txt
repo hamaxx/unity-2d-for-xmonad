@@ -19,6 +19,7 @@ add_executable(unity-qt-launcher ${launcher_SRCS} ${launcher_MOC_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}
     ${QT_INCLUDE_DIR}
     ${QT_QTCORE_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR}

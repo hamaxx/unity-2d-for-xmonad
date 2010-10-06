@@ -22,6 +22,7 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 
+#include "config.h"
 #include "launcherview.h"
 
 int main(int argc, char *argv[])
@@ -40,10 +41,12 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
-    if (QCoreApplication::applicationDirPath() == "/usr/bin")
+    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
     {
         /* Running installed */
-        view.engine()->setBaseUrl(QUrl::fromLocalFile("/usr/share/unity-qt/"));
+        /* Note: baseUrl seems to be picky: if it does not end with a slash,
+           setSource() will fail */
+        view.engine()->setBaseUrl(QUrl::fromLocalFile(INSTALL_PREFIX "/" UNITY_QT_DIR "/"));
     }
     else
     {
