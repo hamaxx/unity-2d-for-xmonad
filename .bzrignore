@@ -6,3 +6,4 @@ launcher/Makefile
 launcher/tmp
 launcher/bin
 .bzr-repo
+*.kdev4
