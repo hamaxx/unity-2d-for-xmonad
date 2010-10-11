@@ -1,3 +1,9 @@
+unity-qt (0.0~bzr111) maverick; urgency=low
+
+  * New upstream snapshot.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Mon, 11 Oct 2010 17:04:58 +0200
+
 unity-qt (0.0~bzr94) maverick; urgency=low
 
   * Snapshot release.
