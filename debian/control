@@ -23,3 +23,19 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Unity Qt Panel
  The Unity Qt panel displays a top panel containing the application menu and
  various indicators.
+
+Package: libuqpanel0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Unity Qt Panel - shared library
+ This library is used to create panel applets for the Unity Qt panel.
+
+Package: libuqpanel-dev
+Section: libdevel
+Architecture: any
+Depends: libuqpanel0 (= ${binary:Version}), ${misc:Depends}
+Description: Unity Qt Panel - development files
+ This library is used to create panel applets for the Unity Qt panel.
+ .
+ This package contains the development header files. 
