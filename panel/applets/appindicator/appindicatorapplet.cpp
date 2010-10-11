@@ -17,6 +17,7 @@
 
 // Qt
 #include <QDBusConnection>
+#include <QHBoxLayout>
 
 // System
 #include <unistd.h>
@@ -45,9 +46,10 @@ void AppIndicatorApplet::setupDBus()
 
 void AppIndicatorApplet::setupUi()
 {
-    m_layout = new QHBoxLayout(this);
-    m_layout->setMargin(0);
-    m_layout->setSpacing(0);
+    m_menuBar = new QMenuBar;
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->addWidget(m_menuBar);
 }
 
 void AppIndicatorApplet::createItems()
@@ -68,8 +70,7 @@ void AppIndicatorApplet::createItem(const QString& id)
     UQ_VAR(service);
     UQ_VAR(path);
 
-    SNIItem* item = new SNIItem(service, path, this);
-    m_layout->addWidget(item);
+    new SNIItem(service, path, m_menuBar);
 }
 
 #include "appindicatorapplet.moc"

@@ -16,7 +16,7 @@
 
 // Qt
 #include <QDBusInterface>
-#include <QHBoxLayout>
+#include <QMenuBar>
 
 class AppIndicatorApplet : public UnityQt::Applet
 {
@@ -28,7 +28,7 @@ private:
     Q_DISABLE_COPY(AppIndicatorApplet)
 
     QDBusInterface* m_watcher;
-    QHBoxLayout* m_layout;
+    QMenuBar* m_menuBar;
 
     void setupDBus();
     void setupUi();

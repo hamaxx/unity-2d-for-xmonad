@@ -13,24 +13,28 @@
 
 // Qt
 #include <QDBusInterface>
-#include <QWidget>
+#include <QObject>
 
+class DBusMenuImporter;
+
+class QAction;
 class QDBusPendingCallWatcher;
+class QMenuBar;
 
-class SNIItem : public QWidget
+class SNIItem : public QObject
 {
     Q_OBJECT
 public:
-    SNIItem(const QString& service, const QString& path, QWidget* parent);
-
-protected:
-    virtual void paintEvent(QPaintEvent*);
+    SNIItem(const QString& service, const QString& path, QMenuBar* menuBar);
 
 private Q_SLOTS:
     void slotPropertiesReceived(QDBusPendingCallWatcher*);
 
 private:
     QDBusInterface m_iface;
+    QMenuBar* m_menuBar;
+    QAction* m_action;
+    QScopedPointer<DBusMenuImporter> m_importer;
     void updateFromDBus();
     void updateFromProperties(const QVariantMap&);
 };

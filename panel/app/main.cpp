@@ -28,6 +28,7 @@ int main(int argc, char** argv)
     panel.addWidget(new AppletContainer("appname"));
     panel.addWidget(new AppletContainer("appmenu"));
     panel.addSpacer();
+    panel.addWidget(new AppletContainer("appindicator"));
     panel.show();
     return app.exec();
 }
