@@ -8,7 +8,7 @@ macro(libgui_tests)
             ${QT_QTGUI_LIBRARIES}
             ${QT_QTCORE_LIBRARIES}
             ${QT_QTTEST_LIBRARIES}
-            unity-qt-gui
+            uqpanel
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)

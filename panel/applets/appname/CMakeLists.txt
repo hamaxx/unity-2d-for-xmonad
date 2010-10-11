@@ -14,7 +14,7 @@ target_link_libraries(appname
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${QTBAMF_LDFLAGS}
-    unity-qt-gui
+    uqpanel
     )
 
 install(TARGETS appname

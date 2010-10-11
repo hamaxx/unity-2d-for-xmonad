@@ -23,7 +23,7 @@ target_link_libraries(appmenu
     ${QT_QTCORE_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
-    unity-qt-gui
+    uqpanel
     )
 
 install(TARGETS appmenu

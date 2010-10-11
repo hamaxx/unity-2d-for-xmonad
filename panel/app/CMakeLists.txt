@@ -12,7 +12,7 @@ include_directories(
 target_link_libraries(unity-qt-panel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
-    unity-qt-gui
+    uqpanel
     )
 
 install(TARGETS unity-qt-panel

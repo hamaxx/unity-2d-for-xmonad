@@ -17,7 +17,7 @@ target_link_libraries(appindicator
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
-    unity-qt-gui
+    uqpanel
     )
 
 install(TARGETS appindicator

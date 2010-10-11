@@ -1,33 +1,46 @@
-set(libgui_SRCS
+# Sources
+set(libuqpanel_SRCS
     applet.cpp
     appletcontainer.cpp
     panel.cpp
     )
-qt4_automoc(${libgui_SRCS})
+
+set(libuqpanel_VERSION 0.0.0)
+set(libuqpanel_SOVERSION 0)
+
+# Build
+qt4_automoc(${libuqpanel_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-add_library(unity-qt-gui SHARED ${libgui_SRCS})
-set_target_properties(unity-qt-gui PROPERTIES
-    VERSION 0.0.0
-    SOVERSION 0
+configure_file(libuqpanel.pc.in ${CMAKE_BINARY_DIR}/libuqpanel.pc @ONLY)
+
+add_library(uqpanel SHARED ${libuqpanel_SRCS})
+set_target_properties(uqpanel PROPERTIES
+    VERSION ${libuqpanel_VERSION}
+    SOVERSION ${libuqpanel_SOVERSION}
     )
 
-target_link_libraries(unity-qt-gui
+target_link_libraries(uqpanel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     )
 
-install(TARGETS unity-qt-gui
+# Install
+install(TARGETS uqpanel
     LIBRARY DESTINATION lib${LIB_SUFFIX}
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     )
 
 install(DIRECTORY .
-    DESTINATION include/unity-qt-gui
+    DESTINATION include/uqpanel
     FILES_MATCHING PATTERN "*.h"
     PATTERN "*_p.h" EXCLUDE
+    )
+
+install(FILES ${CMAKE_BINARY_DIR}/libuqpanel.pc
+    DESTINATION lib/pkgconfig
     )

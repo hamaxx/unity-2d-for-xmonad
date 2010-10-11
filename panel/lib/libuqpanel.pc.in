@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_PREFIX@/lib@LIB_SUFFIX@
+includedir=@CMAKE_INSTALL_PREFIX@/include/libuqpanel
+
+Name: libuqpanel
+Description: Library to create Unity Qt panel applets
+Version: @libgui_VERSION@
+Libs: -L${libdir} -luqpanel
+Cflags: -I${includedir}
