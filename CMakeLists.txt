@@ -28,3 +28,4 @@ include_directories(
 # Source
 add_subdirectory(launcher)
 add_subdirectory(panel)
+add_subdirectory(places)
