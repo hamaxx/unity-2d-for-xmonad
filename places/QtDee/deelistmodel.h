@@ -21,8 +21,7 @@
 #define DEELISTMODEL_H
 
 #include <QAbstractListModel>
-
-#include "dee-shared-model-proxy.h"
+#include <QDBusInterface>
 
 Q_DECLARE_METATYPE(QList<qulonglong>)
 Q_DECLARE_METATYPE(QList<QVariant>)
@@ -58,7 +57,7 @@ private:
     void connect();
     void load();
 
-    ComCanonicalDeeModelInterface* m_dee_shared_model_proxy;
+    QDBusInterface* m_dee_shared_model_proxy;
 
     QString m_columns;
     quint64 m_last_seqnum;

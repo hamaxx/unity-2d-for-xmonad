@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QByteArray>
 #include <QDBusMetaType>
+#include <QDBusPendingReply>
 
 #include <QDebug>
 
@@ -78,9 +79,7 @@ DeeListModel::connect()
 
     if (!m_service.isEmpty() && !m_objectPath.isEmpty())
     {
-        m_dee_shared_model_proxy = new ComCanonicalDeeModelInterface(m_service, m_objectPath,
-                                                                     QDBusConnection::sessionBus(),
-                                                                     static_cast<QObject*>(this));
+        m_dee_shared_model_proxy = new QDBusInterface(m_service, m_objectPath);
         load();
     }
 }
@@ -88,7 +87,7 @@ DeeListModel::connect()
 void
 DeeListModel::load()
 {
-    QDBusPendingReply<QString, quint64, QList<QList<QVariant>>, QList<qulonglong>> reply = m_dee_shared_model_proxy->Clone();
+    QDBusPendingReply<QString, quint64, QList<QList<QVariant>>, QList<qulonglong>> reply = m_dee_shared_model_proxy->call("Clone");
     reply.waitForFinished();
     if (reply.isError())
     {

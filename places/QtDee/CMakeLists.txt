@@ -8,13 +8,11 @@ pkg_check_modules(DEE REQUIRED dee-1.0)
 # Sources
 set(QtDee_SRCS
     deelistmodel.cpp
-    dee-shared-model-proxy.cpp
     plugin.cpp
     )
 
 set(QtDee_MOC_HDRS
     deelistmodel.h
-    dee-shared-model-proxy.h
     plugin.h
     )
 
