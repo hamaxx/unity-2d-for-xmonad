@@ -31,6 +31,7 @@ IndicatorApplet::IndicatorApplet()
 void IndicatorApplet::setupUi()
 {
     m_menuBar = new QMenuBar;
+    m_menuBar->setNativeMenuBar(false);
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_menuBar);
