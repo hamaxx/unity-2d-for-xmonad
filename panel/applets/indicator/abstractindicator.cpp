@@ -18,7 +18,6 @@
 
 AbstractIndicator::AbstractIndicator(QObject* parent)
 : QObject(parent)
-, m_action(new QAction(this))
 {
 }
 
@@ -26,9 +25,8 @@ AbstractIndicator::~AbstractIndicator()
 {
 }
 
-QAction* AbstractIndicator::action() const
+void AbstractIndicator::init()
 {
-    return m_action;
 }
 
 #include "abstractindicator.moc"

@@ -23,10 +23,13 @@ class DateTimeIndicator : public AbstractIndicator
 public:
     DateTimeIndicator(QObject* parent=0);
 
+    virtual void init();
+
 private Q_SLOTS:
     void updateText();
 private:
     Q_DISABLE_COPY(DateTimeIndicator)
+    QAction* m_action;
     QTimer* m_timer;
     QString m_format;
 

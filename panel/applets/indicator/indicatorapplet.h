@@ -24,6 +24,10 @@ Q_OBJECT
 public:
     IndicatorApplet();
 
+private Q_SLOTS:
+    void slotActionAdded(QAction*);
+    void slotActionRemoved(QAction*);
+
 private:
     Q_DISABLE_COPY(IndicatorApplet)
 

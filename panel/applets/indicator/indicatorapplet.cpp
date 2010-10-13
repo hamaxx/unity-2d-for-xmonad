@@ -44,8 +44,22 @@ void IndicatorApplet::loadIndicators()
         ;
 
     Q_FOREACH(AbstractIndicator* indicator, indicators) {
-        m_menuBar->addAction(indicator->action());
+        connect(indicator, SIGNAL(actionAdded(QAction*)), SLOT(slotActionAdded(QAction*)));
+        connect(indicator, SIGNAL(actionRemoved(QAction*)), SLOT(slotActionRemoved(QAction*)));
+        indicator->init();
     }
 }
+
+void IndicatorApplet::slotActionAdded(QAction* action)
+{
+    UQ_VAR(action->text());
+    m_menuBar->addAction(action);
+}
+
+void IndicatorApplet::slotActionRemoved(QAction* action)
+{
+    m_menuBar->removeAction(action);
+}
+
 
 #include "indicatorapplet.moc"

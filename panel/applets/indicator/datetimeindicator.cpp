@@ -34,6 +34,7 @@
 
 DateTimeIndicator::DateTimeIndicator(QObject* parent)
 : AbstractIndicator(parent)
+, m_action(new QAction(this))
 , m_timer(new QTimer(this))
 {
     new IndicatorServiceManager(SERVICE_NAME, SERVICE_VERSION, this);
@@ -44,10 +45,15 @@ DateTimeIndicator::DateTimeIndicator(QObject* parent)
     updateText();
 }
 
+void DateTimeIndicator::init()
+{
+    actionAdded(m_action);
+}
+
 void DateTimeIndicator::setupMenu()
 {
     DBusMenuImporter* importer = new DBusMenuImporter(SERVICE_NAME, MENU_OBJ, this);
-    action()->setMenu(importer->menu());
+    m_action->setMenu(importer->menu());
 }
 
 void DateTimeIndicator::setupTimer()
@@ -66,7 +72,7 @@ void DateTimeIndicator::updateTimer()
 void DateTimeIndicator::updateText()
 {
     QString text = QDateTime::currentDateTime().toString(m_format);
-    action()->setText(text);
+    m_action->setText(text);
 }
 
 void DateTimeIndicator::readConfig()

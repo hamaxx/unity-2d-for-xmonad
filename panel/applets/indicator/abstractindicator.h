@@ -25,11 +25,18 @@ public:
     AbstractIndicator(QObject* parent=0);
     ~AbstractIndicator();
 
-    QAction* action() const;
+    /**
+     * Called when the indicator has been constructed and its owner is connected to signals.
+     * It's the right place to emit actionAdded()
+     */
+    virtual void init();
+
+Q_SIGNALS:
+    void actionAdded(QAction*);
+    void actionRemoved(QAction*);
 
 private:
     Q_DISABLE_COPY(AbstractIndicator)
-    QAction* m_action;
 };
 
 #endif /* ABSTRACTINDICATOR_H */
