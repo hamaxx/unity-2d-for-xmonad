@@ -30,6 +30,7 @@
 DeeListModel::DeeListModel(QObject *parent) :
     QAbstractListModel(parent), m_dee_shared_model_proxy(NULL)
 {
+    qDBusRegisterMetaType<QList<uint>>();
     qDBusRegisterMetaType<QList<qulonglong>>();
     qDBusRegisterMetaType<QList<QVariant>>();
     qDBusRegisterMetaType<QList<QList<QVariant>>>();
@@ -80,6 +81,27 @@ DeeListModel::connect()
     if (!m_service.isEmpty() && !m_objectPath.isEmpty())
     {
         m_dee_shared_model_proxy = new QDBusInterface(m_service, m_objectPath);
+        /* FIXME: these simplistic connections fail at runtime with the following
+                  error messages:
+
+           Object::connect: No such signal local::Merged::RowsAdded(QList<QList<QVariant>>, QList<uint>, QList<qulonglong>)
+           Object::connect: No such signal local::Merged::RowsRemoved(QList<uint>,QList<qulonglong>)
+
+           As it turns out the DBusInterface object (m_interface) does not have
+           these 2 signals as proven by the following code:
+
+           #include <QMetaMethod>
+           const QMetaObject* meta = m_dee_shared_model_proxy->metaObject();
+           for (int i = 0; i < meta->methodCount(); ++i)
+              qDebug() << i << " " << meta->method(i).methodType() << ": " << meta->method(i).signature() << " -> " << meta->method(i).typeName();
+
+           It could be an instance of that Qt bug that was filed and closed:
+
+           http://bugreports.qt.nokia.com/browse/QTBUG-5563
+        */
+        QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsAdded(QList<QList<QVariant>>, QList<uint>, QList<qulonglong>)), this, SLOT(load()));
+        QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsRemoved(QList<uint>,QList<qulonglong>)), this, SLOT(load()));
+
         load();
     }
 }
@@ -87,7 +109,7 @@ DeeListModel::connect()
 void
 DeeListModel::load()
 {
-    QDBusPendingReply<QString, quint64, QList<QList<QVariant>>, QList<qulonglong>> reply = m_dee_shared_model_proxy->call("Clone");
+    QDBusPendingReply<QString, qulonglong, QList<QList<QVariant>>, QList<qulonglong>> reply = m_dee_shared_model_proxy->call("Clone");
     reply.waitForFinished();
     if (reply.isError())
     {

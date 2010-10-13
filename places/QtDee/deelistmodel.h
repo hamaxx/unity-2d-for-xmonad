@@ -23,6 +23,7 @@
 #include <QAbstractListModel>
 #include <QDBusInterface>
 
+Q_DECLARE_METATYPE(QList<uint>)
 Q_DECLARE_METATYPE(QList<qulonglong>)
 Q_DECLARE_METATYPE(QList<QVariant>)
 Q_DECLARE_METATYPE(QList<QList<QVariant>>)
@@ -53,14 +54,16 @@ signals:
     void objectPathChanged(QString);
     void serviceChanged(QString);
 
+private slots:
+    void load();
+
 private:
     void connect();
-    void load();
 
     QDBusInterface* m_dee_shared_model_proxy;
 
     QString m_columns;
-    quint64 m_last_seqnum;
+    qulonglong m_last_seqnum;
     QList<QList<QVariant>> m_rows;
     QList<qulonglong> m_seqnums;
 
