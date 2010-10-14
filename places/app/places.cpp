@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     {
         /* Uninstalled: make sure local plugins such as QtDee are
            importable */
-        view.engine()->addImportPath(QString(".."));
+        view.engine()->addImportPath(QString("."));
     }
 
     view.setSource(QUrl("./places.qml"));

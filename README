@@ -9,4 +9,4 @@ Running separate components
 
 cd launcher && ./app/unity-qt-launcher
 cd panel && ./app/unity-qt-panel
-cd places/app && ./unity-qt-places
+cd places && ./app/unity-qt-places
