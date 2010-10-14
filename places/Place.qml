@@ -12,6 +12,10 @@ Item {
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
+    function setActiveSection(section) {
+        place_entry.SetActiveSection(section)
+    }
+
     UnityPlaceEntry {
         id: place_entry
 

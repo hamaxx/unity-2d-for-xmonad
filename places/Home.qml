@@ -1,4 +1,6 @@
 import Qt 4.7
+import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
+import gconf 1.0
 
 Item {
     Flow {
@@ -11,35 +13,62 @@ Item {
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/web"
-            label: "Web"
+            label: qsTr("Web")
+
+            GConfItem {
+                id: desktop_file_path
+                key: "/desktop/gnome/applications/browser/exec"
+            }
+
+            onClicked: console.log("FIXME: should launch", desktop_file_path.value)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/music"
-            label: "Music"
+            label: qsTr("Music")
+            onClicked: activatePlace(applications_place, 4)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/photos"
-            label: "Photos & Videos"
+            label: qsTr("Photos & Videos")
+            onClicked: activatePlace(applications_place, 4)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/games"
-            label: "Games"
+            label: qsTr("Games")
+            onClicked: activatePlace(applications_place, 2)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/email_and_chat"
-            label: "Email & Chat"
+            label: qsTr("Email & Chat")
+            onClicked: activatePlace(applications_place, 3)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/work"
-            label: "Office"
+            label: qsTr("Office")
+            onClicked: activatePlace(applications_place, 5)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/filesandfolders"
-            label: "Files & Folders"
+            label: qsTr("Files & Folders")
+            onClicked: activatePlace(files_place, 0)
         }
+
         HomeButton {
             icon: "image://icons/unity-icon-theme/softwarecentre"
-            label: "Get New Apps"
+            label: qsTr("Get New Apps")
+
+            QLauncherApplication {
+                id: software_center
+                desktop_file: "/usr/share/applications/ubuntu-software-center.desktop"
+            }
+
+            onClicked: software_center.launch()
         }
     }
 }
