@@ -38,4 +38,12 @@ Depends: libuqpanel0 (= ${binary:Version}), ${misc:Depends}
 Description: Unity Qt Panel - development files
  This library is used to create panel applets for the Unity Qt panel.
  .
- This package contains the development header files. 
+ This package contains the development header files.
+
+Package: unity-qt-places
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher
+Description: Unity Qt Places
+ The Unity Qt places overlay over the desktop to provide quick access to
+ various categories of applications.
+
