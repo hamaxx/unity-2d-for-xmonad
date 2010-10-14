@@ -1,9 +1,6 @@
 import Qt 4.7
 
 Item {
-    property alias icon: icon.source
-    property alias label: label.text
-
     signal clicked
 
     MouseArea {
@@ -24,6 +21,37 @@ Item {
         onDoubleClicked: {
             double_clicked = true
         }
+
+        onPressed: {
+            parent.state = "pressed"
+        }
+
+        onReleased: {
+            if(containsMouse)
+                parent.state = "selected";
+            else if(parent.activeFocus)
+                parent.state = "selected"
+            else
+                parent.state = "default"
+        }
+
+        onEntered: {
+            parent.state = "selected"
+        }
+
+        onExited: {
+            if(parent.activeFocus)
+                parent.state = "selected"
+            else
+                parent.state = "default"
+        }
+    }
+
+    onActiveFocusChanged: {
+        if(activeFocus)
+            state = "selected"
+        else
+            state = "default"
     }
 
     Keys.onPressed: {
@@ -34,12 +62,10 @@ Item {
     }
 
     Rectangle {
-        id: background
-
         anchors.fill: parent
-        opacity: mouse_area.containsMouse ? 1.0 : 0.0
+        opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
 
-        color: mouse_area.pressed ? "#ffffffff" : "#00000000"
+        color: parent.state == "pressed" ? "#ffffffff" : "#00000000"
         border.color: "#dddddd"
         border.width: 1
         radius: 5
@@ -55,38 +81,5 @@ Item {
             source: "/usr/share/unity/dash_background.png"
             smooth: false
         }
-
-    }
-
-    Image {
-        id: icon
-
-        width: 48
-        height: 48
-        anchors.horizontalCenter: background.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 4
-        fillMode: Image.PreserveAspectFit
-        sourceSize.width: width
-        sourceSize.height: height
-
-        asynchronous: true
-        opacity: status == Image.Ready ? 1 : 0
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-    }
-
-    TextCustom {
-        id: label
-
-        color: mouse_area.pressed ? "#444444" : "#ffffff"
-        elide: Text.ElideMiddle
-        horizontalAlignment: Text.AlignHCenter
-        anchors.bottom: background.bottom
-        anchors.right: parent.right
-        anchors.left: parent.left
-        anchors.bottomMargin: 5
-        anchors.rightMargin: 6
-        anchors.leftMargin: 6
-        font.underline: parent.activeFocus
     }
 }
