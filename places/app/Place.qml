@@ -3,7 +3,7 @@ import QtDee 1.0
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons */
 import UnityPlaces 1.0
 
-Rectangle {
+Item {
     id: place
 
     property string name
@@ -11,10 +11,6 @@ Rectangle {
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
-
-    width: 800
-    height: 600
-    color: "grey"
 
     UnityPlaceEntry {
         id: place_entry

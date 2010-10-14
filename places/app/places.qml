@@ -1,9 +1,20 @@
 import Qt 4.7
 
-Rectangle {
+Item {
     width: 800
     height: 600
-    color: "grey"
+
+    GnomeBackground {
+        anchors.fill: parent
+    }
+
+    /* FIXME: the background needs to be darkened but compositing at
+              rendering is way too expensive */
+    Rectangle {
+        anchors.fill: parent
+        opacity: 0.4
+        color: "black"
+    }
 
     Place {
         anchors.fill: parent
