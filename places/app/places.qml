@@ -9,7 +9,11 @@ Item {
     }
 
     /* FIXME: the background needs to be darkened but compositing at
-              rendering is way too expensive */
+              rendering is way too expensive
+
+              Use QGraphicsView::setBackgroundBrush with
+              QGraphicsView::setCacheMode instead.
+    */
     Rectangle {
         anchors.fill: parent
         opacity: 0.4
