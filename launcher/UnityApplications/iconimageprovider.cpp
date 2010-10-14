@@ -2,29 +2,59 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "iconimageprovider.h"
 
-
 IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
 }
 
-/* FIXME: with newer Qt request was deprecated in favor of requestPixmap and requestImage.
-          a new constructor parameter was added to determine which type the Provider is:
+IconImageProvider::~IconImageProvider()
+{
+    /* unreference cached themes */
+    foreach(void* theme, m_themes.values())
+        g_object_unref((GtkIconTheme*)theme);
+}
 
-          : QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap)
-*/
 QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     /* Dealing with case where id is an absolute path to the icon file */
     if(id.startsWith("/"))
         return QImage(id);
 
-    QByteArray byte_array = id.toUtf8();
-    gchar *icon_name = byte_array.data();
+    /* if id is of the form theme_name/icon_name then lookup the icon in the
+       specified theme otherwise in the default theme */
+    QString icon_name;
+    GtkIconTheme *theme;
+
+    QStringList split_id = id.split("/");
+    if(split_id.length()>1)
+    {
+        /* use specified theme */
+        QString theme_name = split_id[0];
+        icon_name = split_id[1];
+
+        if(m_themes.contains(theme_name))
+        {
+            theme = (GtkIconTheme*)m_themes[theme_name];
+        }
+        else
+        {
+            theme = gtk_icon_theme_new();
+            gtk_icon_theme_set_custom_theme(theme, theme_name.toUtf8().data());
+            m_themes[theme_name] = theme;
+        }
+    }
+    else
+    {
+        /* use default theme */
+        theme = gtk_icon_theme_get_default();
+        icon_name = id;
+    }
+
+    QByteArray byte_array = icon_name.toUtf8();
+    gchar *g_icon_name = byte_array.data();
 
     /* gtk_icon_theme_load_icon for a given size will sometimes return path
        to an icon of a smaller size */
-    GtkIconTheme *theme = gtk_icon_theme_get_default();
-    GdkPixbuf *pixbuf = gtk_icon_theme_load_icon(theme, icon_name,
+    GdkPixbuf *pixbuf = gtk_icon_theme_load_icon(theme, g_icon_name,
                                                  requestedSize.width(),
                                                  (GtkIconLookupFlags)0, NULL);
 
