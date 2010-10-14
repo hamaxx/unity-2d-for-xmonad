@@ -1,6 +1,6 @@
 import Qt 4.7
 import QtDee 1.0
-import UnityApplications 1.0
+import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons */
 import UnityPlaces 1.0
 
 Rectangle {
@@ -24,13 +24,6 @@ Rectangle {
 
         service: dBusService
         objectPath: dBusObjectPath
-    }
-
-    BamfMatcher {
-        id: bamf_matcher
-
-        service: "org.ayatana.bamf"
-        objectPath: "/org/ayatana/bamf/matcher"
     }
 
     ListView {
@@ -77,10 +70,6 @@ Rectangle {
         clip: true
 
         delegate: Result {
-            /*property variant view: BamfView {
-                service: "org.ayatana.bamf"
-                objectPath: modelData
-            }*/
             width: GridView.view.delegate_width
             height: GridView.view.delegate_height
             label: column_4
