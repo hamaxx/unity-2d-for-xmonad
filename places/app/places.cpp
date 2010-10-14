@@ -31,6 +31,11 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
+    /* Performance tricks */
+    view.setAttribute(Qt::WA_OpaquePaintEvent);
+    view.setAttribute(Qt::WA_NoSystemBackground);
+    //QApplication::setGraphicsSystem("raster");
+
     if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
     {
         /* Running installed */
