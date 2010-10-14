@@ -66,7 +66,7 @@ Item {
         opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
 
         color: parent.state == "pressed" ? "#ffffffff" : "#00000000"
-        border.color: "#dddddd"
+        border.color: "#cccccc"
         border.width: 1
         radius: 5
 
