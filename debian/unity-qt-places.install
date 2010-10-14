@@ -1,6 +1,6 @@
 usr/bin/unity-qt-places
 usr/share/unity-qt/places/Button.qml
-usr/share/unity-qt/places/places.qml
+usr/share/unity-qt/places/dash.qml
 usr/share/unity-qt/places/TextCustom.qml
 usr/share/unity-qt/places/GnomeBackground.qml
 usr/share/unity-qt/places/Result.qml

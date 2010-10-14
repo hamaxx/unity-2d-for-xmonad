@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(QString("../launcher"));
     }
 
-    view.setSource(QUrl("./places.qml"));
+    view.setSource(QUrl("./dash.qml"));
     view.show();
 
     return application.exec();
