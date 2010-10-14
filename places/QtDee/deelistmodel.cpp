@@ -26,7 +26,6 @@
 
 #include <QDebug>
 
-
 DeeListModel::DeeListModel(QObject *parent) :
     QAbstractListModel(parent), m_dee_shared_model_proxy(NULL)
 {
@@ -99,9 +98,14 @@ DeeListModel::connect()
 
            http://bugreports.qt.nokia.com/browse/QTBUG-5563
         */
-        QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsAdded(QList<QList<QVariant>>, QList<uint>, QList<qulonglong>)), this, SLOT(load()));
-        QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsRemoved(QList<uint>,QList<qulonglong>)), this, SLOT(load()));
+        //QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsAdded(QList<QList<QVariant>>, QList<uint>, QList<qulonglong>)), this, SLOT(load()));
+        //QObject::connect(m_dee_shared_model_proxy, SIGNAL(RowsRemoved(QList<uint>,QList<qulonglong>)), this, SLOT(load()));
 
+        /* FIXME: that way of connecting works however connecting to 'load' for
+                  every single change is wrong and very heavy */
+        QDBusConnection::sessionBus().connect(m_service, m_objectPath, QString(), QString("RowsAdded"), this, SLOT(load()));
+        QDBusConnection::sessionBus().connect(m_service, m_objectPath, QString(), QString("RowsRemoved"), this, SLOT(load()));
+        QDBusConnection::sessionBus().connect(m_service, m_objectPath, QString(), QString("RowsChanged"), this, SLOT(load()));
         load();
     }
 }
@@ -122,8 +126,6 @@ DeeListModel::load()
     m_rows = reply.argumentAt<2>();
     m_seqnums = reply.argumentAt<3>();
 
-    qDebug() << m_columns << m_last_seqnum /*<< m_rows << m_seqnums*/;
-
     QHash<int, QByteArray> roles;
     QString column;
 
@@ -134,6 +136,7 @@ DeeListModel::load()
     }
 
     setRoleNames(roles);
+    reset();
 }
 
 
