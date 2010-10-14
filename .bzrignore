@@ -7,3 +7,9 @@ launcher/tmp
 launcher/bin
 .bzr-repo
 *.kdev4
+*.cmake
+CMakeFiles
+*.cbp
+CMakeCache*
+moc_*.cxx
+*.moc
