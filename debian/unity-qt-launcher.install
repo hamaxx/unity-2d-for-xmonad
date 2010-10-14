@@ -1,10 +1,10 @@
 etc/xdg/xdg-unity-qt/autostart/unity-qt-launcher.desktop
 usr/bin/unity-qt-launcher
-usr/share/unity-qt/Application.qml
-usr/share/unity-qt/Launcher.qml
-usr/share/unity-qt/artwork
-usr/share/unity-qt/artwork/glow.png
-usr/share/unity-qt/artwork/shadow.png
+usr/share/unity-qt/launcher/Application.qml
+usr/share/unity-qt/launcher/Launcher.qml
+usr/share/unity-qt/launcher/artwork
+usr/share/unity-qt/launcher/artwork/glow.png
+usr/share/unity-qt/launcher/artwork/shadow.png
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir
