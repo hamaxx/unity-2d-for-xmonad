@@ -1,8 +1,6 @@
 import Qt 4.7
 
 Rectangle {
-    id: place
-
     width: 800
     height: 600
     color: "grey"

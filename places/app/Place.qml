@@ -6,11 +6,8 @@ import UnityPlaces 1.0
 Rectangle {
     id: place
 
-    /* FIXME: these 2 properties need to be fed from the place configuration file
-              located in /usr/share/unity/places/NAME.place
-    */
-    property string name: "Applications"
-    property string dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+    property string name
+    property string dBusObjectPath
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
