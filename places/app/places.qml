@@ -4,15 +4,26 @@ import UnityApplications 1.0
 import UnityPlaces 1.0
 
 Rectangle {
+    id: place
+
+    /* FIXME: these 2 properties need to be fed from the place configuration file
+              located in /usr/share/unity/places/NAME.place
+    */
+    property string name: "Applications"
+    property string dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+
+    property string dBusService: "com.canonical.Unity." + name + "Place"
+    property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
+
     width: 800
     height: 600
     color: "grey"
 
     UnityPlaceEntry {
-        id: applications_place
+        id: place_entry
 
-        service: "com.canonical.Unity.ApplicationsPlace"
-        objectPath: "/com/canonical/unity/applicationsplace/applications"
+        service: dBusService
+        objectPath: dBusObjectPath
     }
 
     BamfMatcher {
@@ -38,13 +49,13 @@ Rectangle {
 
             onClicked: {
                 ListView.view.currentIndex = model.index
-                applications_place.SetActiveSection(model.index)
+                place_entry.SetActiveSection(model.index)
             }
         }
 
         model: DeeListModel {
-            service: "com.canonical.Unity.ApplicationsPlace"
-            objectPath: "/com/canonical/dee/model/com/canonical/Unity/ApplicationsPlace/SectionsModel"
+            service: dBusService
+            objectPath: dBusDeePrefix + "SectionsModel"
         }
     }
 
@@ -77,8 +88,8 @@ Rectangle {
         }
 
         model: DeeListModel {
-            service: "com.canonical.Unity.ApplicationsPlace"
-            objectPath: "/com/canonical/dee/model/com/canonical/Unity/ApplicationsPlace/ResultsModel"
+            service: dBusService
+            objectPath: dBusDeePrefix +"ResultsModel"
         }
     }
 }
