@@ -44,12 +44,13 @@ target_link_libraries(test
     )
 
 # Install
-set(IMPORT_INSTALL_DIR lib/qt4/imports/dee)
+set(IMPORT_INSTALL_DIR lib/qt4/imports/QtDee)
 
-#install(TARGETS dee
-#    LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
-#    )
+install(TARGETS QtDee
+    LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
+    )
 
-#install(FILES qmldir
-#    DESTINATION ${IMPORT_INSTALL_DIR}
-#    )
+install(FILES qmldir
+    DESTINATION ${IMPORT_INSTALL_DIR}
+    )
+
