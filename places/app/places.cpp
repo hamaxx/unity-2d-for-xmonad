@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         /* Running installed */
         /* Note: baseUrl seems to be picky: if it does not end with a slash,
            setSource() will fail */
-        view.engine()->setBaseUrl(QUrl::fromLocalFile(INSTALL_PREFIX "/" UNITY_QT_DIR "/"));
+        view.engine()->setBaseUrl(QUrl::fromLocalFile(INSTALL_PREFIX "/" UNITY_QT_DIR "/places/"));
     }
     else
     {
