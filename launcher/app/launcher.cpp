@@ -55,7 +55,6 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(QString("."));
     }
 
-    /* This is showing the whole unity desktop, not just the launcher: */
     view.setSource(QUrl("./Launcher.qml"));
 
     view.show();
