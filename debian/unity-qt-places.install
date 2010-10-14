@@ -1,0 +1,17 @@
+usr/bin/unity-qt-places
+usr/share/unity-qt/places/Button.qml
+usr/share/unity-qt/places/places.qml
+usr/share/unity-qt/places/TextCustom.qml
+usr/share/unity-qt/places/GnomeBackground.qml
+usr/share/unity-qt/places/Result.qml
+usr/share/unity-qt/places/Place.qml
+usr/share/unity-qt/places/Section.qml
+usr/lib/qt4/imports/QtDee/libQtDee.so.1.0.0
+usr/lib/qt4/imports/QtDee/libQtDee.so.1
+usr/lib/qt4/imports/QtDee/libQtDee.so
+usr/lib/qt4/imports/QtDee/qmldir
+usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1.0.0
+usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1
+usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so
+usr/lib/qt4/imports/UnityPlaces/qmldir
+

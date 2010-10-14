@@ -6,7 +6,7 @@ Build-Depends: cdbs, debhelper (>= 7),
                cmake, libqt4-dev,
                libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev, libdbusmenu-qt-dev,
-               libx11-dev
+               libx11-dev, libdee-dev
 Standards-Version: 3.8.3
 Vcs-Bzr: lp:~upicek-team/upicek/trunk
 
@@ -38,4 +38,12 @@ Depends: libuqpanel0 (= ${binary:Version}), ${misc:Depends}
 Description: Unity Qt Panel - development files
  This library is used to create panel applets for the Unity Qt panel.
  .
- This package contains the development header files. 
+ This package contains the development header files.
+
+Package: unity-qt-places
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher
+Description: Unity Qt Places
+ The Unity Qt places overlay over the desktop to provide quick access to
+ various categories of applications.
+
