@@ -12,7 +12,13 @@ Item {
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
+    /* FIXME: this is a bit of a hack due to the lack of D-Bus property
+              giving the current section id for a place
+    */
+    property int activeSection
+
     function setActiveSection(section) {
+        activeSection = section
         place_entry.SetActiveSection(section)
     }
 

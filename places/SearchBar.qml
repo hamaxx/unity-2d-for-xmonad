@@ -152,7 +152,7 @@ Item {
         spacing: 10
 
         height: parent.height
-        currentIndex: 0
+        currentIndex: current_page.activeSection
 
         delegate: Section {
             anchors.verticalCenter: parent.verticalCenter
@@ -161,10 +161,7 @@ Item {
             label: column_0
             active: ListView.isCurrentItem
 
-            onClicked: {
-                ListView.view.currentIndex = model.index
-                current_page.setActiveSection(model.index)
-            }
+            onClicked: current_page.setActiveSection(model.index)
         }
 
         model: DeeListModel {
