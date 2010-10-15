@@ -25,6 +25,7 @@ int main(int argc, char** argv)
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setFixedHeight(24);
+    panel.addWidget(new AppletContainer("homebutton"));
     panel.addWidget(new AppletContainer("appname"));
     panel.addWidget(new AppletContainer("appmenu"));
     panel.addSpacer();
