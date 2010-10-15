@@ -7,6 +7,8 @@ BorderImage {
     border.right: 11
     border.top: 12
     border.bottom: 12
+    /* It might be more efficient to have a png with a bigger transparent
+       middle and setting the tile modes to Repeat */
     horizontalTileMode: BorderImage.Stretch
     verticalTileMode: BorderImage.Stretch
 
