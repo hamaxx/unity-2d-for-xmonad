@@ -23,32 +23,6 @@ Item {
         objectPath: dBusObjectPath
     }
 
-    ListView {
-        id: sections
-
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 20
-        orientation: ListView.Horizontal
-
-        delegate: Section {
-            width: 100
-            height: ListView.view.height
-            label: column_0
-
-            onClicked: {
-                ListView.view.currentIndex = model.index
-                place_entry.SetActiveSection(model.index)
-            }
-        }
-
-        model: DeeListModel {
-            service: dBusService
-            objectPath: dBusDeePrefix + "SectionsModel"
-        }
-    }
-
     GridView {
         id: results
 
@@ -57,11 +31,8 @@ Item {
         property int horizontal_spacing: 20
         property int vertical_spacing: 25
 
-        anchors.top: sections.bottom
-        anchors.topMargin: 20
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
+
         cellWidth: delegate_width+horizontal_spacing
         cellHeight: delegate_height+vertical_spacing
         clip: true
