@@ -82,7 +82,6 @@ Item {
                 anchors.right: clear_button.left
                 anchors.rightMargin: 5
 
-                text: "Search"
                 font.italic: true
                 color: "#ffffff"
 
@@ -91,13 +90,29 @@ Item {
                 Timer {
                     id: live_search_timeout
                     interval: 200
-                    onTriggered: current_page.search(parent.text)
+                    onTriggered: current_page.search(search_input.text)
                 }
 
                 Keys.onPressed: {
                     if (event.key == Qt.Key_Return) {
                         current_page.search(text)
                         event.accepted = true;
+                    }
+                }
+
+                Text {
+                    id: search_instructions
+
+                    anchors.fill: parent
+                    font.italic: true
+                    color: "#ffffff"
+                    text: {
+                        if(search_input.text)
+                            return ""
+                        else if(current_page.name)
+                            return qsTr("Search %1").arg(current_page.name)
+                        else
+                            return qsTr("Search")
                     }
                 }
             }
