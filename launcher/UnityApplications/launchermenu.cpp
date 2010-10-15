@@ -24,12 +24,12 @@
 #include <QPoint>
 
 QLauncherContextualMenu::QLauncherContextualMenu():
-    QWidget(0, Qt::FramelessWindowHint), m_application(NULL)
+    QWidget(0, Qt::ToolTip), m_application(NULL)
 {
     m_layout = new QVBoxLayout;
     setLayout(m_layout);
 
-    m_title = new QLabel;
+    m_title = new QLabel(this);
     m_layout->addWidget(m_title);
 
     m_menu = new QMenu(this);
@@ -57,19 +57,37 @@ void
 QLauncherContextualMenu::show(int y, const QVariant& application)
 {
     m_application = (QLauncherApplication*) application.value<QObject*>();
-    bool running = m_application->running();
 
     m_title->setText(m_application->name());
-    m_keep->setText(running ? "Keep In Launcher" : "Remove From Launcher");
-    m_keep->setCheckable(running);
-    m_keep->setChecked(m_application->sticky());
-    m_separator->setVisible(running);
-    m_quit->setVisible(running);
+
+    m_menu->setVisible(false);
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
     move(available.x(), y + available.y() - m_title->sizeHint().height() / 2);
     QWidget::show();
+    resize(m_title->minimumSizeHint());
+}
+
+void
+QLauncherContextualMenu::show_menu()
+{
+    m_menu->setVisible(true);
+
+    bool running = m_application->running();
+
+    m_keep->setText(running ? "Keep In Launcher" : "Remove From Launcher");
+    m_keep->setCheckable(running);
+    m_keep->setChecked(m_application->sticky());
+    m_separator->setVisible(running);
+    m_quit->setVisible(running);
+}
+
+void
+QLauncherContextualMenu::hide()
+{
+    QWidget::hide();
+    m_application = NULL;
 }
 
 void

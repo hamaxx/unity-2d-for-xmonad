@@ -38,7 +38,8 @@ public:
     ~QLauncherContextualMenu();
 
     Q_INVOKABLE void show(int y, const QVariant& application);
-    //Q_INVOKABLE void hide();
+    Q_INVOKABLE void show_menu();
+    Q_INVOKABLE void hide();
 
 private:
     QLauncherApplication* m_application;

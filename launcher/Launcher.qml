@@ -30,6 +30,7 @@ Item {
             launching: application.launching
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
+                    menu.hide()
                     if (active)
                         application.expose()
                     else if (running && application.has_visible_window)
@@ -38,9 +39,12 @@ Item {
                         application.launch()
                 }
                 else if (mouse.button == Qt.RightButton) {
-                    menu.show(y + height / 2, application)
+                    menu.show_menu()
                 }
             }
+
+            onEntered: menu.show(y + height / 2, application)
+            onExited: menu.hide()
         }
     }
 }
