@@ -84,6 +84,14 @@ Item {
                 font.italic: true
                 color: "#ffffff"
 
+                onTextChanged: live_search_timeout.restart()
+
+                Timer {
+                    id: live_search_timeout
+                    interval: 200
+                    onTriggered: current_page.search(parent.text)
+                }
+
                 Keys.onPressed: {
                     if (event.key == Qt.Key_Return) {
                         current_page.search(text)
