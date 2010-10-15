@@ -137,12 +137,14 @@ Item {
         spacing: 10
 
         height: parent.height
+        currentIndex: 0
 
         delegate: Section {
             anchors.verticalCenter: parent.verticalCenter
             horizontalPadding: 4
             verticalPadding: 3
             label: column_0
+            active: ListView.isCurrentItem
 
             onClicked: {
                 ListView.view.currentIndex = model.index
