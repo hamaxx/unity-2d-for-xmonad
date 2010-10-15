@@ -14,6 +14,8 @@ usr/share/unity-qt/places/artwork/border_glow.png
 usr/share/unity-qt/places/artwork/checker.png
 usr/share/unity-qt/places/artwork/button_border.png
 usr/share/unity-qt/places/artwork/button_background.png
+usr/share/unity-qt/places/artwork/cross.png
+usr/share/unity-qt/places/artwork/separator.png
 usr/lib/qt4/imports/QtDee/libQtDee.so.1.0.0
 usr/lib/qt4/imports/QtDee/libQtDee.so.1
 usr/lib/qt4/imports/QtDee/libQtDee.so
