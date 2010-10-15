@@ -49,14 +49,18 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         icon_name = id;
     }
 
+    /* Load the icon by creating a GIcon from the string icon_name.
+       icon_name can contain more than a simple icon name but possibly
+       a string as returned by g_icon_to_string().
+    */
     QByteArray byte_array = icon_name.toUtf8();
     gchar *g_icon_name = byte_array.data();
 
-    /* gtk_icon_theme_load_icon for a given size will sometimes return path
-       to an icon of a smaller size */
-    GdkPixbuf *pixbuf = gtk_icon_theme_load_icon(theme, g_icon_name,
-                                                 requestedSize.width(),
-                                                 (GtkIconLookupFlags)0, NULL);
+    GIcon *g_icon = g_icon_new_for_string(g_icon_name, NULL);
+    GtkIconInfo *icon_info = gtk_icon_theme_lookup_by_gicon(theme, g_icon,
+                                                            requestedSize.width(),
+                                                            (GtkIconLookupFlags)0);
+    GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
 
     /* FIXME: maybe an exception should be raised instead? */
     if(pixbuf == NULL) return QImage();
