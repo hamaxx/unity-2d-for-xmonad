@@ -59,7 +59,7 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
-    exec(QPoint(available.x(), y + available.y()));
+    popup(QPoint(available.x(), y + available.y()));
 }
 
 void
