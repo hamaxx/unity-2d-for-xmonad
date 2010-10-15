@@ -26,6 +26,11 @@
 QLauncherContextualMenu::QLauncherContextualMenu(QWidget *parent):
     QMenu(parent), m_application(NULL)
 {
+    m_title = new QAction(this);
+    m_title->setEnabled(false);
+    addAction(m_title);
+    addSeparator();
+
     m_keep = new QAction(this);
     m_keep->setText("Keep In Launcher");
     m_keep->setCheckable(true);
@@ -49,7 +54,7 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 {
     m_application = (QLauncherApplication*) application.value<QObject*>();
 
-    setTitle(m_application->name());
+    m_title->setText(m_application->name());
     m_keep->blockSignals(true);
     m_keep->setChecked(m_application->sticky());
     m_keep->blockSignals(false);
