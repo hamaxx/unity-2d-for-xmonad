@@ -22,16 +22,19 @@
 
 #include "launcherapplication.h"
 
-#include <QMenu>
 #include <QVariant>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QMenu>
 #include <QAction>
 
-class QLauncherContextualMenu : public QMenu
+class QLauncherContextualMenu : public QWidget
 {
     Q_OBJECT
 
 public:
-    QLauncherContextualMenu(QWidget *parent = 0);
+    QLauncherContextualMenu();
     ~QLauncherContextualMenu();
 
     Q_INVOKABLE void show(int y, const QVariant& application);
@@ -39,7 +42,9 @@ public:
 
 private:
     QLauncherApplication* m_application;
-    QAction* m_title;
+    QVBoxLayout* m_layout;
+    QLabel* m_title;
+    QMenu* m_menu;
     QAction* m_keep;
     QAction* m_separator;
     QAction* m_quit;

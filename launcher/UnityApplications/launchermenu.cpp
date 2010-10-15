@@ -23,24 +23,29 @@
 #include <QDesktopWidget>
 #include <QPoint>
 
-QLauncherContextualMenu::QLauncherContextualMenu(QWidget *parent):
-    QMenu(parent), m_application(NULL)
+QLauncherContextualMenu::QLauncherContextualMenu():
+    QWidget(0, Qt::FramelessWindowHint), m_application(NULL)
 {
-    m_title = new QAction(this);
-    m_title->setEnabled(false);
-    addAction(m_title);
+    m_layout = new QVBoxLayout;
+    setLayout(m_layout);
 
-    addSeparator();
+    m_title = new QLabel;
+    m_layout->addWidget(m_title);
+
+    m_menu = new QMenu(this);
+    /* Unset the modal character of the menu, as it is embedded. */
+    m_menu->setWindowFlags(Qt::Widget);
+    m_layout->addWidget(m_menu);
 
     m_keep = new QAction(this);
-    addAction(m_keep);
+    m_menu->addAction(m_keep);
     QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
 
-    m_separator = addSeparator();
+    m_separator = m_menu->addSeparator();
 
     m_quit = new QAction(this);
     m_quit->setText("Quit");
-    addAction(m_quit);
+    m_menu->addAction(m_quit);
     QObject::connect(m_quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
 }
 
@@ -63,7 +68,8 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
-    popup(QPoint(available.x(), y + available.y()));
+    move(available.x(), y + available.y() - m_title->sizeHint().height() / 2);
+    QWidget::show();
 }
 
 void
