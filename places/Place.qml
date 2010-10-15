@@ -41,7 +41,10 @@ Item {
         property int horizontal_spacing: 20
         property int vertical_spacing: 25
 
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: scrollbar.left
 
         cellWidth: delegate_width+horizontal_spacing
         cellHeight: delegate_height+vertical_spacing
@@ -58,5 +61,17 @@ Item {
             service: dBusService
             objectPath: dBusDeePrefix +"ResultsModel"
         }
+    }
+
+    Scrollbar {
+        id: scrollbar
+
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        width: 10
+
+        position: results.visibleArea.yPosition
+        pageSize: results.visibleArea.heightRatio
     }
 }

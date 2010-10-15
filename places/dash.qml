@@ -44,9 +44,11 @@ Item {
         anchors.top: search_bar.bottom
         anchors.topMargin: 12
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: 12
         anchors.left: parent.left
         anchors.leftMargin: 7
         anchors.right: parent.right
+        anchors.rightMargin: 8
 
         Home {
             id: home

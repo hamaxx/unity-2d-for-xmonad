@@ -10,12 +10,14 @@ usr/share/unity-qt/places/Section.qml
 usr/share/unity-qt/places/Home.qml
 usr/share/unity-qt/places/HomeButton.qml
 usr/share/unity-qt/places/SearchBar.qml
+usr/share/unity-qt/places/Scrollbar.qml
 usr/share/unity-qt/places/artwork
 usr/share/unity-qt/places/artwork/border_glow.png
 usr/share/unity-qt/places/artwork/checker.png
 usr/share/unity-qt/places/artwork/button_background.png
 usr/share/unity-qt/places/artwork/cross.png
 usr/share/unity-qt/places/artwork/separator.png
+usr/share/unity-qt/places/artwork/scrollbar_background.png
 usr/lib/qt4/imports/QtDee/libQtDee.so.1.0.0
 usr/lib/qt4/imports/QtDee/libQtDee.so.1
 usr/lib/qt4/imports/QtDee/libQtDee.so
