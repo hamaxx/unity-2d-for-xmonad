@@ -69,16 +69,7 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 void
 QLauncherContextualMenu::onKeepTriggered()
 {
-    if (m_keep->isCheckable())
-    {
-        // Keep In Launcher
-        m_application->setSticky(m_keep->isChecked());
-    }
-    else
-    {
-        // Remove From Launcher
-        m_application->setSticky(false);
-    }
+    m_application->setSticky(m_keep->isChecked());
 }
 
 void
