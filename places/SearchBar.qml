@@ -75,6 +75,8 @@ Item {
             }
 
             TextInput {
+                id: search_input
+
                 anchors.left: search_icon.right
                 anchors.leftMargin: 5
                 anchors.right: clear_button.left
@@ -111,6 +113,11 @@ Item {
 
                 source: "artwork/cross.png"
                 fillMode: Image.PreserveAspectFit
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: search_input.text = ""
+                }
             }
         }
 
