@@ -29,13 +29,12 @@ QLauncherContextualMenu::QLauncherContextualMenu(QWidget *parent):
     m_title = new QAction(this);
     m_title->setEnabled(false);
     addAction(m_title);
+
     addSeparator();
 
     m_keep = new QAction(this);
-    m_keep->setText("Keep In Launcher");
-    m_keep->setCheckable(true);
     addAction(m_keep);
-    QObject::connect(m_keep, SIGNAL(toggled(bool)), this, SLOT(onKeepToggled(bool)));
+    QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
 
     m_separator = addSeparator();
 
@@ -53,12 +52,12 @@ void
 QLauncherContextualMenu::show(int y, const QVariant& application)
 {
     m_application = (QLauncherApplication*) application.value<QObject*>();
+    bool running = m_application->running();
 
     m_title->setText(m_application->name());
-    m_keep->blockSignals(true);
+    m_keep->setText(running ? "Keep In Launcher" : "Remove From Launcher");
+    m_keep->setCheckable(running);
     m_keep->setChecked(m_application->sticky());
-    m_keep->blockSignals(false);
-    bool running = m_application->running();
     m_separator->setVisible(running);
     m_quit->setVisible(running);
 
@@ -68,9 +67,18 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 }
 
 void
-QLauncherContextualMenu::onKeepToggled(bool checked)
+QLauncherContextualMenu::onKeepTriggered()
 {
-    m_application->setSticky(checked);
+    if (m_keep->isCheckable())
+    {
+        // Keep In Launcher
+        m_application->setSticky(m_keep->isChecked());
+    }
+    else
+    {
+        // Remove From Launcher
+        m_application->setSticky(false);
+    }
 }
 
 void

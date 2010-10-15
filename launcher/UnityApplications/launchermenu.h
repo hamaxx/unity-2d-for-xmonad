@@ -45,7 +45,7 @@ private:
     QAction* m_quit;
 
 private slots:
-    void onKeepToggled(bool);
+    void onKeepTriggered();
     void onQuitTriggered();
 };
 
