@@ -1,7 +1,6 @@
 # Sources
 set(libuqpanel_SRCS
     applet.cpp
-    appletcontainer.cpp
     panel.cpp
     )
 

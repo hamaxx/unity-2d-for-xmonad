@@ -56,6 +56,4 @@ private:
     void fillMenuBar(QMenu*);
 };
 
-APPLET_MAIN(AppMenuApplet)
-
 #endif /* APPMENUAPPLET_H */

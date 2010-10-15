@@ -18,6 +18,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDesktopWidget>
+#include <QPainter>
 #include <QHBoxLayout>
 #include <QX11Info>
 
@@ -101,6 +102,7 @@ Panel::Panel(QWidget* parent)
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+    setAutoFillBackground(true);
 }
 
 Panel::~Panel()
@@ -125,6 +127,14 @@ void Panel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
+}
+
+void Panel::paintEvent(QPaintEvent* event)
+{
+    // Necessary because Oxygen thinks it knows better what to paint in the background
+    QPainter painter(this);
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.fillRect(rect(), palette().brush(QPalette::Background));
 }
 
 void Panel::addWidget(QWidget* widget)

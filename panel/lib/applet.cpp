@@ -12,9 +12,11 @@
 #include "applet.h"
 
 // Local
+#include <panel.h>
 
 // Qt
 #include <QApplication>
+#include <QPainter>
 
 // System
 #include <iostream>
@@ -27,36 +29,15 @@ struct AppletPrivate
 };
 
 Applet::Applet()
-: QX11EmbedWidget()
+: QWidget()
 , d(new AppletPrivate)
 {
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 }
 
 Applet::~Applet()
 {
     delete d;
-}
-
-int appletMain(int argc, char** argv, AppletCreatorFunction creator)
-{
-    QApplication app(argc, argv);
-    Applet* applet = creator();
-    if (argc == 1) {
-        std::cerr << "Running applet in standalone mode" << std::endl;
-    } else if (argc == 2) {
-        bool ok;
-        WId wid = QString(argv[1]).toInt(&ok);
-        if (!ok) {
-            std::cerr << "Window id " << argv[1] << " is not a number" << std::endl;
-            return -1;
-        }
-        applet->embedInto(wid);
-    } else {
-        std::cerr << "Usage: " << argv[0] << " [container-window-id]" << std::endl;
-        return -2;
-    }
-    applet->show();
-    return app.exec();
 }
 
 } // namespace

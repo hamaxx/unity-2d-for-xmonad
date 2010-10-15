@@ -45,6 +45,4 @@ void HomeButtonApplet::slotButtonClicked()
     iface.asyncCall("Notify", "app", QVariant(uint(0)), "", "Home Button", "Clicked the home button", QStringList(), QVariantMap(), -1);
 }
 
-APPLET_MAIN(HomeButtonApplet)
-
 #include "homebuttonapplet.moc"

@@ -33,6 +33,9 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->m_label = new QLabel;
+    QFont font = d->m_label->font();
+    font.setBold(true);
+    d->m_label->setFont(font);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -55,11 +58,8 @@ void AppNameApplet::updateLabel()
     } else {
         d->m_label->setText(QString());
     }
-    adjustSize();
 }
 
 } // namespace
-
-APPLET_MAIN(UnityQt::AppNameApplet)
 
 #include "appnameapplet.moc"

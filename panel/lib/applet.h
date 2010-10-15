@@ -14,13 +14,13 @@
 // Local
 
 // Qt
-#include <QX11EmbedWidget>
+#include <QWidget>
 
 namespace UnityQt
 {
 
 struct AppletPrivate;
-class Applet : public QX11EmbedWidget
+class Applet : public QWidget
 {
 Q_OBJECT
 public:
@@ -32,20 +32,6 @@ private:
     AppletPrivate* const d;
 };
 
-typedef Applet* (*AppletCreatorFunction)();
-template <class T>
-Applet* appletCreator()
-{
-    return new T;
-}
-int appletMain(int argc, char** argv, AppletCreatorFunction);
-
 } // namespace
-
-#define APPLET_MAIN(APPLET_CLASS) \
-int main(int argc, char** argv) \
-{ \
-    return UnityQt::appletMain(argc, argv, UnityQt::appletCreator<APPLET_CLASS>); \
-}
 
 #endif /* APPLET_H */
