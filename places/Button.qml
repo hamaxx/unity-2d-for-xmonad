@@ -79,27 +79,4 @@ Item {
             smooth: false
         }
     }
-
-    /* UNUSED CODE: use of a BorderImage instead of a Rectangle
-    BorderImage {
-        anchors.fill: parent
-        opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
-        source: "artwork/button_border.png"
-        smooth: false
-        border.left: 4
-        border.right: 4
-        border.top: 4
-        border.bottom: 4
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Stretch
-
-        Behavior on opacity {NumberAnimation {duration: 100}}
-
-        Image {
-            anchors.fill: parent
-            anchors.margins: 1
-            source: "artwork/button_background.png"
-            fillMode: Image.Tile
-        }
-    }*/
 }
