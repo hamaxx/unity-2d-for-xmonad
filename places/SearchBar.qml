@@ -75,8 +75,6 @@ Item {
             }
 
             TextInput {
-                id: text
-
                 anchors.left: search_icon.right
                 anchors.leftMargin: 5
                 anchors.right: clear_button.left
@@ -85,6 +83,13 @@ Item {
                 text: "Search"
                 font.italic: true
                 color: "#ffffff"
+
+                Keys.onPressed: {
+                    if (event.key == Qt.Key_Return) {
+                        current_page.search(text)
+                        event.accepted = true;
+                    }
+                }
             }
 
             Image {

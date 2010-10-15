@@ -16,6 +16,10 @@ Item {
         place_entry.SetActiveSection(section)
     }
 
+    function search(query) {
+        place_entry.SetSearch(query, [])
+    }
+
     UnityPlaceEntry {
         id: place_entry
 
