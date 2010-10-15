@@ -30,7 +30,6 @@ Item {
             launching: application.launching
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
-                    tooltip.hide()
                     if (active)
                         application.expose()
                     else if (running && application.has_visible_window)
@@ -39,18 +38,9 @@ Item {
                         application.launch()
                 }
                 else if (mouse.button == Qt.RightButton) {
-                    tooltip.show_menu()
-                }
-                else if (mouse.button == Qt.MiddleButton) {
-                    /* Temporary means of testing (un)favoriting applications,
-                       until the contextual menus are fully implemented. */
-                    application.sticky = !application.sticky
+                    menu.show(y + height / 2, application)
                 }
             }
-
-            /* tooltip is exposed by UnityApplications */
-            onEntered: tooltip.show(y + height / 2, application)
-            onExited: tooltip.hide()
         }
     }
 }

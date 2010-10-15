@@ -34,7 +34,7 @@ Item {
     MouseArea {
         id: mouse
 
-        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         hoverEnabled: true
         anchors.fill: parent
         onClicked: parent.clicked(mouse)
