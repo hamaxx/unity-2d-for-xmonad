@@ -68,18 +68,38 @@ Item {
         color: parent.state == "pressed" ? "#ffffffff" : "#00000000"
         border.color: "#cccccc"
         border.width: 1
-        radius: 5
+        radius: 3
 
         Behavior on opacity {NumberAnimation {duration: 100}}
 
         Image {
-            opacity: 0.3
             fillMode: Image.Tile
             anchors.fill: parent
-            anchors.margins: 1
-            // FIXME: wrong background
-            source: "/usr/share/unity/dash_background.png"
+            source: "artwork/button_background.png"
             smooth: false
         }
     }
+
+    /* UNUSED CODE: use of a BorderImage instead of a Rectangle
+    BorderImage {
+        anchors.fill: parent
+        opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
+        source: "artwork/button_border.png"
+        smooth: false
+        border.left: 4
+        border.right: 4
+        border.top: 4
+        border.bottom: 4
+        horizontalTileMode: BorderImage.Stretch
+        verticalTileMode: BorderImage.Stretch
+
+        Behavior on opacity {NumberAnimation {duration: 100}}
+
+        Image {
+            anchors.fill: parent
+            anchors.margins: 1
+            source: "artwork/button_background.png"
+            fillMode: Image.Tile
+        }
+    }*/
 }
