@@ -28,8 +28,12 @@ HomeButtonApplet::HomeButtonApplet()
 {
     m_button->setAutoRaise(true);
     QIcon::setThemeName("unity-icon-theme");
+    /* FIXME: Even though the size is set properly the wrong png is loaded.
+              unity-icon-theme has 2 visually different distributor-logo icons,
+              one 22x22 and another 24x24 (the one we want).
+    */
+    m_button->setIconSize(QSize(24, 24));
     m_button->setIcon(QIcon::fromTheme("distributor-logo"));
-    m_button->setIconSize(QSize(20, 22));
     m_button->setCheckable(true);
     connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
 
