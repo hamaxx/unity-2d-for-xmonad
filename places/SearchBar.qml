@@ -79,13 +79,15 @@ Item {
                 id: search_input
 
                 anchors.left: search_icon.right
-                anchors.leftMargin: 6
+                anchors.leftMargin: 2
                 anchors.right: clear_button.left
                 anchors.rightMargin: 5
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 3
 
                 color: "#ffffff"
+                selectByMouse: true
+                cursorDelegate: cursor
 
                 onTextChanged: live_search_timeout.restart()
 
@@ -102,10 +104,40 @@ Item {
                     }
                 }
 
+                Component {
+                    id: cursor
+
+                    Rectangle {
+                        color: "white"
+                        width: 2
+                        height: 16
+
+                        /* WARNING: that animation uses resources */
+                        /* The following animation would behave exactly like
+                           Unity if only 'search_input' could be referenced from
+                           within the cursor Component.
+                        /*
+                        SequentialAnimation on opacity {
+                            id: cursor_pulse
+                            loops: 30
+                            running: false
+                            PropertyAnimation { duration: 1000; to: 0; easing.type: Easing.InOutQuad }
+                            PropertyAnimation { duration: 1000; to: 1; easing.type: Easing.InOutQuad }
+                        }
+                        Connections {
+                            target: search_input
+                            onTextChanged: cursor_pulse.running = true
+                            onActiveFocusChanged: cursor_pulse.running = search_input.activeFocus
+                        }*/
+                    }
+                }
+
                 Text {
                     id: search_instructions
 
                     anchors.fill: parent
+                    anchors.leftMargin: 4
+
                     font.italic: true
                     color: "#eeeeee"
                     text: {
