@@ -36,6 +36,7 @@ LauncherDeclarativeView::setActive(bool active)
 
     if(active)
     {
+        grabKeyboard();
         setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, false);
         raise();
         activateWindow();
@@ -43,6 +44,7 @@ LauncherDeclarativeView::setActive(bool active)
     }
     else
     {
+        releaseKeyboard();
         setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
         lower();
         clearFocus();
