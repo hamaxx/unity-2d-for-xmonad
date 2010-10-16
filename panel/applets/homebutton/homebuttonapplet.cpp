@@ -50,6 +50,9 @@ void HomeButtonApplet::slotButtonClicked()
 
     /* Inverse the value of boolean local.DashDeclarativeView.active */
     iface.call(QDBus::Block, "Set", "local.DashDeclarativeView", "active", qVariantFromValue(QDBusVariant(!dashActive)));
+
+    /* Re-synchronise the dash's state with the button's checked state, just in case. */
+    m_button->setChecked(!dashActive);
 }
 
 #include "homebuttonapplet.moc"
