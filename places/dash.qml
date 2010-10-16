@@ -30,6 +30,10 @@ Item {
     Item {
         anchors.fill: parent
         visible: dashView.active
+        Connections {
+            target: dashView
+            onActiveChanged: if(dashView.active) activatePage(home)
+        }
 
         Rectangle {
             anchors.fill: parent
