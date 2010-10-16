@@ -29,7 +29,7 @@ Item {
     */
     Item {
         anchors.fill: parent
-        visible: dashActive
+        visible: dashView.active
 
         Rectangle {
             anchors.fill: parent

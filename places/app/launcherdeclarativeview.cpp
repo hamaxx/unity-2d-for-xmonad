@@ -5,7 +5,7 @@
 #include <QDeclarativeContext>
 
 LauncherDeclarativeView::LauncherDeclarativeView() :
-    QDeclarativeView()
+    QDeclarativeView(), m_active(false)
 {
 }
 
@@ -32,7 +32,7 @@ LauncherDeclarativeView::closeEvent(QCloseEvent* event)
 void
 LauncherDeclarativeView::setActive(bool active)
 {
-    rootContext()->setContextProperty("dashActive", QVariant(active));
+    m_active = active;
 
     if(active)
     {
@@ -55,5 +55,5 @@ LauncherDeclarativeView::setActive(bool active)
 bool
 LauncherDeclarativeView::active() const
 {
-    return rootContext()->contextProperty("dashActive").toBool();
+    return m_active;
 }

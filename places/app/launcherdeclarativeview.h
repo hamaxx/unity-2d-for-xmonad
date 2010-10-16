@@ -16,13 +16,16 @@ public:
     bool active() const;
 
     /* setters */
-    void setActive(bool active);
+    Q_SLOT void setActive(bool active);
 
 signals:
     void activeChanged(bool);
 
 public slots:
     void fitToAvailableSpace(int screen);
+
+private:
+    bool m_active;
 };
 
 #endif // LAUNCHERDECLARATIVEVIEW_H
