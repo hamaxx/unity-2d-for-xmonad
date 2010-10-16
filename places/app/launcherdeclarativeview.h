@@ -6,16 +6,23 @@
 class LauncherDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
+
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 public:
     explicit LauncherDeclarativeView();
     void closeEvent(QCloseEvent* event);
 
+    /* getters */
+    bool active() const;
+
+    /* setters */
+    void setActive(bool active);
+
 signals:
+    void activeChanged(bool);
 
 public slots:
     void fitToAvailableSpace(int screen);
-    Q_SCRIPTABLE void activate();
-    Q_SCRIPTABLE void deactivate();
 };
 
 #endif // LAUNCHERDECLARATIVEVIEW_H

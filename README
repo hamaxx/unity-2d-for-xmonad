@@ -22,8 +22,7 @@ desktop, the following GConf key has to be set to false:
 gconftool-2 -s /apps/nautilus/preferences/show_desktop -t bool false
 
 
-The dash exposes 2 D-Bus methods for activation and deactivation:
+The dash exposes a D-Bus property for activation and deactivation:
 
-com.canonical.UnityQt /dash local.LauncherDeclarativeView.activate
-com.canonical.UnityQt /dash local.LauncherDeclarativeView.deactivate
+com.canonical.UnityQt /dash local.LauncherDeclarativeView.active true|false
 

@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
     /* Register a D-Bus service for activation and deactivation of the dash */
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerService("com.canonical.UnityQt");
-    bus.registerObject("/dash", &view, QDBusConnection::ExportScriptableSlots);
+    bus.registerObject("/dash", &view, QDBusConnection::ExportAllProperties);
 
-    view.activate();
+    view.setActive(false);
     view.show();
 
     return application.exec();

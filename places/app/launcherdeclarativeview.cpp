@@ -30,21 +30,30 @@ LauncherDeclarativeView::closeEvent(QCloseEvent* event)
 }
 
 void
-LauncherDeclarativeView::activate()
+LauncherDeclarativeView::setActive(bool active)
 {
-    rootContext()->setContextProperty("dashActive", QVariant(true));
-    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, false);
-    raise();
-    activateWindow();
-    setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+    rootContext()->setContextProperty("dashActive", QVariant(active));
+
+    if(active)
+    {
+        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, false);
+        raise();
+        activateWindow();
+        setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+    }
+    else
+    {
+        setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
+        lower();
+        clearFocus();
+        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, true);
+    }
+
+    emit activeChanged(active);
 }
 
-void
-LauncherDeclarativeView::deactivate()
+bool
+LauncherDeclarativeView::active() const
 {
-    rootContext()->setContextProperty("dashActive", QVariant(false));
-    setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
-    lower();
-    clearFocus();
-    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, true);
+    return rootContext()->contextProperty("dashActive").toBool();
 }
