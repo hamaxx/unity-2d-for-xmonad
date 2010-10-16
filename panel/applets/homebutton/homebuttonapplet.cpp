@@ -23,15 +23,14 @@ static const char* DBUS_SERVICE = "com.canonical.UnityQt";
 static const char* DBUS_PATH = "/dash";
 static const char* DBUS_IFACE = "org.freedesktop.DBus.Properties";
 
-// FIXME: Hardcoded and part of unity package, not unity-asset-pool
-static const char* ICON_NAME = "/usr/share/unity/bfb.png";
-
 HomeButtonApplet::HomeButtonApplet()
 : m_button(new QToolButton)
 {
     m_button->setAutoRaise(true);
-    m_button->setIcon(QIcon(ICON_NAME));
+    QIcon::setThemeName("unity-icon-theme");
+    m_button->setIcon(QIcon::fromTheme("distributor-logo"));
     m_button->setIconSize(QSize(20, 22));
+    m_button->setCheckable(true);
     connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
 
     QHBoxLayout* layout = new QHBoxLayout(this);
