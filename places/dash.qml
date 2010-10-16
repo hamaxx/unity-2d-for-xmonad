@@ -46,10 +46,10 @@ Item {
 
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.leftMargin: 2
+            anchors.leftMargin: 3
             anchors.right: parent.right
-            anchors.rightMargin: 3
-            height: 45
+            anchors.rightMargin: 4
+            height: 47
         }
 
         Item {

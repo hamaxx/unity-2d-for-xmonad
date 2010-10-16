@@ -28,9 +28,9 @@ Item {
     Item {
         id: search_entry
 
-        width: 279
+        width: 281
         anchors.left: parent.left
-        anchors.leftMargin: 85
+        anchors.leftMargin: 82
         anchors.top: parent.top
         anchors.topMargin: 7
         anchors.bottom: parent.bottom
@@ -54,21 +54,22 @@ Item {
 
         Item {
             anchors.fill: parent
-            anchors.topMargin: 7
+            anchors.topMargin: 6
             anchors.bottomMargin: 6
-            anchors.leftMargin: 8
-            anchors.rightMargin: 11
-            opacity: 0.9
+            anchors.leftMargin: 6
+            anchors.rightMargin: 6
 
             Image {
                 id: search_icon
 
                 anchors.left: parent.left
+                anchors.leftMargin: 3
                 anchors.top: parent.top
-                anchors.topMargin: 2
+                anchors.topMargin: 1
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 3
-                width: 20
+                anchors.bottomMargin: 1
+                smooth: true
+                width: 18
 
                 source: "/usr/share/unity/search_icon.png"
                 fillMode: Image.PreserveAspectCrop
@@ -78,11 +79,12 @@ Item {
                 id: search_input
 
                 anchors.left: search_icon.right
-                anchors.leftMargin: 5
+                anchors.leftMargin: 6
                 anchors.right: clear_button.left
                 anchors.rightMargin: 5
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 3
 
-                font.italic: true
                 color: "#ffffff"
 
                 onTextChanged: live_search_timeout.restart()
@@ -105,7 +107,7 @@ Item {
 
                     anchors.fill: parent
                     font.italic: true
-                    color: "#ffffff"
+                    color: "#eeeeee"
                     text: {
                         if(search_input.text)
                             return ""
@@ -121,9 +123,8 @@ Item {
                 id: clear_button
 
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 1
+                anchors.rightMargin: 4
+                anchors.verticalCenter: parent.verticalCenter
                 width: 10
 
                 source: "artwork/cross.png"
@@ -147,10 +148,10 @@ Item {
         orientation: ListView.Horizontal
 
         anchors.left: search_entry.right
-        anchors.leftMargin: 13
+        anchors.leftMargin: 14
         anchors.right: parent.right
         anchors.rightMargin: 15
-        spacing: 10
+        spacing: 9
 
         height: parent.height
         currentIndex: current_page.hasSections ? current_page.activeSection : 0
