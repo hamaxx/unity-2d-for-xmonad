@@ -20,6 +20,11 @@
 #include <QApplication>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
+#include <QDesktopWidget>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+
+#include "launcherdeclarativeview.h"
 
 #include "config.h"
 
@@ -27,9 +32,7 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    QDeclarativeView view;
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.setFocus();
+    LauncherDeclarativeView view;
 
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
@@ -54,7 +57,21 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(QString("../launcher"));
     }
 
+    /* Load the QML UI, focus and show the window */
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setSource(QUrl("./dash.qml"));
+
+    /* Always match the size of the desktop */
+    int current_screen = QApplication::desktop()->screenNumber(&view);
+    view.fitToAvailableSpace(current_screen);
+    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
+
+    /* Register a D-Bus service for activation and deactivation of the dash */
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerService("com.canonical.UnityQt");
+    bus.registerObject("/dash", &view, QDBusConnection::ExportScriptableSlots);
+
+    view.activate();
     view.show();
 
     return application.exec();

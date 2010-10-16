@@ -23,62 +23,67 @@ Item {
               Use QGraphicsView::setBackgroundBrush with
               QGraphicsView::setCacheMode instead.
     */
-    Rectangle {
-        anchors.fill: parent
-        opacity: 0.37
-        color: "black"
-    }
-
-    SearchBar {
-        id: search_bar
-
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.leftMargin: 2
-        anchors.right: parent.right
-        anchors.rightMargin: 3
-        height: 45
-    }
-
     Item {
-        anchors.top: search_bar.bottom
-        anchors.topMargin: 12
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 12
-        anchors.left: parent.left
-        anchors.leftMargin: 7
-        anchors.right: parent.right
-        anchors.rightMargin: 8
+        anchors.fill: parent
+        visible: dashActive
 
-        Home {
-            id: home
+        Rectangle {
             anchors.fill: parent
+            opacity: 0.37
+            color: "black"
         }
 
-        Place {
-            id: applications_place
+        SearchBar {
+            id: search_bar
 
-            visible: false
-            anchors.fill: parent
-
-            /* FIXME: these 2 properties need to be extracted from the place configuration file
-                      located in /usr/share/unity/places/applications.place
-            */
-            name: "Applications"
-            dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: 2
+            anchors.right: parent.right
+            anchors.rightMargin: 3
+            height: 45
         }
 
-        Place {
-            id: files_place
+        Item {
+            anchors.top: search_bar.bottom
+            anchors.topMargin: 12
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 12
+            anchors.left: parent.left
+            anchors.leftMargin: 7
+            anchors.right: parent.right
+            anchors.rightMargin: 8
 
-            visible: false
-            anchors.fill: parent
+            Home {
+                id: home
+                anchors.fill: parent
+            }
 
-            /* FIXME: these 2 properties need to be extracted from the place configuration file
-                      located in /usr/share/unity/places/files.place
-            */
-            name: "Files"
-            dBusObjectPath: "/com/canonical/unity/filesplace/files"
+            Place {
+                id: applications_place
+
+                visible: false
+                anchors.fill: parent
+
+                /* FIXME: these 2 properties need to be extracted from the place configuration file
+                          located in /usr/share/unity/places/applications.place
+                */
+                name: "Applications"
+                dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+            }
+
+            Place {
+                id: files_place
+
+                visible: false
+                anchors.fill: parent
+
+                /* FIXME: these 2 properties need to be extracted from the place configuration file
+                          located in /usr/share/unity/places/files.place
+                */
+                name: "Files"
+                dBusObjectPath: "/com/canonical/unity/filesplace/files"
+            }
         }
     }
 }
