@@ -37,6 +37,16 @@ HomeButtonApplet::HomeButtonApplet()
     m_button->setCheckable(true);
     connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
 
+    m_button->setStyleSheet(
+            "QToolButton { border: none; margin: 0; padding: 0; width: 55 }"
+            "QToolButton:!checked {"
+            "     background-image: url(/usr/share/unity/themes/bfb_bg_normal.png);"
+            "}"
+            "QToolButton:checked, QToolButton:pressed {"
+            "     border-image: url(/usr/share/unity/themes/bfb_bg_active.png);"
+            "}"
+    );
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_button);
