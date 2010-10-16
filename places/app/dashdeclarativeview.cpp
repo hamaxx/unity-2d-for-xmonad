@@ -1,16 +1,16 @@
-#include "launcherdeclarativeview.h"
+#include "dashdeclarativeview.h"
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDeclarativeContext>
 
-LauncherDeclarativeView::LauncherDeclarativeView() :
+DashDeclarativeView::DashDeclarativeView() :
     QDeclarativeView(), m_active(false)
 {
 }
 
 void
-LauncherDeclarativeView::fitToAvailableSpace(int screen)
+DashDeclarativeView::fitToAvailableSpace(int screen)
 {
     QDesktopWidget *desktop = QApplication::desktop();    
     int current_screen = desktop->screenNumber(this);
@@ -24,13 +24,13 @@ LauncherDeclarativeView::fitToAvailableSpace(int screen)
 }
 
 void
-LauncherDeclarativeView::closeEvent(QCloseEvent* event)
+DashDeclarativeView::closeEvent(QCloseEvent* event)
 {
     event->ignore();
 }
 
 void
-LauncherDeclarativeView::setActive(bool active)
+DashDeclarativeView::setActive(bool active)
 {
     m_active = active;
 
@@ -55,7 +55,7 @@ LauncherDeclarativeView::setActive(bool active)
 }
 
 bool
-LauncherDeclarativeView::active() const
+DashDeclarativeView::active() const
 {
     return m_active;
 }

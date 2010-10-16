@@ -25,7 +25,7 @@
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
 
-#include "launcherdeclarativeview.h"
+#include "dashdeclarativeview.h"
 
 #include "config.h"
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    LauncherDeclarativeView view;
+    DashDeclarativeView view;
 
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);

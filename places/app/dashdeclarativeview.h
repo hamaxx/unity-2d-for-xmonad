@@ -1,15 +1,15 @@
-#ifndef LAUNCHERDECLARATIVEVIEW_H
-#define LAUNCHERDECLARATIVEVIEW_H
+#ifndef DashDeclarativeView_H
+#define DashDeclarativeView_H
 
 #include <QDeclarativeView>
 
-class LauncherDeclarativeView : public QDeclarativeView
+class DashDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
 
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 public:
-    explicit LauncherDeclarativeView();
+    explicit DashDeclarativeView();
     void closeEvent(QCloseEvent* event);
 
     /* getters */
@@ -28,4 +28,4 @@ private:
     bool m_active;
 };
 
-#endif // LAUNCHERDECLARATIVEVIEW_H
+#endif // DashDeclarativeView_H
