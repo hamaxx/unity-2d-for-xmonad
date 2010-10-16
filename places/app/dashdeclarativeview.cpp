@@ -34,6 +34,13 @@ DashDeclarativeView::closeEvent(QCloseEvent* event)
 }
 
 void
+DashDeclarativeView::focusOutEvent(QFocusEvent* event)
+{
+    setActive(false);
+    event->ignore();
+}
+
+void
 DashDeclarativeView::setActive(bool active)
 {
     m_active = active;
