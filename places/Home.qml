@@ -20,7 +20,11 @@ Page {
                 key: "/desktop/gnome/applications/browser/exec"
             }
 
-            onClicked: console.log("FIXME: should launch", desktop_file_path.value)
+            onClicked: {
+                dashView.active = false
+                console.log("FIXME: should launch", desktop_file_path.value)
+                Qt.openUrlExternally("http://")
+            }
         }
 
         HomeButton {
