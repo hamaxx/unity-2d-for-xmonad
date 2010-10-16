@@ -19,9 +19,9 @@
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
-static const char* DBUS_SERVICE = "org.freedesktop.Notifications";
-static const char* DBUS_PATH = "/org/freedesktop/Notifications";
-static const char* DBUS_IFACE = "org.freedesktop.Notifications";
+static const char* DBUS_SERVICE = "com.canonical.UnityQt";
+static const char* DBUS_PATH = "/dash";
+static const char* DBUS_IFACE = "org.freedesktop.DBus.Properties";
 
 // FIXME: Hardcoded and part of unity package, not unity-asset-pool
 static const char* ICON_NAME = "/usr/share/unity/bfb.png";
@@ -42,7 +42,15 @@ HomeButtonApplet::HomeButtonApplet()
 void HomeButtonApplet::slotButtonClicked()
 {
     QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
-    iface.asyncCall("Notify", "app", QVariant(uint(0)), "", "Home Button", "Clicked the home button", QStringList(), QVariantMap(), -1);
+
+    /* Retrieve the value of boolean local.DashDeclarativeView.active */
+    QDBusMessage reply = iface.call(QDBus::Block, "Get", "local.DashDeclarativeView", "active");
+    QVariant rawResult = reply.arguments()[0];
+    QDBusVariant dbusVariant = qvariant_cast<QDBusVariant>(rawResult);
+    bool dashActive = dbusVariant.variant().toBool();
+
+    /* Inverse the value of boolean local.DashDeclarativeView.active */
+    iface.call(QDBus::Block, "Set", "local.DashDeclarativeView", "active", qVariantFromValue(QDBusVariant(!dashActive)));
 }
 
 #include "homebuttonapplet.moc"
