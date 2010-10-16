@@ -6,11 +6,15 @@ Item {
 
     property variant current_page: home
 
-    function activatePlace(place, section) {
+    function activatePage(page) {
         current_page.visible = false
-        place.visible = true
+        current_page = page
+        current_page.visible = true
+    }
+
+    function activatePlace(place, section) {
         place.setActiveSection(section)
-        current_page = place
+        activatePage(place)
     }
 
     GnomeBackground {
