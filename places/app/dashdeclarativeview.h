@@ -10,7 +10,6 @@ class DashDeclarativeView : public QDeclarativeView
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 public:
     explicit DashDeclarativeView();
-    void closeEvent(QCloseEvent* event);
 
     /* getters */
     bool active() const;
@@ -27,6 +26,7 @@ public slots:
 private:
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
+    void closeEvent(QCloseEvent* event);
 
     bool m_active;
 };
