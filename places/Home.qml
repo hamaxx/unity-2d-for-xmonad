@@ -68,7 +68,10 @@ Page {
                 desktop_file: "/usr/share/applications/ubuntu-software-center.desktop"
             }
 
-            onClicked: software_center.launch()
+            onClicked: {
+                dashView.active = false
+                software_center.launch()
+            }
         }
     }
 }
