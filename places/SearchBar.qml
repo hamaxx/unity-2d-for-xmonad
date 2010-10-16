@@ -142,6 +142,7 @@ Item {
     ListView {
         id: sections
 
+        visible: current_page.hasSections
         interactive: false
         orientation: ListView.Horizontal
 
@@ -152,7 +153,7 @@ Item {
         spacing: 10
 
         height: parent.height
-        currentIndex: current_page.activeSection
+        currentIndex: current_page.hasSections ? current_page.activeSection : 0
 
         delegate: Section {
             anchors.verticalCenter: parent.verticalCenter
@@ -165,8 +166,8 @@ Item {
         }
 
         model: DeeListModel {
-            service: current_page.dBusService
-            objectPath: current_page.dBusDeePrefix + "SectionsModel"
+            service: current_page.hasSections ? current_page.dBusService : ""
+            objectPath: current_page.hasSections ? current_page.dBusDeePrefix + "SectionsModel" : ""
         }
     }
 }
