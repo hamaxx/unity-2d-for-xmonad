@@ -23,6 +23,7 @@
 #include <QDesktopWidget>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QDeclarativeContext>
 
 #include "launcherdeclarativeview.h"
 
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.rootContext()->setContextProperty("dashView", &view);
     view.setSource(QUrl("./dash.qml"));
 
     /* Always match the size of the desktop */
