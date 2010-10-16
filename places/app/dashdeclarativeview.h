@@ -25,6 +25,8 @@ public slots:
     void fitToAvailableSpace(int screen);
 
 private:
+    void forceActivateWindow();
+
     bool m_active;
 };
 
