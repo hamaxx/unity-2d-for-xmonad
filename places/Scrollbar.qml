@@ -8,12 +8,8 @@ Item {
         id: background
 
         anchors.fill: parent
-        source: "artwork/scrollbar_background.png"
+        source: "artwork/scrollbar_background.sci"
         smooth: false
-        border.top: 6
-        border.bottom: 6
-        border.left: 0
-        border.right: 0
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Repeat
     }
