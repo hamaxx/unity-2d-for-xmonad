@@ -66,6 +66,7 @@ Item {
             hoverEnabled: true
             anchors.fill: parent
             /* FIXME: missing dragging of the handle */
+            onPressed: console.log("FIXME: scrollbar dragging is not implemented yet")
         }
     }
 }
