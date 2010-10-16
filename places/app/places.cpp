@@ -72,6 +72,16 @@ int main(int argc, char *argv[])
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerService("com.canonical.UnityQt");
     bus.registerObject("/dash", &view, QDBusConnection::ExportAllProperties);
+    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
+       property change notification that Qt 4.7 does not implement.
+
+        org.freedesktop.DBus.Properties.PropertiesChanged (
+            STRING interface_name,
+            DICT<STRING,VARIANT> changed_properties,
+            ARRAY<STRING> invalidated_properties);
+
+       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
+    */
 
     view.setActive(false);
     view.show();
