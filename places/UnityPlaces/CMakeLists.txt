@@ -8,6 +8,7 @@ find_package(Qt4 REQUIRED)
 set(UnityPlaces_SRCS
     plugin.cpp
     qdbusconnectionqml.cpp
+    qsortfilterproxymodelqml.cpp
     )
 
 set(UnityPlaces_MOC_HDRS
@@ -16,6 +17,7 @@ set(UnityPlaces_MOC_HDRS
     bamf_view.h
     plugin.h
     qdbusconnectionqml.h
+    qsortfilterproxymodelqml.h
     )
 
 qt4_wrap_cpp(UnityPlaces_MOC_SRCS ${UnityPlaces_MOC_HDRS})

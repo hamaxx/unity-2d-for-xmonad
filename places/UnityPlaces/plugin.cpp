@@ -20,6 +20,7 @@
 #include "unity_place_entry.h"
 #include "bamf_matcher.h"
 #include "bamf_view.h"
+#include "qsortfilterproxymodelqml.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -30,6 +31,7 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
     qmlRegisterType<UnityPlaceEntry>(uri, 0, 1, "UnityPlaceEntry");
     qmlRegisterType<BamfMatcher>(uri, 0, 1, "BamfMatcher");
     qmlRegisterType<BamfView>(uri, 0, 1, "BamfView");
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "QSortFilterProxyModelQML");
 }
 
 void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
