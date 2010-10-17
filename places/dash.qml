@@ -77,7 +77,8 @@ Item {
                           located in /usr/share/unity/places/applications.place
                 */
                 name: "Applications"
-                dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+                dBusObjectPath: "/com/canonical/unity/applicationsplace"
+                dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
             }
 
             Place {
@@ -90,7 +91,8 @@ Item {
                           located in /usr/share/unity/places/files.place
                 */
                 name: "Files"
-                dBusObjectPath: "/com/canonical/unity/filesplace/files"
+                dBusObjectPath: "/com/canonical/unity/filesplace"
+                dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
             }
         }
     }

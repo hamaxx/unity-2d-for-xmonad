@@ -9,6 +9,7 @@ Item {
     property alias label: header.label
     property bool folded: true
     property variant placeResultsModel
+    property variant placeDBusInterface
 
     /* Using group.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
@@ -55,6 +56,16 @@ Item {
             height: GridView.view.delegate_height
             label: column_4
             icon: "image://icons/"+column_1
+
+            onClicked: {
+                var uri = column_0
+                if(!placeDBusInterface.Activate(uri))
+                {
+                    console.log("FIXME: Possibly no handler for", uri)
+                    /* Try our luck */
+                    Qt.openUrlExternally(uri)
+                }
+            }
         }
 
         /* placeResultsModel contains data for all the Groups of a given Place.

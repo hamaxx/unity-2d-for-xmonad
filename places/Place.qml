@@ -8,6 +8,7 @@ Page {
 
     property string name
     property string dBusObjectPath
+    property string dBusObjectPathPlaceEntry
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
@@ -24,7 +25,10 @@ Page {
                                         service: dBusService
                                         objectPath: dBusDeePrefix +"ResultsModel"
                                    }
-
+    property variant dBusInterface: UnityPlace {
+                                         service: dBusService
+                                         objectPath: dBusObjectPath
+                                    }
 
     function setActiveSection(section) {
         activeSection = section
@@ -39,7 +43,7 @@ Page {
         id: place_entry
 
         service: dBusService
-        objectPath: dBusObjectPath
+        objectPath: dBusObjectPathPlaceEntry
     }
 
     ListView {
@@ -62,6 +66,7 @@ Page {
             label: column_1
             icon: column_2
             placeResultsModel: resultsModel
+            placeDBusInterface: dBusInterface
         }
 
         model: DeeListModel {
