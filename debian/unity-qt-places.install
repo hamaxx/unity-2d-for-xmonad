@@ -14,6 +14,8 @@ usr/share/unity-qt/places/SearchEntry.qml
 usr/share/unity-qt/places/Scrollbar.qml
 usr/share/unity-qt/places/Page.qml
 usr/share/unity-qt/places/BorderGlow.qml
+usr/share/unity-qt/places/Group.qml
+usr/share/unity-qt/places/GroupHeader.qml
 usr/share/unity-qt/places/artwork
 usr/share/unity-qt/places/artwork/border_glow.png
 usr/share/unity-qt/places/artwork/border_glow.sci
@@ -23,6 +25,7 @@ usr/share/unity-qt/places/artwork/cross.png
 usr/share/unity-qt/places/artwork/separator.png
 usr/share/unity-qt/places/artwork/scrollbar_background.png
 usr/share/unity-qt/places/artwork/scrollbar_background.sci
+usr/share/unity-qt/places/artwork/arrow.png
 usr/lib/qt4/imports/QtDee/libQtDee.so.1.0.0
 usr/lib/qt4/imports/QtDee/libQtDee.so.1
 usr/lib/qt4/imports/QtDee/libQtDee.so
