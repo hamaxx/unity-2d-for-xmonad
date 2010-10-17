@@ -42,7 +42,7 @@ Item {
         property int horizontal_spacing: 20
         property int vertical_spacing: 25
         property int cellsPerLine: width/cellWidth
-        property int totalHeight: cellHeight*count/cellsPerLine
+        property int totalHeight: count <= cellsPerLine ? cellHeight : cellHeight*count/cellsPerLine
 
 
         cellWidth: delegate_width+horizontal_spacing
