@@ -31,6 +31,9 @@ Page {
                                     }
 
     function setActiveSection(section) {
+        /* FIXME: SetActive(false) should happen when exiting the place */
+        place_entry.SetActive(false)
+        place_entry.SetActive(true)
         activeSection = section
         place_entry.SetActiveSection(section)
     }
