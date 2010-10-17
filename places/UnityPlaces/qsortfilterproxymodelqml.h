@@ -26,7 +26,6 @@ signals:
     void limitChanged(int limit);
 
 private slots:
-    void reset();
     void updateRoleNames();
 
 private:
