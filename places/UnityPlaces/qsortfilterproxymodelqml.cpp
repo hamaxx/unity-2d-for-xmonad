@@ -2,7 +2,7 @@
 #include <QDebug>
 
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
-    QSortFilterProxyModel(parent)
+    QSortFilterProxyModel(parent), m_limit(-1)
 {
     /* For some unknown reason the VisualDataModel wrapping our model does not tell
        the view to refresh itself when rows are inserted, removed or moved.
@@ -71,4 +71,31 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
     updateRoleNames();
     QObject::connect(model, SIGNAL(modelReset()),
                      this, SLOT(updateRoleNames()));
+}
+
+int
+QSortFilterProxyModelQML::limit() const
+{
+    return m_limit;
+}
+
+void
+QSortFilterProxyModelQML::setLimit(int limit)
+{
+    if(limit != m_limit)
+    {
+        m_limit = limit;
+        emit limitChanged(limit);
+        reset();
+    }
+}
+
+int
+QSortFilterProxyModelQML::rowCount(const QModelIndex & parent) const
+{
+    int actualRowCount = QSortFilterProxyModel::rowCount(parent);
+    if(m_limit == -1)
+        return actualRowCount;
+    else
+        return qMin(m_limit, actualRowCount);
 }
