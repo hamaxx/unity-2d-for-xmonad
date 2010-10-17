@@ -12,6 +12,7 @@ set(UnityPlaces_SRCS
     )
 
 set(UnityPlaces_MOC_HDRS
+    unity_place.h
     unity_place_entry.h
     plugin.h
     qdbusconnectionqml.h

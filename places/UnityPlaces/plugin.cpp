@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "unity_place.h"
 #include "unity_place_entry.h"
 #include "qsortfilterproxymodelqml.h"
 #include "plugin.h"
@@ -26,6 +27,7 @@
 
 void UnityPlacesPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterType<UnityPlace>(uri, 0, 1, "UnityPlace");
     qmlRegisterType<UnityPlaceEntry>(uri, 0, 1, "UnityPlaceEntry");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "QSortFilterProxyModelQML");
 }
