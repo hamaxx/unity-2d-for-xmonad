@@ -13,8 +13,6 @@ set(UnityPlaces_SRCS
 
 set(UnityPlaces_MOC_HDRS
     unity_place_entry.h
-    bamf_matcher.h
-    bamf_view.h
     plugin.h
     qdbusconnectionqml.h
     qsortfilterproxymodelqml.h
