@@ -15,11 +15,12 @@ Item {
        rendering issues. We compute the height manually.
     */
     height: group.count > 0 ? header.height + group.anchors.topMargin + group.totalHeight : 0
-    visible: group.count > 0
+    //Behavior on height {NumberAnimation {duration: 200}}
 
     GroupHeader {
         id: header
 
+        visible: group.count > 0
         moreAvailable: group.count >= group.cellsPerLine
         folded: parent.folded
         anchors.top: parent.top
@@ -51,6 +52,7 @@ Item {
         cellHeight: delegate_height+vertical_spacing
 
         interactive: false
+        clip: true
 
         delegate: Result {
             width: GridView.view.delegate_width
