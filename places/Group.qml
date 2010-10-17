@@ -20,6 +20,7 @@ Item {
     GroupHeader {
         id: header
 
+        moreAvailable: group.count >= group.cellsPerLine
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
