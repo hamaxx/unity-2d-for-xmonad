@@ -9,6 +9,7 @@ set(UnityPlaces_SRCS
     plugin.cpp
     qdbusconnectionqml.cpp
     qsortfilterproxymodelqml.cpp
+    blendedimageprovider.cpp
     )
 
 set(UnityPlaces_MOC_HDRS
@@ -17,6 +18,7 @@ set(UnityPlaces_MOC_HDRS
     plugin.h
     qdbusconnectionqml.h
     qsortfilterproxymodelqml.h
+    blendedimageprovider.h
     )
 
 qt4_wrap_cpp(UnityPlaces_MOC_SRCS ${UnityPlaces_MOC_HDRS})

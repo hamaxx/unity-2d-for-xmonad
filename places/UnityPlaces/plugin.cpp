@@ -20,6 +20,7 @@
 #include "unity_place.h"
 #include "unity_place_entry.h"
 #include "qsortfilterproxymodelqml.h"
+#include "blendedimageprovider.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -35,6 +36,8 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
 void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     Q_UNUSED(uri);
+
+    engine->addImageProvider(QString("blended"), new BlendedImageProvider);
 }
 
 Q_EXPORT_PLUGIN2(UnityPlaces, UnityPlacesPlugin);
