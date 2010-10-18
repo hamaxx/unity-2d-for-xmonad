@@ -36,7 +36,7 @@ public:
 
     Q_INVOKABLE void show(int y, const QVariant& application);
     Q_INVOKABLE void show_menu();
-    Q_INVOKABLE void hide();
+    Q_INVOKABLE void hide(bool force = false);
 
 private:
     QLauncherApplication* m_application;

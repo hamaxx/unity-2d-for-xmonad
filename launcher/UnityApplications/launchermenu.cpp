@@ -82,9 +82,9 @@ QLauncherContextualMenu::show_menu()
 }
 
 void
-QLauncherContextualMenu::hide()
+QLauncherContextualMenu::hide(bool force)
 {
-    if (m_keep->isVisible())
+    if (!force && m_keep->isVisible())
     {
         QDesktopWidget* desktop = QApplication::desktop();
         const QRect available = desktop->availableGeometry(this);
@@ -104,11 +104,13 @@ void
 QLauncherContextualMenu::onKeepTriggered()
 {
     m_application->setSticky(m_keep->isChecked());
+    hide(true);
 }
 
 void
 QLauncherContextualMenu::onQuitTriggered()
 {
     m_application->close();
+    hide(true);
 }
 
