@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
+#include <QCursor>
 
 QLauncherContextualMenu::QLauncherContextualMenu():
     QMenu(0), m_application(NULL)
@@ -83,7 +84,15 @@ QLauncherContextualMenu::show_menu()
 void
 QLauncherContextualMenu::hide()
 {
-    /* FIXME: conditional hide… */
+    if (m_keep->isVisible())
+    {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const QRect available = desktop->availableGeometry(this);
+        QPoint cursor = QCursor::pos();
+        if (cursor.x() >= available.x())
+            return;
+    }
+
     QWidget::hide();
     m_application = NULL;
     m_keep->setVisible(false);
