@@ -116,17 +116,14 @@ QMenu* AppMenuApplet::menuForWinId(WId wid) const
     return importer ? importer->menu() : 0;
 }
 
-void AppMenuApplet::updateActiveWinId(BamfWindow* window)
+void AppMenuApplet::updateActiveWinId(BamfWindow* bamfWindow)
 {
-    WId id = window ? window->xid() : 0;
+    WId id = bamfWindow ? bamfWindow->xid() : 0;
     if (id == m_activeWinId) {
         return;
     }
-    UQ_VAR(id);
-    UQ_VAR(this->window()->winId());
-    if (id == this->window()->winId()) {
+    if (id == window()->winId()) {
         // Do not update id if the active window is the one hosting this applet
-        UQ_DEBUG << "No update";
         return;
     }
     m_activeWinId = id;
@@ -135,7 +132,6 @@ void AppMenuApplet::updateActiveWinId(BamfWindow* window)
 
 void AppMenuApplet::updateMenuBar()
 {
-    UQ_DEBUG;
     WId winId = m_activeWinId;
     QMenu* menu = menuForWinId(winId);
 
@@ -171,7 +167,6 @@ void AppMenuApplet::updateMenuBar()
             */
         }
     }
-    UQ_VAR(menu);
     fillMenuBar(menu);
 }
 
