@@ -14,6 +14,7 @@
 #include <appname/appnameapplet.h>
 #include <homebutton/homebuttonapplet.h>
 #include <indicator/indicatorapplet.h>
+#include <legacytray/legacytrayapplet.h>
 
 // Unity
 #include <panel.h>
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
     panel.addWidget(new AppNameApplet);
     panel.addWidget(new AppMenuApplet);
     panel.addSpacer();
-    panel.addWidget(new AppIndicatorApplet);
+    panel.addWidget(new LegacyTrayApplet);
     panel.addWidget(new IndicatorApplet);
     panel.show();
     return app.exec();

@@ -18,6 +18,7 @@ set(uqapplets_SRCS
     indicator/datetimeindicator.cpp
     indicator/indicatorapplet.cpp
     indicator/indicatorservicemanager.cpp
+    legacytray/legacytrayapplet.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appmenu/org.ayatana.AppMenu.Registrar.xml
