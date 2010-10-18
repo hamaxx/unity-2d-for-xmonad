@@ -14,6 +14,10 @@ Item {
     /* Using group.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
     */
+    /* FIXME: tricking the system by making the delegate of height 0 and with
+              an invisible header is no good: the item in the model still
+              exists and some things such as keyboard selection break.
+    */
     height: group.count > 0 ? header.height + group.anchors.topMargin + group.totalHeight : 0
     //Behavior on height {NumberAnimation {duration: 200}}
 
