@@ -32,7 +32,7 @@ Item {
         anchors.fill: parent
         opacity: picture_filename.value ? 1.0 : 0.0
         source: {
-            if(overlay_alpha < 1.0)
+            if(overlay_alpha > 0.0)
                 return "image://blended/%1color=%2alpha=%3".arg(picture_filename.value).arg(overlay_color).arg(overlay_alpha)
             else
                 return picture_filename.value
