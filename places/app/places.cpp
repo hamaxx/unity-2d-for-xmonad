@@ -20,6 +20,12 @@
 #include <QApplication>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
+#include <QDesktopWidget>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDeclarativeContext>
+
+#include "dashdeclarativeview.h"
 
 #include "config.h"
 
@@ -27,9 +33,7 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    QDeclarativeView view;
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.setFocus();
+    DashDeclarativeView view;
 
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
@@ -54,7 +58,32 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(QString("../launcher"));
     }
 
+    /* Load the QML UI, focus and show the window */
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.rootContext()->setContextProperty("dashView", &view);
     view.setSource(QUrl("./dash.qml"));
+
+    /* Always match the size of the desktop */
+    int current_screen = QApplication::desktop()->screenNumber(&view);
+    view.fitToAvailableSpace(current_screen);
+    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
+
+    /* Register a D-Bus service for activation and deactivation of the dash */
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerService("com.canonical.UnityQt");
+    bus.registerObject("/dash", &view, QDBusConnection::ExportAllProperties);
+    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
+       property change notification that Qt 4.7 does not implement.
+
+        org.freedesktop.DBus.Properties.PropertiesChanged (
+            STRING interface_name,
+            DICT<STRING,VARIANT> changed_properties,
+            ARRAY<STRING> invalidated_properties);
+
+       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
+    */
+
+    view.setActive(false);
     view.show();
 
     return application.exec();

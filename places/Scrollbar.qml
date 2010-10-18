@@ -8,12 +8,8 @@ Item {
         id: background
 
         anchors.fill: parent
-        source: "artwork/scrollbar_background.png"
+        source: "artwork/scrollbar_background.sci"
         smooth: false
-        border.top: 6
-        border.bottom: 6
-        border.left: 0
-        border.right: 0
         horizontalTileMode: BorderImage.Stretch
         verticalTileMode: BorderImage.Repeat
     }
@@ -66,6 +62,7 @@ Item {
             hoverEnabled: true
             anchors.fill: parent
             /* FIXME: missing dragging of the handle */
+            onPressed: console.log("FIXME: scrollbar dragging is not implemented yet")
         }
     }
 }

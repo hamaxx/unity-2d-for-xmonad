@@ -38,6 +38,4 @@ private:
     void loadIndicators();
 };
 
-APPLET_MAIN(IndicatorApplet)
-
 #endif /* INDICATORAPPLET_H */

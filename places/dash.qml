@@ -6,79 +6,84 @@ Item {
 
     property variant current_page: home
 
-    function activatePlace(place, section) {
+    function activatePage(page) {
         current_page.visible = false
-        place.visible = true
+        current_page = page
+        current_page.visible = true
+    }
+
+    function activatePlace(place, section) {
         place.setActiveSection(section)
-        current_page = place
+        activatePage(place)
     }
 
     GnomeBackground {
         anchors.fill: parent
-    }
-
-    /* FIXME: the background needs to be darkened but compositing at
-              rendering is way too expensive
-
-              Use QGraphicsView::setBackgroundBrush with
-              QGraphicsView::setCacheMode instead.
-    */
-    Rectangle {
-        anchors.fill: parent
-        opacity: 0.37
-        color: "black"
-    }
-
-    SearchBar {
-        id: search_bar
-
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.leftMargin: 2
-        anchors.right: parent.right
-        anchors.rightMargin: 3
-        height: 45
+        overlay_color: "black"
+        overlay_alpha: dashView.active ? 0.37 : 0
     }
 
     Item {
-        anchors.top: search_bar.bottom
-        anchors.topMargin: 12
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 12
-        anchors.left: parent.left
-        anchors.leftMargin: 7
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-
-        Home {
-            id: home
-            anchors.fill: parent
+        anchors.fill: parent
+        visible: dashView.active
+        Connections {
+            target: dashView
+            onActiveChanged: if(dashView.active) activatePage(home)
         }
 
-        Place {
-            id: applications_place
+        SearchBar {
+            id: search_bar
 
-            visible: false
-            anchors.fill: parent
-
-            /* FIXME: these 2 properties need to be extracted from the place configuration file
-                      located in /usr/share/unity/places/applications.place
-            */
-            name: "Applications"
-            dBusObjectPath: "/com/canonical/unity/applicationsplace/applications"
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: 3
+            anchors.right: parent.right
+            anchors.rightMargin: 4
+            height: 47
         }
 
-        Place {
-            id: files_place
+        Item {
+            anchors.top: search_bar.bottom
+            anchors.topMargin: 12
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 12
+            anchors.left: parent.left
+            anchors.leftMargin: 7
+            anchors.right: parent.right
+            anchors.rightMargin: 8
 
-            visible: false
-            anchors.fill: parent
+            Home {
+                id: home
+                anchors.fill: parent
+            }
 
-            /* FIXME: these 2 properties need to be extracted from the place configuration file
-                      located in /usr/share/unity/places/files.place
-            */
-            name: "Files"
-            dBusObjectPath: "/com/canonical/unity/filesplace/files"
+            Place {
+                id: applications_place
+
+                visible: false
+                anchors.fill: parent
+
+                /* FIXME: these 2 properties need to be extracted from the place configuration file
+                          located in /usr/share/unity/places/applications.place
+                */
+                name: "Applications"
+                dBusObjectPath: "/com/canonical/unity/applicationsplace"
+                dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
+            }
+
+            Place {
+                id: files_place
+
+                visible: false
+                anchors.fill: parent
+
+                /* FIXME: these 2 properties need to be extracted from the place configuration file
+                          located in /usr/share/unity/places/files.place
+                */
+                name: "Files"
+                dBusObjectPath: "/com/canonical/unity/filesplace"
+                dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
+            }
         }
     }
 }

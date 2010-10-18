@@ -12,3 +12,6 @@ install(FILES ${places_QML}
     DESTINATION ${UNITY_QT_DIR}/places
     )
 
+install(DIRECTORY artwork
+    DESTINATION ${UNITY_QT_DIR}/places
+    )

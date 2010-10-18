@@ -2,7 +2,7 @@ import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import gconf 1.0
 
-Item {
+Page {
     Flow {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -20,7 +20,11 @@ Item {
                 key: "/desktop/gnome/applications/browser/exec"
             }
 
-            onClicked: console.log("FIXME: should launch", desktop_file_path.value)
+            onClicked: {
+                dashView.active = false
+                console.log("FIXME: should launch", desktop_file_path.value)
+                Qt.openUrlExternally("http://")
+            }
         }
 
         HomeButton {
@@ -68,7 +72,10 @@ Item {
                 desktop_file: "/usr/share/applications/ubuntu-software-center.desktop"
             }
 
-            onClicked: software_center.launch()
+            onClicked: {
+                dashView.active = false
+                software_center.launch()
+            }
         }
     }
 }

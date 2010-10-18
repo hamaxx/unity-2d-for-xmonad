@@ -1,9 +1,11 @@
 # Sources
 set(places_SRCS
     places.cpp
+    dashdeclarativeview.cpp
     )
 
 set(places_MOC_HDRS
+    dashdeclarativeview.h
     )
 
 qt4_wrap_cpp(places_MOC_SRCS ${places_MOC_HDRS})

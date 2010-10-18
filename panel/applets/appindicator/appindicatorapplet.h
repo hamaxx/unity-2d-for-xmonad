@@ -36,6 +36,4 @@ private:
     void createItem(const QString&);
 };
 
-APPLET_MAIN(AppIndicatorApplet)
-
 #endif /* APPINDICATORAPPLET_H */

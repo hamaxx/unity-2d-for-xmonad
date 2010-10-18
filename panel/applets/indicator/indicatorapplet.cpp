@@ -41,7 +41,7 @@ void IndicatorApplet::loadIndicators()
 {
     // FIXME: Using Qt plugins
     QList<AbstractIndicator*> indicators = QList<AbstractIndicator*>()
-        << new DateTimeIndicator
+        << new DateTimeIndicator(this)
         ;
 
     Q_FOREACH(AbstractIndicator* indicator, indicators) {
