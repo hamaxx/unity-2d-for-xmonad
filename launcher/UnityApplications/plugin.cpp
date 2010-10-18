@@ -1,7 +1,7 @@
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
 #include "iconimageprovider.h"
-#include "launchertooltip.h"
+#include "launchermenu.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -23,8 +23,8 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
     LauncherApplicationsList* applications = new LauncherApplicationsList;
     engine->rootContext()->setContextProperty("applications", applications);
 
-    QLauncherTooltip* tooltip = new QLauncherTooltip;
-    engine->rootContext()->setContextProperty("tooltip", tooltip);
+    QLauncherContextualMenu* menu = new QLauncherContextualMenu;
+    engine->rootContext()->setContextProperty("menu", menu);
 }
 
 Q_EXPORT_PLUGIN2(UnityApplications, UnityApplicationsPlugin);

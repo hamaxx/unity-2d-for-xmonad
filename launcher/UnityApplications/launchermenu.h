@@ -17,31 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERTOOLTIP_H
-#define LAUNCHERTOOLTIP_H
+#ifndef LAUNCHERMENU_H
+#define LAUNCHERMENU_H
 
 #include "launcherapplication.h"
 
-#include <QMainWindow>
 #include <QVariant>
-#include <QPropertyAnimation>
+#include <QMenu>
+#include <QAction>
 
-class QLauncherTooltip : public QMainWindow
+class QLauncherContextualMenu : public QMenu
 {
     Q_OBJECT
 
 public:
-    QLauncherTooltip(QObject *parent = 0);
-    ~QLauncherTooltip();
+    QLauncherContextualMenu();
+    ~QLauncherContextualMenu();
 
     Q_INVOKABLE void show(int y, const QVariant& application);
-    Q_INVOKABLE void hide();
     Q_INVOKABLE void show_menu();
+    Q_INVOKABLE void hide(bool force = false);
+
+protected:
+    void leaveEvent(QEvent* event);
 
 private:
-    bool m_menu;
     QLauncherApplication* m_application;
-    QPropertyAnimation* m_animation;
+    QAction* m_title;
+    QAction* m_keep;
+    QAction* m_quit;
+
+private slots:
+    void onKeepTriggered();
+    void onQuitTriggered();
 };
 
-#endif // LAUNCHERTOOLTIP_H
+#endif // LAUNCHERMENU_H

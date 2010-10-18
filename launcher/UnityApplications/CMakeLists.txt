@@ -10,14 +10,14 @@ set(UnityApplications_SRCS
     iconimageprovider.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
-    launchertooltip.cpp
+    launchermenu.cpp
     plugin.cpp
     )
 
 set(UnityApplications_MOC_HDRS
     launcherapplication.h
     launcherapplicationslist.h
-    launchertooltip.h
+    launchermenu.h
     plugin.h
     )
 
