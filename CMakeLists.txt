@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.8)
 # Dirs
 set(UNITY_QT_DIR share/unity-qt)
 set(AUTOSTART_DIR share/autostart CACHE PATH "The directory where autostart files should be installed")
-set(APPLET_INSTALL_DIR lib/unity-qt/panel-applets)
 
 configure_file(config.h.in config.h)
 
