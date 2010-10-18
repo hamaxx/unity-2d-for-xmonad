@@ -23,12 +23,6 @@ Item {
         overlay_alpha: dashView.active ? 0.37 : 0
     }
 
-    /* FIXME: the background needs to be darkened but compositing at
-              rendering is way too expensive
-
-              Use QGraphicsView::setBackgroundBrush with
-              QGraphicsView::setCacheMode instead.
-    */
     Item {
         anchors.fill: parent
         visible: dashView.active
