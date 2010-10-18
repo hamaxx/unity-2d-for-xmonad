@@ -48,7 +48,7 @@ Item {
         property int delegate_height: 80
         property int horizontal_spacing: 20
         property int vertical_spacing: 25
-        property int cellsPerLine: width/cellWidth
+        property int cellsPerLine: Math.floor(width/cellWidth)
         property int totalHeight: cellHeight*Math.ceil(count/cellsPerLine)
 
 
