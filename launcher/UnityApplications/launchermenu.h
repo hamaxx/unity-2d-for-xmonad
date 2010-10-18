@@ -45,7 +45,6 @@ private:
     QLauncherApplication* m_application;
     QAction* m_title;
     QAction* m_keep;
-    QAction* m_separator;
     QAction* m_quit;
 
 private slots:

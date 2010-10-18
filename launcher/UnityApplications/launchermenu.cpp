@@ -41,9 +41,6 @@ QLauncherContextualMenu::QLauncherContextualMenu():
     m_keep->setVisible(false);
     QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
 
-    m_separator = addSeparator();
-    m_separator->setVisible(false);
-
     m_quit = new QAction(this);
     m_quit->setText("Quit");
     m_quit->setVisible(false);
@@ -77,7 +74,6 @@ QLauncherContextualMenu::show_menu()
     m_keep->setCheckable(running);
     m_keep->setChecked(m_application->sticky());
     m_keep->setVisible(true);
-    m_separator->setVisible(running);
     m_quit->setVisible(running);
 }
 
@@ -96,7 +92,6 @@ QLauncherContextualMenu::hide(bool force)
     QWidget::hide();
     m_application = NULL;
     m_keep->setVisible(false);
-    m_separator->setVisible(false);
     m_quit->setVisible(false);
 }
 
