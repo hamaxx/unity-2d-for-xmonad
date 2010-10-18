@@ -59,7 +59,8 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
-    move(available.x(), y + available.y());
+    int height = actionGeometry(m_title).height();
+    move(available.x(), y + available.y() - height / 2);
     QWidget::show();
     /* Set the title after showing so that the width is correctly updated. */
     m_title->setText(m_application->name());
