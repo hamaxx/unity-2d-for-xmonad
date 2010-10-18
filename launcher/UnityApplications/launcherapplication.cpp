@@ -271,6 +271,12 @@ QLauncherApplication::close()
     wnck_screen_force_update(screen);
     GList* windows = wnck_screen_get_windows(screen);
 
+    /* Stop monitoring windows, this would make useless calls to
+       updateHasVisibleWindow() and result in trying to invoke methods on stale
+       D-Bus objects. */
+    m_application->disconnect(SIGNAL(WindowAdded(BamfWindow*)));
+    m_application->disconnect(SIGNAL(WindowRemoved(BamfWindow*)));
+
     for (int i = 0; i < size; ++i)
     {
         uint xid = xids->at(i);
