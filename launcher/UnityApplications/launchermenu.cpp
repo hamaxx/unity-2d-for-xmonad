@@ -24,28 +24,29 @@
 #include <QPoint>
 
 QLauncherContextualMenu::QLauncherContextualMenu():
-    QWidget(0, Qt::ToolTip), m_application(NULL)
+    QMenu(0), m_application(NULL)
 {
-    m_layout = new QVBoxLayout;
-    setLayout(m_layout);
+    /* The tooltip/menu shouldn’t be modal. */
+    setWindowFlags(Qt::ToolTip);
 
-    m_title = new QLabel(this);
-    m_layout->addWidget(m_title);
+    m_title = new QAction(this);
+    m_title->setEnabled(false);
+    addAction(m_title);
 
-    m_menu = new QMenu(this);
-    /* Unset the modal character of the menu, as it is embedded. */
-    m_menu->setWindowFlags(Qt::Widget);
-    m_layout->addWidget(m_menu);
+    addSeparator();
 
     m_keep = new QAction(this);
-    m_menu->addAction(m_keep);
+    addAction(m_keep);
+    m_keep->setVisible(false);
     QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
 
-    m_separator = m_menu->addSeparator();
+    m_separator = addSeparator();
+    m_separator->setVisible(false);
 
     m_quit = new QAction(this);
     m_quit->setText("Quit");
-    m_menu->addAction(m_quit);
+    m_quit->setVisible(false);
+    addAction(m_quit);
     QObject::connect(m_quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
 }
 
@@ -58,27 +59,23 @@ QLauncherContextualMenu::show(int y, const QVariant& application)
 {
     m_application = (QLauncherApplication*) application.value<QObject*>();
 
-    m_title->setText(m_application->name());
-
-    m_menu->setVisible(false);
-
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
-    move(available.x(), y + available.y() - m_title->sizeHint().height() / 2);
+    move(available.x(), y + available.y());
     QWidget::show();
-    resize(m_title->minimumSizeHint());
+    /* Set the title after showing so that the width is correctly updated. */
+    m_title->setText(m_application->name());
 }
 
 void
 QLauncherContextualMenu::show_menu()
 {
-    m_menu->setVisible(true);
-
     bool running = m_application->running();
 
     m_keep->setText(running ? "Keep In Launcher" : "Remove From Launcher");
     m_keep->setCheckable(running);
     m_keep->setChecked(m_application->sticky());
+    m_keep->setVisible(true);
     m_separator->setVisible(running);
     m_quit->setVisible(running);
 }
@@ -86,8 +83,12 @@ QLauncherContextualMenu::show_menu()
 void
 QLauncherContextualMenu::hide()
 {
+    /* FIXME: conditional hide… */
     QWidget::hide();
     m_application = NULL;
+    m_keep->setVisible(false);
+    m_separator->setVisible(false);
+    m_quit->setVisible(false);
 }
 
 void

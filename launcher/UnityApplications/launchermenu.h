@@ -23,13 +23,10 @@
 #include "launcherapplication.h"
 
 #include <QVariant>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
 #include <QMenu>
 #include <QAction>
 
-class QLauncherContextualMenu : public QWidget
+class QLauncherContextualMenu : public QMenu
 {
     Q_OBJECT
 
@@ -43,9 +40,7 @@ public:
 
 private:
     QLauncherApplication* m_application;
-    QVBoxLayout* m_layout;
-    QLabel* m_title;
-    QMenu* m_menu;
+    QAction* m_title;
     QAction* m_keep;
     QAction* m_separator;
     QAction* m_quit;
