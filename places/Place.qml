@@ -60,6 +60,23 @@ Page {
 
         orientation: ListView.Vertical
 
+        /* WARNING - HACK - FIXME
+           Issue:
+           User wise annoying jumps in the list are observable if cacheBuffer is
+           set to 0 (which is the default value). States such as 'folded' are
+           lost when scrolling a lot.
+
+           Explanation:
+           The height of the Group delegate depends on its content. However its
+           content is not known until the delegate is instantiated because it
+           depends on the number of results displayed by its GridView.
+
+           Resolution:
+           We set the cacheBuffer to the biggest possible int in order to make
+           sure all delegates are always instantiated.
+        */
+        cacheBuffer: 2147483647
+
         delegate: Group {
             id: group
 
