@@ -101,6 +101,24 @@ QLauncherContextualMenu::hide(bool force)
 }
 
 void
+QLauncherContextualMenu::leaveEvent(QEvent* event)
+{
+    /* Since our menu is not a modal popup, it doesn’t capture all events, and
+       thus doesn’t know when e.g. the mouse was clicked outside of its window
+       (which should close it).
+       Re-implementing leaveEvent(…) is a cheap workaround: hide the menu when
+       the cursor leaves it. This is not the same behaviour as in unity, but it
+       will do for now… */
+    QDesktopWidget* desktop = QApplication::desktop();
+    const QRect available = desktop->availableGeometry(this);
+    QPoint cursor = QCursor::pos();
+    if (cursor.x() <= available.x())
+        return;
+
+    hide(true);
+}
+
+void
 QLauncherContextualMenu::onKeepTriggered()
 {
     m_application->setSticky(m_keep->isChecked());

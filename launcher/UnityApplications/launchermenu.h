@@ -38,6 +38,9 @@ public:
     Q_INVOKABLE void show_menu();
     Q_INVOKABLE void hide(bool force = false);
 
+protected:
+    void leaveEvent(QEvent* event);
+
 private:
     QLauncherApplication* m_application;
     QAction* m_title;
