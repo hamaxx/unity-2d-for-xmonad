@@ -50,7 +50,7 @@ Page {
     }
 
     ListView {
-        id: results
+        id: place_results
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -91,7 +91,7 @@ Page {
                   Deactivating the scrollbar for now.
         */
         visible: false
-        position: results.visibleArea.yPosition
-        pageSize: results.visibleArea.heightRatio
+        position: place_results.visibleArea.yPosition
+        pageSize: place_results.visibleArea.heightRatio
     }
 }
