@@ -2,6 +2,8 @@ import Qt 4.7
 import gconf 1.0
 
 Item {
+    property string overlay_color
+    property real overlay_alpha
 
     GConfItem {
         id: primary_color
@@ -29,9 +31,14 @@ Item {
 
         anchors.fill: parent
         opacity: picture_filename.value ? 1.0 : 0.0
-        source: picture_filename.value
+        source: {
+            if(overlay_alpha < 1.0)
+                return "image://blended/%1color=%2alpha=%3".arg(picture_filename.value).arg(overlay_color).arg(overlay_alpha)
+            else
+                return picture_filename.value
+        }
         sourceSize.width: width
-        sourceSize.height: height
+
         /* Possible modes are:
             - "wallpaper"
             - "centered" (NOT IMPLEMENTED)

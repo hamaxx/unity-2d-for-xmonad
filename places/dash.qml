@@ -19,6 +19,8 @@ Item {
 
     GnomeBackground {
         anchors.fill: parent
+        overlay_color: "black"
+        overlay_alpha: dashView.active ? 0.37 : 0
     }
 
     /* FIXME: the background needs to be darkened but compositing at
@@ -33,12 +35,6 @@ Item {
         Connections {
             target: dashView
             onActiveChanged: if(dashView.active) activatePage(home)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            opacity: 0.37
-            color: "black"
         }
 
         SearchBar {
