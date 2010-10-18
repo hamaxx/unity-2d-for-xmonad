@@ -259,9 +259,31 @@ QLauncherApplication::onLaunchingTimeouted()
 void
 QLauncherApplication::close()
 {
-    if(m_appInfo == NULL) return;
+    if (m_application == NULL)
+        return;
 
-//    launcher_application_close(m_appInfo);
+    BamfUintList* xids = m_application->xids();
+    int size = xids->size();
+    if (size < 1)
+        return;
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+    GList* windows = wnck_screen_get_windows(screen);
+
+    for (int i = 0; i < size; ++i)
+    {
+        uint xid = xids->at(i);
+        for(GList* li = windows; li != NULL; li = g_list_next(li))
+        {
+            WnckWindow* window = (WnckWindow*) li->data;
+            if (wnck_window_get_xid(window) == xid)
+            {
+                wnck_window_close(window, CurrentTime);
+                break;
+            }
+        }
+    }
 }
 
 void
