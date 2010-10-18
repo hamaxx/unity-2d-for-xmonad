@@ -11,21 +11,21 @@ Item {
     property variant placeResultsModel
     property variant placeDBusInterface
 
-    /* Using group.contentHeight produces binding loop warnings and potential
+    /* Using results.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
     */
     /* FIXME: tricking the system by making the delegate of height 0 and with
               an invisible header is no good: the item in the model still
               exists and some things such as keyboard selection break.
     */
-    height: group.count > 0 ? header.height + group.anchors.topMargin + group.totalHeight : 0
+    height: results.count > 0 ? header.height + results.anchors.topMargin + results.totalHeight : 0
     //Behavior on height {NumberAnimation {duration: 200}}
 
     GroupHeader {
         id: header
 
-        visible: group.count > 0
-        moreAvailable: group.count >= group.cellsPerLine
+        visible: results.count > 0
+        moreAvailable: results.count >= results.cellsPerLine
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
@@ -36,7 +36,7 @@ Item {
     }
 
     GridView {
-        id: group
+        id: results
 
         anchors.top: header.bottom
         anchors.topMargin: 14
@@ -81,7 +81,7 @@ Item {
         model: QSortFilterProxyModelQML {
             filterRole: 2
             filterRegExp: RegExp(groupNumber)
-            limit: folded ? group.cellsPerLine : -1
+            limit: folded ? results.cellsPerLine : -1
             model: placeResultsModel
         }
     }
