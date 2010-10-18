@@ -19,6 +19,8 @@ set(uqapplets_SRCS
     indicator/indicatorapplet.cpp
     indicator/indicatorservicemanager.cpp
     legacytray/legacytrayapplet.cpp
+    legacytray/fdoselectionmanager.cpp
+    legacytray/fdotask.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appmenu/org.ayatana.AppMenu.Registrar.xml

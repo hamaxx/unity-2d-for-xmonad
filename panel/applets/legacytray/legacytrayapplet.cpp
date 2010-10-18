@@ -12,15 +12,34 @@
 #include "legacytrayapplet.h"
 
 // Local
+#include "fdoselectionmanager.h"
+#include "fdotask.h"
+
+// uqpanel
 #include <debug_p.h>
 
 // Qt
 #include <QHBoxLayout>
 
 LegacyTrayApplet::LegacyTrayApplet()
+: m_selectionManager(new SystemTray::FdoSelectionManager)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
+    
+    connect(m_selectionManager, SIGNAL(taskCreated(SystemTray::Task*)),
+        SLOT(slotTaskCreated(SystemTray::Task*)));
+}
+
+LegacyTrayApplet::~LegacyTrayApplet()
+{
+    delete m_selectionManager;
+}
+
+void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
+{
+    QWidget* widget = task->widget();
+    layout()->addWidget(widget);
 }
 
 #include "legacytrayapplet.moc"
