@@ -4,7 +4,7 @@ Button {
     property alias icon: icon.source
     property alias label: label.text
 
-    width: 128
+    width: 126
     height: 148
 
     Image {
@@ -12,7 +12,8 @@ Button {
 
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.right: parent.right
+        width: 128
+        height: 128
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -31,7 +32,7 @@ Button {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottomMargin: 3
+        anchors.bottomMargin: 2
         anchors.rightMargin: 6
         anchors.leftMargin: 6
         font.underline: parent.activeFocus

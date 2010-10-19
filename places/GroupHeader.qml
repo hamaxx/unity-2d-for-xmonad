@@ -14,7 +14,7 @@ Button {
         height: 22
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        anchors.leftMargin: 5
+        anchors.leftMargin: 6
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -28,7 +28,7 @@ Button {
         anchors.top: parent.top
         anchors.topMargin: 5
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 7
         anchors.left: icon.right
         anchors.leftMargin: 5
         width: paintedWidth

@@ -3,6 +3,7 @@ import Qt 4.7
 AbstractButton {
     Rectangle {
         anchors.fill: parent
+        anchors.margins: 0.5
         opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
 
         color: parent.state == "pressed" ? "#ffffffff" : "#00000000"

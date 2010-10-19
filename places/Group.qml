@@ -31,7 +31,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 27
+        height: 28
 
         onClicked: parent.folded = !parent.folded
     }
@@ -72,8 +72,8 @@ Item {
             contentY: compensateY
 
 
-            property int delegate_width: 165
-            property int delegate_height: 80
+            property int delegate_width: 158
+            property int delegate_height: 76
             property int horizontal_spacing: 20
             property int vertical_spacing: 25
             property int cellsPerLine: Math.floor(width/cellWidth)
