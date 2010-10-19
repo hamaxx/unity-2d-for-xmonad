@@ -17,8 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include "launchermenu.h"
 
+#include <QFile>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
@@ -29,6 +31,9 @@ QLauncherContextualMenu::QLauncherContextualMenu():
 {
     /* The tooltip/menu shouldn’t be modal. */
     setWindowFlags(Qt::ToolTip);
+
+    /* Custom appearance. */
+    loadCSS();
 
     m_title = new QAction(this);
     m_title->setEnabled(false);
@@ -53,14 +58,49 @@ QLauncherContextualMenu::~QLauncherContextualMenu()
 }
 
 void
+QLauncherContextualMenu::loadCSS()
+{
+    /* FIXME: surely there must be a cleaner way to do that in Qt… */
+    QString path;
+    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
+    {
+        /* Running installed */
+        path = INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/";
+    }
+    else
+    {
+        /* Uninstalled */
+        path = "UnityApplications/";
+    }
+    path += "launchermenu.css";
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QString css(file.readAll());
+    file.close();
+    setStyleSheet(css);
+}
+
+void
 QLauncherContextualMenu::show(int y, const QVariant& application)
 {
-    m_application = (QLauncherApplication*) application.value<QObject*>();
+    QLauncherApplication* app = (QLauncherApplication*) application.value<QObject*>();
+
+    if (isVisible())
+    {
+        if (app == m_application)
+            return;
+        else
+            hide();
+    }
+
+    m_application = app;
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(this);
-    int height = actionGeometry(m_title).height();
-    move(available.x(), y + available.y() - height / 2);
+    move(available.x(), y + available.y() - sizeHint().height() / 2);
     QWidget::show();
     /* Set the title after showing so that the width is correctly updated. */
     m_title->setText(m_application->name());
