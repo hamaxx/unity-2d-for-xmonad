@@ -42,11 +42,27 @@ Button {
         source: "artwork/arrow.png"
         width: 7
         height: 7
-        anchors.verticalCenter: label.verticalCenter
+        anchors.verticalCenter: parent.verticalCenter
         anchors.left: label.right
         anchors.leftMargin: 6
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
+    }
+
+    Rectangle {
+        id: underline
+
+        opacity: parent.state == "selected" ? 0.0 : 1.0
+        Behavior on opacity {NumberAnimation {duration: 100}}
+
+        height: 1
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: 2
+        anchors.right: parent.right
+        anchors.rightMargin: 2
+
+        color: "#4cffffff"
     }
 }
