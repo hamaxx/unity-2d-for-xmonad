@@ -5,7 +5,7 @@ add_subdirectory(QtDee)
 add_subdirectory(app)
 add_subdirectory(UnityPlaces)
 
-file(GLOB places_QML *.qml)
+file(GLOB places_QML *.qml *.js)
 
 # Install
 install(FILES ${places_QML}

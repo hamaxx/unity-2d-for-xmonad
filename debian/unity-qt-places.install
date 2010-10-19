@@ -16,6 +16,7 @@ usr/share/unity-qt/places/Page.qml
 usr/share/unity-qt/places/BorderGlow.qml
 usr/share/unity-qt/places/Group.qml
 usr/share/unity-qt/places/GroupHeader.qml
+usr/share/unity-qt/places/utils.js
 usr/share/unity-qt/places/artwork
 usr/share/unity-qt/places/artwork/border_glow.png
 usr/share/unity-qt/places/artwork/border_glow.sci

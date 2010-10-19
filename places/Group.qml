@@ -2,6 +2,7 @@ import Qt 4.7
 import QtDee 1.0
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons */
 import UnityPlaces 1.0
+import "utils.js" as Utils
 
 Item {
     property int groupNumber
@@ -93,11 +94,21 @@ Item {
 
                 onClicked: {
                     var uri = column_0
-                    if(!placeDBusInterface.Activate(uri))
-                    {
-                        console.log("FIXME: Possibly no handler for", uri)
-                        /* Try our luck */
-                        Qt.openUrlExternally(uri)
+                    if(!placeDBusInterface.Activate(uri)) {
+                        var matches = uri.match("^(.*)(?:://)(.*)$")
+                        var schema = matches[1]
+                        var path = matches[2]
+                        if(schema == "application") {
+                            Utils.launchApplicationFromDesktopFile(path, parent)
+                        }
+                        else {
+                            console.log("FIXME: Possibly no handler for schema \'%1\'".arg(schema))
+                            console.log("Trying to open", uri)
+                            /* Try our luck */
+                            /* FIXME: uri seems already escaped though
+                                      Qt.openUrlExternally tries to escape it */
+                            Qt.openUrlExternally(uri)
+                        }
                     }
                 }
             }
