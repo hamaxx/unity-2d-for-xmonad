@@ -129,17 +129,22 @@ QLauncherApplication::setSticky(bool sticky)
 void
 QLauncherApplication::setDesktopFile(QString desktop_file)
 {
-    /* Accept fully formed URL and truncate anything else that is not the actual
-       path. Only supports local URLs (e.g. 'file:///home/john' is converted
-       into '/home/john') */
-//    desktop_file = QUrl(desktop_file).path();
-
     /* FIXME: should check/interact properly with an m_application != NULL */
 
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
-    m_appInfo = g_desktop_app_info_new_from_filename(file);
+    if(desktop_file.startsWith("/"))
+    {
+        /* It looks like a full path to a desktop file */
+        m_appInfo = g_desktop_app_info_new_from_filename(file);
+    }
+    else
+    {
+        /* It might just be a desktop file name; let GIO look for the actual
+           desktop file for us */
+        m_appInfo = g_desktop_app_info_new(file);
+    }
 
     /* Emit the Changed signal on all properties that can depend on m_appInfo */
     emit desktopFileChanged(desktop_file);
