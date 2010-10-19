@@ -17,8 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include "launchermenu.h"
 
+#include <QFile>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
@@ -29,6 +31,9 @@ QLauncherContextualMenu::QLauncherContextualMenu():
 {
     /* The tooltip/menu shouldn’t be modal. */
     setWindowFlags(Qt::ToolTip);
+
+    /* Custom appearance. */
+    loadCSS();
 
     m_title = new QAction(this);
     m_title->setEnabled(false);
@@ -50,6 +55,32 @@ QLauncherContextualMenu::QLauncherContextualMenu():
 
 QLauncherContextualMenu::~QLauncherContextualMenu()
 {
+}
+
+void
+QLauncherContextualMenu::loadCSS()
+{
+    /* FIXME: surely there must be a cleaner way to do that in Qt… */
+    QString path;
+    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
+    {
+        /* Running installed */
+        path = INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/";
+    }
+    else
+    {
+        /* Uninstalled */
+        path = "UnityApplications/";
+    }
+    path += "launchermenu.css";
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QString css(file.readAll());
+    file.close();
+    setStyleSheet(css);
 }
 
 void

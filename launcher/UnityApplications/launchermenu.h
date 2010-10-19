@@ -47,6 +47,8 @@ private:
     QAction* m_keep;
     QAction* m_quit;
 
+    void loadCSS();
+
 private slots:
     void onKeepTriggered();
     void onQuitTriggered();
