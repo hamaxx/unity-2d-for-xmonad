@@ -43,7 +43,8 @@ HomeButtonApplet::HomeButtonApplet()
             "     background-image: url(theme:/bfb_bg_normal.png);"
             "}"
             "QToolButton:checked, QToolButton:pressed {"
-            "     background-image: url(theme:/bfb_bg_active.png);"
+            // For some reason using background-image here gives a weird right border
+            "     border-image: url(theme:/bfb_bg_active.png);"
             "}"
     );
 
