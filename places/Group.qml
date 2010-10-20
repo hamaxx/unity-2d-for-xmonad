@@ -40,6 +40,7 @@ Item {
         anchors.top: header.bottom
         anchors.topMargin: 14
         anchors.left: parent.left
+        anchors.leftMargin: 2
         anchors.right: parent.right
         anchors.bottom: parent.bottom
 
@@ -74,8 +75,8 @@ Item {
 
             property int delegate_width: 158
             property int delegate_height: 76
-            property int horizontal_spacing: 20
-            property int vertical_spacing: 25
+            property int horizontal_spacing: 26
+            property int vertical_spacing: 26
             property int cellsPerLine: Math.floor(width/cellWidth)
             property int totalHeight: cellHeight*Math.ceil(count/cellsPerLine)
 

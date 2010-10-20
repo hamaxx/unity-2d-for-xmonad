@@ -38,7 +38,7 @@ Item {
         anchors.leftMargin: 14
         anchors.right: parent.right
         anchors.rightMargin: 15
-        spacing: 9
+        spacing: 10
 
         height: parent.height
         currentIndex: current_page.hasSections ? current_page.activeSection : 0

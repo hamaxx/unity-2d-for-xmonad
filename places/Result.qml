@@ -11,7 +11,7 @@ Button {
         height: 48
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 6
+        anchors.topMargin: 3
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -30,9 +30,9 @@ Button {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottomMargin: 4
-        anchors.rightMargin: 6
-        anchors.leftMargin: 6
+        anchors.bottomMargin: 5
+        anchors.rightMargin: 3
+        anchors.leftMargin: 3
         font.underline: parent.activeFocus
     }
 }

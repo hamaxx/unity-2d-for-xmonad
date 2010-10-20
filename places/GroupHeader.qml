@@ -14,7 +14,7 @@ Button {
         height: 22
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
-        anchors.leftMargin: 6
+        anchors.leftMargin: 7
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -25,10 +25,8 @@ Button {
 
         color: parent.state == "pressed" ? "#444444" : "#ffffff"
         font.pixelSize: 16
-        anchors.top: parent.top
-        anchors.topMargin: 5
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 7
+        anchors.bottomMargin: 5
         anchors.left: icon.right
         anchors.leftMargin: 5
         width: paintedWidth
@@ -59,9 +57,9 @@ Button {
         height: 1
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.leftMargin: 2
+        anchors.leftMargin: 5
         anchors.right: parent.right
-        anchors.rightMargin: 2
+        anchors.rightMargin: 1
 
         color: "#4cffffff"
     }

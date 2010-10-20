@@ -57,6 +57,11 @@ Page {
         anchors.left: parent.left
         anchors.right: scrollbar.left
         clip: true
+        /* FIXME: proper spacing cannot be set because of the hack in Group.qml
+           whereby empty groups are still in the list but invisible and of
+           height 0.
+        */
+        //spacing: 31
 
         orientation: ListView.Vertical
 

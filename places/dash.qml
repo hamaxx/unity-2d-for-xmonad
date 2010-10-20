@@ -1,7 +1,7 @@
 import Qt 4.7
 
 Item {
-    width: 965
+    width: 966
     height: 575
 
     property variant current_page: home
