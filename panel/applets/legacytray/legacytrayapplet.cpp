@@ -26,6 +26,7 @@ LegacyTrayApplet::LegacyTrayApplet()
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
+    layout->setSpacing(0);
     
     connect(m_selectionManager, SIGNAL(taskCreated(SystemTray::Task*)),
         SLOT(slotTaskCreated(SystemTray::Task*)));
