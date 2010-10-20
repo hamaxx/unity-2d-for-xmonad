@@ -23,6 +23,7 @@
 #include <QAbstractFileEngineHandler>
 #include <QApplication>
 #include <QFSFileEngine>
+#include <QLabel>
 
 using namespace UnityQt;
 
@@ -54,6 +55,15 @@ QPalette getPalette()
     return palette;
 }
 
+QLabel* createSeparator()
+{
+    QLabel* label = new QLabel;
+    QPixmap pix("theme:/divider.png");
+    label->setPixmap(pix);
+    label->setFixedSize(pix.size());
+    return label;
+}
+
 int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
@@ -65,6 +75,7 @@ int main(int argc, char** argv)
     panel.setFixedHeight(24);
 
     panel.addWidget(new HomeButtonApplet);
+    panel.addWidget(createSeparator());
     panel.addWidget(new AppNameApplet);
     panel.addWidget(new AppMenuApplet);
     panel.addSpacer();
