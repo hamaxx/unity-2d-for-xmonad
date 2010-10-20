@@ -20,9 +20,26 @@
 #include <panel.h>
 
 // Qt
+#include <QAbstractFileEngineHandler>
 #include <QApplication>
+#include <QFSFileEngine>
 
 using namespace UnityQt;
+
+class ThemeEngineHandler : public QAbstractFileEngineHandler
+{
+public:
+    QAbstractFileEngine *create(const QString& fileName) const
+    {
+        if (fileName.startsWith("theme:")) {
+            // FIXME: Do not hardcode path
+            QString name = "/usr/share/unity/themes/" + fileName.mid(6);
+            return new QFSFileEngine(name);
+        } else {
+            return 0;
+        }
+    }
+};
 
 QPalette getPalette()
 {
@@ -39,6 +56,8 @@ QPalette getPalette()
 
 int main(int argc, char** argv)
 {
+    ThemeEngineHandler handler;
+
     QApplication app(argc, argv);
     Panel panel;
     panel.setEdge(Panel::TopEdge);

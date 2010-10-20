@@ -40,10 +40,10 @@ HomeButtonApplet::HomeButtonApplet()
     m_button->setStyleSheet(
             "QToolButton { border: none; margin: 0; padding: 0; width: 55 }"
             "QToolButton:!checked {"
-            "     background-image: url(/usr/share/unity/themes/bfb_bg_normal.png);"
+            "     background-image: url(theme:/bfb_bg_normal.png);"
             "}"
             "QToolButton:checked, QToolButton:pressed {"
-            "     border-image: url(/usr/share/unity/themes/bfb_bg_active.png);"
+            "     background-image: url(theme:/bfb_bg_active.png);"
             "}"
     );
 
