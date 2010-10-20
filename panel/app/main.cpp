@@ -9,6 +9,9 @@
  * License: GPL v3
  */
 // Local
+#include <config.h>
+
+// Applets
 #include <appindicator/appindicatorapplet.h>
 #include <appmenu/appmenuapplet.h>
 #include <appname/appnameapplet.h>
@@ -34,7 +37,7 @@ public:
     {
         if (fileName.startsWith("theme:")) {
             // FIXME: Do not hardcode path
-            QString name = "/usr/share/unity/themes/" + fileName.mid(6);
+            QString name = INSTALL_PREFIX "/" THEME_DIR "/" + fileName.mid(6);
             return new QFSFileEngine(name);
         } else {
             return 0;
