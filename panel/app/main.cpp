@@ -49,8 +49,7 @@ QPalette getPalette()
 {
     QPalette palette;
 
-    /* FIXME: I suppose that should be set coming from the theme some how */
-    QBrush bg(QPixmap("/usr/share/themes/Ambiance/gtk-2.0/apps/img/panel.png"));
+    QBrush bg(QPixmap("theme:/qt_panel_background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     palette.setColor(QPalette::WindowText, Qt::white);
