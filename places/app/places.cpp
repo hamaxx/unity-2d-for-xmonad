@@ -38,6 +38,9 @@ int main(int argc, char *argv[])
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
+    /* FIXME: this should not be needed but some parts of the dash are not
+              property refreshed when not using it .. sometimes */
+    view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     //QApplication::setGraphicsSystem("raster");
 
     if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
