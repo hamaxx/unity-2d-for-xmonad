@@ -36,7 +36,6 @@ FdoTask::FdoTask(WId id, QObject* parent)
 
 FdoTask::~FdoTask()
 {
-    UQ_VAR(m_id);
     taskDeleted(m_id);
     m_container->deleteLater();
 }
