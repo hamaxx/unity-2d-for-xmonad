@@ -42,7 +42,7 @@ Description: Unity Qt Panel - development files
 
 Package: unity-qt-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-place-files, unity-place-applications
 Description: Unity Qt Places
  The Unity Qt places overlay over the desktop to provide quick access to
  various categories of applications.
