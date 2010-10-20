@@ -12,6 +12,8 @@ Button {
 
         anchors.top: parent.top
         anchors.left: parent.left
+        anchors.leftMargin: -1
+        anchors.topMargin: -1
         width: 128
         height: 128
         fillMode: Image.PreserveAspectFit
@@ -32,9 +34,9 @@ Button {
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottomMargin: 2
-        anchors.rightMargin: 6
-        anchors.leftMargin: 6
+        anchors.bottomMargin: 3
+        anchors.rightMargin: 5
+        anchors.leftMargin: 7
         font.underline: parent.activeFocus
     }
 }

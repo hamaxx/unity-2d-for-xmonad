@@ -9,7 +9,7 @@ Page {
 
         width: 692
         height: 348
-        spacing: 60
+        spacing: 62
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/web"
