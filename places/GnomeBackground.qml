@@ -21,16 +21,22 @@ Item {
     }
 
     Rectangle {
+        Rectangle {
+            anchors.fill: parent
+            opacity: overlay_alpha
+            color: overlay_color
+        }
+
         anchors.fill: parent
         color: primary_color.value
-        visible: picture.opacity != 1.0
+        visible: !picture.visible
     }
 
     Image {
         id: picture
 
         anchors.fill: parent
-        opacity: picture_filename.value ? 1.0 : 0.0
+        visible: picture_filename.value
         source: {
             if(overlay_alpha > 0.0)
                 return "image://blended/%1color=%2alpha=%3".arg(picture_filename.value).arg(overlay_color).arg(overlay_alpha)
