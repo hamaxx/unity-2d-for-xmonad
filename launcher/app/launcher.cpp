@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
+#include <QDeclarativeContext>
 
 #include "config.h"
 #include "launcherview.h"
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(QString("."));
     }
 
+    view.rootContext()->setContextProperty("launcherView", &view);
     view.setSource(QUrl("./Launcher.qml"));
 
     view.show();

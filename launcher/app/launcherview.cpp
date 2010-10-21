@@ -16,15 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "launcherview.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QX11Info>
+#include <QDebug>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
+/* FIXME: import of private Qt headers. See rationale in the implementation of
+          'iconAverageColor' */
+#include "qdeclarativepixmapcache_p.h"
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false)
@@ -68,3 +72,74 @@ LauncherView::workAreaResized(int screen)
     }
 }
 
+QColor
+LauncherView::iconAverageColor(QUrl source, QSize size)
+{
+    /* FIXME: QDeclarativePixmap is a private class in Qt and should not be used
+       here. However it provides us with pixmaps caching and avoids the
+       unnecessary reloading of icons (once to display it, once to compute its
+       average color.
+       The code that would do that and not require access to private classes
+       is the following:
+
+       QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
+    */
+    QDeclarativePixmap declarativePixmap(engine(), source, size);
+    QImage icon = declarativePixmap.pixmap().toImage();
+
+    if (icon.width() == 0 || icon.height() == 0)
+    {
+        qWarning() << "Unable to load icon at" << source;
+        return QColor();
+    }
+
+    int total_r = 0, total_g = 0, total_b = 0;
+    int select_r = 0, select_g = 0, select_b = 0;
+    int selected_pixels = 0;
+
+    for (int y=0; y<icon.height(); ++y)
+    {
+        for (int x=0; x<icon.width(); ++x)
+        {
+            QColor color(icon.pixel(x, y));
+
+            if (color.alphaF() < 0.5)
+                continue;
+
+            total_r += color.red();
+            total_g += color.green();
+            total_b += color.blue();
+
+            if (color.saturationF() <= 0.33)
+                continue;
+
+            select_r += color.red();
+            select_g += color.green();
+            select_b += color.blue();
+
+            selected_pixels++;
+        }
+    }
+
+    QColor color;
+
+    if (selected_pixels <= 20)
+    {
+        int total_pixels = icon.width()*icon.height();
+        color = QColor::fromRgb(total_r/total_pixels,
+                                total_g/total_pixels,
+                                total_b/total_pixels);
+        color.setHsv(color.hue(), 0, color.value());
+    }
+    else
+    {
+        color = QColor::fromRgb(select_r/selected_pixels,
+                                select_g/selected_pixels,
+                                select_b/selected_pixels);
+        float saturation = qMin(color.saturationF()*0.7, 1.0);
+        float value = qMin(color.valueF()*1.4, 1.0);
+        color.setHsvF(color.hueF(), saturation, value);
+    }
+
+    return color;
+}

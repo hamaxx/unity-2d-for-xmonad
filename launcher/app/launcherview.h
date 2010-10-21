@@ -28,6 +28,7 @@ class LauncherView : public QDeclarativeView
 
 public:
     explicit LauncherView();
+    Q_INVOKABLE QColor iconAverageColor(QUrl source, QSize size);
 
 public slots:
     void workAreaResized(int screen);
