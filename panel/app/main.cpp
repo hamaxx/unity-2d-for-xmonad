@@ -21,6 +21,7 @@
 
 // Unity
 #include <panel.h>
+#include <unityqtstyle.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>
@@ -69,8 +70,10 @@ QLabel* createSeparator()
 int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
+    UnityQtStyle style;
 
     QApplication app(argc, argv);
+    app.setStyle(&style);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());
