@@ -1,3 +1,9 @@
+unity-qt (0.0~bzr245) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Fri, 22 Oct 2010 17:33:15 +0200
+
 unity-qt (0.0~bzr232) maverick; urgency=low
 
   * Snapshot release. 
