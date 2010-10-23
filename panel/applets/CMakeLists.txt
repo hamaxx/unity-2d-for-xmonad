@@ -5,6 +5,8 @@ include(FindPkgConfig)
 
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
+pkg_check_modules(GTK REQUIRED gtk+-2.0)
+pkg_check_modules(INDICATOR REQUIRED indicator)
 
 # Sources
 set(uqapplets_SRCS
@@ -18,6 +20,7 @@ set(uqapplets_SRCS
     indicator/datetimeindicator.cpp
     indicator/indicatorapplet.cpp
     indicator/indicatorservicemanager.cpp
+    indicator/indicator.c
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
@@ -38,6 +41,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
+    ${GTK_INCLUDE_DIRS}
+    ${INDICATOR_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
@@ -48,6 +53,8 @@ target_link_libraries(uqapplets
     ${QT_QTCORE_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
+    ${GTK_LDFLAGS}
+    ${INDICATOR_LDFLAGS}
     uqpanel
     )
 

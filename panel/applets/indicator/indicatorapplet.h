@@ -18,6 +18,10 @@
 #include <QDBusInterface>
 #include <QMenuBar>
 
+class QX11EmbedContainer;
+
+struct _IndicatorPlugin;
+
 class IndicatorApplet : public UnityQt::Applet
 {
 Q_OBJECT
@@ -27,12 +31,16 @@ public:
 private Q_SLOTS:
     void slotActionAdded(QAction*);
     void slotActionRemoved(QAction*);
+    void createGtkIndicator();
+    void adjustGtkIndicatorSize();
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)
 
     QDBusInterface* m_watcher;
     QMenuBar* m_menuBar;
+    QX11EmbedContainer* m_container;
+    struct _IndicatorPlugin* m_gtkIndicator;
 
     void setupUi();
     void loadIndicators();

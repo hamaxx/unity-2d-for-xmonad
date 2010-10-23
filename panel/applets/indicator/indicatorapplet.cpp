@@ -15,12 +15,19 @@
 #include "abstractindicator.h"
 #include "datetimeindicator.h"
 #include "debug_p.h"
+#include "indicator.h"
 
 // Qt
 #include <QAction>
 #include <QDBusConnection>
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QX11EmbedContainer>
+
+// Gtk
+#undef signals
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 IndicatorApplet::IndicatorApplet()
 {
@@ -35,10 +42,40 @@ void IndicatorApplet::setupUi()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_menuBar);
+
+    createGtkIndicator();
+}
+
+void IndicatorApplet::createGtkIndicator()
+{
+    int* argc = 0;
+    char*** argv = 0;
+    gtk_init(argc, argv);
+    
+    m_container = new QX11EmbedContainer;
+    layout()->addWidget(m_container);
+
+    m_gtkIndicator = indicator_new();
+    m_container->embedClient(gtk_plug_get_id(GTK_PLUG(m_gtkIndicator->container)));
+    gtk_widget_show(m_gtkIndicator->container);
+
+    QTimer* timer = new QTimer(this);
+    timer->setInterval(1000);
+    timer->setSingleShot(false);
+    connect(timer, SIGNAL(timeout()), SLOT(adjustGtkIndicatorSize()));
+    timer->start();
+}
+
+void IndicatorApplet::adjustGtkIndicatorSize()
+{
+    GtkRequisition requisition;
+    gtk_widget_size_request(m_gtkIndicator->menu, &requisition);
+    m_container->setFixedWidth(requisition.width);
 }
 
 void IndicatorApplet::loadIndicators()
 {
+#if 0
     // FIXME: Using Qt plugins
     QList<AbstractIndicator*> indicators = QList<AbstractIndicator*>()
         << new DateTimeIndicator(this)
@@ -49,6 +86,7 @@ void IndicatorApplet::loadIndicators()
         connect(indicator, SIGNAL(actionRemoved(QAction*)), SLOT(slotActionRemoved(QAction*)));
         indicator->init();
     }
+#endif
 }
 
 void IndicatorApplet::slotActionAdded(QAction* action)
