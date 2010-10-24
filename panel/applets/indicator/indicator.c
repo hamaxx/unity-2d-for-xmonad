@@ -379,6 +379,9 @@ indicator_new ()
   gint indicators_loaded = 0;
   const gchar *indicator_names[] = { "application", "messaging", "soundmenu", "datetime", "me", "session", 0 };
 
+  /* Hack! prevent the appmenu indicator from swallowing our own menubar */
+  setenv("APPMENU_DISPLAY_BOTH", "1");
+
   /* allocate memory for the plugin structure */
   indicator = g_new (IndicatorPlugin, 1);
 
