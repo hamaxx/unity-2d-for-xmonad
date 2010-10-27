@@ -245,3 +245,4 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
 
     return QVariant::fromValue(m_applications[m_desktop_files.at(index.row())]);
 }
+

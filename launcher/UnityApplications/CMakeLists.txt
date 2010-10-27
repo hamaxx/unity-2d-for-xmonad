@@ -10,6 +10,8 @@ set(UnityApplications_SRCS
     iconimageprovider.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
+    device.cpp
+    deviceslist.cpp
     launchermenu.cpp
     plugin.cpp
     )
@@ -17,6 +19,8 @@ set(UnityApplications_SRCS
 set(UnityApplications_MOC_HDRS
     launcherapplication.h
     launcherapplicationslist.h
+    device.h
+    deviceslist.h
     launchermenu.h
     plugin.h
     )

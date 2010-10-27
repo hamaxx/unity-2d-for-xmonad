@@ -1,5 +1,7 @@
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
+#include "device.h"
+#include "deviceslist.h"
 #include "iconimageprovider.h"
 #include "launchermenu.h"
 #include "plugin.h"
@@ -10,6 +12,7 @@
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QLauncherApplication>(uri, 0, 1, "QLauncherApplication");
+    qmlRegisterType<QDevice>(uri, 0, 1, "QDevice");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -20,6 +23,9 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
 
     LauncherApplicationsList* applications = new LauncherApplicationsList;
     engine->rootContext()->setContextProperty("applications", applications);
+
+    DevicesList* devices = new DevicesList;
+    engine->rootContext()->setContextProperty("devices", devices);
 
     QLauncherContextualMenu* menu = new QLauncherContextualMenu;
     engine->rootContext()->setContextProperty("menu", menu);
