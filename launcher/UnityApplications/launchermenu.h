@@ -42,7 +42,7 @@ protected:
     void leaveEvent(QEvent* event);
 
 private:
-    QLauncherApplication* m_application;
+    LauncherApplication* m_application;
     QAction* m_title;
     QAction* m_keep;
     QAction* m_quit;

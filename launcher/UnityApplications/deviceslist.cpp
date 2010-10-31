@@ -19,21 +19,27 @@
 
 #include "deviceslist.h"
 
-#include <QDebug>
-
-DevicesList::DevicesList(QObject *parent) :
+DevicesList::DevicesList(QObject* parent) :
     QAbstractListModel(parent)
 {
-    // TODO: load the list of already plugged in devices
-
     m_volume_monitor = g_volume_monitor_get();
+
+    GList* volumes = g_volume_monitor_get_volumes(m_volume_monitor);
+    for(GList* li = volumes; li != NULL; li = g_list_next(li))
+    {
+        GVolume* volume = (GVolume*) li->data;
+        onVolumeAdded(m_volume_monitor, volume);
+        g_object_unref(volume);
+    }
+    g_list_free(volumes);
+
     g_signal_connect(m_volume_monitor, "volume-added",
                      G_CALLBACK(DevicesList::onVolumeAddedProxy), this);
 }
 
 DevicesList::~DevicesList()
 {
-    QList<QDevice*>::iterator iter;
+    QList<Device*>::iterator iter;
     for(iter = m_devices.begin(); iter != m_devices.end(); ++iter)
     {
         delete *iter;
@@ -71,12 +77,38 @@ DevicesList::onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume)
 {
     if (g_volume_can_eject(volume))
     {
-        QDevice* device = new QDevice;
+        Device* device = new Device;
         device->setVolume(volume);
-        qDebug() << "device added:" << device->name();
         beginInsertRows(QModelIndex(), m_devices.size(), m_devices.size());
         m_devices.append(device);
         endInsertRows();
+        g_signal_connect(volume, "removed",
+                         G_CALLBACK(DevicesList::onVolumeRemovedProxy), this);
+    }
+}
+
+void
+DevicesList::onVolumeRemovedProxy(GVolume* volume, gpointer data)
+{
+    DevicesList* _this = static_cast<DevicesList*>(data);
+    return _this->onVolumeRemoved(volume);
+}
+
+void
+DevicesList::onVolumeRemoved(GVolume* volume)
+{
+    QList<Device*>::iterator iter;
+    int i = 0;
+    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter)
+    {
+        if ((*iter)->getVolume() == volume)
+        {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_devices.removeAt(i);
+            endRemoveRows();
+            break;
+        }
+        ++i;
     }
 }
 

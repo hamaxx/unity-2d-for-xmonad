@@ -12,15 +12,18 @@ set(UnityApplications_SRCS
     launcherapplicationslist.cpp
     device.cpp
     deviceslist.cpp
+    launchermodel.cpp
     launchermenu.cpp
     plugin.cpp
     )
 
 set(UnityApplications_MOC_HDRS
+    launcheritem.h
     launcherapplication.h
     launcherapplicationslist.h
     device.h
     deviceslist.h
+    launchermodel.h
     launchermenu.h
     plugin.h
     )

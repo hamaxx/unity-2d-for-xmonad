@@ -21,39 +21,45 @@
 #define DEVICE_H
 
 #include <gio/gio.h>
+
+#include "launcheritem.h"
+
 #include <QObject>
 #include <QString>
 #include <QMetaType>
 
-class QDevice : public QObject
+class Device : public LauncherItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-
 public:
-    QDevice(QObject *parent = 0);
-    QDevice(const QDevice& other);
-    ~QDevice();
+    Device();
+    Device(const Device& other);
+    ~Device();
 
     /* getters */
-    QString name() const;
+    virtual bool active() const;
+    virtual bool running() const;
+    virtual bool urgent() const;
+    virtual QString name() const;
+    virtual QString icon() const;
+    virtual bool launching() const;
 
     /* methods */
-    void setVolume(GVolume* volume);
-    void open();
-    void eject();
-
-signals:
-    void nameChanged(QString);
+    Q_INVOKABLE virtual void activate();
+    Q_INVOKABLE GVolume* getVolume();
+    Q_INVOKABLE void setVolume(GVolume* volume);
+    Q_INVOKABLE void open();
+    Q_INVOKABLE void eject();
 
 private:
-    GVolume *m_volume;
+    GVolume* m_volume;
 
     static void onVolumeMounted(GVolume* volume, GAsyncResult* res);
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
 };
 
-Q_DECLARE_METATYPE(QDevice*)
+Q_DECLARE_METATYPE(Device*)
 
 #endif // DEVICE_H
+

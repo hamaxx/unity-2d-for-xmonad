@@ -21,23 +21,41 @@
 
 #include "QDebug"
 
-QDevice::QDevice(QObject *parent) :
-    QObject(parent), m_volume(NULL)
+Device::Device() :
+    m_volume(NULL)
 {
 }
 
-QDevice::QDevice(const QDevice& other) :
-    QObject(other.parent()), m_volume(other.m_volume)
+Device::Device(const Device& other) :
+    m_volume(other.m_volume)
 {
     // TODO: connect to the volume's changed signal to monitor name change?
 }
 
-QDevice::~QDevice()
+Device::~Device()
 {
 }
 
+bool
+Device::active() const
+{
+    return false;
+}
+
+bool
+Device::running() const
+{
+    return false;
+}
+
+bool
+Device::urgent() const
+{
+    return false;
+}
+
 QString
-QDevice::name() const
+Device::name() const
 {
     if (m_volume != NULL)
         return QString(g_volume_get_name(m_volume));
@@ -45,15 +63,41 @@ QDevice::name() const
     return QString("");
 }
 
+QString
+Device::icon() const
+{
+    return QString("/usr/share/unity/devices.png");
+}
+
+bool
+Device::launching() const
+{
+    // This basically means no launching animation when opening the device.
+    // Unity behaves likes this.
+    return false;
+}
+
 void
-QDevice::setVolume(GVolume* volume)
+Device::activate()
+{
+    open();
+}
+
+GVolume*
+Device::getVolume()
+{
+    return m_volume;
+}
+
+void
+Device::setVolume(GVolume* volume)
 {
     m_volume = volume;
     // TODO: connect to the volume's changed signal to monitor name change?
 }
 
 void
-QDevice::open()
+Device::open()
 {
     if (m_volume == NULL)
         return;
@@ -63,7 +107,7 @@ QDevice::open()
     {
         GFile* root = g_mount_get_root(mount);
         char* uri = g_file_get_uri(root);
-        GError* error;
+        GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
@@ -81,12 +125,12 @@ QDevice::open()
             return;
         }
         g_volume_mount(m_volume, G_MOUNT_MOUNT_NONE, NULL, NULL,
-                       (GAsyncReadyCallback) QDevice::onVolumeMounted, NULL);
+                       (GAsyncReadyCallback) Device::onVolumeMounted, NULL);
     }
 }
 
 void
-QDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
+Device::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 {
     g_volume_mount_finish(volume, res, NULL);
     GMount* mount = g_volume_get_mount(volume);
@@ -94,7 +138,7 @@ QDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
     {
         GFile* root = g_mount_get_root(mount);
         char* uri = g_file_get_uri(root);
-        GError* error;
+        GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
@@ -111,17 +155,17 @@ QDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 }
 
 void
-QDevice::eject()
+Device::eject()
 {
     if (m_volume == NULL)
         return;
 
     g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL, NULL,
-                                  (GAsyncReadyCallback) QDevice::onVolumeEjected, NULL);
+                                  (GAsyncReadyCallback) Device::onVolumeEjected, NULL);
 }
 
 void
-QDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
+Device::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 {
     g_volume_eject_with_operation_finish(volume, res, NULL);
 }

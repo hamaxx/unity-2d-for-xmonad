@@ -86,7 +86,7 @@ QLauncherContextualMenu::loadCSS()
 void
 QLauncherContextualMenu::show(int y, const QVariant& application)
 {
-    QLauncherApplication* app = (QLauncherApplication*) application.value<QObject*>();
+    LauncherApplication* app = (LauncherApplication*) application.value<QObject*>();
 
     if (isVisible())
     {

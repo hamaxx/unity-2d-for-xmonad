@@ -17,38 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEVICESLIST_H
-#define DEVICESLIST_H
+#ifndef LAUNCHERMODEL_H
+#define LAUNCHERMODEL_H
 
-#include "device.h"
+#include "launcherapplicationslist.h"
+#include "deviceslist.h"
 
-#include <QObject>
 #include <QAbstractListModel>
+#include <QObject>
+#include <QVariant>
 
-#include <gio/gio.h>
-
-class DevicesList : public QAbstractListModel
+class LauncherModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    DevicesList(QObject* parent = 0);
-    ~DevicesList();
+    LauncherModel(QObject *parent = 0);
+    ~LauncherModel();
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-private:
-    GVolumeMonitor* m_volume_monitor;
-    QList<Device*> m_devices;
-
 private slots:
-    static void onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data);
-    void onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume);
+    void onApplicationsInserted(const QModelIndex& parent, int first, int last);
+    void onApplicationsRemoved(const QModelIndex& parent, int first, int last);
+    void onDevicesInserted(const QModelIndex& parent, int first, int last);
+    void onDevicesRemoved(const QModelIndex& parent, int first, int last);
 
-    static void onVolumeRemovedProxy(GVolume* volume, gpointer data);
-    void onVolumeRemoved(GVolume* volume);
+private:
+    LauncherApplicationsList* m_applications;
+    DevicesList* m_devices;
+
+    QVariantList m_list;
 };
 
-#endif // DEVICESLIST_H
+#endif // LAUNCHERMODEL_H
 
