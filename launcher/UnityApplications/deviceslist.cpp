@@ -104,8 +104,9 @@ DevicesList::onVolumeRemoved(GVolume* volume)
         if ((*iter)->getVolume() == volume)
         {
             beginRemoveRows(QModelIndex(), i, i);
-            m_devices.removeAt(i);
+            Device* device = m_devices.takeAt(i);
             endRemoveRows();
+            delete device;
             break;
         }
         ++i;
