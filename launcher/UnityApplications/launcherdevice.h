@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEVICE_H
-#define DEVICE_H
+#ifndef LAUNCHERDEVICE_H
+#define LAUNCHERDEVICE_H
 
 #include <gio/gio.h>
 
@@ -29,14 +29,14 @@
 #include <QMetaType>
 #include <QAction>
 
-class Device : public LauncherItem
+class LauncherDevice : public LauncherItem
 {
     Q_OBJECT
 
 public:
-    Device();
-    Device(const Device& other);
-    ~Device();
+    LauncherDevice();
+    LauncherDevice(const LauncherDevice& other);
+    ~LauncherDevice();
 
     /* getters */
     virtual bool active() const;
@@ -73,7 +73,7 @@ private:
     QAction* m_eject;
 };
 
-Q_DECLARE_METATYPE(Device*)
+Q_DECLARE_METATYPE(LauncherDevice*)
 
-#endif // DEVICE_H
+#endif // LAUNCHERDEVICE_H
 

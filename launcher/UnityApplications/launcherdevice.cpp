@@ -17,46 +17,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "device.h"
+#include "launcherdevice.h"
 
 #include "QDebug"
 
-Device::Device() :
+LauncherDevice::LauncherDevice() :
     m_volume(NULL),
     m_open(NULL), m_sep1(NULL), m_sep2(NULL), m_eject(NULL)
 {
 }
 
-Device::Device(const Device& other) :
+LauncherDevice::LauncherDevice(const LauncherDevice& other) :
     m_volume(other.m_volume)
 {
     // TODO: connect to the volume's changed signal to monitor name change?
 }
 
-Device::~Device()
+LauncherDevice::~LauncherDevice()
 {
 }
 
 bool
-Device::active() const
-{
-    return false;
-}
-
-bool
-Device::running() const
+LauncherDevice::active() const
 {
     return false;
 }
 
 bool
-Device::urgent() const
+LauncherDevice::running() const
+{
+    return false;
+}
+
+bool
+LauncherDevice::urgent() const
 {
     return false;
 }
 
 QString
-Device::name() const
+LauncherDevice::name() const
 {
     if (m_volume != NULL)
         return QString(g_volume_get_name(m_volume));
@@ -65,13 +65,13 @@ Device::name() const
 }
 
 QString
-Device::icon() const
+LauncherDevice::icon() const
 {
     return QString("/usr/share/unity/devices.png");
 }
 
 bool
-Device::launching() const
+LauncherDevice::launching() const
 {
     // This basically means no launching animation when opening the device.
     // Unity behaves likes this.
@@ -79,26 +79,26 @@ Device::launching() const
 }
 
 void
-Device::activate()
+LauncherDevice::activate()
 {
     open();
 }
 
 GVolume*
-Device::getVolume()
+LauncherDevice::getVolume()
 {
     return m_volume;
 }
 
 void
-Device::setVolume(GVolume* volume)
+LauncherDevice::setVolume(GVolume* volume)
 {
     m_volume = volume;
     // TODO: connect to the volume's changed signal to monitor name change?
 }
 
 void
-Device::open()
+LauncherDevice::open()
 {
     if (m_volume == NULL)
         return;
@@ -126,12 +126,12 @@ Device::open()
             return;
         }
         g_volume_mount(m_volume, G_MOUNT_MOUNT_NONE, NULL, NULL,
-                       (GAsyncReadyCallback) Device::onVolumeMounted, NULL);
+                       (GAsyncReadyCallback) LauncherDevice::onVolumeMounted, NULL);
     }
 }
 
 void
-Device::onVolumeMounted(GVolume* volume, GAsyncResult* res)
+LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 {
     g_volume_mount_finish(volume, res, NULL);
     GMount* mount = g_volume_get_mount(volume);
@@ -156,23 +156,23 @@ Device::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 }
 
 void
-Device::eject()
+LauncherDevice::eject()
 {
     if (m_volume == NULL)
         return;
 
     g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL, NULL,
-                                  (GAsyncReadyCallback) Device::onVolumeEjected, NULL);
+                                  (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
 }
 
 void
-Device::onVolumeEjected(GVolume* volume, GAsyncResult* res)
+LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 {
     g_volume_eject_with_operation_finish(volume, res, NULL);
 }
 
 void
-Device::really_show_menu()
+LauncherDevice::really_show_menu()
 {
     m_open = new QAction(m_menu);
     m_open->setText("Open");
@@ -192,7 +192,7 @@ Device::really_show_menu()
 }
 
 void
-Device::really_hide_menu()
+LauncherDevice::really_hide_menu()
 {
     delete m_eject;
     m_eject = NULL;
@@ -206,14 +206,14 @@ Device::really_hide_menu()
 }
 
 void
-Device::onOpenTriggered()
+LauncherDevice::onOpenTriggered()
 {
     open();
     really_hide_menu();
 }
 
 void
-Device::onEjectTriggered()
+LauncherDevice::onEjectTriggered()
 {
     eject();
     really_hide_menu();

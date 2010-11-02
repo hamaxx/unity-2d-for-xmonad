@@ -11,8 +11,8 @@ set(UnityApplications_SRCS
     launcheritem.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
-    device.cpp
-    deviceslist.cpp
+    launcherdevice.cpp
+    launcherdeviceslist.cpp
     launchermodel.cpp
     launchermenu.cpp
     plugin.cpp
@@ -22,8 +22,8 @@ set(UnityApplications_MOC_HDRS
     launcheritem.h
     launcherapplication.h
     launcherapplicationslist.h
-    device.h
-    deviceslist.h
+    launcherdevice.h
+    launcherdeviceslist.h
     launchermodel.h
     launchermenu.h
     plugin.h

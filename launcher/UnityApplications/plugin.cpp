@@ -1,5 +1,5 @@
 #include "launcherapplication.h"
-#include "device.h"
+#include "launcherdevice.h"
 #include "launchermodel.h"
 #include "iconimageprovider.h"
 #include "plugin.h"
@@ -10,7 +10,7 @@
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
-    qmlRegisterType<Device>(uri, 0, 1, "Device");
+    qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

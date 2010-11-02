@@ -21,7 +21,7 @@
 #define LAUNCHERMODEL_H
 
 #include "launcherapplicationslist.h"
-#include "deviceslist.h"
+#include "launcherdeviceslist.h"
 
 #include <QAbstractListModel>
 #include <QObject>
@@ -46,7 +46,7 @@ private slots:
 
 private:
     LauncherApplicationsList* m_applications;
-    DevicesList* m_devices;
+    LauncherDevicesList* m_devices;
 
     QVariantList m_list;
 };

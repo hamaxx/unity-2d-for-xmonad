@@ -32,7 +32,7 @@ LauncherModel::LauncherModel(QObject *parent) :
     QObject::connect(m_applications, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
                      this, SLOT(onApplicationsRemoved(const QModelIndex&, int, int)));
 
-    m_devices = new DevicesList;
+    m_devices = new LauncherDevicesList;
     QObject::connect(m_devices, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
                      this, SLOT(onDevicesInserted(const QModelIndex&, int, int)));
     QObject::connect(m_devices, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),

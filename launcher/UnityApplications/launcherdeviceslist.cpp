@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "deviceslist.h"
+#include "launcherdeviceslist.h"
 
-DevicesList::DevicesList(QObject* parent) :
+LauncherDevicesList::LauncherDevicesList(QObject* parent) :
     QAbstractListModel(parent)
 {
     m_volume_monitor = g_volume_monitor_get();
@@ -34,12 +34,12 @@ DevicesList::DevicesList(QObject* parent) :
     g_list_free(volumes);
 
     g_signal_connect(m_volume_monitor, "volume-added",
-                     G_CALLBACK(DevicesList::onVolumeAddedProxy), this);
+                     G_CALLBACK(LauncherDevicesList::onVolumeAddedProxy), this);
 }
 
-DevicesList::~DevicesList()
+LauncherDevicesList::~LauncherDevicesList()
 {
-    QList<Device*>::iterator iter;
+    QList<LauncherDevice*>::iterator iter;
     for(iter = m_devices.begin(); iter != m_devices.end(); ++iter)
     {
         delete *iter;
@@ -47,7 +47,7 @@ DevicesList::~DevicesList()
 }
 
 int
-DevicesList::rowCount(const QModelIndex &parent) const
+LauncherDevicesList::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
@@ -55,7 +55,7 @@ DevicesList::rowCount(const QModelIndex &parent) const
 }
 
 QVariant
-DevicesList::data(const QModelIndex &index, int role) const
+LauncherDevicesList::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role);
 
@@ -66,45 +66,45 @@ DevicesList::data(const QModelIndex &index, int role) const
 }
 
 void
-DevicesList::onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data)
+LauncherDevicesList::onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data)
 {
-    DevicesList* _this = static_cast<DevicesList*>(data);
+    LauncherDevicesList* _this = static_cast<LauncherDevicesList*>(data);
     return _this->onVolumeAdded(volume_monitor, volume);
 }
 
 void
-DevicesList::onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume)
+LauncherDevicesList::onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume)
 {
     if (g_volume_can_eject(volume))
     {
-        Device* device = new Device;
+        LauncherDevice* device = new LauncherDevice;
         device->setVolume(volume);
         beginInsertRows(QModelIndex(), m_devices.size(), m_devices.size());
         m_devices.append(device);
         endInsertRows();
         g_signal_connect(volume, "removed",
-                         G_CALLBACK(DevicesList::onVolumeRemovedProxy), this);
+                         G_CALLBACK(LauncherDevicesList::onVolumeRemovedProxy), this);
     }
 }
 
 void
-DevicesList::onVolumeRemovedProxy(GVolume* volume, gpointer data)
+LauncherDevicesList::onVolumeRemovedProxy(GVolume* volume, gpointer data)
 {
-    DevicesList* _this = static_cast<DevicesList*>(data);
+    LauncherDevicesList* _this = static_cast<LauncherDevicesList*>(data);
     return _this->onVolumeRemoved(volume);
 }
 
 void
-DevicesList::onVolumeRemoved(GVolume* volume)
+LauncherDevicesList::onVolumeRemoved(GVolume* volume)
 {
-    QList<Device*>::iterator iter;
+    QList<LauncherDevice*>::iterator iter;
     int i = 0;
     for (iter = m_devices.begin(); iter != m_devices.end(); ++iter)
     {
         if ((*iter)->getVolume() == volume)
         {
             beginRemoveRows(QModelIndex(), i, i);
-            Device* device = m_devices.takeAt(i);
+            LauncherDevice* device = m_devices.takeAt(i);
             endRemoveRows();
             delete device;
             break;
