@@ -30,7 +30,6 @@ LauncherDevice::LauncherDevice() :
 LauncherDevice::LauncherDevice(const LauncherDevice& other) :
     m_volume(other.m_volume)
 {
-    // TODO: connect to the volume's changed signal to monitor name change?
 }
 
 LauncherDevice::~LauncherDevice()
@@ -94,7 +93,6 @@ void
 LauncherDevice::setVolume(GVolume* volume)
 {
     m_volume = volume;
-    // TODO: connect to the volume's changed signal to monitor name change?
 }
 
 void
