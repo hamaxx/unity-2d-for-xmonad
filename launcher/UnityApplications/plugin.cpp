@@ -2,7 +2,6 @@
 #include "device.h"
 #include "launchermodel.h"
 #include "iconimageprovider.h"
-#include "launchermenu.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -22,9 +21,6 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
 
     LauncherModel* launcher = new LauncherModel;
     engine->rootContext()->setContextProperty("launcher", launcher);
-
-    QLauncherContextualMenu* menu = new QLauncherContextualMenu;
-    engine->rootContext()->setContextProperty("menu", menu);
 }
 
 Q_EXPORT_PLUGIN2(UnityApplications, UnityApplicationsPlugin);

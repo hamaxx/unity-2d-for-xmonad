@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+#include "launchermenu.h"
+
 class LauncherItem : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,9 @@ class LauncherItem : public QObject
     Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
 
 public:
+    LauncherItem();
+    ~LauncherItem();
+
     /* getters */
     virtual bool active() const = 0;
     virtual bool running() const = 0;
@@ -45,6 +50,16 @@ public:
 
     /* methods */
     Q_INVOKABLE virtual void activate() = 0;
+    Q_INVOKABLE void show_tooltip(int y);
+    Q_INVOKABLE void show_menu();
+    Q_INVOKABLE virtual void really_show_menu() = 0;
+    Q_INVOKABLE void hide_menu();
+    Q_INVOKABLE virtual void really_hide_menu() = 0;
+
+protected:
+    LauncherContextualMenu* m_menu;
+
+    bool eventFilter(QObject* obj, QEvent* event);
 
 signals:
     void activeChanged(bool);

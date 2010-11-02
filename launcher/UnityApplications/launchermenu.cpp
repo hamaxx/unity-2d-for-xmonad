@@ -22,12 +22,9 @@
 
 #include <QFile>
 #include <QApplication>
-#include <QDesktopWidget>
-#include <QPoint>
-#include <QCursor>
 
-QLauncherContextualMenu::QLauncherContextualMenu():
-    QMenu(0), m_application(NULL)
+LauncherContextualMenu::LauncherContextualMenu():
+    QMenu(0)
 {
     /* The tooltip/menu shouldn’t be modal. */
     setWindowFlags(Qt::ToolTip);
@@ -38,27 +35,14 @@ QLauncherContextualMenu::QLauncherContextualMenu():
     m_title = new QAction(this);
     m_title->setEnabled(false);
     addAction(m_title);
-
-    addSeparator();
-
-    m_keep = new QAction(this);
-    addAction(m_keep);
-    m_keep->setVisible(false);
-    QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
-
-    m_quit = new QAction(this);
-    m_quit->setText("Quit");
-    m_quit->setVisible(false);
-    addAction(m_quit);
-    QObject::connect(m_quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
 }
 
-QLauncherContextualMenu::~QLauncherContextualMenu()
+LauncherContextualMenu::~LauncherContextualMenu()
 {
 }
 
 void
-QLauncherContextualMenu::loadCSS()
+LauncherContextualMenu::loadCSS()
 {
     /* FIXME: surely there must be a cleaner way to do that in Qt… */
     QString path;
@@ -84,87 +68,19 @@ QLauncherContextualMenu::loadCSS()
 }
 
 void
-QLauncherContextualMenu::show(int y, const QVariant& application)
+LauncherContextualMenu::setTitle(QString title)
 {
-    LauncherApplication* app = (LauncherApplication*) application.value<QObject*>();
-
-    if (isVisible())
-    {
-        if (app == m_application)
-            return;
-        else
-            hide();
-    }
-
-    m_application = app;
-
-    QDesktopWidget* desktop = QApplication::desktop();
-    const QRect available = desktop->availableGeometry(this);
-    move(available.x(), y + available.y() - sizeHint().height() / 2);
-    QWidget::show();
-    /* Set the title after showing so that the width is correctly updated. */
-    m_title->setText(m_application->name());
+    m_title->setText(title);
 }
 
 void
-QLauncherContextualMenu::show_menu()
+LauncherContextualMenu::prependAction(QAction* action)
 {
-    bool running = m_application->running();
-
-    m_keep->setText(running ? "Keep In Launcher" : "Remove From Launcher");
-    m_keep->setCheckable(running);
-    m_keep->setChecked(m_application->sticky());
-    m_keep->setVisible(true);
-    m_quit->setVisible(running);
-}
-
-void
-QLauncherContextualMenu::hide(bool force)
-{
-    if (!force && m_keep->isVisible())
-    {
-        QDesktopWidget* desktop = QApplication::desktop();
-        const QRect available = desktop->availableGeometry(this);
-        QPoint cursor = QCursor::pos();
-        if (cursor.x() >= available.x())
-            return;
-    }
-
-    QWidget::hide();
-    m_application = NULL;
-    m_keep->setVisible(false);
-    m_quit->setVisible(false);
-}
-
-void
-QLauncherContextualMenu::leaveEvent(QEvent* event)
-{
-    /* Since our menu is not a modal popup, it doesn’t capture all events, and
-       thus doesn’t know when e.g. the mouse was clicked outside of its window
-       (which should close it).
-       Re-implementing leaveEvent(…) is a cheap workaround: hide the menu when
-       the cursor leaves it. This is not the same behaviour as in unity, but it
-       will do for now… */
-    QDesktopWidget* desktop = QApplication::desktop();
-    const QRect available = desktop->availableGeometry(this);
-    QPoint cursor = QCursor::pos();
-    if (cursor.x() <= available.x())
-        return;
-
-    hide(true);
-}
-
-void
-QLauncherContextualMenu::onKeepTriggered()
-{
-    m_application->setSticky(m_keep->isChecked());
-    hide(true);
-}
-
-void
-QLauncherContextualMenu::onQuitTriggered()
-{
-    m_application->close();
-    hide(true);
+    /* Insert an action before the title, and move the menu accordingly so that
+       the title remains in the same position. */
+    int y0 = actionGeometry(m_title).y();
+    insertAction(m_title, action);
+    int y1 = actionGeometry(m_title).y();
+    move(x(), y() - y1 + y0);
 }
 

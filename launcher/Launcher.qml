@@ -31,16 +31,16 @@ Item {
             launching: item.launching
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
-                    menu.hide()
+                    item.hide_menu()
                     item.activate()
                 }
                 else if (mouse.button == Qt.RightButton) {
-                    menu.show_menu()
+                    item.show_menu()
                 }
             }
 
-            onEntered: menu.show(y + height / 2, item)
-            onExited: menu.hide()
+            onEntered: item.show_tooltip(y + height / 2)
+            onExited: item.hide_menu()
 
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }

@@ -22,7 +22,8 @@
 #include "QDebug"
 
 Device::Device() :
-    m_volume(NULL)
+    m_volume(NULL),
+    m_open(NULL), m_sep1(NULL), m_sep2(NULL), m_eject(NULL)
 {
 }
 
@@ -168,5 +169,53 @@ void
 Device::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 {
     g_volume_eject_with_operation_finish(volume, res, NULL);
+}
+
+void
+Device::really_show_menu()
+{
+    m_open = new QAction(m_menu);
+    m_open->setText("Open");
+    m_menu->prependAction(m_open);
+    QObject::connect(m_open, SIGNAL(triggered()), this, SLOT(onOpenTriggered()));
+
+    m_sep1 = new QAction(m_menu);
+    m_sep1->setSeparator(true);
+    m_menu->prependAction(m_sep1);
+
+    m_sep2 = m_menu->addSeparator();
+
+    m_eject = new QAction(m_menu);
+    m_eject->setText("Eject");
+    m_menu->addAction(m_eject);
+    QObject::connect(m_eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
+}
+
+void
+Device::really_hide_menu()
+{
+    delete m_eject;
+    m_eject = NULL;
+    delete m_sep2;
+    m_sep2 = NULL;
+    delete m_sep1;
+    m_sep1 = NULL;
+    delete m_open;
+    m_open = NULL;
+    m_menu->hide();
+}
+
+void
+Device::onOpenTriggered()
+{
+    open();
+    really_hide_menu();
+}
+
+void
+Device::onEjectTriggered()
+{
+    eject();
+    really_hide_menu();
 }
 

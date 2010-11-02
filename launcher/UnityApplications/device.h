@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QString>
 #include <QMetaType>
+#include <QAction>
 
 class Device : public LauncherItem
 {
@@ -52,11 +53,24 @@ public:
     Q_INVOKABLE void open();
     Q_INVOKABLE void eject();
 
+    Q_INVOKABLE virtual void really_show_menu();
+    Q_INVOKABLE virtual void really_hide_menu();
+
+private slots:
+    void onOpenTriggered();
+    void onEjectTriggered();
+
 private:
     GVolume* m_volume;
 
     static void onVolumeMounted(GVolume* volume, GAsyncResult* res);
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
+
+    /* Contextual menu actions */
+    QAction* m_open;
+    QAction* m_sep1;
+    QAction* m_sep2;
+    QAction* m_eject;
 };
 
 Q_DECLARE_METATYPE(Device*)

@@ -10,6 +10,7 @@
 #include <QMetaType>
 #include <QString>
 #include <QTimer>
+#include <QAction>
 
 #include "bamf-application.h"
 
@@ -51,6 +52,8 @@ public:
     Q_INVOKABLE void close();
     Q_INVOKABLE void expose();
 
+    Q_INVOKABLE virtual void really_show_menu();
+    Q_INVOKABLE virtual void really_hide_menu();
 
 signals:
     void stickyChanged(bool);
@@ -69,6 +72,10 @@ private slots:
     QBool launch();
     void show();
 
+    /* Contextual menu callbacks */
+    void onKeepTriggered();
+    void onQuitTriggered();
+
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
@@ -76,6 +83,11 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+
+    /* Contextual menu actions */
+    QAction* m_separator;
+    QAction* m_keep;
+    QAction* m_quit;
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

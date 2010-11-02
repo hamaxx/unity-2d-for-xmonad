@@ -11,7 +11,8 @@
 #include <QDebug>
 
 LauncherApplication::LauncherApplication() :
-    m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
+    m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false),
+    m_separator(NULL), m_keep(NULL), m_quit(NULL)
 {
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
@@ -340,5 +341,54 @@ LauncherApplication::expose()
 {
     /* IMPLEMENT ME: see unity’s expose manager */
     qDebug() << "FIXME: Expose mode not implemented yet.";
+}
+
+void
+LauncherApplication::really_show_menu()
+{
+    m_separator = m_menu->addSeparator();
+
+    bool is_running = running();
+
+    m_keep = new QAction(m_menu);
+    m_keep->setCheckable(is_running);
+    m_keep->setChecked(sticky());
+    m_keep->setText(is_running ? "Keep In Launcher" : "Remove From Launcher");
+    m_menu->addAction(m_keep);
+    QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+
+    if (is_running)
+    {
+        m_quit = new QAction(m_menu);
+        m_quit->setText("Quit");
+        m_menu->addAction(m_quit);
+        QObject::connect(m_quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
+    }
+}
+
+void
+LauncherApplication::really_hide_menu()
+{
+    delete m_quit;
+    m_quit = NULL;
+    delete m_keep;
+    m_keep = NULL;
+    delete m_separator;
+    m_separator = NULL;
+    m_menu->hide();
+}
+
+void
+LauncherApplication::onKeepTriggered()
+{
+    setSticky(m_keep->isChecked());
+    really_hide_menu();
+}
+
+void
+LauncherApplication::onQuitTriggered()
+{
+    close();
+    really_hide_menu();
 }
 

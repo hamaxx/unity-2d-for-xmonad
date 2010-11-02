@@ -8,6 +8,7 @@ pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 # Sources
 set(UnityApplications_SRCS
     iconimageprovider.cpp
+    launcheritem.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
     device.cpp
