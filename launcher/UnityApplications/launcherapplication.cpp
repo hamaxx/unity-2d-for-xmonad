@@ -381,14 +381,15 @@ LauncherApplication::really_hide_menu()
 void
 LauncherApplication::onKeepTriggered()
 {
-    setSticky(m_keep->isChecked());
+    bool sticky = m_keep->isChecked();
     really_hide_menu();
+    setSticky(sticky);
 }
 
 void
 LauncherApplication::onQuitTriggered()
 {
-    close();
     really_hide_menu();
+    close();
 }
 

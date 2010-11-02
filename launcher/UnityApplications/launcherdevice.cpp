@@ -208,14 +208,14 @@ LauncherDevice::really_hide_menu()
 void
 LauncherDevice::onOpenTriggered()
 {
-    open();
     really_hide_menu();
+    open();
 }
 
 void
 LauncherDevice::onEjectTriggered()
 {
-    eject();
     really_hide_menu();
+    eject();
 }
 
