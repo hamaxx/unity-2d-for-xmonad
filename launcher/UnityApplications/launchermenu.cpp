@@ -73,14 +73,3 @@ LauncherContextualMenu::setTitle(QString title)
     m_title->setText(title);
 }
 
-void
-LauncherContextualMenu::prependAction(QAction* action)
-{
-    /* Insert an action before the title, and move the menu accordingly so that
-       the title remains in the same position. */
-    int y0 = actionGeometry(m_title).y();
-    insertAction(m_title, action);
-    int y1 = actionGeometry(m_title).y();
-    move(x(), y() - y1 + y0);
-}
-
