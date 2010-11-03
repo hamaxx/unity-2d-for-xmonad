@@ -21,7 +21,6 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QPoint>
 #include <QCursor>
 
 LauncherItem::LauncherItem()
@@ -66,14 +65,16 @@ LauncherItem::hideMenu(bool force)
 {
     if (!force)
     {
-        /* Should the menu really be hidden? */
+        /* Should the menu really be hidden? This trick discards invalid calls
+           to hideMenu() from Launcher.qml: the onExited event shouldn't cause
+           the menu to hide if the mouse cursor has left the button to enter
+           the menu, otherwise the user never gets a chance to use the menu.
+           This logic should live in the calling code, but I'm not sure how to
+           achieve that in QML… */
         bool unfolded = (m_menu->actions().size() > 1);
         if (unfolded)
         {
-            QDesktopWidget* desktop = QApplication::desktop();
-            const QRect available = desktop->availableGeometry(m_menu);
-            QPoint cursor = QCursor::pos();
-            if (cursor.x() >= available.x())
+            if (m_menu->geometry().contains(QCursor::pos()))
                 return;
         }
     }
