@@ -343,7 +343,7 @@ LauncherApplication::expose()
 }
 
 void
-LauncherApplication::reallyShowMenu()
+LauncherApplication::createMenuActions()
 {
     m_menu->addSeparator();
 

@@ -51,7 +51,7 @@ public:
     Q_INVOKABLE void close();
     Q_INVOKABLE void expose();
 
-    Q_INVOKABLE virtual void reallyShowMenu();
+    Q_INVOKABLE virtual void createMenuActions();
 
 signals:
     void stickyChanged(bool);

@@ -52,7 +52,7 @@ public:
     Q_INVOKABLE void open();
     Q_INVOKABLE void eject();
 
-    Q_INVOKABLE virtual void reallyShowMenu();
+    Q_INVOKABLE virtual void createMenuActions();
 
 private slots:
     void onEjectTriggered();

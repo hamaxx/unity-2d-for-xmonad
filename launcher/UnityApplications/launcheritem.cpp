@@ -58,7 +58,7 @@ LauncherItem::showMenu()
     if (m_menu->actions().size() > 1)
         return;
 
-    reallyShowMenu();
+    createMenuActions();
 }
 
 void

@@ -169,7 +169,7 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 }
 
 void
-LauncherDevice::reallyShowMenu()
+LauncherDevice::createMenuActions()
 {
     m_menu->addSeparator();
 
