@@ -50,11 +50,11 @@ public:
 
     /* methods */
     Q_INVOKABLE virtual void activate() = 0;
-    Q_INVOKABLE void show_tooltip(int y);
-    Q_INVOKABLE void show_menu();
-    Q_INVOKABLE virtual void really_show_menu() = 0;
-    Q_INVOKABLE void hide_menu();
-    Q_INVOKABLE virtual void really_hide_menu() = 0;
+    Q_INVOKABLE void showTooltip(int y);
+    Q_INVOKABLE void showMenu();
+    Q_INVOKABLE virtual void reallyShowMenu() = 0;
+    Q_INVOKABLE void hideMenu();
+    Q_INVOKABLE virtual void reallyHideMenu() = 0;
 
 protected:
     LauncherContextualMenu* m_menu;

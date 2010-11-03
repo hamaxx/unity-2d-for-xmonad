@@ -344,7 +344,7 @@ LauncherApplication::expose()
 }
 
 void
-LauncherApplication::really_show_menu()
+LauncherApplication::reallyShowMenu()
 {
     m_separator = m_menu->addSeparator();
 
@@ -367,7 +367,7 @@ LauncherApplication::really_show_menu()
 }
 
 void
-LauncherApplication::really_hide_menu()
+LauncherApplication::reallyHideMenu()
 {
     delete m_quit;
     m_quit = NULL;
@@ -382,14 +382,14 @@ void
 LauncherApplication::onKeepTriggered()
 {
     bool sticky = m_keep->isChecked();
-    really_hide_menu();
+    reallyHideMenu();
     setSticky(sticky);
 }
 
 void
 LauncherApplication::onQuitTriggered()
 {
-    really_hide_menu();
+    reallyHideMenu();
     close();
 }
 

@@ -38,7 +38,7 @@ LauncherItem::~LauncherItem()
 }
 
 void
-LauncherItem::show_tooltip(int y)
+LauncherItem::showTooltip(int y)
 {
     if (m_menu->isVisible())
         return;
@@ -52,17 +52,17 @@ LauncherItem::show_tooltip(int y)
 }
 
 void
-LauncherItem::show_menu()
+LauncherItem::showMenu()
 {
     /* Is the menu already unfolded? */
     if (m_menu->actions().size() > 1)
         return;
 
-    really_show_menu();
+    reallyShowMenu();
 }
 
 void
-LauncherItem::hide_menu()
+LauncherItem::hideMenu()
 {
     /* Should the menu really be hidden? */
     bool unfolded = (m_menu->actions().size() > 1);
@@ -75,7 +75,7 @@ LauncherItem::hide_menu()
             return;
     }
 
-    really_hide_menu();
+    reallyHideMenu();
 }
 
 bool
@@ -89,7 +89,7 @@ LauncherItem::eventFilter(QObject* obj, QEvent* event)
            Intercepting the Leave event is a cheap workaround: hide the menu
            when the cursor leaves it. This is not the same behaviour as in
            unity, but it will do for now… */
-        really_hide_menu();
+        reallyHideMenu();
         return true;
     }
     else

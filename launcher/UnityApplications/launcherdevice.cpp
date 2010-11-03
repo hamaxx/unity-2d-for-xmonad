@@ -170,7 +170,7 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 }
 
 void
-LauncherDevice::really_show_menu()
+LauncherDevice::reallyShowMenu()
 {
     m_separator = m_menu->addSeparator();
 
@@ -181,7 +181,7 @@ LauncherDevice::really_show_menu()
 }
 
 void
-LauncherDevice::really_hide_menu()
+LauncherDevice::reallyHideMenu()
 {
     delete m_eject;
     m_eject = NULL;
@@ -193,7 +193,7 @@ LauncherDevice::really_hide_menu()
 void
 LauncherDevice::onEjectTriggered()
 {
-    really_hide_menu();
+    reallyHideMenu();
     eject();
 }
 
