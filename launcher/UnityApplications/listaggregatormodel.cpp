@@ -1,0 +1,131 @@
+/*
+ * Copyright (C) 2010 Canonical, Ltd.
+ *
+ * Authors:
+ *  Olivier Tilloy <olivier.tilloy@canonical.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "listaggregatormodel.h"
+
+ListAggregatorModel::ListAggregatorModel(QObject* parent) :
+    QAbstractListModel(parent)
+{
+}
+
+ListAggregatorModel::~ListAggregatorModel()
+{
+    m_list.clear();
+}
+
+void
+ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
+{
+    m_models.append(model);
+    connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+            SLOT(onRowsInserted(const QModelIndex&, int, int)));
+    connect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+            SLOT(onRowsRemoved(const QModelIndex&, int, int)));
+}
+
+void
+ListAggregatorModel::removeListModel(QAbstractListModel* model)
+{
+    if (m_models.removeOne(model))
+    {
+        QObject::disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+                            this, SLOT(onRowsInserted(const QModelIndex&, int, int)));
+        QObject::disconnect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+                            this, SLOT(onRowsRemoved(const QModelIndex&, int, int)));
+    }
+}
+
+int
+ListAggregatorModel::computeOffset(QAbstractListModel* model) const
+{
+    int offset = 0;
+    QList<QAbstractListModel*>::const_iterator iter;
+    for (iter = m_models.begin(); (iter != m_models.end()) && (*iter != model); ++iter)
+    {
+        offset += (*iter)->rowCount();
+    }
+    return offset;
+}
+
+void
+ListAggregatorModel::onRowsInserted(const QModelIndex& parent, int first, int last)
+{
+    QAbstractListModel* model = static_cast<QAbstractListModel*>(sender());
+    int offset = computeOffset(model);
+    beginInsertRows(parent, first + offset, last + offset);
+    for (int i = first; i <= last; ++i)
+    {
+        m_list.insert(i + offset, model->data(createIndex(i, 0)));
+    }
+    endInsertRows();
+}
+
+void
+ListAggregatorModel::onRowsRemoved(const QModelIndex& parent, int first, int last)
+{
+    QAbstractListModel* model = static_cast<QAbstractListModel*>(sender());
+    int offset = computeOffset(model);
+    beginRemoveRows(parent, first + offset, last + offset);
+    for (int i = first; i <= last; ++i)
+    {
+        m_list.removeAt(first + offset);
+    }
+    endRemoveRows();
+}
+
+int
+ListAggregatorModel::rowCount(const QModelIndex& parent) const
+{
+    Q_UNUSED(parent)
+
+    int count = 0;
+    QList<QAbstractListModel*>::const_iterator iter;
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
+    {
+        count += (*iter)->rowCount();
+    }
+    return count;
+}
+
+QVariant
+ListAggregatorModel::data(const QModelIndex& index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    int row = index.row();
+    int offset = row;
+    QList<QAbstractListModel*>::const_iterator iter;
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
+    {
+        int rowCount = (*iter)->rowCount();
+        if (offset >= rowCount)
+        {
+            offset -= rowCount;
+        }
+        else
+        {
+            QModelIndex new_index = createIndex(offset, role);
+            return (*iter)->data(new_index, role);
+        }
+    }
+
+    // For the sake of completeness, should never happen.
+    return QVariant();
+}
