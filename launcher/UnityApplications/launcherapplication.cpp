@@ -353,14 +353,14 @@ LauncherApplication::really_show_menu()
     m_keep = new QAction(m_menu);
     m_keep->setCheckable(is_running);
     m_keep->setChecked(sticky());
-    m_keep->setText(is_running ? "Keep In Launcher" : "Remove From Launcher");
+    m_keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
     m_menu->addAction(m_keep);
     QObject::connect(m_keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
 
     if (is_running)
     {
         m_quit = new QAction(m_menu);
-        m_quit->setText("Quit");
+        m_quit->setText(tr("Quit"));
         m_menu->addAction(m_quit);
         QObject::connect(m_quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }

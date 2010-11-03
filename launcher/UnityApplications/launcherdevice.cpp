@@ -175,7 +175,7 @@ LauncherDevice::really_show_menu()
     m_separator = m_menu->addSeparator();
 
     m_eject = new QAction(m_menu);
-    m_eject->setText("Eject");
+    m_eject->setText(tr("Eject"));
     m_menu->addAction(m_eject);
     QObject::connect(m_eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
 }
