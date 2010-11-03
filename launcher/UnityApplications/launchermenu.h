@@ -21,7 +21,6 @@
 #define LAUNCHERMENU_H
 
 #include <QMenu>
-#include <QAction>
 
 class LauncherContextualMenu : public QMenu
 {
@@ -34,8 +33,6 @@ public:
     Q_INVOKABLE void setTitle(QString title);
 
 private:
-    QAction* m_title;
-
     void loadCSS();
 };
 

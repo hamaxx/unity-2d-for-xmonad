@@ -20,6 +20,7 @@
 #include "config.h"
 #include "launchermenu.h"
 
+#include <QAction>
 #include <QFile>
 #include <QApplication>
 
@@ -31,10 +32,6 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* Custom appearance. */
     loadCSS();
-
-    m_title = new QAction(this);
-    m_title->setEnabled(false);
-    addAction(m_title);
 }
 
 LauncherContextualMenu::~LauncherContextualMenu()
@@ -70,6 +67,9 @@ LauncherContextualMenu::loadCSS()
 void
 LauncherContextualMenu::setTitle(QString title)
 {
-    m_title->setText(title);
+    QAction* action = new QAction(this);
+    action->setEnabled(false);
+    addAction(action);
+    action->setText(title);
 }
 

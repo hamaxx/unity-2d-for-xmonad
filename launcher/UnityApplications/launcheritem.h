@@ -53,8 +53,7 @@ public:
     Q_INVOKABLE void showTooltip(int y);
     Q_INVOKABLE void showMenu();
     Q_INVOKABLE virtual void reallyShowMenu() = 0;
-    Q_INVOKABLE void hideMenu();
-    Q_INVOKABLE virtual void reallyHideMenu() = 0;
+    Q_INVOKABLE void hideMenu(bool force = false);
 
 protected:
     LauncherContextualMenu* m_menu;

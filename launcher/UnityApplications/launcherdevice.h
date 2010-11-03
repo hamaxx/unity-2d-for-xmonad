@@ -27,7 +27,6 @@
 #include <QObject>
 #include <QString>
 #include <QMetaType>
-#include <QAction>
 
 class LauncherDevice : public LauncherItem
 {
@@ -54,7 +53,6 @@ public:
     Q_INVOKABLE void eject();
 
     Q_INVOKABLE virtual void reallyShowMenu();
-    Q_INVOKABLE virtual void reallyHideMenu();
 
 private slots:
     void onEjectTriggered();
@@ -64,10 +62,6 @@ private:
 
     static void onVolumeMounted(GVolume* volume, GAsyncResult* res);
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
-
-    /* Contextual menu actions */
-    QAction* m_separator;
-    QAction* m_eject;
 };
 
 Q_DECLARE_METATYPE(LauncherDevice*)

@@ -22,8 +22,7 @@
 #include "QDebug"
 
 LauncherDevice::LauncherDevice() :
-    m_volume(NULL),
-    m_separator(NULL), m_eject(NULL)
+    m_volume(NULL)
 {
 }
 
@@ -172,28 +171,18 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 void
 LauncherDevice::reallyShowMenu()
 {
-    m_separator = m_menu->addSeparator();
+    m_menu->addSeparator();
 
-    m_eject = new QAction(m_menu);
-    m_eject->setText(tr("Eject"));
-    m_menu->addAction(m_eject);
-    QObject::connect(m_eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
-}
-
-void
-LauncherDevice::reallyHideMenu()
-{
-    delete m_eject;
-    m_eject = NULL;
-    delete m_separator;
-    m_separator = NULL;
-    m_menu->hide();
+    QAction* eject = new QAction(m_menu);
+    eject->setText(tr("Eject"));
+    m_menu->addAction(eject);
+    QObject::connect(eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
 }
 
 void
 LauncherDevice::onEjectTriggered()
 {
-    reallyHideMenu();
+    hideMenu(true);
     eject();
 }
 
