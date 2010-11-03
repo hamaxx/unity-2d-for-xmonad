@@ -57,7 +57,6 @@ public:
     Q_INVOKABLE virtual void really_hide_menu();
 
 private slots:
-    void onOpenTriggered();
     void onEjectTriggered();
 
 private:
@@ -67,9 +66,7 @@ private:
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
 
     /* Contextual menu actions */
-    QAction* m_open;
-    QAction* m_sep1;
-    QAction* m_sep2;
+    QAction* m_separator;
     QAction* m_eject;
 };
 
