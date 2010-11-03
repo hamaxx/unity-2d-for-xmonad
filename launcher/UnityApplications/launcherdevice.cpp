@@ -22,8 +22,7 @@
 #include "QDebug"
 
 LauncherDevice::LauncherDevice() :
-    m_volume(NULL),
-    m_open(NULL), m_sep1(NULL), m_sep2(NULL), m_eject(NULL)
+    m_volume(NULL)
 {
 }
 
@@ -170,50 +169,20 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 }
 
 void
-LauncherDevice::really_show_menu()
+LauncherDevice::createMenuActions()
 {
-    m_open = new QAction(m_menu);
-    m_open->setText("Open");
-    m_menu->prependAction(m_open);
-    QObject::connect(m_open, SIGNAL(triggered()), this, SLOT(onOpenTriggered()));
+    m_menu->addSeparator();
 
-    m_sep1 = new QAction(m_menu);
-    m_sep1->setSeparator(true);
-    m_menu->prependAction(m_sep1);
-
-    m_sep2 = m_menu->addSeparator();
-
-    m_eject = new QAction(m_menu);
-    m_eject->setText("Eject");
-    m_menu->addAction(m_eject);
-    QObject::connect(m_eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
-}
-
-void
-LauncherDevice::really_hide_menu()
-{
-    delete m_eject;
-    m_eject = NULL;
-    delete m_sep2;
-    m_sep2 = NULL;
-    delete m_sep1;
-    m_sep1 = NULL;
-    delete m_open;
-    m_open = NULL;
-    m_menu->hide();
-}
-
-void
-LauncherDevice::onOpenTriggered()
-{
-    really_hide_menu();
-    open();
+    QAction* eject = new QAction(m_menu);
+    eject->setText(tr("Eject"));
+    m_menu->addAction(eject);
+    QObject::connect(eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
 }
 
 void
 LauncherDevice::onEjectTriggered()
 {
-    really_hide_menu();
+    hideMenu(true);
     eject();
 }
 

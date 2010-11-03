@@ -21,7 +21,6 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QPoint>
 #include <QCursor>
 
 LauncherItem::LauncherItem()
@@ -38,44 +37,50 @@ LauncherItem::~LauncherItem()
 }
 
 void
-LauncherItem::show_tooltip(int y)
+LauncherItem::showTooltip(int y)
 {
     if (m_menu->isVisible())
         return;
+
+    m_menu->setTitle(name());
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(m_menu);
     m_menu->move(available.x(), y + available.y() - m_menu->sizeHint().height() / 2);
     m_menu->show();
-    /* Set the title after showing so that the width is correctly updated. */
-    m_menu->setTitle(name());
 }
 
 void
-LauncherItem::show_menu()
+LauncherItem::showMenu()
 {
     /* Is the menu already unfolded? */
     if (m_menu->actions().size() > 1)
         return;
 
-    really_show_menu();
+    createMenuActions();
 }
 
 void
-LauncherItem::hide_menu()
+LauncherItem::hideMenu(bool force)
 {
-    /* Should the menu really be hidden? */
-    bool unfolded = (m_menu->actions().size() > 1);
-    if (unfolded)
+    if (!force)
     {
-        QDesktopWidget* desktop = QApplication::desktop();
-        const QRect available = desktop->availableGeometry(m_menu);
-        QPoint cursor = QCursor::pos();
-        if (cursor.x() >= available.x())
-            return;
+        /* Should the menu really be hidden? This trick discards invalid calls
+           to hideMenu() from Launcher.qml: the onExited event shouldn't cause
+           the menu to hide if the mouse cursor has left the button to enter
+           the menu, otherwise the user never gets a chance to use the menu.
+           This logic should live in the calling code, but I'm not sure how to
+           achieve that in QML… */
+        bool unfolded = (m_menu->actions().size() > 1);
+        if (unfolded)
+        {
+            if (m_menu->geometry().contains(QCursor::pos()))
+                return;
+        }
     }
 
-    really_hide_menu();
+    m_menu->hide();
+    m_menu->clear();
 }
 
 bool
@@ -89,7 +94,7 @@ LauncherItem::eventFilter(QObject* obj, QEvent* event)
            Intercepting the Leave event is a cheap workaround: hide the menu
            when the cursor leaves it. This is not the same behaviour as in
            unity, but it will do for now… */
-        really_hide_menu();
+        hideMenu(true);
         return true;
     }
     else
