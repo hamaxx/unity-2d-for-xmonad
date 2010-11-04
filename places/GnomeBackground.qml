@@ -38,10 +38,23 @@ Item {
         anchors.fill: parent
         visible: picture_filename.value
         source: {
+            /* FIXME: Because /usr/share/backgrounds/warty-final-ubuntu.png is
+                      actually a jpeg and Qt relies by default on the extension
+                      that particular background fails to load. We workaround
+                      it by having our own symlink with a 'jpg' extension.
+
+               References:
+               https://bugs.launchpad.net/ubuntu/+source/ubuntu-wallpapers/+bug/296538
+               http://bugreports.qt.nokia.com/browse/QTBUG-7276
+            */
+            var filename = picture_filename.value
+            if(filename == "/usr/share/backgrounds/warty-final-ubuntu.png")
+                filename = "artwork/warty-final-ubuntu.jpg"
+
             if(overlay_alpha > 0.0)
-                return "image://blended/%1color=%2alpha=%3".arg(picture_filename.value).arg(overlay_color).arg(overlay_alpha)
+                return "image://blended/%1color=%2alpha=%3".arg(filename).arg(overlay_color).arg(overlay_alpha)
             else
-                return picture_filename.value
+                return filename
         }
         sourceSize.width: width
 
