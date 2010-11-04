@@ -19,7 +19,7 @@
 
 #include "launcherdevice.h"
 
-#include "QDebug"
+#include <QDebug>
 
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
