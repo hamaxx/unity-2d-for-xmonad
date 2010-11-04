@@ -5,6 +5,8 @@
 #include <QDeclarativeContext>
 #include <QX11Info>
 
+#include <QDebug>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
@@ -98,3 +100,11 @@ DashDeclarativeView::forceActivateWindow()
     XSendEvent(display, QX11Info::appRootWindow(), False,
                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
+
+void
+DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry)
+{
+    // TODO: implement me
+    qDebug() << "active place entry:" << file << entry;
+}
+

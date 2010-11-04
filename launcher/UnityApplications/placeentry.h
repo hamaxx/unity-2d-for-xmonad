@@ -28,6 +28,7 @@ class PlaceEntry : public LauncherItem
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
     Q_PROPERTY(QString groupName READ groupName WRITE setGroupName)
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath WRITE setDbusObjectPath)
 
@@ -43,12 +44,14 @@ public:
     virtual QString name() const;
     virtual QString icon() const;
     virtual bool launching() const;
+    QString fileName() const;
     QString groupName() const;
     QString dbusObjectPath() const;
 
     /* setters */
     void setName(QString);
     void setIcon(QString);
+    void setFileName(QString);
     void setGroupName(QString);
     void setDbusObjectPath(QString);
 
@@ -57,6 +60,7 @@ public:
     Q_INVOKABLE virtual void createMenuActions();
 
 private:
+    QString m_fileName;
     QString m_groupName;
     QString m_dbusObjectPath;
     QString m_icon;

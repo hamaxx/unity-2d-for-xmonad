@@ -61,6 +61,7 @@ Place::data(const QModelIndex& index, int role) const
 
     QString group = m_file->childGroups().filter("Entry:").at(index.row());
     PlaceEntry* entry = new PlaceEntry;
+    entry->setFileName(file());
     entry->setGroupName(group.mid(6));
     m_file->beginGroup(group);
     entry->setDbusObjectPath(m_file->value("DBusObjectPath").toString());

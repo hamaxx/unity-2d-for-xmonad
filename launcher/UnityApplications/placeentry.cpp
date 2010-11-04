@@ -19,13 +19,14 @@
 
 #include "placeentry.h"
 
-//#include <QDBusInterface>
+#include <QDBusInterface>
 
 PlaceEntry::PlaceEntry()
 {
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
+    m_fileName(other.m_fileName),
     m_groupName(other.m_groupName),
     m_dbusObjectPath(other.m_dbusObjectPath),
     m_icon(other.m_icon),
@@ -89,6 +90,18 @@ PlaceEntry::launching() const
 }
 
 QString
+PlaceEntry::fileName() const
+{
+    return m_fileName;
+}
+
+void
+PlaceEntry::setFileName(QString fileName)
+{
+    m_fileName = fileName;
+}
+
+QString
 PlaceEntry::groupName() const
 {
     return m_groupName;
@@ -115,8 +128,8 @@ PlaceEntry::setDbusObjectPath(QString dbusObjectPath)
 void
 PlaceEntry::activate()
 {
-    // TODO: implement me (call the DBus API)
-    //QDBusInterface* iface = new QDBusInterface("com.canonical.UnityQt", "/dash");
+    QDBusInterface iface("com.canonical.UnityQt", "/dash", "local.DashDeclarativeView");
+    iface.call("activatePlaceEntry", m_fileName, m_groupName);
 }
 
 void
