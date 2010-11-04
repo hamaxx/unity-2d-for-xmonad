@@ -41,6 +41,8 @@ public:
 private:
     GVolumeMonitor* m_volume_monitor;
     QList<LauncherDevice*> m_devices;
+    gulong m_handler_id_volume;
+    gulong m_handler_id_mount;
 
 private slots:
     static void onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data);
@@ -48,6 +50,12 @@ private slots:
 
     static void onVolumeRemovedProxy(GVolume* volume, gpointer data);
     void onVolumeRemoved(GVolume* volume);
+
+    static void onMountAddedProxy(GVolumeMonitor* volume_monitor, GMount* mount, gpointer data);
+    void onMountAdded(GVolumeMonitor* volume_monitor, GMount* mount);
+
+    static void onMountUnmountedProxy(GMount* mount, gpointer data);
+    void onMountUnmounted(GMount* mount);
 };
 
 #endif // LAUNCHERDEVICESLIST_H

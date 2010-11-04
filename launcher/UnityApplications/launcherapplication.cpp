@@ -345,8 +345,6 @@ LauncherApplication::expose()
 void
 LauncherApplication::createMenuActions()
 {
-    m_menu->addSeparator();
-
     bool is_running = running();
 
     QAction* keep = new QAction(m_menu);

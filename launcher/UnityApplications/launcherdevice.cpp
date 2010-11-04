@@ -19,20 +19,23 @@
 
 #include "launcherdevice.h"
 
-#include "QDebug"
+#include <QDebug>
 
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
 {
 }
 
-LauncherDevice::LauncherDevice(const LauncherDevice& other) :
-    m_volume(other.m_volume)
+LauncherDevice::LauncherDevice(const LauncherDevice& other)
 {
+    if (other.m_volume != NULL)
+        setVolume(other.m_volume);
 }
 
 LauncherDevice::~LauncherDevice()
 {
+    if (m_volume != NULL)
+        g_object_unref(m_volume);
 }
 
 bool
@@ -57,7 +60,12 @@ QString
 LauncherDevice::name() const
 {
     if (m_volume != NULL)
-        return QString(g_volume_get_name(m_volume));
+    {
+        char* name = g_volume_get_name(m_volume);
+        QString s = QString::fromLocal8Bit(name);
+        g_free(name);
+        return s;
+    }
 
     return QString("");
 }
@@ -92,6 +100,7 @@ void
 LauncherDevice::setVolume(GVolume* volume)
 {
     m_volume = volume;
+    g_object_ref(m_volume);
 }
 
 void
@@ -109,7 +118,7 @@ LauncherDevice::open()
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
-            qDebug() << error->message;
+            qWarning() << error->message;
         }
         g_free(uri);
         g_object_unref(root);
@@ -119,7 +128,7 @@ LauncherDevice::open()
     {
         if (!g_volume_can_mount(m_volume))
         {
-            qDebug() << "Volume cannot be mounted";
+            qWarning() << "Volume cannot be mounted";
             return;
         }
         g_volume_mount(m_volume, G_MOUNT_MOUNT_NONE, NULL, NULL,
@@ -140,7 +149,7 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
-            qDebug() << error->message;
+            qWarning() << error->message;
         }
         g_free(uri);
         g_object_unref(root);
@@ -148,7 +157,7 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
     }
     else
     {
-        qDebug() << "Unable to mount volume";
+        qWarning() << "Unable to mount volume";
     }
 }
 
@@ -158,8 +167,29 @@ LauncherDevice::eject()
     if (m_volume == NULL)
         return;
 
-    g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL, NULL,
-                                  (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
+    if (g_volume_can_eject(m_volume))
+    {
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL,
+            NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
+    }
+    else
+    {
+        GMount* mount = g_volume_get_mount(m_volume);
+
+        if (mount == NULL)
+            return;
+
+        if (g_mount_can_unmount(mount))
+        {
+            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, NULL,
+                NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
+                NULL);
+        }
+        else
+        {
+            g_object_unref(mount);
+        }
+    }
 }
 
 void
@@ -169,10 +199,15 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 }
 
 void
+LauncherDevice::onMountUnmounted(GMount* mount, GAsyncResult* res)
+{
+    g_mount_unmount_with_operation_finish(mount, res, NULL);
+    g_object_unref(mount);
+}
+
+void
 LauncherDevice::createMenuActions()
 {
-    m_menu->addSeparator();
-
     QAction* eject = new QAction(m_menu);
     eject->setText(tr("Eject"));
     m_menu->addAction(eject);

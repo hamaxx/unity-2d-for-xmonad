@@ -1,3 +1,9 @@
+unity-qt (0.0~bzr255) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Olivier Tilloy <olivier.tilloy@canonical.com>  Thu, 04 Nov 2010 16:53:49 -0400
+
 unity-qt (0.0~bzr245) maverick; urgency=low
 
   * Snapshot release.

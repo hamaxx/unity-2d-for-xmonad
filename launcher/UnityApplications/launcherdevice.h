@@ -62,6 +62,7 @@ private:
 
     static void onVolumeMounted(GVolume* volume, GAsyncResult* res);
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
+    static void onMountUnmounted(GMount* mount, GAsyncResult* res);
 };
 
 Q_DECLARE_METATYPE(LauncherDevice*)

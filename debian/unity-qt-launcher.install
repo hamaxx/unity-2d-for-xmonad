@@ -1,6 +1,6 @@
 etc/xdg/xdg-unity-qt/autostart/unity-qt-launcher.desktop
 usr/bin/unity-qt-launcher
-usr/share/unity-qt/launcher/Application.qml
+usr/share/unity-qt/launcher/LauncherItem.qml
 usr/share/unity-qt/launcher/Launcher.qml
 usr/share/unity-qt/launcher/launchermenu.css
 usr/share/unity-qt/launcher/artwork

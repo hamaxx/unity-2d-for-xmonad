@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     /* FIXME: this should not be needed but some parts of the dash are not
               property refreshed when not using it .. sometimes */
     view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    //QApplication::setGraphicsSystem("raster");
+    QApplication::setGraphicsSystem("raster");
 
     if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
     {
