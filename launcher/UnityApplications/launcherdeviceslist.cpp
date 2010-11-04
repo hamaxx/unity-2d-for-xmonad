@@ -33,6 +33,15 @@ LauncherDevicesList::LauncherDevicesList(QObject* parent) :
     }
     g_list_free(volumes);
 
+    GList* mounts = g_volume_monitor_get_mounts(m_volume_monitor);
+    for(GList* li = mounts; li != NULL; li = g_list_next(li))
+    {
+        GMount* mount = (GMount*) li->data;
+        onMountAdded(m_volume_monitor, mount);
+        g_object_unref(mount);
+    }
+    g_list_free(mounts);
+
     m_handler_id_volume = g_signal_connect(m_volume_monitor, "volume-added",
         G_CALLBACK(LauncherDevicesList::onVolumeAddedProxy), this);
     m_handler_id_mount = g_signal_connect(m_volume_monitor, "mount-added",
