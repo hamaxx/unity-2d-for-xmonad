@@ -6,6 +6,7 @@
 
 #include <QStringList>
 #include <QDir>
+#include <QDebug>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
 
@@ -51,6 +52,9 @@ LauncherApplicationsList::insertApplication(QString desktop_file)
     if (m_applications.contains(desktop_file))
         return m_applications[desktop_file];
 
+    if (desktop_file.isEmpty() || !QFile::exists(desktop_file))
+        return NULL;
+
     /* Create a new QLauncherApplication */
     QLauncherApplication* application = new QLauncherApplication;
     application->setDesktopFile(desktop_file);
@@ -86,6 +90,12 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 
     QString desktop_file = bamf_application->desktop_file();
     QLauncherApplication* application = insertApplication(desktop_file);
+    if (application == NULL) {
+        qWarning() << "BAMF app" << bamf_application->name()
+                   << "not added due to desktop file missing or blank (" << desktop_file << ")";
+        return;
+    }
+
     application->setBamfApplication(bamf_application);
 
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
@@ -95,6 +105,11 @@ void
 LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 {
     QLauncherApplication* application = insertApplication(desktop_file);
+    if (application == NULL) {
+        qWarning() << "Favorite app not added due to desktop file missing or blank ("
+                   << desktop_file << ")";
+        return;
+    }
     application->setSticky(true);
 }
 
