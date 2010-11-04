@@ -60,7 +60,12 @@ QString
 LauncherDevice::name() const
 {
     if (m_volume != NULL)
-        return QString(g_volume_get_name(m_volume));
+    {
+        char* name = g_volume_get_name(m_volume);
+        QString s = QString::fromLocal8Bit(name);
+        g_free(name);
+        return s;
+    }
 
     return QString("");
 }
