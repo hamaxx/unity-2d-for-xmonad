@@ -162,14 +162,42 @@ LauncherDevice::eject()
     if (m_volume == NULL)
         return;
 
-    g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL, NULL,
-                                  (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
+    if (g_volume_can_eject(m_volume))
+    {
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL,
+            NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
+    }
+    else
+    {
+        GMount* mount = g_volume_get_mount(m_volume);
+
+        if (mount == NULL)
+            return;
+
+        if (g_mount_can_unmount(mount))
+        {
+            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, NULL,
+                NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
+                NULL);
+        }
+        else
+        {
+            g_object_unref(mount);
+        }
+    }
 }
 
 void
 LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 {
     g_volume_eject_with_operation_finish(volume, res, NULL);
+}
+
+void
+LauncherDevice::onMountUnmounted(GMount* mount, GAsyncResult* res)
+{
+    g_mount_unmount_with_operation_finish(mount, res, NULL);
+    g_object_unref(mount);
 }
 
 void
