@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     /* FIXME: possible optimisations */
 //    view.setAttribute(Qt::WA_OpaquePaintEvent);
 //    view.setAttribute(Qt::WA_NoSystemBackground);
+    QApplication::setGraphicsSystem("raster");
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
