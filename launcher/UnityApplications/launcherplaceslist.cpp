@@ -18,6 +18,7 @@
  */
 
 #include "launcherplaceslist.h"
+#include "place.h"
 
 #include <QDir>
 
@@ -49,10 +50,13 @@ LauncherPlacesList::~LauncherPlacesList()
 {
     delete m_watch;
 
-    QList<Place*>::iterator iter;
-    for(iter = m_places.begin(); iter != m_places.end(); ++iter)
+    QList<QAbstractListModel*>::iterator iter;
+    for(iter = m_models.begin(); iter != m_models.end(); )
     {
-        delete *iter;
+        Place* place = static_cast<Place*>(*iter);
+        removeListModel(place);
+        delete place;
+        iter = m_models.begin();
     }
 }
 
@@ -66,12 +70,13 @@ LauncherPlacesList::addPlace(const QString& file)
 void
 LauncherPlacesList::removePlace(const QString& file)
 {
-    QList<Place*>::iterator iter;
-    for (iter = m_places.begin(); iter != m_places.end(); ++iter)
+    QList<QAbstractListModel*>::iterator iter;
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
     {
-        if ((*iter)->file() == file)
+        Place* place = static_cast<Place*>(*iter);
+        if (place->file() == file)
         {
-            removeListModel(*iter);
+            removeListModel(place);
             break;
         }
     }

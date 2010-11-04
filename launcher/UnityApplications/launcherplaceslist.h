@@ -21,7 +21,6 @@
 #define LAUNCHERPLACESLIST_H
 
 #include "listaggregatormodel.h"
-#include "place.h"
 
 #include <QStringList>
 #include <QFileSystemWatcher>
@@ -37,7 +36,6 @@ public:
 private:
     QStringList m_placeFiles;
     QFileSystemWatcher* m_watch;
-    QList<Place*> m_places;
 
     void addPlace(const QString& file);
     void removePlace(const QString& file);
