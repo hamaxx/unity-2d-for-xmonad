@@ -26,13 +26,16 @@ LauncherDevice::LauncherDevice() :
 {
 }
 
-LauncherDevice::LauncherDevice(const LauncherDevice& other) :
-    m_volume(other.m_volume)
+LauncherDevice::LauncherDevice(const LauncherDevice& other)
 {
+    if (other.m_volume != NULL)
+        setVolume(other.m_volume);
 }
 
 LauncherDevice::~LauncherDevice()
 {
+    if (m_volume != NULL)
+        g_object_unref(m_volume);
 }
 
 bool
@@ -92,6 +95,7 @@ void
 LauncherDevice::setVolume(GVolume* volume)
 {
     m_volume = volume;
+    g_object_ref(m_volume);
 }
 
 void

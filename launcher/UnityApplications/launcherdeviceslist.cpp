@@ -33,12 +33,15 @@ LauncherDevicesList::LauncherDevicesList(QObject* parent) :
     }
     g_list_free(volumes);
 
-    g_signal_connect(m_volume_monitor, "volume-added",
-                     G_CALLBACK(LauncherDevicesList::onVolumeAddedProxy), this);
+    m_handler_id = g_signal_connect(m_volume_monitor, "volume-added",
+        G_CALLBACK(LauncherDevicesList::onVolumeAddedProxy), this);
 }
 
 LauncherDevicesList::~LauncherDevicesList()
 {
+    g_signal_handler_disconnect(m_volume_monitor, m_handler_id);
+    g_object_unref(m_volume_monitor);
+
     QList<LauncherDevice*>::iterator iter;
     for(iter = m_devices.begin(); iter != m_devices.end(); ++iter)
     {

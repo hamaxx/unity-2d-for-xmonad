@@ -41,6 +41,7 @@ public:
 private:
     GVolumeMonitor* m_volume_monitor;
     QList<LauncherDevice*> m_devices;
+    gulong m_handler_id;
 
 private slots:
     static void onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data);
