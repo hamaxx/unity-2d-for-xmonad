@@ -20,38 +20,21 @@
 #ifndef LAUNCHERMENU_H
 #define LAUNCHERMENU_H
 
-#include "launcherapplication.h"
-
-#include <QVariant>
 #include <QMenu>
-#include <QAction>
 
-class QLauncherContextualMenu : public QMenu
+class LauncherContextualMenu : public QMenu
 {
     Q_OBJECT
 
 public:
-    QLauncherContextualMenu();
-    ~QLauncherContextualMenu();
+    LauncherContextualMenu();
+    ~LauncherContextualMenu();
 
-    Q_INVOKABLE void show(int y, const QVariant& application);
-    Q_INVOKABLE void show_menu();
-    Q_INVOKABLE void hide(bool force = false);
-
-protected:
-    void leaveEvent(QEvent* event);
+    Q_INVOKABLE void setTitle(QString title);
 
 private:
-    QLauncherApplication* m_application;
-    QAction* m_title;
-    QAction* m_keep;
-    QAction* m_quit;
-
     void loadCSS();
-
-private slots:
-    void onKeepTriggered();
-    void onQuitTriggered();
 };
 
 #endif // LAUNCHERMENU_H
+

@@ -67,7 +67,7 @@ Page {
             icon: "image://icons/unity-icon-theme/softwarecentre"
             label: qsTr("Get New Apps")
 
-            QLauncherApplication {
+            LauncherApplication {
                 id: software_center
                 desktop_file: "/usr/share/applications/ubuntu-software-center.desktop"
             }

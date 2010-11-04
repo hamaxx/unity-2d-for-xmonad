@@ -1,7 +1,7 @@
 #include "launcherapplication.h"
-#include "launcherapplicationslist.h"
+#include "launcherdevice.h"
+#include "launchermodel.h"
 #include "iconimageprovider.h"
-#include "launchermenu.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -9,7 +9,8 @@
 
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<QLauncherApplication>(uri, 0, 1, "QLauncherApplication");
+    qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
+    qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -18,11 +19,8 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
 
     engine->addImageProvider(QString("icons"), new IconImageProvider);
 
-    LauncherApplicationsList* applications = new LauncherApplicationsList;
-    engine->rootContext()->setContextProperty("applications", applications);
-
-    QLauncherContextualMenu* menu = new QLauncherContextualMenu;
-    engine->rootContext()->setContextProperty("menu", menu);
+    LauncherModel* launcher = new LauncherModel;
+    engine->rootContext()->setContextProperty("launcher", launcher);
 }
 
 Q_EXPORT_PLUGIN2(UnityApplications, UnityApplicationsPlugin);
