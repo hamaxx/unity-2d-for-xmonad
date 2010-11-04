@@ -17,34 +17,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launchermodel.h"
+#ifndef PLACE_H
+#define PLACE_H
 
-LauncherModel::LauncherModel(QObject* parent) :
-    ListAggregatorModel(parent)
+#include <QAbstractListModel>
+#include <QString>
+#include <QSettings>
+
+class Place : public QAbstractListModel
 {
-    QHash<int, QByteArray> roles;
-    roles[0] = "item";
-    setRoleNames(roles);
+    Q_OBJECT
 
-    m_applications = new LauncherApplicationsList;
-    aggregateListModel(m_applications);
+    Q_PROPERTY(QString dbusName READ dbusName)
+    Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath)
 
-    m_places = new LauncherPlacesList;
-    aggregateListModel(m_places);
+public:
+    Place(const QString& file);
+    ~Place();
 
-    m_devices = new LauncherDevicesList;
-    aggregateListModel(m_devices);
-}
+    /* getters */
+    QString file() const;
+    QString dbusName() const;
+    QString dbusObjectPath() const;
 
-LauncherModel::~LauncherModel()
-{
-    removeListModel(m_devices);
-    delete m_devices;
+    /* methods */
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    removeListModel(m_places);
-    delete m_places;
+private:
+    QSettings* m_file;
+};
 
-    removeListModel(m_applications);
-    delete m_applications;
-}
+#endif // PLACE_H
 

@@ -21,6 +21,7 @@
 #define LAUNCHERMODEL_H
 
 #include "launcherapplicationslist.h"
+#include "launcherplaceslist.h"
 #include "launcherdeviceslist.h"
 
 #include "listaggregatormodel.h"
@@ -35,6 +36,7 @@ public:
 
 private:
     LauncherApplicationsList* m_applications;
+    LauncherPlacesList* m_places;
     LauncherDevicesList* m_devices;
 };
 

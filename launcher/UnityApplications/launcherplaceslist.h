@@ -17,34 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launchermodel.h"
+#ifndef LAUNCHERPLACESLIST_H
+#define LAUNCHERPLACESLIST_H
 
-LauncherModel::LauncherModel(QObject* parent) :
-    ListAggregatorModel(parent)
+#include "listaggregatormodel.h"
+#include "place.h"
+
+#include <QStringList>
+#include <QFileSystemWatcher>
+
+class LauncherPlacesList : public ListAggregatorModel
 {
-    QHash<int, QByteArray> roles;
-    roles[0] = "item";
-    setRoleNames(roles);
+    Q_OBJECT
 
-    m_applications = new LauncherApplicationsList;
-    aggregateListModel(m_applications);
+public:
+    LauncherPlacesList(QObject* parent = 0);
+    ~LauncherPlacesList();
 
-    m_places = new LauncherPlacesList;
-    aggregateListModel(m_places);
+private:
+    QStringList m_placeFiles;
+    QFileSystemWatcher* m_watch;
+    QList<Place*> m_places;
 
-    m_devices = new LauncherDevicesList;
-    aggregateListModel(m_devices);
-}
+    void addPlace(const QString& file);
+    void removePlace(const QString& file);
 
-LauncherModel::~LauncherModel()
-{
-    removeListModel(m_devices);
-    delete m_devices;
+private slots:
+    void onDirectoryChanged(const QString&);
+};
 
-    removeListModel(m_places);
-    delete m_places;
-
-    removeListModel(m_applications);
-    delete m_applications;
-}
+#endif // LAUNCHERPLACESLIST_H
 
