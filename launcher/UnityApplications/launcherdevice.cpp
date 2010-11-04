@@ -171,8 +171,6 @@ LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 void
 LauncherDevice::createMenuActions()
 {
-    m_menu->addSeparator();
-
     QAction* eject = new QAction(m_menu);
     eject->setText(tr("Eject"));
     m_menu->addAction(eject);
