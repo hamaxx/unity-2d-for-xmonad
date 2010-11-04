@@ -109,7 +109,7 @@ LauncherDevice::open()
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
-            qDebug() << error->message;
+            qWarning() << error->message;
         }
         g_free(uri);
         g_object_unref(root);
@@ -119,7 +119,7 @@ LauncherDevice::open()
     {
         if (!g_volume_can_mount(m_volume))
         {
-            qDebug() << "Volume cannot be mounted";
+            qWarning() << "Volume cannot be mounted";
             return;
         }
         g_volume_mount(m_volume, G_MOUNT_MOUNT_NONE, NULL, NULL,
@@ -140,7 +140,7 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL)
         {
-            qDebug() << error->message;
+            qWarning() << error->message;
         }
         g_free(uri);
         g_object_unref(root);
@@ -148,7 +148,7 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
     }
     else
     {
-        qDebug() << "Unable to mount volume";
+        qWarning() << "Unable to mount volume";
     }
 }
 
