@@ -34,6 +34,8 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 protected:
+    QList<QAbstractListModel*> m_models;
+
     void aggregateListModel(QAbstractListModel* model);
     void removeListModel(QAbstractListModel* model);
 
@@ -42,7 +44,6 @@ private slots:
     void onRowsRemoved(const QModelIndex& parent, int first, int last);
 
 private:
-    QList<QAbstractListModel*> m_models;
     QVariantList m_list;
 
     int computeOffset(QAbstractListModel* model) const;
