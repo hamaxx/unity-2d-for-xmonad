@@ -67,7 +67,7 @@ private slots:
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
 
-    QBool launch();
+    bool launch();
     void show();
 
     /* Contextual menu callbacks */

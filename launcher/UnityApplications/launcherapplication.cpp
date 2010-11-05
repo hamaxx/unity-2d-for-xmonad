@@ -241,10 +241,10 @@ LauncherApplication::activate()
         launch();
 }
 
-QBool
+bool
 LauncherApplication::launch()
 {
-    if(m_appInfo == NULL) return QBool(false);
+    if(m_appInfo == NULL) return false;
 
     GError* error;
     GdkAppLaunchContext *context;
@@ -265,7 +265,7 @@ LauncherApplication::launch()
     m_launching_timer.start(8000);
     emit launchingChanged(true);
 
-    return QBool(true);
+    return true;
 }
 
 void
