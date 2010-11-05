@@ -44,8 +44,6 @@ private slots:
     void onRowsRemoved(const QModelIndex& parent, int first, int last);
 
 private:
-    QVariantList m_list;
-
     int computeOffset(QAbstractListModel* model) const;
 };
 

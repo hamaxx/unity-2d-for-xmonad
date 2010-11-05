@@ -26,7 +26,6 @@ ListAggregatorModel::ListAggregatorModel(QObject* parent) :
 
 ListAggregatorModel::~ListAggregatorModel()
 {
-    m_list.clear();
 }
 
 void
@@ -72,10 +71,6 @@ ListAggregatorModel::onRowsInserted(const QModelIndex& parent, int first, int la
     QAbstractListModel* model = static_cast<QAbstractListModel*>(sender());
     int offset = computeOffset(model);
     beginInsertRows(parent, first + offset, last + offset);
-    for (int i = first; i <= last; ++i)
-    {
-        m_list.insert(i + offset, model->data(createIndex(i, 0)));
-    }
     endInsertRows();
 }
 
@@ -85,10 +80,6 @@ ListAggregatorModel::onRowsRemoved(const QModelIndex& parent, int first, int las
     QAbstractListModel* model = static_cast<QAbstractListModel*>(sender());
     int offset = computeOffset(model);
     beginRemoveRows(parent, first + offset, last + offset);
-    for (int i = first; i <= last; ++i)
-    {
-        m_list.removeAt(first + offset);
-    }
     endRemoveRows();
 }
 
