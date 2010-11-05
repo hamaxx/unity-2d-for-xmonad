@@ -31,7 +31,9 @@ ListAggregatorModel::~ListAggregatorModel()
 void
 ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 {
-    beginInsertRows(QModelIndex(), m_models.size(), m_models.size());
+    int first = rowCount();
+    int last = first + model->rowCount() - 1;
+    beginInsertRows(QModelIndex(), first, last);
     m_models.append(model);
     endInsertRows();
     connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
@@ -43,8 +45,10 @@ ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 void
 ListAggregatorModel::removeListModel(QAbstractListModel* model)
 {
+    int first = computeOffset(model);
+    int last = first + model->rowCount() - 1;
     int index = m_models.indexOf(model);
-    beginRemoveRows(QModelIndex(), index, index);
+    beginRemoveRows(QModelIndex(), first, last);
     m_models.removeAt(index);
     endRemoveRows();
     QObject::disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
