@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
     /* Register a D-Bus service for activation and deactivation of the dash */
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerService("com.canonical.UnityQt");
-    // FIXME: use an adaptor class in order not to expose all of the view's
-    // properties and methods.
+    /* FIXME: use an adaptor class in order not to expose all of the view's
+       properties and methods. */
     bus.registerObject("/dash", &view, QDBusConnection::ExportAllContents);
     /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
        property change notification that Qt 4.7 does not implement.

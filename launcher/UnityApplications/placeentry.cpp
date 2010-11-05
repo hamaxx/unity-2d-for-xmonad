@@ -84,8 +84,8 @@ PlaceEntry::setIcon(QString icon)
 bool
 PlaceEntry::launching() const
 {
-    // This basically means no launching animation when opening the device.
-    // Unity behaves likes this.
+    /* This basically means no launching animation when opening the device.
+       Unity behaves likes this. */
     return false;
 }
 

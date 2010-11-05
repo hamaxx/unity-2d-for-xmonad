@@ -105,8 +105,8 @@ DashDeclarativeView::forceActivateWindow()
 void
 DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry)
 {
-    // FIXME: this is a quick and dirty implementation.
-    // We need a cleaner way to access the place object and activate it.
+    /* FIXME: this is a quick and dirty implementation.
+       We need a cleaner way to access the place object and activate it. */
     QGraphicsObject* dash = rootObject();
     QString place_id = file.mid(file.lastIndexOf("/") + 1).replace(".", "_");
     QList<QObject*> matches = dash->findChildren<QObject*>(place_id);
