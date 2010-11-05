@@ -63,7 +63,8 @@ LauncherPlacesList::~LauncherPlacesList()
 void
 LauncherPlacesList::addPlace(const QString& file)
 {
-    Place* place = new Place(file);
+    Place* place = new Place;
+    place->setFileName(file);
     aggregateListModel(place);
 }
 
@@ -74,7 +75,7 @@ LauncherPlacesList::removePlace(const QString& file)
     for (iter = m_models.begin(); iter != m_models.end(); ++iter)
     {
         Place* place = static_cast<Place*>(*iter);
-        if (place->file() == file)
+        if (place->fileName() == file)
         {
             removeListModel(place);
             break;
@@ -112,4 +113,3 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
 
     m_placeFiles = newPlaceFiles;
 }
-

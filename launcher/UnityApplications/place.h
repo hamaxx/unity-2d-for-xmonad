@@ -23,22 +23,31 @@
 #include <QAbstractListModel>
 #include <QString>
 #include <QSettings>
+#include <QList>
+#include <QMetaType>
+
+#include "placeentry.h"
 
 class Place : public QAbstractListModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
     Q_PROPERTY(QString dbusName READ dbusName)
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath)
 
 public:
-    Place(const QString& file);
+    Place(QObject* parent = 0);
+    Place(const Place& other);
     ~Place();
 
     /* getters */
-    QString file() const;
+    QString fileName() const;
     QString dbusName() const;
     QString dbusObjectPath() const;
+
+    /* setters */
+    void setFileName(const QString& file);
 
     /* methods */
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -46,7 +55,11 @@ public:
 
 private:
     QSettings* m_file;
+    QString m_dbusName;
+    QString m_dbusObjectName;
+    QList<PlaceEntry*> m_entries;
 };
 
-#endif // PLACE_H
+Q_DECLARE_METATYPE(Place*)
 
+#endif // PLACE_H

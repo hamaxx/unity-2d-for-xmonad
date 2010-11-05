@@ -1,4 +1,5 @@
 #include "launcherapplication.h"
+#include "place.h"
 #include "placeentry.h"
 #include "launcherdevice.h"
 #include "launchermodel.h"
@@ -11,6 +12,7 @@
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
+    qmlRegisterType<Place>(uri, 0, 1, "Place");
     qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
     qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
 }
