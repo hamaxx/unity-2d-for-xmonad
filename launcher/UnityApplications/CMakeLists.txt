@@ -8,22 +8,30 @@ pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 # Sources
 set(UnityApplications_SRCS
     iconimageprovider.cpp
+    listaggregatormodel.cpp
     launcheritem.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
     launcherdevice.cpp
     launcherdeviceslist.cpp
+    placeentry.cpp
+    place.cpp
+    launcherplaceslist.cpp
     launchermodel.cpp
     launchermenu.cpp
     plugin.cpp
     )
 
 set(UnityApplications_MOC_HDRS
+    listaggregatormodel.h
     launcheritem.h
     launcherapplication.h
     launcherapplicationslist.h
     launcherdevice.h
     launcherdeviceslist.h
+    placeentry.h
+    place.h
+    launcherplaceslist.h
     launchermodel.h
     launchermenu.h
     plugin.h

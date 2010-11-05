@@ -4,6 +4,9 @@
 #include <QCloseEvent>
 #include <QDeclarativeContext>
 #include <QX11Info>
+#include <QGraphicsObject>
+
+#include <QDebug>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -97,4 +100,26 @@ DashDeclarativeView::forceActivateWindow()
 
     XSendEvent(display, QX11Info::appRootWindow(), False,
                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+}
+
+void
+DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry)
+{
+    /* FIXME: this is a quick and dirty implementation.
+       We need a cleaner way to access the place object and activate it. */
+    QGraphicsObject* dash = rootObject();
+    QString place_id = file.mid(file.lastIndexOf("/") + 1).replace(".", "_");
+    QList<QObject*> matches = dash->findChildren<QObject*>(place_id);
+    if (matches.size() > 0)
+    {
+        QObject* place = matches.at(0);
+        setActive(true);
+        QMetaObject::invokeMethod(dash, "activatePlace", Qt::AutoConnection,
+                                  Q_ARG(QVariant, QVariant::fromValue(place)),
+                                  Q_ARG(QVariant, QVariant::fromValue(0)));
+    }
+    else
+    {
+        qWarning() << "No matching place for" << file;
+    }
 }

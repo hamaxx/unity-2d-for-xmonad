@@ -21,34 +21,23 @@
 #define LAUNCHERMODEL_H
 
 #include "launcherapplicationslist.h"
+#include "launcherplaceslist.h"
 #include "launcherdeviceslist.h"
 
-#include <QAbstractListModel>
-#include <QObject>
-#include <QVariant>
+#include "listaggregatormodel.h"
 
-class LauncherModel : public QAbstractListModel
+class LauncherModel : public ListAggregatorModel
 {
     Q_OBJECT
 
 public:
-    LauncherModel(QObject *parent = 0);
+    LauncherModel(QObject* parent = 0);
     ~LauncherModel();
-
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
-private slots:
-    void onApplicationsInserted(const QModelIndex& parent, int first, int last);
-    void onApplicationsRemoved(const QModelIndex& parent, int first, int last);
-    void onDevicesInserted(const QModelIndex& parent, int first, int last);
-    void onDevicesRemoved(const QModelIndex& parent, int first, int last);
 
 private:
     LauncherApplicationsList* m_applications;
+    LauncherPlacesList* m_places;
     LauncherDevicesList* m_devices;
-
-    QVariantList m_list;
 };
 
 #endif // LAUNCHERMODEL_H

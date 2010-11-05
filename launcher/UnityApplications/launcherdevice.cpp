@@ -79,8 +79,8 @@ LauncherDevice::icon() const
 bool
 LauncherDevice::launching() const
 {
-    // This basically means no launching animation when opening the device.
-    // Unity behaves likes this.
+    /* This basically means no launching animation when opening the device.
+       Unity behaves likes this. */
     return false;
 }
 
