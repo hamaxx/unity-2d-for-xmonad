@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("dashView", &view);
+    view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
 
     /* Always match the size of the desktop */
