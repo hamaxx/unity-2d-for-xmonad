@@ -42,9 +42,9 @@ LauncherItem::showTooltip(int y)
     if (m_menu->isVisible())
         return;
 
-    /* FIXME: find a way to escape ampersands (e.g. "Files & Folders"),
-       otherwise they are considered as keyboard accelerators. */
-    m_menu->setTitle(name());
+    /* Escaping ampersands so that they are not considered as keyboard
+       accelerators. */
+    m_menu->setTitle(name().replace("&", "&&"));
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(m_menu);
