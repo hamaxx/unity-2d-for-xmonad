@@ -10,14 +10,14 @@
 
 #include <QDebug>
 
-QLauncherApplication::QLauncherApplication(QObject *parent) :
-    QObject(parent), m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
+LauncherApplication::LauncherApplication() :
+    m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
 {
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
-QLauncherApplication::QLauncherApplication(const QLauncherApplication& other) :
-    QObject(other.parent()), m_application(NULL), m_appInfo(NULL)
+LauncherApplication::LauncherApplication(const LauncherApplication& other) :
+    m_application(NULL), m_appInfo(NULL)
 {
     /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
@@ -26,7 +26,7 @@ QLauncherApplication::QLauncherApplication(const QLauncherApplication& other) :
     m_priority = other.m_priority;
 }
 
-QLauncherApplication::~QLauncherApplication()
+LauncherApplication::~LauncherApplication()
 {
     if(m_application != NULL)
     {
@@ -39,7 +39,7 @@ QLauncherApplication::~QLauncherApplication()
 }
 
 bool
-QLauncherApplication::active() const
+LauncherApplication::active() const
 {
     if(m_application != NULL)
         return m_application->active();
@@ -48,7 +48,7 @@ QLauncherApplication::active() const
 }
 
 bool
-QLauncherApplication::running() const
+LauncherApplication::running() const
 {
     if(m_application != NULL)
         return m_application->running();
@@ -57,7 +57,7 @@ QLauncherApplication::running() const
 }
 
 bool
-QLauncherApplication::urgent() const
+LauncherApplication::urgent() const
 {
     if(m_application != NULL)
         return m_application->urgent();
@@ -66,13 +66,13 @@ QLauncherApplication::urgent() const
 }
 
 bool
-QLauncherApplication::sticky() const
+LauncherApplication::sticky() const
 {
     return m_sticky;
 }
 
 QString
-QLauncherApplication::name() const
+LauncherApplication::name() const
 {
     if(m_application != NULL)
         return m_application->name();
@@ -84,7 +84,7 @@ QLauncherApplication::name() const
 }
 
 QString
-QLauncherApplication::icon() const
+LauncherApplication::icon() const
 {
     if(m_application != NULL)
         return m_application->icon();
@@ -96,7 +96,7 @@ QLauncherApplication::icon() const
 }
 
 QString
-QLauncherApplication::application_type() const
+LauncherApplication::application_type() const
 {
     if(m_application != NULL)
         return m_application->application_type();
@@ -105,7 +105,7 @@ QLauncherApplication::application_type() const
 }
 
 QString
-QLauncherApplication::desktop_file() const
+LauncherApplication::desktop_file() const
 {
     if(m_application != NULL)
         return m_application->desktop_file();
@@ -117,7 +117,7 @@ QLauncherApplication::desktop_file() const
 }
 
 void
-QLauncherApplication::setSticky(bool sticky)
+LauncherApplication::setSticky(bool sticky)
 {
     if (sticky == m_sticky)
         return;
@@ -127,7 +127,7 @@ QLauncherApplication::setSticky(bool sticky)
 }
 
 void
-QLauncherApplication::setDesktopFile(QString desktop_file)
+LauncherApplication::setDesktopFile(QString desktop_file)
 {
     /* FIXME: should check/interact properly with an m_application != NULL */
 
@@ -153,7 +153,7 @@ QLauncherApplication::setDesktopFile(QString desktop_file)
 }
 
 void
-QLauncherApplication::setBamfApplication(BamfApplication *application)
+LauncherApplication::setBamfApplication(BamfApplication *application)
 {
     m_application = application;
 
@@ -183,7 +183,7 @@ QLauncherApplication::setBamfApplication(BamfApplication *application)
 }
 
 void
-QLauncherApplication::onBamfApplicationClosed(bool running)
+LauncherApplication::onBamfApplicationClosed(bool running)
 {
     if(running)
        return;
@@ -195,26 +195,26 @@ QLauncherApplication::onBamfApplicationClosed(bool running)
 }
 
 void
-QLauncherApplication::onDesktopFileChanged(QString desktop_file)
+LauncherApplication::onDesktopFileChanged(QString desktop_file)
 {
     /* FIXME: should retrieve its value in GConf */
     m_priority = 1;
 }
 
 int
-QLauncherApplication::priority() const
+LauncherApplication::priority() const
 {
     return m_priority;
 }
 
 bool
-QLauncherApplication::launching() const
+LauncherApplication::launching() const
 {
     return m_launching_timer.isActive();
 }
 
 void
-QLauncherApplication::updateHasVisibleWindow()
+LauncherApplication::updateHasVisibleWindow()
 {
     bool prev = m_has_visible_window;
     m_has_visible_window = m_application->xids()->size() > 0;
@@ -223,15 +223,28 @@ QLauncherApplication::updateHasVisibleWindow()
 }
 
 bool
-QLauncherApplication::has_visible_window() const
+LauncherApplication::has_visible_window() const
 {
     return m_has_visible_window;
 }
 
-QBool
-QLauncherApplication::launch()
+void
+LauncherApplication::activate()
 {
-    if(m_appInfo == NULL) return QBool(false);
+    if (active())
+        expose();
+
+    else if (running() && has_visible_window())
+        show();
+
+    else
+        launch();
+}
+
+bool
+LauncherApplication::launch()
+{
+    if(m_appInfo == NULL) return false;
 
     GError* error;
     GdkAppLaunchContext *context;
@@ -252,17 +265,17 @@ QLauncherApplication::launch()
     m_launching_timer.start(8000);
     emit launchingChanged(true);
 
-    return QBool(true);
+    return true;
 }
 
 void
-QLauncherApplication::onLaunchingTimeouted()
+LauncherApplication::onLaunchingTimeouted()
 {
     emit launchingChanged(false);
 }
 
 void
-QLauncherApplication::close()
+LauncherApplication::close()
 {
     if (m_application == NULL)
         return;
@@ -298,7 +311,7 @@ QLauncherApplication::close()
 }
 
 void
-QLauncherApplication::show()
+LauncherApplication::show()
 {
     if(m_application == NULL || m_application->xids()->size() < 1) return;
 
@@ -323,9 +336,46 @@ QLauncherApplication::show()
 }
 
 void
-QLauncherApplication::expose()
+LauncherApplication::expose()
 {
     /* IMPLEMENT ME: see unity’s expose manager */
     qDebug() << "FIXME: Expose mode not implemented yet.";
+}
+
+void
+LauncherApplication::createMenuActions()
+{
+    bool is_running = running();
+
+    QAction* keep = new QAction(m_menu);
+    keep->setCheckable(is_running);
+    keep->setChecked(sticky());
+    keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
+    m_menu->addAction(keep);
+    QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+
+    if (is_running)
+    {
+        QAction* quit = new QAction(m_menu);
+        quit->setText(tr("Quit"));
+        m_menu->addAction(quit);
+        QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
+    }
+}
+
+void
+LauncherApplication::onKeepTriggered()
+{
+    QAction* keep = static_cast<QAction*>(sender());
+    bool sticky = keep->isChecked();
+    hideMenu(true);
+    setSticky(sticky);
+}
+
+void
+LauncherApplication::onQuitTriggered()
+{
+    hideMenu(true);
+    close();
 }
 

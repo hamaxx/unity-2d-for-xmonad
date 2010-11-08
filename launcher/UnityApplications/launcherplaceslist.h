@@ -17,24 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERMENU_H
-#define LAUNCHERMENU_H
+#ifndef LAUNCHERPLACESLIST_H
+#define LAUNCHERPLACESLIST_H
 
-#include <QMenu>
+#include "listaggregatormodel.h"
 
-class LauncherContextualMenu : public QMenu
+#include <QStringList>
+#include <QFileSystemWatcher>
+
+class LauncherPlacesList : public ListAggregatorModel
 {
     Q_OBJECT
 
 public:
-    LauncherContextualMenu();
-    ~LauncherContextualMenu();
-
-    Q_INVOKABLE void setTitle(QString title);
+    LauncherPlacesList(QObject* parent = 0);
+    ~LauncherPlacesList();
 
 private:
-    void loadCSS();
+    QStringList m_placeFiles;
+    QFileSystemWatcher* m_watch;
+
+    void addPlace(const QString& file);
+    void removePlace(const QString& file);
+
+private slots:
+    void onDirectoryChanged(const QString&);
 };
 
-#endif // LAUNCHERMENU_H
+#endif // LAUNCHERPLACESLIST_H
 

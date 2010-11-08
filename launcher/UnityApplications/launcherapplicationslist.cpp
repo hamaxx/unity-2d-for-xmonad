@@ -14,10 +14,6 @@
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
-    QHash<int, QByteArray> roles;
-    roles[0] = "application";
-    setRoleNames(roles);
-
     m_favorites_list = new GConfItemQmlWrapper();
     m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
 
@@ -26,7 +22,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
-    QHash<QString, QLauncherApplication*>::iterator iter;
+    QHash<QString, LauncherApplication*>::iterator iter;
     for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
     {
         delete *iter;
@@ -49,7 +45,7 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
 }
 
 
-QLauncherApplication*
+LauncherApplication*
 LauncherApplicationsList::insertApplication(QString desktop_file)
 {
     if (m_applications.contains(desktop_file))
@@ -59,7 +55,7 @@ LauncherApplicationsList::insertApplication(QString desktop_file)
         return NULL;
 
     /* Create a new QLauncherApplication */
-    QLauncherApplication* application = new QLauncherApplication;
+    LauncherApplication* application = new LauncherApplication;
     application->setDesktopFile(desktop_file);
 
     beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
@@ -79,7 +75,7 @@ LauncherApplicationsList::removeApplication(QString desktop_file)
 
     beginRemoveRows(QModelIndex(), index, index);
     m_desktop_files.removeAt(index);
-    QLauncherApplication* application = m_applications.take(desktop_file);
+    LauncherApplication* application = m_applications.take(desktop_file);
     endRemoveRows();
 
     delete application;
@@ -92,7 +88,7 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
         return;
 
     QString desktop_file = bamf_application->desktop_file();
-    QLauncherApplication* application = insertApplication(desktop_file);
+    LauncherApplication* application = insertApplication(desktop_file);
     if (application == NULL) {
         qWarning() << "BAMF app" << bamf_application->name()
                    << "not added due to desktop file missing or blank (" << desktop_file << ")";
@@ -107,7 +103,7 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 void
 LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 {
-    QLauncherApplication* application = insertApplication(desktop_file);
+    LauncherApplication* application = insertApplication(desktop_file);
     if (application == NULL) {
         qWarning() << "Favorite app not added due to desktop file missing or blank ("
                    << desktop_file << ")";
@@ -160,7 +156,7 @@ LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
 
 void LauncherApplicationsList::onApplicationClosed()
 {
-    QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
+    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
     if (!application->sticky() && !application->running())
         removeApplication(application->desktop_file());
@@ -169,7 +165,7 @@ void LauncherApplicationsList::onApplicationClosed()
 void
 LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 {
-    QLauncherApplication* application = static_cast<QLauncherApplication*>(sender());
+    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
     if (sticky)
     {
@@ -199,14 +195,14 @@ LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
 
     /* FIXME: storing these attributes in GConf should not be tied to adding
               application to the list of favorites but instead should happen
-              in the QLauncherApplication itself whenever these values change.
+              in the LauncherApplication itself whenever these values change.
     */
     /* Set GConf values corresponding to the favorite id for:
         - desktop file
         - type
         - priority
     */
-    QLauncherApplication* application = m_applications[desktop_file];
+    LauncherApplication* application = m_applications[desktop_file];
 
     GConfItemQmlWrapper gconf_desktop_file;
     gconf_desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
@@ -263,3 +259,4 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
 
     return QVariant::fromValue(m_applications[m_desktop_files.at(index.row())]);
 }
+

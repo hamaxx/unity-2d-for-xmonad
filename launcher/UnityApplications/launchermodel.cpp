@@ -17,24 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERMENU_H
-#define LAUNCHERMENU_H
+#include "launchermodel.h"
 
-#include <QMenu>
-
-class LauncherContextualMenu : public QMenu
+LauncherModel::LauncherModel(QObject* parent) :
+    ListAggregatorModel(parent)
 {
-    Q_OBJECT
+    QHash<int, QByteArray> roles;
+    roles[0] = "item";
+    setRoleNames(roles);
 
-public:
-    LauncherContextualMenu();
-    ~LauncherContextualMenu();
+    m_applications = new LauncherApplicationsList;
+    aggregateListModel(m_applications);
 
-    Q_INVOKABLE void setTitle(QString title);
+    m_places = new LauncherPlacesList;
+    aggregateListModel(m_places);
 
-private:
-    void loadCSS();
-};
+    m_devices = new LauncherDevicesList;
+    aggregateListModel(m_devices);
+}
 
-#endif // LAUNCHERMENU_H
+LauncherModel::~LauncherModel()
+{
+    removeListModel(m_devices);
+    delete m_devices;
+
+    removeListModel(m_places);
+    delete m_places;
+
+    removeListModel(m_applications);
+    delete m_applications;
+}
 

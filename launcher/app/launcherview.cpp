@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "../UnityApplications/launchermodel.h"
 #include "launcherview.h"
 
 #include <QApplication>
@@ -30,7 +32,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include "../UnityApplications/launcherapplicationslist.h"
 
 /* FIXME: import of private Qt headers. See rationale in the implementation of
           'iconAverageColor' */
@@ -57,16 +58,16 @@ void LauncherView::dropEvent(QDropEvent *event)
 {
     if (!event->mimeData()->hasUrls()) return;
 
-    QVariant v =  engine()->rootContext()->contextProperty("applications");
+    QVariant v =  engine()->rootContext()->contextProperty("launcher");
 
-    LauncherApplicationsList* applications;
-    applications = qobject_cast<LauncherApplicationsList*>(qvariant_cast<QObject*>(v));
-    if (applications == NULL) return;
+    LauncherModel* model;
+    model = qobject_cast<LauncherModel*>(qvariant_cast<QObject*>(v));
+    if (model == NULL) return;
 
     foreach (QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             qDebug() << "Path dropped for favorites: " << url.path();
-            applications->insertFavoriteApplication(url.path());
+            model->m_applications->insertFavoriteApplication(url.path());
         }
     }
 

@@ -72,6 +72,7 @@ int main(int argc, char** argv)
     ThemeEngineHandler handler;
     UnityQtStyle style;
 
+    QApplication::setGraphicsSystem("raster");
     QApplication app(argc, argv);
     app.setStyle(&style);
     Panel panel;

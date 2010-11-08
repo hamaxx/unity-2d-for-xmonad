@@ -31,6 +31,7 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
@@ -41,7 +42,6 @@ int main(int argc, char *argv[])
     /* FIXME: this should not be needed but some parts of the dash are not
               property refreshed when not using it .. sometimes */
     view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    QApplication::setGraphicsSystem("raster");
 
     if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
     {
@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("dashView", &view);
+    view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
 
     /* Always match the size of the desktop */
@@ -74,7 +75,9 @@ int main(int argc, char *argv[])
     /* Register a D-Bus service for activation and deactivation of the dash */
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerService("com.canonical.UnityQt");
-    bus.registerObject("/dash", &view, QDBusConnection::ExportAllProperties);
+    /* FIXME: use an adaptor class in order not to expose all of the view's
+       properties and methods. */
+    bus.registerObject("/dash", &view, QDBusConnection::ExportAllContents);
     /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
        property change notification that Qt 4.7 does not implement.
 

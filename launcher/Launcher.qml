@@ -17,36 +17,30 @@ Item {
         anchors.fill: parent
         focus: true
 
-        /* applications is exposed by UnityApplications */
-        model: applications
+        /* launcher is exposed by UnityApplications */
+        model: launcher
 
-        delegate: Application {
+        delegate: LauncherItem {
             id: wrapper
 
             width: 58; height: 54
-            icon: "image://icons/"+application.icon
-            running: application.running
-            active: application.active
-            urgent: application.urgent
-            sticky: application.sticky
-            launching: application.launching
+            icon: "image://icons/"+item.icon
+            running: item.running
+            active: item.active
+            urgent: item.urgent
+            launching: item.launching
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
-                    menu.hide()
-                    if (active)
-                        application.expose()
-                    else if (running && application.has_visible_window)
-                        application.show()
-                    else
-                        application.launch()
+                    item.hideMenu()
+                    item.activate()
                 }
                 else if (mouse.button == Qt.RightButton) {
-                    menu.show_menu()
+                    item.showMenu()
                 }
             }
 
-            onEntered: menu.show(y + height / 2, application)
-            onExited: menu.hide()
+            onEntered: item.showTooltip(y + height / 2)
+            onExited: item.hideMenu()
 
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }

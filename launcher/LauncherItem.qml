@@ -1,11 +1,11 @@
 import Qt 4.7
 
-/* Item displaying an application.
+/* Item displaying a launcher item.
 
    It contains:
     - a generic bordered background image
-    - an icon representing the application
-    - a text describing the application
+    - an icon representing the item
+    - a text describing the item
 
    When an application is launched, the border changes appearance.
    It supports mouse hover by changing the appearance of the background image.
@@ -23,7 +23,6 @@ Item {
     property bool running: false
     property bool active: false
     property bool urgent: false
-    property bool sticky: false
     property bool launching: false
 
     signal clicked(variant mouse)

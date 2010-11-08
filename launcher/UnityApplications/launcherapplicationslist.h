@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
 
-class QLauncherApplication;
+class LauncherApplication;
 class BamfApplication;
 class BamfView;
 class GConfItemQmlWrapper;
@@ -29,7 +29,7 @@ private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
 
-    QLauncherApplication* insertApplication(QString desktop_file);
+    LauncherApplication* insertApplication(QString desktop_file);
     void removeApplication(QString desktop_file);
 
     static QString desktopFilePathFromFavorite(QString favorite_id);
@@ -43,11 +43,11 @@ private:
        complexity a 2 level structure was chosen to store applications.
        A list of desktop file names ordered by placement in the launcher,
        also called priority is used for rendering.
-       A hash of desktop file names to QLauncherApplication is used for
+       A hash of desktop file names to LauncherApplication is used for
        modifications and presence checking.
     */
     QList<QString> m_desktop_files;
-    QHash<QString, QLauncherApplication*> m_applications;
+    QHash<QString, LauncherApplication*> m_applications;
 
     GConfItemQmlWrapper* m_favorites_list;
 

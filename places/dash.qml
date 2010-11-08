@@ -59,6 +59,7 @@ Item {
 
             Place {
                 id: applications_place
+                objectName: "applications_place"
 
                 visible: false
                 anchors.fill: parent
@@ -73,6 +74,7 @@ Item {
 
             Place {
                 id: files_place
+                objectName: "files_place"
 
                 visible: false
                 anchors.fill: parent

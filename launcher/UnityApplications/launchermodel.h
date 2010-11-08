@@ -17,24 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERMENU_H
-#define LAUNCHERMENU_H
+#ifndef LAUNCHERMODEL_H
+#define LAUNCHERMODEL_H
 
-#include <QMenu>
+#include "launcherdeviceslist.h"
+#include "launcherapplicationslist.h"
+#include "launcherplaceslist.h"
 
-class LauncherContextualMenu : public QMenu
+#include "listaggregatormodel.h"
+
+class LauncherModel : public ListAggregatorModel
 {
     Q_OBJECT
 
 public:
-    LauncherContextualMenu();
-    ~LauncherContextualMenu();
+    LauncherModel(QObject* parent = 0);
+    ~LauncherModel();
 
-    Q_INVOKABLE void setTitle(QString title);
-
-private:
-    void loadCSS();
+    /* The following 3 members are now public as a
+      temporary work-around until we have the time to
+      expose them more properly as planned */
+    LauncherApplicationsList* m_applications;
+    LauncherPlacesList* m_places;
+    LauncherDevicesList* m_devices;
 };
 
-#endif // LAUNCHERMENU_H
+#endif // LAUNCHERMODEL_H
 
