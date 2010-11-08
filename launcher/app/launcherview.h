@@ -21,6 +21,7 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
+#include <QDragEnterEvent>
 
 class LauncherView : public QDeclarativeView
 {
@@ -39,6 +40,10 @@ private:
 
     /* Whether space at the left of the screen has already been reserved */
     bool m_reserved;
+
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
 };
 
 #endif // LAUNCHERVIEW

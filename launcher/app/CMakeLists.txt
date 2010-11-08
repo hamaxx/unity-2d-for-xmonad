@@ -24,6 +24,7 @@ include_directories(
     )
 
 target_link_libraries(unity-qt-launcher
+    UnityApplications
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}

@@ -23,10 +23,11 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
+    void insertFavoriteApplication(QString desktop_file);
+
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
-    void insertFavoriteApplication(QString desktop_file);
 
     QLauncherApplication* insertApplication(QString desktop_file);
     void removeApplication(QString desktop_file);

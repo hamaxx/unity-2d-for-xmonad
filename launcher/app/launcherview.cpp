@@ -23,8 +23,14 @@
 #include <QX11Info>
 #include <QDebug>
 
+#include <QtDeclarative/qdeclarative.h>
+#include <QDeclarativeEngine>
+#include <QDeclarativeContext>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
+#include "../UnityApplications/launcherapplicationslist.h"
 
 /* FIXME: import of private Qt headers. See rationale in the implementation of
           'iconAverageColor' */
@@ -33,6 +39,38 @@
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false)
 {
+    setAcceptDrops(true);
+}
+
+void LauncherView::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list"))
+        event->acceptProposedAction();
+}
+
+void LauncherView::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void LauncherView::dropEvent(QDropEvent *event)
+{
+    if (!event->mimeData()->hasUrls()) return;
+
+    QVariant v =  engine()->rootContext()->contextProperty("applications");
+
+    LauncherApplicationsList* applications;
+    applications = qobject_cast<LauncherApplicationsList*>(qvariant_cast<QObject*>(v));
+    if (applications == NULL) return;
+
+    foreach (QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            qDebug() << "Path dropped for favorites: " << url.path();
+            applications->insertFavoriteApplication(url.path());
+        }
+    }
+
+    event->accept();
 }
 
 void
