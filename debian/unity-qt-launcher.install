@@ -3,6 +3,7 @@ usr/bin/unity-qt-launcher
 usr/share/unity-qt/launcher/LauncherItem.qml
 usr/share/unity-qt/launcher/Launcher.qml
 usr/share/unity-qt/launcher/launchermenu.css
+usr/share/unity-qt/launcher/artwork/devices.png
 usr/share/unity-qt/launcher/artwork/glow.png
 usr/share/unity-qt/launcher/artwork/shadow.png
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1

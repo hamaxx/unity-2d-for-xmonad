@@ -11,7 +11,7 @@ install(FILES ${launcher_QML}
     DESTINATION ${UNITY_QT_DIR}/launcher
     )
 
-install(FILES artwork/glow.png artwork/shadow.png
+install(FILES artwork/devices.png artwork/glow.png artwork/shadow.png
     DESTINATION ${UNITY_QT_DIR}/launcher/artwork
     )
 
