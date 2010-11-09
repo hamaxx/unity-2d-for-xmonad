@@ -1,3 +1,6 @@
+# Dependencies
+find_package(X11 REQUIRED)
+
 # Sources
 set(places_SRCS
     places.cpp
@@ -20,7 +23,10 @@ include_directories(
 target_link_libraries(unity-qt-places
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
+    ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
+    ${X11_Xext_LIB}
+    ${X11_X11_LIB}
     )
 
 # Install
