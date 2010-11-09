@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../UnityApplications/launchermodel.h"
 #include "launcherview.h"
 
 #include <QApplication>
@@ -45,8 +44,16 @@ LauncherView::LauncherView() :
 
 void LauncherView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("text/uri-list"))
-        event->acceptProposedAction();
+    // Check that data has a list of URLs and that at least one is
+    // a desktop file.
+    if (!event->mimeData()->hasUrls()) return;
+
+    foreach (QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            event->acceptProposedAction();
+            break;
+        }
+    }
 }
 
 void LauncherView::dragMoveEvent(QDragMoveEvent *event)
@@ -56,21 +63,16 @@ void LauncherView::dragMoveEvent(QDragMoveEvent *event)
 
 void LauncherView::dropEvent(QDropEvent *event)
 {
-    if (!event->mimeData()->hasUrls()) return;
-
-    QVariant v = engine()->rootContext()->contextProperty("launcher");
-
-    LauncherModel* model;
-    model = qobject_cast<LauncherModel*>(qvariant_cast<QObject*>(v));
-    if (model == NULL) return;
+    bool accepted = false;
 
     foreach (QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            model->m_applications->insertFavoriteApplication(url.path());
+            m_dndHelper.dropDesktopFile(url.path());
+            accepted = true;
         }
     }
 
-    event->accept();
+    if (accepted) event->accept();
 }
 
 void

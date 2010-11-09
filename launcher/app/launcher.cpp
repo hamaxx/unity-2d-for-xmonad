@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     }
 
     view.rootContext()->setContextProperty("launcherView", &view);
+    view.rootContext()->setContextProperty("dragAndDrop", view.dndHelper());
     view.setSource(QUrl("./Launcher.qml"));
 
     view.show();

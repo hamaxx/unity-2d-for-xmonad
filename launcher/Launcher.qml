@@ -56,4 +56,10 @@ Item {
             }
         }
     }
+
+    Connections {
+        target: dragAndDrop
+        onDesktopFileDropped: launcher.applications.insertFavoriteApplication(path)
+    }
+
 }

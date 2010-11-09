@@ -34,9 +34,11 @@ public:
     LauncherModel(QObject* parent = 0);
     ~LauncherModel();
 
-    /* The following 3 members are now public as a
-      temporary work-around until we have the time to
-      expose them more properly as planned */
+    Q_PROPERTY(LauncherApplicationsList* applications READ applications)
+
+    LauncherApplicationsList* applications() { return m_applications; }
+
+private:
     LauncherApplicationsList* m_applications;
     LauncherPlacesList* m_places;
     LauncherDevicesList* m_devices;

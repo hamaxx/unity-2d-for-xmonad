@@ -23,7 +23,7 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-    void insertFavoriteApplication(QString desktop_file);
+    Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
 
 private:
     void load();

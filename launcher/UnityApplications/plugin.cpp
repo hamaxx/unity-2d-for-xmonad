@@ -11,6 +11,7 @@
 
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
     qmlRegisterType<Place>(uri, 0, 1, "Place");
     qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
