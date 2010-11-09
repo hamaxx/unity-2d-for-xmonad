@@ -14,6 +14,8 @@ set(places_MOC_HDRS
 qt4_wrap_cpp(places_MOC_SRCS ${places_MOC_HDRS})
 
 # Build
+configure_file(unity-qt-places.service.in unity-qt-places.service)
+
 add_executable(unity-qt-places ${places_SRCS} ${places_MOC_SRCS})
 
 include_directories(
@@ -32,4 +34,8 @@ target_link_libraries(unity-qt-places
 # Install
 install(TARGETS unity-qt-places
     RUNTIME DESTINATION bin
+    )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-places.service
+    DESTINATION share/dbus-1/services
     )
