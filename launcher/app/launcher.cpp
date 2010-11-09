@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
+    QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
     LauncherView view;
@@ -39,7 +40,6 @@ int main(int argc, char *argv[])
     /* FIXME: possible optimisations */
 //    view.setAttribute(Qt::WA_OpaquePaintEvent);
 //    view.setAttribute(Qt::WA_NoSystemBackground);
-    QApplication::setGraphicsSystem("raster");
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 

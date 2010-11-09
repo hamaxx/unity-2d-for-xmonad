@@ -241,12 +241,12 @@ LauncherApplication::activate()
         launch();
 }
 
-QBool
+bool
 LauncherApplication::launch()
 {
-    if(m_appInfo == NULL) return QBool(false);
+    if(m_appInfo == NULL) return false;
 
-    GError* error;
+    GError* error = NULL;
     GdkAppLaunchContext *context;
     GTimeVal timeval;
 
@@ -259,13 +259,20 @@ LauncherApplication::launch()
     g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
     g_object_unref(context);
 
+    if (error != NULL)
+    {
+        qWarning() << "Failed to launch application:" << error->message;
+        g_error_free(error);
+        return false;
+    }
+
     /* 'launching' property becomes true for a maximum of 8 seconds and becomes
        false as soon as the application is launched */
     m_launching_timer.setSingleShot(true);
     m_launching_timer.start(8000);
     emit launchingChanged(true);
 
-    return QBool(true);
+    return true;
 }
 
 void
