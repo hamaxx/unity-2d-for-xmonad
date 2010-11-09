@@ -2,6 +2,7 @@
 #define LAUNCHERAPPLICATION_H
 
 #include <gio/gdesktopappinfo.h>
+#include <libwnck/libwnck.h>
 
 #include "launcheritem.h"
 
@@ -81,6 +82,8 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+
+    void moveViewportToWindow(WnckWindow* window);
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
