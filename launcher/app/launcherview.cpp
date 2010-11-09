@@ -58,7 +58,7 @@ void LauncherView::dropEvent(QDropEvent *event)
 {
     if (!event->mimeData()->hasUrls()) return;
 
-    QVariant v =  engine()->rootContext()->contextProperty("launcher");
+    QVariant v = engine()->rootContext()->contextProperty("launcher");
 
     LauncherModel* model;
     model = qobject_cast<LauncherModel*>(qvariant_cast<QObject*>(v));
@@ -66,7 +66,6 @@ void LauncherView::dropEvent(QDropEvent *event)
 
     foreach (QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            qDebug() << "Path dropped for favorites: " << url.path();
             model->m_applications->insertFavoriteApplication(url.path());
         }
     }
