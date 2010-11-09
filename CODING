@@ -5,6 +5,8 @@ Coding Style
 Naming
 ------
 
+We try to follow Qt naming convention whenever possible:
+
 Classes are CamelCase.
 
 Variables are camelCase.
@@ -14,6 +16,9 @@ Files are lowercase.h and lowercase.cpp.
 Members of a class are prefixed with "m_".
 Rationale: When reading the code of a method, it makes it easy to know whether
 a variable is a local or a member variable.
+
+Accessors are named foo() (not getFoo())
+Setters are named setFoo(...)
 
 
 Formatting
@@ -194,7 +199,7 @@ Foo::~Foo()
 
 Rationale:
 - It makes it possible to add/remove private members to a class without
-  breaking binary compatibility (BC).
+  breaking binary compatibility (BC). This is *very* important for libraries.
 - It helps reducing compilation time because modifying the private part of a
   class only requires changes in the .cpp file.
 
