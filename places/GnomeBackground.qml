@@ -49,7 +49,7 @@ Item {
             */
             var filename = picture_filename.value
             if(filename == "/usr/share/backgrounds/warty-final-ubuntu.png")
-                filename = "artwork/warty-final-ubuntu.jpg"
+                filename = engineBaseUrl + "artwork/warty-final-ubuntu.jpg"
 
             if(overlay_alpha > 0.0)
                 return "image://blended/%1color=%2alpha=%3".arg(filename).arg(overlay_color).arg(overlay_alpha)

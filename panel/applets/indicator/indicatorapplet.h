@@ -29,6 +29,7 @@ public:
     IndicatorApplet();
 
 private Q_SLOTS:
+    void loadIndicators();
     void slotActionAdded(QAction*);
     void slotActionRemoved(QAction*);
     void createGtkIndicator();
@@ -43,7 +44,6 @@ private:
     struct _IndicatorPlugin* m_gtkIndicator;
 
     void setupUi();
-    void loadIndicators();
 };
 
 #endif /* INDICATORAPPLET_H */

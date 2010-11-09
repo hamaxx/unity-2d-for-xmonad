@@ -43,7 +43,7 @@ void IndicatorApplet::setupUi()
     layout->setMargin(0);
     layout->addWidget(m_menuBar);
 
-    createGtkIndicator();
+    QMetaObject::invokeMethod(this, "createGtkIndicator", Qt::QueuedConnection);
 }
 
 void IndicatorApplet::createGtkIndicator()
@@ -51,7 +51,7 @@ void IndicatorApplet::createGtkIndicator()
     int* argc = 0;
     char*** argv = 0;
     gtk_init(argc, argv);
-    
+
     m_container = new QX11EmbedContainer;
     layout()->addWidget(m_container);
 
