@@ -23,6 +23,7 @@
 #include "launcherapplicationslist.h"
 #include "launcherplaceslist.h"
 #include "launcherdeviceslist.h"
+#include "trash.h"
 
 #include "listaggregatormodel.h"
 
@@ -38,6 +39,7 @@ private:
     LauncherApplicationsList* m_applications;
     LauncherPlacesList* m_places;
     LauncherDevicesList* m_devices;
+    Trashes* m_trashes;
 };
 
 #endif // LAUNCHERMODEL_H

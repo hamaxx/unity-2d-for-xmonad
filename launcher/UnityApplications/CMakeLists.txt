@@ -17,6 +17,7 @@ set(UnityApplications_SRCS
     placeentry.cpp
     place.cpp
     launcherplaceslist.cpp
+    trash.cpp
     launchermodel.cpp
     launchermenu.cpp
     plugin.cpp
@@ -32,6 +33,7 @@ set(UnityApplications_MOC_HDRS
     placeentry.h
     place.h
     launcherplaceslist.h
+    trash.h
     launchermodel.h
     launchermenu.h
     plugin.h

@@ -34,10 +34,16 @@ LauncherModel::LauncherModel(QObject* parent) :
 
     m_devices = new LauncherDevicesList;
     aggregateListModel(m_devices);
+
+    m_trashes = new Trashes;
+    aggregateListModel(m_trashes);
 }
 
 LauncherModel::~LauncherModel()
 {
+    removeListModel(m_trashes);
+    delete m_trashes;
+
     removeListModel(m_devices);
     delete m_devices;
 

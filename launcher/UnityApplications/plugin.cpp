@@ -2,6 +2,7 @@
 #include "place.h"
 #include "placeentry.h"
 #include "launcherdevice.h"
+#include "trash.h"
 #include "launchermodel.h"
 #include "iconimageprovider.h"
 #include "plugin.h"
@@ -15,6 +16,7 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
     qmlRegisterType<Place>(uri, 0, 1, "Place");
     qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
     qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
+    qmlRegisterType<Trash>(uri, 0, 1, "Trash");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

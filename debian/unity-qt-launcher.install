@@ -6,6 +6,7 @@ usr/share/unity-qt/launcher/launchermenu.css
 usr/share/unity-qt/launcher/artwork
 usr/share/unity-qt/launcher/artwork/glow.png
 usr/share/unity-qt/launcher/artwork/shadow.png
+usr/share/unity-qt/launcher/artwork/trash.png
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir
