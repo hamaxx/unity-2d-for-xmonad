@@ -6,7 +6,8 @@
 
 #include <QFile>
 
-#define UNITY_RES_PATH "/usr/share/unity/"
+
+static const char* UNITY_RES_PATH = "/usr/share/unity/";
 
 IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
