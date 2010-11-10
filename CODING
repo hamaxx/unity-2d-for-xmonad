@@ -177,7 +177,7 @@ public:
     ~Foo();
 
 private:
-    Foo* const d;
+    FooPrivate* const d;
 };
 
 // foo.cpp
