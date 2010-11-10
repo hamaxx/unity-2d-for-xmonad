@@ -27,8 +27,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
        See https://launchpad.net/bugs/672450 for a discussion. */
     if (id.startsWith(UNITY_RES_PATH))
     {
-        QFile file(id);
-        if (file.exists())
+        if (QFile::exists(id))
         {
             return QImage(id);
         }
