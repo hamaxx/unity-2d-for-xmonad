@@ -256,13 +256,18 @@ void
 LauncherApplication::activate()
 {
     if (active())
-        expose();
-
-    else if (running() && has_visible_window())
+    {
         show();
-
+        expose();
+    }
+    else if (running() && has_visible_window())
+    {
+        show();
+    }
     else
+    {
         launch();
+    }
 }
 
 bool
