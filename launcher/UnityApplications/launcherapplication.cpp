@@ -1,7 +1,14 @@
 /* Those have to be included before any QObject-style header to avoid
    compilation errors. */
 #include <gdk/gdk.h>
+
+/* Required otherwise using wnck_set_client_type breaks linking with error:
+   undefined reference to `wnck_set_client_type(WnckClientType)'
+*/
+extern "C" {
 #include <libwnck/libwnck.h>
+#include <libwnck/util.h>
+}
 
 #include "launcherapplication.h"
 #include "bamf-matcher.h"
@@ -13,6 +20,23 @@
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
 {
+    /* Make sure wnck_set_client_type is called only once */
+    static bool client_type_set = false;
+    if(!client_type_set)
+    {
+        /* Critically important to set the client type to pager because wnck
+           will pass that type over to the window manager through XEvents.
+           Window managers tend to respect orders from pagers to the letter by
+           for example bypassing focus stealing prevention.
+           Compiz does exactly that in src/event.c:handleEvent(...) in the
+           ClientMessage case (line 1702).
+           Metacity has a similar policy in src/core/window.c:window_activate(...)
+           (line 2951).
+        */
+        wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
+        client_type_set = true;
+    }
+
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
@@ -336,31 +360,23 @@ LauncherApplication::show()
         {
             WnckWorkspace* workspace = wnck_window_get_workspace(window);
 
-            /* Using GDK_CURRENT_TIME or X.h's CurrentTime (both equal 0)
-               does not seem to work with Compiz, most likely because of focus
-               stealing prevention.
-               Also libwnck issues the following warning:
-               Wnck-WARNING **: Received a timestamp of 0; window activation may
-               not function properly.
-               Using the actual current time instead.
-
-               Reference:
-               https://bugs.launchpad.net/upicek/+bug/663543
-            */
-            GTimeVal timeval;
-            g_get_current_time (&timeval);
-            wnck_workspace_activate(workspace, timeval.tv_sec);
+            /* Using X.h's CurrentTime (= 0) */
+            wnck_workspace_activate(workspace, CurrentTime);
 
             /* If the workspace contains a viewport then move the viewport so
                that the window is visible.
                Compiz for example uses only one workspace with a desktop larger
                than the screen size which means that a viewport is used to
                determine what part of the desktop is visible.
+
+               Reference:
+               http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#largedesks
             */
             if (wnck_workspace_is_virtual(workspace))
                 moveViewportToWindow(window);
 
-            wnck_window_activate(window, timeval.tv_sec);
+            /* Using X.h's CurrentTime (= 0) */
+            wnck_window_activate(window, CurrentTime);
             break;
         }
     }
