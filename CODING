@@ -115,6 +115,32 @@ Rationale:
 - Qt does it this way, so it must be right! ;)
 
 
+Const correctness
+-----------------
+
+If a method does not modify an object, mark it const. This is important for (at
+least) two reasons:
+- It can potentially help the compiler to produce more efficient code (if the
+  code is in another .o the compiler has no way to know whether a method is
+  going to modify an object)
+- It makes it possible to call this method on a const ref or a const pointer.
+  For example:
+
+class Foo
+{
+public:
+    int computeSomething() const;
+};
+
+void someOtherFunction(const Foo& foo)
+{
+    int result = foo.computeSomething();
+}
+
+If computeSomething() had not been declared const, someOtherFunction() would
+not build.
+
+
 Clean Headers
 -------------
 
