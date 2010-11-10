@@ -27,7 +27,8 @@ LauncherApplicationsList::~LauncherApplicationsList()
     {
         delete *iter;
     }
-    if (m_favorites_list != NULL) delete m_favorites_list;
+
+    delete m_favorites_list;
 }
 
 QString
