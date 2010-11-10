@@ -11,8 +11,10 @@ install(FILES ${launcher_QML}
     DESTINATION ${UNITY_QT_DIR}/launcher
     )
 
-install(FILES artwork/devices.png artwork/glow.png artwork/shadow.png
-    DESTINATION ${UNITY_QT_DIR}/launcher/artwork
+install(DIRECTORY artwork
+    DESTINATION ${UNITY_QT_DIR}/launcher
+    PATTERN "artwork/applications.png" EXCLUDE
+    PATTERN "artwork/files.png" EXCLUDE
     )
 
 install(FILES artwork/applications.png artwork/files.png
