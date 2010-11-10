@@ -35,3 +35,7 @@ target_link_libraries(unity-qt-launcher
 install(TARGETS unity-qt-launcher
     RUNTIME DESTINATION bin
     )
+
+install(FILES unity-qt-launcher.desktop
+    DESTINATION share/applications
+    )
