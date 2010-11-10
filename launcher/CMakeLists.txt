@@ -14,7 +14,3 @@ install(FILES ${launcher_QML}
 install(DIRECTORY artwork
     DESTINATION ${UNITY_QT_DIR}/launcher
     )
-
-install(FILES unity-qt-launcher.desktop
-    DESTINATION ${AUTOSTART_DIR}
-    )
