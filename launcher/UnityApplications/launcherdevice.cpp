@@ -19,6 +19,8 @@
 
 #include "launcherdevice.h"
 
+#include "config.h"
+
 #include <QDebug>
 
 LauncherDevice::LauncherDevice() :
@@ -73,7 +75,7 @@ LauncherDevice::name() const
 QString
 LauncherDevice::icon() const
 {
-    return QString("/usr/share/unity/devices.png");
+    return QString(INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/artwork/devices.png");
 }
 
 bool
