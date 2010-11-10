@@ -14,9 +14,6 @@ Package: unity-qt-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
 Recommends: unity-place-files, unity-place-applications
-# We need to provide the places’ icons, as unity does…
-# See https://launchpad.net/bugs/672450.
-Conflicts: unity
 Description: Unity Qt Launcher
  The Unity Qt launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.

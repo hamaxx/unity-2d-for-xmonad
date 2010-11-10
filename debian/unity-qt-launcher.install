@@ -3,6 +3,7 @@ usr/bin/unity-qt-launcher
 usr/share/unity-qt/launcher/LauncherItem.qml
 usr/share/unity-qt/launcher/Launcher.qml
 usr/share/unity-qt/launcher/launchermenu.css
+usr/share/unity-qt/launcher/artwork/devices.png
 usr/share/unity-qt/launcher/artwork/glow.png
 usr/share/unity-qt/launcher/artwork/shadow.png
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
@@ -12,6 +13,6 @@ usr/lib/qt4/imports/UnityApplications/libUnityApplications.so
 
 # Install places artwork to work around bug #672447 in Unity.
 # See https://launchpad.net/bugs/672450.
-usr/share/unity-qt/launcher/artwork/applications.png usr/share/unity/
-usr/share/unity-qt/launcher/artwork/files.png usr/share/unity/
+usr/share/unity-qt/applications.png
+usr/share/unity-qt/files.png
 
