@@ -23,8 +23,6 @@
 #include <QDeclarativeView>
 #include <QDragEnterEvent>
 
-#include "draganddrophelper.h"
-
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
@@ -32,9 +30,9 @@ class LauncherView : public QDeclarativeView
 public:
     explicit LauncherView();
     Q_INVOKABLE QColor iconAverageColor(QUrl source, QSize size);
-    Q_PROPERTY(DragAndDropHelper* dndHelper READ dndHelper)
 
-    inline DragAndDropHelper* dndHelper() { return &m_dndHelper; }
+signals:
+    void desktopFileDropped(QString path);
 
 public slots:
     void workAreaResized(int screen);
@@ -49,9 +47,6 @@ private:
 
     /* Whether space at the left of the screen has already been reserved */
     bool m_reserved;
-
-public:
-    DragAndDropHelper m_dndHelper;
 };
 
 #endif // LAUNCHERVIEW

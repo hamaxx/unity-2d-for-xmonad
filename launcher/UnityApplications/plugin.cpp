@@ -8,13 +8,20 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QAbstractListModel>
 
 void UnityApplicationsPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
+
     qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
+
+    qmlRegisterType<LauncherPlacesList>(uri, 0, 1, "LauncherPlacesList");
     qmlRegisterType<Place>(uri, 0, 1, "Place");
     qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
+
+    qmlRegisterType<LauncherDevicesList>(uri, 0, 1, "LauncherDevicesList");
     qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
 }
 
@@ -23,9 +30,6 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
     Q_UNUSED(uri);
 
     engine->addImageProvider(QString("icons"), new IconImageProvider);
-
-    LauncherModel* launcher = new LauncherModel;
-    engine->rootContext()->setContextProperty("launcher", launcher);
 }
 
 Q_EXPORT_PLUGIN2(UnityApplications, UnityApplicationsPlugin);

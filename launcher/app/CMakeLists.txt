@@ -6,12 +6,10 @@ pkg_check_modules(X11 REQUIRED x11)
 set(launcher_SRCS
     launcher.cpp
     launcherview.cpp
-    draganddrophelper.cpp
     )
 
 set(launcher_MOC_HDRS
     launcherview.h
-    draganddrophelper.h
     )
 
 qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})

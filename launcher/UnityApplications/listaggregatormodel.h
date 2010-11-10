@@ -33,6 +33,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    Q_INVOKABLE void appendModel(const QVariant& model);
+
 protected:
     QList<QAbstractListModel*> m_models;
 

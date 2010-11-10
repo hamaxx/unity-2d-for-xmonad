@@ -22,6 +22,9 @@
 ListAggregatorModel::ListAggregatorModel(QObject* parent) :
     QAbstractListModel(parent)
 {
+    QHash<int, QByteArray> roles;
+    roles[0] = "item";
+    setRoleNames(roles);
 }
 
 ListAggregatorModel::~ListAggregatorModel()
@@ -29,8 +32,18 @@ ListAggregatorModel::~ListAggregatorModel()
 }
 
 void
+ListAggregatorModel::appendModel(const QVariant& model)
+{
+    QObject* object = qvariant_cast<QObject*>(model);
+    QAbstractListModel* list = qobject_cast<QAbstractListModel*>(object);
+    this->aggregateListModel(list);
+}
+
+void
 ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 {
+    if (model == NULL) return;
+
     int first = rowCount();
     int last = first + model->rowCount() - 1;
     beginInsertRows(QModelIndex(), first, last);

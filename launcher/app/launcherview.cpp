@@ -67,7 +67,7 @@ void LauncherView::dropEvent(QDropEvent *event)
 
     foreach (QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            m_dndHelper.dropDesktopFile(url.path());
+            emit desktopFileDropped(url.path());
             accepted = true;
         }
     }
