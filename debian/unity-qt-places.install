@@ -16,6 +16,7 @@ usr/share/unity-qt/places/Page.qml
 usr/share/unity-qt/places/BorderGlow.qml
 usr/share/unity-qt/places/GroupHeader.qml
 usr/share/unity-qt/places/RendererGrid.qml
+usr/share/unity-qt/places/Renderer.qml
 usr/share/unity-qt/places/UnityDefaultRenderer.qml
 usr/share/unity-qt/places/UnityEmptySearchRenderer.qml
 usr/share/unity-qt/places/UnityEmptySectionRenderer.qml
