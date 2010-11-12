@@ -2,15 +2,19 @@ import Qt 4.7
 import QtDee 1.0
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons */
 import UnityPlaces 1.0
-import "utils.js" as Utils
 
-Item {
-    property int groupNumber
-    property alias icon: header.icon
-    property alias label: header.label
+/* Renderers typically use a grid layout to render the model. The RendererGrid
+   component provides a standard implementation of such a layout where the
+   cells can be customized by providing a QML component to it.
+   A user of RendererGrid would create a renderer inheriting from it
+   and pass a Component via the 'cellRenderer' property.
+*/
+Renderer {
+    id: renderer
+
+    property variant cellRenderer
     property bool folded: true
-    property variant placeResultsModel
-    property variant placeDBusInterface
+    model_count_limit: folded ? results.cellsPerLine : -1
 
     /* Using results.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
@@ -19,7 +23,7 @@ Item {
               an invisible header is no good: the item in the model still
               exists and some things such as keyboard selection break.
     */
-    height: results.count > 0 ? header.height + results.anchors.topMargin + results.totalHeight : 0
+    height: results.count > 0 ? header.height + results_layout.anchors.topMargin + results.totalHeight : 0
     //Behavior on height {NumberAnimation {duration: 200}}
 
     GroupHeader {
@@ -32,11 +36,15 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 28
+        icon: parent.icon_hint
+        label: parent.display_name
 
         onClicked: parent.folded = !parent.folded
     }
 
     Item {
+        id: results_layout
+
         anchors.top: header.bottom
         anchors.topMargin: 14
         anchors.left: parent.left
@@ -58,8 +66,11 @@ Item {
                processing power. Instead we constrain the height of the GridViews
                and compute their position manually to compensate for the position
                changes when flicking the ListView.
+
+               We assume that renderer.parent is the ListView we nest our
+               GridView into.
             */
-            property variant flickable: place_results
+            property variant flickable: renderer.parent
 
             /* flickable.contentY*0 is equal to 0 but is necessary in order to
                have the entire expression being evaluated at the right moment.
@@ -87,42 +98,26 @@ Item {
             interactive: false
             clip: true
 
-            delegate: Result {
+            delegate: Loader {
+                property string uri: column_0
+                property string icon_hint: column_1
+                property string group_id: column_2
+                property string mimetype: column_3
+                property string display_name: column_4
+                property string comment: column_5
+
                 width: GridView.view.delegate_width
                 height: GridView.view.delegate_height
-                label: column_4
-                icon: "image://icons/"+column_1
 
-                onClicked: {
-                    var uri = column_0
-                    if(!placeDBusInterface.Activate(uri)) {
-                        var matches = uri.match("^(.*)(?:://)(.*)$")
-                        var schema = matches[1]
-                        var path = matches[2]
-                        if(schema == "application") {
-                            Utils.launchApplicationFromDesktopFile(path, parent)
-                        }
-                        else {
-                            console.log("FIXME: Possibly no handler for schema \'%1\'".arg(schema))
-                            console.log("Trying to open", uri)
-                            /* Try our luck */
-                            /* FIXME: uri seems already escaped though
-                                      Qt.openUrlExternally tries to escape it */
-                            Qt.openUrlExternally(uri)
-                        }
-                    }
+                sourceComponent: cellRenderer
+                onLoaded: {
+                    item.label = display_name
+                    item.icon = "image://icons/"+icon_hint
+                    item.uri = uri
                 }
             }
 
-            /* placeResultsModel contains data for all the Groups of a given Place.
-               Each row has a column (the seconds one) containing its Group number.
-            */
-            model: QSortFilterProxyModelQML {
-                filterRole: 2
-                filterRegExp: RegExp(groupNumber)
-                limit: folded ? results.cellsPerLine : -1
-                model: placeResultsModel
-            }
+            model: renderer.model
         }
     }
 }
