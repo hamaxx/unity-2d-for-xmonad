@@ -1,3 +1,9 @@
+unity-qt (0.2~bzr280) maverick; urgency=low
+
+  * Snapshot release.
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Mon, 15 Nov 2010 14:13:07 -0200
+
 unity-qt (0.2~bzr275) maverick; urgency=low
 
   * Snapshot release.
