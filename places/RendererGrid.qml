@@ -14,7 +14,7 @@ Renderer {
 
     property variant cellRenderer
     property bool folded: true
-    model_count_limit: folded ? results.cellsPerLine : -1
+    modelCountLimit: folded ? results.cellsPerLine : -1
 
     /* Using results.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
@@ -36,8 +36,8 @@ Renderer {
         anchors.left: parent.left
         anchors.right: parent.right
         height: 28
-        icon: parent.icon_hint
-        label: parent.display_name
+        icon: parent.iconHint
+        label: parent.displayName
 
         onClicked: parent.folded = !parent.folded
     }
@@ -100,10 +100,10 @@ Renderer {
 
             delegate: Loader {
                 property string uri: column_0
-                property string icon_hint: column_1
-                property string group_id: column_2
+                property string iconHint: column_1
+                property string groupId: column_2
                 property string mimetype: column_3
-                property string display_name: column_4
+                property string displayName: column_4
                 property string comment: column_5
 
                 width: GridView.view.delegate_width
@@ -111,8 +111,8 @@ Renderer {
 
                 sourceComponent: cellRenderer
                 onLoaded: {
-                    item.label = display_name
-                    item.icon = "image://icons/"+icon_hint
+                    item.label = displayName
+                    item.icon = "image://icons/"+iconHint
                     item.uri = uri
                 }
             }

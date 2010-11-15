@@ -9,9 +9,9 @@ import Qt 4.7
    in a grid of icons with the item's title underneath it.
 */
 Item {
-    property string display_name /* Name of the group typically displayed in the header */
-    property string icon_hint /* Icon id of the group */
+    property string displayName /* Name of the group typically displayed in the header */
+    property string iconHint /* Icon id of the group */
     property variant model /* List model containing the items to be displayed by the renderer */
     property variant place /* Reference to the place the group belongs to */
-    property int model_count_limit: -1 /* Maximum number of items to display; -1 for no limit */
+    property int modelCountLimit: -1 /* Maximum number of items to display; -1 for no limit */
 }

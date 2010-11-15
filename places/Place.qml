@@ -109,25 +109,25 @@ Page {
         cacheBuffer: 2147483647
 
         /* The group's delegate is chosen dynamically depending on what
-           group_renderer is returned by the GroupsModel.
+           groupRenderer is returned by the GroupsModel.
 
-           Each group_renderer should have a corresponding QML file with the
+           Each groupRenderer should have a corresponding QML file with the
            same name that will be used as delegate.
            For example:
 
-           If group_renderer == 'UnityShowcaseRenderer' then it will look for
+           If groupRenderer == 'UnityShowcaseRenderer' then it will look for
            the file 'UnityShowcaseRenderer.qml' and use it to render the group.
         */
         delegate: Loader {
-            property string group_renderer: column_0
-            property string display_name: column_1
-            property string icon_hint: column_2
-            property int group_id: index
+            property string groupRenderer: column_0
+            property string displayName: column_1
+            property string iconHint: column_2
+            property int groupId: index
 
-            source: group_renderer ? group_renderer+".qml" : ""
+            source: groupRenderer ? groupRenderer+".qml" : ""
             onStatusChanged: {
                 if (status == Loader.Error)
-                    console.log("Failed to load renderer", group_renderer)
+                    console.log("Failed to load renderer", groupRenderer)
             }
 
             /* -2 is here to prevent clipping of the group; it looks like a bug */
@@ -141,18 +141,18 @@ Page {
 
                 /* resultsModel contains data for all the groups of a given Place.
                    Each row has a column (the second one) containing the id of
-                   the group it belongs to (group_id).
+                   the group it belongs to (groupId).
                 */
                 filterRole: 2 /* second column (see above comment) */
-                filterRegExp: RegExp(group_id)
+                filterRegExp: RegExp(groupId)
 
                 /* Maximum number of items in the model; -1 is unlimited */
-                limit: item.model_count_limit
+                limit: item.modelCountLimit
             }
 
             onLoaded: {
-                item.display_name = display_name
-                item.icon_hint = icon_hint
+                item.displayName = displayName
+                item.iconHint = iconHint
                 item.model = group_model
                 item.place = place
             }
