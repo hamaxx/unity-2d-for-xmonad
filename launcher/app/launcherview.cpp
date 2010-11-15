@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "launcherview.h"
 
 #include <QApplication>
@@ -23,8 +24,13 @@
 #include <QX11Info>
 #include <QDebug>
 
+#include <QtDeclarative/qdeclarative.h>
+#include <QDeclarativeEngine>
+#include <QDeclarativeContext>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
 
 /* FIXME: import of private Qt headers. See rationale in the implementation of
           'iconAverageColor' */
@@ -33,6 +39,40 @@
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false)
 {
+    setAcceptDrops(true);
+}
+
+void LauncherView::dragEnterEvent(QDragEnterEvent *event)
+{
+    // Check that data has a list of URLs and that at least one is
+    // a desktop file.
+    if (!event->mimeData()->hasUrls()) return;
+
+    foreach (QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            event->acceptProposedAction();
+            break;
+        }
+    }
+}
+
+void LauncherView::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->acceptProposedAction();
+}
+
+void LauncherView::dropEvent(QDropEvent *event)
+{
+    bool accepted = false;
+
+    foreach (QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            emit desktopFileDropped(url.path());
+            accepted = true;
+        }
+    }
+
+    if (accepted) event->accept();
 }
 
 void

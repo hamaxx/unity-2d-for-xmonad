@@ -3,6 +3,7 @@
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
+#include "gconfitem-qml-wrapper.h"
 
 #include <QStringList>
 #include <QDir>
@@ -13,7 +14,8 @@
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_favorites_list.setKey(FAVORITES_KEY + "favorites_list");
+    m_favorites_list = new GConfItemQmlWrapper();
+    m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
 
     load();
 }
@@ -25,6 +27,8 @@ LauncherApplicationsList::~LauncherApplicationsList()
     {
         delete *iter;
     }
+
+    delete m_favorites_list;
 }
 
 QString
@@ -54,6 +58,11 @@ LauncherApplicationsList::insertApplication(QString desktop_file)
     /* Create a new QLauncherApplication */
     LauncherApplication* application = new LauncherApplication;
     application->setDesktopFile(desktop_file);
+
+    /* if the desktop_file property is empty after setting it, it
+       means glib couldn't load the desktop file (probably corrupt) */
+    if (application->desktop_file().isEmpty())
+        return NULL;
 
     beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
     m_desktop_files.append(desktop_file);
@@ -129,7 +138,7 @@ LauncherApplicationsList::load()
 
     /* Insert favorites */
     QString desktop_file;
-    QStringList favorites = m_favorites_list.getValue().toStringList();
+    QStringList favorites = m_favorites_list->getValue().toStringList();
 
     for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
     {
@@ -182,13 +191,13 @@ LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
     QString favorite_id = favoriteFromDesktopFilePath(desktop_file);
 
     /* Add the favorite id to the GConf list of favorites */
-    QStringList favorites = m_favorites_list.getValue().toStringList();
+    QStringList favorites = m_favorites_list->getValue().toStringList();
     if (favorites.contains(favorite_id))
         return;
     favorites << favorite_id;
-    m_favorites_list.blockSignals(true);
-    m_favorites_list.setValue(QVariant(favorites));
-    m_favorites_list.blockSignals(false);
+    m_favorites_list->blockSignals(true);
+    m_favorites_list->setValue(QVariant(favorites));
+    m_favorites_list->blockSignals(false);
 
     /* FIXME: storing these attributes in GConf should not be tied to adding
               application to the list of favorites but instead should happen
@@ -219,7 +228,7 @@ LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
 void
 LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
 {
-    QStringList favorites = m_favorites_list.getValue().toStringList();
+    QStringList favorites = m_favorites_list->getValue().toStringList();
 
     for (QStringList::iterator i = favorites.begin(); i != favorites.end(); i++ )
     {
@@ -227,9 +236,9 @@ LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
         if (current_desktop_file == desktop_file)
         {
             favorites.erase(i);
-            m_favorites_list.blockSignals(true);
-            m_favorites_list.setValue(QVariant(favorites));
-            m_favorites_list.blockSignals(false);
+            m_favorites_list->blockSignals(true);
+            m_favorites_list->setValue(QVariant(favorites));
+            m_favorites_list->blockSignals(false);
             /* The iterator 'i' is invalid but since we break off the loop
                nothing nasty happens. */
             break;

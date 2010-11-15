@@ -1,15 +1,17 @@
 #ifndef LAUNCHERAPPLICATIONSLIST_H
 #define LAUNCHERAPPLICATIONSLIST_H
 
-#include "launcherapplication.h"
-
 #include <QAbstractListModel>
 #include <QList>
 #include <QVariant>
 #include <QString>
 #include <QObject>
+#include <QtDeclarative/qdeclarative.h>
 
-#include "gconfitem-qml-wrapper.h"
+class LauncherApplication;
+class BamfApplication;
+class BamfView;
+class GConfItemQmlWrapper;
 
 class LauncherApplicationsList : public QAbstractListModel
 {
@@ -21,10 +23,11 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
+    Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
+
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
-    void insertFavoriteApplication(QString desktop_file);
 
     LauncherApplication* insertApplication(QString desktop_file);
     void removeApplication(QString desktop_file);
@@ -46,12 +49,14 @@ private:
     QList<QString> m_desktop_files;
     QHash<QString, LauncherApplication*> m_applications;
 
-    GConfItemQmlWrapper m_favorites_list;
+    GConfItemQmlWrapper* m_favorites_list;
 
 private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
 };
+
+QML_DECLARE_TYPE(LauncherApplicationsList)
 
 #endif // LAUNCHERAPPLICATIONSLIST_H
