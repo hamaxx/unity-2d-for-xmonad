@@ -36,7 +36,7 @@ ListAggregatorModel::appendModel(const QVariant& model)
 {
     QObject* object = qvariant_cast<QObject*>(model);
     QAbstractListModel* list = qobject_cast<QAbstractListModel*>(object);
-    this->aggregateListModel(list);
+    aggregateListModel(list);
 }
 
 void

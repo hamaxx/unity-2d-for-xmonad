@@ -59,8 +59,8 @@ LauncherApplicationsList::insertApplication(QString desktop_file)
     LauncherApplication* application = new LauncherApplication;
     application->setDesktopFile(desktop_file);
 
-    // if the desktop_file property is empty after setting it, it
-    // means glib couldn't load the desktop file (probably corrupt)
+    /* if the desktop_file property is empty after setting it, it
+       means glib couldn't load the desktop file (probably corrupt) */
     if (application->desktop_file().isEmpty())
         return NULL;
 

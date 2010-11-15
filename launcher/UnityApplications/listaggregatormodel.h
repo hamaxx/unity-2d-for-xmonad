@@ -33,6 +33,11 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    /* This method is the QML equivalent of aggregateListModel.
+       The reason why aggregateListModel wasn't directly exposed to QML is that
+       QAbstractListModel can't be exposed to QML directly since it's an abstract
+       class. Therefore we accept a QVariant here and internally cast it back
+       to a QAbstractListModel */
     Q_INVOKABLE void appendModel(const QVariant& model);
 
 protected:
