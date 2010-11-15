@@ -58,8 +58,8 @@ signals:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
-    void hasVisibleWindowChanged(bool);
     void priorityChanged(int);
+    void hasVisibleWindowChanged(bool);
 
     void closed();
 
