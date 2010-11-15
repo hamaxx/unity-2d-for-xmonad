@@ -6,10 +6,27 @@ launcher/Makefile
 launcher/tmp
 launcher/bin
 .bzr-repo
-*.kdev4
 *.cmake
 CMakeFiles
 *.cbp
 CMakeCache*
 moc_*.cxx
 *.moc
+
+# KDevelop
+*.kdev4
+.kdev_include_paths
+
+# Debian packaging files
+obj-x86_64-linux-gnu
+debian/files
+debian/*.debhelper.log
+debian/*.substvars
+debian/*.debhelper
+debian/stamp-*
+debian/libuqpanel-dev
+debian/libuqpanel0
+debian/tmp
+debian/unity-qt-launcher
+debian/unity-qt-panel
+debian/unity-qt-places
