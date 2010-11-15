@@ -59,6 +59,7 @@ signals:
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
     void hasVisibleWindowChanged(bool);
+    void priorityChanged(int);
 
     void closed();
 
