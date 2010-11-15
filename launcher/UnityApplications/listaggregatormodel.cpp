@@ -31,11 +31,18 @@ ListAggregatorModel::~ListAggregatorModel()
 void
 ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 {
-    int first = rowCount();
-    int last = first + model->rowCount() - 1;
-    beginInsertRows(QModelIndex(), first, last);
+    int modelRowCount = model->rowCount();
+    if (modelRowCount > 0)
+    {
+        int first = rowCount();
+        int last = first + modelRowCount - 1;
+        beginInsertRows(QModelIndex(), first, last);
+    }
     m_models.append(model);
-    endInsertRows();
+    if (modelRowCount > 0)
+    {
+        endInsertRows();
+    }
     connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             SLOT(onRowsInserted(const QModelIndex&, int, int)));
     connect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
@@ -45,12 +52,18 @@ ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 void
 ListAggregatorModel::removeListModel(QAbstractListModel* model)
 {
-    int first = computeOffset(model);
-    int last = first + model->rowCount() - 1;
-    int index = m_models.indexOf(model);
-    beginRemoveRows(QModelIndex(), first, last);
-    m_models.removeAt(index);
-    endRemoveRows();
+    int modelRowCount = model->rowCount();
+    if (modelRowCount > 0)
+    {
+        int first = computeOffset(model);
+        int last = first + modelRowCount - 1;
+        beginRemoveRows(QModelIndex(), first, last);
+    }
+    m_models.removeOne(model);
+    if (modelRowCount > 0)
+    {
+        endRemoveRows();
+    }
     QObject::disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
                         this, SLOT(onRowsInserted(const QModelIndex&, int, int)));
     QObject::disconnect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
