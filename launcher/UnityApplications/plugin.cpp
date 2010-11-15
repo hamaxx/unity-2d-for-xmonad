@@ -2,7 +2,10 @@
 #include "place.h"
 #include "placeentry.h"
 #include "launcherdevice.h"
-#include "launchermodel.h"
+#include "listaggregatormodel.h"
+#include "launcherapplicationslist.h"
+#include "launcherdeviceslist.h"
+#include "launcherplaceslist.h"
 #include "iconimageprovider.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
