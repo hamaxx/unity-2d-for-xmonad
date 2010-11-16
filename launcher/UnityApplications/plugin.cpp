@@ -2,6 +2,7 @@
 #include "place.h"
 #include "placeentry.h"
 #include "launcherdevice.h"
+#include "trash.h"
 #include "listaggregatormodel.h"
 #include "launcherapplicationslist.h"
 #include "launcherdeviceslist.h"
@@ -26,6 +27,9 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<LauncherDevicesList>(uri, 0, 1, "LauncherDevicesList");
     qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
+
+    qmlRegisterType<Trashes>(uri, 0, 1, "Trashes");
+    qmlRegisterType<Trash>(uri, 0, 1, "Trash");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
