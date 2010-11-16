@@ -70,10 +70,15 @@ Item {
         id: devices
     }
 
+    Trashes {
+        id: trashes
+    }
+
     Component.onCompleted: {
         items.appendModel(applications);
         items.appendModel(places);
         items.appendModel(devices);
+        items.appendModel(trashes);
     }
 
     Connections {
