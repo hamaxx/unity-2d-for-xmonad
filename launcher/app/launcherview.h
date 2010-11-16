@@ -21,6 +21,7 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
+#include <QDragEnterEvent>
 
 class LauncherView : public QDeclarativeView
 {
@@ -30,10 +31,17 @@ public:
     explicit LauncherView();
     Q_INVOKABLE QColor iconAverageColor(QUrl source, QSize size);
 
+signals:
+    void desktopFileDropped(QString path);
+
 public slots:
     void workAreaResized(int screen);
 
 private:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+
     /* Whether the launcher is already being resized */
     bool m_resizing;
 

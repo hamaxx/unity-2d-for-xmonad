@@ -1,10 +1,10 @@
 usr/bin/unity-qt-places
+usr/share/dbus-1/services/unity-qt-places.service
 usr/share/unity-qt/places/AbstractButton.qml
 usr/share/unity-qt/places/Button.qml
 usr/share/unity-qt/places/dash.qml
 usr/share/unity-qt/places/TextCustom.qml
 usr/share/unity-qt/places/GnomeBackground.qml
-usr/share/unity-qt/places/Result.qml
 usr/share/unity-qt/places/Place.qml
 usr/share/unity-qt/places/Section.qml
 usr/share/unity-qt/places/Home.qml
@@ -14,8 +14,14 @@ usr/share/unity-qt/places/SearchEntry.qml
 usr/share/unity-qt/places/Scrollbar.qml
 usr/share/unity-qt/places/Page.qml
 usr/share/unity-qt/places/BorderGlow.qml
-usr/share/unity-qt/places/Group.qml
 usr/share/unity-qt/places/GroupHeader.qml
+usr/share/unity-qt/places/RendererGrid.qml
+usr/share/unity-qt/places/Renderer.qml
+usr/share/unity-qt/places/UnityDefaultRenderer.qml
+usr/share/unity-qt/places/UnityEmptySearchRenderer.qml
+usr/share/unity-qt/places/UnityEmptySectionRenderer.qml
+usr/share/unity-qt/places/UnityFileInfoRenderer.qml
+usr/share/unity-qt/places/UnityShowcaseRenderer.qml
 usr/share/unity-qt/places/utils.js
 usr/share/unity-qt/places/artwork
 usr/share/unity-qt/places/artwork/border_glow.png
