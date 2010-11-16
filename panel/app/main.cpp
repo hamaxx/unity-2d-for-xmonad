@@ -61,7 +61,7 @@ QPalette getPalette()
 QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
-    QPixmap pix("theme:/divider.png");
+    QPixmap pix("theme:/qt_divider.png");
     label->setPixmap(pix);
     label->setFixedSize(pix.size());
     return label;
