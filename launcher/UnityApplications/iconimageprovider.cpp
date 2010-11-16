@@ -2,6 +2,13 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "iconimageprovider.h"
 
+#include "config.h"
+
+#include <QFile>
+
+
+static const char* UNITY_RES_PATH = "/usr/share/unity/";
+
 IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
 }
@@ -15,6 +22,26 @@ IconImageProvider::~IconImageProvider()
 
 QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    /* Special case handling for image resources that belong to the unity
+       package. If unity is not installed, as a fallback we rewrite the path to
+       try and locate them in our (unity-qt) resource directory.
+       See https://launchpad.net/bugs/672450 for a discussion. */
+    if (id.startsWith(UNITY_RES_PATH))
+    {
+        if (QFile::exists(id))
+        {
+            return QImage(id);
+        }
+        else
+        {
+            QString rid(id);
+            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-qt/");
+            /* No need to check whether the file exists, we don’t have a
+               fallback anyway. */
+            return QImage(rid);
+        }
+    }
+
     /* Dealing with case where id is an absolute path to the icon file */
     if(id.startsWith("/"))
         return QImage(id);

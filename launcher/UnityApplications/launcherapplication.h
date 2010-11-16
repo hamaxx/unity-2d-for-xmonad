@@ -2,6 +2,7 @@
 #define LAUNCHERAPPLICATION_H
 
 #include <gio/gdesktopappinfo.h>
+#include <libwnck/libwnck.h>
 
 #include "launcheritem.h"
 
@@ -57,6 +58,7 @@ signals:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
+    void priorityChanged(int);
     void hasVisibleWindowChanged(bool);
 
     void closed();
@@ -67,7 +69,7 @@ private slots:
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
 
-    QBool launch();
+    bool launch();
     void show();
 
     /* Contextual menu callbacks */
@@ -81,6 +83,8 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+
+    void moveViewportToWindow(WnckWindow* window);
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

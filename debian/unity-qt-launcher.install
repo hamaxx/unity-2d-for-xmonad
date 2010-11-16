@@ -1,9 +1,9 @@
-etc/xdg/xdg-unity-qt/autostart/unity-qt-launcher.desktop
 usr/bin/unity-qt-launcher
+usr/share/applications/unity-qt-launcher.desktop
 usr/share/unity-qt/launcher/LauncherItem.qml
 usr/share/unity-qt/launcher/Launcher.qml
 usr/share/unity-qt/launcher/launchermenu.css
-usr/share/unity-qt/launcher/artwork
+usr/share/unity-qt/launcher/artwork/devices.png
 usr/share/unity-qt/launcher/artwork/glow.png
 usr/share/unity-qt/launcher/artwork/shadow.png
 usr/share/unity-qt/launcher/artwork/trash.png
@@ -11,4 +11,9 @@ usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so
+
+# Install places artwork to work around bug #672447 in Unity.
+# See https://launchpad.net/bugs/672450.
+usr/share/unity-qt/applications.png
+usr/share/unity-qt/files.png
 

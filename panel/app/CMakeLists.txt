@@ -20,3 +20,7 @@ target_link_libraries(unity-qt-panel
 install(TARGETS unity-qt-panel
     RUNTIME DESTINATION bin
     )
+
+install(FILES unity-qt-panel.desktop
+    DESTINATION share/applications
+    )

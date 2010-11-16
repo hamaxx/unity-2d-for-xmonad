@@ -17,8 +17,9 @@ Item {
         anchors.fill: parent
         focus: true
 
-        /* launcher is exposed by UnityApplications */
-        model: launcher
+        model: ListAggregatorModel {
+            id: items
+        }
 
         delegate: LauncherItem {
             id: wrapper
@@ -55,5 +56,28 @@ Item {
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
             }
         }
+    }
+
+   LauncherApplicationsList {
+        id: applications
+    }
+
+    LauncherPlacesList {
+        id: places
+    }
+
+    LauncherDevicesList {
+        id: devices
+    }
+
+    Component.onCompleted: {
+        items.appendModel(applications);
+        items.appendModel(places);
+        items.appendModel(devices);
+    }
+
+    Connections {
+        target: launcherView
+        onDesktopFileDropped: applications.insertFavoriteApplication(path)
     }
 }

@@ -9,5 +9,9 @@ if [ "$1" = "upgrade" ]; then
     if [ -f /etc/xdg/autostart/unity-qt-launcher.desktop ]; then
         rm -f /etc/xdg/autostart/unity-qt-launcher.desktop || true
     fi
+
+    # unity-qt-launcher is now started by gnome-session as a required component
+    rm -f /etc/xdg/xdg-unity-qt/autostart/unity-qt-launcher.desktop
+
     exit 0
 fi
