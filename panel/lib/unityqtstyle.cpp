@@ -38,3 +38,23 @@ void UnityQtStyle::drawControl(QStyle::ControlElement element, const QStyleOptio
         QProxyStyle::drawControl(element, option, painter, widget);
     }
 }
+
+int UnityQtStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
+{
+    if (metric == QStyle::PM_MenuBarVMargin) {
+        // Avoid one-pixel gap above menuitem
+        return 0;
+    } else {
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+QSize UnityQtStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOption* option, const QSize& contentsSize, const QWidget* widget) const
+{
+    QSize size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
+    if (type == QStyle::CT_MenuBarItem && widget) {
+        // Avoid three-pixel gap below menuitem
+        size.setHeight(widget->height());
+    }
+    return size;
+}
