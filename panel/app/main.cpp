@@ -37,8 +37,7 @@ public:
     QAbstractFileEngine *create(const QString& fileName) const
     {
         if (fileName.startsWith("theme:")) {
-            // FIXME: Do not hardcode path
-            QString name = INSTALL_PREFIX "/" THEME_DIR "/" + fileName.mid(6);
+            QString name = UNITY_DIR "themes/" + fileName.mid(6);
             return new QFSFileEngine(name);
         } else {
             return 0;
@@ -50,7 +49,12 @@ QPalette getPalette()
 {
     QPalette palette;
 
-    QBrush bg(QPixmap("theme:/qt_panel_background.png"));
+    /* Should use the panel's background provided by Unity but it turns
+       out not to be good. It would look like:
+
+         QBrush bg(QPixmap("theme:/panel_background.png"));
+    */
+    QBrush bg(QPixmap(unityQtDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     palette.setColor(QPalette::WindowText, Qt::white);
