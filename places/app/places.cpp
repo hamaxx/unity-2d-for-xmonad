@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/places/"));
 
-    if (!isRunningInstalled) {
+    if (!isRunningInstalled()) {
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
         view.engine()->addImportPath(unityQtDirectory() + "/launcher/");

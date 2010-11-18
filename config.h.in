@@ -4,10 +4,13 @@
 
 #include <QCoreApplication>
 
-static bool isRunningInstalled = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
+inline bool isRunningInstalled() {
+    static bool cached_result = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
+    return cached_result;
+}
 
 inline QString unityQtDirectory() {
-    if (isRunningInstalled) {
+    if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/" UNITY_QT_DIR);
     }
     else {
@@ -16,7 +19,7 @@ inline QString unityQtDirectory() {
 }
 
 inline QString unityQtImportPath() {
-    if (isRunningInstalled) {
+    if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/lib/qt4/imports");
     }
     else {
