@@ -42,8 +42,8 @@ X11EmbedDelegate::X11EmbedDelegate(QWidget *parent)
       d(new Private())
 {
     d->container = new X11EmbedContainer(this);
-    setFixedSize(22, 24);
-    d->container->setFixedSize(22, 22);
+    setFixedSize(32, 24);
+    d->container->setFixedSize(24, 24);
     d->container->show();
 }
 
@@ -70,7 +70,8 @@ void X11EmbedDelegate::resizeEvent(QResizeEvent *)
 {
     d->container->move(
         (width() - d->container->width()) / 2,
-        (height() - d->container->height()) / 2);
+        0);
+        //(height() - d->container->height()) / 2);
 }
 
 

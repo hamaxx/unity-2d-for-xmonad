@@ -196,7 +196,7 @@ void X11EmbedContainer::paintEvent(QPaintEvent *event)
     // Translate the painter to ensure the background brush is aligned with the
     // rest of the panel
     p.translate(-x(), -y());
-    p.eraseRect(rect());
+    p.eraseRect(0, 0, x() + width(), y() + height());
     p.translate(x(), y());
 
     // Taking a detour via a QPixmap is unfortunately the only way we can get
