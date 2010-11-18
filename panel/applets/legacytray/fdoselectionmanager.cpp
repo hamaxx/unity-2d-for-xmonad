@@ -18,15 +18,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
-
 #include "fdoselectionmanager.h"
 
 #include <debug_p.h>
 
 #include "fdotask.h"
-/* UQ
 #include "x11embedpainter.h"
-
+/* UQ
 #include <KDebug>
 */
 #include <QtCore/QCoreApplication>
@@ -48,17 +46,9 @@
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrender.h>
 
-#ifdef HAVE_XFIXES
-#  include <X11/extensions/Xfixes.h>
-#endif
-
-#ifdef HAVE_XDAMAGE
-#  include <X11/extensions/Xdamage.h>
-#endif
-
-#ifdef HAVE_XCOMPOSITE
-#  include <X11/extensions/Xcomposite.h>
-#endif
+#include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xdamage.h>
+#include <X11/extensions/Xcomposite.h>
 
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
@@ -69,9 +59,8 @@ namespace SystemTray
 {
 
 static FdoSelectionManager *s_manager = 0;
-// UQ static X11EmbedPainter *s_painter = 0;
+static X11EmbedPainter *s_painter = 0;
 
-#if defined(HAVE_XFIXES) && defined(HAVE_XDAMAGE) && defined(HAVE_XCOMPOSITE)
 struct DamageWatch
 {
     QWidget *container;
@@ -105,7 +94,6 @@ static bool x11EventFilter(void *message, long int *result)
         return false;
     }
 }
-#endif
 
 
 struct MessageRequest
@@ -131,7 +119,6 @@ public:
         messageAtom = XInternAtom(display, "_NET_SYSTEM_TRAY_MESSAGE_DATA", false);
         visualAtom = XInternAtom(display, "_NET_SYSTEM_TRAY_VISUAL", false);
 
-#if defined(HAVE_XFIXES) && defined(HAVE_XDAMAGE) && defined(HAVE_XCOMPOSITE)
         int eventBase, errorBase;
         bool haveXfixes = XFixesQueryExtension(display, &eventBase, &errorBase);
         bool haveXdamage = XDamageQueryExtension(display, &damageEventBase, &errorBase);
@@ -141,7 +128,6 @@ public:
             haveComposite = true;
             oldEventFilter = QCoreApplication::instance()->setEventFilter(x11EventFilter);
         }
-#endif
     }
 
     void createNotification(WId winId);
@@ -181,16 +167,14 @@ FdoSelectionManager::FdoSelectionManager()
 
 FdoSelectionManager::~FdoSelectionManager()
 {
-#if defined(HAVE_XFIXES) && defined(HAVE_XDAMAGE) && defined(HAVE_XCOMPOSITE)
     if (d->haveComposite && QCoreApplication::instance()) {
         QCoreApplication::instance()->setEventFilter(oldEventFilter);
     }
-#endif
 
     if (s_manager == this) {
         s_manager = 0;
-        // UQ delete s_painter;
-        // UQ s_painter = 0;
+        delete s_painter;
+        s_painter = 0;
     }
 
     delete d;
@@ -200,25 +184,22 @@ FdoSelectionManager *FdoSelectionManager::manager()
 {
     return s_manager;
 }
-/* UQ
+
 X11EmbedPainter *FdoSelectionManager::painter()
 {
     return s_painter;
 }
-*/
+
 void FdoSelectionManager::addDamageWatch(QWidget *container, WId client)
 {
-#if defined(HAVE_XFIXES) && defined(HAVE_XDAMAGE) && defined(HAVE_XCOMPOSITE)
     DamageWatch *damage = new DamageWatch;
     damage->container = container;
     damage->damage = XDamageCreate(QX11Info::display(), client, XDamageReportNonEmpty);
     damageWatches.insert(client, damage);
-#endif
 }
 
 void FdoSelectionManager::removeDamageWatch(QWidget *container)
 {
-#if defined(HAVE_XFIXES) && defined(HAVE_XDAMAGE) && defined(HAVE_XCOMPOSITE)
     for (QMap<WId, DamageWatch*>::Iterator it = damageWatches.begin(); it != damageWatches.end(); ++it)
     {
         DamageWatch *damage = *(it);
@@ -229,7 +210,6 @@ void FdoSelectionManager::removeDamageWatch(QWidget *container)
              break;
         } 
     }
-#endif
 }
 
 
@@ -266,7 +246,6 @@ bool FdoSelectionManager::x11Event(XEvent *event)
 
 void FdoSelectionManager::initSelection()
 {
-    UQ_DEBUG;
     XSetSelectionOwner(d->display, d->selectionAtom, winId(), CurrentTime);
 
     WId selectionOwner = XGetSelectionOwner(d->display, d->selectionAtom);
@@ -301,10 +280,10 @@ void FdoSelectionManager::initSelection()
     }
     XChangeProperty(d->display, winId(), d->visualAtom, XA_VISUALID, 32,
                     PropModeReplace, (const unsigned char*)&visual, 1);
-    /* UQ
+
     if (!s_painter) {
         s_painter = new X11EmbedPainter;
-    }*/
+    }
     s_manager = this;
 
     WId root = QX11Info::appRootWindow();
@@ -398,12 +377,14 @@ void FdoSelectionManagerPrivate::createNotification(WId winId)
 
     QString message = QString::fromUtf8(request.message);
     message = QTextDocument(message).toHtml();
+
     if (!notificationsEngine) {
         notificationsEngine = Plasma::DataEngineManager::self()->loadEngine("notifications");
     }
     //FIXME: who is the source in this case?
     Plasma::Service *service = notificationsEngine->serviceForSource("notification");
     KConfigGroup op = service->operationDescription("createNotification");
+
     if (op.isValid()) {
         UQ_DEBUG << "Notification";
         op.writeEntry("appName", task->name());

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   fdoselectionmanager.h                                                 *
+ *   x11embeddelegate.cpp                                                  *
  *                                                                         *
  *   Copyright (C) 2008 Jason Stubbs <jasonbstubbs@gmail.com>              *
  *                                                                         *
@@ -19,50 +19,78 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef FDOSELECTIONMANAGER_H
-#define FDOSELECTIONMANAGER_H
+#include "x11embedcontainer.h"
+#include "x11embeddelegate.h"
 
-#include <QtGui/QWidget>
+#include <debug_p.h>
+
+#include <QtCore/QEvent>
+
 
 namespace SystemTray
 {
 
-class Notification;
-class Task;
-class X11EmbedPainter;
-class FdoSelectionManagerPrivate;
-
-class FdoSelectionManager : public QWidget
+class X11EmbedDelegate::Private
 {
-    Q_OBJECT
-
 public:
-    static FdoSelectionManager *manager();
-    static X11EmbedPainter *painter();
-
-    FdoSelectionManager();
-    ~FdoSelectionManager();
-
-    void addDamageWatch(QWidget *container, WId client);
-    void removeDamageWatch(QWidget *container);
-    bool haveComposite() const;
-
-signals:
-    void taskCreated(SystemTray::Task *task);
-    void notificationCreated(SystemTray::Notification *notification);
-
-protected:
-    bool x11Event(XEvent *event);
-
-private slots:
-    void initSelection();
-    void cleanupTask(WId winId);
-
-private:
-    friend class FdoSelectionManagerPrivate;
-    FdoSelectionManagerPrivate* const d;
+    X11EmbedContainer *container;
 };
+
+
+X11EmbedDelegate::X11EmbedDelegate(QWidget *parent)
+    : QWidget(parent),
+      d(new Private())
+{
+    d->container = new X11EmbedContainer(this);
+    setFixedSize(22, 24);
+    d->container->setFixedSize(22, 22);
+    d->container->show();
+}
+
+
+X11EmbedDelegate::~X11EmbedDelegate()
+{
+    delete d;
+}
+
+
+void X11EmbedDelegate::setParent(QWidget *newParent)
+{
+    if (parent()) {
+        parent()->removeEventFilter(this);
+    }
+    QWidget::setParent(newParent);
+    if (newParent) {
+        newParent->installEventFilter(this);
+    }
+}
+
+
+void X11EmbedDelegate::resizeEvent(QResizeEvent *)
+{
+    d->container->move(
+        (width() - d->container->width()) / 2,
+        (height() - d->container->height()) / 2);
+}
+
+
+X11EmbedContainer* X11EmbedDelegate::container()
+{
+    return d->container;
+}
+
+
+bool X11EmbedDelegate::eventFilter(QObject *watched, QEvent *event)
+{
+    bool ret = QWidget::eventFilter(watched, event);
+
+    if (event->type() == QEvent::Hide) {
+        setParent(0);
+    }
+
+    return ret;
+}
 
 }
 
-#endif
+#include "x11embeddelegate.moc"

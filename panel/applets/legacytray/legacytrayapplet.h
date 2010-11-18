@@ -31,6 +31,7 @@ public:
 
 private Q_SLOTS:
     void slotTaskCreated(SystemTray::Task*);
+    void slotWidgetCreated(QWidget* widget);
 
 private:
     Q_DISABLE_COPY(LegacyTrayApplet)
