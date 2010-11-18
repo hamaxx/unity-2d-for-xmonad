@@ -68,10 +68,7 @@ void X11EmbedDelegate::setParent(QWidget *newParent)
 
 void X11EmbedDelegate::resizeEvent(QResizeEvent *)
 {
-    d->container->move(
-        (width() - d->container->width()) / 2,
-        0);
-        //(height() - d->container->height()) / 2);
+    d->container->move((width() - d->container->width()) / 2, 0);
 }
 
 
