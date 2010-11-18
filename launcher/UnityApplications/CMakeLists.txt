@@ -80,7 +80,3 @@ install(FILES qmldir
     DESTINATION ${IMPORT_INSTALL_DIR}
     )
 
-install(FILES launchermenu.css
-    DESTINATION ${UNITY_QT_DIR}/launcher
-    )
-
