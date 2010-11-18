@@ -43,22 +43,15 @@ int main(int argc, char *argv[])
               property refreshed when not using it .. sometimes */
     view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
-    {
-        /* Running installed */
-        view.engine()->addImportPath(QString(INSTALL_PREFIX "/lib/qt4/imports"));
-        /* Note: baseUrl seems to be picky: if it does not end with a slash,
-           setSource() will fail */
-        view.engine()->setBaseUrl(QUrl::fromLocalFile(INSTALL_PREFIX "/" UNITY_QT_DIR "/places/"));
-    }
-    else
-    {
-        /* Uninstalled: make sure local plugins such as QtDee are
-           importable */
-        view.engine()->addImportPath(QString("."));
+    view.engine()->addImportPath(unityQtImportPath());
+    /* Note: baseUrl seems to be picky: if it does not end with a slash,
+       setSource() will fail */
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/places/"));
+
+    if (!isRunningInstalled) {
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
-        view.engine()->addImportPath(QString("../launcher"));
+        view.engine()->addImportPath(unityQtDirectory() + "/launcher/");
     }
 
     /* Load the QML UI, focus and show the window */

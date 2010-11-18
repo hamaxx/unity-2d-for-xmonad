@@ -43,20 +43,10 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
-    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
-    {
-        /* Running installed */
-        view.engine()->addImportPath(QString(INSTALL_PREFIX "/lib/qt4/imports"));
-        /* Note: baseUrl seems to be picky: if it does not end with a slash,
-           setSource() will fail */
-        view.engine()->setBaseUrl(QUrl::fromLocalFile(INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/"));
-    }
-    else
-    {
-        /* Uninstalled: make sure local plugins such as UnityApplications are
-           importable */
-        view.engine()->addImportPath(QString("."));
-    }
+    view.engine()->addImportPath(unityQtImportPath());
+    /* Note: baseUrl seems to be picky: if it does not end with a slash,
+       setSource() will fail */
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/launcher/"));
 
     view.rootContext()->setContextProperty("launcherView", &view);
     view.setSource(QUrl("./Launcher.qml"));
