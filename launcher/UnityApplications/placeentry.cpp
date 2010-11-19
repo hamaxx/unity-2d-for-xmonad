@@ -344,9 +344,11 @@ PlaceEntry::connectToRemotePlaceEntry()
     // Connect to RendererInfoChanged and PlaceEntryInfoChanged signals
     QDBusConnection connection = m_dbusIface->connection();
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
-                       "RendererInfoChanged", this, SLOT(onRendererInfoChanged()));
+                       "RendererInfoChanged", this,
+                       SLOT(onRendererInfoChanged(const RendererInfoStruct&)));
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
-                       "PlaceEntryInfoChanged", this, SLOT(onPlaceEntryInfoChanged()));
+                       "PlaceEntryInfoChanged", this,
+                       SLOT(onPlaceEntryInfoChanged(const PlaceEntryInfoStruct&)));
 
     m_online = true;
 }
@@ -407,16 +409,16 @@ PlaceEntry::setSection(const QString& sectionModelName)
 }
 
 void
-PlaceEntry::onRendererInfoChanged()
+PlaceEntry::onRendererInfoChanged(const RendererInfoStruct& r)
 {
     // TODO
     //emit rendererInfoChanged();
 }
 
 void
-PlaceEntry::onPlaceEntryInfoChanged(const PlaceEntryInfoStruct& info)
+PlaceEntry::onPlaceEntryInfoChanged(const PlaceEntryInfoStruct& p)
 {
-    updateInfo(info);
+    updateInfo(p);
     //emit rendererInfoChanged();
 }
 

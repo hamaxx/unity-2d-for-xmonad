@@ -137,7 +137,7 @@ private:
     void activateEntry(const int section);
 
 private Q_SLOTS:
-    void onRendererInfoChanged();
+    void onRendererInfoChanged(const RendererInfoStruct&);
     void onPlaceEntryInfoChanged(const PlaceEntryInfoStruct&);
 
     /* Contextual menu callbacks */
