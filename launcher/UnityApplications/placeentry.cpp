@@ -123,8 +123,12 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
         p.hints[key] = value;
     }
     argument.endMap();
-    argument >> p.entry_renderer_info;
-    argument >> p.global_renderer_info;
+    /* The PlaceEntryInfoChanged signal on the com.canonical.Unity.PlaceEntry
+       interface omits the two RenderingInfo structs. */
+    if (!argument.atEnd()) {
+        argument >> p.entry_renderer_info;
+        argument >> p.global_renderer_info;
+    }
     argument.endStructure();
     return argument;
 }
