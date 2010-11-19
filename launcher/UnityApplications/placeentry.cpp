@@ -19,23 +19,147 @@
 
 #include "placeentry.h"
 
-#include <QDBusInterface>
+#include <QDBusMetaType>
+#include <QDebug>
 
-PlaceEntry::PlaceEntry()
+// Marshall the RendererInfoStruct data into a D-Bus argument
+QDBusArgument &operator<<(QDBusArgument &argument, const RendererInfoStruct &r)
 {
+    argument.beginStructure();
+    argument << r.default_renderer;
+    argument << r.groups_model;
+    argument << r.results_model;
+    argument.beginMap(QVariant::String, QVariant::String);
+    QMap<QString, QString>::const_iterator i;
+    for (i = r.renderer_hints.constBegin(); i != r.renderer_hints.constEnd(); ++i) {
+        argument.beginMapEntry();
+        argument << i.key() << i.value();
+        argument.endMapEntry();
+    }
+    argument.endMap();
+    argument.endStructure();
+    return argument;
+}
+
+// Retrieve the RendererInfoStruct data from the D-Bus argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, RendererInfoStruct &r)
+{
+    argument.beginStructure();
+    argument >> r.default_renderer;
+    argument >> r.groups_model;
+    argument >> r.results_model;
+    r.renderer_hints.clear();
+    argument.beginMap();
+    while (!argument.atEnd()) {
+        QString key;
+        QString value;
+        argument.beginMapEntry();
+        argument >> key >> value;
+        argument.endMapEntry();
+        r.renderer_hints[key] = value;
+    }
+    argument.endMap();
+    argument.endStructure();
+    return argument;
+}
+
+
+// Marshall the PlaceEntryInfoStruct data into a D-Bus argument
+QDBusArgument &operator<<(QDBusArgument &argument, const PlaceEntryInfoStruct &p)
+{
+    argument.beginStructure();
+    argument << p.dbus_path;
+    argument << p.name;
+    argument << p.icon;
+    argument << p.position;
+    argument.beginArray(QVariant::String);
+    QStringList::const_iterator i;
+    for (i = p.mimetypes.constBegin(); i != p.mimetypes.constEnd(); ++i) {
+        argument << *i;
+    }
+    argument.endArray();
+    argument << p.sensitive;
+    argument << p.sections_model;
+    argument.beginMap(QVariant::String, QVariant::String);
+    QMap<QString, QString>::const_iterator j;
+    for (j = p.hints.constBegin(); j != p.hints.constEnd(); ++j) {
+        argument.beginMapEntry();
+        argument << j.key() << j.value();
+        argument.endMapEntry();
+    }
+    argument.endMap();
+    argument << p.entry_renderer_info;
+    argument << p.global_renderer_info;
+    argument.endStructure();
+    return argument;
+}
+
+// Retrieve the PlaceEntryInfoStruct data from the D-Bus argument
+const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStruct &p)
+{
+    argument.beginStructure();
+    argument >> p.dbus_path;
+    argument >> p.name;
+    argument >> p.icon;
+    argument >> p.position;
+    argument.beginArray();
+    p.mimetypes.clear();
+    while (!argument.atEnd()) {
+        QString mimetype;
+        argument >> mimetype;
+        p.mimetypes.append(mimetype);
+    }
+    argument.endArray();
+    argument >> p.sensitive;
+    argument >> p.sections_model;
+    p.hints.clear();
+    argument.beginMap();
+    while (!argument.atEnd()) {
+        QString key;
+        QString value;
+        argument.beginMapEntry();
+        argument >> key >> value;
+        argument.endMapEntry();
+        p.hints[key] = value;
+    }
+    argument.endMap();
+    argument >> p.entry_renderer_info;
+    argument >> p.global_renderer_info;
+    argument.endStructure();
+    return argument;
+}
+
+
+static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
+
+PlaceEntry::PlaceEntry() : m_position(0), m_dbusIface(NULL)
+{
+    // FIXME: this is not the right place to do this…
+    qDBusRegisterMetaType<RendererInfoStruct>();
+    qDBusRegisterMetaType<PlaceEntryInfoStruct>();
+    qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_fileName(other.m_fileName),
     m_groupName(other.m_groupName),
+    m_dbusName(other.m_dbusName),
     m_dbusObjectPath(other.m_dbusObjectPath),
     m_icon(other.m_icon),
-    m_name(other.m_name)
+    m_name(other.m_name),
+    m_position(other.m_position),
+    m_mimetypes(other.m_mimetypes)
 {
+    // TODO: connect()
 }
 
 PlaceEntry::~PlaceEntry()
 {
+    if (m_dbusIface != NULL)
+    {
+        // TODO: disconnect()
+        delete m_dbusIface;
+    }
 }
 
 bool
@@ -114,15 +238,54 @@ PlaceEntry::setGroupName(QString groupName)
 }
 
 QString
+PlaceEntry::dbusName() const
+{
+    return m_dbusName;
+}
+
+QString
 PlaceEntry::dbusObjectPath() const
 {
     return m_dbusObjectPath;
+}
+
+uint
+PlaceEntry::position() const
+{
+    return m_position;
+}
+
+QStringList
+PlaceEntry::mimetypes() const
+{
+    return m_mimetypes;
+}
+
+void
+PlaceEntry::setDbusName(QString dbusName)
+{
+    m_dbusName = dbusName;
 }
 
 void
 PlaceEntry::setDbusObjectPath(QString dbusObjectPath)
 {
     m_dbusObjectPath = dbusObjectPath;
+}
+
+void
+PlaceEntry::setPosition(uint position)
+{
+    if (position != m_position) {
+        m_position = position;
+        emit positionChanged(position);
+    }
+}
+
+void
+PlaceEntry::setMimetypes(QStringList mimetypes)
+{
+    m_mimetypes = mimetypes;
 }
 
 void
@@ -136,5 +299,76 @@ void
 PlaceEntry::createMenuActions()
 {
     // TODO: implement me
+}
+
+void
+PlaceEntry::connectToRemotePlaceEntry()
+{
+    m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
+                                     UNITY_PLACE_ENTRY_INTERFACE);
+
+    // Connect to RendererInfoChanged and PlaceEntryInfoChanged signals
+    QDBusConnection connection = m_dbusIface->connection();
+    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
+                       "RendererInfoChanged", this, SLOT(onRendererInfoChanged()));
+    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
+                       "PlaceEntryInfoChanged", this, SLOT(onPlaceEntryInfoChanged()));
+}
+
+void
+PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
+{
+    if (info.name != "") {
+        setName(info.name);
+    }
+    setIcon(info.icon);
+    setPosition(info.position);
+    setMimetypes(info.mimetypes);
+    //setSensitive(info.sensitive);
+    //setSectionsModelName(info.sections_model_name);
+    //setHints(info.hints);
+
+    //setEntryRendererName(info.entry_renderer_info.default_renderer);
+    /*const QString& eGroupsModelName = info.entry_renderer_info.groups_model;
+    if (entryGroupsModelName() != eGroupsModelName) {
+        setEntryGroupsModelName(eGroupsModelName);
+        setEntryGroupsModel(NULL);
+    }*/
+    /*const QString& eResultsModelName = info.entry_renderer_info.results_model;
+    if (entryResultsModelName() != eResultsModelName) {
+        setEntryResultsModelName(eResultsModelName);
+        setEntryResultsModel(NULL);
+    }*/
+    //setEntryRendererHints(info.entry_renderer_info.renderer_hints);
+
+    //setGlobalRendererName(info.global_renderer_info.default_renderer);
+    /*const QString& gGroupsModelName = info.global_renderer_info.groups_model;
+    if (globalGroupsModelName() != gGroupsModelName) {
+        setGlobalGroupsModelName(gGroupsModelName);
+        setGlobalGroupsModel(NULL);
+    }*/
+    /*const QString& gResultsModelName = info.global_renderer_info.results_model;
+    if (globalResultsModelName() != gResultsModelName) {
+        setGlobalResultsModelName(gResultsModelName);
+        setGlobalResultsModel(NULL);
+    }*/
+    //setGlobalRendererHints(info.global_renderer_info.renderer_hints);
+
+    //emit updated();
+    //emit rendererInfoChanged();
+}
+
+void
+PlaceEntry::onRendererInfoChanged()
+{
+    // TODO
+    //emit rendererInfoChanged();
+}
+
+void
+PlaceEntry::onPlaceEntryInfoChanged(const PlaceEntryInfoStruct& info)
+{
+    updateInfo(info);
+    //emit rendererInfoChanged();
 }
 

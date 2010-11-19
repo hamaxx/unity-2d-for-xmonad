@@ -25,6 +25,8 @@
 #include <QSettings>
 #include <QList>
 #include <QMetaType>
+#include <QDBusInterface>
+#include <QDBusPendingCallWatcher>
 
 #include "placeentry.h"
 
@@ -53,11 +55,23 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    /* Connect to the remote representation of the place on DBus and monitor
+       changes. */
+    void connectToRemotePlace();
+
 private:
     QSettings* m_file;
     QString m_dbusName;
-    QString m_dbusObjectName;
+    QString m_dbusObjectPath;
     QList<PlaceEntry*> m_entries;
+    QDBusInterface* m_dbusIface;
+
+private Q_SLOTS:
+    void onEntryAdded(const PlaceEntryInfoStruct&);
+    void onEntryRemoved(QVariant);
+    void onEntryPositionChanged(uint);
+
+    void gotEntries(QDBusPendingCallWatcher*);
 };
 
 Q_DECLARE_METATYPE(Place*)
