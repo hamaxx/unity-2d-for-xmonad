@@ -47,6 +47,7 @@ public:
     QString fileName() const;
     QString dbusName() const;
     QString dbusObjectPath() const;
+    bool online() const;
 
     /* setters */
     void setFileName(const QString& file);
@@ -68,6 +69,7 @@ private:
     QString m_dbusName;
     QString m_dbusObjectPath;
     QList<PlaceEntry*> m_entries;
+    bool m_online;
     QDBusInterface* m_dbusIface;
 
 private Q_SLOTS:

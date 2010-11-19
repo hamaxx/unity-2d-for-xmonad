@@ -66,7 +66,9 @@ LauncherPlacesList::addPlace(const QString& file)
     Place* place = new Place;
     place->setFileName(file);
     place->connectToRemotePlace();
-    aggregateListModel(place);
+    if (place->online()) {
+        aggregateListModel(place);
+    }
 }
 
 void

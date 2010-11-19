@@ -26,7 +26,10 @@
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
 
 Place::Place(QObject* parent) :
-    QAbstractListModel(parent), m_file(NULL), m_dbusIface(NULL)
+    QAbstractListModel(parent),
+    m_file(NULL),
+    m_online(false),
+    m_dbusIface(NULL)
 {
 }
 
@@ -109,6 +112,12 @@ Place::dbusObjectPath() const
     return m_dbusObjectPath;
 }
 
+bool
+Place::online() const
+{
+    return m_online;
+}
+
 QVariant
 Place::data(const QModelIndex& index, int role) const
 {
@@ -131,8 +140,14 @@ Place::rowCount(const QModelIndex& parent) const
 void
 Place::connectToRemotePlace()
 {
+    if (m_online) return;
+
     m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
                                      UNITY_PLACE_INTERFACE);
+    if (!m_dbusIface->isValid()) {
+        m_online = false;
+        return;
+    }
 
     // Connect to EntryAdded and EntryRemoved signals
     QDBusConnection connection = m_dbusIface->connection();
@@ -147,6 +162,8 @@ Place::connectToRemotePlace()
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
     QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
                      this, SLOT(gotEntries(QDBusPendingCallWatcher*)));
+
+    m_online = true;
 }
 
 void
@@ -230,7 +247,15 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
 
         /* Now remove those that couldn’t connect or did not exist in the live
            place. */
-        // TODO (see unity-private/places/places-place.vala:193)
+        for (int k = m_entries.size() - 1; k != -1; --k) {
+            PlaceEntry* entry = m_entries.at(k);
+            if (!entry->online()) {
+                emit entryRemoved(entry);
+                beginRemoveRows(createIndex(0, 0), k, k);
+                m_entries.removeAt(k);
+                endRemoveRows();
+            }
+        }
     }
     watcher->deleteLater();
 }

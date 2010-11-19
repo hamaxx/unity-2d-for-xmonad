@@ -95,6 +95,7 @@ public:
     QString dbusObjectPath() const;
     uint position() const;
     QStringList mimetypes() const;
+    bool online() const;
 
     /* setters */
     void setName(QString);
@@ -129,6 +130,7 @@ private:
     uint m_position;
     QStringList m_mimetypes;
     DeeListModel* m_sections;
+    bool m_online;
     QDBusInterface* m_dbusIface;
 
     void setSection(const QString&);
