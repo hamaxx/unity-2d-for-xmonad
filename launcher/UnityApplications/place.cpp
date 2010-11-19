@@ -139,7 +139,7 @@ Place::connectToRemotePlace()
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
                        "EntryAdded", this, SLOT(onEntryAdded(const PlaceEntryInfoStruct&)));
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
-                       "EntryRemoved", this, SLOT(onEntryRemoved()));
+                       "EntryRemoved", this, SLOT(onEntryRemoved(const QString&)));
 
     // Get the list of entries and update the existing entries.
     // See unity/unity-private/places/places-place.vala:167
@@ -152,15 +152,37 @@ Place::connectToRemotePlace()
 void
 Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 {
-    qDebug() << "onEntryAdded";
-    // TODO
+    // TODO: test that this actually works… How do I add an entry on D-Bus?
+    PlaceEntry* entry = new PlaceEntry;
+    entry->setDbusName(m_dbusName);
+    entry->setDbusObjectPath(p.dbus_path);
+    entry->updateInfo(p);
+    QObject::connect(entry, SIGNAL(positionChanged(uint)),
+                     this, SLOT(onEntryPositionChanged(uint)));
+    m_entries.append(entry);
+    entry->connectToRemotePlaceEntry();
+    emit entryAdded(entry);
 }
 
 void
-Place::onEntryRemoved(QVariant blah)
+Place::onEntryRemoved(const QString& dbusObjectPath)
 {
-    qDebug() << "onEntryRemoved:" << blah;
-    // TODO
+    // TODO: test that this actually works… How do I remove an entry on D-Bus?
+    PlaceEntry* entry = NULL;
+    QList<PlaceEntry*>::const_iterator i;
+    for (i = m_entries.constBegin(); i != m_entries.constEnd(); ++i) {
+        if ((*i)->dbusObjectPath() == dbusObjectPath) {
+            entry = *i;
+            break;
+        }
+    }
+    if (entry != NULL) {
+        emit entryRemoved(entry);
+        int index = m_entries.indexOf(entry);
+        beginRemoveRows(QModelIndex(), index, index);
+        m_entries.removeOne(entry);
+        endRemoveRows();
+    }
 }
 
 void
@@ -174,8 +196,6 @@ Place::onEntryPositionChanged(uint position)
 void
 Place::gotEntries(QDBusPendingCallWatcher* watcher)
 {
-    qDebug() << "Place::gotEntries(" << watcher << ")";
-
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
         qWarning() << reply.error().message();

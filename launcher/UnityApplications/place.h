@@ -59,6 +59,10 @@ public:
        changes. */
     void connectToRemotePlace();
 
+Q_SIGNALS:
+    void entryAdded(PlaceEntry*);
+    void entryRemoved(PlaceEntry*);
+
 private:
     QSettings* m_file;
     QString m_dbusName;
@@ -68,7 +72,7 @@ private:
 
 private Q_SLOTS:
     void onEntryAdded(const PlaceEntryInfoStruct&);
-    void onEntryRemoved(QVariant);
+    void onEntryRemoved(const QString&);
     void onEntryPositionChanged(uint);
 
     void gotEntries(QDBusPendingCallWatcher*);
