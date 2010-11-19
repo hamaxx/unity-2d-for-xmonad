@@ -37,16 +37,11 @@ Place::Place(const Place &other)
 {
     if (other.m_file != NULL)
         setFileName(other.m_file->fileName());
-    // TODO: connect()
 }
 
 Place::~Place()
 {
-    if (m_dbusIface != NULL)
-    {
-        // TODO: disconnect()
-        delete m_dbusIface;
-    }
+    delete m_dbusIface;
     delete m_file;
     QList<PlaceEntry*>::iterator iter;
     for(iter = m_entries.begin(); iter != m_entries.end(); ++iter)
@@ -157,7 +152,6 @@ Place::connectToRemotePlace()
                        "EntryRemoved", this, SLOT(onEntryRemoved(const QString&)));
 
     // Get the list of entries and update the existing entries.
-    // See unity/unity-private/places/places-place.vala:167
     QDBusPendingCall pcall = m_dbusIface->asyncCall("GetEntries");
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
     QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
@@ -202,6 +196,7 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
         beginRemoveRows(createIndex(0, 0), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
+        delete entry;
     }
 }
 
@@ -225,7 +220,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
 {
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
-        qWarning() << reply.error().message();
+        qWarning() << "ERROR:" << m_dbusName << reply.error().message();
     } else {
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
         QList<PlaceEntryInfoStruct>::const_iterator i;
@@ -254,6 +249,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
                 beginRemoveRows(createIndex(0, 0), k, k);
                 m_entries.removeAt(k);
                 endRemoveRows();
+                delete entry;
             }
         }
     }

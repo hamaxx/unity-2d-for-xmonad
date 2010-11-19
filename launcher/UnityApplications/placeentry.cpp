@@ -160,11 +160,7 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
 PlaceEntry::~PlaceEntry()
 {
     delete m_sections;
-    if (m_dbusIface != NULL)
-    {
-        // TODO: disconnect()
-        delete m_dbusIface;
-    }
+    delete m_dbusIface;
 }
 
 bool

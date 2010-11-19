@@ -68,6 +68,8 @@ LauncherPlacesList::addPlace(const QString& file)
     place->connectToRemotePlace();
     if (place->online()) {
         aggregateListModel(place);
+    } else {
+        delete place;
     }
 }
 
