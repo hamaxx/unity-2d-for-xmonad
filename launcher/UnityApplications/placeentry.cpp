@@ -292,8 +292,14 @@ PlaceEntry::setMimetypes(QStringList mimetypes)
 void
 PlaceEntry::activate()
 {
+    activateEntry(0);
+}
+
+void
+PlaceEntry::activateEntry(const int section)
+{
     QDBusInterface iface("com.canonical.UnityQt", "/dash", "local.DashDeclarativeView");
-    iface.call("activatePlaceEntry", m_fileName, m_groupName);
+    iface.call("activatePlaceEntry", m_fileName, m_groupName, section);
 }
 
 void
@@ -314,7 +320,7 @@ PlaceEntry::onSectionTriggered()
     QAction* action = static_cast<QAction*>(sender());
     int section = action->property("section").toInt();
     hideMenu(true);
-    qDebug() << "TODO: activate section" << section;
+    activateEntry(section);
 }
 
 void

@@ -132,6 +132,7 @@ private:
     QDBusInterface* m_dbusIface;
 
     void setSection(const QString&);
+    void activateEntry(const int section);
 
 private Q_SLOTS:
     void onRendererInfoChanged();
