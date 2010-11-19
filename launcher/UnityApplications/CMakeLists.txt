@@ -65,7 +65,7 @@ target_link_libraries(UnityApplications
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
     ${WNCK_LDFLAGS}
-    # Hack until QtDee is in its own package
+    # Hack until QtDee is in its own package (https://launchpad.net/bugs/677548)
     -L../../places/QtDee -lQtDee
     )
 

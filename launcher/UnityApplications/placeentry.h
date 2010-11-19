@@ -22,7 +22,7 @@
 
 #include "launcheritem.h"
 
-// Hack until QtDee is in its own package
+// Hack until QtDee is in its own package (https://launchpad.net/bugs/677548)
 #include "../../places/QtDee/deelistmodel.h"
 
 #include <QMetaType>
