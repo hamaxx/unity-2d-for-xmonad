@@ -131,6 +131,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 
 
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
+static const char* SECTION_PROPERTY = "section";
 
 PlaceEntry::PlaceEntry() :
     m_position(0),
@@ -154,7 +155,6 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes)
 {
-    // TODO: connect()
 }
 
 PlaceEntry::~PlaceEntry()
@@ -314,7 +314,7 @@ PlaceEntry::createMenuActions()
     for(int i = 0; i < m_sections->rowCount(); ++i) {
         QAction* section = new QAction(m_menu);
         section->setText(m_sections->data(m_sections->index(i)).toString());
-        section->setProperty("section", QVariant(i));
+        section->setProperty(SECTION_PROPERTY, QVariant(i));
         m_menu->addAction(section);
         QObject::connect(section, SIGNAL(triggered()), this, SLOT(onSectionTriggered()));
     }
@@ -324,7 +324,7 @@ void
 PlaceEntry::onSectionTriggered()
 {
     QAction* action = static_cast<QAction*>(sender());
-    int section = action->property("section").toInt();
+    int section = action->property(SECTION_PROPERTY).toInt();
     hideMenu(true);
     activateEntry(section);
 }
