@@ -132,7 +132,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
 
-PlaceEntry::PlaceEntry() : m_position(0), m_dbusIface(NULL)
+PlaceEntry::PlaceEntry() : m_position(0), m_sections(NULL), m_dbusIface(NULL)
 {
     // FIXME: this is not the right place to do this…
     qDBusRegisterMetaType<RendererInfoStruct>();
@@ -155,6 +155,7 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
 
 PlaceEntry::~PlaceEntry()
 {
+    delete m_sections;
     if (m_dbusIface != NULL)
     {
         // TODO: disconnect()
@@ -298,7 +299,22 @@ PlaceEntry::activate()
 void
 PlaceEntry::createMenuActions()
 {
-    // TODO: implement me
+    for(int i = 0; i < m_sections->rowCount(); ++i) {
+        QAction* section = new QAction(m_menu);
+        section->setText(m_sections->data(m_sections->index(i)).toString());
+        section->setProperty("section", QVariant(i));
+        m_menu->addAction(section);
+        QObject::connect(section, SIGNAL(triggered()), this, SLOT(onSectionTriggered()));
+    }
+}
+
+void
+PlaceEntry::onSectionTriggered()
+{
+    QAction* action = static_cast<QAction*>(sender());
+    int section = action->property("section").toInt();
+    hideMenu(true);
+    qDebug() << "TODO: activate section" << section;
 }
 
 void
@@ -325,7 +341,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setPosition(info.position);
     setMimetypes(info.mimetypes);
     //setSensitive(info.sensitive);
-    //setSectionsModelName(info.sections_model_name);
+    setSection(info.sections_model);
     //setHints(info.hints);
 
     //setEntryRendererName(info.entry_renderer_info.default_renderer);
@@ -356,6 +372,18 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
 
     //emit updated();
     //emit rendererInfoChanged();
+}
+
+void
+PlaceEntry::setSection(const QString& sectionModelName)
+{
+    if (m_sections == NULL) {
+        m_sections = new DeeListModel;
+    }
+    QString path = m_dbusName;
+    path.replace(".", "/");
+    m_sections->setObjectPath("/com/canonical/dee/model/" + path + "/SectionsModel");
+    m_sections->setService(sectionModelName);
 }
 
 void

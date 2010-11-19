@@ -22,6 +22,9 @@
 
 #include "launcheritem.h"
 
+// Hack until QtDee is in its own package
+#include "../../places/QtDee/deelistmodel.h"
+
 #include <QMetaType>
 #include <QDBusInterface>
 #include <QDBusArgument>
@@ -125,11 +128,17 @@ private:
     QString m_name;
     uint m_position;
     QStringList m_mimetypes;
+    DeeListModel* m_sections;
     QDBusInterface* m_dbusIface;
+
+    void setSection(const QString&);
 
 private Q_SLOTS:
     void onRendererInfoChanged();
     void onPlaceEntryInfoChanged(const PlaceEntryInfoStruct&);
+
+    /* Contextual menu callbacks */
+    void onSectionTriggered();
 };
 
 Q_DECLARE_METATYPE(PlaceEntry*)

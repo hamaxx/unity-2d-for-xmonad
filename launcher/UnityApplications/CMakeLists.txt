@@ -65,6 +65,8 @@ target_link_libraries(UnityApplications
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
     ${WNCK_LDFLAGS}
+    # Hack until QtDee is in its own package
+    -L../../places/QtDee -lQtDee
     )
 
 # Install
