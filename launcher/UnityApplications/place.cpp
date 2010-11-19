@@ -159,7 +159,10 @@ Place::onEntryAdded(const PlaceEntryInfoStruct& p)
     entry->updateInfo(p);
     QObject::connect(entry, SIGNAL(positionChanged(uint)),
                      this, SLOT(onEntryPositionChanged(uint)));
+    int index = m_entries.size();
+    beginInsertRows(createIndex(0, 0), index, index);
     m_entries.append(entry);
+    endInsertRows();
     entry->connectToRemotePlaceEntry();
     emit entryAdded(entry);
 }
@@ -179,7 +182,7 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
     if (entry != NULL) {
         emit entryRemoved(entry);
         int index = m_entries.indexOf(entry);
-        beginRemoveRows(QModelIndex(), index, index);
+        beginRemoveRows(createIndex(0, 0), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
     }
@@ -188,9 +191,16 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
 void
 Place::onEntryPositionChanged(uint position)
 {
+    /* This doesn’t seem to be implemented/used in Unity, but it can’t hurt… */
+    /* TODO: test that this actually works… How do I change the position of an
+       entry on D-Bus? */
+    // TODO: may require some sanity checks.
     PlaceEntry* entry = static_cast<PlaceEntry*>(sender());
-    qDebug() << "onEntryPositionChanged(" << entry << ", " << position << ")";
-    // TODO
+    QModelIndex parent = createIndex(0, 0);
+    int from = m_entries.indexOf(entry);
+    beginMoveRows(parent, from, from, parent, position);
+    m_entries.move(from, position);
+    endMoveRows();
 }
 
 void
