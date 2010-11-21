@@ -39,8 +39,8 @@ DashDeclarativeView::closeEvent(QCloseEvent* event)
 void
 DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
+    QDeclarativeView::focusOutEvent(event);
     setActive(false);
-    event->ignore();
 }
 
 void
