@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Dirs
 set(UNITY_QT_DIR share/unity-qt)
+set(UNITY_DIR /usr/share/unity/)
 
 configure_file(config.h.in config.h)
 
