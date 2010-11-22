@@ -31,12 +31,6 @@ DashDeclarativeView::fitToAvailableSpace(int screen)
 }
 
 void
-DashDeclarativeView::closeEvent(QCloseEvent* event)
-{
-    event->ignore();
-}
-
-void
 DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     setActive(false);
