@@ -70,7 +70,6 @@ QLabel* createSeparator()
 int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
-    UnityQtStyle style;
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
@@ -82,7 +81,7 @@ int main(int argc, char** argv)
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication app(argc, argv);
-    app.setStyle(&style);
+    app.setStyle(new UnityQtStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());
