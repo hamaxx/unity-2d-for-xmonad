@@ -1,5 +1,5 @@
 /***************************************************************************
- *   fdoselectionmanager.h                                                 *
+ *   x11embedcontainer.h                                                   *
  *                                                                         *
  *   Copyright (C) 2008 Jason Stubbs <jasonbstubbs@gmail.com>              *
  *                                                                         *
@@ -19,50 +19,39 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef FDOSELECTIONMANAGER_H
-#define FDOSELECTIONMANAGER_H
+#ifndef X11EMBEDCONTAINER_H
+#define X11EMBEDCONTAINER_H
 
-#include <QtGui/QWidget>
+#include <QtGui/QX11EmbedContainer>
+
 
 namespace SystemTray
 {
 
-class Notification;
-class Task;
-class X11EmbedPainter;
-class FdoSelectionManagerPrivate;
-
-class FdoSelectionManager : public QWidget
+class X11EmbedContainer : public QX11EmbedContainer
 {
     Q_OBJECT
 
 public:
-    static FdoSelectionManager *manager();
-    static X11EmbedPainter *painter();
+    X11EmbedContainer(QWidget *parent = 0);
+    ~X11EmbedContainer();
 
-    FdoSelectionManager();
-    ~FdoSelectionManager();
-
-    void addDamageWatch(QWidget *container, WId client);
-    void removeDamageWatch(QWidget *container);
-    bool haveComposite() const;
-
-signals:
-    void taskCreated(SystemTray::Task *task);
-    void notificationCreated(SystemTray::Notification *notification);
+    void embedSystemTrayClient(WId id);
+    void setUpdatesEnabled(bool enabled);
+    void setBackgroundPixmap(QPixmap background);
 
 protected:
-    bool x11Event(XEvent *event);
+    void paintEvent(QPaintEvent *event);
 
 private slots:
-    void initSelection();
-    void cleanupTask(WId winId);
+    void ensureValidSize();
 
 private:
-    friend class FdoSelectionManagerPrivate;
-    FdoSelectionManagerPrivate* const d;
+    class Private;
+    Private* const d;
 };
 
 }
+
 
 #endif

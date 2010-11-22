@@ -1,5 +1,5 @@
 /***************************************************************************
- *   fdoselectionmanager.h                                                 *
+ *   x11embedpainter.h                                                     *
  *                                                                         *
  *   Copyright (C) 2008 Jason Stubbs <jasonbstubbs@gmail.com>              *
  *                                                                         *
@@ -19,48 +19,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-#ifndef FDOSELECTIONMANAGER_H
-#define FDOSELECTIONMANAGER_H
+#ifndef X11EMBEDPAINTER_H
+#define X11EMBEDPAINTER_H
 
-#include <QtGui/QWidget>
+#include "x11embedcontainer.h"
+
+#include <QtCore/QObject>
+
 
 namespace SystemTray
 {
 
-class Notification;
-class Task;
-class X11EmbedPainter;
-class FdoSelectionManagerPrivate;
-
-class FdoSelectionManager : public QWidget
+class X11EmbedPainter : public QObject
 {
     Q_OBJECT
 
 public:
-    static FdoSelectionManager *manager();
-    static X11EmbedPainter *painter();
+    X11EmbedPainter();
+    ~X11EmbedPainter();
 
-    FdoSelectionManager();
-    ~FdoSelectionManager();
-
-    void addDamageWatch(QWidget *container, WId client);
-    void removeDamageWatch(QWidget *container);
-    bool haveComposite() const;
-
-signals:
-    void taskCreated(SystemTray::Task *task);
-    void notificationCreated(SystemTray::Notification *notification);
-
-protected:
-    bool x11Event(XEvent *event);
+    void updateContainer(X11EmbedContainer *container);
 
 private slots:
-    void initSelection();
-    void cleanupTask(WId winId);
+    void performUpdates();
+    void removeContainer(QObject *container);
 
 private:
-    friend class FdoSelectionManagerPrivate;
-    FdoSelectionManagerPrivate* const d;
+    class Private;
+    Private* const d;
 };
 
 }

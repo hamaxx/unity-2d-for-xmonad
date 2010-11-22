@@ -1,0 +1,272 @@
+Coding Style
+============
+
+
+Naming
+------
+
+We try to follow Qt naming convention whenever possible:
+
+Classes are CamelCase.
+
+Variables are camelCase.
+
+Files are lowercase.h and lowercase.cpp.
+
+Members of a class are prefixed with "m_".
+Rationale: When reading the code of a method, it makes it easy to know whether
+a variable is a local or a member variable.
+
+Accessors are named foo() (not getFoo())
+Setters are named setFoo(...)
+
+
+Formatting
+----------
+
+Indentation is 4 spaces, no tabs.
+
+Opening braces are on the same line as the code, except for classes and
+functions. Example:
+
+class Foo
+{
+public:
+    void method();
+}; 
+
+void Foo::method()
+{
+    if (something()) {
+        doThis();
+        doThat();
+    }
+}
+
+Rationale:
+Having opening braces on the same line ensure we can put more code
+on a screen. For some reason it seems people highly dislike having opening
+brace on the same line as class definitions and function implementations, hence
+they are on their own line in this case.
+
+Even one-line blocks should be enclosed in braces.
+
+Do not do that:
+
+    if (something())
+        doThis();
+    else
+        doThat();
+
+    for (int x=0; x < 10; ++x)
+        inLoop(x);
+
+Do this:
+
+    if (something()) {
+        doThis();
+    } else {
+        doThat();
+    }
+
+    for (int x=0; x < 10; ++x) {
+        inLoop(x);
+    }
+
+Rationale: always having braces is only one line longer and avoids mistakes like that:
+
+    if (something())
+        doThis();
+    else
+        doThat();
+        doThatAsWell(); // Always executed, but author probably wanted it 
+                        // to be run in the else part only
+
+It also avoids cluttering diffs with the add/removal of braces.
+
+
+Best Practices
+==============
+
+
+Pass arguments by const references instead of values
+----------------------------------------------------
+
+Even if some Qt classes like QString are implicitly shared and meant to be used
+like built-in types, they should be passed as const references instead of
+values. Do not do that:
+
+class Foo
+{
+    void method(QString);
+};
+
+Do this:
+
+class Foo
+{
+    void method(const QString&);
+};
+
+Rationale:
+- It is still faster to pass a reference than to call a constructor
+- It helps reducing the amount of #include in header files (see "Clean
+  Headers")
+- Qt does it this way, so it must be right! ;)
+
+
+Const correctness
+-----------------
+
+If a method does not modify an object, mark it const. This is important for (at
+least) two reasons:
+- It can potentially help the compiler to produce more efficient code (if the
+  code is in another .o the compiler has no way to know whether a method is
+  going to modify an object)
+- It makes it possible to call this method on a const ref or a const pointer.
+  For example:
+
+class Foo
+{
+public:
+    int computeSomething() const;
+};
+
+void someOtherFunction(const Foo& foo)
+{
+    int result = foo.computeSomething();
+}
+
+If computeSomething() had not been declared const, someOtherFunction() would
+not build.
+
+
+Clean Headers
+-------------
+
+Header files should contain the minimum amount of #include.
+
+This can be done by using forward declarations of classes, passing const
+references instead of values or using pimpls (see "Pimpls").
+
+Reducing includes speeds up compilation time because it avoids propagating
+changes. Consider these files:
+
+    // a.h
+    #include <b.h>
+
+    class A
+    {
+        // ...
+    private:
+        void function(B);
+    };
+
+    // c.cpp
+    #include <a.h>
+    ...
+    
+When a change is made in b.h, c.cpp has to be rebuild even if it is only used
+in the private part of the A class.
+
+If a.h is changed to:
+
+    class B;
+
+    class A
+    {
+    public:
+
+    private:
+        void function(const B&);
+    };
+
+Then c.cpp won't be rebuilt when b.h changes.
+
+Having clean headers also avoids propagating other component include paths. In
+the previous example, if b.h is in a different installed dir, then c.cpp has to
+be build with the include path to find b.h, even if it does not need it.
+
+
+Pimpls
+------
+
+Pimpl stands for "Private Implementation". The idea is to put all private code
+in an opaque class, like this:
+
+// foo.h
+class FooPrivate;
+class Foo
+{
+public:
+    Foo();
+    ~Foo();
+
+private:
+    FooPrivate* const d;
+};
+
+// foo.cpp
+class FooPrivate
+{
+public:
+    int m_abc;
+    QString m_def;
+}
+
+Foo::Foo()
+: d(new FooPrivate)
+{}
+
+Foo::~Foo()
+{
+    delete d;
+}
+
+Rationale:
+- It makes it possible to add/remove private members to a class without
+  breaking binary compatibility (BC). This is *very* important for libraries.
+- It helps reducing compilation time because modifying the private part of a
+  class only requires changes in the .cpp file.
+
+Drawback:
+Slots cannot easily be put in a pimpl so they must still be private members of
+the class (but adding/removing them does not break BC).
+
+Note: Using "d" as the name of the pimpl is common practice in Qt and KDE code
+(It stands for "data" IIRC).
+Being a one letter variable reduces the cluttering when public and protected
+code accesses private members and methods.
+
+
+QT_NO_KEYWORD
+-------------
+
+Qt provides two ways to define signals/slots:
+
+class Foo
+{
+    Q_OBJECT
+signals:
+    void somethingHappened();
+public slots:
+    void doSomething();
+};
+
+class Foo
+{
+    Q_OBJECT
+Q_SIGNALS:
+    void somethingHappened();
+public Q_SLOTS:
+    void doSomething();
+};
+
+The first version is problematic because "signals" is actually a #define for
+"protected". This can cause build failures with at least some of the latest gio
+stuff, which has a structure containing a field named "signals".
+
+To avoid this, one can build with the QT_NO_KEYWORD #define, which disable the
+"signals" and "slots" #defines. Instead one has to use Q_SIGNALS and Q_SLOTS.
+
+We should ensure our code builds with the QT_NO_KEYWORD #define.

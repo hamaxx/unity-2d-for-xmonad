@@ -31,7 +31,15 @@
 
 int main(int argc, char *argv[])
 {
+    /* Forcing graphics system to 'raster' instead of the default 'native'
+       which on X11 is 'XRender'.
+       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
+       with 'raster' by calling QApplication::setColorSpec.
+
+       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+    */
     QApplication::setGraphicsSystem("raster");
+    QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
@@ -53,7 +61,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        /* Uninstalled: make sure local plugins such as QtDee are
+        /* Uninstalled: make sure local plugins such as UnityPlaces are
            importable */
         view.engine()->addImportPath(QString("."));
         /* Place.qml imports UnityApplications, which is part of the launcher
