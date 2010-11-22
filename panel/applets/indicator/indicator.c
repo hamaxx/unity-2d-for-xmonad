@@ -388,6 +388,8 @@ indicator_new ()
   indicator->container = gtk_plug_new(0);
   
   /* Init some theme/icon stuff */
+  g_object_set (gtk_settings_get_default(), "gtk-theme-name", "Ambiance", NULL);
+  g_object_set (gtk_settings_get_default(), "gtk-icon-theme-name", "ubuntu-mono-dark", NULL);
   gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
                                   ICONS_DIR);
   /* g_debug("Icons directory: %s", ICONS_DIR); */
