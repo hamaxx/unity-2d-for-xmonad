@@ -7,6 +7,8 @@
 #include <QFile>
 
 
+static const char* UNITY_RES_PATH = "/usr/share/unity/";
+
 IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
 }
@@ -24,7 +26,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
        package. If unity is not installed, as a fallback we rewrite the path to
        try and locate them in our (unity-qt) resource directory.
        See https://launchpad.net/bugs/672450 for a discussion. */
-    if (id.startsWith(UNITY_DIR))
+    if (id.startsWith(UNITY_RES_PATH))
     {
         if (QFile::exists(id))
         {
@@ -33,7 +35,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         else
         {
             QString rid(id);
-            rid.replace(UNITY_DIR, unityQtDirectory());
+            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-qt/");
             /* No need to check whether the file exists, we don’t have a
                fallback anyway. */
             return QImage(rid);
