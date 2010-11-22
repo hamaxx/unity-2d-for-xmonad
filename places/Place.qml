@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtDee 1.0
+import dee 1.0
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons */
 import UnityPlaces 1.0
 import "utils.js" as Utils
