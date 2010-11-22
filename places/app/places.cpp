@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        /* Uninstalled: make sure local plugins such as QtDee are
+        /* Uninstalled: make sure local plugins such as UnityPlaces are
            importable */
         view.engine()->addImportPath(QString("."));
         /* Place.qml imports UnityApplications, which is part of the launcher
