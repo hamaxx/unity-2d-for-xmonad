@@ -394,6 +394,7 @@ indicator_new ()
                                   ICONS_DIR);
   /* g_debug("Icons directory: %s", ICONS_DIR); */
   gtk_rc_parse_string (
+    "widget \"indicator-applet*\" style \"panel\"\n"
     "style \"indicator-applet-style\"\n"
     "{\n"
     "    GtkMenuBar::shadow-type = none\n"
