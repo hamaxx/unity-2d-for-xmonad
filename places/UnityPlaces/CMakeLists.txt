@@ -33,14 +33,12 @@ set_target_properties(UnityPlaces PROPERTIES
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${DEE_INCLUDE_DIRS}
     )
 
 target_link_libraries(UnityPlaces
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
-    ${DEE_LDFLAGS}
     )
 
 # Install

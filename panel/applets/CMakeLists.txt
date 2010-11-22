@@ -8,6 +8,8 @@ pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
 pkg_check_modules(INDICATOR REQUIRED indicator)
 
+find_package(X11 REQUIRED)
+
 # Sources
 set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
@@ -24,6 +26,9 @@ set(uqapplets_SRCS
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
+    legacytray/x11embedcontainer.cpp
+    legacytray/x11embeddelegate.cpp
+    legacytray/x11embedpainter.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appmenu/org.ayatana.AppMenu.Registrar.xml
@@ -44,6 +49,7 @@ include_directories(
     ${GTK_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${X11_INCLUDE_DIR}
     )
 
 add_library(uqapplets SHARED ${uqapplets_SRCS})
@@ -55,6 +61,11 @@ target_link_libraries(uqapplets
     ${QTBAMF_LDFLAGS}
     ${GTK_LDFLAGS}
     ${INDICATOR_LDFLAGS}
+    ${X11_LIBRARIES}
+    ${X11_Xrender_LIB}
+    ${X11_Xcomposite_LIB}
+    ${X11_Xdamage_LIB}
+    ${X11_Xfixes_LIB}
     uqpanel
     )
 

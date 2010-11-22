@@ -19,15 +19,18 @@
 #include <debug_p.h>
 
 // Qt
+#include <QApplication>
 #include <QHBoxLayout>
 
 LegacyTrayApplet::LegacyTrayApplet()
 : m_selectionManager(new SystemTray::FdoSelectionManager)
 {
+    QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    
+
     connect(m_selectionManager, SIGNAL(taskCreated(SystemTray::Task*)),
         SLOT(slotTaskCreated(SystemTray::Task*)));
 }
@@ -39,7 +42,12 @@ LegacyTrayApplet::~LegacyTrayApplet()
 
 void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
 {
-    QWidget* widget = task->widget();
+    task->createWidget();
+    connect(task, SIGNAL(widgetCreated(QWidget*)), SLOT(slotWidgetCreated(QWidget*)));
+}
+
+void LegacyTrayApplet::slotWidgetCreated(QWidget* widget)
+{
     layout()->addWidget(widget);
 }
 

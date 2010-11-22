@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtDee 1.0
+import dee 1.0
 
 Item {
     BorderGlow {

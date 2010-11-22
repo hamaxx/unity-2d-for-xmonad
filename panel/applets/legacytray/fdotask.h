@@ -16,10 +16,11 @@
 // Qt
 #include <QObject>
 #include <QWidget>
-#include <QX11EmbedContainer>
 
 namespace SystemTray
 {
+
+class X11EmbedDelegate;
 
 class Task : public QObject
 {
@@ -28,8 +29,8 @@ public:
     Task(QObject* parent)
     : QObject(parent)
     {}
-    
-    virtual QWidget* widget() = 0;
+
+    virtual void createWidget() = 0;
 };
 
 class FdoTask : public Task
@@ -38,23 +39,21 @@ Q_OBJECT
 public:
     FdoTask(WId id, QObject *parent);
     ~FdoTask();
-    
-    virtual QWidget* widget();
-    
+
+    virtual void createWidget();
+
 Q_SIGNALS:
     void taskDeleted(WId);
-
-protected:
-    virtual bool eventFilter(QObject*, QEvent*);
+    void widgetCreated(QWidget*);
 
 private Q_SLOTS:
-    void slotError(QX11EmbedContainer::Error);
+    void setupXEmbedDelegate();
+    void slotClientEmbedded();
 
 private:
     WId m_id;
-    QX11EmbedContainer* m_container;
-
-    void doEmbedClient();
+    bool m_clientEmbedded;
+    X11EmbedDelegate* m_widget;
 };
 
 } // namespace
