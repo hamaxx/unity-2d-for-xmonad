@@ -26,6 +26,10 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
        package. If unity is not installed, as a fallback we rewrite the path to
        try and locate them in our (unity-qt) resource directory.
        See https://launchpad.net/bugs/672450 for a discussion. */
+    /* It is not using common facilities from config.h because the last attempt
+       to do so was a failure due to the fragility of the code path. For example
+       it is very easy to break the entire mechanism by adding or forgetting a
+       slash in any of the paths. */
     if (id.startsWith(UNITY_RES_PATH))
     {
         if (QFile::exists(id))

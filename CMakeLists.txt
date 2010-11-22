@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Dirs
 set(UNITY_QT_DIR share/unity-qt)
-set(THEME_DIR share/unity/themes)
+set(UNITY_DIR /usr/share/unity/)
 
 configure_file(config.h.in config.h)
 
@@ -28,8 +28,3 @@ include_directories(
 add_subdirectory(launcher)
 add_subdirectory(panel)
 add_subdirectory(places)
-
-# Install
-install(DIRECTORY themes/
-    DESTINATION ${THEME_DIR}
-    )

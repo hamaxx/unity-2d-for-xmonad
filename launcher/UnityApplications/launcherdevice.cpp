@@ -75,7 +75,7 @@ LauncherDevice::name() const
 QString
 LauncherDevice::icon() const
 {
-    return QString(INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/artwork/devices.png");
+    return QString(unityQtDirectory() + "/launcher/artwork/devices.png");
 }
 
 bool

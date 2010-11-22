@@ -7,7 +7,7 @@ add_subdirectory(app)
 file(GLOB launcher_QML *.qml)
 
 # Install
-install(FILES ${launcher_QML}
+install(FILES ${launcher_QML} launchermenu.css
     DESTINATION ${UNITY_QT_DIR}/launcher
     )
 
