@@ -1,6 +1,8 @@
 import Qt 4.7
 
 Item {
+    property bool enabled: true
+
     signal clicked
 
     MouseArea {
@@ -10,7 +12,8 @@ Item {
                   http://bugreports.qt.nokia.com/browse/QTBUG-12250 */
         property bool double_clicked: false
 
-        hoverEnabled: true
+        enabled: parent.enabled
+        hoverEnabled: parent.enabled
         anchors.fill: parent
         onClicked: {
             if(double_clicked)
