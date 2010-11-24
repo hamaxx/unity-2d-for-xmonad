@@ -30,7 +30,7 @@ public:
 private Q_SLOTS:
     void updateLabel();
     void updateWindowHelper();
-    void updateWindowButtonWidget();
+    void updateWidgets();
 
 private:
     Q_DISABLE_COPY(AppNameApplet)

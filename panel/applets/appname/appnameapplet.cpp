@@ -24,21 +24,42 @@
 // Qt
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 namespace UnityQt
 {
 
+typedef QPushButton WindowButton;
+
 struct AppNameAppletPrivate
 {
     AppNameApplet* q;
+    QWidget* m_windowButtonWidget;
+    WindowButton* m_closeButton;
+    WindowButton* m_minimizeButton;
+    WindowButton* m_maximizeButton;
     QLabel* m_label;
     WindowHelper* m_windowHelper;
+
+    void setupWindowButtonWidget()
+    {
+        m_windowButtonWidget = new QWidget;
+        QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
+        layout->setMargin(0);
+        layout->setSpacing(0);
+        m_closeButton = new WindowButton("x");
+        m_minimizeButton = new WindowButton("-");
+        m_maximizeButton = new WindowButton("[]");
+        layout->addWidget(m_closeButton);
+        layout->addWidget(m_minimizeButton);
+        layout->addWidget(m_maximizeButton);
+    }
 
     void setupWatcher()
     {
         m_windowHelper = new WindowHelper(q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
-            q, SLOT(updateWindowButtonWidget()));
+            q, SLOT(updateWidgets()));
     }
 };
 
@@ -51,17 +72,19 @@ AppNameApplet::AppNameApplet()
     font.setBold(true);
     d->m_label->setFont(font);
 
+    d->setupWindowButtonWidget();
     d->setupWatcher();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
+    layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveApplicationChanged(BamfApplication*, BamfApplication*)), SLOT(updateLabel()));
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)), SLOT(updateWindowHelper()));
     updateLabel();
     updateWindowHelper();
-    updateWindowButtonWidget();
+    updateWidgets();
 }
 
 AppNameApplet::~AppNameApplet()
@@ -85,9 +108,11 @@ void AppNameApplet::updateWindowHelper()
     d->m_windowHelper->setXid(window ? window->xid() : 0);
 }
 
-void AppNameApplet::updateWindowButtonWidget()
+void AppNameApplet::updateWidgets()
 {
-    UQ_VAR(d->m_windowHelper->isMaximized());
+    bool isMaximized = d->m_windowHelper->isMaximized();
+    d->m_windowButtonWidget->setVisible(isMaximized);
+    d->m_label->setVisible(!isMaximized);
 }
 
 } // namespace
