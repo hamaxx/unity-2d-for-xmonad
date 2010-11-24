@@ -29,6 +29,8 @@ public:
 
 private Q_SLOTS:
     void updateLabel();
+    void updateWindowHelper();
+    void updateWindowButtonWidget();
 
 private:
     Q_DISABLE_COPY(AppNameApplet)
@@ -38,3 +40,4 @@ private:
 } // namespace
 
 #endif /* APPNAMEAPPLET_H */
+
