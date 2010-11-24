@@ -61,6 +61,9 @@ struct AppNameAppletPrivate
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
+        QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
+        QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
+        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
     }
 
     void setupWatcher()

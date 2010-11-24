@@ -24,6 +24,7 @@ extern "C" {
 }
 
 // Qt
+#include <QDateTime>
 
 struct WindowHelperPrivate
 {
@@ -73,6 +74,22 @@ bool WindowHelper::isMaximized() const
         return false;
     }
     return wnck_window_is_maximized(d->m_window);
+}
+
+void WindowHelper::close()
+{
+    guint32 timestamp = QDateTime::currentDateTime().toTime_t();
+    wnck_window_close(d->m_window, timestamp);
+}
+
+void WindowHelper::minimize()
+{
+    wnck_window_minimize(d->m_window);
+}
+
+void WindowHelper::unmaximize()
+{
+    wnck_window_unmaximize(d->m_window);
 }
 
 #include "windowhelper.moc"

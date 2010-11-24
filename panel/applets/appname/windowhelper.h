@@ -28,6 +28,11 @@ public:
 
     bool isMaximized() const;
 
+public Q_SLOTS:
+    void close();
+    void minimize();
+    void unmaximize();
+
 Q_SIGNALS:
     void stateChanged();
 
