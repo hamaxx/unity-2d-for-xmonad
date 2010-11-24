@@ -81,7 +81,7 @@ int main(int argc, char** argv)
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication app(argc, argv);
-    app.setStyle(new UnityQtStyle);
+    QApplication::setStyle(new UnityQtStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());
