@@ -22,14 +22,74 @@
 #include <bamf-matcher.h>
 
 // Qt
+#include <QAbstractButton>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
+#include <QPainter>
+
+static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
 namespace UnityQt
 {
 
-typedef QPushButton WindowButton;
+class WindowButton : public QAbstractButton
+{
+public:
+    WindowButton(const QString& prefix, QWidget* parent = 0)
+    : QAbstractButton(parent)
+    , m_prefix(prefix)
+    , m_normalPix(loadPix("normal"))
+    , m_hoverPix(loadPix("prelight"))
+    , m_downPix(loadPix("pressed"))
+    {
+        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    }
+
+    QSize minimumSizeHint() const
+    {
+        return m_normalPix.size();
+    }
+
+protected:
+    void paintEvent(QPaintEvent*)
+    {
+        QPainter painter(this);
+        QPixmap pix;
+        if (isDown()) {
+            pix = m_downPix;
+        } else if (underMouse()) {
+            pix = m_hoverPix;
+        } else {
+            pix = m_normalPix;
+        }
+        painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
+    }
+
+    void enterEvent(QEvent*)
+    {
+        update();
+    }
+
+    void leaveEvent(QEvent*)
+    {
+        update();
+    }
+
+private:
+    QString m_prefix;
+    QPixmap m_normalPix;
+    QPixmap m_hoverPix;
+    QPixmap m_downPix;
+
+    QPixmap loadPix(const QString& name)
+    {
+        QString path = QString("%1/%2_focused_%3.png")
+            .arg(METACITY_DIR)
+            .arg(m_prefix)
+            .arg(name);
+        return QPixmap(path);
+    }
+};
 
 struct AppNameAppletPrivate
 {
@@ -55,9 +115,9 @@ struct AppNameAppletPrivate
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
         layout->setMargin(0);
         layout->setSpacing(0);
-        m_closeButton = new WindowButton("x");
-        m_minimizeButton = new WindowButton("-");
-        m_maximizeButton = new WindowButton("[]");
+        m_closeButton = new WindowButton("close");
+        m_minimizeButton = new WindowButton("minimize");
+        m_maximizeButton = new WindowButton("unmaximize");
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
