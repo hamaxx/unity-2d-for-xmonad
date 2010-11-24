@@ -41,6 +41,14 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
 
+    void setupLabel()
+    {
+        m_label = new QLabel;
+        QFont font = m_label->font();
+        font.setBold(true);
+        m_label->setFont(font);
+    }
+
     void setupWindowButtonWidget()
     {
         m_windowButtonWidget = new QWidget;
@@ -67,13 +75,10 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    d->m_label = new QLabel;
-    QFont font = d->m_label->font();
-    font.setBold(true);
-    d->m_label->setFont(font);
 
-    d->setupWindowButtonWidget();
     d->setupWatcher();
+    d->setupLabel();
+    d->setupWindowButtonWidget();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
