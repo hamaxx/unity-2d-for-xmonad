@@ -1,7 +1,10 @@
 import Qt 4.7
 import dee 1.0
 
-Item {
+FocusScope {
+    /* Keys forwarded to the search bar are forwarded to the search entry. */
+    Keys.forwardTo: [search_entry]
+
     BorderGlow {
         id: background
 
@@ -18,6 +21,9 @@ Item {
     SearchEntry {
         id: search_entry
 
+        focus: true
+        KeyNavigation.right: sections
+
         width: 281
         anchors.left: parent.left
         anchors.leftMargin: 82
@@ -30,9 +36,12 @@ Item {
     ListView {
         id: sections
 
+        KeyNavigation.left: search_entry
+
         visible: current_page.hasSections
-        interactive: false
         orientation: ListView.Horizontal
+        /* Non-draggable when all sections are visible */
+        boundsBehavior: Flickable.StopAtBounds
 
         anchors.left: search_entry.right
         anchors.leftMargin: 14
@@ -41,16 +50,28 @@ Item {
         spacing: 10
 
         height: parent.height
-        currentIndex: current_page.hasSections ? current_page.activeSection : 0
+        /* Make sure the first section is selected when getting the focus */
+        currentIndex: 0
+        onActiveFocusChanged: {
+            /* It really should be onFocusChanged but the following bug makes
+               using focus impossible:
+               http://bugreports.qt.nokia.com/browse/QTBUG-12649
+            */
+            if(!focus) currentIndex = 0
+        }
 
         delegate: Section {
             anchors.verticalCenter: parent.verticalCenter
             horizontalPadding: 4
             verticalPadding: 3
             label: column_0
-            active: ListView.isCurrentItem
+            isActiveSection: current_page.activeSection == index
 
-            onClicked: current_page.setActiveSection(model.index)
+            onClicked: {
+                sections.focus = false
+                search_entry.focus = true
+                current_page.setActiveSection(model.index)
+            }
         }
 
         model: DeeListModel {

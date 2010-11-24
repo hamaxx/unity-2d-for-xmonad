@@ -1,6 +1,9 @@
 import Qt 4.7
 
-Item {
+FocusScope {
+    /* Keys forwarded to the search entry are forwarded to the text input. */
+    Keys.forwardTo: [search_input]
+
     BorderGlow {
         anchors.fill: parent
     }
@@ -39,6 +42,7 @@ Item {
             anchors.bottomMargin: 3
 
             color: "#ffffff"
+            focus: true
             selectByMouse: true
             cursorDelegate: cursor
 
@@ -117,7 +121,10 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: search_input.text = ""
+                onClicked: {
+                    search_input.forceActiveFocus()
+                    search_input.text = ""
+                }
             }
         }
     }
