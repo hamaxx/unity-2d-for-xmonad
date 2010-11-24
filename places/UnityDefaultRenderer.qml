@@ -1,17 +1,25 @@
 import Qt 4.7
 
 RendererGrid {
+    cellWidth: 158
+    cellHeight: 76
+    horizontalSpacing: 26
+    verticalSpacing: 26
+
     cellRenderer: Component {
         Button {
-            property alias icon: icon.source
-            property alias label: label.text
-            property string uri
+            property url uri
+            property string iconHint
+            property string mimetype
+            property string displayName
+            property string comment
 
-            onClicked: place.activate(uri)
+            onClicked: place.activate(uri.toString())
 
             Image {
                 id: icon
 
+                source: "image://icons/"+iconHint
                 width: 48
                 height: 48
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -29,7 +37,8 @@ RendererGrid {
             TextCustom {
                 id: label
 
-                color: parent.state == "pressed" ? "#444444" : "#ffffff"
+                text: displayName
+                color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter
                 anchors.bottom: parent.bottom
