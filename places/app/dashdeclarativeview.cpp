@@ -117,3 +117,11 @@ DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entr
         qWarning() << "No matching place for" << file;
     }
 }
+
+void
+DashDeclarativeView::activateHome()
+{
+    QGraphicsObject* dash = rootObject();
+    setActive(true);
+    QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
+}
