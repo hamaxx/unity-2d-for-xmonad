@@ -80,6 +80,19 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         icon_name = id;
     }
 
+    /* Some desktop files have a malformed Icon= key where the value contains
+       not only the icon name but also an extension which makes the lookup fail.
+
+       See http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
+       for more details.
+    */
+    if (icon_name.endsWith(".png") || icon_name.endsWith(".svg")
+        || icon_name.endsWith(".xpm") || icon_name.endsWith(".gif")
+        || icon_name.endsWith(".jpg"))
+    {
+        icon_name.chop(4);
+    }
+
     /* Load the icon by creating a GIcon from the string icon_name.
        icon_name can contain more than a simple icon name but possibly
        a string as returned by g_icon_to_string().
