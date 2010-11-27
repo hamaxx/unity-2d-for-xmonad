@@ -81,7 +81,9 @@ Page {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.right: scrollbar.left
+        /* Take all available horizontal space if the scrollbar is invisible */
+        anchors.right: scrollbar.opacity > 0 ? scrollbar.left : parent.right
+
         clip: true
         /* FIXME: proper spacing cannot be set because of the hack in Group.qml
            whereby empty groups are still in the list but invisible and of
@@ -170,14 +172,11 @@ Page {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        width: 10
 
-        /* FIXME: Because of the nesting of GridViews inside the ListView, these
-                  values do not provide the expected result.
-                  Deactivating the scrollbar for now.
-        */
-        visible: false
-        position: place_results.visibleArea.yPosition
-        pageSize: place_results.visibleArea.heightRatio
+        targetFlickable: place_results
+
+        /* Hide the scrollbar if there is less than a page of results */
+        opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
+        Behavior on opacity {NumberAnimation {duration: 100}}
     }
 }
