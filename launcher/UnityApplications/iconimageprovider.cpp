@@ -82,6 +82,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
 
     /* Some desktop files have a malformed Icon= key where the value contains
        not only the icon name but also an extension which makes the lookup fail.
+       Solution: chop off the extension.
 
        See http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
        for more details.
