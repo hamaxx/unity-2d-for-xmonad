@@ -30,7 +30,11 @@ LauncherContextualMenu::LauncherContextualMenu():
     /* The tooltip/menu shouldn’t be modal. */
     setWindowFlags(Qt::ToolTip);
 
+    /* The tooltip/menu should not move when switching workspaces. */
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+
     /* Custom appearance. */
+    setAttribute(Qt::WA_TranslucentBackground);
     loadCSS();
 }
 

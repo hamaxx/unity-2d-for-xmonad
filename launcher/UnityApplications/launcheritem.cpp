@@ -48,7 +48,13 @@ LauncherItem::showTooltip(int y)
 
     QDesktopWidget* desktop = QApplication::desktop();
     const QRect available = desktop->availableGeometry(m_menu);
-    m_menu->move(available.x(), y + available.y() - m_menu->sizeHint().height() / 2);
+    /* FIXME: should use the position of the launcher instead of relying on the
+       available workspace.
+    */
+    /* FIXME: relies on the launcher always being positioned on the left (see
+              substractions).
+    */
+    m_menu->move(available.x()-5, y + available.y() - m_menu->sizeHint().height() / 2);
     m_menu->show();
 }
 
