@@ -123,6 +123,16 @@ LauncherApplicationsList::load()
 {
     /* FIXME: applications should be sorted depending on their priority */
 
+    /* Insert favorites */
+    QString desktop_file;
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
+    {
+        desktop_file = desktopFilePathFromFavorite(*iter);
+        insertFavoriteApplication(desktop_file);
+    }
+
     /* Insert running applications from Bamf */
     BamfMatcher& matcher = BamfMatcher::get_default();
     BamfApplicationList* running_applications = matcher.running_applications();
@@ -135,16 +145,6 @@ LauncherApplicationsList::load()
     }
 
     QObject::connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(onBamfViewOpened(BamfView*)));
-
-    /* Insert favorites */
-    QString desktop_file;
-    QStringList favorites = m_favorites_list->getValue().toStringList();
-
-    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
-    {
-        desktop_file = desktopFilePathFromFavorite(*iter);
-        insertFavoriteApplication(desktop_file);
-    }
 }
 
 void
