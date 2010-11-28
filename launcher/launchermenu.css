@@ -18,15 +18,21 @@
  */
 
 QMenu {
-    background-image: url(artwork/tooltip/background.png);
-    background-origin: border;
-    border-image: url(artwork/tooltip/border.png) 24px 5px 4px 15px Stretch Stretch;
     border-width: 24px 5px 4px 15px;
     padding-top: -14px;
     padding-left: -15px;
     min-width: 72px;
     min-height: 13px;
 }
+
+QMenu[transparencyAvailable=true] {
+    border-image: url(artwork/tooltip/background.png) 24px 5px 4px 15px Repeat Repeat;
+}
+
+QMenu[transparencyAvailable=false] {
+    border-image: url(artwork/tooltip/background_no_transparency.png) 24px 5px 4px 15px Repeat Repeat;
+}
+
 
 QMenu::item {
     color: white;
