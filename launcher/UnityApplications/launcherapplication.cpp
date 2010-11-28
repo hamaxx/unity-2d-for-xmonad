@@ -212,8 +212,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     if(running)
        return;
 
-    //BamfApplication* application = static_cast<BamfApplication*>(sender());
-    /* FIXME: should we disconnect from application's signals? */
+    m_application->disconnect(this);
     m_application = NULL;
     emit closed();
 }
