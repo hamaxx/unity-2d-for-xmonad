@@ -26,11 +26,17 @@ class LauncherContextualMenu : public QMenu
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool transparencyAvailable READ transparencyAvailable)
+
 public:
     LauncherContextualMenu();
     ~LauncherContextualMenu();
 
+    /* getters */
+    bool transparencyAvailable();
+
     Q_INVOKABLE void setTitle(QString title);
+    void resizeEvent(QResizeEvent* event);
 
 private:
     void loadCSS();

@@ -23,6 +23,9 @@
 #include <QAction>
 #include <QFile>
 #include <QApplication>
+#include <QResizeEvent>
+#include <QBitmap>
+#include <QX11Info>
 
 LauncherContextualMenu::LauncherContextualMenu():
     QMenu(0)
@@ -33,8 +36,17 @@ LauncherContextualMenu::LauncherContextualMenu():
     /* The tooltip/menu should not move when switching workspaces. */
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
 
+    /* Use transparency if available.
+       Warning: if the availability of transparency changes over time, for
+                example because a compositing window manager is launched, we
+                do not react to that and the menu is likely to break visually.
+                Ref: http://bugreports.qt.nokia.com/browse/QTBUG-6044
+    */
+    if (transparencyAvailable()) {
+        setAttribute(Qt::WA_TranslucentBackground);
+    }
+
     /* Custom appearance. */
-    setAttribute(Qt::WA_TranslucentBackground);
     loadCSS();
 }
 
@@ -65,3 +77,22 @@ LauncherContextualMenu::setTitle(QString title)
     action->setText(title);
 }
 
+void
+LauncherContextualMenu::resizeEvent(QResizeEvent* event)
+{
+    /* If transparent windows are not available use the XShape extension */
+    if (!transparencyAvailable()) {
+        QPixmap pixmap(event->size());
+        render(&pixmap, QPoint(), QRegion(),
+               QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask);
+        setMask(pixmap.createMaskFromColor("red"));
+    }
+
+    QMenu::resizeEvent(event);
+}
+
+bool
+LauncherContextualMenu::transparencyAvailable()
+{
+    return QX11Info::isCompositingManagerRunning();
+}
