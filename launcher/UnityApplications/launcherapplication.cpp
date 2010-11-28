@@ -180,6 +180,7 @@ void
 LauncherApplication::setBamfApplication(BamfApplication *application)
 {
     m_application = application;
+    setDesktopFile(application->desktop_file());
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
@@ -425,12 +426,15 @@ LauncherApplication::createMenuActions()
 {
     bool is_running = running();
 
-    QAction* keep = new QAction(m_menu);
-    keep->setCheckable(is_running);
-    keep->setChecked(sticky());
-    keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
-    m_menu->addAction(keep);
-    QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+    /* Only applications with a corresponding desktop file can be kept in the launcher */
+    if (!desktop_file().isEmpty()) {
+        QAction* keep = new QAction(m_menu);
+        keep->setCheckable(is_running);
+        keep->setChecked(sticky());
+        keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
+        m_menu->addAction(keep);
+        QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+    }
 
     if (is_running)
     {

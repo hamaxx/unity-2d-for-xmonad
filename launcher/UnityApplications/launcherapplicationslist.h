@@ -29,25 +29,23 @@ private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
 
-    LauncherApplication* insertApplication(QString desktop_file);
-    void removeApplication(QString desktop_file);
+    void insertApplication(LauncherApplication* application);
+    void removeApplication(LauncherApplication* application);
 
     static QString desktopFilePathFromFavorite(QString favorite_id);
     static QString favoriteFromDesktopFilePath(QString desktop_file);
 
-    void addApplicationToFavorites(QString desktop_file);
-    void removeApplicationFromFavorites(QString desktop_file);
+    void addApplicationToFavorites(LauncherApplication* application);
+    void removeApplicationFromFavorites(LauncherApplication* application);
 
-    /* In order to reduce algorithmical complexity when updating and
-       rendering the list of applications as well as overall code
-       complexity a 2 level structure was chosen to store applications.
-       A list of desktop file names ordered by placement in the launcher,
-       also called priority is used for rendering.
-       A hash of desktop file names to LauncherApplication is used for
-       modifications and presence checking.
+    /* List of LauncherApplication displayed in the launcher. */
+    QList<LauncherApplication*> m_applications;
+    /* Hash of desktop file names to LauncherApplication used to reduce
+       the algorithmical complexity of merging the list of running applications
+       and the list of favorited applications into the list of applications
+       displayed (m_applications).
     */
-    QList<QString> m_desktop_files;
-    QHash<QString, LauncherApplication*> m_applications;
+    QHash<QString, LauncherApplication*> m_desktop_files;
 
     GConfItemQmlWrapper* m_favorites_list;
 
