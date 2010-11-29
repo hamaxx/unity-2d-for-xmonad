@@ -22,6 +22,7 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QDir>
 
 #include "config.h"
 #include "launcherview.h"
@@ -42,6 +43,10 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
+
+    /* Configure "artwork:" prefix so that any access to a file whose name starts
+       with that prefix resolves properly. */
+    QDir::addSearchPath("artwork", unityQtDirectory() + "/launcher/artwork");
 
     LauncherView view;
     view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
