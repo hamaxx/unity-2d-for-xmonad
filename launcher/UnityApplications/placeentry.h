@@ -74,8 +74,10 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QString dbusName READ dbusName WRITE setDbusName)
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath WRITE setDbusObjectPath)
     Q_PROPERTY(uint position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(QStringList mimetypes READ mimetypes WRITE setMimetypes)
+    Q_PROPERTY(QStringList mimetypes READ mimetypes WRITE setMimetypes NOTIFY mimetypesChanged)
+    Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
+    Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
 
 public:
     PlaceEntry();
@@ -95,7 +97,9 @@ public:
     QString dbusObjectPath() const;
     uint position() const;
     QStringList mimetypes() const;
+    bool sensitive() const;
     DeeListModel* sections() const;
+    QMap<QString, QVariant> hints() const;
     bool online() const;
 
     /* setters */
@@ -107,7 +111,9 @@ public:
     void setDbusObjectPath(QString);
     void setPosition(uint);
     void setMimetypes(QStringList);
+    void setSensitive(bool);
     void setSections(DeeListModel*);
+    void setHints(QMap<QString, QVariant>);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -121,7 +127,10 @@ public:
 
 Q_SIGNALS:
     void positionChanged(uint);
+    void mimetypesChanged();
+    void sensitiveChanged(bool);
     void sectionsChanged();
+    void hintsChanged();
 
 private:
     QString m_fileName;
@@ -132,7 +141,12 @@ private:
     QString m_name;
     uint m_position;
     QStringList m_mimetypes;
+    bool m_sensitive;
     DeeListModel* m_sections;
+    /* m_hints should be a QMap<QString, QString> really, but it has to hold
+       QVariant values in order to allow exposing it as a property (see
+       http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
+    QMap<QString, QVariant> m_hints;
     bool m_online;
     QDBusInterface* m_dbusIface;
 

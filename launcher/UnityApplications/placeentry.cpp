@@ -139,6 +139,7 @@ static const char* SECTION_PROPERTY = "section";
 
 PlaceEntry::PlaceEntry() :
     m_position(0),
+    m_sensitive(true),
     m_sections(NULL),
     m_online(false),
     m_dbusIface(NULL)
@@ -157,9 +158,11 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_icon(other.m_icon),
     m_name(other.m_name),
     m_position(other.m_position),
-    m_mimetypes(other.m_mimetypes)
+    m_mimetypes(other.m_mimetypes),
+    m_sensitive(other.m_sensitive)
 {
     setSections(other.m_sections);
+    setHints(other.m_hints);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -267,10 +270,22 @@ PlaceEntry::mimetypes() const
     return m_mimetypes;
 }
 
+bool
+PlaceEntry::sensitive() const
+{
+    return m_sensitive;
+}
+
 DeeListModel*
 PlaceEntry::sections() const
 {
     return m_sections;
+}
+
+QMap<QString, QVariant>
+PlaceEntry::hints() const
+{
+    return m_hints;
 }
 
 bool
@@ -304,6 +319,16 @@ void
 PlaceEntry::setMimetypes(QStringList mimetypes)
 {
     m_mimetypes = mimetypes;
+    emit mimetypesChanged();
+}
+
+void
+PlaceEntry::setSensitive(bool sensitive)
+{
+    if (sensitive != m_sensitive) {
+        m_sensitive = sensitive;
+        emit sensitiveChanged(sensitive);
+    }
 }
 
 void
@@ -317,6 +342,13 @@ PlaceEntry::setSections(DeeListModel* sections)
     }
     m_sections = sections;
     emit sectionsChanged();
+}
+
+void
+PlaceEntry::setHints(QMap<QString, QVariant> hints)
+{
+    m_hints = hints;
+    emit hintsChanged();
 }
 
 void
@@ -386,9 +418,15 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setIcon(info.icon);
     setPosition(info.position);
     setMimetypes(info.mimetypes);
-    //setSensitive(info.sensitive);
+    setSensitive(info.sensitive);
     setSection(info.sections_model);
-    //setHints(info.hints);
+
+    QMap<QString, QVariant> hints;
+    QMap<QString, QString>::const_iterator i;
+    for(i = info.hints.constBegin(); i != info.hints.constEnd(); ++i) {
+        hints[i.key()] = QVariant(i.value());
+    }
+    setHints(hints);
 
     //setEntryRendererName(info.entry_renderer_info.default_renderer);
     /*const QString& eGroupsModelName = info.entry_renderer_info.groups_model;
