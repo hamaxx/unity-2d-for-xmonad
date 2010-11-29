@@ -24,8 +24,9 @@ Item {
             state: parent.state
 
             appName: item.appName + "(" + item.xid + ")"
-            icon: "image://icons/" + item.icon
-            capture: "image://x11/" + item.xid
+
+            //icon: "image://icons/" + item.icon
+            capture: "image://window/" + item.xid
             title: item.title
 
             win_x: item.location.x

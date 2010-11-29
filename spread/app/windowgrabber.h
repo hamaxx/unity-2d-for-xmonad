@@ -13,9 +13,10 @@ class WindowGrabber : public QObject {
     Q_PROPERTY(bool useRender READ useRender WRITE setUseRender)
 
 public:
-    explicit WindowGrabber(QObject *parent = 0);
+    explicit WindowGrabber(QObject *parent = 0, bool useRender = true);
     ~WindowGrabber();
     QPixmap* getPixmapForWindow(Window windowId);
+    QImage* getImageForWindow(Window windowId);
 
     QString outputPath() const;
     void setOutputPath(const QString path);

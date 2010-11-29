@@ -22,9 +22,13 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QPaintEngine>
+#include <QPixmap>
 
 #include "config.h"
 #include "spreadview.h"
+
+#include "windowimageprovider.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -42,8 +46,12 @@ int main(int argc, char *argv[])
 
        Reference: https://bugs.launchpad.net/upicek/+bug/674484
     */
-    QApplication::setGraphicsSystem("raster");
-    QApplication::setColorSpec(QApplication::ManyColor);
+    bool useRaster = false;
+    if (useRaster) {
+        QApplication::setGraphicsSystem("raster");
+        QApplication::setColorSpec(QApplication::ManyColor);
+    }
+
     QApplication application(argc, argv);
 
     SpreadView view;
@@ -61,6 +69,9 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
+
+    WindowImageProvider *provider = new WindowImageProvider(!useRaster);
+    view.engine()->addImageProvider(QString("window"), provider);
 
     view.rootContext()->setContextProperty("spreadView", &view);
     view.rootContext()->setContextProperty("screen",

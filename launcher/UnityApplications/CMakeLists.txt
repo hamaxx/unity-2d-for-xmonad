@@ -8,7 +8,6 @@ pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 # Sources
 set(UnityApplications_SRCS
     iconimageprovider.cpp
-    x11windowimageprovider.cpp
     listaggregatormodel.cpp
     launcheritem.cpp
     launcherapplication.cpp
@@ -23,11 +22,9 @@ set(UnityApplications_SRCS
     plugin.cpp
     windowinfo.cpp
     windowslist.cpp
-    windowgrabber.cpp
     )
 
 set(UnityApplications_MOC_HDRS
-    x11windowimageprovider.h
     listaggregatormodel.h
     launcheritem.h
     launcherapplication.h
@@ -42,7 +39,6 @@ set(UnityApplications_MOC_HDRS
     plugin.h
     windowinfo.h
     windowslist.h
-    windowgrabber.h
     )
 
 

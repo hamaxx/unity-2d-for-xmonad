@@ -106,7 +106,6 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
 
     WnckWindow *win = wnck_window_get(xid);
     if (win == 0) {
-        qDebug() << "!!!!!!!!!!! Had to force update";
         wnck_screen_force_update(wnck_screen_get_default());
         win = wnck_window_get(xid);
     }

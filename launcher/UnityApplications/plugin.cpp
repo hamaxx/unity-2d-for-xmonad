@@ -8,7 +8,6 @@
 #include "launcherdeviceslist.h"
 #include "launcherplaceslist.h"
 #include "iconimageprovider.h"
-#include "x11windowimageprovider.h"
 #include "windowinfo.h"
 #include "windowslist.h"
 #include "plugin.h"
@@ -43,7 +42,6 @@ void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const
     Q_UNUSED(uri);
 
     engine->addImageProvider(QString("icons"), new IconImageProvider);
-    engine->addImageProvider(QString("x11"), new X11WindowImageProvider);
 }
 
 Q_EXPORT_PLUGIN2(UnityApplications, UnityApplicationsPlugin);

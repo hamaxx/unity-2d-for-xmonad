@@ -24,7 +24,7 @@ WindowsList::WindowsList(QObject *parent) :
     for (int i = 0; i < apps->size(); i++) {
         BamfApplication *app = apps->at(i);
 
-        qDebug() << "+" << app->name() << " " << app->view_type();
+        //qDebug() << "+" << app->name() << " " << app->view_type();
 
         BamfWindowList *wins = app->windows();
         for (int k = 0; k < wins->size(); k++) {
@@ -39,7 +39,6 @@ WindowsList::WindowsList(QObject *parent) :
 
             WnckWindow *wnck_win = wnck_window_get(xid);
             if (wnck_win == 0) {
-                qDebug() << "!!!!!!!!!!! Had to force update";
                 wnck_screen_force_update(wnck_screen_get_default());
                 wnck_win = wnck_window_get(xid);
             }
@@ -52,7 +51,7 @@ WindowsList::WindowsList(QObject *parent) :
                 continue;
             }
 
-            qDebug().nospace() << "\t\t" << win->name() << " (" << xid << ")";
+            //qDebug().nospace() << "\t\t" << win->name() << " (" << xid << ")";
 
             WindowInfo *info = new WindowInfo(xid);
             m_windows.append(info);

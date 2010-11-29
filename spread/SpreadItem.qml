@@ -17,12 +17,6 @@ Item {
     property int win_height
     property alias win_z: item.z
 
-    Component.onCompleted: {
-        console.log("---------" + win_x + ", " + win_y + ", " +
-                    win_width + ", " + win_height + ", " + win_z + ", " +
-                    item.appName + " ** " + item.title);
-    }
-
     Rectangle {
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
