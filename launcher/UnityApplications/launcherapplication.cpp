@@ -182,6 +182,10 @@ LauncherApplication::setDesktopFile(QString desktop_file)
 void
 LauncherApplication::setBamfApplication(BamfApplication *application)
 {
+    if (application == NULL) {
+        return;
+    }
+
     m_application = application;
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
