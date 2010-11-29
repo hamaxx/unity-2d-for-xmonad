@@ -79,6 +79,8 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
     Q_PROPERTY(QString entryRendererName READ entryRendererName WRITE setEntryRendererName NOTIFY entryRendererNameChanged)
+    Q_PROPERTY(QString entryGroupsModelName READ entryGroupsModelName WRITE setEntryGroupsModelName NOTIFY entryGroupsModelNameChanged)
+    Q_PROPERTY(DeeListModel* entryGroupsModel READ entryGroupsModel WRITE setEntryGroupsModel NOTIFY entryGroupsModelChanged)
 
 public:
     PlaceEntry();
@@ -102,6 +104,8 @@ public:
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
     QString entryRendererName() const;
+    QString entryGroupsModelName() const;
+    DeeListModel* entryGroupsModel();
     bool online() const;
 
     /* setters */
@@ -117,6 +121,8 @@ public:
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
     void setEntryRendererName(QString);
+    void setEntryGroupsModelName(QString);
+    void setEntryGroupsModel(DeeListModel*);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -135,6 +141,8 @@ Q_SIGNALS:
     void sectionsChanged();
     void hintsChanged();
     void entryRendererNameChanged();
+    void entryGroupsModelNameChanged();
+    void entryGroupsModelChanged();
 
 private:
     QString m_fileName;
@@ -152,6 +160,8 @@ private:
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
     QString m_entryRendererName;
+    QString m_entryGroupsModelName;
+    DeeListModel* m_entryGroupsModel;
     bool m_online;
     QDBusInterface* m_dbusIface;
 

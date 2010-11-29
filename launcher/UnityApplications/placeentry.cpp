@@ -141,6 +141,7 @@ PlaceEntry::PlaceEntry() :
     m_position(0),
     m_sensitive(true),
     m_sections(NULL),
+    m_entryGroupsModel(NULL),
     m_online(false),
     m_dbusIface(NULL)
 {
@@ -160,10 +161,12 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes),
     m_sensitive(other.m_sensitive),
-    m_entryRendererName(other.m_entryRendererName)
+    m_entryRendererName(other.m_entryRendererName),
+    m_entryGroupsModelName(other.m_entryGroupsModelName)
 {
     setSections(other.m_sections);
     setHints(other.m_hints);
+    setEntryGroupsModel(other.m_entryGroupsModel);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -295,6 +298,27 @@ PlaceEntry::entryRendererName() const
     return m_entryRendererName;
 }
 
+QString
+PlaceEntry::entryGroupsModelName() const
+{
+    return m_entryGroupsModelName;
+}
+
+DeeListModel*
+PlaceEntry::entryGroupsModel()
+{
+    if (m_entryGroupsModel == NULL) {
+        if (!m_entryGroupsModelName.isNull()) {
+            m_entryGroupsModel = new DeeListModel;
+            QString path = m_entryGroupsModelName;
+            path.replace(".", "/");
+            m_entryGroupsModel->setObjectPath("/com/canonical/dee/model/" + path);
+            m_entryGroupsModel->setService(m_entryGroupsModelName);
+        }
+    }
+    return m_entryGroupsModel;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -365,6 +389,30 @@ PlaceEntry::setEntryRendererName(QString entryRendererName)
         m_entryRendererName = entryRendererName;
         emit entryRendererNameChanged();
     }
+}
+
+void
+PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
+{
+    if (entryGroupsModelName != m_entryGroupsModelName) {
+        m_entryGroupsModelName = entryGroupsModelName;
+        delete m_entryGroupsModel;
+        m_entryGroupsModel = NULL;
+        emit entryGroupsModelNameChanged();
+    }
+}
+
+void
+PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
+{
+    if (entryGroupsModel == NULL) {
+        return;
+    }
+    if (m_entryGroupsModel != NULL) {
+        delete m_entryGroupsModel;
+    }
+    m_entryGroupsModel = entryGroupsModel;
+    emit entryGroupsModelChanged();
 }
 
 void
@@ -453,11 +501,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setHints(hints);
 
     setEntryRendererName(info.entry_renderer_info.default_renderer);
-    /*const QString& eGroupsModelName = info.entry_renderer_info.groups_model;
-    if (entryGroupsModelName() != eGroupsModelName) {
-        setEntryGroupsModelName(eGroupsModelName);
-        setEntryGroupsModel(NULL);
-    }*/
+    setEntryGroupsModelName(info.entry_renderer_info.groups_model);
     /*const QString& eResultsModelName = info.entry_renderer_info.results_model;
     if (entryResultsModelName() != eResultsModelName) {
         setEntryResultsModelName(eResultsModelName);
