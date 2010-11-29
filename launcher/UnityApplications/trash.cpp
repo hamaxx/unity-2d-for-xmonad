@@ -66,7 +66,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return QString(INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/artwork/trash.png");
+    return QString(unityQtDirectory() + "/launcher/artwork/trash.png");
 }
 
 bool

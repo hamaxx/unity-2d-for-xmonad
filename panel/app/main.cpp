@@ -37,8 +37,7 @@ public:
     QAbstractFileEngine *create(const QString& fileName) const
     {
         if (fileName.startsWith("theme:")) {
-            // FIXME: Do not hardcode path
-            QString name = INSTALL_PREFIX "/" THEME_DIR "/" + fileName.mid(6);
+            QString name = UNITY_DIR "themes/" + fileName.mid(6);
             return new QFSFileEngine(name);
         } else {
             return 0;
@@ -50,7 +49,12 @@ QPalette getPalette()
 {
     QPalette palette;
 
-    QBrush bg(QPixmap("theme:/qt_panel_background.png"));
+    /* Should use the panel's background provided by Unity but it turns
+       out not to be good. It would look like:
+
+         QBrush bg(QPixmap("theme:/panel_background.png"));
+    */
+    QBrush bg(QPixmap(unityQtDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     palette.setColor(QPalette::WindowText, Qt::white);
@@ -61,7 +65,7 @@ QPalette getPalette()
 QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
-    QPixmap pix("theme:/divider.png");
+    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
     label->setPixmap(pix);
     label->setFixedSize(pix.size());
     return label;
@@ -70,7 +74,6 @@ QLabel* createSeparator()
 int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
-    UnityQtStyle style;
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
@@ -82,7 +85,7 @@ int main(int argc, char** argv)
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication app(argc, argv);
-    app.setStyle(&style);
+    QApplication::setStyle(new UnityQtStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());

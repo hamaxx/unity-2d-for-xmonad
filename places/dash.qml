@@ -10,6 +10,13 @@ Item {
         current_page.visible = false
         current_page = page
         current_page.visible = true
+        /* FIXME: For some reason current_page gets the focus when it becomes
+           visible. Reset the focus to the search_bar instead.
+           It could be due to Qt bug QTBUG-13380:
+           "Listview gets focus when it becomes visible"
+        */
+        search_bar.focus = true
+        console.log(search_bar.search_entry.search_input)
     }
 
     function activatePlace(place, section) {
@@ -31,8 +38,15 @@ Item {
             onActiveChanged: if(dashView.active) activatePage(home)
         }
 
+        /* Unhandled keys will always be forwarded to the search bar. That way
+           the user can type and search from anywhere in the interface without
+           necessarily focusing the search bar first. */
+        Keys.forwardTo: [search_bar]
+
         SearchBar {
             id: search_bar
+
+            focus: true
 
             anchors.top: parent.top
             anchors.left: parent.left

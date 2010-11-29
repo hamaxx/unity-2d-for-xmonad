@@ -41,21 +41,9 @@ LauncherContextualMenu::~LauncherContextualMenu()
 void
 LauncherContextualMenu::loadCSS()
 {
-    /* FIXME: surely there must be a cleaner way to do that in Qt… */
-    QString path;
-    if (QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin")
-    {
-        /* Running installed */
-        path = INSTALL_PREFIX "/" UNITY_QT_DIR "/launcher/";
-    }
-    else
-    {
-        /* Uninstalled */
-        path = "UnityApplications/";
-    }
-    path += "launchermenu.css";
+    QString cssFilePath = unityQtDirectory() + "/launcher/launchermenu.css";
 
-    QFile file(path);
+    QFile file(cssFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 

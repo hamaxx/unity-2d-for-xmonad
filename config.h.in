@@ -1,3 +1,26 @@
 #define INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
 #define UNITY_QT_DIR "${UNITY_QT_DIR}"
-#define THEME_DIR "${THEME_DIR}"
+#define UNITY_DIR "${UNITY_DIR}"
+
+#include <QCoreApplication>
+
+inline bool isRunningInstalled() {
+    static bool cachedResult = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
+    return cachedResult;
+}
+
+inline QString unityQtDirectory() {
+    if (isRunningInstalled()) {
+        return QString(INSTALL_PREFIX "/" UNITY_QT_DIR);
+    } else {
+        return QString(QCoreApplication::applicationDirPath()+"/../../");
+    }
+}
+
+inline QString unityQtImportPath() {
+    if (isRunningInstalled()) {
+        return QString(INSTALL_PREFIX "/lib/qt4/imports");
+    } else {
+        return QString(QCoreApplication::applicationDirPath()+"/../");
+    }
+}

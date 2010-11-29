@@ -38,12 +38,9 @@ HomeButtonApplet::HomeButtonApplet()
     connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
 
     m_button->setStyleSheet(
-            "QToolButton { border: none; margin: 0; padding: 0; width: 55 }"
-            "QToolButton:!checked {"
-            "     background-image: url(theme:/bfb_bg_normal.png);"
-            "}"
+            "QToolButton { border: none; margin: 0; padding: 0; width: 54 }"
             "QToolButton:checked, QToolButton:pressed {"
-            // For some reason using background-image here gives a weird right border
+            // Use border-image here, not background-image, because bfb_bg_active.png is 56px wide
             "     border-image: url(theme:/bfb_bg_active.png);"
             "}"
     );

@@ -16,6 +16,11 @@ Renderer {
     property bool folded: true
     modelCountLimit: folded ? results.cellsPerLine : -1
 
+    property int cellWidth: 158
+    property int cellHeight: 76
+    property int horizontalSpacing: 26
+    property int verticalSpacing: 26
+
     /* Using results.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
     */
@@ -83,37 +88,34 @@ Renderer {
             y: compensateY
             contentY: compensateY
 
-
-            property int delegate_width: 158
-            property int delegate_height: 76
-            property int horizontal_spacing: 26
-            property int vertical_spacing: 26
-            property int cellsPerLine: Math.floor(width/cellWidth)
-            property int totalHeight: cellHeight*Math.ceil(count/cellsPerLine)
+            property int cellsPerLine: Math.floor(width/results.cellWidth)
+            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerLine)
 
 
-            cellWidth: delegate_width+horizontal_spacing
-            cellHeight: delegate_height+vertical_spacing
+            cellWidth: renderer.cellWidth+renderer.horizontalSpacing
+            cellHeight: renderer.cellHeight+renderer.verticalSpacing
 
             interactive: false
             clip: true
 
             delegate: Loader {
-                property string uri: column_0
+                property url uri: column_0
                 property string iconHint: column_1
                 property string groupId: column_2
                 property string mimetype: column_3
                 property string displayName: column_4
                 property string comment: column_5
 
-                width: GridView.view.delegate_width
-                height: GridView.view.delegate_height
+                width: renderer.cellWidth
+                height: renderer.cellHeight
 
                 sourceComponent: cellRenderer
                 onLoaded: {
-                    item.label = displayName
-                    item.icon = "image://icons/"+iconHint
                     item.uri = uri
+                    item.iconHint = iconHint
+                    item.mimetype = mimetype
+                    item.displayName = displayName
+                    item.comment = comment
                 }
             }
 

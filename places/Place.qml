@@ -144,7 +144,7 @@ Page {
                    the group it belongs to (groupId).
                 */
                 filterRole: 2 /* second column (see above comment) */
-                filterRegExp: RegExp(groupId)
+                filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
 
                 /* Maximum number of items in the model; -1 is unlimited */
                 limit: item.modelCountLimit
