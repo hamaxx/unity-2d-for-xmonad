@@ -159,6 +159,7 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes)
 {
+    setSections(other.m_sections);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -266,6 +267,12 @@ PlaceEntry::mimetypes() const
     return m_mimetypes;
 }
 
+DeeListModel*
+PlaceEntry::sections() const
+{
+    return m_sections;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -297,6 +304,19 @@ void
 PlaceEntry::setMimetypes(QStringList mimetypes)
 {
     m_mimetypes = mimetypes;
+}
+
+void
+PlaceEntry::setSections(DeeListModel* sections)
+{
+    if (sections == NULL) {
+        return;
+    }
+    if (m_sections != NULL) {
+        delete m_sections;
+    }
+    m_sections = sections;
+    emit sectionsChanged();
 }
 
 void
@@ -403,13 +423,12 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
 void
 PlaceEntry::setSection(const QString& sectionModelName)
 {
-    if (m_sections == NULL) {
-        m_sections = new DeeListModel;
-    }
+    DeeListModel* sections = new DeeListModel;
     QString path = m_dbusName;
     path.replace(".", "/");
-    m_sections->setObjectPath("/com/canonical/dee/model/" + path + "/SectionsModel");
-    m_sections->setService(sectionModelName);
+    sections->setObjectPath("/com/canonical/dee/model/" + path + "/SectionsModel");
+    sections->setService(sectionModelName);
+    setSections(sections);
 }
 
 void

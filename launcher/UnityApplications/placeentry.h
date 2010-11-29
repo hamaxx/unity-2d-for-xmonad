@@ -75,6 +75,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath WRITE setDbusObjectPath)
     Q_PROPERTY(uint position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QStringList mimetypes READ mimetypes WRITE setMimetypes)
+    Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
 
 public:
     PlaceEntry();
@@ -94,6 +95,7 @@ public:
     QString dbusObjectPath() const;
     uint position() const;
     QStringList mimetypes() const;
+    DeeListModel* sections() const;
     bool online() const;
 
     /* setters */
@@ -105,6 +107,7 @@ public:
     void setDbusObjectPath(QString);
     void setPosition(uint);
     void setMimetypes(QStringList);
+    void setSections(DeeListModel*);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -118,6 +121,7 @@ public:
 
 Q_SIGNALS:
     void positionChanged(uint);
+    void sectionsChanged();
 
 private:
     QString m_fileName;
