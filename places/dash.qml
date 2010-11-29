@@ -13,7 +13,6 @@ Item {
            "Listview gets focus when it becomes visible"
         */
         search_bar.focus = true
-        console.log(search_bar.search_entry.search_input)
     }
 
     function activatePlace(place, section) {
