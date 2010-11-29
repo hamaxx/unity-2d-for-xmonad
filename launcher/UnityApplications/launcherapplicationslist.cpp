@@ -17,6 +17,10 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     m_favorites_list = new GConfItemQmlWrapper();
     m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
 
+    QHash<int, QByteArray> roles;
+    roles[0] = "item";
+    setRoleNames(roles);
+
     load();
 }
 
