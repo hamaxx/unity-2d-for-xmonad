@@ -153,8 +153,6 @@ LauncherApplication::setSticky(bool sticky)
 void
 LauncherApplication::setDesktopFile(QString desktop_file)
 {
-    /* FIXME: should check/interact properly with an m_application != NULL */
-
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
@@ -170,10 +168,15 @@ LauncherApplication::setDesktopFile(QString desktop_file)
         m_appInfo = g_desktop_app_info_new(file);
     }
 
-    /* Emit the Changed signal on all properties that can depend on m_appInfo */
-    emit desktopFileChanged(desktop_file);
-    emit nameChanged(name());
-    emit iconChanged(icon());
+    /* Emit the Changed signal on all properties that can depend on m_appInfo
+       m_application's properties take precedence over m_appInfo's
+    */
+    if(m_application == NULL && m_appInfo != NULL)
+    {
+        emit desktopFileChanged(desktop_file);
+        emit nameChanged(name());
+        emit iconChanged(icon());
+    }
 }
 
 void
