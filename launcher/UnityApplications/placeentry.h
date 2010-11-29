@@ -78,6 +78,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+    Q_PROPERTY(QString entryRendererName READ entryRendererName WRITE setEntryRendererName NOTIFY entryRendererNameChanged)
 
 public:
     PlaceEntry();
@@ -100,6 +101,7 @@ public:
     bool sensitive() const;
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
+    QString entryRendererName() const;
     bool online() const;
 
     /* setters */
@@ -114,6 +116,7 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
+    void setEntryRendererName(QString);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -131,6 +134,7 @@ Q_SIGNALS:
     void sensitiveChanged(bool);
     void sectionsChanged();
     void hintsChanged();
+    void entryRendererNameChanged();
 
 private:
     QString m_fileName;
@@ -147,6 +151,7 @@ private:
        QVariant values in order to allow exposing it as a property (see
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
+    QString m_entryRendererName;
     bool m_online;
     QDBusInterface* m_dbusIface;
 

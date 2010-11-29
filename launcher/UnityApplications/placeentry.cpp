@@ -159,7 +159,8 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_name(other.m_name),
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes),
-    m_sensitive(other.m_sensitive)
+    m_sensitive(other.m_sensitive),
+    m_entryRendererName(other.m_entryRendererName)
 {
     setSections(other.m_sections);
     setHints(other.m_hints);
@@ -288,6 +289,12 @@ PlaceEntry::hints() const
     return m_hints;
 }
 
+QString
+PlaceEntry::entryRendererName() const
+{
+    return m_entryRendererName;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -349,6 +356,15 @@ PlaceEntry::setHints(QMap<QString, QVariant> hints)
 {
     m_hints = hints;
     emit hintsChanged();
+}
+
+void
+PlaceEntry::setEntryRendererName(QString entryRendererName)
+{
+    if (entryRendererName != m_entryRendererName) {
+        m_entryRendererName = entryRendererName;
+        emit entryRendererNameChanged();
+    }
 }
 
 void
@@ -436,7 +452,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     }
     setHints(hints);
 
-    //setEntryRendererName(info.entry_renderer_info.default_renderer);
+    setEntryRendererName(info.entry_renderer_info.default_renderer);
     /*const QString& eGroupsModelName = info.entry_renderer_info.groups_model;
     if (entryGroupsModelName() != eGroupsModelName) {
         setEntryGroupsModelName(eGroupsModelName);
