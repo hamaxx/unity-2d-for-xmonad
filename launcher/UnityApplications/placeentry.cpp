@@ -360,6 +360,10 @@ PlaceEntry::activate()
 void
 PlaceEntry::activateEntry(const int section)
 {
+    if (!m_sensitive) {
+        return;
+    }
+
     QDBusInterface iface("com.canonical.UnityQt", "/dash", "local.DashDeclarativeView");
     iface.call("activatePlaceEntry", m_fileName, m_groupName, section);
 }
@@ -367,6 +371,10 @@ PlaceEntry::activateEntry(const int section)
 void
 PlaceEntry::createMenuActions()
 {
+    if (!m_sensitive) {
+        return;
+    }
+
     for(int i = 0; i < m_sections->rowCount(); ++i) {
         QAction* section = new QAction(m_menu);
         section->setText(m_sections->data(m_sections->index(i)).toString());
