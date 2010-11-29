@@ -27,7 +27,7 @@ FocusScope {
             smooth: true
             width: 18
 
-            source: "/usr/share/unity/search_icon.png"
+            source: "artwork/search_icon.png"
             fillMode: Image.PreserveAspectCrop
         }
 
