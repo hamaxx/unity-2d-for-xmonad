@@ -23,7 +23,7 @@ Item {
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
-        overlay_alpha: dashView.active ? 0.37 : 0
+        overlay_alpha: 0.37
     }
 
     Item {
