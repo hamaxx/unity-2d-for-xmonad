@@ -52,20 +52,14 @@ HomeButtonApplet::HomeButtonApplet()
 
 void HomeButtonApplet::slotButtonClicked()
 {
-    QDBusInterface ifaceProperties(DBUS_SERVICE, DBUS_PATH, "org.freedesktop.DBus.Properties");
+    QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
 
-    /* Retrieve the value of boolean local.DashDeclarativeView.active */
-    QDBusMessage reply = ifaceProperties.call(QDBus::Block, "Get", "local.DashDeclarativeView", "active");
-    QVariant rawResult = reply.arguments()[0];
-    QDBusVariant dbusVariant = qvariant_cast<QDBusVariant>(rawResult);
-    bool dashActive = dbusVariant.variant().toBool();
+    bool dashActive = iface.property("active").toBool();
 
     if (dashActive) {
-        /* Set local.DashDeclarativeView.active to false */
-        ifaceProperties.call(QDBus::Block, "Set", "local.DashDeclarativeView", "active", qVariantFromValue(QDBusVariant(false)));
+        iface.setProperty("active", false);
     } else {
         /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
-        QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
         iface.call(QDBus::Block, "activateHome");
     }
 
