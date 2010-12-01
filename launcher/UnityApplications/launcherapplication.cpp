@@ -11,11 +11,13 @@ extern "C" {
 }
 
 #include "launcherapplication.h"
+#include "launchermenu.h"
 #include "bamf-matcher.h"
 
 #include <X11/X.h>
 
 #include <QDebug>
+#include <QAction>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -456,14 +458,14 @@ LauncherApplication::onKeepTriggered()
 {
     QAction* keep = static_cast<QAction*>(sender());
     bool sticky = keep->isChecked();
-    hideMenu(true);
+    m_menu->hide();
     setSticky(sticky);
 }
 
 void
 LauncherApplication::onQuitTriggered()
 {
-    hideMenu(true);
+    m_menu->hide();
     close();
 }
 

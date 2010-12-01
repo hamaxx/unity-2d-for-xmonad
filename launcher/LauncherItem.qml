@@ -18,6 +18,8 @@ import Qt 4.7
    The 'clicked' signal is emitted upon clicking on the item.
 */
 Item {
+    id: launcherItem
+
     property alias icon: icon.source
     property alias label: label.text
     property bool running: false
@@ -28,17 +30,6 @@ Item {
     signal clicked(variant mouse)
     signal entered
     signal exited
-
-    MouseArea {
-        id: mouse
-
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        hoverEnabled: true
-        anchors.fill: parent
-        onClicked: parent.clicked(mouse)
-        onEntered: parent.entered()
-        onExited: parent.exited()
-    }
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Return) {
@@ -80,6 +71,17 @@ Item {
         height: 50
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
+
+        MouseArea {
+            id: mouse
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            hoverEnabled: true
+            anchors.fill: parent
+            onClicked: launcherItem.clicked(mouse)
+            onEntered: launcherItem.entered()
+            onExited: launcherItem.exited()
+        }
 
         Rectangle {
             id: background

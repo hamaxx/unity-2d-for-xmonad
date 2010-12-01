@@ -18,10 +18,12 @@
  */
 
 #include "launcherdevice.h"
+#include "launchermenu.h"
 
 #include "config.h"
 
 #include <QDebug>
+#include <QAction>
 
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
@@ -219,7 +221,7 @@ LauncherDevice::createMenuActions()
 void
 LauncherDevice::onEjectTriggered()
 {
-    hideMenu(true);
+    m_menu->hide();
     eject();
 }
 
