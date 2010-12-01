@@ -146,8 +146,8 @@ void
 LauncherContextualMenu::hide()
 {
     /* Fold the menu upon hiding */
-    setFolded(true);
     QMenu::hide();
+    setFolded(true);
 }
 
 void
