@@ -1,9 +1,6 @@
 import Qt 4.7
 
 Item {
-    width: 966
-    height: 575
-
     property variant current_page: home
 
     function activatePage(page) {
@@ -16,7 +13,6 @@ Item {
            "Listview gets focus when it becomes visible"
         */
         search_bar.focus = true
-        console.log(search_bar.search_entry.search_input)
     }
 
     function activatePlace(place, section) {
@@ -27,7 +23,7 @@ Item {
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
-        overlay_alpha: dashView.active ? 0.37 : 0
+        overlay_alpha: 0.37
     }
 
     Item {

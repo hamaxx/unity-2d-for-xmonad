@@ -1,68 +1,126 @@
 import Qt 4.7
 
+/* Scrollbar composed of:
+   - a background track; clicking on it triggers page scrolling
+   - a draggable slider on top
+
+   Usage:
+
+   Flickable {
+       id: flickable
+   }
+
+   Scrollbar {
+       targetFlickable: flickable
+   }
+*/
 Item {
-    property real position
-    property real pageSize
+    id: scrollbar
+
+    property variant targetFlickable
+
+    width: 10
 
     BorderImage {
         id: background
 
         anchors.fill: parent
-        source: "artwork/scrollbar_background.sci"
+        source: "artwork/scrollbar/background.sci"
         smooth: false
-        horizontalTileMode: BorderImage.Stretch
-        verticalTileMode: BorderImage.Repeat
+
+        MouseArea {
+            id: scrollMouseArea
+
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+
+            onPressed: {
+                /* Scroll one page without overshooting */
+                var scrollAmount = mouseY > slider.y ? targetFlickable.height : -targetFlickable.height
+                var destination = targetFlickable.contentY + scrollAmount
+                var clampedDestination = Math.max(0, Math.min(targetFlickable.contentHeight - targetFlickable.height,
+                                                              destination))
+                scrollAnimation.to = clampedDestination
+                scrollAnimation.restart()
+            }
+
+            NumberAnimation {
+                id: scrollAnimation
+
+                duration: 200
+                easing.type: Easing.InOutQuad
+                target: targetFlickable
+                property: "contentY"
+            }
+        }
     }
 
-    /* FIXME: the handle does not look like Unity's; it is missing:
-               - the glow
-               - the 3 small marks in the middle
-    */
     Item {
-        id: handle
+        id: slider
+
+        property int minimalHeight: 40
 
         anchors.left: parent.left
         anchors.right: parent.right
 
-        /* FIXME: ugly code */
         y: {
-            if(parent.position <= 0)
-                return 0
-            else if(parent.position + parent.pageSize >= 1)
-                return (1-parent.pageSize) * (parent.height-2)
-            else
-                return parent.position * (parent.height-2)
+            var clampedYPosition = Math.max(0, Math.min(1-targetFlickable.visibleArea.heightRatio,
+                                                        targetFlickable.visibleArea.yPosition))
+            return clampedYPosition * scrollbar.height
         }
+        height: Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height)
 
-        height: parent.pageSize * (parent.height-2)
+        Behavior on height {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 
-        Rectangle {
+        BorderImage {
             anchors.fill: parent
-            anchors.rightMargin: 1
+            /* The glow around the slider is 5 pixels wide */
+            anchors.margins: -5
 
-            color: mouse.pressed ? "#ffffffff" : "#00000000"
-            border.color: "#cccccc"
-            border.width: 1
-            radius: 5
+            smooth: false
+
+            source: {
+                if(dragMouseArea.pressed)
+                    return "artwork/scrollbar/slider_pressed.sci"
+                else if(dragMouseArea.containsMouse)
+                    return "artwork/scrollbar/slider_hovered.sci"
+                else
+                    return "artwork/scrollbar/slider_default.sci"
+            }
 
             Image {
-                fillMode: Image.Tile
-                anchors.fill: parent
-                source: "artwork/button_background.png"
-                smooth: false
+                id: handle
 
-                opacity: mouse.containsMouse || mouse.pressed ? 1.0 : 0.0
-                Behavior on opacity {NumberAnimation {duration: 100}}
+                anchors.centerIn: parent
+                source: {
+                    if(dragMouseArea.pressed)
+                        return "artwork/scrollbar/handle_pressed.png"
+                    else
+                        return "artwork/scrollbar/handle_default.png"
+                }
+                width: sourceSize.width
+                height: sourceSize.height
+                fillMode: Image.Tile
+                smooth: false
             }
         }
 
         MouseArea {
-            id: mouse
+            id: dragMouseArea
 
-            hoverEnabled: true
             anchors.fill: parent
-            /* FIXME: missing dragging of the handle */
-            onPressed: console.log("FIXME: scrollbar dragging is not implemented yet")
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+            drag.target: slider
+            drag.axis: Drag.YAxis
+            drag.minimumY: 0
+            drag.maximumY: scrollbar.height - slider.height
+
+            onPositionChanged: {
+                if (drag.active) {
+                    targetFlickable.contentY = slider.y * targetFlickable.contentHeight / scrollbar.height
+                }
+            }
         }
     }
 }
