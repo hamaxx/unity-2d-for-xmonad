@@ -22,12 +22,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
-    QList<LauncherApplication*>::iterator iter;
-    for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
-    {
-        delete *iter;
-    }
-
+    qDeleteAll(m_applications);
     delete m_favorites_list;
 }
 
