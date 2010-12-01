@@ -21,7 +21,7 @@
 
 static const char* DBUS_SERVICE = "com.canonical.UnityQt";
 static const char* DBUS_PATH = "/dash";
-static const char* DBUS_IFACE = "org.freedesktop.DBus.Properties";
+static const char* DBUS_IFACE = "local.DashDeclarativeView";
 
 HomeButtonApplet::HomeButtonApplet()
 : m_button(new QToolButton)
@@ -54,14 +54,14 @@ void HomeButtonApplet::slotButtonClicked()
 {
     QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
 
-    /* Retrieve the value of boolean local.DashDeclarativeView.active */
-    QDBusMessage reply = iface.call(QDBus::Block, "Get", "local.DashDeclarativeView", "active");
-    QVariant rawResult = reply.arguments()[0];
-    QDBusVariant dbusVariant = qvariant_cast<QDBusVariant>(rawResult);
-    bool dashActive = dbusVariant.variant().toBool();
+    bool dashActive = iface.property("active").toBool();
 
-    /* Inverse the value of boolean local.DashDeclarativeView.active */
-    iface.call(QDBus::Block, "Set", "local.DashDeclarativeView", "active", qVariantFromValue(QDBusVariant(!dashActive)));
+    if (dashActive) {
+        iface.setProperty("active", false);
+    } else {
+        /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
+        iface.call(QDBus::Block, "activateHome");
+    }
 
     /* Re-synchronise the dash's state with the button's checked state, just in case. */
     m_button->setChecked(!dashActive);
