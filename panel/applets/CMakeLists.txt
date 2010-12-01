@@ -7,6 +7,7 @@ pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
 pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(WNCK REQUIRED libwnck)
 
 find_package(X11 REQUIRED)
 
@@ -17,6 +18,7 @@ set(uqapplets_SRCS
     appmenu/appmenuapplet.cpp
     appmenu/registrar.cpp
     appname/appnameapplet.cpp
+    appname/windowhelper.cpp
     homebutton/homebuttonapplet.cpp
     indicator/abstractindicator.cpp
     indicator/datetimeindicator.cpp
@@ -48,6 +50,7 @@ include_directories(
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
     )
@@ -61,6 +64,7 @@ target_link_libraries(uqapplets
     ${QTBAMF_LDFLAGS}
     ${GTK_LDFLAGS}
     ${INDICATOR_LDFLAGS}
+    ${WNCK_LDFLAGS}
     ${X11_LIBRARIES}
     ${X11_Xrender_LIB}
     ${X11_Xcomposite_LIB}

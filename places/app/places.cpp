@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
 
     DashDeclarativeView view;
 
+    /* The dash window is borderless and not moveable by the user, yet not
+       fullscreen */
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
@@ -89,9 +93,6 @@ int main(int argc, char *argv[])
 
        ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
     */
-
-    view.setActive(false);
-    view.show();
 
     return application.exec();
 }

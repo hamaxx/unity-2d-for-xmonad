@@ -45,18 +45,14 @@ DashDeclarativeView::setActive(bool active)
     if(active)
     {
         emit activeChanged(active);
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, false);
+        show();
         raise();
         activateWindow();
         forceActivateWindow();
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     }
     else
     {
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
-        lower();
-        clearFocus();
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, true);
+        hide();
         emit activeChanged(active);
     }
 }

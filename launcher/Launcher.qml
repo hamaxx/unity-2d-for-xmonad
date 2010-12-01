@@ -14,6 +14,8 @@ Item {
     }
 
     ListView {
+        id: list
+
         anchors.fill: parent
         focus: true
 
@@ -40,8 +42,14 @@ Item {
                 }
             }
 
-            onEntered: item.showTooltip(y + height / 2)
+            /* Display the tooltip when hovering the item only when the list
+               is not moving */
+            onEntered: if (!list.moving) item.showTooltip(y + height / 2)
             onExited: item.hideMenu()
+            Connections {
+                target: list
+                onMovementStarted: item.hideMenu()
+            }
 
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }
