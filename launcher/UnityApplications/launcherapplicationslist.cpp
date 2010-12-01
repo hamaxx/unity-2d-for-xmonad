@@ -103,7 +103,7 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 
     /* If the desktop_file property is empty after setting it, it
        means glib couldn't load the desktop file (probably corrupted) */
-    if (application->desktop_file() == "") {
+    if (application->desktop_file().isEmpty()) {
         qWarning() << "Favorite application not added due to desktop file missing or corrupted ("
                    << desktop_file << ")";
         delete application;
