@@ -57,15 +57,14 @@ static void stateChangedCB(GObject* window,
 
 void WindowHelper::setXid(uint xid)
 {
-    if (!xid) {
-        if (d->m_window) {
-            g_signal_handlers_disconnect_by_func(d->m_window, gpointer(stateChangedCB), this);
-            d->m_window = 0;
-        }
-        return;
+    if (d->m_window) {
+        g_signal_handlers_disconnect_by_func(d->m_window, gpointer(stateChangedCB), this);
+        d->m_window = 0;
     }
-    d->m_window = wnck_window_get(xid);
-    g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
+    if (xid != 0) {
+        d->m_window = wnck_window_get(xid);
+        g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
+    }
 }
 
 bool WindowHelper::isMaximized() const
