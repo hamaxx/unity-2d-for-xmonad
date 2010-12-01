@@ -45,7 +45,7 @@ private:
        and the list of favorited applications into the list of applications
        displayed (m_applications).
     */
-    QHash<QString, LauncherApplication*> m_desktop_files;
+    QHash<QString, LauncherApplication*> m_applicationForDesktopFile;
 
     GConfItemQmlWrapper* m_favorites_list;
 

@@ -53,7 +53,7 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
     m_applications.append(application);
 
     if (!application->desktop_file().isEmpty()) {
-        m_desktop_files.insert(application->desktop_file(), application);
+        m_applicationForDesktopFile.insert(application->desktop_file(), application);
     }
     endInsertRows();
 
@@ -68,7 +68,7 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 
     beginRemoveRows(QModelIndex(), index, index);
     m_applications.removeAt(index);
-    m_desktop_files.remove(application->desktop_file());
+    m_applicationForDesktopFile.remove(application->desktop_file());
     endRemoveRows();
 
     delete application;
@@ -83,9 +83,9 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
     LauncherApplication* application;
 
     QString desktop_file = bamf_application->desktop_file();
-    if (m_desktop_files.contains(desktop_file)) {
+    if (m_applicationForDesktopFile.contains(desktop_file)) {
         /* A LauncherApplication with the same desktop file already exists */
-        application = m_desktop_files[desktop_file];
+        application = m_applicationForDesktopFile[desktop_file];
         application->setBamfApplication(bamf_application);
     } else {
         /* Create a new LauncherApplication and append it to the list */
@@ -98,7 +98,7 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 void
 LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 {
-    if (m_desktop_files.contains(desktop_file))
+    if (m_applicationForDesktopFile.contains(desktop_file))
         return;
 
     /* Create a new LauncherApplication */
