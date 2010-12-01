@@ -21,25 +21,51 @@
 #define LAUNCHERMENU_H
 
 #include <QMenu>
+#include <QTimer>
+
+class LauncherItem;
 
 class LauncherContextualMenu : public QMenu
 {
     Q_OBJECT
 
     Q_PROPERTY(bool transparencyAvailable READ transparencyAvailable)
+    Q_PROPERTY(bool folded READ folded WRITE setFolded NOTIFY foldedChanged)
+    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 
 public:
     LauncherContextualMenu();
     ~LauncherContextualMenu();
 
     /* getters */
-    bool transparencyAvailable();
+    bool transparencyAvailable() const;
+    bool folded() const;
+    LauncherItem* launcherItem() const;
+    QString title() const;
 
-    Q_INVOKABLE void setTitle(QString title);
+    /* setters */
+    void setFolded(int folded);
+    void setLauncherItem(LauncherItem* launcherItem);
+    void setTitle(const QString& title);
+
+    Q_INVOKABLE void show(int x, int y);
+    Q_INVOKABLE void hide();
+    Q_INVOKABLE void hideWithDelay(int delay);
     void resizeEvent(QResizeEvent* event);
+    void leaveEvent(QEvent* event);
+    void enterEvent(QEvent* event);
+
+Q_SIGNALS:
+    void foldedChanged(bool);
+    void titleChanged(QString);
 
 private:
     void loadCSS();
+    QTimer m_hidingDelayTimer;
+    bool m_folded;
+    LauncherItem* m_launcherItem;
+    QString m_title;
+    QAction* m_titleAction;
 };
 
 #endif // LAUNCHERMENU_H

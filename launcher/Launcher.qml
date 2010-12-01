@@ -16,6 +16,9 @@ Item {
     ListView {
         id: list
 
+        /* Keep a reference to the currently visible contextual menu */
+        property variant visibleMenu
+
         anchors.fill: parent
         focus: true
 
@@ -32,23 +35,49 @@ Item {
             active: item.active
             urgent: item.urgent
             launching: item.launching
+
+            Binding { target: item.menu; property: "title"; value: item.name }
+
+            function showMenu() {
+                /* Prevent the simultaneous display of multiple menus */
+                if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
+                    list.visibleMenu.hide()
+                }
+                list.visibleMenu = item.menu
+
+                /* The menu needs to never overlap with the MouseArea of
+                   item otherwise flickering happens when the mouse is on
+                   an overlapping pixel (hence the -4). */
+                item.menu.show(width-4, y+height/2-list.contentY+launcherView.y)
+            }
+
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
-                    item.hideMenu()
+                    item.menu.hide()
                     item.activate()
                 }
                 else if (mouse.button == Qt.RightButton) {
-                    item.showMenu()
+                    item.menu.folded = false
+                    showMenu()
                 }
             }
 
             /* Display the tooltip when hovering the item only when the list
                is not moving */
-            onEntered: if (!list.moving) item.showTooltip(y + height / 2)
-            onExited: item.hideMenu()
+            onEntered: if (!list.moving) showMenu()
+            onExited: {
+                /* When unfolded, leave enough time for the user to reach the
+                   menu. Necessary because there is some void between the item
+                   and the menu. Also it fixes the case when the user
+                   overshoots. */
+                if (!item.menu.folded)
+                    item.menu.hideWithDelay(400)
+                else
+                    item.menu.hide()
+            }
             Connections {
                 target: list
-                onMovementStarted: item.hideMenu()
+                onMovementStarted: item.menu.hide()
             }
 
             ListView.onAdd: SequentialAnimation {
