@@ -204,6 +204,12 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
 
+    updateBamfApplicationDependentProperties();
+}
+
+void
+LauncherApplication::updateBamfApplicationDependentProperties()
+{
     emit activeChanged(active());
     emit runningChanged(running());
     emit urgentChanged(urgent());
@@ -224,6 +230,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
 
     m_application->disconnect(this);
     m_application = NULL;
+    updateBamfApplicationDependentProperties();
     emit closed();
 }
 
@@ -250,7 +257,12 @@ void
 LauncherApplication::updateHasVisibleWindow()
 {
     bool prev = m_has_visible_window;
-    m_has_visible_window = m_application->xids()->size() > 0;
+
+    if (m_application != NULL) {
+        m_has_visible_window = m_application->xids()->size() > 0;
+    } else {
+        m_has_visible_window = false;
+    }
     if (m_has_visible_window != prev)
         emit hasVisibleWindowChanged(m_has_visible_window);
 }
