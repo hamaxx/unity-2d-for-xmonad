@@ -12,6 +12,7 @@
 #include "appnameapplet.h"
 
 // Local
+#include "menubarwidget.h"
 #include "windowhelper.h"
 
 // Unity-qt
@@ -100,6 +101,7 @@ struct AppNameAppletPrivate
     WindowButton* m_maximizeButton;
     QLabel* m_label;
     WindowHelper* m_windowHelper;
+    MenuBarWidget* m_menuBarWidget;
 
     void setupLabel()
     {
@@ -146,11 +148,13 @@ AppNameApplet::AppNameApplet()
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
+    d->m_menuBarWidget = new MenuBarWidget;
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
+    layout->addWidget(d->m_menuBarWidget);
 
     updateLabel();
     updateWidgets();
