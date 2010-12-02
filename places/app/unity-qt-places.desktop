@@ -9,4 +9,4 @@ Type=Application
 Categories=
 X-Ubuntu-Gettext-Domain=unity-qt-places
 X-GNOME-Autostart-Notify=false
-X-GNOME-Autostart-Delay=4
+X-GNOME-Autostart-Delay=10
