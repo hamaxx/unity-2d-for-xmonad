@@ -25,14 +25,12 @@
 // Qt
 #include <QAbstractButton>
 #include <QCursor>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
-#include <QTimer>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
-
-static const int MOUSE_POLL_INTERVAL = 1000 / 60;
 
 namespace UnityQt
 {
@@ -48,6 +46,7 @@ public:
     , m_downPix(loadPix("pressed"))
     {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        setAttribute(Qt::WA_Hover);
     }
 
     QSize minimumSizeHint() const
@@ -68,16 +67,6 @@ protected:
             pix = m_normalPix;
         }
         painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
-    }
-
-    void enterEvent(QEvent*)
-    {
-        update();
-    }
-
-    void leaveEvent(QEvent*)
-    {
-        update();
     }
 
 private:
@@ -106,8 +95,6 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
-
-    bool m_isOver;
 
     void setupLabel()
     {
@@ -144,26 +131,16 @@ struct AppNameAppletPrivate
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
     }
-
-    void setupMousePollTimer()
-    {
-        QTimer* mouseTimer = new QTimer(q);
-        mouseTimer->setInterval(MOUSE_POLL_INTERVAL);
-        QObject::connect(mouseTimer, SIGNAL(timeout()), q, SLOT(updateIsOver()));
-        mouseTimer->start();
-    }
 };
 
 AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    d->m_isOver = false;
 
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMousePollTimer();
     d->m_menuBarWidget = new MenuBarWidget;
 
     QHBoxLayout* layout = new QHBoxLayout(this);
@@ -194,26 +171,39 @@ void AppNameApplet::updateLabel()
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
+    bool under = window()->underMouse();
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
-    d->m_label->setVisible(!(isMaximized && d->m_isOver));
-    bool labelIsCropped = !isMaximized && d->m_isOver;
+    d->m_label->setVisible(!(isMaximized && under));
+    bool labelIsCropped = !isMaximized && under;
     d->m_label->setMaximumWidth(labelIsCropped
         ? d->m_windowButtonWidget->sizeHint().width()
         : QWIDGETSIZE_MAX);
 
-    d->m_menuBarWidget->setVisible(d->m_isOver);
+    d->m_menuBarWidget->setVisible(under);
 }
 
-void AppNameApplet::updateIsOver()
+bool AppNameApplet::event(QEvent* event)
 {
-    QRect hoverRect = window()->geometry();
-    bool isOver = hoverRect.contains(QCursor::pos());
-    if (isOver != d->m_isOver) {
-        d->m_isOver = isOver;
-        updateWidgets();
+    if (event->type() == QEvent::ParentChange) {
+        // Install an event filter on the panel to detect mouse over
+        window()->installEventFilter(this);
     }
+    return Applet::event(event);
+}
+
+bool AppNameApplet::eventFilter(QObject*, QEvent* event)
+{
+    switch (event->type()) {
+    case QEvent::HoverEnter:
+    case QEvent::HoverLeave:
+        updateWidgets();
+        break;
+    default:
+        break;
+    }
+    return false;
 }
 
 } // namespace

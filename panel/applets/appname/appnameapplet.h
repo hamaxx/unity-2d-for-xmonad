@@ -16,6 +16,8 @@
 
 // Qt
 
+class QEvent;
+
 namespace UnityQt
 {
 
@@ -27,10 +29,13 @@ public:
     AppNameApplet();
     ~AppNameApplet();
 
+protected:
+    bool event(QEvent*); // reimp
+    bool eventFilter(QObject*, QEvent*); // reimp
+
 private Q_SLOTS:
     void updateLabel();
     void updateWidgets();
-    void updateIsOver();
 
 private:
     Q_DISABLE_COPY(AppNameApplet)
