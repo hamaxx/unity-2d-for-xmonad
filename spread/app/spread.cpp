@@ -32,6 +32,7 @@
 
 #include <QDebug>
 #include <QTimer>
+#include <QX11Info>
 
 int main(int argc, char *argv[])
 {
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 
        Reference: https://bugs.launchpad.net/upicek/+bug/674484
     */
-    bool useRaster = false;
+    bool useRaster = true;
     if (useRaster) {
         QApplication::setGraphicsSystem("raster");
         QApplication::setColorSpec(QApplication::ManyColor);
@@ -55,6 +56,8 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     SpreadView view;
+    application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
+
     //view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     /* FIXME: possible optimisations */
 //    view.setAttribute(Qt::WA_OpaquePaintEvent);
@@ -62,16 +65,23 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
     view.engine()->addImportPath(unityQtImportPath());
+
     // This is needed for UnityApplications
     view.engine()->addImportPath(unityQtImportPath() + "/../launcher/");
-    application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
-
-    /* Note: baseUrl seems to be picky: if it does not end with a slash,
-       setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
-    WindowImageProvider *provider = new WindowImageProvider(!useRaster);
+    WindowImageProvider *provider = new WindowImageProvider();
     view.engine()->addImageProvider(QString("window"), provider);
+
+    /* Always activate composite, so we can capture windows that are partially obscured
+       Ideally we want to activate it only when QX11Info::isCompositingManagerRunning()
+       is false, but in my experience it is not reliable at all.
+       The only downside when calling this is that there's a small visual glitch at the
+       moment when it's called on the entire desktop, and the same thing when the app
+       terminates. This happens regardless if the WM has activated composite already or
+       not.
+    */
+    provider->activateComposite();
 
     view.rootContext()->setContextProperty("spreadView", &view);
     view.rootContext()->setContextProperty("screen",

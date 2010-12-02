@@ -1,45 +1,71 @@
+#include <QX11Info>
 #include <QDebug>
-#include <QApplication>
 
 #include "windowimageprovider.h"
-#include "windowgrabber.h"
 
+#include <X11/Xlib.h>
+#include <X11/extensions/Xcomposite.h>
 
-WindowImageProvider::WindowImageProvider(bool useX11) :
-    QDeclarativeImageProvider((useX11) ?
-                               QDeclarativeImageProvider::Pixmap : QDeclarativeImageProvider::Image),
-    m_capture(new WindowGrabber()) {
-    qDebug() << "Using image type: " << ((imageType() == QDeclarativeImageProvider::Pixmap) ? "Pixmap" : "Image");
+WindowImageProvider::WindowImageProvider() :
+    QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap) {
 }
 
 WindowImageProvider::~WindowImageProvider() {
-    delete m_capture;
 }
 
 QPixmap WindowImageProvider::requestPixmap(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize) {
-    QPixmap *shot = m_capture->getPixmapForWindow((Window)id.toULong());
-    if (shot) {
-        size->setWidth(shot->width());
-        size->setHeight(shot->height());
-        return *shot;
+    QPixmap shot = QPixmap::fromX11Pixmap((Qt::HANDLE)id.toULong());
+    if (!shot.isNull()) {
+        if (requestedSize.isValid()) {
+            shot = shot.scaled(requestedSize);
+        }
+        size->setWidth(shot.width());
+        size->setHeight(shot.height());
+        return shot;
     } else {
         return QPixmap();
     }
 
 }
 
-QImage WindowImageProvider::requestImage(const QString &id,
-                                            QSize *size,
-                                            const QSize &requestedSize) {
-    QImage *shot = m_capture->getImageForWindow((Window)id.toULong());
-    if (shot) {
-        size->setWidth(shot->width());
-        size->setHeight(shot->height());
-        return *shot;
+/*! Tries to ask the X Composite extension (if supported) to redirect all
+    windows on all screens to backing storage. This does not have
+    any effect if another application already requested the same
+    thing (typically the window manager does this).
+*/
+void WindowImageProvider::activateComposite() {
+    int event_base;
+    int error_base;
+
+    Display *display = QX11Info::display();
+    bool compositeSupport = false;
+
+    if (XCompositeQueryExtension(display, &event_base, &error_base)) {
+        int major = 0;
+        int minor = 2;
+        XCompositeQueryVersion(display, &major, &minor);
+
+        if (major > 0 || minor >= 2) {
+            compositeSupport = true;
+            qDebug().nospace() << "Server supports the Composite extension (ver "
+                    << major << "." << minor << ")";
+        }
+        else {
+            qDebug().nospace() << "Server supports the Composite extension, but "
+                                  "version is < 0.2 (ver " << major << "." << minor << ")";
+        }
     } else {
-        return QImage();
+        qDebug() << "Server doesn't support the Composite extension.";
+    }
+
+    if (compositeSupport) {
+        int screens = ScreenCount(display);
+        for (int i = 0; i < screens; ++i) {
+            XCompositeRedirectSubwindows(display, RootWindow(display, i),
+                                         CompositeRedirectAutomatic);
+        }
     }
 }
 

@@ -5,20 +5,16 @@
 #include <QPixmap>
 #include <QImage>
 #include <QSize>
-#include <QPaintEngine>
 
 class WindowGrabber;
 
 class WindowImageProvider : public QDeclarativeImageProvider
 {
 public:
-    WindowImageProvider(bool useX11);
+    WindowImageProvider();
     ~WindowImageProvider();
     virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
-
-private:
-    WindowGrabber *m_capture;
+    static void activateComposite();
 };
 
 #endif // X11WINDOWIMAGEPROVIDER_H

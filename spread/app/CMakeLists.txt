@@ -7,13 +7,11 @@ set(spread_SRCS
     spread.cpp
     spreadview.cpp
     windowimageprovider.cpp
-    windowgrabber.cpp
-    )
+   )
 
 set(spread_MOC_HDRS
     spreadview.h
     windowimageprovider.h
-    windowgrabber.h
     )
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
