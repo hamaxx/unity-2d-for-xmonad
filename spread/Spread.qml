@@ -22,6 +22,6 @@ Item {
     }
 
     Component.onCompleted: {
-        grid.state = "spread"
+        grid.state = "screen"
     }
 }
