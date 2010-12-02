@@ -33,6 +33,9 @@ public Q_SLOTS:
     void minimize();
     void unmaximize();
 
+private Q_SLOTS:
+    void update();
+
 Q_SIGNALS:
     void stateChanged();
 

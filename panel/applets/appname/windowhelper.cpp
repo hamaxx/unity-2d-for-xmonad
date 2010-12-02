@@ -16,6 +16,10 @@
 // unity-qt
 #include <debug_p.h>
 
+// Bamf
+#include <bamf-matcher.h>
+#include <bamf-window.h>
+
 // libwnck
 #undef signals
 extern "C" {
@@ -40,6 +44,11 @@ WindowHelper::WindowHelper(QObject* parent)
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
+
+    update();
+
+    connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)),
+        SLOT(update()));
 }
 
 WindowHelper::~WindowHelper()
@@ -55,8 +64,11 @@ static void stateChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "stateChanged");
 }
 
-void WindowHelper::setXid(uint xid)
+void WindowHelper::update()
 {
+    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+    uint xid = bamfWindow ? bamfWindow->xid() : 0;
+
     if (d->m_window) {
         g_signal_handlers_disconnect_by_func(d->m_window, gpointer(stateChangedCB), this);
         d->m_window = 0;

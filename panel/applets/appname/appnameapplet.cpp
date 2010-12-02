@@ -107,6 +107,10 @@ struct AppNameAppletPrivate
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
+
+        QObject::connect(
+            &BamfMatcher::get_default(), SIGNAL(ActiveApplicationChanged(BamfApplication*, BamfApplication*)),
+            q, SLOT(updateLabel()));
     }
 
     void setupWindowButtonWidget()
@@ -126,7 +130,7 @@ struct AppNameAppletPrivate
         QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
     }
 
-    void setupWatcher()
+    void setupWindowHelper()
     {
         m_windowHelper = new WindowHelper(q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
@@ -139,7 +143,7 @@ AppNameApplet::AppNameApplet()
 {
     d->q = this;
 
-    d->setupWatcher();
+    d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
 
@@ -148,10 +152,7 @@ AppNameApplet::AppNameApplet()
     layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
 
-    connect(&BamfMatcher::get_default(), SIGNAL(ActiveApplicationChanged(BamfApplication*, BamfApplication*)), SLOT(updateLabel()));
-    connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)), SLOT(updateWindowHelper()));
     updateLabel();
-    updateWindowHelper();
     updateWidgets();
 }
 
@@ -168,12 +169,6 @@ void AppNameApplet::updateLabel()
     } else {
         d->m_label->setText(QString());
     }
-}
-
-void AppNameApplet::updateWindowHelper()
-{
-    BamfWindow* window = BamfMatcher::get_default().active_window();
-    d->m_windowHelper->setXid(window ? window->xid() : 0);
 }
 
 void AppNameApplet::updateWidgets()

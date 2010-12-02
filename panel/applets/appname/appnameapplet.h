@@ -29,7 +29,6 @@ public:
 
 private Q_SLOTS:
     void updateLabel();
-    void updateWindowHelper();
     void updateWidgets();
 
 private:
