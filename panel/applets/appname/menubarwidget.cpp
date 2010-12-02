@@ -12,6 +12,7 @@
 #include "menubarwidget.h"
 
 // Local
+#include "config.h"
 #include "debug_p.h"
 #include "registrar.h"
 
@@ -24,6 +25,7 @@
 
 // Qt
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMenuBar>
 
 class MyDBusMenuImporter : public DBusMenuImporter
@@ -68,9 +70,17 @@ void MenuBarWidget::setupRegistrar()
 
 void MenuBarWidget::setupMenuBar()
 {
+    QLabel* separatorLabel = new QLabel;
+    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    separatorLabel->setPixmap(pix);
+    separatorLabel->setFixedSize(pix.size());
+
+    m_menuBar = new QMenuBar;
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
-    m_menuBar = new QMenuBar;
+    layout->setSpacing(0);
+    layout->addWidget(separatorLabel);
     layout->addWidget(m_menuBar);
     m_menuBar->setNativeMenuBar(false);
 }

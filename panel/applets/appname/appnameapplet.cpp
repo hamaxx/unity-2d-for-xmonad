@@ -24,11 +24,15 @@
 
 // Qt
 #include <QAbstractButton>
+#include <QCursor>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QTimer>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
+
+static const int MOUSE_POLL_INTERVAL = 1000 / 60;
 
 namespace UnityQt
 {
@@ -103,6 +107,8 @@ struct AppNameAppletPrivate
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
 
+    bool m_isOver;
+
     void setupLabel()
     {
         m_label = new QLabel;
@@ -138,16 +144,26 @@ struct AppNameAppletPrivate
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
     }
+
+    void setupMousePollTimer()
+    {
+        QTimer* mouseTimer = new QTimer(q);
+        mouseTimer->setInterval(MOUSE_POLL_INTERVAL);
+        QObject::connect(mouseTimer, SIGNAL(timeout()), q, SLOT(updateIsOver()));
+        mouseTimer->start();
+    }
 };
 
 AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
+    d->m_isOver = false;
 
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
+    d->setupMousePollTimer();
     d->m_menuBarWidget = new MenuBarWidget;
 
     QHBoxLayout* layout = new QHBoxLayout(this);
@@ -178,8 +194,26 @@ void AppNameApplet::updateLabel()
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
+
     d->m_windowButtonWidget->setVisible(isMaximized);
-    d->m_label->setVisible(!isMaximized);
+
+    d->m_label->setVisible(!(isMaximized && d->m_isOver));
+    bool labelIsCropped = !isMaximized && d->m_isOver;
+    d->m_label->setMaximumWidth(labelIsCropped
+        ? d->m_windowButtonWidget->sizeHint().width()
+        : QWIDGETSIZE_MAX);
+
+    d->m_menuBarWidget->setVisible(d->m_isOver);
+}
+
+void AppNameApplet::updateIsOver()
+{
+    QRect hoverRect = window()->geometry();
+    bool isOver = hoverRect.contains(QCursor::pos());
+    if (isOver != d->m_isOver) {
+        d->m_isOver = isOver;
+        updateWidgets();
+    }
 }
 
 } // namespace
