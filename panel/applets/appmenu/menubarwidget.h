@@ -1,0 +1,57 @@
+/*
+ * This file is part of unity-qt
+ *
+ * Copyright 2010 Canonical Ltd.
+ *
+ * Authors:
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ *
+ * License: GPL v3
+ */
+#ifndef MENUBARWIDGET_H
+#define MENUBARWIDGET_H
+
+// Qt
+#include <QHash>
+#include <QWidget>
+
+class BamfWindow;
+
+class QDBusObjectPath;
+class QMenu;
+class QMenuBar;
+
+class MyDBusMenuImporter;
+class Registrar;
+
+typedef QHash<WId, MyDBusMenuImporter*> ImporterForWId;
+
+class MenuBarWidget : public QWidget
+{
+Q_OBJECT
+public:
+    MenuBarWidget(QWidget* parent = 0);
+
+private Q_SLOTS:
+    void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
+    void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
+    void slotMenuUpdated();
+    void slotActionActivationRequested(QAction* action);
+
+private:
+    Q_DISABLE_COPY(MenuBarWidget)
+
+    QMenuBar* m_menuBar;
+    Registrar* m_registrar;
+    ImporterForWId m_importers;
+    WId m_activeWinId;
+
+    void setupRegistrar();
+    void setupMenuBar();
+    QMenu* menuForWinId(WId) const;
+    void updateActiveWinId(BamfWindow*);
+    void updateMenuBar();
+    void fillMenuBar(QMenu*);
+};
+
+#endif /* MENUBARWIDGET_H */

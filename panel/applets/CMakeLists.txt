@@ -16,6 +16,7 @@ set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
     appmenu/appmenuapplet.cpp
+    appmenu/menubarwidget.cpp
     appmenu/registrar.cpp
     appname/appnameapplet.cpp
     appname/windowhelper.cpp
