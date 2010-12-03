@@ -18,8 +18,10 @@
  */
 
 #include "placeentry.h"
+#include "launchermenu.h"
 
 #include <QDBusMetaType>
+#include <QAction>
 #include <QDebug>
 
 // Marshall the RendererInfoStruct data into a D-Bus argument
@@ -644,7 +646,7 @@ PlaceEntry::onSectionTriggered()
 {
     QAction* action = static_cast<QAction*>(sender());
     int section = action->property(SECTION_PROPERTY).toInt();
-    hideMenu(true);
+    m_menu->hide();
     activateEntry(section);
 }
 
