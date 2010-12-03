@@ -78,12 +78,22 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+
+    /* Entry rendering info */
     Q_PROPERTY(QString entryRendererName READ entryRendererName WRITE setEntryRendererName NOTIFY entryRendererNameChanged)
     Q_PROPERTY(QString entryGroupsModelName READ entryGroupsModelName WRITE setEntryGroupsModelName NOTIFY entryGroupsModelNameChanged)
     Q_PROPERTY(DeeListModel* entryGroupsModel READ entryGroupsModel WRITE setEntryGroupsModel NOTIFY entryGroupsModelChanged)
     Q_PROPERTY(QString entryResultsModelName READ entryResultsModelName WRITE setEntryResultsModelName NOTIFY entryResultsModelNameChanged)
     Q_PROPERTY(DeeListModel* entryResultsModel READ entryResultsModel WRITE setEntryResultsModel NOTIFY entryResultsModelChanged)
     Q_PROPERTY(QMap entryRendererHints READ entryRendererHints WRITE setEntryRendererHints NOTIFY entryRendererHintsChanged)
+
+    /* Global rendering info */
+    Q_PROPERTY(QString globalRendererName READ globalRendererName WRITE setGlobalRendererName NOTIFY globalRendererNameChanged)
+    Q_PROPERTY(QString globalGroupsModelName READ globalGroupsModelName WRITE setGlobalGroupsModelName NOTIFY globalGroupsModelNameChanged)
+    Q_PROPERTY(DeeListModel* globalGroupsModel READ globalGroupsModel WRITE setGlobalGroupsModel NOTIFY globalGroupsModelChanged)
+    Q_PROPERTY(QString globalResultsModelName READ globalResultsModelName WRITE setGlobalResultsModelName NOTIFY globalResultsModelNameChanged)
+    Q_PROPERTY(DeeListModel* globalResultsModel READ globalResultsModel WRITE setGlobalResultsModel NOTIFY globalResultsModelChanged)
+    Q_PROPERTY(QMap globalRendererHints READ globalRendererHints WRITE setGlobalRendererHints NOTIFY globalRendererHintsChanged)
 
 public:
     PlaceEntry();
@@ -106,12 +116,21 @@ public:
     bool sensitive() const;
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
+
     QString entryRendererName() const;
     QString entryGroupsModelName() const;
     DeeListModel* entryGroupsModel();
     QString entryResultsModelName() const;
     DeeListModel* entryResultsModel();
     QMap<QString, QVariant> entryRendererHints() const;
+
+    QString globalRendererName() const;
+    QString globalGroupsModelName() const;
+    DeeListModel* globalGroupsModel();
+    QString globalResultsModelName() const;
+    DeeListModel* globalResultsModel();
+    QMap<QString, QVariant> globalRendererHints() const;
+
     bool online() const;
 
     /* setters */
@@ -126,12 +145,20 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
+
     void setEntryRendererName(QString);
     void setEntryGroupsModelName(QString);
     void setEntryGroupsModel(DeeListModel*);
     void setEntryResultsModelName(QString);
     void setEntryResultsModel(DeeListModel*);
     void setEntryRendererHints(QMap<QString, QVariant>);
+
+    void setGlobalRendererName(QString);
+    void setGlobalGroupsModelName(QString);
+    void setGlobalGroupsModel(DeeListModel*);
+    void setGlobalResultsModelName(QString);
+    void setGlobalResultsModel(DeeListModel*);
+    void setGlobalRendererHints(QMap<QString, QVariant>);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -149,12 +176,20 @@ Q_SIGNALS:
     void sensitiveChanged(bool);
     void sectionsChanged();
     void hintsChanged();
+
     void entryRendererNameChanged();
     void entryGroupsModelNameChanged();
     void entryGroupsModelChanged();
     void entryResultsModelNameChanged();
     void entryResultsModelChanged();
     void entryRendererHintsChanged();
+
+    void globalRendererNameChanged();
+    void globalGroupsModelNameChanged();
+    void globalGroupsModelChanged();
+    void globalResultsModelNameChanged();
+    void globalResultsModelChanged();
+    void globalRendererHintsChanged();
 
 private:
     QString m_fileName;
@@ -171,6 +206,7 @@ private:
        QVariant values in order to allow exposing it as a property (see
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
+
     QString m_entryRendererName;
     QString m_entryGroupsModelName;
     DeeListModel* m_entryGroupsModel;
@@ -178,6 +214,15 @@ private:
     DeeListModel* m_entryResultsModel;
     /* The remark about m_hints also applies to m_entryRendererHints. */
     QMap<QString, QVariant> m_entryRendererHints;
+
+    QString m_globalRendererName;
+    QString m_globalGroupsModelName;
+    DeeListModel* m_globalGroupsModel;
+    QString m_globalResultsModelName;
+    DeeListModel* m_globalResultsModel;
+    /* The remark about m_hints also applies to m_globalRendererHints. */
+    QMap<QString, QVariant> m_globalRendererHints;
+
     bool m_online;
     QDBusInterface* m_dbusIface;
 

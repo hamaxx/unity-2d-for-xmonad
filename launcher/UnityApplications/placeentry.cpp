@@ -143,6 +143,8 @@ PlaceEntry::PlaceEntry() :
     m_sections(NULL),
     m_entryGroupsModel(NULL),
     m_entryResultsModel(NULL),
+    m_globalGroupsModel(NULL),
+    m_globalResultsModel(NULL),
     m_online(false),
     m_dbusIface(NULL)
 {
@@ -162,15 +164,25 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes),
     m_sensitive(other.m_sensitive),
+
     m_entryRendererName(other.m_entryRendererName),
     m_entryGroupsModelName(other.m_entryGroupsModelName),
-    m_entryResultsModelName(other.m_entryResultsModelName)
+    m_entryResultsModelName(other.m_entryResultsModelName),
+
+    m_globalRendererName(other.m_globalRendererName),
+    m_globalGroupsModelName(other.m_globalGroupsModelName),
+    m_globalResultsModelName(other.m_globalResultsModelName)
 {
     setSections(other.m_sections);
     setHints(other.m_hints);
+
     setEntryGroupsModel(other.m_entryGroupsModel);
     setEntryResultsModel(other.m_entryResultsModel);
     setEntryRendererHints(other.m_entryRendererHints);
+
+    setGlobalGroupsModel(other.m_globalGroupsModel);
+    setGlobalResultsModel(other.m_globalResultsModel);
+    setGlobalRendererHints(other.m_globalRendererHints);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -350,6 +362,60 @@ PlaceEntry::entryRendererHints() const
     return m_entryRendererHints;
 }
 
+QString
+PlaceEntry::globalRendererName() const
+{
+    return m_globalRendererName;
+}
+
+QString
+PlaceEntry::globalGroupsModelName() const
+{
+    return m_globalGroupsModelName;
+}
+
+DeeListModel*
+PlaceEntry::globalGroupsModel()
+{
+    if (m_globalGroupsModel == NULL) {
+        if (!m_globalGroupsModelName.isNull()) {
+            m_globalGroupsModel = new DeeListModel;
+            QString path = m_globalGroupsModelName;
+            path.replace(".", "/");
+            m_globalGroupsModel->setObjectPath("/com/canonical/dee/model/" + path);
+            m_globalGroupsModel->setService(m_globalGroupsModelName);
+        }
+    }
+    return m_globalGroupsModel;
+}
+
+QString
+PlaceEntry::globalResultsModelName() const
+{
+    return m_globalResultsModelName;
+}
+
+DeeListModel*
+PlaceEntry::globalResultsModel()
+{
+    if (m_globalResultsModel == NULL) {
+        if (!m_globalResultsModelName.isNull()) {
+            m_globalResultsModel = new DeeListModel;
+            QString path = m_globalResultsModelName;
+            path.replace(".", "/");
+            m_globalResultsModel->setObjectPath("/com/canonical/dee/model/" + path);
+            m_globalResultsModel->setService(m_globalResultsModelName);
+        }
+    }
+    return m_globalResultsModel;
+}
+
+QMap<QString, QVariant>
+PlaceEntry::globalRendererHints() const
+{
+    return m_globalRendererHints;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -478,6 +544,70 @@ PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
 }
 
 void
+PlaceEntry::setGlobalRendererName(QString globalRendererName)
+{
+    if (globalRendererName != m_globalRendererName) {
+        m_globalRendererName = globalRendererName;
+        emit globalRendererNameChanged();
+    }
+}
+
+void
+PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
+{
+    if (globalGroupsModelName != m_globalGroupsModelName) {
+        m_globalGroupsModelName = globalGroupsModelName;
+        delete m_globalGroupsModel;
+        m_globalGroupsModel = NULL;
+        emit globalGroupsModelNameChanged();
+    }
+}
+
+void
+PlaceEntry::setGlobalGroupsModel(DeeListModel* globalGroupsModel)
+{
+    if (globalGroupsModel == NULL) {
+        return;
+    }
+    if (m_globalGroupsModel != NULL) {
+        delete m_globalGroupsModel;
+    }
+    m_globalGroupsModel = globalGroupsModel;
+    emit globalGroupsModelChanged();
+}
+
+void
+PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
+{
+    if (globalResultsModelName != m_globalResultsModelName) {
+        m_globalResultsModelName = globalResultsModelName;
+        delete m_globalResultsModel;
+        m_globalResultsModel = NULL;
+        emit globalResultsModelNameChanged();
+    }
+}
+
+void
+PlaceEntry::setGlobalResultsModel(DeeListModel* globalResultsModel)
+{
+    if (globalResultsModel == NULL) {
+        return;
+    }
+    if (m_globalResultsModel != NULL) {
+        delete m_globalResultsModel;
+    }
+    m_globalResultsModel = globalResultsModel;
+    emit globalResultsModelChanged();
+}
+
+void
+PlaceEntry::setGlobalRendererHints(QMap<QString, QVariant> globalRendererHints)
+{
+    m_globalRendererHints = globalRendererHints;
+    emit globalRendererHintsChanged();
+}
+
+void
 PlaceEntry::activate()
 {
     activateEntry(0);
@@ -573,18 +703,16 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     }
     setEntryRendererHints(entryRendererHints);
 
-    //setGlobalRendererName(info.global_renderer_info.default_renderer);
-    /*const QString& gGroupsModelName = info.global_renderer_info.groups_model;
-    if (globalGroupsModelName() != gGroupsModelName) {
-        setGlobalGroupsModelName(gGroupsModelName);
-        setGlobalGroupsModel(NULL);
-    }*/
-    /*const QString& gResultsModelName = info.global_renderer_info.results_model;
-    if (globalResultsModelName() != gResultsModelName) {
-        setGlobalResultsModelName(gResultsModelName);
-        setGlobalResultsModel(NULL);
-    }*/
-    //setGlobalRendererHints(info.global_renderer_info.renderer_hints);
+    setGlobalRendererName(info.global_renderer_info.default_renderer);
+    setGlobalGroupsModelName(info.global_renderer_info.groups_model);
+    setGlobalResultsModelName(info.global_renderer_info.results_model);
+
+    QMap<QString, QVariant> globalRendererHints;
+    for(i = info.global_renderer_info.renderer_hints.constBegin();
+        i != info.global_renderer_info.renderer_hints.constEnd(); ++i) {
+        globalRendererHints[i.key()] = QVariant(i.value());
+    }
+    setGlobalRendererHints(globalRendererHints);
 
     //emit updated();
     //emit rendererInfoChanged();
