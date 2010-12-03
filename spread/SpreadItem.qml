@@ -16,8 +16,10 @@ Item {
     property int win_width
     property int win_height
     property alias win_z: item.z
+    property real win_ratio: win_width / win_height
 
     Rectangle {
+        id: box
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
         color: "white"
@@ -32,10 +34,29 @@ Item {
 
         Image {
             id: shot
+            state: item.state
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: parent.height
+            property int margins: box.anchors.margins * 2 + 16
+
+            states: [
+                State {
+                    name: "screen"
+                    PropertyChanges {
+                        target: shot;
+                        width: item.width
+                        height: item.height
+                    }
+                },
+                State {
+                    name: "spread"
+                    PropertyChanges {
+                        target: shot
+                        width: ((item.win_ratio > 1.0) ? item.width : item.width * item.win_ratio) - margins
+                        height: ((item.win_ratio <= 1.0) ? item.height : item.height / item.win_ratio) - margins
+                    }
+                }
+            ]
         }
 
         Text {
