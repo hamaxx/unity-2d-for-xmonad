@@ -83,6 +83,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(DeeListModel* entryGroupsModel READ entryGroupsModel WRITE setEntryGroupsModel NOTIFY entryGroupsModelChanged)
     Q_PROPERTY(QString entryResultsModelName READ entryResultsModelName WRITE setEntryResultsModelName NOTIFY entryResultsModelNameChanged)
     Q_PROPERTY(DeeListModel* entryResultsModel READ entryResultsModel WRITE setEntryResultsModel NOTIFY entryResultsModelChanged)
+    Q_PROPERTY(QMap entryRendererHints READ entryRendererHints WRITE setEntryRendererHints NOTIFY entryRendererHintsChanged)
 
 public:
     PlaceEntry();
@@ -110,6 +111,7 @@ public:
     DeeListModel* entryGroupsModel();
     QString entryResultsModelName() const;
     DeeListModel* entryResultsModel();
+    QMap<QString, QVariant> entryRendererHints() const;
     bool online() const;
 
     /* setters */
@@ -129,6 +131,7 @@ public:
     void setEntryGroupsModel(DeeListModel*);
     void setEntryResultsModelName(QString);
     void setEntryResultsModel(DeeListModel*);
+    void setEntryRendererHints(QMap<QString, QVariant>);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -151,6 +154,7 @@ Q_SIGNALS:
     void entryGroupsModelChanged();
     void entryResultsModelNameChanged();
     void entryResultsModelChanged();
+    void entryRendererHintsChanged();
 
 private:
     QString m_fileName;
@@ -172,6 +176,8 @@ private:
     DeeListModel* m_entryGroupsModel;
     QString m_entryResultsModelName;
     DeeListModel* m_entryResultsModel;
+    /* The remark about m_hints also applies to m_entryRendererHints. */
+    QMap<QString, QVariant> m_entryRendererHints;
     bool m_online;
     QDBusInterface* m_dbusIface;
 

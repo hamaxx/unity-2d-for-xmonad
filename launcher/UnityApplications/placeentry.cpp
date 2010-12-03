@@ -170,6 +170,7 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     setHints(other.m_hints);
     setEntryGroupsModel(other.m_entryGroupsModel);
     setEntryResultsModel(other.m_entryResultsModel);
+    setEntryRendererHints(other.m_entryRendererHints);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -343,6 +344,12 @@ PlaceEntry::entryResultsModel()
     return m_entryResultsModel;
 }
 
+QMap<QString, QVariant>
+PlaceEntry::entryRendererHints() const
+{
+    return m_entryRendererHints;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -464,6 +471,13 @@ PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
 }
 
 void
+PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
+{
+    m_entryRendererHints = entryRendererHints;
+    emit entryRendererHintsChanged();
+}
+
+void
 PlaceEntry::activate()
 {
     activateEntry(0);
@@ -551,7 +565,13 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setEntryRendererName(info.entry_renderer_info.default_renderer);
     setEntryGroupsModelName(info.entry_renderer_info.groups_model);
     setEntryResultsModelName(info.entry_renderer_info.results_model);
-    //setEntryRendererHints(info.entry_renderer_info.renderer_hints);
+
+    QMap<QString, QVariant> entryRendererHints;
+    for(i = info.entry_renderer_info.renderer_hints.constBegin();
+        i != info.entry_renderer_info.renderer_hints.constEnd(); ++i) {
+        entryRendererHints[i.key()] = QVariant(i.value());
+    }
+    setEntryRendererHints(entryRendererHints);
 
     //setGlobalRendererName(info.global_renderer_info.default_renderer);
     /*const QString& gGroupsModelName = info.global_renderer_info.groups_model;
