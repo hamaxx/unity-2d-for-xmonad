@@ -714,8 +714,8 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     }
     setGlobalRendererHints(globalRendererHints);
 
-    //emit updated();
-    //emit rendererInfoChanged();
+    emit updated();
+    emit rendererInfoChanged();
 }
 
 void

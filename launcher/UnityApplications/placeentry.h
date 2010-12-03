@@ -191,6 +191,9 @@ Q_SIGNALS:
     void globalResultsModelChanged();
     void globalRendererHintsChanged();
 
+    void updated();
+    void rendererInfoChanged();
+
 private:
     QString m_fileName;
     QString m_groupName;
