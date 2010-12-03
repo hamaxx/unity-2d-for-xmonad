@@ -668,7 +668,7 @@ PlaceEntry::connectToRemotePlaceEntry()
                        SLOT(onRendererInfoChanged(const RendererInfoStruct&)));
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
                        "PlaceEntryInfoChanged", this,
-                       SLOT(onPlaceEntryInfoChanged(const PlaceEntryInfoStruct&)));
+                       SLOT(updateInfo(const PlaceEntryInfoStruct&)));
 
     m_online = true;
 }
@@ -732,14 +732,19 @@ PlaceEntry::setSection(const QString& sectionModelName)
 void
 PlaceEntry::onRendererInfoChanged(const RendererInfoStruct& r)
 {
-    // TODO
-    //emit rendererInfoChanged();
-}
+    setEntryRendererName(r.default_renderer);
+    setEntryGroupsModelName(r.groups_model);
+    setEntryResultsModelName(r.results_model);
 
-void
-PlaceEntry::onPlaceEntryInfoChanged(const PlaceEntryInfoStruct& p)
-{
-    updateInfo(p);
-    //emit rendererInfoChanged();
+    QMap<QString, QVariant> entryRendererHints;
+    QMap<QString, QString>::const_iterator i;
+    for(i = r.renderer_hints.constBegin();
+        i != r.renderer_hints.constEnd(); ++i) {
+        entryRendererHints[i.key()] = QVariant(i.value());
+    }
+    setEntryRendererHints(entryRendererHints);
+
+    emit updated();
+    emit rendererInfoChanged();
 }
 

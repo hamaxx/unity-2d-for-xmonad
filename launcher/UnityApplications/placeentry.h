@@ -234,7 +234,6 @@ private:
 
 private Q_SLOTS:
     void onRendererInfoChanged(const RendererInfoStruct&);
-    void onPlaceEntryInfoChanged(const PlaceEntryInfoStruct&);
 
     /* Contextual menu callbacks */
     void onSectionTriggered();
