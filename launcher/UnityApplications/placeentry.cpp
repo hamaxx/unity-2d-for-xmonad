@@ -148,7 +148,6 @@ PlaceEntry::PlaceEntry() :
     m_online(false),
     m_dbusIface(NULL)
 {
-    // FIXME: this is not the right place to do this…
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
     qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
