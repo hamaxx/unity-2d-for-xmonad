@@ -80,11 +80,10 @@ Place::setFileName(const QString &file)
             entry->setName(m_file->value("Name").toString());
             entry->setIcon(m_file->value("Icon").toString());
             m_file->endGroup();
-            entry->setPosition(i);
+            entry->setPosition(i++);
             QObject::connect(entry, SIGNAL(positionChanged(uint)),
                              this, SLOT(onEntryPositionChanged(uint)));
             m_entries.append(entry);
-            ++i;
         }
     }
     else
