@@ -163,7 +163,6 @@ Place::connectToRemotePlace()
 void
 Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 {
-    // TODO: test that this actually works… How do I add an entry on D-Bus?
     PlaceEntry* entry = new PlaceEntry;
     entry->setDbusName(m_dbusName);
     entry->setDbusObjectPath(p.dbus_path);
@@ -181,7 +180,6 @@ Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 void
 Place::onEntryRemoved(const QString& dbusObjectPath)
 {
-    // TODO: test that this actually works… How do I remove an entry on D-Bus?
     PlaceEntry* entry = NULL;
     QList<PlaceEntry*>::const_iterator i;
     for (i = m_entries.constBegin(); i != m_entries.constEnd(); ++i) {
@@ -204,8 +202,6 @@ void
 Place::onEntryPositionChanged(uint position)
 {
     /* This doesn’t seem to be implemented/used in Unity, but it can’t hurt… */
-    /* TODO: test that this actually works… How do I change the position of an
-       entry on D-Bus? */
     // TODO: may require some sanity checks.
     PlaceEntry* entry = static_cast<PlaceEntry*>(sender());
     QModelIndex parent = createIndex(0, 0);
