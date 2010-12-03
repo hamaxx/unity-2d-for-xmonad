@@ -25,7 +25,7 @@ Item {
 
             appName: item.appName + "(" + item.xid + ")"
 
-            //icon: "image://icons/" + item.icon
+            icon: "image://icons/" + item.icon
             capture: "image://window/" + item.xid
             title: item.title
 

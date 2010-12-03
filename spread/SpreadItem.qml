@@ -34,6 +34,7 @@ Item {
 
         Image {
             id: shot
+            z: 2
             state: item.state
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -59,6 +60,18 @@ Item {
             ]
         }
 
+        Image {
+            id: img
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            width: 48
+            height: 48
+            // This ensures that the icon is normally covered by the screenshot, unless when the
+            // window is unmapped. In which case we fill the pixmap with "transparent", and the
+            // icon shows through.
+            z: 1
+        }
+
         Text {
             id: appName
             anchors.top: parent.top
@@ -73,14 +86,8 @@ Item {
                 color: "yellow"
                 z: -1
             }
-        }
 
-        Image {
-            id: img
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            width: 48
-            height: 48
+            z: 3
         }
 
         Text {
@@ -97,6 +104,8 @@ Item {
                 color: "orange"
                 z: -1
             }
+
+            z: 3
         }
 
         Rectangle {
@@ -104,6 +113,8 @@ Item {
             anchors.fill: parent
             color: "black"
             opacity: 0.1 * item.darkness
+
+            z: 4
         }
     }
 
