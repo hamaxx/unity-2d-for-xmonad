@@ -11,11 +11,13 @@ extern "C" {
 }
 
 #include "launcherapplication.h"
+#include "launchermenu.h"
 #include "bamf-matcher.h"
 
 #include <X11/X.h>
 
 #include <QDebug>
+#include <QAction>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -153,8 +155,6 @@ LauncherApplication::setSticky(bool sticky)
 void
 LauncherApplication::setDesktopFile(QString desktop_file)
 {
-    /* FIXME: should check/interact properly with an m_application != NULL */
-
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
@@ -170,16 +170,26 @@ LauncherApplication::setDesktopFile(QString desktop_file)
         m_appInfo = g_desktop_app_info_new(file);
     }
 
-    /* Emit the Changed signal on all properties that can depend on m_appInfo */
-    emit desktopFileChanged(desktop_file);
-    emit nameChanged(name());
-    emit iconChanged(icon());
+    /* Emit the Changed signal on all properties that can depend on m_appInfo
+       m_application's properties take precedence over m_appInfo's
+    */
+    if(m_application == NULL && m_appInfo != NULL)
+    {
+        emit desktopFileChanged(desktop_file);
+        emit nameChanged(name());
+        emit iconChanged(icon());
+    }
 }
 
 void
 LauncherApplication::setBamfApplication(BamfApplication *application)
 {
+    if (application == NULL) {
+        return;
+    }
+
     m_application = application;
+    setDesktopFile(application->desktop_file());
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
@@ -212,8 +222,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     if(running)
        return;
 
-    //BamfApplication* application = static_cast<BamfApplication*>(sender());
-    /* FIXME: should we disconnect from application's signals? */
+    m_application->disconnect(this);
     m_application = NULL;
     emit closed();
 }
@@ -425,12 +434,15 @@ LauncherApplication::createMenuActions()
 {
     bool is_running = running();
 
-    QAction* keep = new QAction(m_menu);
-    keep->setCheckable(is_running);
-    keep->setChecked(sticky());
-    keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
-    m_menu->addAction(keep);
-    QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+    /* Only applications with a corresponding desktop file can be kept in the launcher */
+    if (!desktop_file().isEmpty()) {
+        QAction* keep = new QAction(m_menu);
+        keep->setCheckable(is_running);
+        keep->setChecked(sticky());
+        keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
+        m_menu->addAction(keep);
+        QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
+    }
 
     if (is_running)
     {
@@ -446,14 +458,14 @@ LauncherApplication::onKeepTriggered()
 {
     QAction* keep = static_cast<QAction*>(sender());
     bool sticky = keep->isChecked();
-    hideMenu(true);
+    m_menu->hide();
     setSticky(sticky);
 }
 
 void
 LauncherApplication::onQuitTriggered()
 {
-    hideMenu(true);
+    m_menu->hide();
     close();
 }
 

@@ -7,6 +7,10 @@ usr/share/unity-qt/launcher/artwork/devices.png
 usr/share/unity-qt/launcher/artwork/glow.png
 usr/share/unity-qt/launcher/artwork/shadow.png
 usr/share/unity-qt/launcher/artwork/trash.png
+usr/share/unity-qt/launcher/artwork/tooltip/background.png
+usr/share/unity-qt/launcher/artwork/tooltip/background_no_transparency.png
+usr/share/unity-qt/launcher/artwork/tooltip/check_default.png
+usr/share/unity-qt/launcher/artwork/tooltip/check_selected.png
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir

@@ -22,12 +22,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
-    QHash<QString, LauncherApplication*>::iterator iter;
-    for(iter=m_applications.begin(); iter!=m_applications.end(); iter++)
-    {
-        delete *iter;
-    }
-
+    qDeleteAll(m_applications);
     delete m_favorites_list;
 }
 
@@ -46,42 +41,29 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
 }
 
 
-LauncherApplication*
-LauncherApplicationsList::insertApplication(QString desktop_file)
+void
+LauncherApplicationsList::insertApplication(LauncherApplication* application)
 {
-    if (m_applications.contains(desktop_file))
-        return m_applications[desktop_file];
-
-    if (desktop_file.isEmpty() || !QFile::exists(desktop_file))
-        return NULL;
-
-    /* Create a new QLauncherApplication */
-    LauncherApplication* application = new LauncherApplication;
-    application->setDesktopFile(desktop_file);
-
-    /* if the desktop_file property is empty after setting it, it
-       means glib couldn't load the desktop file (probably corrupt) */
-    if (application->desktop_file().isEmpty())
-        return NULL;
-
     beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
-    m_desktop_files.append(desktop_file);
-    m_applications.insert(desktop_file, application);
+    m_applications.append(application);
+
+    if (!application->desktop_file().isEmpty()) {
+        m_applicationForDesktopFile.insert(application->desktop_file(), application);
+    }
     endInsertRows();
 
+    QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
-
-    return application;
 }
 
 void
-LauncherApplicationsList::removeApplication(QString desktop_file)
+LauncherApplicationsList::removeApplication(LauncherApplication* application)
 {
-    int index = m_desktop_files.indexOf(desktop_file);
+    int index = m_applications.indexOf(application);
 
     beginRemoveRows(QModelIndex(), index, index);
-    m_desktop_files.removeAt(index);
-    LauncherApplication* application = m_applications.take(desktop_file);
+    m_applications.removeAt(index);
+    m_applicationForDesktopFile.remove(application->desktop_file());
     endRemoveRows();
 
     delete application;
@@ -90,38 +72,60 @@ LauncherApplicationsList::removeApplication(QString desktop_file)
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
-    if(!bamf_application->user_visible())
+    if (!bamf_application->user_visible())
         return;
+
+    LauncherApplication* application;
 
     QString desktop_file = bamf_application->desktop_file();
-    LauncherApplication* application = insertApplication(desktop_file);
-    if (application == NULL) {
-        qWarning() << "BAMF app" << bamf_application->name()
-                   << "not added due to desktop file missing or blank (" << desktop_file << ")";
-        return;
+    if (m_applicationForDesktopFile.contains(desktop_file)) {
+        /* A LauncherApplication with the same desktop file already exists */
+        application = m_applicationForDesktopFile[desktop_file];
+        application->setBamfApplication(bamf_application);
+    } else {
+        /* Create a new LauncherApplication and append it to the list */
+        application = new LauncherApplication;
+        application->setBamfApplication(bamf_application);
+        insertApplication(application);
     }
-
-    application->setBamfApplication(bamf_application);
-
-    QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
 }
 
 void
 LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 {
-    LauncherApplication* application = insertApplication(desktop_file);
-    if (application == NULL) {
-        qWarning() << "Favorite app not added due to desktop file missing or blank ("
-                   << desktop_file << ")";
+    if (m_applicationForDesktopFile.contains(desktop_file))
         return;
-    }
+
+    /* Create a new LauncherApplication */
+    LauncherApplication* application = new LauncherApplication;
+    application->setDesktopFile(desktop_file);
     application->setSticky(true);
+
+    /* If the desktop_file property is empty after setting it, it
+       means glib couldn't load the desktop file (probably corrupted) */
+    if (application->desktop_file().isEmpty()) {
+        qWarning() << "Favorite application not added due to desktop file missing or corrupted ("
+                   << desktop_file << ")";
+        delete application;
+    } else {
+        insertApplication(application);
+    }
 }
 
 void
 LauncherApplicationsList::load()
 {
     /* FIXME: applications should be sorted depending on their priority */
+
+    /* Insert favorites */
+    QString desktop_file;
+    QStringList favorites = m_favorites_list->getValue().toStringList();
+
+    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
+    {
+        desktop_file = desktopFilePathFromFavorite(*iter);
+        insertFavoriteApplication(desktop_file);
+    }
 
     /* Insert running applications from Bamf */
     BamfMatcher& matcher = BamfMatcher::get_default();
@@ -135,16 +139,6 @@ LauncherApplicationsList::load()
     }
 
     QObject::connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(onBamfViewOpened(BamfView*)));
-
-    /* Insert favorites */
-    QString desktop_file;
-    QStringList favorites = m_favorites_list->getValue().toStringList();
-
-    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
-    {
-        desktop_file = desktopFilePathFromFavorite(*iter);
-        insertFavoriteApplication(desktop_file);
-    }
 }
 
 void
@@ -165,7 +159,7 @@ void LauncherApplicationsList::onApplicationClosed()
     LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
     if (!application->sticky() && !application->running())
-        removeApplication(application->desktop_file());
+        removeApplication(application);
 }
 
 void
@@ -175,19 +169,20 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 
     if (sticky)
     {
-        addApplicationToFavorites(application->desktop_file());
+        addApplicationToFavorites(application);
     }
     else
     {
-        removeApplicationFromFavorites(application->desktop_file());
+        removeApplicationFromFavorites(application);
         if (!application->running())
-            removeApplication(application->desktop_file());
+            removeApplication(application);
     }
 }
 
 void
-LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
+LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* application)
 {
+    QString desktop_file = application->desktop_file();
     QString favorite_id = favoriteFromDesktopFilePath(desktop_file);
 
     /* Add the favorite id to the GConf list of favorites */
@@ -208,8 +203,6 @@ LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
         - type
         - priority
     */
-    LauncherApplication* application = m_applications[desktop_file];
-
     GConfItemQmlWrapper gconf_desktop_file;
     gconf_desktop_file.setKey(FAVORITES_KEY + favorite_id + "/desktop_file");
     gconf_desktop_file.setValue(QVariant(desktop_file));
@@ -226,8 +219,9 @@ LauncherApplicationsList::addApplicationToFavorites(QString desktop_file)
 }
 
 void
-LauncherApplicationsList::removeApplicationFromFavorites(QString desktop_file)
+LauncherApplicationsList::removeApplicationFromFavorites(LauncherApplication* application)
 {
+    QString desktop_file = application->desktop_file();
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
     for (QStringList::iterator i = favorites.begin(); i != favorites.end(); i++ )
@@ -263,6 +257,6 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    return QVariant::fromValue(m_applications[m_desktop_files.at(index.row())]);
+    return QVariant::fromValue(m_applications.at(index.row()));
 }
 

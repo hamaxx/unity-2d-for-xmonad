@@ -18,10 +18,12 @@
  */
 
 #include "trash.h"
+#include "launchermenu.h"
 
 #include "config.h"
 
 #include <QDebug>
+#include <QAction>
 
 #define TRASH_URI "trash://"
 
@@ -202,7 +204,7 @@ Trash::createMenuActions()
 void
 Trash::onEmptyTriggered()
 {
-    hideMenu(true);
+    m_menu->hide();
     empty();
 }
 

@@ -45,18 +45,14 @@ DashDeclarativeView::setActive(bool active)
     if(active)
     {
         emit activeChanged(active);
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, false);
+        show();
         raise();
         activateWindow();
         forceActivateWindow();
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     }
     else
     {
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
-        lower();
-        clearFocus();
-        setAttribute(Qt::WA_X11NetWmWindowTypeDesktop, true);
+        hide();
         emit activeChanged(active);
     }
 }
@@ -116,4 +112,12 @@ DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entr
     {
         qWarning() << "No matching place for" << file;
     }
+}
+
+void
+DashDeclarativeView::activateHome()
+{
+    QGraphicsObject* dash = rootObject();
+    setActive(true);
+    QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
 }

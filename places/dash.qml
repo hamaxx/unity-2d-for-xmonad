@@ -1,13 +1,11 @@
 import Qt 4.7
 
 Item {
-    width: 966
-    height: 575
-
-    property variant current_page: home
+    property variant current_page
 
     function activatePage(page) {
-        current_page.visible = false
+        if (current_page != undefined)
+            current_page.visible = false
         current_page = page
         current_page.visible = true
         /* FIXME: For some reason current_page gets the focus when it becomes
@@ -16,7 +14,6 @@ Item {
            "Listview gets focus when it becomes visible"
         */
         search_bar.focus = true
-        console.log(search_bar.search_entry.search_input)
     }
 
     function activatePlace(place, section) {
@@ -24,19 +21,19 @@ Item {
         activatePage(place)
     }
 
+    function activateHome() {
+        activatePage(home)
+    }
+
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
-        overlay_alpha: dashView.active ? 0.37 : 0
+        overlay_alpha: 0.71
     }
 
     Item {
         anchors.fill: parent
         visible: dashView.active
-        Connections {
-            target: dashView
-            onActiveChanged: if(dashView.active) activatePage(home)
-        }
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
@@ -69,6 +66,7 @@ Item {
             Home {
                 id: home
                 anchors.fill: parent
+                visible: false
             }
 
             Place {

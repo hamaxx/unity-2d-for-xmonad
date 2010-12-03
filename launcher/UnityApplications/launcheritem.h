@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QString>
 
-#include "launchermenu.h"
+class LauncherContextualMenu;
 
 class LauncherItem : public QObject
 {
@@ -35,6 +35,8 @@ class LauncherItem : public QObject
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
+    /* Export the menu as a plain QObject so that it can be used from QML */
+    Q_PROPERTY(QObject* menu READ menu NOTIFY menuChanged)
 
 public:
     LauncherItem();
@@ -47,18 +49,14 @@ public:
     virtual QString name() const = 0;
     virtual QString icon() const = 0;
     virtual bool launching() const = 0;
+    QObject* menu() const;
 
     /* methods */
     Q_INVOKABLE virtual void activate() = 0;
-    Q_INVOKABLE void showTooltip(int y);
-    Q_INVOKABLE void showMenu();
     Q_INVOKABLE virtual void createMenuActions() = 0;
-    Q_INVOKABLE void hideMenu(bool force = false);
 
 protected:
     LauncherContextualMenu* m_menu;
-
-    bool eventFilter(QObject* obj, QEvent* event);
 
 signals:
     void activeChanged(bool);
@@ -67,6 +65,7 @@ signals:
     void nameChanged(QString);
     void iconChanged(QString);
     void launchingChanged(bool);
+    void menuChanged(QObject*);
 };
 
 #endif // LAUNCHERITEM_H
