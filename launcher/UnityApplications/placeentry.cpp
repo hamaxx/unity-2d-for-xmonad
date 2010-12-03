@@ -142,6 +142,7 @@ PlaceEntry::PlaceEntry() :
     m_sensitive(true),
     m_sections(NULL),
     m_entryGroupsModel(NULL),
+    m_entryResultsModel(NULL),
     m_online(false),
     m_dbusIface(NULL)
 {
@@ -162,11 +163,13 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_mimetypes(other.m_mimetypes),
     m_sensitive(other.m_sensitive),
     m_entryRendererName(other.m_entryRendererName),
-    m_entryGroupsModelName(other.m_entryGroupsModelName)
+    m_entryGroupsModelName(other.m_entryGroupsModelName),
+    m_entryResultsModelName(other.m_entryResultsModelName)
 {
     setSections(other.m_sections);
     setHints(other.m_hints);
     setEntryGroupsModel(other.m_entryGroupsModel);
+    setEntryResultsModel(other.m_entryResultsModel);
 }
 
 PlaceEntry::~PlaceEntry()
@@ -319,6 +322,27 @@ PlaceEntry::entryGroupsModel()
     return m_entryGroupsModel;
 }
 
+QString
+PlaceEntry::entryResultsModelName() const
+{
+    return m_entryResultsModelName;
+}
+
+DeeListModel*
+PlaceEntry::entryResultsModel()
+{
+    if (m_entryResultsModel == NULL) {
+        if (!m_entryResultsModelName.isNull()) {
+            m_entryResultsModel = new DeeListModel;
+            QString path = m_entryResultsModelName;
+            path.replace(".", "/");
+            m_entryResultsModel->setObjectPath("/com/canonical/dee/model/" + path);
+            m_entryResultsModel->setService(m_entryResultsModelName);
+        }
+    }
+    return m_entryResultsModel;
+}
+
 bool
 PlaceEntry::online() const
 {
@@ -416,6 +440,30 @@ PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
 }
 
 void
+PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
+{
+    if (entryResultsModelName != m_entryResultsModelName) {
+        m_entryResultsModelName = entryResultsModelName;
+        delete m_entryResultsModel;
+        m_entryResultsModel = NULL;
+        emit entryResultsModelNameChanged();
+    }
+}
+
+void
+PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
+{
+    if (entryResultsModel == NULL) {
+        return;
+    }
+    if (m_entryResultsModel != NULL) {
+        delete m_entryResultsModel;
+    }
+    m_entryResultsModel = entryResultsModel;
+    emit entryResultsModelChanged();
+}
+
+void
 PlaceEntry::activate()
 {
     activateEntry(0);
@@ -502,11 +550,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
 
     setEntryRendererName(info.entry_renderer_info.default_renderer);
     setEntryGroupsModelName(info.entry_renderer_info.groups_model);
-    /*const QString& eResultsModelName = info.entry_renderer_info.results_model;
-    if (entryResultsModelName() != eResultsModelName) {
-        setEntryResultsModelName(eResultsModelName);
-        setEntryResultsModel(NULL);
-    }*/
+    setEntryResultsModelName(info.entry_renderer_info.results_model);
     //setEntryRendererHints(info.entry_renderer_info.renderer_hints);
 
     //setGlobalRendererName(info.global_renderer_info.default_renderer);

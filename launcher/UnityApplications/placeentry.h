@@ -81,6 +81,8 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QString entryRendererName READ entryRendererName WRITE setEntryRendererName NOTIFY entryRendererNameChanged)
     Q_PROPERTY(QString entryGroupsModelName READ entryGroupsModelName WRITE setEntryGroupsModelName NOTIFY entryGroupsModelNameChanged)
     Q_PROPERTY(DeeListModel* entryGroupsModel READ entryGroupsModel WRITE setEntryGroupsModel NOTIFY entryGroupsModelChanged)
+    Q_PROPERTY(QString entryResultsModelName READ entryResultsModelName WRITE setEntryResultsModelName NOTIFY entryResultsModelNameChanged)
+    Q_PROPERTY(DeeListModel* entryResultsModel READ entryResultsModel WRITE setEntryResultsModel NOTIFY entryResultsModelChanged)
 
 public:
     PlaceEntry();
@@ -106,6 +108,8 @@ public:
     QString entryRendererName() const;
     QString entryGroupsModelName() const;
     DeeListModel* entryGroupsModel();
+    QString entryResultsModelName() const;
+    DeeListModel* entryResultsModel();
     bool online() const;
 
     /* setters */
@@ -123,6 +127,8 @@ public:
     void setEntryRendererName(QString);
     void setEntryGroupsModelName(QString);
     void setEntryGroupsModel(DeeListModel*);
+    void setEntryResultsModelName(QString);
+    void setEntryResultsModel(DeeListModel*);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -143,6 +149,8 @@ Q_SIGNALS:
     void entryRendererNameChanged();
     void entryGroupsModelNameChanged();
     void entryGroupsModelChanged();
+    void entryResultsModelNameChanged();
+    void entryResultsModelChanged();
 
 private:
     QString m_fileName;
@@ -162,6 +170,8 @@ private:
     QString m_entryRendererName;
     QString m_entryGroupsModelName;
     DeeListModel* m_entryGroupsModel;
+    QString m_entryResultsModelName;
+    DeeListModel* m_entryResultsModel;
     bool m_online;
     QDBusInterface* m_dbusIface;
 
