@@ -84,6 +84,7 @@ private:
     bool m_has_visible_window;
 
     void moveViewportToWindow(WnckWindow* window);
+    void updateBamfApplicationDependentProperties();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
