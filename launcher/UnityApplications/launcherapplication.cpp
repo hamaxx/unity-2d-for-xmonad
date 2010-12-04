@@ -227,13 +227,6 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     emit closed();
 }
 
-void
-LauncherApplication::onDesktopFileChanged(QString desktop_file)
-{
-    /* FIXME: should retrieve its value in GConf */
-    m_priority = 1;
-}
-
 int
 LauncherApplication::priority() const
 {

@@ -65,7 +65,6 @@ signals:
 
 private slots:
     void onBamfApplicationClosed(bool running);
-    void onDesktopFileChanged(QString desktop_file);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
 
