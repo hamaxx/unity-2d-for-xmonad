@@ -77,6 +77,7 @@ void WindowHelper::update()
         d->m_window = wnck_window_get(xid);
         g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
+    stateChanged();
 }
 
 bool WindowHelper::isMaximized() const
