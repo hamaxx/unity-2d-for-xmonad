@@ -65,7 +65,6 @@ signals:
 
 private slots:
     void onBamfApplicationClosed(bool running);
-    void onDesktopFileChanged(QString desktop_file);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
 
@@ -85,6 +84,7 @@ private:
     bool m_has_visible_window;
 
     void moveViewportToWindow(WnckWindow* window);
+    void updateBamfApplicationDependentProperties();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
