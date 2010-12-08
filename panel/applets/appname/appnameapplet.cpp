@@ -102,10 +102,6 @@ struct AppNameAppletPrivate
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
-
-        QObject::connect(
-            &BamfMatcher::get_default(), SIGNAL(ActiveApplicationChanged(BamfApplication*, BamfApplication*)),
-            q, SLOT(updateLabel()));
     }
 
     void setupWindowButtonWidget()
@@ -149,7 +145,6 @@ AppNameApplet::AppNameApplet()
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
-    updateLabel();
     updateWidgets();
 }
 
@@ -160,16 +155,14 @@ AppNameApplet::~AppNameApplet()
 
 void AppNameApplet::updateLabel()
 {
-    BamfApplication* app = BamfMatcher::get_default().active_application();
-    if (app) {
-        d->m_label->setText(app->name());
-    } else {
-        d->m_label->setText(QString());
-    }
+    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+    d->m_label->setText(bamfWindow ? bamfWindow->name() : QString());
 }
 
 void AppNameApplet::updateWidgets()
 {
+    updateLabel();
+
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool under = window()->underMouse();
 
