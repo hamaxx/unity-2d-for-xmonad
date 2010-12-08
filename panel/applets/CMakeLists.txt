@@ -55,7 +55,7 @@ include_directories(
     ${X11_INCLUDE_DIR}
     )
 
-add_library(uqapplets SHARED ${uqapplets_SRCS})
+add_library(uqapplets ${uqapplets_SRCS})
 
 target_link_libraries(uqapplets
     ${QT_QTGUI_LIBRARIES}
@@ -71,11 +71,4 @@ target_link_libraries(uqapplets
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
     uqpanel
-    )
-
-# Install
-install(TARGETS uqapplets
-    LIBRARY DESTINATION lib${LIB_SUFFIX}
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
     )
