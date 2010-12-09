@@ -119,6 +119,7 @@ struct AppNameAppletPrivate
     {
         m_label = new CroppedLabel;
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        m_label->setTextFormat(Qt::PlainText);
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
