@@ -14,7 +14,6 @@ Item {
     property int win_width
     property int win_height
     property alias win_z: item.z
-    property real win_ratio: win_width / win_height
 
     Rectangle {
         id: box
@@ -31,28 +30,23 @@ Item {
         Image {
             id: shot
             z: 2
-            state: item.state
             anchors.fill: parent
-            property int margins: box.anchors.margins * 2 + 16
+            fillMode: Image.PreserveAspectFit
+            property real widthScale: width / sourceSize.width
+            property real heightScale: height / sourceSize.height
 
-            states: [
-                State {
-                    name: "screen"
-                    PropertyChanges {
-                        target: shot;
-                        width: item.width
-                        height: item.height
-                    }
-                },
-                State {
-                    name: "spread"
-                    PropertyChanges {
-                        target: shot
-                        width: ((item.win_ratio > 1.0) ? item.width : item.width * item.win_ratio) - margins
-                        height: ((item.win_ratio <= 1.0) ? item.height : item.height / item.win_ratio) - margins
-                    }
-                }
-            ]
+            Rectangle {
+                id: darken
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                width: (shot.widthScale <= shot.heightScale) ? shot.width : shot.heightScale * shot.sourceSize.width
+                height: (shot.widthScale <= shot.heightScale) ? shot.widthScale * shot.sourceSize.height : shot.height
+
+                color: "black"
+                opacity: 0.1 * item.darkness
+
+            }
         }
 
         Image {
@@ -65,15 +59,6 @@ Item {
             // window is unmapped. In which case we fill the pixmap with "transparent", and the
             // icon shows through.
             z: 1
-        }
-
-        Rectangle {
-            id: darken
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.1 * item.darkness
-
-            z: 4
         }
     }
 
