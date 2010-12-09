@@ -93,7 +93,6 @@ int main(int argc, char** argv)
     panel.addWidget(new HomeButtonApplet);
     panel.addWidget(createSeparator());
     panel.addWidget(new AppNameApplet);
-    panel.addSpacer();
     panel.addWidget(new LegacyTrayApplet);
     panel.addWidget(new IndicatorApplet);
     panel.show();

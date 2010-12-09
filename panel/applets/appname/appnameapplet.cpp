@@ -87,6 +87,23 @@ private:
     }
 };
 
+/**
+ * This label makes sure minimumSizeHint() is not set. This ensures the applet
+ * does not get wider if a window title is very long
+ */
+class CroppedLabel : public QLabel
+{
+public:
+    CroppedLabel(QWidget* parent = 0)
+    : QLabel(parent)
+    {}
+
+    QSize minimumSizeHint() const
+    {
+        return QWidget::minimumSizeHint();
+    }
+};
+
 struct AppNameAppletPrivate
 {
     AppNameApplet* q;
@@ -100,7 +117,8 @@ struct AppNameAppletPrivate
 
     void setupLabel()
     {
-        m_label = new QLabel;
+        m_label = new CroppedLabel;
+        m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
@@ -142,6 +160,7 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     d->setupWindowHelper();
     d->setupLabel();
