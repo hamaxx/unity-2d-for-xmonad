@@ -33,6 +33,8 @@ Q_OBJECT
 public:
     MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
 
+    QMenuBar* menuBar() const { return m_menuBar; }
+
 Q_SIGNALS:
     void menuBarClosed();
 

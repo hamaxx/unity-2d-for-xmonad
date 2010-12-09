@@ -27,7 +27,7 @@
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMenu>
+#include <QMenuBar>
 #include <QPainter>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
@@ -132,20 +132,7 @@ struct AppNameAppletPrivate
 
     void setupMenuBarWidget()
     {
-        QMenu* windowMenu = new QMenu(q);
-        // We use AppNameApplet::tr() to ensure lupdate picks up the appropriate
-        // context. AppNameAppletPrivate should be merged back into
-        // AppNameApplet so that we can just use tr()
-        QMenu* fileMenu = windowMenu->addMenu(
-            AppNameApplet::tr("&File")
-            );
-        fileMenu->addAction(
-            AppNameApplet::tr("&Close"),
-            m_windowHelper,
-            SLOT(close())
-            );
-
-        m_menuBarWidget = new MenuBarWidget(windowMenu);
+        m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
     }
@@ -179,7 +166,8 @@ AppNameApplet::~AppNameApplet()
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
-    bool showMenu = window()->underMouse();
+    bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
+    bool showMenu = window()->underMouse() && !menuBarIsEmpty;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
