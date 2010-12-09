@@ -64,6 +64,12 @@ static void stateChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "stateChanged");
 }
 
+static void nameChangedCB(GObject* window,
+    WindowHelper*  watcher)
+{
+    QMetaObject::invokeMethod(watcher, "stateChanged");
+}
+
 void WindowHelper::update()
 {
     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
@@ -71,10 +77,12 @@ void WindowHelper::update()
 
     if (d->m_window) {
         g_signal_handlers_disconnect_by_func(d->m_window, gpointer(stateChangedCB), this);
+        g_signal_handlers_disconnect_by_func(d->m_window, gpointer(nameChangedCB), this);
         d->m_window = 0;
     }
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
+        g_signal_connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
     stateChanged();
