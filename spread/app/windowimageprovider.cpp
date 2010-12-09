@@ -28,7 +28,10 @@ QPixmap WindowImageProvider::requestPixmap(const QString &id,
         return pixmap;
     }
 
-    QPixmap shot = QPixmap::fromX11Pixmap(win);
+    /* Copy the pixmap to a QImage and then back again to Pixmap. This will create
+       a real static copy of the pixmap that's not tied to the server anymore.
+       It will be handled by the raster engine *much* faster */
+    QPixmap shot = QPixmap::fromImage(QPixmap::fromX11Pixmap(win).toImage());
     if (!shot.isNull()) {
         if (requestedSize.isValid()) {
             shot = shot.scaled(requestedSize);
