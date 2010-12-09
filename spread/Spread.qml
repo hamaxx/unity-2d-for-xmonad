@@ -2,13 +2,13 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
-    width: 1000
-    height: 800
+    width: screen.width * 0.75
+    height: screen.height * 0.75
 
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            grid.state = (grid.state == "spread") ? "screen" : "spread"
+            grid.state = (grid.state == "spread") ? "" : "spread"
         }
     }
 
@@ -21,7 +21,13 @@ Item {
         items: wins
     }
 
-    Component.onCompleted: {
-        grid.state = "screen"
+    Timer {
+        id: delay
+        interval: 900;
+        running: false
+        onTriggered: grid.state = "spread"
     }
+
+    Component.onCompleted: delay.running = true
+
 }

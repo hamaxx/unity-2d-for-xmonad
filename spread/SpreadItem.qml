@@ -15,6 +15,11 @@ Item {
     property int win_height
     property alias win_z: item.z
 
+    x: win_x * parent.ratio
+    y: win_y * parent.ratio
+    width: win_width * parent.ratio
+    height: win_height * parent.ratio
+
     Item {
         id: box
         anchors.fill: parent
@@ -83,17 +88,6 @@ Item {
 
     states: [
         State {
-            name: "screen"
-            PropertyChanges {
-                target: item;
-                x: win_x * item.parent.ratio
-                y: win_y * item.parent.ratio
-                width: win_width * item.parent.ratio
-                height: win_height * item.parent.ratio
-                darkness: 0.0
-            }
-        },
-        State {
             name: "spread"
             PropertyChanges {
                 target: item;
@@ -117,7 +111,7 @@ Item {
     transitions: Transition {
         NumberAnimation {
             properties: "x,y,width,height,darkness";
-            duration: 500;
+            duration: 550;
             easing.type: Easing.InOutQuad
         }
     }
