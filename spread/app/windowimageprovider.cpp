@@ -20,19 +20,16 @@ QPixmap WindowImageProvider::requestPixmap(const QString &id,
     XWindowAttributes attr;
     XGetWindowAttributes(QX11Info::display(), win, &attr);
     if (attr.map_state != IsViewable) {
-        // If the window is unmapped, return an empty pixmap that is filled with
-        // the "transparent" color. This will basically allow the icon below it to
-        // show through. It's a bit of a trick but should be good enugh for now.
-        QPixmap pixmap = (requestedSize.isValid()) ? QPixmap(requestedSize) : QPixmap();
-        pixmap.fill(Qt::transparent);
-        return pixmap;
+        return QPixmap();
     }
 
-    /* Copy the pixmap to a QImage and then back again to Pixmap. This will create
-       a real static copy of the pixmap that's not tied to the server anymore.
-       It will be handled by the raster engine *much* faster */
-    QPixmap shot = QPixmap::fromImage(QPixmap::fromX11Pixmap(win).toImage());
+    QPixmap shot = QPixmap::fromX11Pixmap(win);
     if (!shot.isNull()) {
+        /* Copy the pixmap to a QImage and then back again to Pixmap. This will create
+           a real static copy of the pixmap that's not tied to the server anymore.
+           It will be handled by the raster engine *much* faster */
+        shot = QPixmap::fromImage(shot.toImage());
+
         if (requestedSize.isValid()) {
             shot = shot.scaled(requestedSize);
         }
@@ -40,10 +37,7 @@ QPixmap WindowImageProvider::requestPixmap(const QString &id,
         size->setHeight(shot.height());
         return shot;
     } else {
-        // In case the capture fails, let's do the same trick as in the unmapped case
-        QPixmap pixmap = (requestedSize.isValid()) ? QPixmap(requestedSize) : QPixmap();
-        pixmap.fill(Qt::transparent);
-        return pixmap;
+        return QPixmap();
     }
 
 }

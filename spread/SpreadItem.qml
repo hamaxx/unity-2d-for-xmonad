@@ -2,7 +2,7 @@ import Qt 4.7
 
 Item {
     id: item
-    property alias icon: img.source
+    property alias icon: icon.source
     property alias capture: shot.source
     property real darkness: 0.0
 
@@ -15,10 +15,15 @@ Item {
     property int win_height
     property alias win_z: item.z
 
-    Rectangle {
+    Item {
         id: box
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
+
+        property real widthScale: width / win_width
+        property real heightScale: height / win_height
+        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width : heightScale * win_width) - anchors.margins
+        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * win_height : parent.height) - anchors.margins
 
         MouseArea {
             anchors.fill: parent
@@ -32,33 +37,47 @@ Item {
             z: 2
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
-            property real widthScale: width / sourceSize.width
-            property real heightScale: height / sourceSize.height
 
             Rectangle {
                 id: darken
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
 
-                width: (shot.widthScale <= shot.heightScale) ? shot.width : shot.heightScale * shot.sourceSize.width
-                height: (shot.widthScale <= shot.heightScale) ? shot.widthScale * shot.sourceSize.height : shot.height
+                width: parent.scaledWinWidth
+                height: parent.scaledWinHeight
 
                 color: "black"
                 opacity: 0.1 * item.darkness
 
             }
+
+            opacity: (status == Image.Error) ? 0.0 : 1.0
         }
 
-        Image {
-            id: img
+        Rectangle {
+            id: window_box
+            opacity: (shot.status == Image.Error) ? 1.0 : 0.0
+
+            width: parent.scaledWinWidth
+            height: parent.scaledWinHeight
+
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            width: 48
-            height: 48
-            // This ensures that the icon is normally covered by the screenshot, unless when the
-            // window is unmapped. In which case we fill the pixmap with "transparent", and the
-            // icon shows through.
-            z: 1
+
+            border.width: 1
+            border.color: "black"
+
+            Image {
+                id: icon
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                fillMode: Image.PreserveAspectFit
+                asynchronous: true
+
+                height: 48
+                width: 48
+                sourceSize { width: width; height: height }
+            }
         }
     }
 
