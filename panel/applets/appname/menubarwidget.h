@@ -31,7 +31,7 @@ class MenuBarWidget : public QWidget
 {
 Q_OBJECT
 public:
-    MenuBarWidget(QWidget* parent = 0);
+    MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
 
 Q_SIGNALS:
     void menuBarClosed();
@@ -53,6 +53,7 @@ private:
     Registrar* m_registrar;
     ImporterForWId m_importers;
     WId m_activeWinId;
+    QMenu* m_windowMenu;
 
     void setupRegistrar();
     void setupMenuBar();

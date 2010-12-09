@@ -24,10 +24,10 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QCursor>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QPainter>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
@@ -132,7 +132,20 @@ struct AppNameAppletPrivate
 
     void setupMenuBarWidget()
     {
-        m_menuBarWidget = new MenuBarWidget;
+        QMenu* windowMenu = new QMenu(q);
+        // We use AppNameApplet::tr() to ensure lupdate picks up the appropriate
+        // context. AppNameAppletPrivate should be merged back into
+        // AppNameApplet so that we can just use tr()
+        QMenu* fileMenu = windowMenu->addMenu(
+            AppNameApplet::tr("&File")
+            );
+        fileMenu->addAction(
+            AppNameApplet::tr("&Close"),
+            m_windowHelper,
+            SLOT(close())
+            );
+
+        m_menuBarWidget = new MenuBarWidget(windowMenu);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
     }

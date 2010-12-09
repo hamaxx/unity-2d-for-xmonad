@@ -46,8 +46,9 @@ private:
     QString m_path;
 };
 
-MenuBarWidget::MenuBarWidget(QWidget* parent)
+MenuBarWidget::MenuBarWidget(QMenu* windowMenu, QWidget* parent)
 : QWidget(parent)
+, m_windowMenu(windowMenu)
 {
     m_activeWinId = 0;
     setupRegistrar();
@@ -149,28 +150,7 @@ void MenuBarWidget::updateMenuBar()
 
     if (!menu) {
         if (winId) {
-            // We have an active window
-            // FIXME: transient check
-            /*
-            WId mainWinId = KWindowSystem::transientFor(winId);
-            if (mainWinId) {
-                // We have a parent window, use a disabled version of its
-                // menubar if it has one.
-                QMenu* mainMenu = menuForWinId(mainWinId);
-                if (mainMenu) {
-                    mMenuCloner->setOriginalMenu(mainMenu);
-                    menu = mMenuCloner->clonedMenu();
-                }
-            }*/
-            // FIXME: WindowMenuManager
-            /*
-            if (!menu) {
-                // No suitable menubar but we have a window, use the
-                // generic window menu
-                mWindowMenuManager->setWinId(winId);
-                menu = mWindowMenu;
-            }
-            */
+            menu = m_windowMenu;
         } else {
             // No active window, show a desktop menubar
             // FIXME: Empty menu
