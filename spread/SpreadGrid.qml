@@ -23,11 +23,8 @@ Item {
 
             state: parent.state
 
-            appName: item.appName + "(" + item.xid + ")"
-
             icon: "image://icons/" + item.icon
             capture: "image://window/" + item.xid
-            title: item.title
 
             win_x: item.location.x
             win_y: item.location.y

@@ -2,9 +2,7 @@ import Qt 4.7
 
 Item {
     id: item
-    property alias appName: appName.text
     property alias icon: img.source
-    property alias title: title.text
     property alias capture: shot.source
     property real darkness: 0.0
 
@@ -70,42 +68,6 @@ Item {
             // window is unmapped. In which case we fill the pixmap with "transparent", and the
             // icon shows through.
             z: 1
-        }
-
-        Text {
-            id: appName
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideMiddle
-
-            Rectangle {
-                anchors.fill: parent
-                color: "yellow"
-                z: -1
-            }
-
-            z: 3
-        }
-
-        Text {
-            id: title
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideRight
-
-            Rectangle {
-                anchors.fill: parent
-                color: "orange"
-                z: -1
-            }
-
-            z: 3
         }
 
         Rectangle {
