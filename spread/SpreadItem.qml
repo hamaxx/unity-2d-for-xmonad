@@ -20,8 +20,6 @@ Item {
         id: box
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
-        color: "white"
-        border.width: 2
 
         MouseArea {
             anchors.fill: parent
@@ -34,8 +32,7 @@ Item {
             id: shot
             z: 2
             state: item.state
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.fill: parent
             property int margins: box.anchors.margins * 2 + 16
 
             states: [
