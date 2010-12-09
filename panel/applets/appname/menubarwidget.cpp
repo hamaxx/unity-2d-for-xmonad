@@ -24,6 +24,7 @@
 #include <bamf-window.h>
 
 // Qt
+#include <QActionEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
@@ -76,6 +77,7 @@ void MenuBarWidget::setupMenuBar()
     separatorLabel->setFixedSize(pix.size());
 
     m_menuBar = new QMenuBar;
+    m_menuBar->installEventFilter(this);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -192,6 +194,59 @@ void MenuBarWidget::fillMenuBar(QMenu* menu)
             continue;
         }
         m_menuBar->addAction(action);
+    }
+}
+
+bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_menuBar) {
+        switch (event->type()) {
+            case QEvent::ActionAdded:
+            case QEvent::ActionRemoved:
+            case QEvent::ActionChanged:
+                menuBarActionEvent(static_cast<QActionEvent*>(event));
+                break;
+            default:
+                break;
+        }
+    } else {
+        // Top-level menus
+        if (event->type() == QEvent::Hide) {
+            // menu hides themselves when the menubar is closed but also when
+            // one goes from one menu to another. The way to know this is to
+            // check the value of QMenuBar::activeAction(), but at this point
+            // it has not been updated yet, so we check in a delayed method.
+            QMetaObject::invokeMethod(this, "emitMenuBarClosed", Qt::QueuedConnection);
+        }
+    }
+    return false;
+}
+
+void MenuBarWidget::emitMenuBarClosed()
+{
+    if (!m_menuBar->activeAction()) {
+        menuBarClosed();
+    }
+}
+
+void MenuBarWidget::menuBarActionEvent(QActionEvent* event)
+{
+    // Install/remove event filters on top level menus so that we can know when
+    // they hide themselves (to emit menuBarClosed())
+    QMenu* menu = event->action()->menu();
+    if (!menu) {
+        return;
+    }
+    switch (event->type()) {
+    case QEvent::ActionAdded:
+    case QEvent::ActionChanged:
+        menu->installEventFilter(this);
+        break;
+    case QEvent::ActionRemoved:
+        menu->removeEventFilter(this);
+        break;
+    default:
+        break;
     }
 }
 

@@ -129,6 +129,13 @@ struct AppNameAppletPrivate
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
     }
+
+    void setupMenuBarWidget()
+    {
+        m_menuBarWidget = new MenuBarWidget;
+        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
+            q, SLOT(updateWidgets()));
+    }
 };
 
 AppNameApplet::AppNameApplet()
@@ -139,7 +146,7 @@ AppNameApplet::AppNameApplet()
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->m_menuBarWidget = new MenuBarWidget;
+    d->setupMenuBarWidget();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);

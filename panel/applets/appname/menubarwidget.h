@@ -17,6 +17,7 @@
 
 class BamfWindow;
 
+class QActionEvent;
 class QDBusObjectPath;
 class QMenu;
 class QMenuBar;
@@ -32,11 +33,18 @@ Q_OBJECT
 public:
     MenuBarWidget(QWidget* parent = 0);
 
+Q_SIGNALS:
+    void menuBarClosed();
+
+protected:
+    bool eventFilter(QObject*, QEvent*); // reimp
+
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
+    void emitMenuBarClosed();
 
 private:
     Q_DISABLE_COPY(MenuBarWidget)
@@ -52,6 +60,7 @@ private:
     void updateActiveWinId(BamfWindow*);
     void updateMenuBar();
     void fillMenuBar(QMenu*);
+    void menuBarActionEvent(QActionEvent*);
 };
 
 #endif /* MENUBARWIDGET_H */
