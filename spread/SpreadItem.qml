@@ -42,6 +42,7 @@ Item {
             z: 2
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
+            smooth: true
 
             Rectangle {
                 id: darken
@@ -109,10 +110,12 @@ Item {
 
     // TODO: check transitions time and type in Unity
     transitions: Transition {
+        PropertyAction { target: shot; property: "smooth"; value: false }
         NumberAnimation {
             properties: "x,y,width,height,darkness";
             duration: 550;
             easing.type: Easing.InOutQuad
         }
+        PropertyAction { target: shot; property: "smooth"; value: true }
     }
 }
