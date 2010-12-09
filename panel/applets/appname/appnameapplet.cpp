@@ -32,6 +32,8 @@
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
+static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
+
 namespace UnityQt
 {
 
@@ -108,7 +110,7 @@ struct AppNameAppletPrivate
     {
         m_windowButtonWidget = new QWidget;
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
         layout->setSpacing(0);
         m_closeButton = new WindowButton("close");
         m_minimizeButton = new WindowButton("minimize");
@@ -141,6 +143,7 @@ AppNameApplet::AppNameApplet()
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
+    layout->setSpacing(0);
     layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
