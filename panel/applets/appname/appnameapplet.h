@@ -34,7 +34,6 @@ protected:
     bool eventFilter(QObject*, QEvent*); // reimp
 
 private Q_SLOTS:
-    void updateLabel();
     void updateWidgets();
 
 private:

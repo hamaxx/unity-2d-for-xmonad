@@ -156,28 +156,42 @@ AppNameApplet::~AppNameApplet()
     delete d;
 }
 
-void AppNameApplet::updateLabel()
-{
-    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-    d->m_label->setText(bamfWindow ? bamfWindow->name() : QString());
-}
-
 void AppNameApplet::updateWidgets()
 {
-    updateLabel();
-
     bool isMaximized = d->m_windowHelper->isMaximized();
-    bool under = window()->underMouse();
+    bool showMenu = window()->underMouse();
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
-    d->m_label->setVisible(!(isMaximized && under));
-    bool labelIsCropped = !isMaximized && under;
-    d->m_label->setMaximumWidth(labelIsCropped
-        ? d->m_windowButtonWidget->sizeHint().width()
-        : QWIDGETSIZE_MAX);
+    bool showLabel = !(isMaximized && showMenu);
+    d->m_label->setVisible(showLabel);
+    if (showLabel) {
+        // Define text
+        QString text;
+        if (isMaximized) {
+            // When maximized, show window title
+            BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+            if (bamfWindow) {
+                text = bamfWindow->name();
+            }
+        } else {
+            // When not maximized, show application name
+            BamfApplication* app = BamfMatcher::get_default().active_application();
+            if (app) {
+                text = app->name();
+            }
+        }
+        d->m_label->setText(text);
 
-    d->m_menuBarWidget->setVisible(under);
+        // Define width
+        if (!isMaximized && showMenu) {
+            d->m_label->setMaximumWidth(d->m_windowButtonWidget->sizeHint().width());
+        } else {
+            d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
+        }
+    }
+
+    d->m_menuBarWidget->setVisible(showMenu);
 }
 
 bool AppNameApplet::event(QEvent* event)
