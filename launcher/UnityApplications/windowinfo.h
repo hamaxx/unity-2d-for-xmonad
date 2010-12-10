@@ -12,6 +12,7 @@
 
 class BamfWindow;
 class BamfApplication;
+typedef struct _WnckWindow WnckWindow;
 
 class WindowInfo : public QObject
 {
@@ -24,6 +25,7 @@ class WindowInfo : public QObject
     Q_PROPERTY(QString appName READ appName NOTIFY appNameChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
 public:
     explicit WindowInfo(Window xid = 0, QObject *parent = 0);
@@ -37,6 +39,8 @@ public:
     QString appName() const;
     QString title() const;
     QString icon() const;
+    bool active() const;
+    void setActive(bool active);
 
 signals:
     void windowChanged(BamfWindow *window);
@@ -47,10 +51,15 @@ signals:
     void appNameChanged(QString appName);
     void titleChanged(QString title);
     void iconChanged(QString icon);
+    void activeChanged(bool active);
+
+protected slots:
+    void onActiveChanged(bool active);
 
 private:
     void fromXid(Window xid);
     bool geometry(Window xid, QSize *size, QPoint *position, int *z) const;
+    WnckWindow *getWnckWin(Window xid = 0) const;
 
 private:
     BamfWindow *m_bamfWindow;

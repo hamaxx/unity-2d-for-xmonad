@@ -19,16 +19,12 @@ Item {
             column: index % list.columns
             row: Math.floor(index / list.columns)
 
+            property bool active: false
             state: parent.state
 
-            icon: "image://icons/" + item.icon
-            capture: "image://window/" + item.xid
+            win: item
 
-            winX: item.location.x
-            winY: item.location.y
-            winWidth: item.size.width
-            winHeight: item.size.height
-            winZ: item.z
+            onNeedsActivationChanged: if (needsActivation) parent.state = ""
         }
     }
 }

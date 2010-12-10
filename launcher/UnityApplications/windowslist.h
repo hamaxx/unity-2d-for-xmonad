@@ -25,16 +25,14 @@ public:
 
     void setGrabber(WindowGrabber *grabber) { m_capture = grabber; }
 
+    Q_INVOKABLE void setAppAsPager();
+
 signals:
     void countChanged(int count);
 
 private:
     QList<WindowInfo*> m_windows;
     WindowGrabber *m_capture;
-
-//private slots:
-//    void onBamfViewOpened(BamfView* bamf_view);
-//    void onBamfViewClosed(BamfView* bamf_view);
 };
 
 QML_DECLARE_TYPE(WindowsList)

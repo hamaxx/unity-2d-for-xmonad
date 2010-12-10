@@ -28,6 +28,8 @@ Item {
         onTriggered: grid.state = "spread"
     }
 
-    Component.onCompleted: delay.running = true
-
+    Component.onCompleted: {
+        wins.setAppAsPager()
+        delay.running = true
+    }
 }

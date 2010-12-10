@@ -2,8 +2,8 @@ import Qt 4.7
 
 Item {
     id: item
-    property alias icon: icon.source
-    property alias capture: shot.source
+    property variant win
+
     property real darkness: 0.0
 
     property int column
@@ -13,26 +13,23 @@ Item {
                                    parent.lastRowColumns : parent.columns
     property real columnWidth: (parent.width - parent.anchors.margins) / columnsInRow
 
-    property int winX
-    property int winY
-    property int winWidth
-    property int winHeight
-    property alias winZ: item.z
+    property bool needsActivation: false
 
-    x: winX * parent.ratio
-    y: winY * parent.ratio
-    width: winWidth * parent.ratio
-    height: winHeight * parent.ratio
+    x: win.location.x * parent.ratio
+    y: win.location.y * parent.ratio
+    width: win.size.width * parent.ratio
+    height: win.size.height * parent.ratio
+    z: win.z
 
     Item {
         id: box
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
 
-        property real widthScale: width / winWidth
-        property real heightScale: height / winHeight
-        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width - anchors.margins * 2: heightScale * winWidth)
-        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * winHeight : parent.height - anchors.margins * 2)
+        property real widthScale: width / item.win.size.width
+        property real heightScale: height / item.win.size.height
+        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width - anchors.margins * 2: heightScale * item.win.size.width)
+        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * item.win.size.height : parent.height - anchors.margins * 2)
 
         MouseArea {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -44,10 +41,12 @@ Item {
             hoverEnabled: true
             onEntered: if (item.state == "spread") item.darkness = 0.0
             onExited: if (item.state == "spread") item.darkness = 1.0
+            onClicked: { item.z = 1000; item.needsActivation = true; }
         }
 
         Image {
             id: shot
+            source: "image://window/" + item.win.xid
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
             smooth: true
@@ -70,10 +69,12 @@ Item {
 
             Image {
                 id: icon
+                source: "image://icons/" + item.win.icon
+                asynchronous: true
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 fillMode: Image.PreserveAspectFit
-                asynchronous: true
 
                 height: 48
                 width: 48
@@ -96,6 +97,16 @@ Item {
 
     states: [
         State {
+            name: ""
+            StateChangeScript {
+                name: "activate"
+                script: if (item.needsActivation) {
+                            item.needsActivation = false;
+                            win.active = true;
+                        }
+            }
+        },
+        State {
             name: "spread"
             PropertyChanges {
                 target: item;
@@ -108,14 +119,18 @@ Item {
         }
     ]
 
-    // TODO: check transitions time and type in Unity
-    transitions: Transition {
-        PropertyAction { target: shot; property: "smooth"; value: false }
-        NumberAnimation {
-            properties: "x,y,width,height,darkness";
-            duration: 250;
-            easing.type: Easing.InOutSine
+    transitions: [
+        Transition {
+            SequentialAnimation {
+                PropertyAction { target: shot; property: "smooth"; value: false }
+                NumberAnimation {
+                    properties: "x,y,width,height,darkness";
+                    duration: 250;
+                    easing.type: Easing.InOutSine
+                }
+                PropertyAction { target: shot; property: "smooth"; value: true }
+                ScriptAction { scriptName: "activate" }
+            }
         }
-        PropertyAction { target: shot; property: "smooth"; value: true }
-    }
+    ]
 }

@@ -29,9 +29,20 @@ void WindowInfo::fromXid(Window xid) {
        BamfWindow *win = wins->at(i);
        if (win->xid() == xid) {
            m_bamfWindow = win;
-           return;
+           break;
        }
    }
+
+   if (!m_bamfWindow) {
+       m_bamfApplication = 0;
+       return;
+   }
+
+   connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
+}
+
+void WindowInfo::onActiveChanged(bool active) {
+    emit activeChanged(active);
 }
 
 QVariant WindowInfo::xid() const {
@@ -97,6 +108,37 @@ QString WindowInfo::icon() const {
 
 }
 
+bool WindowInfo::active() const {
+    return (m_bamfWindow) ? m_bamfWindow->active() : false;
+}
+
+void WindowInfo::setActive(bool active) {
+    if (!active) {
+        /* FIXME: What shall we do in this case ? */
+        return;
+    }
+    WnckWindow *win = getWnckWin();
+    if (win == 0) {
+        return;
+    }
+    wnck_window_activate(win, CurrentTime);
+}
+
+WnckWindow* WindowInfo::getWnckWin(Window xid) const {
+    if (xid == 0) {
+        if (m_bamfWindow == 0) {
+            return 0;
+        }
+        xid = m_bamfWindow->xid();
+    }
+    WnckWindow *win = wnck_window_get(xid);
+    if (win == 0) {
+        wnck_screen_force_update(wnck_screen_get_default());
+        win = wnck_window_get(xid);
+    }
+    return win;
+}
+
 bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) const {
     int x, y, w, h;
 
@@ -104,12 +146,10 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
         return false;
     }
 
-    WnckWindow *win = wnck_window_get(xid);
+    WnckWindow *win = getWnckWin(xid);
     if (win == 0) {
-        wnck_screen_force_update(wnck_screen_get_default());
-        win = wnck_window_get(xid);
+        return false;
     }
-    if (win == 0) return false;
 
     wnck_window_get_client_window_geometry(win, &x, &y, &w, &h);
 
