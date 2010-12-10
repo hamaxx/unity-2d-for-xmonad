@@ -32,6 +32,7 @@ Item {
         property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * item.win.size.height : parent.height - anchors.margins * 2)
 
         MouseArea {
+            id: itemArea
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
@@ -41,7 +42,6 @@ Item {
             hoverEnabled: true
             onEntered: if (item.state == "spread") item.darkness = 0.0
             onExited: if (item.state == "spread") item.darkness = 1.0
-            onClicked: { item.z = 1000; item.needsActivation = true; }
         }
 
         Image {
@@ -105,6 +105,10 @@ Item {
                             win.active = true;
                         }
             }
+            PropertyChanges {
+                target: itemArea
+                onClicked: undefined
+            }
         },
         State {
             name: "spread"
@@ -115,6 +119,10 @@ Item {
                 x: column * columnWidth
                 y: row * height
                 darkness: 1.0
+            }
+            PropertyChanges {
+                target: itemArea
+                onClicked: { item.z = 1000; item.needsActivation = true; }
             }
         }
     ]
