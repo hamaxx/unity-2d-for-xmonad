@@ -7,20 +7,20 @@
 #include <X11/extensions/Xcomposite.h>
 
 WindowImageProvider::WindowImageProvider() :
-    QDeclarativeImageProvider(QDeclarativeImageProvider::Pixmap) {
+    QDeclarativeImageProvider(QDeclarativeImageProvider::Image) {
 }
 
 WindowImageProvider::~WindowImageProvider() {
 }
 
-QPixmap WindowImageProvider::requestPixmap(const QString &id,
+QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize) {
     Window win = (Window) id.toULong();
     XWindowAttributes attr;
     XGetWindowAttributes(QX11Info::display(), win, &attr);
     if (attr.map_state != IsViewable) {
-        return QPixmap();
+        return QImage();
     }
 
     QPixmap shot = QPixmap::fromX11Pixmap(win);
@@ -28,16 +28,14 @@ QPixmap WindowImageProvider::requestPixmap(const QString &id,
         /* Copy the pixmap to a QImage and then back again to Pixmap. This will create
            a real static copy of the pixmap that's not tied to the server anymore.
            It will be handled by the raster engine *much* faster */
-        shot = QPixmap::fromImage(shot.toImage());
-
         if (requestedSize.isValid()) {
             shot = shot.scaled(requestedSize);
         }
         size->setWidth(shot.width());
         size->setHeight(shot.height());
-        return shot;
+        return shot.toImage();
     } else {
-        return QPixmap();
+        return QImage();
     }
 
 }
