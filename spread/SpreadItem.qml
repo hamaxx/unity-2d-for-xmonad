@@ -31,8 +31,8 @@ Item {
 
         property real widthScale: width / winWidth
         property real heightScale: height / winHeight
-        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width : heightScale * winWidth) - anchors.margins
-        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * winHeight : parent.height) - anchors.margins
+        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width - anchors.margins * 2: heightScale * winWidth)
+        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * winHeight : parent.height - anchors.margins * 2)
 
         MouseArea {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -86,8 +86,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
-            width: parent.scaledWinWidth
-            height: parent.scaledWinHeight
+            width: box.scaledWinWidth
+            height: box.scaledWinHeight
 
             color: "black"
             opacity: 0.1 * item.darkness
