@@ -9,10 +9,8 @@ Item {
     property int count: items.count
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / list.columns)
-    property int gap: (rows * columns) - count
+    property int lastRowColumns: (rows * columns) - count
     property real ratio: width / screen.width
-
-    state: "screen"
 
     Repeater {
         id: repeater
@@ -26,11 +24,11 @@ Item {
             icon: "image://icons/" + item.icon
             capture: "image://window/" + item.xid
 
-            win_x: item.location.x
-            win_y: item.location.y
-            win_width: item.size.width
-            win_height: item.size.height
-            win_z: item.z
+            winX: item.location.x
+            winY: item.location.y
+            winWidth: item.size.width
+            winHeight: item.size.height
+            winZ: item.z
         }
     }
 }

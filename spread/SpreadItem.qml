@@ -9,29 +9,38 @@ Item {
     property int column
     property int row
 
-    property int win_x
-    property int win_y
-    property int win_width
-    property int win_height
-    property alias win_z: item.z
+    property int columnsInRow: (row == parent.rows - 1 && parent.lastRowColumns != 0) ?
+                                   parent.lastRowColumns : parent.columns
+    property real columnWidth: (parent.width - parent.anchors.margins) / columnsInRow
 
-    x: win_x * parent.ratio
-    y: win_y * parent.ratio
-    width: win_width * parent.ratio
-    height: win_height * parent.ratio
+    property int winX
+    property int winY
+    property int winWidth
+    property int winHeight
+    property alias winZ: item.z
+
+    x: winX * parent.ratio
+    y: winY * parent.ratio
+    width: winWidth * parent.ratio
+    height: winHeight * parent.ratio
 
     Item {
         id: box
         anchors.fill: parent
         anchors.margins: 8  //TODO: check in unity
 
-        property real widthScale: width / win_width
-        property real heightScale: height / win_height
-        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width : heightScale * win_width) - anchors.margins
-        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * win_height : parent.height) - anchors.margins
+        property real widthScale: width / winWidth
+        property real heightScale: height / winHeight
+        property real scaledWinWidth: ((widthScale <= heightScale) ? parent.width : heightScale * winWidth) - anchors.margins
+        property real scaledWinHeight: ((widthScale <= heightScale) ? widthScale * winHeight : parent.height) - anchors.margins
 
         MouseArea {
-            anchors.fill: parent
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            width: parent.scaledWinWidth
+            height: parent.scaledWinHeight
+
             hoverEnabled: true
             onEntered: if (item.state == "spread") item.darkness = 0.0
             onExited: if (item.state == "spread") item.darkness = 1.0
@@ -39,23 +48,9 @@ Item {
 
         Image {
             id: shot
-            z: 2
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
             smooth: true
-
-            Rectangle {
-                id: darken
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-
-                width: parent.scaledWinWidth
-                height: parent.scaledWinHeight
-
-                color: "black"
-                opacity: 0.1 * item.darkness
-
-            }
 
             opacity: (status == Image.Error) ? 0.0 : 1.0
         }
@@ -85,6 +80,18 @@ Item {
                 sourceSize { width: width; height: height }
             }
         }
+
+        Rectangle {
+            id: darken
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            width: parent.scaledWinWidth
+            height: parent.scaledWinHeight
+
+            color: "black"
+            opacity: 0.1 * item.darkness
+        }
     }
 
     states: [
@@ -92,17 +99,10 @@ Item {
             name: "spread"
             PropertyChanges {
                 target: item;
-                y: height * row
-                x: {
-                    if (!parent.full && row == item.parent.rows - 1) {
-                        var gap = parent.rows * parent.columns - parent.count
-                        width * column + (gap * width / 2.0)
-                    }
-                    else
-                        width * column
-                }
-                width: (parent.width - parent.anchors.margins) / parent.columns
+                width: columnWidth
                 height: (parent.height - parent.anchors.margins) / parent.rows
+                x: column * columnWidth
+                y: row * height
                 darkness: 1.0
             }
         }
