@@ -23,7 +23,7 @@ Item {
 
     Timer {
         id: delay
-        interval: 900;
+        interval: 450;
         running: false
         onTriggered: grid.state = "spread"
     }

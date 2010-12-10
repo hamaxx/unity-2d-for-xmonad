@@ -113,8 +113,8 @@ Item {
         PropertyAction { target: shot; property: "smooth"; value: false }
         NumberAnimation {
             properties: "x,y,width,height,darkness";
-            duration: 550;
-            easing.type: Easing.InOutQuad
+            duration: 250;
+            easing.type: Easing.InOutSine
         }
         PropertyAction { target: shot; property: "smooth"; value: true }
     }
