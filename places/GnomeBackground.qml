@@ -35,7 +35,6 @@ Item {
     Image {
         id: picture
 
-        anchors.fill: parent
         visible: picture_filename.value
         source: {
             /* FIXME: Because /usr/share/backgrounds/warty-final-ubuntu.png is
@@ -56,7 +55,11 @@ Item {
             else
                 return filename
         }
+        width: dashView.screenGeometry.width
+        height: dashView.screenGeometry.height
         sourceSize.width: width
+        x: -dashView.availableGeometry.x
+        y: -dashView.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"
