@@ -82,8 +82,7 @@ Item {
 
             function setIconGeometry() {
                 if (running) {
-                    // FIXME: add an offset for the absolute position of the launcher
-                    item.setIconGeometry(x, y, width, height)
+                    item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height)
                 }
             }
 
