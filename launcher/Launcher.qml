@@ -80,13 +80,10 @@ Item {
                 onMovementStarted: item.menu.hide()
             }
 
-            Connections {
-                target: applications
-                onApplicationAdded: {
-                    if (application == item) {
-                        // FIXME: add an offset for the absolute position of the launcher
-                        application.setIconGeometry(x, y, width, height)
-                    }
+            function setIconGeometry() {
+                if (running) {
+                    // FIXME: add an offset for the absolute position of the launcher
+                    item.setIconGeometry(x, y, width, height)
                 }
             }
 
@@ -102,6 +99,10 @@ Item {
                 NumberAnimation { target: wrapper; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
             }
+
+            onRunningChanged: setIconGeometry()
+            onXChanged: setIconGeometry()
+            onYChanged: setIconGeometry()
         }
     }
 

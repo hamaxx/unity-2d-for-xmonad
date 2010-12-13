@@ -25,9 +25,6 @@ public:
 
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
 
-Q_SIGNALS:
-    void applicationAdded(LauncherApplication* application);
-
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
