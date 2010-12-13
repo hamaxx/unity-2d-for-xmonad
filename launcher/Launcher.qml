@@ -100,7 +100,9 @@ Item {
             }
 
             onRunningChanged: setIconGeometry()
-            onXChanged: setIconGeometry()
+            /* Note: this doesn’t work as expected for the first favorite
+               application in the list if it is already running when the
+               launcher is started, because its y property doesn’t change */
             onYChanged: setIconGeometry()
         }
     }
