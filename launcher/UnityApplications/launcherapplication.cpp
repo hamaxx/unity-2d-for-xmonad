@@ -234,6 +234,37 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     emit closed();
 }
 
+void
+LauncherApplication::setIconGeometry(int x, int y, int width, int height)
+{
+    if (m_application == NULL) {
+        return;
+    }
+
+    BamfUintList* xids = m_application->xids();
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+    GList* windows = wnck_screen_get_windows(screen);
+
+    for (int i = 0; i < size; ++i) {
+        uint xid = xids->at(i);
+        for(GList* li = windows; li != NULL; li = g_list_next(li))
+        {
+            WnckWindow* window = (WnckWindow*) li->data;
+            if (wnck_window_get_xid(window) == xid)
+            {
+                wnck_window_set_icon_geometry(window, x, y, width, height);
+                break;
+            }
+        }
+    }
+}
+
 int
 LauncherApplication::priority() const
 {

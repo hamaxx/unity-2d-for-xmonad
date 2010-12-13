@@ -88,6 +88,8 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
         application->setBamfApplication(bamf_application);
         insertApplication(application);
     }
+
+    applicationAdded(application);
 }
 
 void

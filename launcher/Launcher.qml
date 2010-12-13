@@ -80,6 +80,16 @@ Item {
                 onMovementStarted: item.menu.hide()
             }
 
+            Connections {
+                target: applications
+                onApplicationAdded: {
+                    if (application == item) {
+                        // FIXME: add an offset for the absolute position of the launcher
+                        application.setIconGeometry(x, y, width, height)
+                    }
+                }
+            }
+
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }
                 NumberAnimation { target: wrapper; property: "height"; from: 0; to: 54; duration: 250; easing.type: Easing.InOutQuad }
@@ -95,7 +105,7 @@ Item {
         }
     }
 
-   LauncherApplicationsList {
+    LauncherApplicationsList {
         id: applications
     }
 
