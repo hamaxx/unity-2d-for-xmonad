@@ -102,7 +102,9 @@ Item {
             onRunningChanged: setIconGeometry()
             /* Note: this doesn’t work as expected for the first favorite
                application in the list if it is already running when the
-               launcher is started, because its y property doesn’t change */
+               launcher is started, because its y property doesn’t change.
+               This isn’t too bad though, as the launcher is supposed to be
+               started before any other regular application. */
             onYChanged: setIconGeometry()
         }
     }
