@@ -20,10 +20,8 @@ Item {
     }
 
     function activatePlace(place, section) {
-        activatePage(place)
-        /* PlaceEntry.SetActiveSection needs to be called after PlaceEntry.SetActive
-           in order for it to have an effect. */
         place.activeSection = section
+        activatePage(place)
     }
 
     function activateHome() {
