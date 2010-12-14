@@ -13,6 +13,13 @@ Page {
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
+    /* The PlaceEntry D-Bus API does not expose properties but only setters.
+       We make sure the setters are always synchronised with our local properties. */
+    onActiveChanged: place_entry.SetActive(active)
+    onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
+    onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
+
+    /* Sections model containing the list of available sections for the place */
     sections: DeeListModel {
                    service: dBusService
                    objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
@@ -53,10 +60,6 @@ Page {
             }
         }
     }
-
-    onActiveChanged: place_entry.SetActive(active)
-    onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
-    onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
 
     UnityPlaceEntry {
         id: place_entry
