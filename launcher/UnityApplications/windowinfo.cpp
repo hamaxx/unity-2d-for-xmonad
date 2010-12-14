@@ -1,14 +1,18 @@
 #include <libwnck/screen.h>
 #include <libwnck/window.h>
+#include <libwnck/workspace.h>
+
+#include "launcherapplication.h"
+
 #include <glib-2.0/glib.h>
+#include "bamf-matcher.h"
+#include "bamf-application.h"
+#include "bamf-window.h"
 
 #include <QDebug>
 
 #include "windowinfo.h"
 
-#include "bamf-matcher.h"
-#include "bamf-application.h"
-#include "bamf-window.h"
 
 WindowInfo::WindowInfo(Window xid, QObject *parent) :
     QObject(parent), m_bamfWindow(0)
@@ -121,6 +125,13 @@ void WindowInfo::setActive(bool active) {
     if (win == 0) {
         return;
     }
+
+    WnckWorkspace* workspace = wnck_window_get_workspace(win);
+    wnck_workspace_activate(workspace, CurrentTime);
+    if (wnck_workspace_is_virtual(workspace)) {
+        LauncherApplication::moveViewportToWindow(win);
+    }
+
     wnck_window_activate(win, CurrentTime);
 }
 

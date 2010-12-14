@@ -54,6 +54,8 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
 
+    static void moveViewportToWindow(WnckWindow* window);
+
 signals:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
@@ -83,7 +85,6 @@ private:
     QTimer m_launching_timer;
     bool m_has_visible_window;
 
-    void moveViewportToWindow(WnckWindow* window);
     void updateBamfApplicationDependentProperties();
 };
 
