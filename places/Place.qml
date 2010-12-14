@@ -15,11 +15,18 @@ Page {
 
     /* The PlaceEntry D-Bus API does not expose properties but only setters.
        We make sure the setters are always synchronised with our local properties. */
+    Component.onCompleted: {
+        place_entry.SetActive(active)
+        place_entry.SetActiveSection(activeSection)
+        place_entry.SetSearch(searchQuery, [])
+    }
     onActiveChanged: {
         place_entry.SetActive(active)
         /* PlaceEntry.SetActiveSection needs to be called after PlaceEntry.SetActive
            in order for it to have an effect. */
-        place_entry.SetActiveSection(activeSection)
+        if (active) {
+            place_entry.SetActiveSection(activeSection)
+        }
     }
     onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
     onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
