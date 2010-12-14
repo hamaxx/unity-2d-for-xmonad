@@ -253,11 +253,9 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height)
 
     for (int i = 0; i < size; ++i) {
         uint xid = xids->at(i);
-        for(GList* li = windows; li != NULL; li = g_list_next(li))
-        {
+        for(GList* li = windows; li != NULL; li = g_list_next(li)) {
             WnckWindow* window = (WnckWindow*) li->data;
-            if (wnck_window_get_xid(window) == xid)
-            {
+            if (wnck_window_get_xid(window) == xid) {
                 wnck_window_set_icon_geometry(window, x, y, width, height);
                 break;
             }
