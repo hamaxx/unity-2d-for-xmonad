@@ -1,5 +1,4 @@
 import Qt 4.7
-import dee 1.0
 
 FocusScope {
     /* Keys forwarded to the search bar are forwarded to the search entry. */
@@ -74,9 +73,6 @@ FocusScope {
             }
         }
 
-        model: DeeListModel {
-            service: current_page.hasSections ? current_page.dBusService : ""
-            objectPath: current_page.hasSections ? current_page.dBusDeePrefix + "SectionsModel" : ""
-        }
+        model: current_page.sections
     }
 }

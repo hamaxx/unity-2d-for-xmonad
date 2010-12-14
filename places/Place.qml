@@ -19,6 +19,10 @@ Page {
     */
     property int activeSection
     property bool hasSections: true
+    property variant sections: DeeListModel {
+                   service: dBusService
+                   objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
+              }
 
     /* ResultsModel containing data for all the Groups. Each Group will filter
        it locally. */

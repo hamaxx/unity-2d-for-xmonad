@@ -4,8 +4,7 @@ Item {
     property bool hasSections: false
     property int activeSection
     property string name
-    property string dBusService
-    property string dBusDeePrefix
+    property variant sections
 
     function setActiveSection(section) {}
     function search(searchString) {}
