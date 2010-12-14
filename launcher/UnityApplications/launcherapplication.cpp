@@ -253,6 +253,7 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
     }
     int size = xids->size();
     if (size < 1) {
+        delete xids;
         return;
     }
 
