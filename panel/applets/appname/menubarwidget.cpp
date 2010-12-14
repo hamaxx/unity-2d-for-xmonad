@@ -78,7 +78,7 @@ void MenuBarWidget::setupMenuBar()
     separatorLabel->setFixedSize(pix.size());
 
     m_menuBar = new QMenuBar;
-    m_menuBar->installEventFilter(this);
+    new MenuBarClosedHelper(this);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -177,9 +177,16 @@ void MenuBarWidget::fillMenuBar(QMenu* menu)
     }
 }
 
-bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
+MenuBarClosedHelper::MenuBarClosedHelper(MenuBarWidget* widget)
+: QObject(widget)
+, m_widget(widget)
 {
-    if (object == m_menuBar) {
+    widget->menuBar()->installEventFilter(this);
+}
+
+bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_widget->menuBar()) {
         switch (event->type()) {
             case QEvent::ActionAdded:
             case QEvent::ActionRemoved:
@@ -202,14 +209,14 @@ bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
-void MenuBarWidget::emitMenuBarClosed()
+void MenuBarClosedHelper::emitMenuBarClosed()
 {
-    if (!m_menuBar->activeAction()) {
-        menuBarClosed();
+    if (!m_widget->menuBar()->activeAction()) {
+        QMetaObject::invokeMethod(m_widget, "menuBarClosed");
     }
 }
 
-void MenuBarWidget::menuBarActionEvent(QActionEvent* event)
+void MenuBarClosedHelper::menuBarActionEvent(QActionEvent* event)
 {
     // Install/remove event filters on top level menus so that we can know when
     // they hide themselves (to emit menuBarClosed())

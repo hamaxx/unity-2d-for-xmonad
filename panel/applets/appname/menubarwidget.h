@@ -27,6 +27,29 @@ class Registrar;
 
 typedef QHash<WId, MyDBusMenuImporter*> ImporterForWId;
 
+class MenuBarWidget;
+
+/**
+ * An helper class which monitors the menubar and emits MenuBarWidget::menuBarClosed()
+ * when necessary
+ */
+class MenuBarClosedHelper : public QObject
+{
+Q_OBJECT
+public:
+    MenuBarClosedHelper(MenuBarWidget*);
+
+protected:
+    bool eventFilter(QObject*, QEvent*); //reimp
+
+private Q_SLOTS:
+    void emitMenuBarClosed();
+
+private:
+    MenuBarWidget* m_widget;
+    void menuBarActionEvent(QActionEvent*);
+};
+
 class MenuBarWidget : public QWidget
 {
 Q_OBJECT
@@ -38,15 +61,11 @@ public:
 Q_SIGNALS:
     void menuBarClosed();
 
-protected:
-    bool eventFilter(QObject*, QEvent*); // reimp
-
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
-    void emitMenuBarClosed();
 
 private:
     Q_DISABLE_COPY(MenuBarWidget)
@@ -63,7 +82,6 @@ private:
     void updateActiveWinId(BamfWindow*);
     void updateMenuBar();
     void fillMenuBar(QMenu*);
-    void menuBarActionEvent(QActionEvent*);
 };
 
 #endif /* MENUBARWIDGET_H */
