@@ -14,6 +14,9 @@
 DashDeclarativeView::DashDeclarativeView() :
     QDeclarativeView(), m_active(false)
 {
+    QDesktopWidget* desktop = QApplication::desktop();
+    connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
+    connect(desktop, SIGNAL(workAreaResized(int)), SIGNAL(availableGeometryChanged()));
 }
 
 void
@@ -121,3 +124,18 @@ DashDeclarativeView::activateHome()
     setActive(true);
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
 }
+
+const QRect
+DashDeclarativeView::screenGeometry() const
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    return desktop->screenGeometry(this);
+}
+
+const QRect
+DashDeclarativeView::availableGeometry() const
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    return desktop->availableGeometry(this);
+}
+
