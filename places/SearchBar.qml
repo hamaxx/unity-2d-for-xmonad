@@ -73,6 +73,6 @@ FocusScope {
             }
         }
 
-        model: current_page.sections
+        model: current_page != undefined ? current_page.sections : undefined
     }
 }
