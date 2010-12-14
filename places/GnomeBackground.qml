@@ -1,5 +1,7 @@
 import Qt 4.7
 import gconf 1.0
+/* Necessary to access the blended image provider */
+import UnityPlaces 1.0
 
 Item {
     property string overlay_color
