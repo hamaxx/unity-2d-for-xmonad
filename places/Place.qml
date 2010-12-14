@@ -38,7 +38,15 @@ Page {
        open the uri.
     */
     function activate(uri) {
-        if(!dBusInterface.Activate(uri)) {
+        if (uri.substr(0, 7) == "file://") {
+            /* Override the files place’s default URI handler: we want the file
+               manager to handle opening folders, not the dash.
+
+               Ref: https://bugs.launchpad.net/upicek/+bug/689667
+             */
+             Qt.openUrlExternally(decodeURIComponent(uri))
+        }
+        else if(!dBusInterface.Activate(uri)) {
             var matches = uri.match("^(.*)(?:://)(.*)$")
             var schema = matches[1]
             var path = matches[2]
