@@ -106,6 +106,13 @@ Item {
                This isn’t too bad though, as the launcher is supposed to be
                started before any other regular application. */
             onYChanged: setIconGeometry()
+
+            Connections {
+                target: item
+                onWindowAdded: item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height, xid)
+                /* Not all items are applications. */
+                ignoreUnknownSignals: true
+            }
         }
     }
 

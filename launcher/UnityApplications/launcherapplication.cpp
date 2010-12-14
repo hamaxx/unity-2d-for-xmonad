@@ -204,6 +204,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
 
+    connect(application, SIGNAL(WindowAdded(BamfWindow*)), SLOT(onWindowAdded(BamfWindow*)));
+
     updateBamfApplicationDependentProperties();
 }
 
@@ -235,13 +237,20 @@ LauncherApplication::onBamfApplicationClosed(bool running)
 }
 
 void
-LauncherApplication::setIconGeometry(int x, int y, int width, int height)
+LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint xid)
 {
     if (m_application == NULL) {
         return;
     }
 
-    BamfUintList* xids = m_application->xids();
+    BamfUintList* xids;
+    if (xid == 0) {
+        xids = m_application->xids();
+    } else {
+        QList<uint> list;
+        list.append(xid);
+        xids = new BamfUintList(list);
+    }
     int size = xids->size();
     if (size < 1) {
         return;
@@ -261,6 +270,13 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height)
             }
         }
     }
+    delete xids;
+}
+
+void
+LauncherApplication::onWindowAdded(BamfWindow* window)
+{
+    windowAdded(window->xid());
 }
 
 int
