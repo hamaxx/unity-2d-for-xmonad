@@ -37,6 +37,7 @@ private Q_SLOTS:
     void update();
 
 Q_SIGNALS:
+    void nameChanged();
     void stateChanged();
 
 private:

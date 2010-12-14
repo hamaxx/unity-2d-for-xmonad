@@ -32,7 +32,6 @@ extern "C" {
 
 struct WindowHelperPrivate
 {
-    uint m_xid;
     WnckWindow* m_window;
 };
 
@@ -61,7 +60,7 @@ static void stateChangedCB(GObject* window,
     WnckWindowState new_state,
     WindowHelper*  watcher)
 {
-    QMetaObject::invokeMethod(watcher, "stateChanged");
+    QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
 static void nameChangedCB(GObject* window,

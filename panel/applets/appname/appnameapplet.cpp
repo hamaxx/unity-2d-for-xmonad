@@ -147,6 +147,8 @@ struct AppNameAppletPrivate
         m_windowHelper = new WindowHelper(q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
+        QObject::connect(m_windowHelper, SIGNAL(nameChanged()),
+            q, SLOT(updateWidgets()));
     }
 
     void setupMenuBarWidget()
