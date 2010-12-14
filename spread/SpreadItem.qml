@@ -15,8 +15,8 @@ Item {
 
     property bool needsActivation: false
 
-    x: win.location.x * parent.ratio
-    y: win.location.y * parent.ratio
+    x: (win.location.x * parent.ratio) - desktop.x
+    y: (win.location.y * parent.ratio) - desktop.y
     width: win.size.width * parent.ratio
     height: win.size.height * parent.ratio
     z: win.z
@@ -24,7 +24,6 @@ Item {
     Item {
         id: box
         anchors.fill: parent
-        anchors.margins: 8  //TODO: check in unity
 
         property real widthScale: width / item.win.size.width
         property real heightScale: height / item.win.size.height
@@ -103,6 +102,7 @@ Item {
                 script: if (item.needsActivation) {
                             item.needsActivation = false;
                             win.active = true;
+                            Qt.quit()
                         }
             }
             PropertyChanges {
@@ -123,6 +123,10 @@ Item {
             PropertyChanges {
                 target: itemArea
                 onClicked: { item.z = 1000; item.needsActivation = true; }
+            }
+            PropertyChanges {
+                target: box
+                anchors.margins: 8 //FIXME: Check this value in Unity
             }
         }
     ]

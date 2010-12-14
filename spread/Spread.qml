@@ -2,15 +2,8 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
-    width: screen.width * 0.75
-    height: screen.height * 0.75
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            grid.state = (grid.state == "spread") ? "" : "spread"
-        }
-    }
+    width: desktop.width
+    height: desktop.height
 
     WindowsList {
         id: wins

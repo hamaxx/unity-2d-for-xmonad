@@ -10,7 +10,7 @@ Item {
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / list.columns)
     property int lastRowColumns: (rows * columns) - count
-    property real ratio: width / screen.width
+    property real ratio: width / desktop.width
 
     Repeater {
         id: repeater

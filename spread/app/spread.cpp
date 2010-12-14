@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
     SpreadView view;
     application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
 
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
@@ -72,11 +73,11 @@ int main(int argc, char *argv[])
     provider->activateComposite();
 
     view.rootContext()->setContextProperty("spreadView", &view);
-    view.rootContext()->setContextProperty("screen",
-                                           QApplication::desktop()->screenGeometry());
+    view.rootContext()->setContextProperty("desktop",
+                                           QApplication::desktop()->availableGeometry());
 
     view.setSource(QUrl("./Spread.qml"));
-    view.show();
+    view.showMaximized();
 
     return application.exec();
 }
