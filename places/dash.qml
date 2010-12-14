@@ -20,8 +20,8 @@ Item {
     }
 
     function activatePlace(place, section) {
-        place.activeSection = section
         activatePage(place)
+        place.activeSection = section
     }
 
     function activateHome() {
