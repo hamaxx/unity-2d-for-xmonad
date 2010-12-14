@@ -7,18 +7,13 @@ import "utils.js" as Utils
 Page {
     id: place
 
-    property string name
     property string dBusObjectPath
     property string dBusObjectPathPlaceEntry
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
-    /* FIXME: this is a bit of a hack due to the lack of D-Bus property
-              giving the current section id for a place
-    */
-    property int activeSection
-    property variant sections: DeeListModel {
+    sections: DeeListModel {
                    service: dBusService
                    objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
               }
@@ -59,16 +54,9 @@ Page {
         }
     }
 
-    function setActiveSection(section) {
-        /* FIXME: SetActive(false) should happen when exiting the place */
-        place_entry.SetActive(false)
-        place_entry.SetActive(true)
-        activeSection = section
-        place_entry.SetActiveSection(section)
-    }
-
-    /* Fake property forcing the call to SetSearch whenever searchQuery is updated */
-    property string _search: place_entry.SetSearch(searchQuery, [])
+    onActiveChanged: place_entry.SetActive(active)
+    onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
+    onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
 
     UnityPlaceEntry {
         id: place_entry

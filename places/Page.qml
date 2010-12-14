@@ -1,10 +1,9 @@
 import Qt 4.7
 
 Item {
-    property int activeSection
     property string name
+    property bool active: false
+    property int activeSection
     property variant sections
-
-    function setActiveSection(section) {}
     property string searchQuery
 }

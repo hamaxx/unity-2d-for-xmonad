@@ -4,9 +4,12 @@ Item {
     property variant current_page
 
     function activatePage(page) {
-        if (current_page != undefined)
+        if (current_page != undefined) {
             current_page.visible = false
+            current_page.active = false
+        }
         current_page = page
+        current_page.active = true
         current_page.visible = true
         /* FIXME: For some reason current_page gets the focus when it becomes
            visible. Reset the focus to the search_bar instead.
@@ -17,7 +20,7 @@ Item {
     }
 
     function activatePlace(place, section) {
-        place.setActiveSection(section)
+        place.activeSection = section
         activatePage(place)
     }
 

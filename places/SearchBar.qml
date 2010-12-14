@@ -69,7 +69,7 @@ FocusScope {
             onClicked: {
                 sections.focus = false
                 search_entry.focus = true
-                current_page.setActiveSection(model.index)
+                current_page.activeSection = model.index
             }
         }
 
