@@ -259,18 +259,12 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
-    GList* windows = wnck_screen_get_windows(screen);
 
     for (int i = 0; i < size; ++i) {
-        uint xid = xids->at(i);
-        for(GList* li = windows; li != NULL; li = g_list_next(li)) {
-            WnckWindow* window = (WnckWindow*) li->data;
-            if (wnck_window_get_xid(window) == xid) {
-                wnck_window_set_icon_geometry(window, x, y, width, height);
-                break;
-            }
-        }
+        WnckWindow* window = wnck_window_get(xids->at(i));
+        wnck_window_set_icon_geometry(window, x, y, width, height);
     }
+
     delete xids;
 }
 
