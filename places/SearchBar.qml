@@ -63,7 +63,16 @@ FocusScope {
             anchors.verticalCenter: parent.verticalCenter
             horizontalPadding: 4
             verticalPadding: 3
-            label: column_0
+            /* FIXME: check for current_page.sections != undefined is a
+               workaround for a crash in Qt happening when setting the model of
+               a ListView to undefined after it being non-empty.
+               It seems that the model count is not 0 and delegates are still
+               being created and updated with data.
+
+               To reproduce the crash: go to the applications place, exit the
+               dash and then go to the home page of the dash.
+            */
+            label: current_page.sections != undefined ? column_0 : ""
             isActiveSection: current_page.activeSection == index
 
             onClicked: {
