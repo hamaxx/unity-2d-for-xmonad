@@ -37,7 +37,7 @@ FocusScope {
 
         KeyNavigation.left: search_entry
 
-        visible: current_page.hasSections
+        visible: model != undefined
         orientation: ListView.Horizontal
         /* Non-draggable when all sections are visible */
         boundsBehavior: Flickable.StopAtBounds

@@ -18,7 +18,6 @@ Page {
               giving the current section id for a place
     */
     property int activeSection
-    property bool hasSections: true
     property variant sections: DeeListModel {
                    service: dBusService
                    objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
