@@ -57,9 +57,7 @@ Page {
                 console.log("FIXME: Possibly no handler for schema \'%1\'".arg(schema))
                 console.log("Trying to open", uri)
                 /* Try our luck */
-                /* FIXME: uri seems already escaped though
-                          Qt.openUrlExternally tries to escape it */
-                Qt.openUrlExternally(uri)
+                Qt.openUrlExternally(decodeURIComponent(uri))
             }
         }
     }
