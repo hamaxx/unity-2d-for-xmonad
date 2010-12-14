@@ -1,6 +1,14 @@
 import Qt 4.7
 
 FocusScope {
+    property string searchQuery
+
+    Binding {
+        target: current_page
+        property: "searchQuery"
+        value: searchQuery
+    }
+
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
 
@@ -51,12 +59,12 @@ FocusScope {
             Timer {
                 id: live_search_timeout
                 interval: 200
-                onTriggered: current_page.search(search_input.text)
+                onTriggered: searchQuery = search_input.text
             }
 
             Keys.onPressed: {
                 if (event.key == Qt.Key_Return) {
-                    current_page.search(text)
+                    searchQuery = text
                     event.accepted = true;
                 }
             }

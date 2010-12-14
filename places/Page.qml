@@ -6,5 +6,5 @@ Item {
     property variant sections
 
     function setActiveSection(section) {}
-    function search(searchString) {}
+    property string searchQuery
 }

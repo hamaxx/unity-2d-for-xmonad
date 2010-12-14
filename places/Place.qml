@@ -67,9 +67,8 @@ Page {
         place_entry.SetActiveSection(section)
     }
 
-    function search(query) {
-        place_entry.SetSearch(query, [])
-    }
+    /* Fake property forcing the call to SetSearch whenever searchQuery is updated */
+    property string _search: place_entry.SetSearch(searchQuery, [])
 
     UnityPlaceEntry {
         id: place_entry
