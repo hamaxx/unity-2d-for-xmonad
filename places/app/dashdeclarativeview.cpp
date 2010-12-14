@@ -15,8 +15,8 @@ DashDeclarativeView::DashDeclarativeView() :
     QDeclarativeView(), m_active(false)
 {
     QDesktopWidget* desktop = QApplication::desktop();
-    QObject::connect(desktop, SIGNAL(resized(int)), this, SIGNAL(screenGeometryChanged()));
-    QObject::connect(desktop, SIGNAL(workAreaResized(int)), this, SIGNAL(availableGeometryChanged()));
+    connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
+    connect(desktop, SIGNAL(workAreaResized(int)), SIGNAL(availableGeometryChanged()));
 }
 
 void
