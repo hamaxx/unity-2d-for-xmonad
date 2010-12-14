@@ -9,9 +9,10 @@
  * License: GPL v3
  */
 // Self
-#include "appmenuapplet.h"
+#include "menubarwidget.h"
 
 // Local
+#include "config.h"
 #include "debug_p.h"
 #include "registrar.h"
 
@@ -23,7 +24,9 @@
 #include <bamf-window.h>
 
 // Qt
+#include <QActionEvent>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMenuBar>
 
 class MyDBusMenuImporter : public DBusMenuImporter
@@ -43,7 +46,9 @@ private:
     QString m_path;
 };
 
-AppMenuApplet::AppMenuApplet()
+MenuBarWidget::MenuBarWidget(QMenu* windowMenu, QWidget* parent)
+: QWidget(parent)
+, m_windowMenu(windowMenu)
 {
     m_activeWinId = 0;
     setupRegistrar();
@@ -54,7 +59,7 @@ AppMenuApplet::AppMenuApplet()
     updateActiveWinId(BamfMatcher::get_default().active_window());
 }
 
-void AppMenuApplet::setupRegistrar()
+void MenuBarWidget::setupRegistrar()
 {
     m_registrar = new Registrar(this);
     if (!m_registrar->connectToBus()) {
@@ -65,24 +70,32 @@ void AppMenuApplet::setupRegistrar()
         SLOT(slotWindowRegistered(WId, const QString&, const QDBusObjectPath&)));
 }
 
-void AppMenuApplet::setupMenuBar()
+void MenuBarWidget::setupMenuBar()
 {
+    QLabel* separatorLabel = new QLabel;
+    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    separatorLabel->setPixmap(pix);
+    separatorLabel->setFixedSize(pix.size());
+
+    m_menuBar = new QMenuBar;
+    m_menuBar->installEventFilter(this);
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
-    m_menuBar = new QMenuBar;
+    layout->setSpacing(0);
+    layout->addWidget(separatorLabel);
     layout->addWidget(m_menuBar);
     m_menuBar->setNativeMenuBar(false);
-    m_menuBar->addMenu("File");
 }
 
-void AppMenuApplet::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
+void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
 {
     if (current) {
         updateActiveWinId(current);
     }
 }
 
-void AppMenuApplet::slotWindowRegistered(WId wid, const QString& service, const QDBusObjectPath& menuObjectPath)
+void MenuBarWidget::slotWindowRegistered(WId wid, const QString& service, const QDBusObjectPath& menuObjectPath)
 {
     MyDBusMenuImporter* importer = new MyDBusMenuImporter(service, menuObjectPath.path(), this);
     delete m_importers.take(wid);
@@ -92,7 +105,7 @@ void AppMenuApplet::slotWindowRegistered(WId wid, const QString& service, const 
     QMetaObject::invokeMethod(importer, "updateMenu", Qt::QueuedConnection);
 }
 
-void AppMenuApplet::slotMenuUpdated()
+void MenuBarWidget::slotMenuUpdated()
 {
     DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
 
@@ -101,7 +114,7 @@ void AppMenuApplet::slotMenuUpdated()
     }
 }
 
-void AppMenuApplet::slotActionActivationRequested(QAction* action)
+void MenuBarWidget::slotActionActivationRequested(QAction* action)
 {
     DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
 
@@ -110,13 +123,13 @@ void AppMenuApplet::slotActionActivationRequested(QAction* action)
     }
 }
 
-QMenu* AppMenuApplet::menuForWinId(WId wid) const
+QMenu* MenuBarWidget::menuForWinId(WId wid) const
 {
     MyDBusMenuImporter* importer = m_importers.value(wid);
     return importer ? importer->menu() : 0;
 }
 
-void AppMenuApplet::updateActiveWinId(BamfWindow* bamfWindow)
+void MenuBarWidget::updateActiveWinId(BamfWindow* bamfWindow)
 {
     WId id = bamfWindow ? bamfWindow->xid() : 0;
     if (id == m_activeWinId) {
@@ -130,35 +143,14 @@ void AppMenuApplet::updateActiveWinId(BamfWindow* bamfWindow)
     updateMenuBar();
 }
 
-void AppMenuApplet::updateMenuBar()
+void MenuBarWidget::updateMenuBar()
 {
     WId winId = m_activeWinId;
     QMenu* menu = menuForWinId(winId);
 
     if (!menu) {
         if (winId) {
-            // We have an active window
-            // FIXME: transient check
-            /*
-            WId mainWinId = KWindowSystem::transientFor(winId);
-            if (mainWinId) {
-                // We have a parent window, use a disabled version of its
-                // menubar if it has one.
-                QMenu* mainMenu = menuForWinId(mainWinId);
-                if (mainMenu) {
-                    mMenuCloner->setOriginalMenu(mainMenu);
-                    menu = mMenuCloner->clonedMenu();
-                }
-            }*/
-            // FIXME: WindowMenuManager
-            /*
-            if (!menu) {
-                // No suitable menubar but we have a window, use the
-                // generic window menu
-                mWindowMenuManager->setWinId(winId);
-                menu = mWindowMenu;
-            }
-            */
+            menu = m_windowMenu;
         } else {
             // No active window, show a desktop menubar
             // FIXME: Empty menu
@@ -170,7 +162,7 @@ void AppMenuApplet::updateMenuBar()
     fillMenuBar(menu);
 }
 
-void AppMenuApplet::fillMenuBar(QMenu* menu)
+void MenuBarWidget::fillMenuBar(QMenu* menu)
 {
     m_menuBar->clear();
     // FIXME: Empty menu
@@ -185,4 +177,57 @@ void AppMenuApplet::fillMenuBar(QMenu* menu)
     }
 }
 
-#include "appmenuapplet.moc"
+bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_menuBar) {
+        switch (event->type()) {
+            case QEvent::ActionAdded:
+            case QEvent::ActionRemoved:
+            case QEvent::ActionChanged:
+                menuBarActionEvent(static_cast<QActionEvent*>(event));
+                break;
+            default:
+                break;
+        }
+    } else {
+        // Top-level menus
+        if (event->type() == QEvent::Hide) {
+            // menu hides themselves when the menubar is closed but also when
+            // one goes from one menu to another. The way to know this is to
+            // check the value of QMenuBar::activeAction(), but at this point
+            // it has not been updated yet, so we check in a delayed method.
+            QMetaObject::invokeMethod(this, "emitMenuBarClosed", Qt::QueuedConnection);
+        }
+    }
+    return false;
+}
+
+void MenuBarWidget::emitMenuBarClosed()
+{
+    if (!m_menuBar->activeAction()) {
+        menuBarClosed();
+    }
+}
+
+void MenuBarWidget::menuBarActionEvent(QActionEvent* event)
+{
+    // Install/remove event filters on top level menus so that we can know when
+    // they hide themselves (to emit menuBarClosed())
+    QMenu* menu = event->action()->menu();
+    if (!menu) {
+        return;
+    }
+    switch (event->type()) {
+    case QEvent::ActionAdded:
+    case QEvent::ActionChanged:
+        menu->installEventFilter(this);
+        break;
+    case QEvent::ActionRemoved:
+        menu->removeEventFilter(this);
+        break;
+    default:
+        break;
+    }
+}
+
+#include "menubarwidget.moc"

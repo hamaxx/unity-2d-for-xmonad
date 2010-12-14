@@ -8,17 +8,16 @@
  *
  * License: GPL v3
  */
-#ifndef APPMENUAPPLET_H
-#define APPMENUAPPLET_H
-
-// Local
-#include <applet.h>
+#ifndef MENUBARWIDGET_H
+#define MENUBARWIDGET_H
 
 // Qt
 #include <QHash>
+#include <QWidget>
 
 class BamfWindow;
 
+class QActionEvent;
 class QDBusObjectPath;
 class QMenu;
 class QMenuBar;
@@ -28,25 +27,35 @@ class Registrar;
 
 typedef QHash<WId, MyDBusMenuImporter*> ImporterForWId;
 
-class AppMenuApplet : public UnityQt::Applet
+class MenuBarWidget : public QWidget
 {
 Q_OBJECT
 public:
-    AppMenuApplet();
+    MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
+
+    QMenuBar* menuBar() const { return m_menuBar; }
+
+Q_SIGNALS:
+    void menuBarClosed();
+
+protected:
+    bool eventFilter(QObject*, QEvent*); // reimp
 
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
+    void emitMenuBarClosed();
 
 private:
-    Q_DISABLE_COPY(AppMenuApplet)
+    Q_DISABLE_COPY(MenuBarWidget)
 
     QMenuBar* m_menuBar;
     Registrar* m_registrar;
     ImporterForWId m_importers;
     WId m_activeWinId;
+    QMenu* m_windowMenu;
 
     void setupRegistrar();
     void setupMenuBar();
@@ -54,6 +63,7 @@ private:
     void updateActiveWinId(BamfWindow*);
     void updateMenuBar();
     void fillMenuBar(QMenu*);
+    void menuBarActionEvent(QActionEvent*);
 };
 
-#endif /* APPMENUAPPLET_H */
+#endif /* MENUBARWIDGET_H */

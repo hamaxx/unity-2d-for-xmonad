@@ -12,6 +12,7 @@
 #include "appnameapplet.h"
 
 // Local
+#include "menubarwidget.h"
 #include "windowhelper.h"
 
 // Unity-qt
@@ -23,11 +24,15 @@
 
 // Qt
 #include <QAbstractButton>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenuBar>
 #include <QPainter>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
+
+static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 namespace UnityQt
 {
@@ -43,6 +48,7 @@ public:
     , m_downPix(loadPix("pressed"))
     {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        setAttribute(Qt::WA_Hover);
     }
 
     QSize minimumSizeHint() const
@@ -65,16 +71,6 @@ protected:
         painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
     }
 
-    void enterEvent(QEvent*)
-    {
-        update();
-    }
-
-    void leaveEvent(QEvent*)
-    {
-        update();
-    }
-
 private:
     QString m_prefix;
     QPixmap m_normalPix;
@@ -91,6 +87,23 @@ private:
     }
 };
 
+/**
+ * This label makes sure minimumSizeHint() is not set. This ensures the applet
+ * does not get wider if a window title is very long
+ */
+class CroppedLabel : public QLabel
+{
+public:
+    CroppedLabel(QWidget* parent = 0)
+    : QLabel(parent)
+    {}
+
+    QSize minimumSizeHint() const
+    {
+        return QWidget::minimumSizeHint();
+    }
+};
+
 struct AppNameAppletPrivate
 {
     AppNameApplet* q;
@@ -100,10 +113,13 @@ struct AppNameAppletPrivate
     WindowButton* m_maximizeButton;
     QLabel* m_label;
     WindowHelper* m_windowHelper;
+    MenuBarWidget* m_menuBarWidget;
 
     void setupLabel()
     {
-        m_label = new QLabel;
+        m_label = new CroppedLabel;
+        m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        m_label->setTextFormat(Qt::PlainText);
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
@@ -113,7 +129,7 @@ struct AppNameAppletPrivate
     {
         m_windowButtonWidget = new QWidget;
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
-        layout->setMargin(0);
+        layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
         layout->setSpacing(0);
         m_closeButton = new WindowButton("close");
         m_minimizeButton = new WindowButton("minimize");
@@ -126,10 +142,19 @@ struct AppNameAppletPrivate
         QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
     }
 
-    void setupWatcher()
+    void setupWindowHelper()
     {
         m_windowHelper = new WindowHelper(q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
+            q, SLOT(updateWidgets()));
+        QObject::connect(m_windowHelper, SIGNAL(nameChanged()),
+            q, SLOT(updateWidgets()));
+    }
+
+    void setupMenuBarWidget()
+    {
+        m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
+        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
     }
 };
@@ -138,20 +163,20 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-    d->setupWatcher();
+    d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
+    d->setupMenuBarWidget();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
+    layout->setSpacing(0);
     layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
+    layout->addWidget(d->m_menuBarWidget);
 
-    connect(&BamfMatcher::get_default(), SIGNAL(ActiveApplicationChanged(BamfApplication*, BamfApplication*)), SLOT(updateLabel()));
-    connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)), SLOT(updateWindowHelper()));
-    updateLabel();
-    updateWindowHelper();
     updateWidgets();
 }
 
@@ -160,27 +185,65 @@ AppNameApplet::~AppNameApplet()
     delete d;
 }
 
-void AppNameApplet::updateLabel()
-{
-    BamfApplication* app = BamfMatcher::get_default().active_application();
-    if (app) {
-        d->m_label->setText(app->name());
-    } else {
-        d->m_label->setText(QString());
-    }
-}
-
-void AppNameApplet::updateWindowHelper()
-{
-    BamfWindow* window = BamfMatcher::get_default().active_window();
-    d->m_windowHelper->setXid(window ? window->xid() : 0);
-}
-
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
+    bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
+    bool showMenu = window()->underMouse() && !menuBarIsEmpty;
+
     d->m_windowButtonWidget->setVisible(isMaximized);
-    d->m_label->setVisible(!isMaximized);
+
+    bool showLabel = !(isMaximized && showMenu);
+    d->m_label->setVisible(showLabel);
+    if (showLabel) {
+        // Define text
+        QString text;
+        if (isMaximized) {
+            // When maximized, show window title
+            BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+            if (bamfWindow) {
+                text = bamfWindow->name();
+            }
+        } else {
+            // When not maximized, show application name
+            BamfApplication* app = BamfMatcher::get_default().active_application();
+            if (app) {
+                text = app->name();
+            }
+        }
+        d->m_label->setText(text);
+
+        // Define width
+        if (!isMaximized && showMenu) {
+            d->m_label->setMaximumWidth(d->m_windowButtonWidget->sizeHint().width());
+        } else {
+            d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
+        }
+    }
+
+    d->m_menuBarWidget->setVisible(showMenu);
+}
+
+bool AppNameApplet::event(QEvent* event)
+{
+    if (event->type() == QEvent::ParentChange) {
+        // Install an event filter on the panel to detect mouse over
+        window()->installEventFilter(this);
+    }
+    return Applet::event(event);
+}
+
+bool AppNameApplet::eventFilter(QObject*, QEvent* event)
+{
+    switch (event->type()) {
+    case QEvent::HoverEnter:
+    case QEvent::HoverLeave:
+        updateWidgets();
+        break;
+    default:
+        break;
+    }
+    return false;
 }
 
 } // namespace
