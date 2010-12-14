@@ -21,6 +21,7 @@ class QActionEvent;
 class QDBusObjectPath;
 class QMenu;
 class QMenuBar;
+class QTimer;
 
 class MyDBusMenuImporter;
 class Registrar;
@@ -61,11 +62,15 @@ public:
 Q_SIGNALS:
     void menuBarClosed();
 
+protected:
+    bool eventFilter(QObject*, QEvent*); // reimp
+
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
+    void updateMenuBar();
 
 private:
     Q_DISABLE_COPY(MenuBarWidget)
@@ -75,13 +80,12 @@ private:
     ImporterForWId m_importers;
     WId m_activeWinId;
     QMenu* m_windowMenu;
+    QTimer* m_updateMenuBarTimer;
 
     void setupRegistrar();
     void setupMenuBar();
     QMenu* menuForWinId(WId) const;
     void updateActiveWinId(BamfWindow*);
-    void updateMenuBar();
-    void fillMenuBar(QMenu*);
 };
 
 #endif /* MENUBARWIDGET_H */
