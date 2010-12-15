@@ -38,20 +38,26 @@ Page {
        open the uri.
     */
     function activate(uri) {
-        if(!dBusInterface.Activate(uri)) {
-            var matches = uri.match("^(.*)(?:://)(.*)$")
-            var schema = matches[1]
-            var path = matches[2]
-            if(schema == "application") {
+        var matches = uri.match("^(.*)(?:://)(.*)$")
+        var scheme = matches[1]
+        if (scheme == "file") {
+            /* Override the files place’s default URI handler: we want the file
+               manager to handle opening folders, not the dash.
+
+               Ref: https://bugs.launchpad.net/upicek/+bug/689667
+             */
+             Qt.openUrlExternally(decodeURIComponent(uri))
+        }
+        else if (!dBusInterface.Activate(uri)) {
+            if (scheme == "application") {
+                var path = matches[2]
                 Utils.launchApplicationFromDesktopFile(path, parent)
             }
             else {
-                console.log("FIXME: Possibly no handler for schema \'%1\'".arg(schema))
+                console.log("FIXME: Possibly no handler for scheme \'%1\'".arg(scheme))
                 console.log("Trying to open", uri)
                 /* Try our luck */
-                /* FIXME: uri seems already escaped though
-                          Qt.openUrlExternally tries to escape it */
-                Qt.openUrlExternally(uri)
+                Qt.openUrlExternally(decodeURIComponent(uri))
             }
         }
     }
