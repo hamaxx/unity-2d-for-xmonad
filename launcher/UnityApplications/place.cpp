@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QDBusPendingReply>
+#include <QDBusServiceWatcher>
 
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
 
@@ -85,6 +86,7 @@ Place::setFileName(const QString &file)
                              this, SLOT(onEntryPositionChanged(uint)));
             m_entries.append(entry);
         }
+        connectToRemotePlace();
     }
     else
     {
@@ -134,17 +136,39 @@ Place::rowCount(const QModelIndex& parent) const
 void
 Place::connectToRemotePlace()
 {
-    if (m_online) return;
-
-    m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
-                                     UNITY_PLACE_INTERFACE);
-    if (!m_dbusIface->isValid()) {
-        m_online = false;
+    if (m_online) {
         return;
     }
 
-    // Connect to EntryAdded and EntryRemoved signals
+    QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(this);
+    serviceWatcher->setConnection(QDBusConnection::sessionBus());
+    serviceWatcher->addWatchedService(m_dbusName);
+    connect(serviceWatcher, SIGNAL(serviceRegistered(QString)),
+            SLOT(slotRemotePlaceConnected()));
+    connect(serviceWatcher, SIGNAL(serviceUnregistered(QString)),
+            SLOT(slotRemotePlaceDisconnected()));
+
+    m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
+                                     UNITY_PLACE_INTERFACE);
     QDBusConnection connection = m_dbusIface->connection();
+    if (!connection.isConnected()) {
+        return;
+    }
+
+    if (m_dbusIface->isValid()) {
+        slotRemotePlaceConnected();
+    }
+}
+
+void
+Place::slotRemotePlaceConnected()
+{
+    m_online = true;
+    Q_EMIT onlineChanged(m_online);
+
+    QDBusConnection connection = m_dbusIface->connection();
+
+    // Connect to EntryAdded and EntryRemoved signals
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
                        "EntryAdded", this, SLOT(onEntryAdded(const PlaceEntryInfoStruct&)));
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
@@ -155,8 +179,13 @@ Place::connectToRemotePlace()
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
     QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
                      this, SLOT(gotEntries(QDBusPendingCallWatcher*)));
+}
 
-    m_online = true;
+void
+Place::slotRemotePlaceDisconnected()
+{
+    m_online = false;
+    Q_EMIT onlineChanged(m_online);
 }
 
 void

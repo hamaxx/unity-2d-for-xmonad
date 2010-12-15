@@ -37,6 +37,7 @@ class Place : public QAbstractListModel
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
     Q_PROPERTY(QString dbusName READ dbusName)
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath)
+    Q_PROPERTY(bool online READ online NOTIFY onlineChanged)
 
 public:
     Place(QObject* parent = 0);
@@ -56,13 +57,11 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    /* Connect to the remote representation of the place on DBus and monitor
-       changes. */
-    void connectToRemotePlace();
-
 Q_SIGNALS:
     void entryAdded(PlaceEntry*);
     void entryRemoved(PlaceEntry*);
+
+    void onlineChanged(bool);
 
 private:
     QSettings* m_file;
@@ -72,10 +71,17 @@ private:
     bool m_online;
     QDBusInterface* m_dbusIface;
 
+    /* Connect to the remote representation of the place on DBus and monitor
+       changes. */
+    void connectToRemotePlace();
+
 private Q_SLOTS:
     void onEntryAdded(const PlaceEntryInfoStruct&);
     void onEntryRemoved(const QString&);
     void onEntryPositionChanged(uint);
+
+    void slotRemotePlaceConnected();
+    void slotRemotePlaceDisconnected();
 
     void gotEntries(QDBusPendingCallWatcher*);
 };
