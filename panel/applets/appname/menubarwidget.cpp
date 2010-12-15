@@ -28,6 +28,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
+#include <QTimer>
 
 class MyDBusMenuImporter : public DBusMenuImporter
 {
@@ -78,7 +79,7 @@ void MenuBarWidget::setupMenuBar()
     separatorLabel->setFixedSize(pix.size());
 
     m_menuBar = new QMenuBar;
-    m_menuBar->installEventFilter(this);
+    new MenuBarClosedHelper(this);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -86,6 +87,12 @@ void MenuBarWidget::setupMenuBar()
     layout->addWidget(separatorLabel);
     layout->addWidget(m_menuBar);
     m_menuBar->setNativeMenuBar(false);
+
+    m_updateMenuBarTimer = new QTimer(this);
+    m_updateMenuBarTimer->setSingleShot(true);
+    m_updateMenuBarTimer->setInterval(0);
+    connect(m_updateMenuBarTimer, SIGNAL(timeout()),
+        SLOT(updateMenuBar()));
 }
 
 void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
@@ -159,16 +166,13 @@ void MenuBarWidget::updateMenuBar()
             */
         }
     }
-    fillMenuBar(menu);
-}
 
-void MenuBarWidget::fillMenuBar(QMenu* menu)
-{
     m_menuBar->clear();
     // FIXME: Empty menu
     if (!menu) {
         return;
     }
+    menu->installEventFilter(this);
     Q_FOREACH(QAction* action, menu->actions()) {
         if (action->isSeparator()) {
             continue;
@@ -179,7 +183,29 @@ void MenuBarWidget::fillMenuBar(QMenu* menu)
 
 bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
 {
-    if (object == m_menuBar) {
+    switch (event->type()) {
+    case QEvent::ActionAdded:
+    case QEvent::ActionRemoved:
+    case QEvent::ActionChanged:
+        m_updateMenuBarTimer->start();
+        break;
+    default:
+        break;
+    }
+    return false;
+}
+
+// MenuBarClosedHelper ----------------------------------------
+MenuBarClosedHelper::MenuBarClosedHelper(MenuBarWidget* widget)
+: QObject(widget)
+, m_widget(widget)
+{
+    widget->menuBar()->installEventFilter(this);
+}
+
+bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_widget->menuBar()) {
         switch (event->type()) {
             case QEvent::ActionAdded:
             case QEvent::ActionRemoved:
@@ -202,14 +228,14 @@ bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
-void MenuBarWidget::emitMenuBarClosed()
+void MenuBarClosedHelper::emitMenuBarClosed()
 {
-    if (!m_menuBar->activeAction()) {
-        menuBarClosed();
+    if (!m_widget->menuBar()->activeAction()) {
+        QMetaObject::invokeMethod(m_widget, "menuBarClosed");
     }
 }
 
-void MenuBarWidget::menuBarActionEvent(QActionEvent* event)
+void MenuBarClosedHelper::menuBarActionEvent(QActionEvent* event)
 {
     // Install/remove event filters on top level menus so that we can know when
     // they hide themselves (to emit menuBarClosed())
