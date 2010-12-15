@@ -1,5 +1,6 @@
 import Qt 4.7
 import UnityApplications 1.0
+import UnityPlaces 1.0
 
 Item {
     width: desktop.width

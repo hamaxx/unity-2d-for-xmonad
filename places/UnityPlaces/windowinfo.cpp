@@ -2,8 +2,6 @@
 #include <libwnck/window.h>
 #include <libwnck/workspace.h>
 
-#include "launcherapplication.h"
-
 #include <glib-2.0/glib.h>
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -129,7 +127,7 @@ void WindowInfo::setActive(bool active) {
     WnckWorkspace* workspace = wnck_window_get_workspace(win);
     wnck_workspace_activate(workspace, CurrentTime);
     if (wnck_workspace_is_virtual(workspace)) {
-        LauncherApplication::moveViewportToWindow(win);
+        WindowInfo::moveViewportToWindow(win);
     }
 
     wnck_window_activate(win, CurrentTime);
@@ -191,3 +189,28 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
 
     return true;
 }
+
+void WindowInfo::moveViewportToWindow(WnckWindow* window) {
+    WnckWorkspace* workspace = wnck_window_get_workspace(window);
+    WnckScreen* screen = wnck_window_get_screen(window);
+
+    int screen_width = wnck_screen_get_width(screen);
+    int screen_height = wnck_screen_get_height(screen);
+    int viewport_x = wnck_workspace_get_viewport_x(workspace);
+    int viewport_y = wnck_workspace_get_viewport_y(workspace);
+
+    int window_x, window_y, window_width, window_height;
+    wnck_window_get_geometry(window, &window_x, &window_y,
+                                     &window_width, &window_height);
+
+    /* Compute the row and column of the "virtual workspace" that contains
+       the window. A "virtual workspace" is a portion of the desktop of the
+       size of the screen.
+    */
+    int viewport_column = (viewport_x + window_x) / screen_width;
+    int viewport_row = (viewport_y + window_y) / screen_height;
+
+    wnck_screen_move_viewport(screen, viewport_column * screen_width,
+                                      viewport_row * screen_height);
+}
+

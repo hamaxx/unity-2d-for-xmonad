@@ -28,8 +28,6 @@
 #include "config.h"
 #include "spreadview.h"
 
-#include "windowimageprovider.h"
-
 #include <QDebug>
 #include <QTimer>
 #include <QX11Info>
@@ -46,18 +44,6 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     SpreadView view;
-    WindowImageProvider provider;
-
-    /* Always activate composite, so we can capture windows that are partially obscured
-       Ideally we want to activate it only when QX11Info::isCompositingManagerRunning()
-       is false, but in my experience it is not reliable at all.
-       The only downside when calling this is that there's a small visual glitch at the
-       moment when it's called on the entire desktop, and the same thing when the app
-       terminates. This happens regardless if the WM has activated composite already or
-       not.
-    */
-    provider.activateComposite();
-    view.engine()->addImageProvider(QString("window"),& provider);
 
     view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     view.setAttribute(Qt::WA_OpaquePaintEvent);
@@ -71,13 +57,10 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                      &view, SLOT(fitToAvailableSpace(int)));
 
-    // This is needed for UnityApplications
+    // This is needed for UnityApplications and UnityPlaces
     view.engine()->addImportPath(unityQtImportPath() + "/../launcher/");
+    view.engine()->addImportPath(unityQtImportPath() + "/../places/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
-
-    view.rootContext()->setContextProperty("spreadView", &view);
-    view.rootContext()->setContextProperty("desktop",
-                                           QApplication::desktop()->availableGeometry());
 
     view.setSource(QUrl("./Spread.qml"));
     view.showMaximized();

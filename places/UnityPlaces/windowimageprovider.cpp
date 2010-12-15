@@ -8,6 +8,15 @@
 
 WindowImageProvider::WindowImageProvider() :
     QDeclarativeImageProvider(QDeclarativeImageProvider::Image) {
+    /* Always activate composite, so we can capture windows that are partially obscured
+       Ideally we want to activate it only when QX11Info::isCompositingManagerRunning()
+       is false, but in my experience it is not reliable at all.
+       The only downside when calling this is that there's a small visual glitch at the
+       moment when it's called on the entire desktop, and the same thing when the app
+       terminates. This happens regardless if the WM has activated composite already or
+       not.
+    */
+    activateComposite();
 }
 
 WindowImageProvider::~WindowImageProvider() {

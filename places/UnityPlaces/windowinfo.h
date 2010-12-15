@@ -42,6 +42,8 @@ public:
     bool active() const;
     void setActive(bool active);
 
+    static void moveViewportToWindow(WnckWindow* window);
+
 signals:
     void windowChanged(BamfWindow *window);
     void xidChanged(QVariant xid);

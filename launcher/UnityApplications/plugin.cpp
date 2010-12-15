@@ -8,8 +8,6 @@
 #include "launcherdeviceslist.h"
 #include "launcherplaceslist.h"
 #include "iconimageprovider.h"
-#include "windowinfo.h"
-#include "windowslist.h"
 #include "plugin.h"
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -32,9 +30,6 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Trashes>(uri, 0, 1, "Trashes");
     qmlRegisterType<Trash>(uri, 0, 1, "Trash");
-
-    qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
-    qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

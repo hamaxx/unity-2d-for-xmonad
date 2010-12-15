@@ -20,8 +20,6 @@ set(UnityApplications_SRCS
     trash.cpp
     launchermenu.cpp
     plugin.cpp
-    windowinfo.cpp
-    windowslist.cpp
     )
 
 set(UnityApplications_MOC_HDRS
@@ -37,8 +35,6 @@ set(UnityApplications_MOC_HDRS
     trash.h
     launchermenu.h
     plugin.h
-    windowinfo.h
-    windowslist.h
     )
 
 
@@ -71,7 +67,6 @@ target_link_libraries(UnityApplications
     ${QTGCONF_LDFLAGS}
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
-    ${WNCK_LDFLAGS}
     )
 
 # Install
