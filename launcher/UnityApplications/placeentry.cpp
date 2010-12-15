@@ -23,6 +23,7 @@
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>
+#include <QDBusReply>
 
 // Marshall the RendererInfoStruct data into a D-Bus argument
 QDBusArgument &operator<<(QDBusArgument &argument, const RendererInfoStruct &r)
@@ -622,7 +623,11 @@ PlaceEntry::activateEntry(const int section)
     }
 
     QDBusInterface iface("com.canonical.UnityQt", "/dash", "local.DashDeclarativeView");
-    iface.call("activatePlaceEntry", m_fileName, m_groupName, section);
+    QDBusReply<void> reply = iface.call(QLatin1String("activatePlaceEntry"),
+                                        m_fileName, m_groupName, section);
+    if (!reply.isValid()) {
+        qWarning() << "ERROR:" << reply.error().message();
+    }
 }
 
 void
