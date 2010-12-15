@@ -337,7 +337,6 @@ LauncherApplication::close()
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
-    GList* windows = wnck_screen_get_windows(screen);
 
     /* Stop monitoring windows, this would make useless calls to
        updateHasVisibleWindow() and result in trying to invoke methods on stale
@@ -345,18 +344,9 @@ LauncherApplication::close()
     m_application->disconnect(SIGNAL(WindowAdded(BamfWindow*)));
     m_application->disconnect(SIGNAL(WindowRemoved(BamfWindow*)));
 
-    for (int i = 0; i < size; ++i)
-    {
-        uint xid = xids->at(i);
-        for(GList* li = windows; li != NULL; li = g_list_next(li))
-        {
-            WnckWindow* window = (WnckWindow*) li->data;
-            if (wnck_window_get_xid(window) == xid)
-            {
-                wnck_window_close(window, CurrentTime);
-                break;
-            }
-        }
+    for (int i = 0; i < size; ++i) {
+        WnckWindow* window = wnck_window_get(xids->at(i));
+        wnck_window_close(window, CurrentTime);
     }
 }
 
@@ -370,35 +360,28 @@ LauncherApplication::show()
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
-    GList* windows = wnck_screen_get_windows(screen);
 
-    for(GList* li = windows; li != NULL; li = g_list_next(li))
-    {
-        WnckWindow* window = (WnckWindow*) li->data;
-        if (wnck_window_get_xid(window) == xid)
-        {
-            WnckWorkspace* workspace = wnck_window_get_workspace(window);
+    WnckWindow* window = wnck_window_get(xid);
+    WnckWorkspace* workspace = wnck_window_get_workspace(window);
 
-            /* Using X.h's CurrentTime (= 0) */
-            wnck_workspace_activate(workspace, CurrentTime);
+    /* Using X.h's CurrentTime (= 0) */
+    wnck_workspace_activate(workspace, CurrentTime);
 
-            /* If the workspace contains a viewport then move the viewport so
-               that the window is visible.
-               Compiz for example uses only one workspace with a desktop larger
-               than the screen size which means that a viewport is used to
-               determine what part of the desktop is visible.
+    /* If the workspace contains a viewport then move the viewport so
+       that the window is visible.
+       Compiz for example uses only one workspace with a desktop larger
+       than the screen size which means that a viewport is used to
+       determine what part of the desktop is visible.
 
-               Reference:
-               http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#largedesks
-            */
-            if (wnck_workspace_is_virtual(workspace))
-                moveViewportToWindow(window);
-
-            /* Using X.h's CurrentTime (= 0) */
-            wnck_window_activate(window, CurrentTime);
-            break;
-        }
+       Reference:
+       http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#largedesks
+    */
+    if (wnck_workspace_is_virtual(workspace)) {
+        moveViewportToWindow(window);
     }
+
+    /* Using X.h's CurrentTime (= 0) */
+    wnck_window_activate(window, CurrentTime);
 }
 
 void
