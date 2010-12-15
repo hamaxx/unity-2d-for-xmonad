@@ -252,7 +252,7 @@ LauncherApplication::updateHasVisibleWindow()
     bool prev = m_has_visible_window;
 
     if (m_application != NULL) {
-        m_has_visible_window = m_application->xids()->size() > 0;
+        m_has_visible_window = QScopedPointer<BamfUintList>(m_application->xids())->size() > 0;
     } else {
         m_has_visible_window = false;
     }
@@ -330,7 +330,7 @@ LauncherApplication::close()
     if (m_application == NULL)
         return;
 
-    BamfUintList* xids = m_application->xids();
+    QScopedPointer<BamfUintList> xids(m_application->xids());
     int size = xids->size();
     if (size < 1)
         return;
@@ -353,10 +353,17 @@ LauncherApplication::close()
 void
 LauncherApplication::show()
 {
-    if(m_application == NULL || m_application->xids()->size() < 1) return;
+    if(m_application == NULL) {
+        return;
+    }
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    if (xids->size() < 1) {
+        return;
+    }
 
     /* FIXME: pick the most important window, not just the first one */
-    uint xid = m_application->xids()->at(0);
+    uint xid = xids->at(0);
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
