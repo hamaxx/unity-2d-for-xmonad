@@ -243,17 +243,16 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
         return;
     }
 
-    BamfUintList* xids;
+    QScopedPointer<BamfUintList> xids;
     if (xid == 0) {
-        xids = m_application->xids();
+        xids.reset(m_application->xids());
     } else {
         QList<uint> list;
         list.append(xid);
-        xids = new BamfUintList(list);
+        xids.reset(new BamfUintList(list));
     }
     int size = xids->size();
     if (size < 1) {
-        delete xids;
         return;
     }
 
@@ -264,8 +263,6 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
         WnckWindow* window = wnck_window_get(xids->at(i));
         wnck_window_set_icon_geometry(window, x, y, width, height);
     }
-
-    delete xids;
 }
 
 void
