@@ -19,8 +19,6 @@ Item {
     height: win.size.height * parent.ratio
     z: win.z
 
-    property real darkness: 0.0
-
     Item {
         id: box
         anchors.fill: parent
@@ -89,7 +87,7 @@ Item {
                 id: darken
                 anchors.fill:  parent
                 color: "black"
-                opacity: 0.1 * item.darkness
+                opacity: 0.1
             }
 
             Rectangle {
@@ -149,7 +147,6 @@ Item {
                 height: (parent.height - parent.anchors.margins) / parent.rows
                 x: column * columnWidth
                 y: row * height
-                darkness: 1.0
             }
             PropertyChanges {
                 target: itemArea
