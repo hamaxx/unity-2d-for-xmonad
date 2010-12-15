@@ -66,6 +66,11 @@ int main(int argc, char *argv[])
     view.setFocus();
     view.engine()->addImportPath(unityQtImportPath());
 
+    /* Always fit the available space on the desktop */
+    view.fitToAvailableSpace(QApplication::desktop()->screenNumber(&view));
+    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                     &view, SLOT(fitToAvailableSpace(int)));
+
     // This is needed for UnityApplications
     view.engine()->addImportPath(unityQtImportPath() + "/../launcher/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));

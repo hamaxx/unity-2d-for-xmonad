@@ -19,8 +19,22 @@
 
 #include "spreadview.h"
 
+#include <QDesktopWidget>
+#include <QApplication>
+
 SpreadView::SpreadView() : QDeclarativeView() {
 }
 
+void SpreadView::fitToAvailableSpace(int screen) {
+    QDesktopWidget *desktop = QApplication::desktop();
+    int current_screen = desktop->screenNumber(this);
+
+    if(screen == current_screen)
+    {
+        QRect geometry = desktop->availableGeometry(this);
+        setGeometry(geometry);
+        setFixedSize(geometry.size());
+    }
+}
 
 

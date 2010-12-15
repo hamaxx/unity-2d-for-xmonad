@@ -26,6 +26,9 @@ class SpreadView : public QDeclarativeView
 {
     Q_OBJECT
 
+public slots:
+    void fitToAvailableSpace(int screen);
+
 public:
     explicit SpreadView();
 };
