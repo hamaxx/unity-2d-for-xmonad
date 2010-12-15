@@ -21,7 +21,6 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
-#include <QDragEnterEvent>
 
 class SpreadView : public QDeclarativeView
 {
@@ -29,23 +28,6 @@ class SpreadView : public QDeclarativeView
 
 public:
     explicit SpreadView();
-
-signals:
-    void desktopFileDropped(QString path);
-
-//public slots:
-//    void workAreaResized(int screen);
-
-private:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-
-    /* Whether the launcher is already being resized */
-    bool m_resizing;
-
-    /* Whether space at the left of the screen has already been reserved */
-    bool m_reserved;
 };
 
 #endif // LAUNCHERVIEW
