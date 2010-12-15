@@ -57,10 +57,11 @@ Q_OBJECT
 public:
     MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
 
-    QMenuBar* menuBar() const { return m_menuBar; }
+    bool isEmpty() const;
 
 Q_SIGNALS:
     void menuBarClosed();
+    void isEmptyChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*); // reimp
@@ -86,6 +87,8 @@ private:
     void setupMenuBar();
     QMenu* menuForWinId(WId) const;
     void updateActiveWinId(BamfWindow*);
+
+    friend class MenuBarClosedHelper;
 };
 
 #endif /* MENUBARWIDGET_H */

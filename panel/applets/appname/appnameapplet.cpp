@@ -156,6 +156,8 @@ struct AppNameAppletPrivate
         m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
+        QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
+            q, SLOT(updateWidgets()));
     }
 };
 
@@ -188,7 +190,7 @@ AppNameApplet::~AppNameApplet()
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
-    bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
+    bool menuBarIsEmpty = d->m_menuBarWidget->isEmpty();
     bool showMenu = window()->underMouse() && !menuBarIsEmpty;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
