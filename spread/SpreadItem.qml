@@ -48,12 +48,12 @@ Item {
             fillMode: Image.PreserveAspectFit
             smooth: true
 
-            opacity: (status == Image.Error) ? 0.0 : 1.0
+            visible: (status != Image.Error)
         }
 
         Rectangle {
             id: window_box
-            opacity: (shot.status == Image.Error) ? 1.0 : 0.0
+            visible: (shot.status == Image.Error)
 
             width: parent.scaledWinWidth
             height: parent.scaledWinHeight
@@ -83,6 +83,7 @@ Item {
             anchors.centerIn: parent
             width: box.scaledWinWidth
             height: box.scaledWinHeight
+            visible: false
 
             Rectangle {
                 id: darken
@@ -103,10 +104,10 @@ Item {
                 anchors.centerIn: parent
                 width: Math.min(parent.width, label.paintedWidth + labelMargins)
                 height: label.height + labelMargins
+                visible: false
 
                 radius: 3
                 color: "#99000000" // should equal: backgroundColor: "black"; opacity: 0.6
-                visible: false
 
                 Text {
                     id: label
@@ -166,14 +167,15 @@ Item {
             SequentialAnimation {
                 PropertyAction { target: shot; property: "smooth"; value: false }
                 PropertyAction { target: itemArea; property: "enabled"; value: false }
-                PropertyAction { target: labelBox; property: "visible"; value: false }
+                PropertyAction { target: itemExtras; property: "visible"; value: false }
                 NumberAnimation {
-                    properties: "x,y,width,height,darkness";
+                    properties: "x,y,width,height";
                     duration: 250;
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
                 PropertyAction { target: itemArea; property: "enabled"; value: true }
+                PropertyAction { target: itemExtras; property: "visible"; value: true }
                 ScriptAction { scriptName: "activate" }
             }
         }
