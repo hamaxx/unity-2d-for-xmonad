@@ -96,7 +96,7 @@ Item {
                 property int labelMargins: 6
 
                 anchors.centerIn: parent
-                width: Math.min(parent.width, label.paintedWidth) + labelMargins
+                width: Math.min(parent.width, label.paintedWidth + labelMargins)
                 height: label.height + labelMargins
 
                 radius: 3
