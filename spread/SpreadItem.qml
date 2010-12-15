@@ -4,8 +4,6 @@ Item {
     id: item
     property variant win
 
-    property real darkness: 0.0
-
     property int column
     property int row
 
@@ -20,6 +18,8 @@ Item {
     width: win.size.width * parent.ratio
     height: win.size.height * parent.ratio
     z: win.z
+
+    property real darkness: 0.0
 
     Item {
         id: box
@@ -39,8 +39,7 @@ Item {
             height: parent.scaledWinHeight
 
             hoverEnabled: true
-            onEntered: if (item.state == "spread") item.darkness = 0.0
-            onExited: if (item.state == "spread") item.darkness = 1.0
+            enabled: false
         }
 
         Image {
@@ -81,16 +80,51 @@ Item {
             }
         }
 
-        Rectangle {
-            id: darken
+        Item {
+            id: itemExtras
+
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
             width: box.scaledWinWidth
             height: box.scaledWinHeight
 
-            color: "black"
-            opacity: 0.1 * item.darkness
+            Rectangle {
+                id: darken
+                anchors.fill:  parent
+                color: "black"
+                opacity: 0.1 * item.darkness
+            }
+
+            Rectangle {
+                id: labelBox
+                property int labelMargins: 6
+
+                anchors.centerIn: parent
+                width: Math.min(parent.width, label.paintedWidth) + labelMargins
+                height: label.height + labelMargins
+
+                radius: 3
+                color: "#99000000" // should equal: backgroundColor: "black"; opacity: 0.6
+                visible: false
+
+                Text {
+                    id: label
+                    text: win.title
+                    elide: Text.ElideRight
+                    color: "white"
+
+                    anchors.centerIn: parent
+                    width: itemExtras.width - parent.labelMargins
+                    horizontalAlignment: Text.AlignHCenter
+                }
+            }
+
+            states: State {
+                when: itemArea.containsMouse
+                PropertyChanges { target: darken; visible: false }
+                PropertyChanges { target: labelBox; visible: true }
+            }
         }
     }
 
@@ -104,10 +138,6 @@ Item {
                             win.active = true;
                             Qt.quit()
                         }
-            }
-            PropertyChanges {
-                target: itemArea
-                onClicked: undefined
             }
         },
         State {
@@ -135,12 +165,14 @@ Item {
         Transition {
             SequentialAnimation {
                 PropertyAction { target: shot; property: "smooth"; value: false }
+                PropertyAction { target: itemArea; property: "enabled"; value: false }
                 NumberAnimation {
                     properties: "x,y,width,height,darkness";
                     duration: 250;
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
+                PropertyAction { target: itemArea; property: "enabled"; value: true }
                 ScriptAction { scriptName: "activate" }
             }
         }
