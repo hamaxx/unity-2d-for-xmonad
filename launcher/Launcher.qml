@@ -80,6 +80,12 @@ Item {
                 onMovementStarted: item.menu.hide()
             }
 
+            function setIconGeometry() {
+                if (running) {
+                    item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height)
+                }
+            }
+
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }
                 NumberAnimation { target: wrapper; property: "height"; from: 0; to: 54; duration: 250; easing.type: Easing.InOutQuad }
@@ -92,10 +98,25 @@ Item {
                 NumberAnimation { target: wrapper; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
                 PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
             }
+
+            onRunningChanged: setIconGeometry()
+            /* Note: this doesn’t work as expected for the first favorite
+               application in the list if it is already running when the
+               launcher is started, because its y property doesn’t change.
+               This isn’t too bad though, as the launcher is supposed to be
+               started before any other regular application. */
+            onYChanged: setIconGeometry()
+
+            Connections {
+                target: item
+                onWindowAdded: item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height, xid)
+                /* Not all items are applications. */
+                ignoreUnknownSignals: true
+            }
         }
     }
 
-   LauncherApplicationsList {
+    LauncherApplicationsList {
         id: applications
     }
 

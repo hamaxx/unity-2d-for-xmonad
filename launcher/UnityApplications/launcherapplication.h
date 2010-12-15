@@ -51,6 +51,7 @@ public:
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE void close();
     Q_INVOKABLE void expose();
+    Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, uint xid=0);
 
     Q_INVOKABLE virtual void createMenuActions();
 
@@ -63,6 +64,8 @@ signals:
 
     void closed();
 
+    void windowAdded(uint xid);
+
 private slots:
     void onBamfApplicationClosed(bool running);
     void onLaunchingTimeouted();
@@ -74,6 +77,8 @@ private slots:
     /* Contextual menu callbacks */
     void onKeepTriggered();
     void onQuitTriggered();
+
+    void onWindowAdded(BamfWindow*);
 
 private:
     BamfApplication *m_application;

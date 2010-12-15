@@ -204,6 +204,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
 
+    connect(application, SIGNAL(WindowAdded(BamfWindow*)), SLOT(onWindowAdded(BamfWindow*)));
+
     updateBamfApplicationDependentProperties();
 }
 
@@ -232,6 +234,41 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     m_application = NULL;
     updateBamfApplicationDependentProperties();
     emit closed();
+}
+
+void
+LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint xid)
+{
+    if (m_application == NULL) {
+        return;
+    }
+
+    QScopedPointer<BamfUintList> xids;
+    if (xid == 0) {
+        xids.reset(m_application->xids());
+    } else {
+        QList<uint> list;
+        list.append(xid);
+        xids.reset(new BamfUintList(list));
+    }
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+
+    for (int i = 0; i < size; ++i) {
+        WnckWindow* window = wnck_window_get(xids->at(i));
+        wnck_window_set_icon_geometry(window, x, y, width, height);
+    }
+}
+
+void
+LauncherApplication::onWindowAdded(BamfWindow* window)
+{
+    windowAdded(window->xid());
 }
 
 int
