@@ -9,7 +9,7 @@ Item {
     property int count: items.count
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / list.columns)
-    property int lastRowColumns: (rows * columns) - count
+    property int lastRowColumns: columns - ((rows * columns) - count)
     property real ratio: width / desktop.width
 
     Repeater {
