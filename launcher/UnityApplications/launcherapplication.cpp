@@ -375,12 +375,6 @@ LauncherApplication::close()
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
 
-    /* Stop monitoring windows, this would make useless calls to
-       updateHasVisibleWindow() and result in trying to invoke methods on stale
-       D-Bus objects. */
-    m_application->disconnect(SIGNAL(WindowAdded(BamfWindow*)));
-    m_application->disconnect(SIGNAL(WindowRemoved(BamfWindow*)));
-
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
         wnck_window_close(window, CurrentTime);
