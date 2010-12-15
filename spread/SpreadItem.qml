@@ -93,6 +93,11 @@ Item {
 
             Rectangle {
                 id: labelBox
+
+                /* This property (and the weird logic that uses it below)
+                   is needed since using regular margins isn't possible while
+                   scaling the text to the size of the outer box wihtout having
+                   a bindings loop */
                 property int labelMargins: 6
 
                 anchors.centerIn: parent
