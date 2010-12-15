@@ -166,6 +166,7 @@ Item {
             SequentialAnimation {
                 PropertyAction { target: shot; property: "smooth"; value: false }
                 PropertyAction { target: itemArea; property: "enabled"; value: false }
+                PropertyAction { target: labelBox; property: "visible"; value: false }
                 NumberAnimation {
                     properties: "x,y,width,height,darkness";
                     duration: 250;
