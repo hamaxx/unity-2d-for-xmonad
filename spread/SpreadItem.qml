@@ -32,8 +32,7 @@ Item {
 
         MouseArea {
             id: itemArea
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.centerIn: parent
 
             width: parent.scaledWinWidth
             height: parent.scaledWinHeight
@@ -59,8 +58,7 @@ Item {
             width: parent.scaledWinWidth
             height: parent.scaledWinHeight
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.centerIn: parent
 
             border.width: 1
             border.color: "black"
@@ -70,8 +68,7 @@ Item {
                 source: "image://icons/" + item.win.icon
                 asynchronous: true
 
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.centerIn: parent
                 fillMode: Image.PreserveAspectFit
 
                 height: 48
@@ -83,9 +80,7 @@ Item {
         Item {
             id: itemExtras
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-
+            anchors.centerIn: parent
             width: box.scaledWinWidth
             height: box.scaledWinHeight
 
