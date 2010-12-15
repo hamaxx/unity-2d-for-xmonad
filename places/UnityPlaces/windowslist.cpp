@@ -50,6 +50,10 @@ WindowsList::WindowsList(QObject *parent) :
             }
             if (wnck_win == 0) continue;
 
+            if (wnck_window_is_skip_tasklist(wnck_win)) {
+                continue;
+            }
+
             WnckWindowType type = wnck_window_get_window_type(wnck_win);
             if (type != WNCK_WINDOW_NORMAL &&
                 type != WNCK_WINDOW_DIALOG &&
