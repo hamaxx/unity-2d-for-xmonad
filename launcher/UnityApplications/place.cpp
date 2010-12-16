@@ -30,7 +30,8 @@ Place::Place(QObject* parent) :
     QAbstractListModel(parent),
     m_file(NULL),
     m_online(false),
-    m_dbusIface(NULL)
+    m_dbusIface(NULL),
+    m_querying(false)
 {
 }
 
@@ -148,12 +149,54 @@ Place::connectToRemotePlace()
                                      UNITY_PLACE_INTERFACE);
     QDBusConnection connection = m_dbusIface->connection();
     if (!connection.isConnected()) {
+        qWarning() << "ERROR: unable to connect to bus:"
+                   << connection.lastError();
         return;
     }
 
     if (m_dbusIface->isValid()) {
         slotRemotePlaceConnected();
     }
+    else {
+        /* A call to the interface will spawn the corresponding place daemon. */
+        getEntries();
+    }
+}
+
+void
+Place::getEntries()
+{
+    if (m_querying) {
+        /* A call to GetEntries is already pending. */
+        return;
+    }
+    m_querying = true;
+
+    /* Get the list of entries and update the existing entries. */
+    QDBusPendingCall pcall = m_dbusIface->asyncCall("GetEntries");
+    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            SLOT(gotEntries(QDBusPendingCallWatcher*)));
+}
+
+void
+Place::startMonitoringEntries()
+{
+    QDBusConnection connection = m_dbusIface->connection();
+    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
+                       "EntryAdded", this, SLOT(onEntryAdded(const PlaceEntryInfoStruct&)));
+    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
+                       "EntryRemoved", this, SLOT(onEntryRemoved(const QString&)));
+}
+
+void
+Place::stopMonitoringEntries()
+{
+    QDBusConnection connection = m_dbusIface->connection();
+    connection.disconnect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
+                          "EntryAdded", this, SLOT(onEntryAdded(const PlaceEntryInfoStruct&)));
+    connection.disconnect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
+                          "EntryRemoved", this, SLOT(onEntryRemoved(const QString&)));
 }
 
 void
@@ -162,19 +205,8 @@ Place::slotRemotePlaceConnected()
     m_online = true;
     Q_EMIT onlineChanged(m_online);
 
-    QDBusConnection connection = m_dbusIface->connection();
-
-    // Connect to EntryAdded and EntryRemoved signals
-    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
-                       "EntryAdded", this, SLOT(onEntryAdded(const PlaceEntryInfoStruct&)));
-    connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_INTERFACE,
-                       "EntryRemoved", this, SLOT(onEntryRemoved(const QString&)));
-
-    // Get the list of entries and update the existing entries.
-    QDBusPendingCall pcall = m_dbusIface->asyncCall("GetEntries");
-    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
-    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            SLOT(gotEntries(QDBusPendingCallWatcher*)));
+    startMonitoringEntries();
+    getEntries();
 }
 
 void
@@ -182,6 +214,8 @@ Place::slotRemotePlaceDisconnected()
 {
     m_online = false;
     Q_EMIT onlineChanged(m_online);
+
+    stopMonitoringEntries();
 
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     while (!m_entries.isEmpty()) {
@@ -287,5 +321,6 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
         }
     }
     watcher->deleteLater();
+    m_querying = false;
 }
 

@@ -76,6 +76,11 @@ private:
        changes. */
     void connectToRemotePlace();
 
+    void getEntries();
+    void startMonitoringEntries();
+    void stopMonitoringEntries();
+    bool m_querying;
+
 private Q_SLOTS:
     void onEntryAdded(const PlaceEntryInfoStruct&);
     void onEntryRemoved(const QString&);
