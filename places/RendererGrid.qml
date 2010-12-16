@@ -93,8 +93,8 @@ Renderer {
 
             property int cellsPerLine: Math.floor(width/results.cellWidth)
             /* Only display one line of items when folded */
-            property int countDisplayed: folded ? cellsPerLine : count
-            property int totalHeight: results.cellHeight*Math.ceil(countDisplayed/cellsPerLine)
+            property int displayedCount: folded ? cellsPerLine : count
+            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerLine)
 
             cellWidth: renderer.cellWidth+renderer.horizontalSpacing
             cellHeight: renderer.cellHeight+renderer.verticalSpacing
