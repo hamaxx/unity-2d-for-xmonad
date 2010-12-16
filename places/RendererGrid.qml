@@ -35,7 +35,7 @@ Renderer {
         id: header
 
         visible: results.count > 0
-        moreAvailable: results.count >= results.cellsPerLine
+        availableCount: results.count - results.cellsPerLine
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
