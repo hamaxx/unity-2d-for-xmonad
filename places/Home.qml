@@ -1,9 +1,68 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
+import UnityPlaces 1.0 /* Necessary for QSortFilterProxyModelQML */
 import gconf 1.0
 
 Page {
+    /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
+    property bool globalSearchActive: searchQuery != ""
+
+    Binding {
+        target: pages
+        property: "globalSearchQuery"
+        value: searchQuery
+        when: globalSearchActive
+    }
+
+    ListViewWithScrollbar {
+        id: globalSearch
+
+        opacity: globalSearchActive ? 1 : 0
+        anchors.fill: parent
+
+        list.model: pages.places
+
+        list.delegate: UnityDefaultRenderer {
+            /* -2 is here because no rightMargin is set in ListViewWithScrollbar.list yet */
+            width: ListView.view.width-2
+
+            parentListView: list
+            place: modelData
+            displayName: modelData.name
+            iconHint: modelData.icon
+
+            /* Filter out results for which the corresponding group's renderer
+               is 'UnityEmptySearchRenderer'.
+               Each result has a column (the second one) containing the id of
+               the group it belongs to (groupId).
+            */
+            model:  QSortFilterProxyModelQML {
+                model: modelData.globalResultsModel
+
+                /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'
+                   by hardcoding it instead of looking it up in the Place's
+                   groupsModel as Unity does.
+
+                   Two solutions could be envisioned:
+                   1) Actually looking for the row in the Place's groupsModel
+                      that has in its first column 'UnityEmptySearchRenderer'.
+                      That would require adding an API in libqtdee's DeeListModel.
+                   2) Changing the behaviour of the place daemons so that the
+                      Place's globalResultsModel is empty when there are no
+                      results. The applications place does that but not the
+                      files place.
+                */
+                property int ignoredGroupId: 5
+                filterRole: 2 /* groupId column */
+                filterRegExp: RegExp("^[^%1]$".arg(ignoredGroupId)) /* anything but the ignoredGroupId */
+            }
+        }
+    }
+
     Flow {
+        id: buttons
+
+        opacity: globalSearchActive ? 0 : 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
