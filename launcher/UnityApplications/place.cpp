@@ -78,8 +78,8 @@ Place::setFileName(const QString &file)
             entry->setIcon(m_file->value("Icon").toString());
             m_file->endGroup();
             entry->setPosition(i++);
-            QObject::connect(entry, SIGNAL(positionChanged(uint)),
-                             this, SLOT(onEntryPositionChanged(uint)));
+            connect(entry, SIGNAL(positionChanged(uint)),
+                    SLOT(onEntryPositionChanged(uint)));
             m_static_entries.append(entry);
         }
         connectToRemotePlace();
@@ -173,8 +173,8 @@ Place::slotRemotePlaceConnected()
     // Get the list of entries and update the existing entries.
     QDBusPendingCall pcall = m_dbusIface->asyncCall("GetEntries");
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                     this, SLOT(gotEntries(QDBusPendingCallWatcher*)));
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            SLOT(gotEntries(QDBusPendingCallWatcher*)));
 }
 
 void
@@ -196,12 +196,22 @@ Place::slotRemotePlaceDisconnected()
 void
 Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 {
-    PlaceEntry* entry = new PlaceEntry(this);
-    entry->setDbusName(m_dbusName);
-    entry->setDbusObjectPath(p.dbus_path);
+    PlaceEntry* entry = NULL;
+    QList<PlaceEntry*>::iterator i;
+    for (i = m_static_entries.begin(); i != m_static_entries.end(); ++i) {
+        if ((*i)->dbusObjectPath() == p.dbus_path) {
+            entry = *i;
+            break;
+        }
+    }
+    if (entry == NULL) {
+        entry = new PlaceEntry(this);
+        entry->setDbusName(m_dbusName);
+        entry->setDbusObjectPath(p.dbus_path);
+    }
     entry->updateInfo(p);
-    QObject::connect(entry, SIGNAL(positionChanged(uint)),
-                     this, SLOT(onEntryPositionChanged(uint)));
+    connect(entry, SIGNAL(positionChanged(uint)),
+            SLOT(onEntryPositionChanged(uint)), Qt::UniqueConnection);
     int index = m_entries.size();
     beginInsertRows(QModelIndex(), index, index);
     m_entries.append(entry);
@@ -227,7 +237,9 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
         beginRemoveRows(QModelIndex(), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
-        delete entry;
+        if (!m_static_entries.contains(entry)) {
+            delete entry;
+        }
     }
 }
 
