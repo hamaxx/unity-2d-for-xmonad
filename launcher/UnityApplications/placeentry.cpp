@@ -143,7 +143,7 @@ static const char* SECTION_PROPERTY = "section";
 PlaceEntry::PlaceEntry(QObject* parent) :
     LauncherItem(parent),
     m_position(0),
-    m_sensitive(true),
+    m_sensitive(false),
     m_sections(NULL),
     m_entryGroupsModel(NULL),
     m_entryResultsModel(NULL),

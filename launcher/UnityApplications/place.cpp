@@ -82,6 +82,7 @@ Place::setFileName(const QString &file)
             connect(entry, SIGNAL(positionChanged(uint)),
                     SLOT(onEntryPositionChanged(uint)));
             m_static_entries[entry->dbusObjectPath()] = entry;
+            m_entries.append(entry);
         }
         connectToRemotePlace();
     }
@@ -223,6 +224,9 @@ Place::slotRemotePlaceDisconnected()
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
         }
+        else {
+            entry->setSensitive(false);
+        }
     }
     endRemoveRows();
 }
@@ -242,6 +246,7 @@ Place::onEntryAdded(const PlaceEntryInfoStruct& p)
     entry->updateInfo(p);
     connect(entry, SIGNAL(positionChanged(uint)),
             SLOT(onEntryPositionChanged(uint)), Qt::UniqueConnection);
+    entry->setSensitive(true);
     int index = m_entries.size();
     beginInsertRows(QModelIndex(), index, index);
     m_entries.append(entry);
@@ -270,6 +275,9 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
         }
+        else {
+            entry->setSensitive(false);
+        }
     }
 }
 
@@ -293,6 +301,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
         qWarning() << "ERROR:" << m_dbusName << reply.error().message();
+        slotRemotePlaceDisconnected();
     } else {
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
         QList<PlaceEntryInfoStruct>::const_iterator i;
@@ -300,10 +309,15 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
             if (m_static_entries.contains(i->dbus_path)) {
                 PlaceEntry* entry = m_static_entries.value(i->dbus_path);
                 entry->updateInfo(*i);
-                int index = m_entries.size();
-                beginInsertRows(QModelIndex(), index, index);
-                m_entries.append(entry);
-                endInsertRows();
+                if (m_entries.contains(entry)) {
+                    entry->setSensitive(true);
+                }
+                else {
+                    int index = m_entries.size();
+                    beginInsertRows(QModelIndex(), index, index);
+                    m_entries.append(entry);
+                    endInsertRows();
+                }
                 entry->connectToRemotePlaceEntry();
             }
             else {

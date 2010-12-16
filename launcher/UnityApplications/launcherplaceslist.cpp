@@ -64,6 +64,7 @@ Place*
 LauncherPlacesList::addPlace(const QString& file)
 {
     Place* place = new Place(this);
+    aggregateListModel(place);
     connect(place, SIGNAL(onlineChanged(bool)),
             SLOT(slotPlaceOnlineChanged(bool)));
     place->setFileName(file);
@@ -123,7 +124,9 @@ LauncherPlacesList::slotPlaceOnlineChanged(bool online)
 {
     Place* place = static_cast<Place*>(sender());
     if (online) {
-        aggregateListModel(place);
+        if (!m_models.contains(place)) {
+            aggregateListModel(place);
+        }
     }
     else {
         removeListModel(place);
