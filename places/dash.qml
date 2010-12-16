@@ -64,7 +64,7 @@ Item {
             property string globalSearchQuery
             /* FIXME: hardcoded list of places
                       Ref: https://bugs.launchpad.net/bugs/684152 */
-            property variant places: [applications_place, files_place]
+            property variant places: [files_place, applications_place]
 
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
