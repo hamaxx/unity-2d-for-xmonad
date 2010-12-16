@@ -234,6 +234,10 @@ private:
 private Q_SLOTS:
     void onRendererInfoChanged(const RendererInfoStruct&);
 
+    void startMonitoringSections();
+    void stopMonitoringSections();
+    void slotSectionsChanged();
+
     /* Contextual menu callbacks */
     void onSectionTriggered();
 };
