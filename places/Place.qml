@@ -138,6 +138,7 @@ Page {
             }
 
             onLoaded: {
+                item.parentListView = place_results.list
                 item.displayName = displayName
                 item.iconHint = iconHint
                 item.model = group_model

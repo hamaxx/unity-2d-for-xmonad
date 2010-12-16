@@ -13,4 +13,5 @@ Item {
     property string iconHint /* Icon id of the group */
     property variant model /* List model containing the items to be displayed by the renderer */
     property variant place /* Reference to the place the group belongs to */
+    property variant parentListView /* Reference to the ListView the renderer is nested into */
 }
