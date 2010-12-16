@@ -102,6 +102,7 @@ Panel::Panel(QWidget* parent)
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+    setAttribute(Qt::WA_Hover);
     setAutoFillBackground(true);
 }
 

@@ -1,5 +1,7 @@
 import Qt 4.7
 import gconf 1.0
+/* Necessary to access the blended image provider */
+import UnityPlaces 1.0
 
 Item {
     property string overlay_color
@@ -35,7 +37,6 @@ Item {
     Image {
         id: picture
 
-        anchors.fill: parent
         visible: picture_filename.value
         source: {
             /* FIXME: Because /usr/share/backgrounds/warty-final-ubuntu.png is
@@ -56,7 +57,11 @@ Item {
             else
                 return filename
         }
+        width: dashView.screenGeometry.width
+        height: dashView.screenGeometry.height
         sourceSize.width: width
+        x: -dashView.availableGeometry.x
+        y: -dashView.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"

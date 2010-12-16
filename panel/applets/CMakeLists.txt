@@ -15,9 +15,9 @@ find_package(X11 REQUIRED)
 set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
-    appmenu/appmenuapplet.cpp
-    appmenu/registrar.cpp
     appname/appnameapplet.cpp
+    appname/menubarwidget.cpp
+    appname/registrar.cpp
     appname/windowhelper.cpp
     homebutton/homebuttonapplet.cpp
     indicator/abstractindicator.cpp
@@ -33,7 +33,7 @@ set(uqapplets_SRCS
     legacytray/x11embedpainter.cpp
     )
 
-qt4_add_dbus_adaptor(uqapplets_SRCS appmenu/org.ayatana.AppMenu.Registrar.xml
+qt4_add_dbus_adaptor(uqapplets_SRCS appname/org.ayatana.AppMenu.Registrar.xml
     registrar.h Registrar
     )
 
@@ -42,7 +42,6 @@ qt4_automoc(${uqapplets_SRCS})
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
-    ${CMAKE_CURRENT_SOURCE_DIR}/appmenu
     ${CMAKE_CURRENT_SOURCE_DIR}/appname
     ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator

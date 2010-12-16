@@ -133,7 +133,7 @@ LauncherApplicationsList::load()
 
     /* Insert running applications from Bamf */
     BamfMatcher& matcher = BamfMatcher::get_default();
-    BamfApplicationList* running_applications = matcher.running_applications();
+    QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
     BamfApplication* bamf_application;
 
     for(int i=0; i<running_applications->size(); i++)

@@ -74,7 +74,7 @@ Page {
 
             onClicked: {
                 dashView.active = false
-                software_center.launch()
+                software_center.activate()
             }
         }
     }
