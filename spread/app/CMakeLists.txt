@@ -13,6 +13,8 @@ set(spread_MOC_HDRS
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
 
+configure_file(unity-qt-spread.service.in unity-qt-spread.service)
+
 # Build
 add_executable(unity-qt-spread ${spread_SRCS} ${spread_MOC_SRCS})
 
@@ -33,6 +35,6 @@ install(TARGETS unity-qt-spread
     RUNTIME DESTINATION bin
     )
 
-install(FILES unity-qt-spread.desktop
-    DESTINATION share/applications
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-spread.service
+    DESTINATION share/dbus-1/services
     )

@@ -9,6 +9,7 @@ places/app/unity-qt-places
 places/app/unity-qt-places.service
 
 spread/app/unity-qt-spread
+spread/app/unity-qt-spread.service
 
 panel/app/unity-qt-panel
 panel/applets/registraradaptor.*

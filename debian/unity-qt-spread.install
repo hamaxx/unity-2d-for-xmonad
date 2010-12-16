@@ -1,0 +1,6 @@
+usr/bin/unity-qt-spread
+usr/share/dbus-1/services/unity-qt-spread.service
+usr/share/unity-qt/spread/Spread.qml
+usr/share/unity-qt/spread/SpreadGrid.qml
+usr/share/unity-qt/spread/SpreadItem.qml
+usr/share/unity-qt/spread/GnomeBackground.qml
