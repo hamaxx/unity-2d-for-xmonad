@@ -24,6 +24,7 @@
 #include <QString>
 #include <QSettings>
 #include <QList>
+#include <QHash>
 #include <QMetaType>
 #include <QDBusInterface>
 #include <QDBusPendingCallWatcher>
@@ -68,10 +69,10 @@ private:
     QString m_dbusName;
     QString m_dbusObjectPath;
 
-    /* Initial list of entries as parsed in the place file */
-    QList<PlaceEntry*> m_static_entries;
+    /* Initial dictionary (dbusObjectPath → entry) as parsed in the place file */
+    QHash<QString, PlaceEntry*> m_static_entries;
 
-    /* Online entries */
+    /* Online entries (ordered) */
     QList<PlaceEntry*> m_entries;
 
     bool m_online;

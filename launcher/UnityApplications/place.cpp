@@ -81,7 +81,7 @@ Place::setFileName(const QString &file)
             entry->setPosition(i++);
             connect(entry, SIGNAL(positionChanged(uint)),
                     SLOT(onEntryPositionChanged(uint)));
-            m_static_entries.append(entry);
+            m_static_entries[entry->dbusObjectPath()] = entry;
         }
         connectToRemotePlace();
     }
@@ -220,7 +220,7 @@ Place::slotRemotePlaceDisconnected()
     beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     while (!m_entries.isEmpty()) {
         PlaceEntry* entry = m_entries.takeFirst();
-        if (!m_static_entries.contains(entry)) {
+        if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
         }
     }
@@ -231,14 +231,10 @@ void
 Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 {
     PlaceEntry* entry = NULL;
-    QList<PlaceEntry*>::iterator i;
-    for (i = m_static_entries.begin(); i != m_static_entries.end(); ++i) {
-        if ((*i)->dbusObjectPath() == p.dbus_path) {
-            entry = *i;
-            break;
-        }
+    if (m_static_entries.contains(p.dbus_path)) {
+        entry = m_static_entries.value(p.dbus_path);
     }
-    if (entry == NULL) {
+    else {
         entry = new PlaceEntry(this);
         entry->setDbusName(m_dbusName);
         entry->setDbusObjectPath(p.dbus_path);
@@ -271,7 +267,7 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
         beginRemoveRows(QModelIndex(), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
-        if (!m_static_entries.contains(entry)) {
+        if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
         }
     }
@@ -301,21 +297,16 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
         QList<PlaceEntryInfoStruct>::const_iterator i;
         for (i = entries.constBegin(); i != entries.constEnd(); ++i) {
-            bool existing = false;
-            QList<PlaceEntry*>::iterator j;
-            for (j = m_static_entries.begin(); j != m_static_entries.end(); ++j) {
-                PlaceEntry* entry = *j;
-                if (entry->dbusObjectPath() == i->dbus_path) {
-                    entry->updateInfo(*i);
-                    int index = m_entries.size();
-                    beginInsertRows(QModelIndex(), index, index);
-                    m_entries.append(entry);
-                    endInsertRows();
-                    entry->connectToRemotePlaceEntry();
-                    existing = true;
-                }
+            if (m_static_entries.contains(i->dbus_path)) {
+                PlaceEntry* entry = m_static_entries.value(i->dbus_path);
+                entry->updateInfo(*i);
+                int index = m_entries.size();
+                beginInsertRows(QModelIndex(), index, index);
+                m_entries.append(entry);
+                endInsertRows();
+                entry->connectToRemotePlaceEntry();
             }
-            if (!existing) {
+            else {
                 onEntryAdded(*i);
             }
         }
