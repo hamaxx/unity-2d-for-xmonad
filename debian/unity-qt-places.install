@@ -1,4 +1,5 @@
 usr/bin/unity-qt-places
+usr/share/applications/unity-qt-places.desktop
 usr/share/dbus-1/services/unity-qt-places.service
 usr/share/unity-qt/places/AbstractButton.qml
 usr/share/unity-qt/places/Button.qml
