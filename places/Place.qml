@@ -19,6 +19,7 @@ Page {
         place_entry.SetActive(active)
         place_entry.SetActiveSection(activeSection)
         place_entry.SetSearch(searchQuery, [])
+        place_entry.SetGlobalSearch(globalSearchQuery, [])
     }
     onActiveChanged: {
         place_entry.SetActive(active)
@@ -30,6 +31,7 @@ Page {
     }
     onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
     onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
+    onGlobalSearchQueryChanged: place_entry.SetGlobalSearch(globalSearchQuery, [])
 
     /* Sections model containing the list of available sections for the place */
     sections: DeeListModel {
@@ -42,6 +44,10 @@ Page {
     property variant resultsModel: DeeListModel {
                                         service: dBusService
                                         objectPath: dBusDeePrefix +"ResultsModel"
+                                   }
+    property variant globalResultsModel: DeeListModel {
+                                        service: dBusService
+                                        objectPath: dBusDeePrefix ? dBusDeePrefix + "GlobalResultsModel" : ""
                                    }
     property variant dBusInterface: UnityPlace {
                                          service: dBusService

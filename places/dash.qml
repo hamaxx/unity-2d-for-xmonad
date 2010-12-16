@@ -57,6 +57,12 @@ Item {
         }
 
         Item {
+            id: pages
+
+            /* globalSearchQuery is used to store the Page.globalSearchQuery string
+               common to all the Page components */
+            property string globalSearchQuery
+
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
             anchors.bottom: parent.bottom
