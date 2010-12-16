@@ -96,7 +96,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QMap globalRendererHints READ globalRendererHints WRITE setGlobalRendererHints NOTIFY globalRendererHintsChanged)
 
 public:
-    PlaceEntry();
+    PlaceEntry(QObject* parent = 0);
     PlaceEntry(const PlaceEntry& other);
     ~PlaceEntry();
 
@@ -130,8 +130,6 @@ public:
     QString globalResultsModelName() const;
     DeeListModel* globalResultsModel();
     QMap<QString, QVariant> globalRendererHints() const;
-
-    bool online() const;
 
     /* setters */
     void setName(QString);
@@ -226,7 +224,6 @@ private:
     /* The remark about m_hints also applies to m_globalRendererHints. */
     QMap<QString, QVariant> m_globalRendererHints;
 
-    bool m_online;
     QDBusInterface* m_dbusIface;
 
     void setSection(const QString&);

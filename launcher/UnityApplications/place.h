@@ -67,6 +67,7 @@ private:
     QSettings* m_file;
     QString m_dbusName;
     QString m_dbusObjectPath;
+    QList<PlaceEntry*> m_static_entries; // initial list of entries as parsed in the place file
     QList<PlaceEntry*> m_entries;
     bool m_online;
     QDBusInterface* m_dbusIface;

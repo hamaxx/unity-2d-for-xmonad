@@ -20,7 +20,7 @@
 #include "launcheritem.h"
 #include "launchermenu.h"
 
-LauncherItem::LauncherItem()
+LauncherItem::LauncherItem(QObject* parent): QObject(parent)
 {
     m_menu = new LauncherContextualMenu;
     m_menu->setLauncherItem(this);

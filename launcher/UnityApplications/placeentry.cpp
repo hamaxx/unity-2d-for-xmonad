@@ -140,7 +140,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
 static const char* SECTION_PROPERTY = "section";
 
-PlaceEntry::PlaceEntry() :
+PlaceEntry::PlaceEntry(QObject* parent) :
+    LauncherItem(parent),
     m_position(0),
     m_sensitive(true),
     m_sections(NULL),
@@ -148,7 +149,6 @@ PlaceEntry::PlaceEntry() :
     m_entryResultsModel(NULL),
     m_globalGroupsModel(NULL),
     m_globalResultsModel(NULL),
-    m_online(false),
     m_dbusIface(NULL)
 {
     qDBusRegisterMetaType<RendererInfoStruct>();
@@ -418,12 +418,6 @@ PlaceEntry::globalRendererHints() const
     return m_globalRendererHints;
 }
 
-bool
-PlaceEntry::online() const
-{
-    return m_online;
-}
-
 void
 PlaceEntry::setDbusName(QString dbusName)
 {
@@ -658,25 +652,20 @@ PlaceEntry::onSectionTriggered()
 void
 PlaceEntry::connectToRemotePlaceEntry()
 {
-    if (m_online) return;
-
     m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
                                      UNITY_PLACE_ENTRY_INTERFACE);
-    if (!m_dbusIface->isValid()) {
-        m_online = false;
+    QDBusConnection connection = m_dbusIface->connection();
+    if (!connection.isConnected()) {
         return;
     }
 
     // Connect to RendererInfoChanged and PlaceEntryInfoChanged signals
-    QDBusConnection connection = m_dbusIface->connection();
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
                        "RendererInfoChanged", this,
                        SLOT(onRendererInfoChanged(const RendererInfoStruct&)));
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
                        "PlaceEntryInfoChanged", this,
                        SLOT(updateInfo(const PlaceEntryInfoStruct&)));
-
-    m_online = true;
 }
 
 void

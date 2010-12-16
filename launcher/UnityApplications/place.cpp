@@ -44,12 +44,8 @@ Place::~Place()
 {
     delete m_dbusIface;
     delete m_file;
-    QList<PlaceEntry*>::iterator iter;
-    for(iter = m_entries.begin(); iter != m_entries.end(); ++iter)
-    {
-        delete *iter;
-    }
     m_entries.clear();
+    m_static_entries.clear();
 }
 
 QString
@@ -71,7 +67,7 @@ Place::setFileName(const QString &file)
         uint i = 0;
         for(iter = entries.begin(); iter != entries.end(); ++iter)
         {
-            PlaceEntry* entry = new PlaceEntry;
+            PlaceEntry* entry = new PlaceEntry(this);
             entry->setFileName(file);
             entry->setGroupName(iter->mid(6));
             m_file->beginGroup(*iter);
@@ -84,7 +80,7 @@ Place::setFileName(const QString &file)
             entry->setPosition(i++);
             QObject::connect(entry, SIGNAL(positionChanged(uint)),
                              this, SLOT(onEntryPositionChanged(uint)));
-            m_entries.append(entry);
+            m_static_entries.append(entry);
         }
         connectToRemotePlace();
     }
@@ -186,19 +182,28 @@ Place::slotRemotePlaceDisconnected()
 {
     m_online = false;
     Q_EMIT onlineChanged(m_online);
+
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    while (!m_entries.isEmpty()) {
+        PlaceEntry* entry = m_entries.takeFirst();
+        if (!m_static_entries.contains(entry)) {
+            delete entry;
+        }
+    }
+    endRemoveRows();
 }
 
 void
 Place::onEntryAdded(const PlaceEntryInfoStruct& p)
 {
-    PlaceEntry* entry = new PlaceEntry;
+    PlaceEntry* entry = new PlaceEntry(this);
     entry->setDbusName(m_dbusName);
     entry->setDbusObjectPath(p.dbus_path);
     entry->updateInfo(p);
     QObject::connect(entry, SIGNAL(positionChanged(uint)),
                      this, SLOT(onEntryPositionChanged(uint)));
     int index = m_entries.size();
-    beginInsertRows(createIndex(0, 0), index, index);
+    beginInsertRows(QModelIndex(), index, index);
     m_entries.append(entry);
     endInsertRows();
     entry->connectToRemotePlaceEntry();
@@ -219,7 +224,7 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
     if (entry != NULL) {
         emit entryRemoved(entry);
         int index = m_entries.indexOf(entry);
-        beginRemoveRows(createIndex(0, 0), index, index);
+        beginRemoveRows(QModelIndex(), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
         delete entry;
@@ -232,11 +237,12 @@ Place::onEntryPositionChanged(uint position)
     /* This doesn’t seem to be implemented/used in Unity, but it can’t hurt… */
     // TODO: may require some sanity checks.
     PlaceEntry* entry = static_cast<PlaceEntry*>(sender());
-    QModelIndex parent = createIndex(0, 0);
     int from = m_entries.indexOf(entry);
-    beginMoveRows(parent, from, from, parent, position);
-    m_entries.move(from, position);
-    endMoveRows();
+    if (from != -1) {
+        beginMoveRows(QModelIndex(), from, from, QModelIndex(), position);
+        m_entries.move(from, position);
+        endMoveRows();
+    }
 }
 
 void
@@ -251,29 +257,20 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
         for (i = entries.constBegin(); i != entries.constEnd(); ++i) {
             bool existing = false;
             QList<PlaceEntry*>::iterator j;
-            for (j = m_entries.begin(); j != m_entries.end(); ++j) {
+            for (j = m_static_entries.begin(); j != m_static_entries.end(); ++j) {
                 PlaceEntry* entry = *j;
                 if (entry->dbusObjectPath() == i->dbus_path) {
                     entry->updateInfo(*i);
+                    int index = m_entries.size();
+                    beginInsertRows(QModelIndex(), index, index);
+                    m_entries.append(entry);
+                    endInsertRows();
                     entry->connectToRemotePlaceEntry();
                     existing = true;
                 }
             }
             if (!existing) {
                 onEntryAdded(*i);
-            }
-        }
-
-        /* Now remove those that couldn’t connect or did not exist in the live
-           place. */
-        for (int k = m_entries.size() - 1; k != -1; --k) {
-            PlaceEntry* entry = m_entries.at(k);
-            if (!entry->online()) {
-                emit entryRemoved(entry);
-                beginRemoveRows(createIndex(0, 0), k, k);
-                m_entries.removeAt(k);
-                endRemoveRows();
-                delete entry;
             }
         }
     }
