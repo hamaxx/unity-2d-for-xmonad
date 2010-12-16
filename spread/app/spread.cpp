@@ -24,9 +24,12 @@
 #include <QDeclarativeContext>
 #include <QPaintEngine>
 #include <QPixmap>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
 #include "config.h"
 #include "spreadview.h"
+#include "dbusproxy.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -62,10 +65,18 @@ int main(int argc, char *argv[])
     view.engine()->addImportPath(unityQtImportPath() + "/../places/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
+    DBusProxy *proxy = new DBusProxy();
+    view.rootContext()->setContextObject(proxy);
+
     view.setSource(QUrl("./Spread.qml"));
     view.showMaximized();
 
     application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
+
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerService("com.canonical.UnityQtSpread");
+    bus.registerObject("/spread", proxy, QDBusConnection::ExportAllContents);
+
     return application.exec();
 }
 
