@@ -229,6 +229,8 @@ private:
     void setSection(const QString&);
     void activateEntry(const int section);
 
+    void startRemotePlaceOnDemand();
+
 private Q_SLOTS:
     void onRendererInfoChanged(const RendererInfoStruct&);
 

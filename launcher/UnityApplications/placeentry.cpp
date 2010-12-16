@@ -18,6 +18,7 @@
  */
 
 #include "placeentry.h"
+#include "place.h"
 #include "launchermenu.h"
 
 #include <QDBusMetaType>
@@ -613,7 +614,7 @@ void
 PlaceEntry::activateEntry(const int section)
 {
     if (!m_sensitive) {
-        return;
+        startRemotePlaceOnDemand();
     }
 
     QDBusInterface iface("com.canonical.UnityQt", "/dash", "local.DashDeclarativeView");
@@ -625,9 +626,21 @@ PlaceEntry::activateEntry(const int section)
 }
 
 void
+PlaceEntry::startRemotePlaceOnDemand()
+{
+    /* On-demand startup of the place. */
+    Place* place = qobject_cast<Place*>(parent());
+    place->connectToRemotePlace();
+}
+
+void
 PlaceEntry::createMenuActions()
 {
     if (!m_sensitive) {
+        startRemotePlaceOnDemand();
+    }
+
+    if (m_sections == NULL) {
         return;
     }
 

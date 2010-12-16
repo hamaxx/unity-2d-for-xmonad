@@ -83,11 +83,12 @@ private:
     void stopMonitoringEntries();
     bool m_querying;
 
-private Q_SLOTS:
+public Q_SLOTS:
     /* Connect to the remote representation of the place on DBus and monitor
        changes. */
     void connectToRemotePlace();
 
+private Q_SLOTS:
     void onEntryAdded(const PlaceEntryInfoStruct&);
     void onEntryRemoved(const QString&);
     void onEntryPositionChanged(uint);
