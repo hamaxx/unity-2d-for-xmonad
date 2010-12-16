@@ -62,6 +62,9 @@ Item {
             /* globalSearchQuery is used to store the Page.globalSearchQuery string
                common to all the Page components */
             property string globalSearchQuery
+            /* FIXME: hardcoded list of places
+                      Ref: https://bugs.launchpad.net/bugs/684152 */
+            property variant places: [applications_place, files_place]
 
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
