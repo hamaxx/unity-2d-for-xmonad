@@ -6,6 +6,12 @@ Item {
     width: desktop.width
     height: desktop.height
 
+    GnomeBackground {
+        anchors.fill: parent
+        overlay_color: "black"
+        overlay_alpha: 0
+    }
+
     WindowsList {
         id: wins
     }

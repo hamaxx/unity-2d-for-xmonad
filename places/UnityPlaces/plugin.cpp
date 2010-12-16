@@ -52,10 +52,12 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);
 
-    // FIXME: this is probably not very proper here, since clearly not all users
+    // FIXME: these are probably not very proper here, since clearly not all users
     // of this plugin wish to have this object in their context
     engine->rootContext()->setContextProperty("desktop",
                                               QApplication::desktop()->availableGeometry());
+    engine->rootContext()->setContextProperty("screen",
+                                              QApplication::desktop()->geometry());
 }
 
 Q_EXPORT_PLUGIN2(UnityPlaces, UnityPlacesPlugin);
