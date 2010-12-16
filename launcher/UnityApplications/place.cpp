@@ -172,7 +172,7 @@ Place::getEntries()
     }
     m_querying = true;
 
-    /* Get the list of entries and update the existing entries. */
+    /* Update the list of online entries. */
     QDBusPendingCall pcall = m_dbusIface->asyncCall("GetEntries");
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(pcall, this);
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
