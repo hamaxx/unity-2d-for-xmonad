@@ -14,7 +14,6 @@ Renderer {
 
     property variant cellRenderer
     property bool folded: true
-    modelCountLimit: folded ? results.cellsPerLine : -1
 
     property int cellWidth: 158
     property int cellHeight: 76
@@ -84,13 +83,18 @@ Renderer {
             property int compensateY: inFlickableY > 0 ? 0 : -inFlickableY
 
             width: flickable.width
-            height: flickable.height
-            y: compensateY
-            contentY: compensateY
+            height: Math.min(totalHeight, flickable.height)
+            onCompensateYChanged: {
+                if (flickable.height > 0 && totalHeight >= flickable.height) {
+                    y = compensateY
+                    contentY = compensateY
+                }
+            }
 
             property int cellsPerLine: Math.floor(width/results.cellWidth)
-            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerLine)
-
+            /* Only display one line of items when folded */
+            property int countDisplayed: folded ? cellsPerLine : count
+            property int totalHeight: results.cellHeight*Math.ceil(countDisplayed/cellsPerLine)
 
             cellWidth: renderer.cellWidth+renderer.horizontalSpacing
             cellHeight: renderer.cellHeight+renderer.verticalSpacing
