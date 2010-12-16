@@ -9,6 +9,7 @@ Page {
 
     property string dBusObjectPath
     property string dBusObjectPathPlaceEntry
+    property string icon
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"

@@ -91,6 +91,7 @@ Item {
                 name: "Applications"
                 dBusObjectPath: "/com/canonical/unity/applicationsplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
+                icon: "/usr/share/unity/applications.png"
             }
 
             Place {
@@ -106,6 +107,7 @@ Item {
                 name: "Files"
                 dBusObjectPath: "/com/canonical/unity/filesplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
+                icon: "/usr/share/unity/files.png"
             }
         }
     }
