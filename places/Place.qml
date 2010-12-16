@@ -153,9 +153,6 @@ Page {
                 */
                 filterRole: 2 /* second column (see above comment) */
                 filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
-
-                /* Maximum number of items in the model; -1 is unlimited */
-                limit: item.modelCountLimit
             }
 
             onLoaded: {
