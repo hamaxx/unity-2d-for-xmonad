@@ -86,40 +86,10 @@ Page {
         objectPath: dBusObjectPathPlaceEntry
     }
 
-    ListView {
+    ListViewWithScrollbar {
         id: place_results
 
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        /* Take all available horizontal space if the scrollbar is invisible */
-        anchors.right: scrollbar.opacity > 0 ? scrollbar.left : parent.right
-
-        clip: true
-        /* FIXME: proper spacing cannot be set because of the hack in Group.qml
-           whereby empty groups are still in the list but invisible and of
-           height 0.
-        */
-        //spacing: 31
-
-        orientation: ListView.Vertical
-
-        /* WARNING - HACK - FIXME
-           Issue:
-           User wise annoying jumps in the list are observable if cacheBuffer is
-           set to 0 (which is the default value). States such as 'folded' are
-           lost when scrolling a lot.
-
-           Explanation:
-           The height of the Group delegate depends on its content. However its
-           content is not known until the delegate is instantiated because it
-           depends on the number of results displayed by its GridView.
-
-           Resolution:
-           We set the cacheBuffer to the biggest possible int in order to make
-           sure all delegates are always instantiated.
-        */
-        cacheBuffer: 2147483647
+        anchors.fill: parent
 
         /* The group's delegate is chosen dynamically depending on what
            groupRenderer is returned by the GroupsModel.
@@ -131,7 +101,7 @@ Page {
            If groupRenderer == 'UnityShowcaseRenderer' then it will look for
            the file 'UnityShowcaseRenderer.qml' and use it to render the group.
         */
-        delegate: Loader {
+        list.delegate: Loader {
             property string groupRenderer: column_0
             property string displayName: column_1
             property string iconHint: column_2
@@ -168,23 +138,10 @@ Page {
             }
         }
 
-        model: DeeListModel {
+        list.model: DeeListModel {
             service: dBusService
             objectPath: dBusDeePrefix + "GroupsModel"
         }
     }
 
-    Scrollbar {
-        id: scrollbar
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-
-        targetFlickable: place_results
-
-        /* Hide the scrollbar if there is less than a page of results */
-        opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
-        Behavior on opacity {NumberAnimation {duration: 100}}
-    }
 }
