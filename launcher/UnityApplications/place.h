@@ -78,16 +78,16 @@ private:
     bool m_online;
     QDBusInterface* m_dbusIface;
 
-    /* Connect to the remote representation of the place on DBus and monitor
-       changes. */
-    void connectToRemotePlace();
-
     void getEntries();
     void startMonitoringEntries();
     void stopMonitoringEntries();
     bool m_querying;
 
 private Q_SLOTS:
+    /* Connect to the remote representation of the place on DBus and monitor
+       changes. */
+    void connectToRemotePlace();
+
     void onEntryAdded(const PlaceEntryInfoStruct&);
     void onEntryRemoved(const QString&);
     void onEntryPositionChanged(uint);

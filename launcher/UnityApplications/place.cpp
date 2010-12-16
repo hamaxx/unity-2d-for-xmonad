@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusServiceWatcher>
+#include <QTimer>
 
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
 
@@ -84,7 +85,8 @@ Place::setFileName(const QString &file)
             m_static_entries[entry->dbusObjectPath()] = entry;
             m_entries.append(entry);
         }
-        connectToRemotePlace();
+        /* Start the live place delayed to not impact startup time. */
+        QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
     }
     else
     {
