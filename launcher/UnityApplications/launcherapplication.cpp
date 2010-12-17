@@ -394,18 +394,30 @@ LauncherApplication::show()
         return;
     }
 
-    QScopedPointer<BamfUintList> xids(m_application->xids());
-    if (xids->size() < 1) {
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    int size = windows->size();
+    if (size < 1) {
         return;
     }
 
-    /* FIXME: pick the most important window, not just the first one */
-    uint xid = xids->at(0);
+    /* Pick the most important window. */
+    BamfWindow* important = windows->at(0);
+    for (int i = 0; i < size; ++i) {
+        BamfWindow* current = windows->at(i);
+        if (current->urgent() && !important->urgent()) {
+            important = current;
+        }
+        else if (current->urgent() || !important->urgent()) {
+            if (current->last_active() > important->last_active()) {
+                important = current;
+            }
+        }
+    }
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
 
-    WnckWindow* window = wnck_window_get(xid);
+    WnckWindow* window = wnck_window_get(important->xid());
     WnckWorkspace* workspace = wnck_window_get_workspace(window);
 
     /* Using X.h's CurrentTime (= 0) */
