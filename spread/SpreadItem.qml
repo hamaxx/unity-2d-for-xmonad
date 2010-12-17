@@ -11,7 +11,6 @@ Item {
     property real columnWidth
     property real rowHeight
 
-    property bool needsActivation: false
     property real ratio
 
     x: (win.location.x * ratio) - desktop.x
@@ -139,10 +138,6 @@ Item {
             StateChangeScript {
                 name: "activate"
                 script: {
-                    if (item.needsActivation) {
-                        item.needsActivation = false
-                        win.active = true
-                    }
                     finished()
                 }
             }
@@ -164,7 +159,7 @@ Item {
                 target: itemArea
                 onClicked: {
                     item.z = 1000
-                    item.needsActivation = true
+                    item.win.active = true
                     item.parent.state = "" // Trigger the exit from the spread state
                 }
             }
