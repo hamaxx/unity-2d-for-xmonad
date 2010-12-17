@@ -25,7 +25,6 @@
 #include <QAction>
 #include <QDebug>
 #include <QDBusReply>
-#include <QTimer>
 
 // Marshall the RendererInfoStruct data into a D-Bus argument
 QDBusArgument &operator<<(QDBusArgument &argument, const RendererInfoStruct &r)
@@ -641,7 +640,6 @@ PlaceEntry::createMenuActions()
         /* Monitor updates to the list of sections upon starting the remote
            place. */
         startMonitoringSections();
-        QTimer::singleShot(500, this, SLOT(stopMonitoringSections()));
 
         startRemotePlaceOnDemand();
     }
