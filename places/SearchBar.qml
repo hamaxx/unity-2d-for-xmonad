@@ -1,5 +1,4 @@
 import Qt 4.7
-import dee 1.0
 
 FocusScope {
     /* Keys forwarded to the search bar are forwarded to the search entry. */
@@ -38,7 +37,7 @@ FocusScope {
 
         KeyNavigation.left: search_entry
 
-        visible: current_page.hasSections
+        visible: model != undefined
         orientation: ListView.Horizontal
         /* Non-draggable when all sections are visible */
         boundsBehavior: Flickable.StopAtBounds
@@ -64,19 +63,25 @@ FocusScope {
             anchors.verticalCenter: parent.verticalCenter
             horizontalPadding: 4
             verticalPadding: 3
-            label: column_0
+            /* FIXME: check for current_page.sections != undefined is a
+               workaround for a crash in Qt happening when setting the model of
+               a ListView to undefined after it being non-empty.
+               It seems that the model count is not 0 and delegates are still
+               being created and updated with data.
+
+               To reproduce the crash: go to the applications place, exit the
+               dash and then go to the home page of the dash.
+            */
+            label: current_page.sections != undefined ? column_0 : ""
             isActiveSection: current_page.activeSection == index
 
             onClicked: {
                 sections.focus = false
                 search_entry.focus = true
-                current_page.setActiveSection(model.index)
+                current_page.activeSection = model.index
             }
         }
 
-        model: DeeListModel {
-            service: current_page.hasSections ? current_page.dBusService : ""
-            objectPath: current_page.hasSections ? current_page.dBusDeePrefix + "SectionsModel" : ""
-        }
+        model: current_page != undefined ? current_page.sections : undefined
     }
 }
