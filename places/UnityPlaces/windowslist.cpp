@@ -113,13 +113,13 @@ void WindowsList::load() {
     }
 
     if (m_windows.count() > 0) {
-        beginRemoveRows(QModelIndex(), 0, m_windows.count());
+        beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
         m_windows.clear();
         endRemoveRows();
     }
 
     if (newWins.count() > 0) {
-        beginInsertRows(QModelIndex(), 0, newWins.count());
+        beginInsertRows(QModelIndex(), 0, newWins.count() - 1);
         m_windows.append(newWins);
         endInsertRows();
     }
@@ -128,7 +128,7 @@ void WindowsList::load() {
 }
 
 void WindowsList::unload() {
-    beginRemoveRows(QModelIndex(), 0, m_windows.count());
+    beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
     m_windows.clear();
     endRemoveRows();
 }
