@@ -25,6 +25,8 @@
 #include <QStringList>
 #include <QFileSystemWatcher>
 
+class Place;
+
 class LauncherPlacesList : public ListAggregatorModel
 {
     Q_OBJECT
@@ -37,11 +39,13 @@ private:
     QStringList m_placeFiles;
     QFileSystemWatcher* m_watch;
 
-    void addPlace(const QString& file);
-    void removePlace(const QString& file);
+    Place* addPlace(const QString& file);
+    Place* removePlace(const QString& file);
 
 private slots:
     void onDirectoryChanged(const QString&);
+
+    void slotPlaceOnlineChanged(bool);
 };
 
 #endif // LAUNCHERPLACESLIST_H
