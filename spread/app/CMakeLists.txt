@@ -5,12 +5,14 @@ pkg_check_modules(GTK REQUIRED gtk+-2.0)
 set(spread_SRCS
     spread.cpp
     spreadview.cpp
-    dbusproxy.cpp
+    spreadcontrol.cpp
+    qmlspreadcontrol.cpp
    )
 
 set(spread_MOC_HDRS
     spreadview.h
-    dbusproxy.h
+    spreadcontrol.h
+    qmlspreadcontrol.h
     )
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
@@ -18,7 +20,7 @@ qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
 configure_file(unity-qt-spread.service.in unity-qt-spread.service)
 
 qt4_add_dbus_adaptor(spread_SRCS spread.xml
-    dbusproxy.h DBusProxy
+    spreadcontrol.h SpreadControl
     )
 
 # Build

@@ -4,36 +4,26 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 
-#include "dbusproxy.h"
+#include "spreadcontrol.h"
 #include "spreadadaptor.h"
-#include "spreadview.h"
 
 static const char* DBUS_SERVICE = "com.canonical.UnityQtSpread.Spread";
 static const char* DBUS_OBJECT_PATH = "/com/canonical/UnityQtSpread/Spread";
 
-DBusProxy::DBusProxy(QObject *parent) :
-    QObject(parent), m_appId(0),
-    mServiceWatcher(new QDBusServiceWatcher(this))
+SpreadControl::SpreadControl(QObject *parent) :
+    QObject(parent), mServiceWatcher(new QDBusServiceWatcher(this))
 {
     mServiceWatcher->setConnection(QDBusConnection::sessionBus());
     mServiceWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
     connect(mServiceWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
 }
 
-DBusProxy::~DBusProxy() {
+SpreadControl::~SpreadControl() {
     QDBusConnection::sessionBus().unregisterService(mService);
 }
 
-void DBusProxy::setAppId(unsigned long appId) {
-    if (m_appId != appId) {
-        m_appId = appId;
-        emit appIdChanged(appId);
-    }
-}
-
-bool DBusProxy::connectToBus(const QString& _service, const QString& _path)
+bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
 {
-    qDebug() << _service << " , " << _path;
     mService = _service.isEmpty() ? DBUS_SERVICE : _service;
     QString path = _path.isEmpty() ? DBUS_OBJECT_PATH : _path;
 
@@ -47,29 +37,20 @@ bool DBusProxy::connectToBus(const QString& _service, const QString& _path)
     return true;
 }
 
-void DBusProxy::SpreadAllWindows() {
+void SpreadControl::SpreadAllWindows() {
     qDebug() << "DBUS: Received request to expose all windows";
-    setAppId(0);
-    emit activateSpread();
+    m_qmlcontrol->setAppId(0);
+    m_qmlcontrol->doSpread();
 }
 
-void DBusProxy::SpreadApplicationWindows(unsigned int appId) {
+void SpreadControl::SpreadApplicationWindows(unsigned int appId) {
     qDebug() << "DBUS: Received request to expose application windows of" << appId;
-    setAppId(appId);
-    emit activateSpread();
+    m_qmlcontrol->setAppId(appId);
+    m_qmlcontrol->doSpread();
 }
 
-void DBusProxy::slotServiceUnregistered(const QString& service)
+void SpreadControl::slotServiceUnregistered(const QString& service)
 {
     mServiceWatcher->removeWatchedService(service);
 }
 
-void DBusProxy::show() {
-    if (m_view == 0) return;
-    m_view->showMaximized();
-}
-
-void DBusProxy::hide() {
-    if (m_view == 0) return;
-    m_view->hide();
-}

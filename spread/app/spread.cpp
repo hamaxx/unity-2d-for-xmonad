@@ -29,7 +29,7 @@
 
 #include "config.h"
 #include "spreadview.h"
-#include "dbusproxy.h"
+#include "spreadcontrol.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -65,18 +65,17 @@ int main(int argc, char *argv[])
     view.engine()->addImportPath(unityQtImportPath() + "/../places/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
-    DBusProxy *proxy = new DBusProxy();
-    proxy->setView(&view);
-    view.rootContext()->setContextProperty("control", proxy);
+    QmlSpreadControl qmlcontrol;
+    qmlcontrol.setView(&view);
+    view.rootContext()->setContextProperty("control", &qmlcontrol);
+
+    SpreadControl* control = new SpreadControl();
+    control->setQmlControl(&qmlcontrol);
+    control->connectToBus();
 
     view.setSource(QUrl("./Spread.qml"));
-    //view.showMaximized();
 
     application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
-
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerService("com.canonical.UnityQtSpread");
-    bus.registerObject("/spread", proxy, QDBusConnection::ExportAllContents);
 
     return application.exec();
 }
