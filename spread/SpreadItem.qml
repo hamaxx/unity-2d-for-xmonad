@@ -11,20 +11,13 @@ Item {
     property real columnWidth
     property real rowHeight
 
-    property real ratio
-
-    x: (win.location.x * ratio) - desktop.x
-    y: (win.location.y * ratio) - desktop.y
-    width: win.size.width * ratio
-    height: win.size.height * ratio
-    z: win.z
-
     property real topMargin: 0
     property real bottomMargin: 0
     property real leftMargin: 0
     property real rightMargin: 0
 
     signal finished
+    signal speadShouldEnd
 
     property real widthScale: width / win.size.width
     property real heightScale: height / win.size.height
@@ -137,11 +130,10 @@ Item {
             name: ""
             StateChangeScript {
                 name: "activate"
-                script: {
-                    finished()
-                }
+                script: finished()
             }
         },
+
         State {
             name: "spread"
             PropertyChanges {
@@ -160,7 +152,7 @@ Item {
                 onClicked: {
                     item.z = 1000
                     item.win.active = true
-                    item.parent.state = "" // Trigger the exit from the spread state
+                    speadShouldEnd()
                 }
             }
         }
