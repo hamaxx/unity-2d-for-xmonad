@@ -57,6 +57,15 @@ Item {
         }
 
         Item {
+            id: pages
+
+            /* globalSearchQuery is used to store the Page.globalSearchQuery string
+               common to all the Page components */
+            property string globalSearchQuery
+            /* FIXME: hardcoded list of places
+                      Ref: https://bugs.launchpad.net/bugs/684152 */
+            property variant places: [files_place, applications_place]
+
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
             anchors.bottom: parent.bottom
@@ -85,6 +94,7 @@ Item {
                 name: "Applications"
                 dBusObjectPath: "/com/canonical/unity/applicationsplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
+                icon: "/usr/share/unity/applications.png"
             }
 
             Place {
@@ -100,6 +110,7 @@ Item {
                 name: "Files"
                 dBusObjectPath: "/com/canonical/unity/filesplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
+                icon: "/usr/share/unity/files.png"
             }
         }
     }
