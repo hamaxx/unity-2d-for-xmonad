@@ -21,8 +21,8 @@ Item {
 
     property real widthScale: width / win.size.width
     property real heightScale: height / win.size.height
-    property real scaledWinWidth: Math.min((widthScale <= heightScale) ? width : heightScale * win.size.width, win.size.width) - (leftMargin + rightMargin)
-    property real scaledWinHeight: Math.min((widthScale <= heightScale) ? widthScale * win.size.height : height, win.size.height) - (topMargin + bottomMargin)
+    property real scaledWinWidth: Math.min((widthScale <= heightScale) ? width - (leftMargin + rightMargin) : heightScale * win.size.width, win.size.width)
+    property real scaledWinHeight: Math.min((widthScale <= heightScale) ? widthScale * win.size.height : height - (topMargin + bottomMargin), win.size.height)
 
 
     MouseArea {
