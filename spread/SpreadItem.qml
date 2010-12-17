@@ -6,18 +6,19 @@ Item {
 
     property int column
     property int row
-
-    property int columnsInRow: (row == parent.rows - 1 && parent.lastRowColumns != 0) ?
-                                   parent.lastRowColumns : parent.columns
-    property real columnWidth: (parent.width - parent.anchors.margins) / columnsInRow
+    property int columnsInRow
+    property real columnWidth
 
     property bool needsActivation: false
+    property real ratio
 
-    x: (win.location.x * parent.ratio) - desktop.x
-    y: (win.location.y * parent.ratio) - desktop.y
-    width: win.size.width * parent.ratio
-    height: win.size.height * parent.ratio
+    x: (win.location.x * ratio) - desktop.x
+    y: (win.location.y * ratio) - desktop.y
+    width: win.size.width * ratio
+    height: win.size.height * ratio
     z: win.z
+
+    signal itemActivationFinished
 
     Item {
         id: box
@@ -133,9 +134,9 @@ Item {
             StateChangeScript {
                 name: "activate"
                 script: if (item.needsActivation) {
-                            item.needsActivation = false;
-                            win.active = true;
-                            Qt.quit()
+                            item.needsActivation = false
+                            win.active = true
+                            itemActivationFinished()
                         }
             }
         },

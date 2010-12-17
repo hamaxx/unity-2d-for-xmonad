@@ -18,13 +18,57 @@ extern "C" {
 #include "bamf-application.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent)
+    QAbstractListModel(parent), m_applicationId(0)
 {
     QHash<int, QByteArray> roles;
     roles[0] = "item";
     setRoleNames(roles);
+}
 
+int WindowsList::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+
+    return m_windows.size();
+}
+
+void WindowsList::setApplicationId(unsigned long applicationId) {
+    if (m_applicationId != applicationId) {
+        m_applicationId = applicationId;
+        emit applicationIdChanged(applicationId);
+    }
+}
+
+QVariant WindowsList::data(const QModelIndex &index, int role) const
+{
+    Q_UNUSED(role);
+
+    if (!index.isValid())
+        return QVariant();
+
+    WindowInfo *info = m_windows.value(index.row(), 0);
+    if (info == 0) return QVariant();
+    else return QVariant::fromValue(info);
+}
+
+/* FIXME: This is hardly the right place to put this function, but
+   I didn't want to make the spread main app depend on wnck or
+   UnityApplications directly on the c++ side. So for now this will do.
+   What we should really do later is to create a QObject that expose this
+   function and expose that object via setContextProperty in the plugin.
+   Then call it both in the launcher and in the spread in Component.onCompleted.
+
+   See LauncherApplication::LauncherApplication for an explanation of why
+   this is important.
+*/
+void WindowsList::setAppAsPager() {
+    wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
+}
+
+void WindowsList::load() {
     BamfMatcher &matcher = BamfMatcher::get_default();
+
+    QList<WindowInfo*> newWins;
 
     BamfApplicationList *apps = matcher.applications();
     for (int i = 0; i < apps->size(); i++) {
@@ -64,40 +108,27 @@ WindowsList::WindowsList(QObject *parent) :
             //qDebug().nospace() << "\t\t" << win->name() << " (" << xid << ")";
 
             WindowInfo *info = new WindowInfo(xid);
-            m_windows.append(info);
+            newWins.append(info);
         }
     }
+
+    if (m_windows.count() > 0) {
+        beginRemoveRows(QModelIndex(), 0, m_windows.count());
+        m_windows.clear();
+        endRemoveRows();
+    }
+
+    if (newWins.count() > 0) {
+        beginInsertRows(QModelIndex(), 0, newWins.count());
+        m_windows.append(newWins);
+        endInsertRows();
+    }
+
+    emit loaded();
 }
 
-int WindowsList::rowCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent)
-
-    return m_windows.size();
-}
-
-QVariant WindowsList::data(const QModelIndex &index, int role) const
-{
-    Q_UNUSED(role);
-
-    if (!index.isValid())
-        return QVariant();
-
-    WindowInfo *info = m_windows.value(index.row(), 0);
-    if (info == 0) return QVariant();
-    else return QVariant::fromValue(info);
-}
-
-/* FIXME: This is hardly the right place to put this function, but
-   I didn't want to make the spread main app depend on wnck or
-   UnityApplications directly on the c++ side. So for now this will do.
-   What we should really do later is to create a QObject that expose this
-   function and expose that object via setContextProperty in the plugin.
-   Then call it both in the launcher and in the spread in Component.onCompleted.
-
-   See LauncherApplication::LauncherApplication for an explanation of why
-   this is important.
-*/
-void WindowsList::setAppAsPager() {
-    wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
+void WindowsList::unload() {
+    beginRemoveRows(QModelIndex(), 0, m_windows.count());
+    m_windows.clear();
+    endRemoveRows();
 }

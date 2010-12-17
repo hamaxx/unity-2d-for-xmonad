@@ -18,6 +18,7 @@ extern "C" {
 
 #include <QDebug>
 #include <QAction>
+#include <QDBusInterface>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -457,8 +458,9 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 void
 LauncherApplication::expose()
 {
-    /* IMPLEMENT ME: see unity’s expose manager */
-    qDebug() << "FIXME: Expose mode not implemented yet.";
+    qDebug() << "Triggering expose via DBUS";
+    QDBusInterface iface("com.canonical.UnityQtSpread", "/spread", "local.DBusProxy");
+    iface.call("SpreadAllWindows");
 }
 
 void

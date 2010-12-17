@@ -14,22 +14,35 @@ Item {
 
     WindowsList {
         id: wins
+        applicationId: control.appId
+        onLoaded: {
+            grid.items = wins
+            grid.state = "spread"
+        }
     }
 
     SpreadGrid {
         id: grid
-        items: wins
-    }
-
-    Timer {
-        id: delay
-        interval: 450;
-        running: false
-        onTriggered: grid.state = "spread"
     }
 
     Component.onCompleted: {
         wins.setAppAsPager()
-        delay.running = true
+    }
+
+    Connections {
+        target: control
+        onActivateSpread: {
+            console.log("Spread activated via control")
+            control.show();
+            wins.load()
+        }
+    }
+
+    MouseArea {
+        width: 100
+        height: 100
+        anchors.top: parent.top
+        anchors.left: parent.left
+        onDoubleClicked: Qt.quit()
     }
 }

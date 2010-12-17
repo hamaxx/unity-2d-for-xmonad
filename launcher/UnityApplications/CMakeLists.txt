@@ -67,6 +67,7 @@ target_link_libraries(UnityApplications
     ${QTGCONF_LDFLAGS}
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
+    ${WNCK_LDFLAGS}
     )
 
 # Install

@@ -66,10 +66,11 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
     DBusProxy *proxy = new DBusProxy();
-    view.rootContext()->setContextObject(proxy);
+    proxy->setView(&view);
+    view.rootContext()->setContextProperty("control", proxy);
 
     view.setSource(QUrl("./Spread.qml"));
-    view.showMaximized();
+    //view.showMaximized();
 
     application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
 
