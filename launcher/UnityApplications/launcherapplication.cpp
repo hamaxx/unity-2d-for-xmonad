@@ -309,7 +309,6 @@ LauncherApplication::activate()
 {
     if (active())
     {
-        show();
         expose();
     }
     else if (running() && has_visible_window())
