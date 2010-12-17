@@ -4,6 +4,10 @@ Item {
     property variant current_page
 
     function activatePage(page) {
+        if (page == current_page) {
+            return
+        }
+
         if (current_page != undefined) {
             current_page.visible = false
             current_page.active = false
