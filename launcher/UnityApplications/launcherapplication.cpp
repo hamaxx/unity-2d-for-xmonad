@@ -459,8 +459,9 @@ void
 LauncherApplication::expose()
 {
     qDebug() << "Triggering expose via DBUS";
-    QDBusInterface iface("com.canonical.UnityQtSpread", "/spread", "local.DBusProxy");
-    iface.call("SpreadAllWindows");
+    QDBusInterface iface("com.canonical.UnityQtSpread.Spread", "/Spread",
+                         "com.canonical.UnityQtSpread.Spread");
+    iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
 }
 
 void

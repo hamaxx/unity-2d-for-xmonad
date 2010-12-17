@@ -23,6 +23,12 @@ Item {
 
     SpreadGrid {
         id: grid
+
+        onSpreadFinished: {
+            control.hide()
+            wins.unload()
+            control.inProgress = false
+        }
     }
 
     Component.onCompleted: {
@@ -31,10 +37,16 @@ Item {
 
     Connections {
         target: control
+
         onActivateSpread: {
+            control.inProgress = true;
             console.log("Spread activated via control")
             control.show();
             wins.load()
+        }
+
+        onCancelSpread: {
+            grid.state = ""
         }
     }
 

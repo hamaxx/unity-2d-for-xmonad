@@ -66,15 +66,21 @@ void WindowsList::setAppAsPager() {
 }
 
 void WindowsList::load() {
+    QList<WindowInfo*> newWins;
     BamfMatcher &matcher = BamfMatcher::get_default();
 
-    QList<WindowInfo*> newWins;
+    QList<BamfApplication*> apps;
+    if (m_applicationId) {
+        apps.append(matcher.application_for_xid(m_applicationId));
+    } else {
+        BamfApplicationList *allapps = matcher.applications();
+        for (int i = 0; i < allapps->size(); i++) {
+             apps.append(allapps->at(i));
+        }
+    }
 
-    BamfApplicationList *apps = matcher.applications();
-    for (int i = 0; i < apps->size(); i++) {
-        BamfApplication *app = apps->at(i);
-
-        //qDebug() << "+" << app->name() << " " << app->view_type();
+    foreach (BamfApplication* app, apps) {
+       //qDebug() << "+" << app->name() << " " << app->view_type();
 
         BamfWindowList *wins = app->windows();
         for (int k = 0; k < wins->size(); k++) {
@@ -112,6 +118,8 @@ void WindowsList::load() {
         }
     }
 
+    qDebug() << "Matched" << newWins.count() << "Windows in" << apps.count() << "Applications";
+
     if (m_windows.count() > 0) {
         beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
         m_windows.clear();
@@ -124,6 +132,7 @@ void WindowsList::load() {
         endInsertRows();
     }
 
+    emit countChanged(m_windows.count());
     emit loaded();
 }
 
@@ -131,4 +140,6 @@ void WindowsList::unload() {
     beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
     m_windows.clear();
     endRemoveRows();
+
+    emit countChanged(m_windows.count());
 }

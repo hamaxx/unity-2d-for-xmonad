@@ -8,7 +8,7 @@
 #include "spreadview.h"
 
 QmlSpreadControl::QmlSpreadControl(QObject *parent) :
-    QObject(parent), m_appId(0) {
+    QObject(parent), m_appId(0), m_inProgress(false) {
 }
 
 QmlSpreadControl::~QmlSpreadControl() {

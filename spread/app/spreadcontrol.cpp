@@ -8,7 +8,7 @@
 #include "spreadadaptor.h"
 
 static const char* DBUS_SERVICE = "com.canonical.UnityQtSpread.Spread";
-static const char* DBUS_OBJECT_PATH = "/com/canonical/UnityQtSpread/Spread";
+static const char* DBUS_OBJECT_PATH = "/Spread";
 
 SpreadControl::SpreadControl(QObject *parent) :
     QObject(parent), mServiceWatcher(new QDBusServiceWatcher(this))
@@ -39,14 +39,24 @@ bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
 
 void SpreadControl::SpreadAllWindows() {
     qDebug() << "DBUS: Received request to expose all windows";
-    m_qmlcontrol->setAppId(0);
-    m_qmlcontrol->doSpread();
+    if (!m_qmlcontrol->inProgress()) {
+        m_qmlcontrol->setAppId(0);
+        m_qmlcontrol->doSpread();
+    } else {
+        qDebug() << "DBUS: Canceling current spread";
+        m_qmlcontrol->doCancelSpread();
+    }
 }
 
 void SpreadControl::SpreadApplicationWindows(unsigned int appId) {
     qDebug() << "DBUS: Received request to expose application windows of" << appId;
-    m_qmlcontrol->setAppId(appId);
-    m_qmlcontrol->doSpread();
+    if (!m_qmlcontrol->inProgress()) {
+        m_qmlcontrol->setAppId(appId);
+        m_qmlcontrol->doSpread();
+    } else {
+        qDebug() << "DBUS: Canceling current spread";
+        m_qmlcontrol->doCancelSpread();
+    }
 }
 
 void SpreadControl::slotServiceUnregistered(const QString& service)

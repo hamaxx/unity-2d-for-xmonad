@@ -18,7 +18,7 @@ Item {
     height: win.size.height * ratio
     z: win.z
 
-    signal itemActivationFinished
+    signal finished
 
     Item {
         id: box
@@ -133,11 +133,13 @@ Item {
             name: ""
             StateChangeScript {
                 name: "activate"
-                script: if (item.needsActivation) {
-                            item.needsActivation = false
-                            win.active = true
-                            itemActivationFinished()
-                        }
+                script: {
+                    if (item.needsActivation) {
+                        item.needsActivation = false
+                        win.active = true
+                    }
+                    finished()
+                }
             }
         },
         State {
@@ -151,7 +153,11 @@ Item {
             }
             PropertyChanges {
                 target: itemArea
-                onClicked: { item.z = 1000; item.needsActivation = true; }
+                onClicked: {
+                    item.z = 1000
+                    item.needsActivation = true
+                    item.parent.state = "" // Trigger the exit from the spread state
+                }
             }
             PropertyChanges {
                 target: box
