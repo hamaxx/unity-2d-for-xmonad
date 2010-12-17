@@ -24,7 +24,10 @@
 #include <QString>
 #include <QSettings>
 #include <QList>
+#include <QHash>
 #include <QMetaType>
+#include <QDBusInterface>
+#include <QDBusPendingCallWatcher>
 
 #include "placeentry.h"
 
@@ -35,6 +38,7 @@ class Place : public QAbstractListModel
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
     Q_PROPERTY(QString dbusName READ dbusName)
     Q_PROPERTY(QString dbusObjectPath READ dbusObjectPath)
+    Q_PROPERTY(bool online READ online NOTIFY onlineChanged)
 
 public:
     Place(QObject* parent = 0);
@@ -45,6 +49,7 @@ public:
     QString fileName() const;
     QString dbusName() const;
     QString dbusObjectPath() const;
+    bool online() const;
 
     /* setters */
     void setFileName(const QString& file);
@@ -53,11 +58,45 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+Q_SIGNALS:
+    void entryAdded(PlaceEntry*);
+    void entryRemoved(PlaceEntry*);
+
+    void onlineChanged(bool);
+
 private:
     QSettings* m_file;
     QString m_dbusName;
-    QString m_dbusObjectName;
+    QString m_dbusObjectPath;
+
+    /* Initial dictionary (dbusObjectPath → entry) as parsed in the place file */
+    QHash<QString, PlaceEntry*> m_static_entries;
+
+    /* Online entries (ordered) */
     QList<PlaceEntry*> m_entries;
+
+    bool m_online;
+    QDBusInterface* m_dbusIface;
+
+    void getEntries();
+    void startMonitoringEntries();
+    void stopMonitoringEntries();
+    bool m_querying;
+
+public Q_SLOTS:
+    /* Connect to the remote representation of the place on DBus and monitor
+       changes. */
+    void connectToRemotePlace();
+
+private Q_SLOTS:
+    void onEntryAdded(const PlaceEntryInfoStruct&);
+    void onEntryRemoved(const QString&);
+    void onEntryPositionChanged(uint);
+
+    void slotRemotePlaceConnected();
+    void slotRemotePlaceDisconnected();
+
+    void gotEntries(QDBusPendingCallWatcher*);
 };
 
 Q_DECLARE_METATYPE(Place*)

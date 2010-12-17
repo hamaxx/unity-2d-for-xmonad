@@ -96,7 +96,7 @@ DashDeclarativeView::forceActivateWindow()
 }
 
 void
-DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry)
+DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
 {
     /* FIXME: this is a quick and dirty implementation.
        We need a cleaner way to access the place object and activate it. */
@@ -109,7 +109,7 @@ DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entr
         setActive(true);
         QMetaObject::invokeMethod(dash, "activatePlace", Qt::AutoConnection,
                                   Q_ARG(QVariant, QVariant::fromValue(place)),
-                                  Q_ARG(QVariant, QVariant::fromValue(0)));
+                                  Q_ARG(QVariant, QVariant::fromValue(section)));
     }
     else
     {

@@ -60,15 +60,18 @@ LauncherPlacesList::~LauncherPlacesList()
     }
 }
 
-void
+Place*
 LauncherPlacesList::addPlace(const QString& file)
 {
-    Place* place = new Place;
-    place->setFileName(file);
+    Place* place = new Place(this);
     aggregateListModel(place);
+    connect(place, SIGNAL(onlineChanged(bool)),
+            SLOT(slotPlaceOnlineChanged(bool)));
+    place->setFileName(file);
+    return place;
 }
 
-void
+Place*
 LauncherPlacesList::removePlace(const QString& file)
 {
     QList<QAbstractListModel*>::iterator iter;
@@ -78,9 +81,10 @@ LauncherPlacesList::removePlace(const QString& file)
         if (place->fileName() == file)
         {
             removeListModel(place);
-            break;
+            return place;
         }
     }
+    return NULL;
 }
 
 void
@@ -98,7 +102,8 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
     {
         if (!newPlaceFiles.contains(*iter))
         {
-            removePlace(dir.absoluteFilePath(*iter));
+            Place* place = removePlace(dir.absoluteFilePath(*iter));
+            delete place;
         }
     }
 
@@ -113,3 +118,18 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
 
     m_placeFiles = newPlaceFiles;
 }
+
+void
+LauncherPlacesList::slotPlaceOnlineChanged(bool online)
+{
+    Place* place = static_cast<Place*>(sender());
+    if (online) {
+        if (!m_models.contains(place)) {
+            aggregateListModel(place);
+        }
+    }
+    else {
+        removeListModel(place);
+    }
+}
+

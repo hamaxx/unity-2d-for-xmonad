@@ -23,8 +23,7 @@ public:
     Q_SLOT void setActive(bool active);
 
     /* methods */
-    // FIXME: add a parameter to activate a specific section (filter)
-    Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry);
+    Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
     Q_INVOKABLE void activateHome();
 
 signals:
