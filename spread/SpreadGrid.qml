@@ -5,20 +5,23 @@ import Qt 4.7
 
    When the state is the default state (named ""), the shots will be positioned
    and scaled according to screen mode (i.e. perfectly matching the real windows).
-
-   When the state is the "spread" state, the shots will be positioned in layout
-   that's pretty much the same as a standard Grid, except for some peculiarities
-   on the size of the columns in the last row in certain cases, and a certain
-   oddness in margin calculations.
-
-   The calculations are in part here and in part in SpreadItem, according to where
-   it was most efficient to have them. You should probably read the two files
-   together.
-
-   IMPORTANT!
    The positioning in screen mode only uses the real size and position taken
    from each item in the model. See the assignement of x,y,width,height and z
    and that's all you need to know about screen mode.
+
+   When the state is the "spread" state, the shots will be positioned in a layout
+   that's pretty much the same as a standard Grid, except for some peculiarities.
+   More specifically, the logic for the grid is as follows:
+
+   * The number of rows and columns depends on the total number of items (see
+     exact formulas below, lifted straight from Unity's code)
+   * All cells in a row have always the same width
+   * The combined width of all cells in a row always equals the width of the row.
+   * If there would be empty cells in the last row of the grid, then the last row
+     will have less cells so that no empty cells can exist.
+
+   The calculations are in part here and in part in SpreadItem, according to where
+   it was most efficient to have them.
 
    The rest of the discussion below assumes that everything is referred to
    working in grid mode, unless otherwise specified explicitly.
@@ -39,13 +42,10 @@ Item {
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / list.columns)
 
-    /* The pecuilarity of this grid mentioned above is this: if there would be empty
-       cells in the last row of the grid, then last row will have less cells than
-       normal (exactly enough to fit all the items). But they will be longer so to
-       fill the entire row anyway (see the calculation for SpreadItem.columnWidth */
-    property int lastRowColumns: columns - ((rows * columns) - count)
+    /* Calculate if the number of cells in the last row (as described above) */
+    property int lastRowCells: columns - ((rows * columns) - count)
 
-    // This is emitted when the outro animation is fully done.
+    /* This is emitted when the outro animation is fully done. */
     signal spreadFinished
     property int finishedChildCount: 0 // read the HACK note below
 
@@ -55,6 +55,7 @@ Item {
         /* The "item" property of the current model value represents a
            WindowInfo object, holding coordinates and size of a real window. */
         delegate: SpreadItem {
+
             /* The following group of properties is the only thing needed to position
                this item in screen mode (almost exactly where the window is).
                Note that we subtract the desktop x and y since item.location is
@@ -66,21 +67,18 @@ Item {
             height: item.size.height
             z: item.z
 
-            /* Set in which cell of the grid this item should position itself in
+            /* Decide in which cell of the grid this item should position itself in
                (based on the index of the current model value) */
             column: index % list.columns
             row: Math.floor(index / list.columns)
 
-            /* Shortcut to know how many cells are there in the row where we
-               should position ourselves. */
-            columnsInRow: (row == list.rows - 1 && list.lastRowColumns != 0) ?
-                          list.lastRowColumns : list.columns
-
-            /* Calculate height and widht of the current cell.
-               The rule is that all cells in a row have always the same width
-               and together always fill the entire width of the row. */
-            columnWidth: (list.width - list.anchors.margins) / columnsInRow
-            rowHeight: (list.height - list.anchors.margins) / rows
+            /* Calculate height and widht of the current cell. See header for details. */
+            cellHeight: (list.height - list.anchors.margins) / rows
+            cellWidth: {
+                var cellsInRow = (row == list.rows - 1 && list.lastRowCells != 0) ?
+                        list.lastRowCells : list.columns;
+                return (list.width - list.anchors.margins) / cellsInRow
+            }
 
             /* Pass on a few properties so that they can be reference from inside the
                SpreadItem itself. The state is particularly important as it drives
