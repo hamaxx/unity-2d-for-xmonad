@@ -15,14 +15,12 @@ Item {
     WindowsList {
         id: wins
         applicationId: control.appId
-        onLoaded: {
-            grid.items = wins
-            grid.state = "spread"
-        }
+        onLoaded: grid.state = "spread"
     }
 
     SpreadGrid {
         id: grid
+        items: wins
 
         onSpreadFinished: {
             control.hide()
