@@ -1,6 +1,7 @@
 # Dependencies
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+pkg_check_modules(QTDEE REQUIRED libqtdee)
 pkg_check_modules(GDK REQUIRED gdk-2.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
@@ -54,6 +55,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
+    ${QTDEE_INCLUDE_DIRS}
     ${GDK_INCLUDE_DIRS}
     ${GIO_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
@@ -65,6 +67,7 @@ target_link_libraries(UnityApplications
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QTBAMF_LDFLAGS}
     ${QTGCONF_LDFLAGS}
+    ${QTDEE_LDFLAGS}
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
     ${WNCK_LDFLAGS}

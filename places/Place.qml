@@ -7,18 +7,35 @@ import "utils.js" as Utils
 Page {
     id: place
 
-    property string name
     property string dBusObjectPath
     property string dBusObjectPathPlaceEntry
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
-    /* FIXME: this is a bit of a hack due to the lack of D-Bus property
-              giving the current section id for a place
-    */
-    property int activeSection
-    property bool hasSections: true
+    /* The PlaceEntry D-Bus API does not expose properties but only setters.
+       We make sure the setters are always synchronised with our local properties. */
+    Component.onCompleted: {
+        place_entry.SetActive(active)
+        place_entry.SetActiveSection(activeSection)
+        place_entry.SetSearch(searchQuery, [])
+    }
+    onActiveChanged: {
+        place_entry.SetActive(active)
+        /* PlaceEntry.SetActiveSection needs to be called after PlaceEntry.SetActive
+           in order for it to have an effect. */
+        if (active) {
+            place_entry.SetActiveSection(activeSection)
+        }
+    }
+    onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
+    onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
+
+    /* Sections model containing the list of available sections for the place */
+    sections: DeeListModel {
+                   service: dBusService
+                   objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
+              }
 
     /* ResultsModel containing data for all the Groups. Each Group will filter
        it locally. */
@@ -60,18 +77,6 @@ Page {
                 Qt.openUrlExternally(decodeURIComponent(uri))
             }
         }
-    }
-
-    function setActiveSection(section) {
-        /* FIXME: SetActive(false) should happen when exiting the place */
-        place_entry.SetActive(false)
-        place_entry.SetActive(true)
-        activeSection = section
-        place_entry.SetActiveSection(section)
-    }
-
-    function search(query) {
-        place_entry.SetSearch(query, [])
     }
 
     UnityPlaceEntry {
@@ -153,9 +158,6 @@ Page {
                 */
                 filterRole: 2 /* second column (see above comment) */
                 filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
-
-                /* Maximum number of items in the model; -1 is unlimited */
-                limit: item.modelCountLimit
             }
 
             onLoaded: {

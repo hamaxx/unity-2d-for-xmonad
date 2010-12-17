@@ -39,7 +39,7 @@ class LauncherItem : public QObject
     Q_PROPERTY(QObject* menu READ menu NOTIFY menuChanged)
 
 public:
-    LauncherItem();
+    LauncherItem(QObject* parent = 0);
     ~LauncherItem();
 
     /* getters */

@@ -18,6 +18,7 @@
  */
 
 #include <QApplication>
+#include <QDebug>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
 #include <QDesktopWidget>
@@ -28,6 +29,33 @@
 #include "dashdeclarativeview.h"
 
 #include "config.h"
+
+/* Register a D-Bus service for activation and deactivation of the dash */
+static bool registerDBusService(DashDeclarativeView* view)
+{
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    if (!bus.registerService("com.canonical.UnityQt")) {
+        qCritical() << "Failed to register DBus service, is there another instance already running?";
+        return false;
+    }
+    /* FIXME: use an adaptor class in order not to expose all of the view's
+       properties and methods. */
+    if (!bus.registerObject("/dash", view, QDBusConnection::ExportAllContents)) {
+        qCritical() << "Failed to register /dash, this should not happen!";
+        return false;
+    }
+    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
+       property change notification that Qt 4.7 does not implement.
+
+        org.freedesktop.DBus.Properties.PropertiesChanged (
+            STRING interface_name,
+            DICT<STRING,VARIANT> changed_properties,
+            ARRAY<STRING> invalidated_properties);
+
+       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
+    */
+    return true;
+}
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +71,10 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
+
+    if (!registerDBusService(&view)) {
+        return -1;
+    }
 
     /* The dash window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -73,23 +105,6 @@ int main(int argc, char *argv[])
     int current_screen = QApplication::desktop()->screenNumber(&view);
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
-
-    /* Register a D-Bus service for activation and deactivation of the dash */
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerService("com.canonical.UnityQt");
-    /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */
-    bus.registerObject("/dash", &view, QDBusConnection::ExportAllContents);
-    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
-       property change notification that Qt 4.7 does not implement.
-
-        org.freedesktop.DBus.Properties.PropertiesChanged (
-            STRING interface_name,
-            DICT<STRING,VARIANT> changed_properties,
-            ARRAY<STRING> invalidated_properties);
-
-       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
-    */
 
     return application.exec();
 }
