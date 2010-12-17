@@ -23,7 +23,9 @@ Item {
             row: Math.floor(index / list.columns)
             columnsInRow: (row == list.rows - 1 && list.lastRowColumns != 0) ?
                           list.lastRowColumns : list.columns
+
             columnWidth: (list.width - list.anchors.margins) / columnsInRow
+            rowHeight: (list.height - list.anchors.margins) / rows
 
             property bool active: false
             state: list.state
