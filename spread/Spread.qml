@@ -49,12 +49,4 @@ Item {
             grid.state = ""
         }
     }
-
-    MouseArea {
-        width: 100
-        height: 100
-        anchors.top: parent.top
-        anchors.left: parent.left
-        onDoubleClicked: Qt.quit()
-    }
 }
