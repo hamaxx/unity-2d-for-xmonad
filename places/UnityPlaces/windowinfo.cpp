@@ -114,11 +114,7 @@ bool WindowInfo::active() const {
     return (m_bamfWindow) ? m_bamfWindow->active() : false;
 }
 
-void WindowInfo::setActive(bool active) {
-    if (!active) {
-        /* FIXME: What shall we do in this case ? */
-        return;
-    }
+void WindowInfo::activate() {
     WnckWindow *win = getWnckWin();
     if (win == 0) {
         return;

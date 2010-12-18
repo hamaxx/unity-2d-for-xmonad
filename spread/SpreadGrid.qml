@@ -91,7 +91,7 @@ Item {
                 /* Immediately activate the window. Since spread is an
                    always-on-top window, we can raise the window now so it
                    will be already in the correct position when the outro finishes */
-                windowInfo.active = true
+                windowInfo.activate()
                 list.state = ""
             }
 
