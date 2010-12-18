@@ -47,9 +47,7 @@ Item {
     property int spreadX: column * cellWidth + (cellWidth-spreadWidth)/2
     property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
 
-    /* Emitted when clicking on an item, to tell the parent to
-       initiate the outro animation */
-    signal spreadShouldEnd
+    signal clicked
 
     /* Emitted when the outro animation for this item is done */
     signal outroFinished
@@ -200,17 +198,7 @@ Item {
         enabled: false
         hoverEnabled: true
 
-        onClicked: {
-            /* This is a bit of an hack, to raise the item above all the others
-               before starting the outro, but it's ok since at the end of the outro
-               all the items will be unloaded (and we will never have >9999 items) */
-            item.z = 9999
-            /* Immediately activate the window. Since spread is an
-               always-on-top window, we can raise the window now so it
-               will be already in the correct position when the outro finishes */
-            windowInfo.active = true
-            item.spreadShouldEnd()
-        }
+        onClicked: item.clicked()
     }
 
     states: [

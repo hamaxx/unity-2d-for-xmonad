@@ -84,9 +84,17 @@ Item {
             state: list.state
             windowInfo: window
 
-            /* Change the global state of the list to trigger the outro animation on
-               this signal (emitted when clicking an item in the grid) */
-            onSpreadShouldEnd: list.state = ""
+            onClicked: {
+                /* This is a bit of an hack, to raise the item above all the others
+                   before starting the outro, but it's ok since at the end of the outro
+                   all the items will be unloaded (and we will never have >9999 items) */
+                z = 9999
+                /* Immediately activate the window. Since spread is an
+                   always-on-top window, we can raise the window now so it
+                   will be already in the correct position when the outro finishes */
+                windowInfo.active = true
+                list.state = ""
+            }
 
             /* HACK: This is an hack that is needed to ensure that we consider the
                spread finished when the animation of all the items back into
