@@ -96,7 +96,7 @@ Item {
                Attaching to onStateChange of the SpreadGrid component itself will not
                work since the state change is triggered immediately, and the
                animations of the children will still be running. */
-            onFinished: {
+            onOutroFinished: {
                 list.finishedChildCount++
                 if (list.finishedChildCount == list.count) {
                     list.finishedChildCount = 0
