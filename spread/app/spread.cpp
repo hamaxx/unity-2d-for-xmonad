@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
     view.engine()->addImportPath(unityQtImportPath() + "/../places/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
+    /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
+              instantiated on the QML side */
     SpreadControl control;
     control.connectToBus();
 
