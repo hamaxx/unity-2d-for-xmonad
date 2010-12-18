@@ -124,13 +124,7 @@ void WindowInfo::setActive(bool active) {
         return;
     }
 
-    WnckWorkspace* workspace = wnck_window_get_workspace(win);
-    wnck_workspace_activate(workspace, CurrentTime);
-    if (wnck_workspace_is_virtual(workspace)) {
-        WindowInfo::moveViewportToWindow(win);
-    }
-
-    wnck_window_activate(win, CurrentTime);
+    showWindow(win);
 }
 
 WnckWindow* WindowInfo::getWnckWin(Window xid) const {
@@ -190,6 +184,32 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
     return true;
 }
 
+/* FIXME: copied from UnityApplications/launcherapplication.cpp */
+void WindowInfo::showWindow(WnckWindow* window)
+{
+    WnckWorkspace* workspace = wnck_window_get_workspace(window);
+
+    /* Using X.h's CurrentTime (= 0) */
+    wnck_workspace_activate(workspace, CurrentTime);
+
+    /* If the workspace contains a viewport then move the viewport so
+       that the window is visible.
+       Compiz for example uses only one workspace with a desktop larger
+       than the screen size which means that a viewport is used to
+       determine what part of the desktop is visible.
+
+       Reference:
+       http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#largedesks
+    */
+    if (wnck_workspace_is_virtual(workspace)) {
+        moveViewportToWindow(window);
+    }
+
+    /* Using X.h's CurrentTime (= 0) */
+    wnck_window_activate(window, CurrentTime);
+}
+
+/* FIXME: copied from UnityApplications/launcherapplication.cpp */
 void WindowInfo::moveViewportToWindow(WnckWindow* window) {
     WnckWorkspace* workspace = wnck_window_get_workspace(window);
     WnckScreen* screen = wnck_window_get_screen(window);

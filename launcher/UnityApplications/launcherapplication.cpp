@@ -406,6 +406,12 @@ LauncherApplication::show()
     wnck_screen_force_update(screen);
 
     WnckWindow* window = wnck_window_get(xid);
+    showWindow(window);
+}
+
+void
+LauncherApplication::showWindow(WnckWindow* window)
+{
     WnckWorkspace* workspace = wnck_window_get_workspace(window);
 
     /* Using X.h's CurrentTime (= 0) */

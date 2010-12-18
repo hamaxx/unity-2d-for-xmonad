@@ -55,6 +55,7 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
 
+    static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
 
 signals:

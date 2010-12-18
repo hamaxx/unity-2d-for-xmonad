@@ -42,6 +42,8 @@ public:
     bool active() const;
     void setActive(bool active);
 
+    /* FIXME: copied from UnityApplications/launcherapplication.h */
+    static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
 
 signals:
