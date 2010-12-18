@@ -51,8 +51,8 @@ Item {
 
     /* Only here to make following calculations more readable.
        Assigned only once so not a big performance issue */
-    property real widthScale: cellWidth / win.size.width
-    property real heightScale: cellHeight / win.size.height
+    property real widthScale: width / win.size.width
+    property real heightScale: height / win.size.height
 
     /* Calculate the final size of the shot inside of the cell.
        Essentially first try to scale it so that the larger side will fit
