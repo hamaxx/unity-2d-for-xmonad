@@ -23,18 +23,11 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
-#include <QPaintEngine>
-#include <QPixmap>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
 
-#include "config.h"
 #include "spreadview.h"
 #include "spreadcontrol.h"
 
-#include <QDebug>
-#include <QTimer>
-#include <QX11Info>
+#include "config.h"
 
 int main(int argc, char *argv[])
 {
