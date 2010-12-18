@@ -27,6 +27,7 @@ class SpreadView : public QDeclarativeView
     Q_OBJECT
 
 public slots:
+    /* FIXME: copied from places/app/dashdeclarativeview.h */
     void fitToAvailableSpace(int screen);
 
 public:
