@@ -38,7 +38,7 @@ Item {
        After it finishes loading it fires the loaded() signal, which
        triggers the intro animation (which is tied to the grid's state) */
     WindowsList {
-        id: wins
+        id: windows
         applicationId: control.appId
         onLoaded: grid.state = "spread"
     }
@@ -51,12 +51,12 @@ Item {
        the items are positioned according to grid mode. */
     SpreadGrid {
         id: grid
-        windows: wins
+        windows: windows
 
         // This is triggered after an outro animation is fully complete
         onSpreadFinished: {
             control.hide()  // Hides the entire window
-            wins.unload()   // Avoid wasting memory by keeping old shots
+            windows.unload()   // Avoid wasting memory by keeping old shots
             control.inProgress = false
         }
     }
@@ -68,7 +68,7 @@ Item {
         onActivateSpread: {
             control.inProgress = true;
             control.show(); // Shows the entire window
-            wins.load()     // Start taking shots of the windows
+            windows.load()     // Start taking shots of the windows
         }
 
         // Same as above, but if any spread is in progress it will start
@@ -79,6 +79,6 @@ Item {
     Component.onCompleted: {
         // See places/UnityPlaces/WindowsList.cpp for
         // an explanation of what this is and why it shouldn't be here.
-        wins.setAppAsPager()
+        windows.setAppAsPager()
     }
 }
