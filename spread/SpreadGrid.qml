@@ -84,7 +84,7 @@ Item {
                SpreadItem itself. The state is particularly important as it drives
                all the animations that make up intro and outro (see SpreadItem.qml) */
             state: list.state
-            win: item
+            windowInfo: item
 
             /* Change the global state of the list to trigger the outro animation on
                this signal (emitted when clicking an item in the grid) */

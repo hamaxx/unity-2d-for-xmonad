@@ -24,7 +24,7 @@ in the states property, at the bottom of this file.
 
 Item {
     id: item
-    property variant win
+    property variant windowInfo
 
     /* Position and size of our cell inside the grid */
     property int column
@@ -38,11 +38,11 @@ Item {
     property int availableHeight: cellHeight-minMargin
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
-    property bool isHorizontal: win.size.width-availableWidth >= win.size.height-availableHeight
-    property int maxWidth: Math.min(win.size.width, availableWidth)
-    property int maxHeight: Math.min(win.size.height, availableHeight)
-    property int spreadWidth: isHorizontal ? maxWidth : win.size.width * maxHeight / win.size.height
-    property int spreadHeight: !isHorizontal ? maxHeight : win.size.height * maxWidth / win.size.width
+    property bool isHorizontal: windowInfo.size.width-availableWidth >= windowInfo.size.height-availableHeight
+    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
+    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
+    property int spreadWidth: isHorizontal ? maxWidth : windowInfo.size.width * maxHeight / windowInfo.size.height
+    property int spreadHeight: !isHorizontal ? maxHeight : windowInfo.size.height * maxWidth / windowInfo.size.width
     /* Center item within its cell */
     property int spreadX: column * cellWidth + (cellWidth-spreadWidth)/2
     property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
@@ -66,7 +66,7 @@ Item {
         anchors.fill: parent
         fillMode: Image.Stretch
 
-        source: "image://window/" + item.win.xid
+        source: "image://window/" + windowInfo.xid
 
         /* This will be disabled during intro/outro animations for performance reasons,
            but it's good to have in grid mode when the window is */
@@ -90,7 +90,7 @@ Item {
         visible: (shot.status == Image.Error)
 
         Image {
-            source: "image://icons/" + item.win.icon
+            source: "image://icons/" + windowInfo.icon
             asynchronous: true
 
             anchors.centerIn: parent
@@ -167,7 +167,7 @@ Item {
                 anchors.centerIn: parent
                 width: itemExtras.width - parent.labelMargins
 
-                text: win.title
+                text: windowInfo.title
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
 
@@ -208,7 +208,7 @@ Item {
             /* Immediately activate the window. Since spread is an
                always-on-top window, we can raise the window now so it
                will be already in the correct position when the outro finishes */
-            item.win.active = true
+            windowInfo.active = true
             item.spreadShouldEnd()
         }
     }
