@@ -65,13 +65,10 @@ int main(int argc, char *argv[])
     view.engine()->addImportPath(unityQtImportPath() + "/../places/");
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
-    QmlSpreadControl qmlcontrol;
-    qmlcontrol.setView(&view);
-    view.rootContext()->setContextProperty("control", &qmlcontrol);
-
-    SpreadControl* control = new SpreadControl();
-    control->setQmlControl(&qmlcontrol);
-    control->connectToBus();
+    SpreadControl control;
+    control.setView(&view);
+    control.connectToBus();
+    view.rootContext()->setContextProperty("control", &control);
 
     view.setSource(QUrl("./Spread.qml"));
 

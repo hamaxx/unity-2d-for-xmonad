@@ -4,6 +4,7 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 
+#include "spreadview.h"
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
 
@@ -39,23 +40,23 @@ bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
 
 void SpreadControl::SpreadAllWindows() {
     qDebug() << "DBUS: Received request to expose all windows";
-    if (!m_qmlcontrol->inProgress()) {
-        m_qmlcontrol->setAppId(0);
-        m_qmlcontrol->doSpread();
+    if (!inProgress()) {
+        setAppId(0);
+        doSpread();
     } else {
         qDebug() << "DBUS: Canceling current spread";
-        m_qmlcontrol->doCancelSpread();
+        doCancelSpread();
     }
 }
 
 void SpreadControl::SpreadApplicationWindows(unsigned int appId) {
     qDebug() << "DBUS: Received request to expose application windows of" << appId;
-    if (!m_qmlcontrol->inProgress()) {
-        m_qmlcontrol->setAppId(appId);
-        m_qmlcontrol->doSpread();
+    if (!inProgress()) {
+        setAppId(appId);
+        doSpread();
     } else {
         qDebug() << "DBUS: Canceling current spread";
-        m_qmlcontrol->doCancelSpread();
+        doCancelSpread();
     }
 }
 
@@ -64,3 +65,19 @@ void SpreadControl::slotServiceUnregistered(const QString& service)
     mServiceWatcher->removeWatchedService(service);
 }
 
+void SpreadControl::setAppId(unsigned long appId) {
+    if (m_appId != appId) {
+        m_appId = appId;
+        emit appIdChanged(appId);
+    }
+}
+
+void SpreadControl::show() {
+    if (m_view == 0) return;
+    m_view->showMaximized();
+}
+
+void SpreadControl::hide() {
+    if (m_view == 0) return;
+    m_view->hide();
+}
