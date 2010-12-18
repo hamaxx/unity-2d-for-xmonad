@@ -56,11 +56,10 @@ Item {
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).
-               Note that we subtract the desktop x and y since window.location is
-               expressed in whole screen coordinates, but we are operating using
-               only the available space on desktop (which is what desktop is). */
-            x: window.location.x - desktop.x
-            y: window.location.y - desktop.y
+               Note that we subtract the availableGeometry x and y since window.location is
+               expressed in whole screen coordinates. */
+            x: window.location.x - availableGeometry.x
+            y: window.location.y - availableGeometry.y
             width: window.size.width
             height: window.size.height
             z: window.z

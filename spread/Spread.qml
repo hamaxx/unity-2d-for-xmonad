@@ -18,13 +18,13 @@ import UnityPlaces 1.0
    is triggered by a DBus call on the c++ side. It has a "inProgress" property that is
    true from the start of the intro animation to the end of the outro animation.
 
-   The context property called desktop represents the available space on the screen (i.e.
+   The context property called availableGeometry represents the available space on the screen (i.e.
    screen minus launcher, panels, etc)
 */
 
 Item {
-    width: desktop.width
-    height: desktop.height
+    width: availableGeometry.width
+    height: availableGeometry.height
 
     // Just displays the current gnome background below the spread
     GnomeBackground {

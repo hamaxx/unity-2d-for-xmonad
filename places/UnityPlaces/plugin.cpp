@@ -54,9 +54,9 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
 
     // FIXME: these are probably not very proper here, since clearly not all users
     // of this plugin wish to have this object in their context
-    engine->rootContext()->setContextProperty("desktop",
+    engine->rootContext()->setContextProperty("availableGeometry",
                                               QApplication::desktop()->availableGeometry());
-    engine->rootContext()->setContextProperty("screen",
+    engine->rootContext()->setContextProperty("screenGeometry",
                                               QApplication::desktop()->geometry());
 }
 
