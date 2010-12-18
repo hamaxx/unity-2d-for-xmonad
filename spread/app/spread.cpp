@@ -60,9 +60,15 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                      &view, SLOT(fitToAvailableSpace(int)));
 
-    // This is needed for UnityApplications and UnityPlaces
-    view.engine()->addImportPath(unityQtImportPath() + "/../launcher/");
-    view.engine()->addImportPath(unityQtImportPath() + "/../places/");
+    if (!isRunningInstalled()) {
+        /* Spread.qml imports UnityApplications, which is part of the launcher
+           component */
+        view.engine()->addImportPath(unityQtDirectory() + "/launcher/");
+        /* Spread.qml imports UnityPlaces, which is part of the places
+           component */
+        view.engine()->addImportPath(unityQtDirectory() + "/places/");
+    }
+
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
