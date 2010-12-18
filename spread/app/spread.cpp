@@ -35,24 +35,31 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
+    /* Forcing graphics system to 'raster' instead of the default 'native'
+       which on X11 is 'XRender'.
+       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
+       with 'raster' by calling QApplication::setColorSpec.
+
+       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+    */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-
     QApplication application(argc, argv);
 
     SpreadView view;
 
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+    /* The spread window is borderless and not moveable by the user, yet not
+       fullscreen */
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+
+    /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.setFocus();
-    view.engine()->addImportPath(unityQtImportPath());
 
-    /* Always fit the available space on the desktop */
-    view.fitToAvailableSpace(QApplication::desktop()->screenNumber(&view));
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
-                     &view, SLOT(fitToAvailableSpace(int)));
+    view.engine()->addImportPath(unityQtImportPath());
+    /* Note: baseUrl seems to be picky: if it does not end with a slash,
+       setSource() will fail */
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
     if (!isRunningInstalled()) {
         /* Spread.qml imports UnityApplications, which is part of the launcher
@@ -63,20 +70,22 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(unityQtDirectory() + "/places/");
     }
 
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
-
+    /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
               instantiated on the QML side */
     SpreadControl control;
     control.connectToBus();
-
-    view.rootContext()->setContextProperty("spreadView", &view);
     view.rootContext()->setContextProperty("control", &control);
 
+    /* Load the QML UI, focus and show the window */
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Spread.qml"));
 
-    application.connect(view.engine(), SIGNAL(quit()), SLOT(quit()));
+    /* Always match the size of the desktop */
+    int current_screen = QApplication::desktop()->screenNumber(&view);
+    view.fitToAvailableSpace(current_screen);
+    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     return application.exec();
 }
-
