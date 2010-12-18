@@ -32,15 +32,20 @@ Item {
     property real cellWidth
     property real cellHeight
 
-    /* The item's inner margins.
-       We are not using QML's anchors.*Margin here to allow
-       more flexibility in when to apply margins.
-       This is the value for screen mode, which is always zero
-       since we don't want to alter the shots at all. */
-    property real topMargin: 0
-    property real bottomMargin: 0
-    property real leftMargin: 0
-    property real rightMargin: 0
+    /* Values applied when in 'spread' mode */
+    property int minMargin: 20
+    property int availableWidth: cellWidth-minMargin
+    property int availableHeight: cellHeight-minMargin
+    /* Scale down to fit availableWidth/availableHeight while preserving the aspect
+       ratio of the window. Never scale up the window. */
+    property bool isHorizontal: win.size.width-availableWidth >= win.size.height-availableHeight
+    property int maxWidth: Math.min(win.size.width, availableWidth)
+    property int maxHeight: Math.min(win.size.height, availableHeight)
+    property int spreadWidth: isHorizontal ? maxWidth : win.size.width * maxHeight / win.size.height
+    property int spreadHeight: !isHorizontal ? maxHeight : win.size.height * maxWidth / win.size.width
+    /* Center item within its cell */
+    property int spreadX: column * cellWidth + (cellWidth-spreadWidth)/2
+    property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
 
     /* Emitted when clicking on an item, to tell the parent to
        initiate the outro animation */
@@ -48,35 +53,6 @@ Item {
 
     /* Emitted when the outro animation for this item is done */
     signal outroFinished
-
-    /* Only here to make following calculations more readable.
-       Assigned only once so not a big performance issue */
-    property real widthScale: width / win.size.width
-    property real heightScale: height / win.size.height
-
-    /* Calculate the final size of the shot inside of the cell.
-       Essentially first try to scale it so that the larger side will fit
-       completely the cell's inner margins, but preserving the aspect ratio
-       (the logic is the same as QML's Image.fillMode = Image.PreserveAspectFit).
-       However if this size is larger than the original shot, then keep the original.
-
-       NOTE: these values are very important because all children of the item, not
-       just the shot, will use them (since they should overlap perfectly).
-       These children include the replacement box+icon for failed screenshots, the
-       MouseArea receiving the user's clicks and the opaque Rectangle used for
-       showing the currently selected item in the grid.
-    */
-    property real shotWidth
-    property real shotHeight
-    shotWidth: {
-        var scaledWidth = (widthScale <= heightScale) ? width - (leftMargin + rightMargin) : heightScale * win.size.width
-        return Math.min(scaledWidth, win.size.width)
-    }
-    shotHeight: {
-        var scaledHeight = (widthScale <= heightScale) ? widthScale * win.size.height : height - (topMargin + bottomMargin)
-        return Math.min(scaledHeight, win.size.height)
-    }
-
 
     /* The shot itself. The actual image is obtained via the WindowImageProvider which
        serves the "image://window/*" source URIs.
@@ -87,9 +63,8 @@ Item {
     Image {
         id: shot
 
-        width: item.shotWidth
-        height: item.shotHeight
-        anchors.centerIn: parent
+        anchors.fill: parent
+        fillMode: Image.Stretch
 
         source: "image://window/" + item.win.xid
 
@@ -107,9 +82,7 @@ Item {
     Rectangle {
         id: iconBox
 
-        width: item.shotWidth
-        height: item.shotHeight
-        anchors.centerIn: parent
+        anchors.fill: parent
 
         border.width: 1
         border.color: "black"
@@ -136,9 +109,7 @@ Item {
     Item {
         id: itemExtras
 
-        width: item.shotWidth
-        height: item.shotHeight
-        anchors.centerIn: parent
+        anchors.fill: parent
 
         /* Shown only in grid mode, see transitions */
         visible: false
@@ -219,8 +190,8 @@ Item {
     MouseArea {
         id: itemArea
 
-        width: item.shotWidth
-        height: item.shotHeight
+        width: shot.paintedWidth
+        height: shot.paintedHeight
         anchors.centerIn: parent
 
         /* Since it should be possible to interact with items only
@@ -265,29 +236,10 @@ Item {
             PropertyChanges {
                 target: item;
 
-                /* In grid mode, we want to be constrained inside our designated cell */
-                width: cellWidth
-                height: cellHeight
-                x: column * cellWidth
-                y: row * cellHeight
-
-                /* The logic for the cell's margins (according to Florian's interpretation
-                   of Unity's code) is as follows:
-                   * Always leave at least 20 pixels between any shot's side and anything else.
-                     (anything else means either another shot or the desktop's available space's
-                      borders)
-                   * If the shot is smaller than that, it's ok to leave more margin space.
-
-                   To respect the first rule, we have to check if our cell is at the outer sides
-                   of the grid, and leave 20 pixels on these sides. On the inner sides only 10
-                   pixels are necessary since the neighbour will provide the other 10.
-                   To respect the second rule, we just rely on the fact that all shots have
-                   anchors.centerIn: parent, therefore they will float in the center if smaller.
-                */
-                leftMargin: (column == 0) ? 20 : 10
-                rightMargin: (column == item.parent.columns - 1) ? 20 : 10
-                topMargin: (row == 0) ? 20 : 10
-                bottomMargin: (row == item.parent.rows - 1) ? 20 : 10
+                width: spreadWidth
+                height: spreadHeight
+                x: spreadX
+                y: spreadY
             }
         }
     ]
@@ -302,7 +254,7 @@ Item {
                 PropertyAction { target: itemExtras; property: "visible"; value: false }
                 NumberAnimation {
                     target: item
-                    properties: "x,y,width,height,leftMargin,rightMargin,topMargin,bottomMargin";
+                    properties: "x,y,width,height";
                     duration: 250;
                     easing.type: Easing.InOutSine
                 }
