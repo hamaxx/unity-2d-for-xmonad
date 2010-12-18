@@ -1,10 +1,10 @@
 import Qt 4.7
 
 /*
-Each SpreadItem represents a real window on the desktop (we are
+Each SpreadWindow represents a real window on the desktop (we are
 passed a WindowInfo object with all the information about it).
 
-Its state ("" or "spread") decides which mode the item should
+Its state ("" or "spread") decides which mode the window should
 follow to position itself on screen ("screen" or "spread" mode
 respectively). The state is the same as state of the whole grid.
 
@@ -23,7 +23,7 @@ in the states property, at the bottom of this file.
 */
 
 Item {
-    id: item
+    id: window
     property variant windowInfo
 
     /* Position and size of our cell inside the grid */
@@ -43,13 +43,13 @@ Item {
     property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : windowInfo.size.width * maxHeight / windowInfo.size.height
     property int spreadHeight: !isHorizontal ? maxHeight : windowInfo.size.height * maxWidth / windowInfo.size.width
-    /* Center item within its cell */
+    /* Center window within its cell */
     property int spreadX: column * cellWidth + (cellWidth-spreadWidth)/2
     property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
 
     signal clicked
 
-    /* Emitted when the outro animation for this item is done */
+    /* Emitted when the outro animation for this window is done */
     signal outroFinished
 
     /* The shot itself. The actual image is obtained via the WindowImageProvider which
@@ -102,10 +102,10 @@ Item {
         }
     }
 
-    /* This grouping item is necessary to calculate properly the size of
+    /* This grouping window is necessary to calculate properly the size of
        the label. See below */
     Item {
-        id: itemExtras
+        id: windowExtras
 
         anchors.fill: parent
 
@@ -113,7 +113,7 @@ Item {
         visible: false
 
         /* A darkened rectangle that by default covers all shots
-           in grid mode, except the currently selected item. See itemExtras.states */
+           in grid mode, except the currently selected window. See windowExtras.states */
         Rectangle {
             id: darken
 
@@ -124,7 +124,7 @@ Item {
         }
 
         /* A label with the window title centered over the shot.
-           It will appear only for the currently selected item. See itemExtras.states */
+           It will appear only for the currently selected window. See windowExtras.states */
         Rectangle {
             id: labelBox
 
@@ -163,7 +163,7 @@ Item {
                 id: label
 
                 anchors.centerIn: parent
-                width: itemExtras.width - parent.labelMargins
+                width: windowExtras.width - parent.labelMargins
 
                 text: windowInfo.title
                 elide: Text.ElideRight
@@ -173,39 +173,39 @@ Item {
             }
         }
 
-        /* If we are hovering this item, show the label and hide the dark box.
-           The opposite should happen when we're not hovering the item */
+        /* If we are hovering this window, show the label and hide the dark box.
+           The opposite should happen when we're not hovering the window */
         states: State {
-            when: itemArea.containsMouse
+            when: windowArea.containsMouse
             PropertyChanges { target: darken; visible: false }
             PropertyChanges { target: labelBox; visible: true }
         }
     }
 
     /* This covers the entire shot (or iconBox) area, and serve two
-       functions: change the currently selected item by mouseOver, and
-       trigger the outro sequence when clicking on an item */
+       functions: change the currently selected window by mouseOver, and
+       trigger the outro sequence when clicking on an window */
     MouseArea {
-        id: itemArea
+        id: windowArea
 
         width: shot.paintedWidth
         height: shot.paintedHeight
         anchors.centerIn: parent
 
-        /* Since it should be possible to interact with items only
+        /* Since it should be possible to interact with windows only
            in grid mode, no events are handled except when enabled
-           explicity (see item.transitions) */
+           explicity (see window.transitions) */
         enabled: false
         hoverEnabled: true
 
-        onClicked: item.clicked()
+        onClicked: window.clicked()
     }
 
     states: [
-        /* This is the default state. Since items are created in this state, we don't
+        /* This is the default state. Since windows are created in this state, we don't
            set any of their values here. See how the default properties are assigned in
-           SpreadGrid and SpreadItem.
-           At the end of the outro, items will return to this state, and their properties
+           SpreadGrid and SpreadWindow.
+           At the end of the outro, windows will return to this state, and their properties
            to their default values (i.e. the correct values for screen mode). */
         State {
             name: ""
@@ -213,16 +213,16 @@ Item {
             /* See the transitions are for an explanation of this */
             StateChangeScript {
                 name: "endOfOutro"
-                script: item.outroFinished()
+                script: window.outroFinished()
             }
         },
 
         /* This state is what we want to have at the end of the intro.
-           In other words, it puts the item in its right place and size when in grid mode. */
+           In other words, it puts the window in its right place and size when in grid mode. */
         State {
             name: "spread"
             PropertyChanges {
-                target: item;
+                target: window;
 
                 width: spreadWidth
                 height: spreadHeight
@@ -238,17 +238,17 @@ Item {
         Transition {
             SequentialAnimation {
                PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: itemArea; property: "enabled"; value: false }
-                PropertyAction { target: itemExtras; property: "visible"; value: false }
+                PropertyAction { target: windowArea; property: "enabled"; value: false }
+                PropertyAction { target: windowExtras; property: "visible"; value: false }
                 NumberAnimation {
-                    target: item
+                    target: window
                     properties: "x,y,width,height";
                     duration: 250;
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: itemArea; property: "enabled"; value: (item.state == "spread") }
-                PropertyAction { target: itemExtras; property: "visible"; value: true }
+                PropertyAction { target: windowArea; property: "enabled"; value: (window.state == "spread") }
+                PropertyAction { target: windowExtras; property: "visible"; value: true }
                 ScriptAction { scriptName: "endOfOutro" }
             }
         }

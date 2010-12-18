@@ -6,21 +6,21 @@ import Qt 4.7
    When the state is the default state (named ""), the shots will be positioned
    and scaled according to screen mode (i.e. perfectly matching the real windows).
    The positioning in screen mode only uses the real size and position taken
-   from each item in the model. See the assignement of x,y,width,height and z
+   from each window in the model. See the assignement of x,y,width,height and z
    and that's all you need to know about screen mode.
 
    When the state is the "spread" state, the shots will be positioned in a layout
    that's pretty much the same as a standard Grid, except for some peculiarities.
    More specifically, the logic for the grid is as follows:
 
-   * The number of rows and columns depends on the total number of items (see
+   * The number of rows and columns depends on the total number of windows (see
      exact formulas below, lifted straight from Unity's code)
    * All cells in a row have always the same width
    * The combined width of all cells in a row always equals the width of the row.
    * If there would be empty cells in the last row of the grid, then the last row
      will have less cells so that no empty cells can exist.
 
-   The calculations are in part here and in part in SpreadItem, according to where
+   The calculations are in part here and in part in SpreadWindow, according to where
    it was most efficient to have them.
 
    The rest of the discussion below assumes that everything is referred to
@@ -31,7 +31,7 @@ Item {
     anchors.fill: parent
 
     /* The model feeds directly the Repeater, which generates and destroys
-       SpreadItems according to what's in the model at any given time.
+       SpreadWindows according to what's in the model at any given time.
        NOTE: the content of the model changes only in response to calling its
        load() and unload() methods (see the main Spread.qml) */
     property alias windows: repeater.model
@@ -52,11 +52,11 @@ Item {
     Repeater {
         id: repeater
 
-        delegate: SpreadItem {
+        delegate: SpreadWindow {
 
             /* The following group of properties is the only thing needed to position
-               this item in screen mode (almost exactly where the window is).
-               Note that we subtract the desktop x and y since item.location is
+               this window in screen mode (almost exactly where the window is).
+               Note that we subtract the desktop x and y since window.location is
                expressed in whole screen coordinates, but we are operating using
                only the available space on desktop (which is what desktop is). */
             x: window.location.x - desktop.x
@@ -65,7 +65,7 @@ Item {
             height: window.size.height
             z: window.z
 
-            /* Decide in which cell of the grid this item should position itself in
+            /* Decide in which cell of the grid this window should position itself in
                (based on the index of the current model value) */
             column: index % list.columns
             row: Math.floor(index / list.columns)
@@ -79,15 +79,15 @@ Item {
             }
 
             /* Pass on a few properties so that they can be reference from inside the
-               SpreadItem itself. The state is particularly important as it drives
-               all the animations that make up intro and outro (see SpreadItem.qml) */
+               SpreadWindow itself. The state is particularly important as it drives
+               all the animations that make up intro and outro (see SpreadWindow.qml) */
             state: list.state
             windowInfo: window
 
             onClicked: {
-                /* This is a bit of an hack, to raise the item above all the others
+                /* This is a bit of an hack, to raise the window above all the others
                    before starting the outro, but it's ok since at the end of the outro
-                   all the items will be unloaded (and we will never have >9999 items) */
+                   all the windows will be unloaded (and we will never have >9999 windows) */
                 z = 9999
                 /* Immediately activate the window. Since spread is an
                    always-on-top window, we can raise the window now so it
@@ -97,7 +97,7 @@ Item {
             }
 
             /* HACK: This is an hack that is needed to ensure that we consider the
-               spread finished when the animation of all the items back into
+               spread finished when the animation of all the windows back into
                their starting positions is complete.
                Attaching to onStateChange of the SpreadGrid component itself will not
                work since the state change is triggered immediately, and the
