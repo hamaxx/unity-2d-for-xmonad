@@ -55,7 +55,7 @@ Item {
 
         // This is triggered after an outro animation is fully complete
         onSpreadFinished: {
-            control.hide()  // Hides the entire window
+            spreadView.hide()  // Hides the entire window
             windows.unload()   // Avoid wasting memory by keeping old shots
             control.inProgress = false
         }
@@ -67,7 +67,7 @@ Item {
         // This is fired as a result of a method call from DBus
         onActivateSpread: {
             control.inProgress = true;
-            control.show(); // Shows the entire window
+            spreadView.showMaximized(); // Shows the entire window
             windows.load()     // Start taking shots of the windows
         }
 

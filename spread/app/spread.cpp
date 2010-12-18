@@ -66,8 +66,9 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
 
     SpreadControl control;
-    control.setView(&view);
     control.connectToBus();
+
+    view.rootContext()->setContextProperty("spreadView", &view);
     view.rootContext()->setContextProperty("control", &control);
 
     view.setSource(QUrl("./Spread.qml"));

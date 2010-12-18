@@ -8,7 +8,6 @@
 
 class QDBusObjectPath;
 class QDBusServiceWatcher;
-class SpreadView;
 
 class SpreadControl : public QObject, protected QDBusContext
 {
@@ -24,17 +23,11 @@ public:
     unsigned long appId() const { return m_appId; }
     void setAppId(unsigned long appId);
 
-    SpreadView *view() const { return m_view; }
-    void setView(SpreadView *view) { m_view = view; }
-
     bool inProgress() const { return m_inProgress; }
     void setInProgress(bool inProgress) { m_inProgress = inProgress; }
 
     void doSpread() { emit activateSpread(); }
     void doCancelSpread() { emit cancelSpread(); }
-
-    Q_INVOKABLE void show();
-    Q_INVOKABLE void hide();
 
     bool connectToBus(const QString& service = QString(), const QString& objectPath = QString());
 
@@ -54,7 +47,6 @@ private:
     QDBusServiceWatcher* mServiceWatcher;
     QString mService;
     unsigned long m_appId;
-    SpreadView *m_view;
     bool m_inProgress;
 };
 

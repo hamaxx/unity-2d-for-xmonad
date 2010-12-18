@@ -4,7 +4,6 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 
-#include "spreadview.h"
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
 
@@ -70,14 +69,4 @@ void SpreadControl::setAppId(unsigned long appId) {
         m_appId = appId;
         emit appIdChanged(appId);
     }
-}
-
-void SpreadControl::show() {
-    if (m_view == 0) return;
-    m_view->showMaximized();
-}
-
-void SpreadControl::hide() {
-    if (m_view == 0) return;
-    m_view->hide();
 }
