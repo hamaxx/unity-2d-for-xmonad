@@ -75,10 +75,4 @@ Item {
         // playing the outro animation no matter what the current state is
         onCancelSpread: grid.state = ""
     }
-
-    Component.onCompleted: {
-        // See places/UnityPlaces/WindowsList.cpp for
-        // an explanation of what this is and why it shouldn't be here.
-        windows.setAppAsPager()
-    }
 }

@@ -4,7 +4,6 @@
 extern "C" {
 #include <libwnck/screen.h>
 #include <libwnck/window.h>
-#include <libwnck/util.h>
 }
 #include <glib-2.0/glib.h>
 
@@ -49,20 +48,6 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     WindowInfo *info = m_windows.value(index.row(), 0);
     if (info == 0) return QVariant();
     else return QVariant::fromValue(info);
-}
-
-/* FIXME: This is hardly the right place to put this function, but
-   I didn't want to make the spread main app depend on wnck or
-   UnityApplications directly on the c++ side. So for now this will do.
-   What we should really do later is to create a QObject that expose this
-   function and expose that object via setContextProperty in the plugin.
-   Then call it both in the launcher and in the spread in Component.onCompleted.
-
-   See LauncherApplication::LauncherApplication for an explanation of why
-   this is important.
-*/
-void WindowsList::setAppAsPager() {
-    wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 }
 
 void WindowsList::load() {

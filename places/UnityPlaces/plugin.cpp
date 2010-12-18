@@ -17,6 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Required otherwise using wnck_set_client_type breaks linking with error:
+   undefined reference to `wnck_set_client_type(WnckClientType)'
+*/
+extern "C" {
+#include <libwnck/util.h>
+}
+
 #include "unity_place.h"
 #include "unity_place_entry.h"
 #include "qsortfilterproxymodelqml.h"
@@ -58,6 +65,17 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
                                               QApplication::desktop()->availableGeometry());
     engine->rootContext()->setContextProperty("screenGeometry",
                                               QApplication::desktop()->geometry());
+
+    /* Critically important to set the client type to pager because wnck
+       will pass that type over to the window manager through XEvents.
+       Window managers tend to respect orders from pagers to the letter by
+       for example bypassing focus stealing prevention.
+       Compiz does exactly that in src/event.c:handleEvent(...) in the
+       ClientMessage case (line 1702).
+       Metacity has a similar policy in src/core/window.c:window_activate(...)
+       (line 2951).
+    */
+    wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 }
 
 Q_EXPORT_PLUGIN2(UnityPlaces, UnityPlacesPlugin);

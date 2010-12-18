@@ -29,7 +29,6 @@ public:
 
     void setGrabber(WindowGrabber *grabber) { m_capture = grabber; }
 
-    Q_INVOKABLE void setAppAsPager();
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
 
