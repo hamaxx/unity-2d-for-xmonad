@@ -88,7 +88,7 @@ Item {
 
             /* Change the global state of the list to trigger the outro animation on
                this signal (emitted when clicking an item in the grid) */
-            onSpeadShouldEnd: list.state = ""
+            onSpreadShouldEnd: list.state = ""
 
             /* HACK: This is an hack that is needed to ensure that we consider the
                spread finished when the animation of all the items back into

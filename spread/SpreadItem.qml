@@ -49,7 +49,7 @@ Item {
 
     /* Emitted when clicking on an item, to tell the parent to
        initiate the outro animation */
-    signal speadShouldEnd
+    signal spreadShouldEnd
 
     /* Emitted when the outro animation for this item is done */
     signal outroFinished
@@ -209,7 +209,7 @@ Item {
                always-on-top window, we can raise the window now so it
                will be already in the correct position when the outro finishes */
             item.win.active = true
-            item.speadShouldEnd()
+            item.spreadShouldEnd()
         }
     }
 
