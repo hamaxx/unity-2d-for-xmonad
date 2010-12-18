@@ -34,11 +34,11 @@ Item {
        SpreadItems according to what's in the model at any given time.
        NOTE: the content of the model changes only in response to calling its
        load() and unload() methods (see the main Spread.qml) */
-    property alias items: repeater.model
+    property alias windows: repeater.model
 
     /* Calculate the number of columns and rows based on the total number
-       of items. Formulas are liften straight from Unity. */
-    property int count: (items) ? items.count : 0
+       of windows. Formulas are liften straight from Unity. */
+    property int count: windows ? windows.count : 0
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / list.columns)
 
@@ -52,8 +52,6 @@ Item {
     Repeater {
         id: repeater
 
-        /* The "item" property of the current model value represents a
-           WindowInfo object, holding coordinates and size of a real window. */
         delegate: SpreadItem {
 
             /* The following group of properties is the only thing needed to position
@@ -61,11 +59,11 @@ Item {
                Note that we subtract the desktop x and y since item.location is
                expressed in whole screen coordinates, but we are operating using
                only the available space on desktop (which is what desktop is). */
-            x: item.location.x - desktop.x
-            y: item.location.y - desktop.y
-            width: item.size.width
-            height: item.size.height
-            z: item.z
+            x: window.location.x - desktop.x
+            y: window.location.y - desktop.y
+            width: window.size.width
+            height: window.size.height
+            z: window.z
 
             /* Decide in which cell of the grid this item should position itself in
                (based on the index of the current model value) */
@@ -84,7 +82,7 @@ Item {
                SpreadItem itself. The state is particularly important as it drives
                all the animations that make up intro and outro (see SpreadItem.qml) */
             state: list.state
-            windowInfo: item
+            windowInfo: window
 
             /* Change the global state of the list to trigger the outro animation on
                this signal (emitted when clicking an item in the grid) */

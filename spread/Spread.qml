@@ -51,7 +51,7 @@ Item {
        the items are positioned according to grid mode. */
     SpreadGrid {
         id: grid
-        items: wins
+        windows: wins
 
         // This is triggered after an outro animation is fully complete
         onSpreadFinished: {

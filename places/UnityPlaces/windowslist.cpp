@@ -21,7 +21,7 @@ WindowsList::WindowsList(QObject *parent) :
     QAbstractListModel(parent), m_applicationId(0)
 {
     QHash<int, QByteArray> roles;
-    roles[0] = "item";
+    roles[0] = "window";
     setRoleNames(roles);
 }
 
