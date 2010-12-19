@@ -7,8 +7,6 @@
 #include "bamf-application.h"
 #include "bamf-window.h"
 
-#include <QDebug>
-
 #include "windowinfo.h"
 
 

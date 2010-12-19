@@ -5,7 +5,6 @@
 #include <QPoint>
 #include <QSize>
 #include <QVariant>
-#include <QX11Info>
 #include <QtDeclarative/qdeclarative.h>
 
 #include <X11/Xlib.h>
