@@ -24,6 +24,11 @@ WindowsList::WindowsList(QObject *parent) :
     setRoleNames(roles);
 }
 
+WindowsList::~WindowsList()
+{
+    qDeleteAll(m_windows);
+}
+
 int WindowsList::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
@@ -107,6 +112,7 @@ void WindowsList::load() {
 
     if (m_windows.count() > 0) {
         beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
+        qDeleteAll(m_windows);
         m_windows.clear();
         endRemoveRows();
     }
@@ -123,6 +129,7 @@ void WindowsList::load() {
 
 void WindowsList::unload() {
     beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
+    qDeleteAll(m_windows);
     m_windows.clear();
     endRemoveRows();
 

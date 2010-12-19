@@ -19,7 +19,7 @@ class WindowsList : public QAbstractListModel
 
 public:
     WindowsList(QObject *parent = 0);
-    ~WindowsList() {}
+    ~WindowsList();
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
