@@ -13,7 +13,7 @@
 
 
 WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
-    QObject(parent), m_bamfWindow(0)
+    QObject(parent), m_bamfWindow(0), m_xid(0)
 {
     setXid(xid);
 }
@@ -23,11 +23,11 @@ void WindowInfo::onActiveChanged(bool active) {
 }
 
 unsigned int WindowInfo::xid() const {
-    return m_bamfWindow->xid();
+    return m_xid;
 }
 
 void WindowInfo::setXid(unsigned int xid) {
-    if (m_bamfWindow != NULL && xid == m_bamfWindow->xid()) {
+    if (m_bamfWindow != NULL && xid == m_xid) {
         return;
     }
 
@@ -53,13 +53,15 @@ void WindowInfo::setXid(unsigned int xid) {
 
     connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
 
+    m_xid = xid;
+
     emit xidChanged(xid);
     emit windowChanged(m_bamfWindow);
 
     QSize size;
     QPoint location;
     int z;
-    geometry(m_bamfWindow->xid(), &size, &location, &z);
+    geometry(m_xid, &size, &location, &z);
     emit sizeChanged(size);
     emit positionChanged(location);
     emit zChanged(z);
@@ -71,19 +73,19 @@ void WindowInfo::setXid(unsigned int xid) {
 
 QPoint WindowInfo::position() const {
     QPoint location;
-    geometry(m_bamfWindow->xid(), 0, &location, 0);
+    geometry(m_xid, 0, &location, 0);
     return location;
 }
 
 QSize WindowInfo::size() const {
     QSize size;
-    geometry(m_bamfWindow->xid(), &size, 0, 0);
+    geometry(m_xid, &size, 0, 0);
     return size;
 }
 
 int WindowInfo::z() const {
     int z;
-    geometry(m_bamfWindow->xid(), 0, 0, &z);
+    geometry(m_xid, 0, 0, &z);
     return z;
 }
 
@@ -124,7 +126,7 @@ WnckWindow* WindowInfo::getWnckWindow(unsigned int xid) const {
         if (m_bamfWindow == 0) {
             return 0;
         }
-        xid = m_bamfWindow->xid();
+        xid = m_xid;
     }
     WnckWindow *window = wnck_window_get(xid);
     if (window == 0) {

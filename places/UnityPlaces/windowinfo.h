@@ -66,6 +66,7 @@ private:
 private:
     BamfWindow *m_bamfWindow;
     BamfApplication *m_bamfApplication;
+    unsigned int m_xid;
 };
 
 QML_DECLARE_TYPE(WindowInfo)
