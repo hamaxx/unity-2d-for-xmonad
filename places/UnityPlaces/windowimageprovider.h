@@ -2,7 +2,6 @@
 #define X11WINDOWIMAGEPROVIDER_H
 
 #include <QDeclarativeImageProvider>
-#include <QPixmap>
 #include <QImage>
 #include <QSize>
 
