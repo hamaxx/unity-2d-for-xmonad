@@ -1,12 +1,3 @@
-/* Required otherwise using wnck_set_client_type breaks linking with error:
-   undefined reference to `wnck_set_client_type(WnckClientType)'
-*/
-extern "C" {
-#include <libwnck/screen.h>
-#include <libwnck/window.h>
-}
-#include <glib-2.0/glib.h>
-
 #include <QDebug>
 
 #include "windowslist.h"

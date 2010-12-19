@@ -3,7 +3,6 @@
 
 #include <QAbstractListModel>
 #include <QVariant>
-#include <QString>
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
 
