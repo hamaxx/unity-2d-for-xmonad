@@ -28,7 +28,7 @@ public:
     explicit WindowInfo(unsigned int xid = 0, QObject *parent = 0);
 
     unsigned int xid() const;
-    void setXid(unsigned int varXid);
+    void setXid(unsigned int xid);
 
     QPoint position() const;
     QSize size() const;

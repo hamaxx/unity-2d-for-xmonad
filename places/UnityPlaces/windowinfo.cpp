@@ -15,32 +15,7 @@
 WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
     QObject(parent), m_bamfWindow(0)
 {
-    if (xid == 0) return;
-    fromXid(xid);
-}
-
-void WindowInfo::fromXid(unsigned int xid) {
-   m_bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
-   if (m_bamfApplication == 0) {
-       m_bamfWindow = 0;
-       return;
-   }
-
-   BamfWindowList *windows = m_bamfApplication->windows();
-   for (int i = 0; i < windows->size(); i++) {
-       BamfWindow *window = windows->at(i);
-       if (window->xid() == xid) {
-           m_bamfWindow = window;
-           break;
-       }
-   }
-
-   if (!m_bamfWindow) {
-       m_bamfApplication = 0;
-       return;
-   }
-
-   connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
+    setXid(xid);
 }
 
 void WindowInfo::onActiveChanged(bool active) {
@@ -51,13 +26,34 @@ unsigned int WindowInfo::xid() const {
     return m_bamfWindow->xid();
 }
 
-void WindowInfo::setXid(unsigned int varXid) {
-    if (xid() == varXid) {
+void WindowInfo::setXid(unsigned int xid) {
+    if (m_bamfWindow != NULL && xid == m_bamfWindow->xid()) {
         return;
     }
 
-    fromXid(varXid);
-    emit xidChanged(xid());
+    m_bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
+    if (m_bamfApplication == 0) {
+        m_bamfWindow = 0;
+        return;
+    }
+
+    BamfWindowList *windows = m_bamfApplication->windows();
+    for (int i = 0; i < windows->size(); i++) {
+        BamfWindow *window = windows->at(i);
+        if (window->xid() == xid) {
+            m_bamfWindow = window;
+            break;
+        }
+    }
+
+    if (!m_bamfWindow) {
+        m_bamfApplication = 0;
+        return;
+    }
+
+    connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
+
+    emit xidChanged(xid);
     emit windowChanged(m_bamfWindow);
 
     QSize size;
