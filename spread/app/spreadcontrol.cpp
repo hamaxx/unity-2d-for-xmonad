@@ -58,7 +58,7 @@ bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
 }
 
 void SpreadControl::SpreadAllWindows() {
-    qDebug() << "DBUS: Received request to expose all windows";
+    qDebug() << "DBUS: Received request to spread all windows";
     if (!inProgress()) {
         setApplicationId(0);
         Q_EMIT activateSpread();
@@ -69,7 +69,7 @@ void SpreadControl::SpreadAllWindows() {
 }
 
 void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
-    qDebug() << "DBUS: Received request to expose application windows of" << applicationId;
+    qDebug() << "DBUS: Received request to spread application windows of" << applicationId;
     if (!inProgress()) {
         setApplicationId(applicationId);
         Q_EMIT activateSpread();

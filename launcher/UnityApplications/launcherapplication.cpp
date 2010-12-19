@@ -309,7 +309,7 @@ LauncherApplication::activate()
 {
     if (active())
     {
-        expose();
+        spread();
     }
     else if (running() && has_visible_window())
     {
@@ -461,9 +461,9 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 }
 
 void
-LauncherApplication::expose()
+LauncherApplication::spread()
 {
-    qDebug() << "Triggering expose via DBUS";
+    qDebug() << "Triggering spread via DBUS";
     QDBusInterface iface("com.canonical.UnityQtSpread.Spread", "/Spread",
                          "com.canonical.UnityQtSpread.Spread");
     iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
