@@ -60,12 +60,12 @@ protected slots:
 
 private:
     void fromXid(unsigned int xid);
-    bool geometry(unsigned int xid, QSize *size, QPoint *position) const;
-    WnckWindow *getWnckWindow(unsigned int xid = 0) const;
+    bool geometry(QSize *size, QPoint *position) const;
 
 private:
     BamfWindow *m_bamfWindow;
     BamfApplication *m_bamfApplication;
+    WnckWindow *m_wnckWindow;
     unsigned int m_xid;
 };
 

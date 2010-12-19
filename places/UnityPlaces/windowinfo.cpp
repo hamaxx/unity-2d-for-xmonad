@@ -53,6 +53,17 @@ void WindowInfo::setXid(unsigned int xid) {
 
     connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
 
+    WnckWindow *wnckWindow = wnck_window_get(xid);
+    if (wnckWindow == NULL) {
+        wnck_screen_force_update(wnck_screen_get_default());
+        wnckWindow = wnck_window_get(xid);
+    }
+
+    if (wnckWindow == NULL) {
+        return;
+    }
+
+    m_wnckWindow = wnckWindow;
     m_xid = xid;
 
     emit xidChanged(xid);
@@ -60,7 +71,7 @@ void WindowInfo::setXid(unsigned int xid) {
 
     QSize size;
     QPoint position;
-    geometry(m_xid, &size, &position);
+    geometry(&size, &position);
     emit sizeChanged(size);
     emit positionChanged(position);
     emit zChanged(z());
@@ -72,13 +83,13 @@ void WindowInfo::setXid(unsigned int xid) {
 
 QPoint WindowInfo::position() const {
     QPoint position;
-    geometry(m_xid, 0, &position);
+    geometry(0, &position);
     return position;
 }
 
 QSize WindowInfo::size() const {
     QSize size;
-    geometry(m_xid, &size, 0);
+    geometry(&size, 0);
     return size;
 }
 
@@ -121,42 +132,13 @@ bool WindowInfo::active() const {
 }
 
 void WindowInfo::activate() {
-    WnckWindow *window = getWnckWindow();
-    if (window == NULL) {
-        return;
-    }
-
-    showWindow(window);
+    showWindow(m_wnckWindow);
 }
 
-WnckWindow* WindowInfo::getWnckWindow(unsigned int xid) const {
-    if (xid == 0) {
-        if (m_bamfWindow == NULL) {
-            return NULL;
-        }
-        xid = m_xid;
-    }
-    WnckWindow *window = wnck_window_get(xid);
-    if (window == NULL) {
-        wnck_screen_force_update(wnck_screen_get_default());
-        window = wnck_window_get(xid);
-    }
-    return window;
-}
-
-bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position) const {
+bool WindowInfo::geometry(QSize *size, QPoint *position) const {
     int x, y, w, h;
 
-    if (!xid) {
-        return false;
-    }
-
-    WnckWindow *window = getWnckWindow(xid);
-    if (window == NULL) {
-        return false;
-    }
-
-    wnck_window_get_client_window_geometry(window, &x, &y, &w, &h);
+    wnck_window_get_client_window_geometry(m_wnckWindow, &x, &y, &w, &h);
 
     if (size) {
         size->setWidth(w);
