@@ -17,9 +17,9 @@
                 <method name="SpreadApplicationWindows">
                         <dox:d><![CDATA[
                            Activate a spread including all windows belonging to the application
-                           to which the window specified by the input parameter appId belongs to.
+                           to which the window specified by the input parameter applicationId belongs to.
                         ]]></dox:d>
-                        <arg name="appId" type="u" direction="in">
+                        <arg name="applicationId" type="u" direction="in">
                                 <dox:d>The XWindow ID of the window</dox:d>
                         </arg>
                 </method>

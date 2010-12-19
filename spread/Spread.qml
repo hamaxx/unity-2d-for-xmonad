@@ -39,7 +39,7 @@ Item {
        triggers the intro animation (which is tied to the grid's state) */
     WindowsList {
         id: windows
-        applicationId: control.appId
+        applicationId: control.applicationId
         onLoaded: grid.state = "spread"
     }
 

@@ -33,15 +33,15 @@ class SpreadControl : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
-    Q_PROPERTY(unsigned long appId READ appId WRITE setAppId NOTIFY appIdChanged)
+    Q_PROPERTY(unsigned long applicationId READ applicationId WRITE setApplicationId NOTIFY applicationIdChanged)
     Q_PROPERTY(bool inProgress READ inProgress WRITE setInProgress)
 
 public:
     explicit SpreadControl(QObject *parent = 0);
     ~SpreadControl();
 
-    unsigned long appId() const { return m_appId; }
-    void setAppId(unsigned long appId);
+    unsigned long applicationId() const { return m_applicationId; }
+    void setApplicationId(unsigned long applicationId);
 
     bool inProgress() const { return m_inProgress; }
     void setInProgress(bool inProgress) { m_inProgress = inProgress; }
@@ -53,20 +53,20 @@ public:
 
 public Q_SLOTS:
     Q_NOREPLY void SpreadAllWindows();
-    Q_NOREPLY void SpreadApplicationWindows(unsigned int appId);
+    Q_NOREPLY void SpreadApplicationWindows(unsigned int applicationId);
 
 private Q_SLOTS:
     void slotServiceUnregistered(const QString& service);
 
 Q_SIGNALS:
-    void appIdChanged(unsigned long appId);
+    void applicationIdChanged(unsigned long applicationId);
     void activateSpread();
     void cancelSpread();
 
 private:
     QDBusServiceWatcher* mServiceWatcher;
     QString mService;
-    unsigned long m_appId;
+    unsigned long m_applicationId;
     bool m_inProgress;
 };
 
