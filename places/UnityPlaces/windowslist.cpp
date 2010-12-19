@@ -36,13 +36,6 @@ int WindowsList::rowCount(const QModelIndex &parent) const
     return m_windows.size();
 }
 
-void WindowsList::setApplicationId(unsigned long applicationId) {
-    if (m_applicationId != applicationId) {
-        m_applicationId = applicationId;
-        emit applicationIdChanged(applicationId);
-    }
-}
-
 QVariant WindowsList::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role);
@@ -55,13 +48,17 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     else return QVariant::fromValue(info);
 }
 
-void WindowsList::load() {
+void WindowsList::load(unsigned long applicationId) {
+    if (m_applicationId == applicationId) {
+        return;
+    }
+
     QList<WindowInfo*> newWins;
     BamfMatcher &matcher = BamfMatcher::get_default();
 
     QList<BamfApplication*> apps;
-    if (m_applicationId) {
-        apps.append(matcher.application_for_xid(m_applicationId));
+    if (applicationId) {
+        apps.append(matcher.application_for_xid(applicationId));
     } else {
         BamfApplicationList *allapps = matcher.applications();
         for (int i = 0; i < allapps->size(); i++) {
@@ -123,6 +120,9 @@ void WindowsList::load() {
         endInsertRows();
     }
 
+    m_applicationId = applicationId;
+
+    emit applicationIdChanged(m_applicationId);
     emit countChanged(m_windows.count());
     emit loaded();
 }

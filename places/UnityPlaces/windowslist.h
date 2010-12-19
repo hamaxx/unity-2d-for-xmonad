@@ -15,7 +15,7 @@ class WindowsList : public QAbstractListModel
     Q_OBJECT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged);
-    Q_PROPERTY(unsigned long applicationId READ applicationId WRITE setApplicationId NOTIFY applicationIdChanged);
+    Q_PROPERTY(unsigned long applicationId READ applicationId NOTIFY applicationIdChanged);
 
 public:
     WindowsList(QObject *parent = 0);
@@ -26,11 +26,10 @@ public:
 
     int count() const { return rowCount(); }
     unsigned long applicationId() const { return m_applicationId; }
-    void setApplicationId(unsigned long applicationId);
 
     void setGrabber(WindowGrabber *grabber) { m_capture = grabber; }
 
-    Q_INVOKABLE void load();
+    Q_INVOKABLE void load(unsigned long applicationId);
     Q_INVOKABLE void unload();
 
 signals:

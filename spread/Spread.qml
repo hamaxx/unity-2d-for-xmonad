@@ -63,10 +63,9 @@ Item {
             if (applicationId == windows.applicationId && spreadView.visible) {
                 layout.state = "spread"
             } else {
-                windows.applicationId = applicationId
                 spreadView.show()
                 /* layout.state will be set to "spread" once the windows are loaded */
-                windows.load()
+                windows.load(applicationId)
             }
         }
 
