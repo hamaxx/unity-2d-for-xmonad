@@ -191,12 +191,6 @@ Item {
         height: shot.paintedHeight
         anchors.centerIn: parent
 
-        /* Since it should be possible to interact with windows only
-           in grid mode, no events are handled except when enabled
-           explicity (see window.transitions) */
-        enabled: false
-        hoverEnabled: true
-
         onClicked: window.clicked()
     }
 
@@ -222,7 +216,7 @@ Item {
         Transition {
             SequentialAnimation {
                PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: windowArea; property: "enabled"; value: false }
+                PropertyAction { target: windowArea; property: "hoverEnabled"; value: false }
                 PropertyAction { target: windowExtras; property: "visible"; value: false }
                 NumberAnimation {
                     target: window
@@ -231,7 +225,7 @@ Item {
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: windowArea; property: "enabled"; value: (window.state == "spread") }
+                PropertyAction { target: windowArea; property: "hoverEnabled"; value: (window.state == "spread") }
                 PropertyAction { target: windowExtras; property: "visible"; value: true }
             }
         }
