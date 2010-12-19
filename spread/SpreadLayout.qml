@@ -19,8 +19,7 @@ import Qt 4.7
      will have less cells so that no empty cells can exist.
 */
 Item {
-    id: grid
-    anchors.fill: parent
+    id: layout
 
     property alias windows: repeater.model
 
@@ -28,7 +27,7 @@ Item {
        Formulas are lifted straight from Unity. */
     property int count: windows ? windows.count : 0
     property int columns: Math.ceil (Math.sqrt (count))
-    property int rows: Math.ceil(count / grid.columns)
+    property int rows: Math.ceil(count / layout.columns)
 
     /* Number of cells in the last row: (as described above) */
     property int lastRowCells: count - (columns*(rows-1))
@@ -54,7 +53,7 @@ Item {
         id: repeater
 
         delegate: SpreadWindow {
-            transitionDuration: grid.transitionDuration
+            transitionDuration: layout.transitionDuration
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).
@@ -66,23 +65,23 @@ Item {
             height: window.size.height
             z: window.z
 
-            /* Decide in which cell of the grid this window should position itself in
+            /* Decide in which cell of the layout this window should position itself in
                (based on the index of the current model value) */
-            column: index % grid.columns
-            row: Math.floor(index / grid.columns)
+            column: index % layout.columns
+            row: Math.floor(index / layout.columns)
 
             /* Height and width of the current cell. See header for details. */
-            cellHeight: (grid.height - grid.anchors.margins) / rows
+            cellHeight: (layout.height - layout.anchors.margins) / rows
             cellWidth: {
-                var cellsInRow = (row == grid.rows - 1 && grid.lastRowCells != 0) ?
-                        grid.lastRowCells : grid.columns;
-                return (grid.width - grid.anchors.margins) / cellsInRow
+                var cellsInRow = (row == layout.rows - 1 && layout.lastRowCells != 0) ?
+                        layout.lastRowCells : layout.columns;
+                return (layout.width - layout.anchors.margins) / cellsInRow
             }
 
             /* Pass on a few properties so that they can be referenced from inside the
                SpreadWindow itself. The state is particularly important as it drives
                all the animations that make up intro and outro */
-            state: grid.state
+            state: layout.state
             windowInfo: window
 
             onClicked: {
@@ -94,7 +93,7 @@ Item {
                    always-on-top window, we can raise the window now so it
                    will be already in the correct position when the outro finishes */
                 windowInfo.activate()
-                grid.state = ""
+                layout.state = ""
             }
         }
     }

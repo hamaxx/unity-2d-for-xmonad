@@ -3,12 +3,12 @@ import UnityApplications 1.0
 import UnityPlaces 1.0
 
 /* The main component that manages the spread.
-   This only acts as an outer shell, the actual logic is pretty much all in SpreadGrid.qml
+   This only acts as an outer shell, the actual logic is pretty much all in SpreadLayout.qml
    and SpreadItem.qml
 
    In the rest of the comments there will be some recurring terms that I explain below:
    - screen mode: in this mode each shot is positioned and scaled exactly as the real window.
-   - spread mode: in this mode each shot is constrained to a cell in a grid.
+   - spread mode: in this mode each shot is constrained to a cell in a layout.
    - intro animation: the animation that moves the shots from screen to spread mode
    - outro animation: the animation that moves the shots from spread mode back to screen mode
 
@@ -32,7 +32,7 @@ Item {
     /* List of windows that will be shown in the spread. */
     WindowsList {
         id: windows
-        onLoaded: grid.state = "spread"
+        onLoaded: layout.state = "spread"
     }
 
     /* This is our main view.
@@ -41,13 +41,14 @@ Item {
        It has two states: the default one (named "") where it positions the
        items according to screen mode. And the other named "spread" where
        the items are positioned according to spread mode. */
-    SpreadGrid {
-        id: grid
+    SpreadLayout {
+        id: layout
 
+        anchors.fill: parent
         windows: windows
 
         onTransitionCompleted: {
-            if (grid.state == "") {
+            if (layout.state == "") {
                 spreadView.hide()
                 windows.unload()
             }
@@ -60,7 +61,7 @@ Item {
         /* Go to spread mode once the windows are loaded */
         onActivateSpread: {
             if (applicationId == windows.applicationId && spreadView.visible) {
-                grid.state = "spread"
+                layout.state = "spread"
             } else {
                 windows.applicationId = applicationId
                 spreadView.show()
@@ -69,6 +70,6 @@ Item {
         }
 
         /* Go to screen mode */
-        onCancelSpread: grid.state = ""
+        onCancelSpread: layout.state = ""
     }
 }
