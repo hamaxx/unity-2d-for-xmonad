@@ -6,11 +6,11 @@ passed a WindowInfo object with all the information about it).
 
 Its state ("" or "spread") decides which mode the window should
 follow to position itself on screen ("screen" or "spread" mode
-respectively). The state is the same as state of the parent grid.
+respectively).
 
 In screen mode we use the real window's position and size to exactly mimic it.
 
-In spread mode, we are assigned a cell in the grid, and we resize
+In spread mode, we are assigned a cell in the spread, and we resize
 and reposition ourselves to be fully constrained and centered inside
 that specific cell.
 The shot should occupy as much space as possible inside the cell,
@@ -24,7 +24,7 @@ Item {
     property variant windowInfo
     property int transitionDuration
 
-    /* Position and size of our cell inside the grid */
+    /* Position and size of our cell inside the spread */
     property int column
     property int row
     property real cellWidth
@@ -62,7 +62,7 @@ Item {
         source: "image://window/" + windowInfo.xid
 
         /* This will be disabled during intro/outro animations for performance reasons,
-           but it's good to have in grid mode when the window is */
+           but it's good to have in spread mode when the window is */
         smooth: true
 
         visible: (status != Image.Error)
@@ -187,7 +187,7 @@ Item {
 
     states: [
         /* This state is what we want to have at the end of the intro.
-           In other words, it puts the window in its right place and size when in grid mode. */
+           In other words, it puts the window in its right place and size when in spread mode. */
         State {
             name: "spread"
             PropertyChanges {
