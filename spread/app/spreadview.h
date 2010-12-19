@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERVIEW
-#define LAUNCHERVIEW
+#ifndef SPREADVIEW_H
+#define SPREADVIEW_H
 
 #include <QDeclarativeView>
 
@@ -34,5 +34,5 @@ public:
     explicit SpreadView();
 };
 
-#endif // LAUNCHERVIEW
+#endif // SPREADVIEW_H
 
