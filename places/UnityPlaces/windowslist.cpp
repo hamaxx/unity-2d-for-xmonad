@@ -135,6 +135,6 @@ void WindowsList::unload() {
 
     m_loaded = false;
 
-    Q_EMIT loadedChanged(m_loaded);
     Q_EMIT countChanged(m_windows.count());
+    Q_EMIT loadedChanged(m_loaded);
 }
