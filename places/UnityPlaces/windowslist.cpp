@@ -43,9 +43,8 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    WindowInfo *info = m_windows.value(index.row(), 0);
-    if (info == 0) return QVariant();
-    else return QVariant::fromValue(info);
+    WindowInfo *info = m_windows.at(index.row());
+    return QVariant::fromValue(info);
 }
 
 void WindowsList::load(unsigned long applicationId) {
