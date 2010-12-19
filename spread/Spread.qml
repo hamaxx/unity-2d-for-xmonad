@@ -67,7 +67,7 @@ Item {
         // This is fired as a result of a method call from DBus
         onActivateSpread: {
             windows.applicationId = applicationId
-            spreadView.showMaximized() // Shows the entire window
+            spreadView.show() // Shows the entire window
             windows.load()     // Start taking shots of the windows
         }
 
