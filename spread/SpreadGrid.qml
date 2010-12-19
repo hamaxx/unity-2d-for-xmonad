@@ -27,7 +27,7 @@ import Qt 4.7
    working in grid mode, unless otherwise specified explicitly.
 */
 Item {
-    id: list
+    id: grid
     anchors.fill: parent
 
     /* The model feeds directly the Repeater, which generates and destroys
@@ -40,7 +40,7 @@ Item {
        of windows. Formulas are liften straight from Unity. */
     property int count: windows ? windows.count : 0
     property int columns: Math.ceil (Math.sqrt (count))
-    property int rows: Math.ceil(count / list.columns)
+    property int rows: Math.ceil(count / grid.columns)
 
     /* Calculate if the number of cells in the last row (as described above) */
     property int lastRowCells: columns - ((rows * columns) - count)
@@ -67,7 +67,7 @@ Item {
         id: repeater
 
         delegate: SpreadWindow {
-            transitionDuration: list.transitionDuration
+            transitionDuration: grid.transitionDuration
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).
@@ -81,21 +81,21 @@ Item {
 
             /* Decide in which cell of the grid this window should position itself in
                (based on the index of the current model value) */
-            column: index % list.columns
-            row: Math.floor(index / list.columns)
+            column: index % grid.columns
+            row: Math.floor(index / grid.columns)
 
             /* Calculate height and widht of the current cell. See header for details. */
-            cellHeight: (list.height - list.anchors.margins) / rows
+            cellHeight: (grid.height - grid.anchors.margins) / rows
             cellWidth: {
-                var cellsInRow = (row == list.rows - 1 && list.lastRowCells != 0) ?
-                        list.lastRowCells : list.columns;
-                return (list.width - list.anchors.margins) / cellsInRow
+                var cellsInRow = (row == grid.rows - 1 && grid.lastRowCells != 0) ?
+                        grid.lastRowCells : grid.columns;
+                return (grid.width - grid.anchors.margins) / cellsInRow
             }
 
             /* Pass on a few properties so that they can be reference from inside the
                SpreadWindow itself. The state is particularly important as it drives
                all the animations that make up intro and outro (see SpreadWindow.qml) */
-            state: list.state
+            state: grid.state
             windowInfo: window
 
             onClicked: {
@@ -107,7 +107,7 @@ Item {
                    always-on-top window, we can raise the window now so it
                    will be already in the correct position when the outro finishes */
                 windowInfo.activate()
-                list.state = ""
+                grid.state = ""
             }
         }
     }
