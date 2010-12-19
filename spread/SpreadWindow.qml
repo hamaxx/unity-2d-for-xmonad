@@ -6,20 +6,16 @@ passed a WindowInfo object with all the information about it).
 
 Its state ("" or "spread") decides which mode the window should
 follow to position itself on screen ("screen" or "spread" mode
-respectively). The state is the same as state of the whole grid.
+respectively). The state is the same as state of the parent grid.
 
-In screen mode we does just use the real window's position and size
-to exactly mimic it.
+In screen mode we use the real window's position and size to exactly mimic it.
 
-In grid mode, we are assigned a cell in the grid, and we resize
+In spread mode, we are assigned a cell in the grid, and we resize
 and reposition ourselves to be fully constrained and centered inside
 that specific cell.
 The shot should occupy as much space as possible inside the cell,
 but never be bigger than its original window's size, and always
 maintain the same aspect ratio as the original window.
-
-Please note that a big chunk of the size calculations are taking place
-in the states property, at the bottom of this file.
 */
 
 Item {
@@ -73,8 +69,8 @@ Item {
     }
 
     /* This replaces the shot whenever retrieving its image fails.
-       It is essentially a white rectangle of the same size as the the shot would,
-       with a border and the icon for the window floating in the center.
+       It is essentially a white rectangle of the same size as the shot,
+       with a border and the window icon floating in the center.
     */
     Rectangle {
         id: iconBox
@@ -101,18 +97,16 @@ Item {
         }
     }
 
-    /* This grouping window is necessary to calculate properly the size of
-       the label. See below */
     Item {
         id: overlay
 
         anchors.fill: parent
 
-        /* Shown only in grid mode, see transitions */
+        /* Shown only in spread state, see transitions */
         visible: false
 
-        /* A darkened rectangle that by default covers all shots
-           in grid mode, except the currently selected window. See overlay.states */
+        /* A darkening rectangle that covers every window in spread state,
+           except the currently selected window. See overlay.states */
         Rectangle {
             id: darken
 
@@ -181,9 +175,6 @@ Item {
         }
     }
 
-    /* This covers the entire shot (or iconBox) area, and serve two
-       functions: change the currently selected window by mouseOver, and
-       trigger the outro sequence when clicking on an window */
     MouseArea {
         id: mouseArea
 
