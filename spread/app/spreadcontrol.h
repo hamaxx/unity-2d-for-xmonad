@@ -34,8 +34,7 @@ public:
     explicit SpreadControl(QObject *parent = 0);
     ~SpreadControl();
 
-
-    bool connectToBus(const QString& service = QString(), const QString& objectPath = QString());
+    bool connectToBus();
 
 public Q_SLOTS:
     Q_NOREPLY void SpreadAllWindows();
@@ -45,9 +44,6 @@ public Q_SLOTS:
 Q_SIGNALS:
     void activateSpread(unsigned int applicationId);
     void cancelSpread();
-
-private:
-    QString mService;
 };
 
 QML_DECLARE_TYPE(SpreadControl)

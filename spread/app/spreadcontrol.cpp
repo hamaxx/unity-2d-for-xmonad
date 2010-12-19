@@ -32,20 +32,17 @@ SpreadControl::SpreadControl(QObject *parent) : QObject(parent)
 }
 
 SpreadControl::~SpreadControl() {
-    QDBusConnection::sessionBus().unregisterService(mService);
+    QDBusConnection::sessionBus().unregisterService(DBUS_SERVICE);
 }
 
-bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
+bool SpreadControl::connectToBus()
 {
-    mService = _service.isEmpty() ? DBUS_SERVICE : _service;
-    QString path = _path.isEmpty() ? DBUS_OBJECT_PATH : _path;
-
-    bool ok = QDBusConnection::sessionBus().registerService(mService);
+    bool ok = QDBusConnection::sessionBus().registerService(DBUS_SERVICE);
     if (!ok) {
         return false;
     }
     new SpreadAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(path, this);
+    QDBusConnection::sessionBus().registerObject(DBUS_OBJECT_PATH, this);
 
     return true;
 }
