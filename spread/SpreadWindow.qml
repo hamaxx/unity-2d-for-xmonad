@@ -175,7 +175,7 @@ Item {
         /* If we are hovering this window, show the label and hide the dark box.
            The opposite should happen when we're not hovering the window */
         states: State {
-            when: windowArea.containsMouse
+            when: mouseArea.containsMouse
             PropertyChanges { target: darken; visible: false }
             PropertyChanges { target: labelBox; visible: true }
         }
@@ -185,7 +185,7 @@ Item {
        functions: change the currently selected window by mouseOver, and
        trigger the outro sequence when clicking on an window */
     MouseArea {
-        id: windowArea
+        id: mouseArea
 
         width: shot.paintedWidth
         height: shot.paintedHeight
@@ -216,7 +216,7 @@ Item {
         Transition {
             SequentialAnimation {
                PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: windowArea; property: "hoverEnabled"; value: false }
+                PropertyAction { target: mouseArea; property: "hoverEnabled"; value: false }
                 PropertyAction { target: overlay; property: "visible"; value: false }
                 NumberAnimation {
                     target: window
@@ -225,7 +225,7 @@ Item {
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: windowArea; property: "hoverEnabled"; value: (window.state == "spread") }
+                PropertyAction { target: mouseArea; property: "hoverEnabled"; value: (window.state == "spread") }
                 PropertyAction { target: overlay; property: "visible"; value: true }
             }
         }
