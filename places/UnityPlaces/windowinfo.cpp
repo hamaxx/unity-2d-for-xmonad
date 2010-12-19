@@ -13,7 +13,7 @@
 
 
 WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
-    QObject(parent), m_bamfWindow(0), m_xid(0)
+    QObject(parent), m_bamfWindow(NULL), m_xid(0)
 {
     setXid(xid);
 }
@@ -32,8 +32,8 @@ void WindowInfo::setXid(unsigned int xid) {
     }
 
     m_bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
-    if (m_bamfApplication == 0) {
-        m_bamfWindow = 0;
+    if (m_bamfApplication == NULL) {
+        m_bamfWindow = NULL;
         return;
     }
 
@@ -46,8 +46,8 @@ void WindowInfo::setXid(unsigned int xid) {
         }
     }
 
-    if (!m_bamfWindow) {
-        m_bamfApplication = 0;
+    if (m_bamfWindow == NULL) {
+        m_bamfApplication = NULL;
         return;
     }
 
@@ -90,17 +90,17 @@ int WindowInfo::z() const {
 }
 
 QString WindowInfo::applicationName() const {
-    return (m_bamfApplication == 0) ? QString() : m_bamfApplication->name();
+    return (m_bamfApplication == NULL) ? QString() : m_bamfApplication->name();
 }
 
 QString WindowInfo::title() const {
-    return (m_bamfWindow == 0) ? QString() : m_bamfWindow->name();
+    return (m_bamfWindow == NULL) ? QString() : m_bamfWindow->name();
 }
 
 QString WindowInfo::icon() const {
     /* m_bamfWindow and m_bamfApplication should always both
        be null or non-null at the same time. */
-    if (m_bamfWindow == 0) {
+    if (m_bamfWindow == NULL) {
         return QString();
     }
     return (m_bamfWindow->icon().isEmpty()) ?
@@ -114,7 +114,7 @@ bool WindowInfo::active() const {
 
 void WindowInfo::activate() {
     WnckWindow *window = getWnckWindow();
-    if (window == 0) {
+    if (window == NULL) {
         return;
     }
 
@@ -123,13 +123,13 @@ void WindowInfo::activate() {
 
 WnckWindow* WindowInfo::getWnckWindow(unsigned int xid) const {
     if (xid == 0) {
-        if (m_bamfWindow == 0) {
-            return 0;
+        if (m_bamfWindow == NULL) {
+            return NULL;
         }
         xid = m_xid;
     }
     WnckWindow *window = wnck_window_get(xid);
-    if (window == 0) {
+    if (window == NULL) {
         wnck_screen_force_update(wnck_screen_get_default());
         window = wnck_window_get(xid);
     }
@@ -144,7 +144,7 @@ bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position, int *
     }
 
     WnckWindow *window = getWnckWindow(xid);
-    if (window == 0) {
+    if (window == NULL) {
         return false;
     }
 
