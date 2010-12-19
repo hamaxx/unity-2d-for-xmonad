@@ -46,9 +46,6 @@ public:
     bool inProgress() const { return m_inProgress; }
     void setInProgress(bool inProgress) { m_inProgress = inProgress; }
 
-    void doSpread() { emit activateSpread(); }
-    void doCancelSpread() { emit cancelSpread(); }
-
     bool connectToBus(const QString& service = QString(), const QString& objectPath = QString());
 
 public Q_SLOTS:

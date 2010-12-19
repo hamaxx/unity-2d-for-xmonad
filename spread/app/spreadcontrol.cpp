@@ -61,10 +61,10 @@ void SpreadControl::SpreadAllWindows() {
     qDebug() << "DBUS: Received request to expose all windows";
     if (!inProgress()) {
         setApplicationId(0);
-        doSpread();
+        Q_EMIT activateSpread();
     } else {
         qDebug() << "DBUS: Canceling current spread";
-        doCancelSpread();
+        Q_EMIT cancelSpread();
     }
 }
 
@@ -72,10 +72,10 @@ void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
     qDebug() << "DBUS: Received request to expose application windows of" << applicationId;
     if (!inProgress()) {
         setApplicationId(applicationId);
-        doSpread();
+        Q_EMIT activateSpread();
     } else {
         qDebug() << "DBUS: Canceling current spread";
-        doCancelSpread();
+        Q_EMIT cancelSpread();
     }
 }
 
