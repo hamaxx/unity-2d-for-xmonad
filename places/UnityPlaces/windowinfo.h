@@ -16,7 +16,7 @@ class WindowInfo : public QObject
     Q_OBJECT
 
     Q_PROPERTY(unsigned int xid READ xid WRITE setXid NOTIFY xidChanged)
-    Q_PROPERTY(QPoint location READ location NOTIFY locationChanged)
+    Q_PROPERTY(QPoint position READ position NOTIFY positionChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
     Q_PROPERTY(int z READ z NOTIFY zChanged)
     Q_PROPERTY(QString applicationName READ applicationName NOTIFY applicationNameChanged)
@@ -30,7 +30,7 @@ public:
     unsigned int xid() const;
     void setXid(unsigned int varXid);
 
-    QPoint location() const;
+    QPoint position() const;
     QSize size() const;
     int z() const;
     QString applicationName() const;
@@ -48,7 +48,7 @@ signals:
     void windowChanged(BamfWindow *window);
     void xidChanged(QVariant xid);
     void sizeChanged(QSize size);
-    void locationChanged(QPoint location);
+    void positionChanged(QPoint position);
     void zChanged(int z);
     void applicationNameChanged(QString applicationName);
     void titleChanged(QString title);
