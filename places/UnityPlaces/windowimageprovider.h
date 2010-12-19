@@ -5,8 +5,6 @@
 #include <QImage>
 #include <QSize>
 
-class WindowGrabber;
-
 class WindowImageProvider : public QDeclarativeImageProvider
 {
 public:

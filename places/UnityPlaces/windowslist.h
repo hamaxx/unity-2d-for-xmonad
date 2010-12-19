@@ -8,7 +8,6 @@
 #include <QtDeclarative/qdeclarative.h>
 
 class WindowInfo;
-class WindowGrabber;
 
 class WindowsList : public QAbstractListModel
 {
@@ -27,8 +26,6 @@ public:
     int count() const { return rowCount(); }
     unsigned long applicationId() const { return m_applicationId; }
 
-    void setGrabber(WindowGrabber *grabber) { m_capture = grabber; }
-
     Q_INVOKABLE void load(unsigned long applicationId);
     Q_INVOKABLE void unload();
 
@@ -39,7 +36,6 @@ signals:
 
 private:
     QList<WindowInfo*> m_windows;
-    WindowGrabber *m_capture;
     unsigned long m_applicationId;
 };
 
