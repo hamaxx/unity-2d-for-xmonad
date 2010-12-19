@@ -19,7 +19,6 @@
  */
 
 #include <QDebug>
-#include <QDBusMessage>
 
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
