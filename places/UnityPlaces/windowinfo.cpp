@@ -59,11 +59,11 @@ void WindowInfo::setXid(unsigned int xid) {
     emit windowChanged(m_bamfWindow);
 
     QSize size;
-    QPoint location;
+    QPoint position;
     int z;
-    geometry(m_xid, &size, &location, &z);
+    geometry(m_xid, &size, &position, &z);
     emit sizeChanged(size);
-    emit positionChanged(location);
+    emit positionChanged(position);
     emit zChanged(z);
 
     emit applicationNameChanged(applicationName());
@@ -72,9 +72,9 @@ void WindowInfo::setXid(unsigned int xid) {
 }
 
 QPoint WindowInfo::position() const {
-    QPoint location;
-    geometry(m_xid, 0, &location, 0);
-    return location;
+    QPoint position;
+    geometry(m_xid, 0, &position, 0);
+    return position;
 }
 
 QSize WindowInfo::size() const {
