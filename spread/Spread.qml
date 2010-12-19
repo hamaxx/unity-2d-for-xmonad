@@ -66,9 +66,13 @@ Item {
 
         // This is fired as a result of a method call from DBus
         onActivateSpread: {
-            windows.applicationId = applicationId
-            spreadView.show() // Shows the entire window
-            windows.load()     // Start taking shots of the windows
+            if (applicationId == windows.applicationId && spreadView.visible) {
+                grid.state = "spread"
+            } else {
+                windows.applicationId = applicationId
+                spreadView.show() // Shows the entire window
+                windows.load()    // Start taking shots of the windows
+            }
         }
 
         // Same as above, but if any spread is in progress it will start
