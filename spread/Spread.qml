@@ -32,7 +32,6 @@ Item {
     /* List of windows that will be shown in the spread. */
     WindowsList {
         id: windows
-        onLoadedChanged: if (loaded) layout.state = "spread"
     }
 
     /* This is our main view.
@@ -60,13 +59,9 @@ Item {
 
         /* Go to spread mode once the windows are loaded */
         onActivateSpread: {
-            if (applicationId == windows.applicationId && spreadView.visible) {
-                layout.state = "spread"
-            } else {
-                spreadView.show()
-                /* layout.state will be set to "spread" once the windows are loaded */
-                windows.load(applicationId)
-            }
+            spreadView.show()
+            windows.load(applicationId)
+            layout.state = "spread"
         }
 
         /* Go to screen mode */
