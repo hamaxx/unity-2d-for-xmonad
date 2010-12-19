@@ -38,8 +38,8 @@ signals:
 
 private:
     QList<WindowInfo*> m_windows;
-    bool m_loaded;
     unsigned long m_applicationId;
+    bool m_loaded;
 };
 
 QML_DECLARE_TYPE(WindowsList)
