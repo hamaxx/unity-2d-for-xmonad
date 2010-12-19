@@ -13,15 +13,16 @@ class WindowGrabber;
 class WindowsList : public QAbstractListModel
 {
     Q_OBJECT
+
+    Q_PROPERTY(int count READ count NOTIFY countChanged);
+    Q_PROPERTY(unsigned long applicationId READ applicationId WRITE setApplicationId NOTIFY applicationIdChanged);
+
 public:
     WindowsList(QObject *parent = 0);
     ~WindowsList() {}
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
-
-    Q_PROPERTY(int count READ count NOTIFY countChanged);
-    Q_PROPERTY(unsigned long applicationId READ applicationId WRITE setApplicationId NOTIFY applicationIdChanged);
 
     int count() const { return rowCount(); }
     unsigned long applicationId() const { return m_applicationId; }
