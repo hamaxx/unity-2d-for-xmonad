@@ -58,7 +58,6 @@ Q_SIGNALS:
 private:
     QDBusServiceWatcher* mServiceWatcher;
     QString mService;
-    unsigned long m_applicationId;
     bool m_inProgress;
 };
 
