@@ -42,7 +42,7 @@ public:
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
 
-signals:
+Q_SIGNALS:
     void xidChanged(unsigned int xid);
     void positionChanged(QPoint position);
     void sizeChanged(QSize size);
