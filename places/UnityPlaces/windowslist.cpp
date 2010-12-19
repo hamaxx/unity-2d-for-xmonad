@@ -105,9 +105,7 @@ void WindowsList::load(unsigned long applicationId) {
     m_applicationId = applicationId;
     m_loaded = true;
 
-    Q_EMIT applicationIdChanged(m_applicationId);
     Q_EMIT countChanged(m_windows.count());
-    Q_EMIT loadedChanged(m_loaded);
 }
 
 void WindowsList::unload() {
@@ -119,5 +117,4 @@ void WindowsList::unload() {
     m_loaded = false;
 
     Q_EMIT countChanged(m_windows.count());
-    Q_EMIT loadedChanged(m_loaded);
 }
