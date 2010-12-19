@@ -23,11 +23,8 @@
 
 #include <QObject>
 #include <QDBusContext>
-#include <QDBusObjectPath>
 #include <QtDeclarative/qdeclarative.h>
 
-class QDBusObjectPath;
-class QDBusServiceWatcher;
 
 class SpreadControl : public QObject, protected QDBusContext
 {
@@ -45,15 +42,11 @@ public Q_SLOTS:
     Q_NOREPLY void SpreadApplicationWindows(unsigned int applicationId);
     Q_NOREPLY void CancelSpread();
 
-private Q_SLOTS:
-    void slotServiceUnregistered(const QString& service);
-
 Q_SIGNALS:
     void activateSpread(unsigned int applicationId);
     void cancelSpread();
 
 private:
-    QDBusServiceWatcher* mServiceWatcher;
     QString mService;
 };
 

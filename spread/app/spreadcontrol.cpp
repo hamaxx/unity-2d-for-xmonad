@@ -20,9 +20,6 @@
 
 #include <QDebug>
 #include <QDBusMessage>
-#include <QDBusObjectPath>
-#include <QDBusServiceWatcher>
-#include <QDBusConnection>
 
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
@@ -30,12 +27,8 @@
 static const char* DBUS_SERVICE = "com.canonical.UnityQt.Spread";
 static const char* DBUS_OBJECT_PATH = "/Spread";
 
-SpreadControl::SpreadControl(QObject *parent) :
-    QObject(parent), mServiceWatcher(new QDBusServiceWatcher(this))
+SpreadControl::SpreadControl(QObject *parent) : QObject(parent)
 {
-    mServiceWatcher->setConnection(QDBusConnection::sessionBus());
-    mServiceWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-    connect(mServiceWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
 }
 
 SpreadControl::~SpreadControl() {
@@ -70,9 +63,4 @@ void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
 void SpreadControl::CancelSpread() {
     qDebug() << "DBUS: Received request to cancel the spread";
     Q_EMIT cancelSpread();
-}
-
-void SpreadControl::slotServiceUnregistered(const QString& service)
-{
-    mServiceWatcher->removeWatchedService(service);
 }
