@@ -1,14 +1,14 @@
 import Qt 4.7
 
 /* This is our main view.
-   It positions the shots in two very different layouts depending on its state.
+   It positions the windows in two very different layouts depending on its state.
 
-   When the state is the default state (named ""), the shots will be positioned
+   When the state is the default state (named ""), the windows will be positioned
    and scaled according to screen mode (i.e. perfectly matching the real windows).
    The positioning in screen mode only uses the real size and position taken
    from each window in the model.
 
-   When the state is the "spread" state, the shots will be positioned in a layout
+   When the state is the "spread" state, the windows will be positioned in a layout
    that is pretty much the same as a standard GridView, except for some peculiarities.
    More specifically, the logic for the spread is as follows:
 

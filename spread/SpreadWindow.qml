@@ -47,8 +47,8 @@ Item {
 
     signal clicked
 
-    /* The shot itself. The actual image is obtained via the WindowImageProvider which
-       serves the "image://window/*" source URIs.
+    /* Screenshot of the window, minus the decorations. The actual image is
+       obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
        Please note that the screenshot is taken at the moment the source property is
        actually assigned, during component initialization.
        If taking the screenshot fails (for example for minimized windows), then this
