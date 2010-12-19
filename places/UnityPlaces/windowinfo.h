@@ -11,6 +11,7 @@ class BamfWindow;
 class BamfApplication;
 typedef struct _WnckWindow WnckWindow;
 
+/* FIXME: position, size, z, title and icon values are not updated real time */
 class WindowInfo : public QObject
 {
     Q_OBJECT
