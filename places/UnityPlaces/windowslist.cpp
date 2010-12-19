@@ -49,10 +49,6 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
 }
 
 void WindowsList::load(unsigned long applicationId) {
-    if (m_applicationId == applicationId) {
-        return;
-    }
-
     QList<WindowInfo*> newWins;
     BamfMatcher &matcher = BamfMatcher::get_default();
 
