@@ -222,7 +222,7 @@ Item {
         State {
             name: "spread"
             PropertyChanges {
-                target: window;
+                target: window
 
                 width: spreadWidth
                 height: spreadHeight
@@ -242,8 +242,8 @@ Item {
                 PropertyAction { target: windowExtras; property: "visible"; value: false }
                 NumberAnimation {
                     target: window
-                    properties: "x,y,width,height";
-                    duration: 250;
+                    properties: "x,y,width,height"
+                    duration: 250
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
