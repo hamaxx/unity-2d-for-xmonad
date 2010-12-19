@@ -26,11 +26,11 @@ void WindowInfo::fromXid(Window xid) {
        return;
    }
 
-   BamfWindowList *wins = m_bamfApplication->windows();
-   for (int i = 0; i < wins->size(); i++) {
-       BamfWindow *win = wins->at(i);
-       if (win->xid() == xid) {
-           m_bamfWindow = win;
+   BamfWindowList *windows = m_bamfApplication->windows();
+   for (int i = 0; i < windows->size(); i++) {
+       BamfWindow *window = windows->at(i);
+       if (window->xid() == xid) {
+           m_bamfWindow = window;
            break;
        }
    }
@@ -115,27 +115,27 @@ bool WindowInfo::active() const {
 }
 
 void WindowInfo::activate() {
-    WnckWindow *win = getWnckWin();
-    if (win == 0) {
+    WnckWindow *window = getWnckWindow();
+    if (window == 0) {
         return;
     }
 
-    showWindow(win);
+    showWindow(window);
 }
 
-WnckWindow* WindowInfo::getWnckWin(Window xid) const {
+WnckWindow* WindowInfo::getWnckWindow(Window xid) const {
     if (xid == 0) {
         if (m_bamfWindow == 0) {
             return 0;
         }
         xid = m_bamfWindow->xid();
     }
-    WnckWindow *win = wnck_window_get(xid);
-    if (win == 0) {
+    WnckWindow *window = wnck_window_get(xid);
+    if (window == 0) {
         wnck_screen_force_update(wnck_screen_get_default());
-        win = wnck_window_get(xid);
+        window = wnck_window_get(xid);
     }
-    return win;
+    return window;
 }
 
 bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) const {
@@ -145,12 +145,12 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
         return false;
     }
 
-    WnckWindow *win = getWnckWin(xid);
-    if (win == 0) {
+    WnckWindow *window = getWnckWindow(xid);
+    if (window == 0) {
         return false;
     }
 
-    wnck_window_get_client_window_geometry(win, &x, &y, &w, &h);
+    wnck_window_get_client_window_geometry(window, &x, &y, &w, &h);
 
     if (size) {
         size->setWidth(w);
@@ -168,8 +168,8 @@ bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) con
         GList *cur = stack;
         while (cur) {
             i++;
-            WnckWindow *win = (WnckWindow*) cur->data;
-            if (wnck_window_get_xid(win) == xid) {
+            WnckWindow *window = (WnckWindow*) cur->data;
+            if (wnck_window_get_xid(window) == xid) {
                 *z = i;
                 break;
             }

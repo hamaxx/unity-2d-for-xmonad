@@ -64,7 +64,7 @@ protected slots:
 private:
     void fromXid(Window xid);
     bool geometry(Window xid, QSize *size, QPoint *position, int *z) const;
-    WnckWindow *getWnckWin(Window xid = 0) const;
+    WnckWindow *getWnckWindow(Window xid = 0) const;
 
 private:
     BamfWindow *m_bamfWindow;
