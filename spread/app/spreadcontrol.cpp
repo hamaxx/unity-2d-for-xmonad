@@ -60,8 +60,7 @@ bool SpreadControl::connectToBus(const QString& _service, const QString& _path)
 void SpreadControl::SpreadAllWindows() {
     qDebug() << "DBUS: Received request to spread all windows";
     if (!inProgress()) {
-        setApplicationId(0);
-        Q_EMIT activateSpread();
+        Q_EMIT activateSpread(0);
     } else {
         qDebug() << "DBUS: Canceling current spread";
         Q_EMIT cancelSpread();
@@ -71,8 +70,7 @@ void SpreadControl::SpreadAllWindows() {
 void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
     qDebug() << "DBUS: Received request to spread application windows of" << applicationId;
     if (!inProgress()) {
-        setApplicationId(applicationId);
-        Q_EMIT activateSpread();
+        Q_EMIT activateSpread(applicationId);
     } else {
         qDebug() << "DBUS: Canceling current spread";
         Q_EMIT cancelSpread();
@@ -82,11 +80,4 @@ void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
 void SpreadControl::slotServiceUnregistered(const QString& service)
 {
     mServiceWatcher->removeWatchedService(service);
-}
-
-void SpreadControl::setApplicationId(unsigned long applicationId) {
-    if (m_applicationId != applicationId) {
-        m_applicationId = applicationId;
-        emit applicationIdChanged(applicationId);
-    }
 }

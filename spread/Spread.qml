@@ -39,7 +39,6 @@ Item {
        triggers the intro animation (which is tied to the grid's state) */
     WindowsList {
         id: windows
-        applicationId: control.applicationId
         onLoaded: grid.state = "spread"
     }
 
@@ -66,6 +65,7 @@ Item {
 
         // This is fired as a result of a method call from DBus
         onActivateSpread: {
+            windows.applicationId = applicationId
             control.inProgress = true;
             spreadView.showMaximized(); // Shows the entire window
             windows.load()     // Start taking shots of the windows
