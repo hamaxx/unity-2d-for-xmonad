@@ -60,11 +60,10 @@ void WindowInfo::setXid(unsigned int xid) {
 
     QSize size;
     QPoint position;
-    int z;
-    geometry(m_xid, &size, &position, &z);
+    geometry(m_xid, &size, &position);
     emit sizeChanged(size);
     emit positionChanged(position);
-    emit zChanged(z);
+    emit zChanged(z());
 
     emit applicationNameChanged(applicationName());
     emit titleChanged(title());
@@ -73,19 +72,28 @@ void WindowInfo::setXid(unsigned int xid) {
 
 QPoint WindowInfo::position() const {
     QPoint position;
-    geometry(m_xid, 0, &position, 0);
+    geometry(m_xid, 0, &position);
     return position;
 }
 
 QSize WindowInfo::size() const {
     QSize size;
-    geometry(m_xid, &size, 0, 0);
+    geometry(m_xid, &size, 0);
     return size;
 }
 
-int WindowInfo::z() const {
-    int z;
-    geometry(m_xid, 0, 0, &z);
+unsigned int WindowInfo::z() const {
+    int z = 0;
+    GList *stack = wnck_screen_get_windows_stacked(wnck_screen_get_default());
+    GList *cur = stack;
+    while (cur) {
+        z++;
+        WnckWindow *window = (WnckWindow*) cur->data;
+        if (wnck_window_get_xid(window) == m_xid) {
+            break;
+        }
+        cur = g_list_next(cur);
+    }
     return z;
 }
 
@@ -136,7 +144,7 @@ WnckWindow* WindowInfo::getWnckWindow(unsigned int xid) const {
     return window;
 }
 
-bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position, int *z) const {
+bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position) const {
     int x, y, w, h;
 
     if (!xid) {
@@ -158,22 +166,6 @@ bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position, int *
         position->setX(x);
         position->setY(y);
     }
-
-    if (z) {
-        *z = 0;
-        unsigned int i = 0;
-        GList *stack = wnck_screen_get_windows_stacked(wnck_screen_get_default());
-        GList *cur = stack;
-        while (cur) {
-            i++;
-            WnckWindow *window = (WnckWindow*) cur->data;
-            if (wnck_window_get_xid(window) == xid) {
-                *z = i;
-                break;
-            }
-            cur = g_list_next(cur);
-        }
-     }
 
     return true;
 }
