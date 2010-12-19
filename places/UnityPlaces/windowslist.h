@@ -14,6 +14,7 @@ class WindowsList : public QAbstractListModel
     Q_OBJECT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged);
+    Q_PROPERTY(bool loaded READ loaded NOTIFY loadedChanged);
     Q_PROPERTY(unsigned long applicationId READ applicationId NOTIFY applicationIdChanged);
 
 public:
@@ -24,6 +25,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     int count() const { return rowCount(); }
+    bool loaded() const { return m_loaded; }
     unsigned long applicationId() const { return m_applicationId; }
 
     Q_INVOKABLE void load(unsigned long applicationId);
@@ -32,10 +34,11 @@ public:
 signals:
     void countChanged(int count);
     void applicationIdChanged(unsigned long applicationId);
-    void loaded();
+    void loadedChanged(bool loaded);
 
 private:
     QList<WindowInfo*> m_windows;
+    bool m_loaded;
     unsigned long m_applicationId;
 };
 

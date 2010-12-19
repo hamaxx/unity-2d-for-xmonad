@@ -32,7 +32,7 @@ Item {
     /* List of windows that will be shown in the spread. */
     WindowsList {
         id: windows
-        onLoaded: layout.state = "spread"
+        onLoadedChanged: if (loaded) layout.state = "spread"
     }
 
     /* This is our main view.

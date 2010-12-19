@@ -17,7 +17,7 @@ extern "C" {
 #include "bamf-application.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent), m_applicationId(0)
+    QAbstractListModel(parent), m_applicationId(0), m_loaded(false)
 {
     QHash<int, QByteArray> roles;
     roles[0] = "window";
@@ -116,10 +116,11 @@ void WindowsList::load(unsigned long applicationId) {
     }
 
     m_applicationId = applicationId;
+    m_loaded = true;
 
     emit applicationIdChanged(m_applicationId);
     emit countChanged(m_windows.count());
-    emit loaded();
+    emit loadedChanged(m_loaded);
 }
 
 void WindowsList::unload() {
@@ -128,5 +129,8 @@ void WindowsList::unload() {
     m_windows.clear();
     endRemoveRows();
 
+    m_loaded = false;
+
+    emit loadedChanged(m_loaded);
     emit countChanged(m_windows.count());
 }
