@@ -55,8 +55,8 @@ private:
     void updateGeometry();
 
 private:
-    BamfWindow *m_bamfWindow;
     BamfApplication *m_bamfApplication;
+    BamfWindow *m_bamfWindow;
     WnckWindow *m_wnckWindow;
     unsigned int m_xid;
     QPoint m_position;

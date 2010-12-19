@@ -13,7 +13,7 @@
 
 
 WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
-    QObject(parent), m_bamfWindow(NULL), m_xid(0)
+    QObject(parent), m_bamfApplication(NULL), m_bamfWindow(NULL), m_wnckWindow(NULL), m_xid(0)
 {
     setXid(xid);
 }
@@ -23,30 +23,30 @@ unsigned int WindowInfo::xid() const {
 }
 
 void WindowInfo::setXid(unsigned int xid) {
-    if (m_bamfWindow != NULL && xid == m_xid) {
+    if (xid == m_xid) {
         return;
     }
 
-    m_bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
-    if (m_bamfApplication == NULL) {
-        m_bamfWindow = NULL;
+    /* Find out BamfApplication and BamfWindow correponding to xid */
+    BamfApplication *bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
+    if (bamfApplication == NULL) {
         return;
     }
 
-    BamfWindowList *windows = m_bamfApplication->windows();
-    for (int i = 0; i < windows->size(); i++) {
-        BamfWindow *window = windows->at(i);
-        if (window->xid() == xid) {
-            m_bamfWindow = window;
+    BamfWindow *bamfWindow;
+    BamfWindowList *bamfWindows = bamfApplication->windows();
+    for (int i = 0; i < bamfWindows->size(); i++) {
+        bamfWindow = bamfWindows->at(i);
+        if (bamfWindow->xid() == xid) {
             break;
         }
     }
 
-    if (m_bamfWindow == NULL) {
-        m_bamfApplication = NULL;
+    if (bamfWindow == NULL) {
         return;
     }
 
+    /* Find out WnckWindow and BamfWindow correponding to xid */
     WnckWindow *wnckWindow = wnck_window_get(xid);
     if (wnckWindow == NULL) {
         wnck_screen_force_update(wnck_screen_get_default());
@@ -57,6 +57,9 @@ void WindowInfo::setXid(unsigned int xid) {
         return;
     }
 
+    /* Set member variables and emit changed signals */
+    m_bamfApplication = bamfApplication;
+    m_bamfWindow = bamfWindow;
     m_wnckWindow = wnckWindow;
     m_xid = xid;
 
