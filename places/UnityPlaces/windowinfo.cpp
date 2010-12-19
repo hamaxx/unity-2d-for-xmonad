@@ -18,10 +18,6 @@ WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
     setXid(xid);
 }
 
-void WindowInfo::onActiveChanged(bool active) {
-    emit activeChanged(active);
-}
-
 unsigned int WindowInfo::xid() const {
     return m_xid;
 }
@@ -51,8 +47,6 @@ void WindowInfo::setXid(unsigned int xid) {
         return;
     }
 
-    connect(m_bamfWindow, SIGNAL(ActiveChanged(bool)), SLOT(onActiveChanged(bool)));
-
     WnckWindow *wnckWindow = wnck_window_get(xid);
     if (wnckWindow == NULL) {
         wnck_screen_force_update(wnck_screen_get_default());
@@ -75,7 +69,6 @@ void WindowInfo::setXid(unsigned int xid) {
     emit positionChanged(position);
     emit zChanged(z());
 
-    emit applicationNameChanged(applicationName());
     emit titleChanged(title());
     emit iconChanged(icon());
 }
@@ -107,10 +100,6 @@ unsigned int WindowInfo::z() const {
     return z;
 }
 
-QString WindowInfo::applicationName() const {
-    return (m_bamfApplication == NULL) ? QString() : m_bamfApplication->name();
-}
-
 QString WindowInfo::title() const {
     return (m_bamfWindow == NULL) ? QString() : m_bamfWindow->name();
 }
@@ -124,10 +113,6 @@ QString WindowInfo::icon() const {
     return (m_bamfWindow->icon().isEmpty()) ?
             m_bamfApplication->icon() : m_bamfWindow->icon();
 
-}
-
-bool WindowInfo::active() const {
-    return (m_bamfWindow) ? m_bamfWindow->active() : false;
 }
 
 void WindowInfo::activate() {

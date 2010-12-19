@@ -19,10 +19,8 @@ class WindowInfo : public QObject
     Q_PROPERTY(QPoint position READ position NOTIFY positionChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
     Q_PROPERTY(unsigned int z READ z NOTIFY zChanged)
-    Q_PROPERTY(QString applicationName READ applicationName NOTIFY applicationNameChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
-    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
 
 public:
     explicit WindowInfo(unsigned int xid = 0, QObject *parent = 0);
@@ -32,10 +30,8 @@ public:
     QPoint position() const;
     QSize size() const;
     unsigned int z() const;
-    QString applicationName() const;
     QString title() const;
     QString icon() const;
-    bool active() const;
 
     /* setters */
     void setXid(unsigned int xid);
@@ -51,13 +47,8 @@ signals:
     void positionChanged(QPoint position);
     void sizeChanged(QSize size);
     void zChanged(unsigned int z);
-    void applicationNameChanged(QString applicationName);
     void titleChanged(QString title);
     void iconChanged(QString icon);
-    void activeChanged(bool active);
-
-protected slots:
-    void onActiveChanged(bool active);
 
 private:
     bool geometry(QSize *size, QPoint *position) const;
