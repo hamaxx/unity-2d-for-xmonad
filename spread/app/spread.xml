@@ -23,5 +23,10 @@
                                 <dox:d>The XWindow ID of the window</dox:d>
                         </arg>
                 </method>
+                <method name="CancelSpread">
+                        <dox:d><![CDATA[
+                           Cancel any currently active spread.
+                        ]]></dox:d>
+                </method>
         </interface>
 </node>

@@ -77,6 +77,11 @@ void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
     }
 }
 
+void SpreadControl::CancelSpread() {
+    qDebug() << "DBUS: Received request to cancel the spread";
+    Q_EMIT cancelSpread();
+}
+
 void SpreadControl::slotServiceUnregistered(const QString& service)
 {
     mServiceWatcher->removeWatchedService(service);

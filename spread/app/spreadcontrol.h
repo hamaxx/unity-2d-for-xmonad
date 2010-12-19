@@ -47,6 +47,7 @@ public:
 public Q_SLOTS:
     Q_NOREPLY void SpreadAllWindows();
     Q_NOREPLY void SpreadApplicationWindows(unsigned int applicationId);
+    Q_NOREPLY void CancelSpread();
 
 private Q_SLOTS:
     void slotServiceUnregistered(const QString& service);
