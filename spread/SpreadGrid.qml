@@ -31,7 +31,7 @@ Item {
     property int rows: Math.ceil(count / grid.columns)
 
     /* Number of cells in the last row: (as described above) */
-    property int lastRowCells: columns - ((rows * columns) - count)
+    property int lastRowCells: count - (columns*(rows-1))
 
     /* After any state change wait for transitionDuration (ms) and then emit
        the signal transitionCompleted */
