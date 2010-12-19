@@ -62,27 +62,19 @@ void WindowInfo::setXid(unsigned int xid) {
 
     emit xidChanged(xid);
 
-    QSize size;
-    QPoint position;
-    geometry(&size, &position);
-    emit sizeChanged(size);
-    emit positionChanged(position);
-    emit zChanged(z());
+    updateGeometry();
 
+    emit zChanged(z());
     emit titleChanged(title());
     emit iconChanged(icon());
 }
 
 QPoint WindowInfo::position() const {
-    QPoint position;
-    geometry(0, &position);
-    return position;
+    return m_position;
 }
 
 QSize WindowInfo::size() const {
-    QSize size;
-    geometry(&size, 0);
-    return size;
+    return m_size;
 }
 
 unsigned int WindowInfo::z() const {
@@ -119,21 +111,18 @@ void WindowInfo::activate() {
     showWindow(m_wnckWindow);
 }
 
-bool WindowInfo::geometry(QSize *size, QPoint *position) const {
+void WindowInfo::updateGeometry() {
     int x, y, w, h;
 
     wnck_window_get_client_window_geometry(m_wnckWindow, &x, &y, &w, &h);
 
-    if (size) {
-        size->setWidth(w);
-        size->setHeight(h);
-    }
-    if (position) {
-        position->setX(x);
-        position->setY(y);
-    }
+    m_position.setX(x);
+    m_position.setY(y);
+    m_size.setWidth(w);
+    m_size.setHeight(h);
 
-    return true;
+    emit positionChanged(m_position);
+    emit sizeChanged(m_size);
 }
 
 /* FIXME: copied from UnityApplications/launcherapplication.cpp */

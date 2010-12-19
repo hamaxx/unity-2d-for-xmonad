@@ -51,13 +51,15 @@ Q_SIGNALS:
     void iconChanged(QString icon);
 
 private:
-    bool geometry(QSize *size, QPoint *position) const;
+    void updateGeometry();
 
 private:
     BamfWindow *m_bamfWindow;
     BamfApplication *m_bamfApplication;
     WnckWindow *m_wnckWindow;
     unsigned int m_xid;
+    QPoint m_position;
+    QSize m_size;
 };
 
 QML_DECLARE_TYPE(WindowInfo)
