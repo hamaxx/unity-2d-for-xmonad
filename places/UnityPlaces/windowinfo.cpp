@@ -3,21 +3,23 @@
 #include <libwnck/workspace.h>
 
 #include <glib-2.0/glib.h>
+
 #include "bamf-matcher.h"
 #include "bamf-application.h"
 #include "bamf-window.h"
 
 #include "windowinfo.h"
+#include <X11/X.h>
 
 
-WindowInfo::WindowInfo(Window xid, QObject *parent) :
+WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
     QObject(parent), m_bamfWindow(0)
 {
     if (xid == 0) return;
     fromXid(xid);
 }
 
-void WindowInfo::fromXid(Window xid) {
+void WindowInfo::fromXid(unsigned int xid) {
    m_bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
    if (m_bamfApplication == 0) {
        m_bamfWindow = 0;
@@ -45,16 +47,16 @@ void WindowInfo::onActiveChanged(bool active) {
     emit activeChanged(active);
 }
 
-QVariant WindowInfo::xid() const {
-    return QVariant::fromValue(m_bamfWindow->xid());
+unsigned int WindowInfo::xid() const {
+    return m_bamfWindow->xid();
 }
 
-void WindowInfo::setXid(QVariant varXid) {
+void WindowInfo::setXid(unsigned int varXid) {
     if (xid() == varXid) {
         return;
     }
 
-    fromXid(varXid.toULongLong());
+    fromXid(varXid);
     emit xidChanged(xid());
     emit windowChanged(m_bamfWindow);
 
@@ -121,7 +123,7 @@ void WindowInfo::activate() {
     showWindow(window);
 }
 
-WnckWindow* WindowInfo::getWnckWindow(Window xid) const {
+WnckWindow* WindowInfo::getWnckWindow(unsigned int xid) const {
     if (xid == 0) {
         if (m_bamfWindow == 0) {
             return 0;
@@ -136,7 +138,7 @@ WnckWindow* WindowInfo::getWnckWindow(Window xid) const {
     return window;
 }
 
-bool WindowInfo::geometry(Window xid, QSize *size, QPoint *position, int *z) const {
+bool WindowInfo::geometry(unsigned int xid, QSize *size, QPoint *position, int *z) const {
     int x, y, w, h;
 
     if (!xid) {

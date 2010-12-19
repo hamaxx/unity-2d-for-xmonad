@@ -7,8 +7,6 @@
 #include <QVariant>
 #include <QtDeclarative/qdeclarative.h>
 
-#include <X11/Xlib.h>
-
 class BamfWindow;
 class BamfApplication;
 typedef struct _WnckWindow WnckWindow;
@@ -17,7 +15,7 @@ class WindowInfo : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QVariant xid READ xid WRITE setXid NOTIFY xidChanged)
+    Q_PROPERTY(unsigned int xid READ xid WRITE setXid NOTIFY xidChanged)
     Q_PROPERTY(QPoint location READ location NOTIFY locationChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
     Q_PROPERTY(int z READ z NOTIFY zChanged)
@@ -27,10 +25,10 @@ class WindowInfo : public QObject
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
 
 public:
-    explicit WindowInfo(Window xid = 0, QObject *parent = 0);
+    explicit WindowInfo(unsigned int xid = 0, QObject *parent = 0);
 
-    QVariant xid() const;
-    void setXid(QVariant varXid);
+    unsigned int xid() const;
+    void setXid(unsigned int varXid);
 
     QPoint location() const;
     QSize size() const;
@@ -61,9 +59,9 @@ protected slots:
     void onActiveChanged(bool active);
 
 private:
-    void fromXid(Window xid);
-    bool geometry(Window xid, QSize *size, QPoint *position, int *z) const;
-    WnckWindow *getWnckWindow(Window xid = 0) const;
+    void fromXid(unsigned int xid);
+    bool geometry(unsigned int xid, QSize *size, QPoint *position, int *z) const;
+    WnckWindow *getWnckWindow(unsigned int xid = 0) const;
 
 private:
     BamfWindow *m_bamfWindow;
