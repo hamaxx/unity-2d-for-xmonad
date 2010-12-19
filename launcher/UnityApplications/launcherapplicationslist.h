@@ -25,13 +25,6 @@ public:
 
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged);
-
-    int count() const { return rowCount(); }
-
-signals:
-    void countChanged(int count);
-
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);

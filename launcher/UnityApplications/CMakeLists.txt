@@ -38,7 +38,6 @@ set(UnityApplications_MOC_HDRS
     plugin.h
     )
 
-
 qt4_wrap_cpp(UnityApplications_MOC_SRCS ${UnityApplications_MOC_HDRS})
 
 # Build
