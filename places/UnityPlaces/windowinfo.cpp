@@ -67,7 +67,6 @@ void WindowInfo::setXid(unsigned int xid) {
     m_xid = xid;
 
     emit xidChanged(xid);
-    emit windowChanged(m_bamfWindow);
 
     QSize size;
     QPoint position;
