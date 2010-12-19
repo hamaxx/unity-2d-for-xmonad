@@ -59,7 +59,6 @@ protected slots:
     void onActiveChanged(bool active);
 
 private:
-    void fromXid(unsigned int xid);
     bool geometry(QSize *size, QPoint *position) const;
 
 private:
