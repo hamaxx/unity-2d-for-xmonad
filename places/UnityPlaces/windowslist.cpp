@@ -52,54 +52,37 @@ void WindowsList::load(unsigned long applicationId) {
         return;
     }
 
-    QList<WindowInfo*> newWindows;
     BamfMatcher &matcher = BamfMatcher::get_default();
-
     QList<BamfApplication*> applications;
-    if (applicationId) {
-        applications.append(matcher.application_for_xid(applicationId));
-    } else {
+
+    if (applicationId == 0) {
+        /* List the windows of all the applications */
         BamfApplicationList *allapplications = matcher.applications();
         for (int i = 0; i < allapplications->size(); i++) {
              applications.append(allapplications->at(i));
         }
+    } else {
+        /* List the windows of the application that has for group leader the window
+           with XID applicationId */
+        applications.append(matcher.application_for_xid(applicationId));
     }
 
-    foreach (BamfApplication* application, applications) {
-       //qDebug() << "+" << application->name() << " " << application->view_type();
+    /* Build a list of windowInfos for windows that are 'user_visible' according to BAMF */
+    QList<WindowInfo*> newWindows;
 
-        BamfWindowList *windows = application->windows();
-        for (int k = 0; k < windows->size(); k++) {
-            BamfWindow* window = windows->at(k);
-            if (window == 0) {
-                qDebug() << "Window belonging to " << application->name()
-                         << "is in list but null";
+    Q_FOREACH (BamfApplication* application, applications) {
+        if (!application->user_visible()) {
+            continue;
+        }
+
+        BamfWindowList *bamfWindows = application->windows();
+        for (int i = 0; i < bamfWindows->size(); i++) {
+            BamfWindow* window = bamfWindows->at(i);
+            if (!window->user_visible()) {
                 continue;
             }
 
-            Window xid = window->xid();
-
-            WnckWindow *wnck_window = wnck_window_get(xid);
-            if (wnck_window == 0) {
-                wnck_screen_force_update(wnck_screen_get_default());
-                wnck_window = wnck_window_get(xid);
-            }
-            if (wnck_window == 0) continue;
-
-            if (wnck_window_is_skip_tasklist(wnck_window)) {
-                continue;
-            }
-
-            WnckWindowType type = wnck_window_get_window_type(wnck_window);
-            if (type != WNCK_WINDOW_NORMAL &&
-                type != WNCK_WINDOW_DIALOG &&
-                type != WNCK_WINDOW_UTILITY) {
-                continue;
-            }
-
-            //qDebug().nospace() << "\t\t" << window->name() << " (" << xid << ")";
-
-            WindowInfo *info = new WindowInfo(xid);
+            WindowInfo *info = new WindowInfo(window->xid());
             newWindows.append(info);
         }
     }
