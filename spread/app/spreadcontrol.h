@@ -33,14 +33,10 @@ class SpreadControl : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool inProgress READ inProgress WRITE setInProgress)
-
 public:
     explicit SpreadControl(QObject *parent = 0);
     ~SpreadControl();
 
-    bool inProgress() const { return m_inProgress; }
-    void setInProgress(bool inProgress) { m_inProgress = inProgress; }
 
     bool connectToBus(const QString& service = QString(), const QString& objectPath = QString());
 
@@ -59,7 +55,6 @@ Q_SIGNALS:
 private:
     QDBusServiceWatcher* mServiceWatcher;
     QString mService;
-    bool m_inProgress;
 };
 
 QML_DECLARE_TYPE(SpreadControl)

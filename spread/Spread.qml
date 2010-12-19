@@ -56,7 +56,6 @@ Item {
         onSpreadFinished: {
             spreadView.hide()  // Hides the entire window
             windows.unload()   // Avoid wasting memory by keeping old shots
-            control.inProgress = false
         }
     }
 
@@ -66,7 +65,6 @@ Item {
         // This is fired as a result of a method call from DBus
         onActivateSpread: {
             windows.applicationId = applicationId
-            control.inProgress = true
             spreadView.showMaximized() // Shows the entire window
             windows.load()     // Start taking shots of the windows
         }
