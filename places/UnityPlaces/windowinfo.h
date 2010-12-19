@@ -27,9 +27,8 @@ class WindowInfo : public QObject
 public:
     explicit WindowInfo(unsigned int xid = 0, QObject *parent = 0);
 
+    /* getters */
     unsigned int xid() const;
-    void setXid(unsigned int xid);
-
     QPoint position() const;
     QSize size() const;
     unsigned int z() const;
@@ -38,6 +37,9 @@ public:
     QString icon() const;
     bool active() const;
 
+    /* setters */
+    void setXid(unsigned int xid);
+
     Q_INVOKABLE void activate();
 
     /* FIXME: copied from UnityApplications/launcherapplication.h */
@@ -45,11 +47,10 @@ public:
     static void moveViewportToWindow(WnckWindow* window);
 
 signals:
-    void windowChanged(BamfWindow *window);
-    void xidChanged(QVariant xid);
-    void sizeChanged(QSize size);
+    void xidChanged(unsigned int xid);
     void positionChanged(QPoint position);
-    void zChanged(int z);
+    void sizeChanged(QSize size);
+    void zChanged(unsigned int z);
     void applicationNameChanged(QString applicationName);
     void titleChanged(QString title);
     void iconChanged(QString icon);
