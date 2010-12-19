@@ -19,7 +19,7 @@ class WindowInfo : public QObject
     Q_PROPERTY(QPoint location READ location NOTIFY locationChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
     Q_PROPERTY(int z READ z NOTIFY zChanged)
-    Q_PROPERTY(QString appName READ appName NOTIFY appNameChanged)
+    Q_PROPERTY(QString applicationName READ applicationName NOTIFY applicationNameChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
@@ -33,7 +33,7 @@ public:
     QPoint location() const;
     QSize size() const;
     int z() const;
-    QString appName() const;
+    QString applicationName() const;
     QString title() const;
     QString icon() const;
     bool active() const;
@@ -50,7 +50,7 @@ signals:
     void sizeChanged(QSize size);
     void locationChanged(QPoint location);
     void zChanged(int z);
-    void appNameChanged(QString appName);
+    void applicationNameChanged(QString applicationName);
     void titleChanged(QString title);
     void iconChanged(QString icon);
     void activeChanged(bool active);

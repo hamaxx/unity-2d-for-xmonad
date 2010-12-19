@@ -68,7 +68,7 @@ void WindowInfo::setXid(unsigned int varXid) {
     emit locationChanged(location);
     emit zChanged(z);
 
-    emit appNameChanged(appName());
+    emit applicationNameChanged(applicationName());
     emit titleChanged(title());
     emit iconChanged(icon());
 }
@@ -91,7 +91,7 @@ int WindowInfo::z() const {
     return z;
 }
 
-QString WindowInfo::appName() const {
+QString WindowInfo::applicationName() const {
     return (m_bamfApplication == 0) ? QString() : m_bamfApplication->name();
 }
 
