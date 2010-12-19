@@ -52,59 +52,59 @@ void WindowsList::load(unsigned long applicationId) {
         return;
     }
 
-    QList<WindowInfo*> newWins;
+    QList<WindowInfo*> newWindows;
     BamfMatcher &matcher = BamfMatcher::get_default();
 
-    QList<BamfApplication*> apps;
+    QList<BamfApplication*> applications;
     if (applicationId) {
-        apps.append(matcher.application_for_xid(applicationId));
+        applications.append(matcher.application_for_xid(applicationId));
     } else {
-        BamfApplicationList *allapps = matcher.applications();
-        for (int i = 0; i < allapps->size(); i++) {
-             apps.append(allapps->at(i));
+        BamfApplicationList *allapplications = matcher.applications();
+        for (int i = 0; i < allapplications->size(); i++) {
+             applications.append(allapplications->at(i));
         }
     }
 
-    foreach (BamfApplication* app, apps) {
-       //qDebug() << "+" << app->name() << " " << app->view_type();
+    foreach (BamfApplication* application, applications) {
+       //qDebug() << "+" << application->name() << " " << application->view_type();
 
-        BamfWindowList *wins = app->windows();
-        for (int k = 0; k < wins->size(); k++) {
-            BamfWindow* win = wins->at(k);
-            if (win == 0) {
-                qDebug() << "Window belonging to " << app->name()
+        BamfWindowList *windows = application->windows();
+        for (int k = 0; k < windows->size(); k++) {
+            BamfWindow* window = windows->at(k);
+            if (window == 0) {
+                qDebug() << "Window belonging to " << application->name()
                          << "is in list but null";
                 continue;
             }
 
-            Window xid = win->xid();
+            Window xid = window->xid();
 
-            WnckWindow *wnck_win = wnck_window_get(xid);
-            if (wnck_win == 0) {
+            WnckWindow *wnck_window = wnck_window_get(xid);
+            if (wnck_window == 0) {
                 wnck_screen_force_update(wnck_screen_get_default());
-                wnck_win = wnck_window_get(xid);
+                wnck_window = wnck_window_get(xid);
             }
-            if (wnck_win == 0) continue;
+            if (wnck_window == 0) continue;
 
-            if (wnck_window_is_skip_tasklist(wnck_win)) {
+            if (wnck_window_is_skip_tasklist(wnck_window)) {
                 continue;
             }
 
-            WnckWindowType type = wnck_window_get_window_type(wnck_win);
+            WnckWindowType type = wnck_window_get_window_type(wnck_window);
             if (type != WNCK_WINDOW_NORMAL &&
                 type != WNCK_WINDOW_DIALOG &&
                 type != WNCK_WINDOW_UTILITY) {
                 continue;
             }
 
-            //qDebug().nospace() << "\t\t" << win->name() << " (" << xid << ")";
+            //qDebug().nospace() << "\t\t" << window->name() << " (" << xid << ")";
 
             WindowInfo *info = new WindowInfo(xid);
-            newWins.append(info);
+            newWindows.append(info);
         }
     }
 
-    qDebug() << "Matched" << newWins.count() << "Windows in" << apps.count() << "Applications";
+    qDebug() << "Matched" << newWindows.count() << "Windows in" << applications.count() << "Applications";
 
     if (m_windows.count() > 0) {
         beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
@@ -113,9 +113,9 @@ void WindowsList::load(unsigned long applicationId) {
         endRemoveRows();
     }
 
-    if (newWins.count() > 0) {
-        beginInsertRows(QModelIndex(), 0, newWins.count() - 1);
-        m_windows.append(newWins);
+    if (newWindows.count() > 0) {
+        beginInsertRows(QModelIndex(), 0, newWindows.count() - 1);
+        m_windows.append(newWindows);
         endInsertRows();
     }
 
