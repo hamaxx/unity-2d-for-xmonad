@@ -24,7 +24,9 @@ in the states property, at the bottom of this file.
 
 Item {
     id: window
+
     property variant windowInfo
+    property int transitionDuration
 
     /* Position and size of our cell inside the grid */
     property int column
@@ -48,9 +50,6 @@ Item {
     property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
 
     signal clicked
-
-    /* Emitted when the outro animation for this window is done */
-    signal outroFinished
 
     /* The shot itself. The actual image is obtained via the WindowImageProvider which
        serves the "image://window/*" source URIs.
@@ -202,21 +201,6 @@ Item {
     }
 
     states: [
-        /* This is the default state. Since windows are created in this state, we don't
-           set any of their values here. See how the default properties are assigned in
-           SpreadGrid and SpreadWindow.
-           At the end of the outro, windows will return to this state, and their properties
-           to their default values (i.e. the correct values for screen mode). */
-        State {
-            name: ""
-
-            /* See the transitions are for an explanation of this */
-            StateChangeScript {
-                name: "endOfOutro"
-                script: window.outroFinished()
-            }
-        },
-
         /* This state is what we want to have at the end of the intro.
            In other words, it puts the window in its right place and size when in grid mode. */
         State {
@@ -243,13 +227,12 @@ Item {
                 NumberAnimation {
                     target: window
                     properties: "x,y,width,height"
-                    duration: 250
+                    duration: window.transitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
                 PropertyAction { target: windowArea; property: "enabled"; value: (window.state == "spread") }
                 PropertyAction { target: windowExtras; property: "visible"; value: true }
-                ScriptAction { scriptName: "endOfOutro" }
             }
         }
     ]

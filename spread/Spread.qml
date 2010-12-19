@@ -53,9 +53,11 @@ Item {
         windows: windows
 
         // This is triggered after an outro animation is fully complete
-        onSpreadFinished: {
-            spreadView.hide()  // Hides the entire window
-            windows.unload()   // Avoid wasting memory by keeping old shots
+        onTransitionCompleted: {
+            if (grid.state == "") {
+                spreadView.hide()  // Hides the entire window
+                windows.unload()   // Avoid wasting memory by keeping old shots
+            }
         }
     }
 

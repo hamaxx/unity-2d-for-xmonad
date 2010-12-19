@@ -46,13 +46,28 @@ Item {
     property int lastRowCells: columns - ((rows * columns) - count)
 
     /* This is emitted when the outro animation is fully done. */
-    signal spreadFinished
-    property int finishedChildCount: 0 // read the HACK note below
+    /* After any state change wait for transitionDuration (ms) and then emit
+       the signal transitionCompleted */
+    property int transitionDuration: 250
+    signal transitionCompleted
+
+    transitions: Transition {
+        ScriptAction { script: transitionTimer.restart() }
+    }
+
+    Timer {
+        id: transitionTimer
+
+        interval: transitionDuration
+        onTriggered: transitionCompleted()
+    }
+
 
     Repeater {
         id: repeater
 
         delegate: SpreadWindow {
+            transitionDuration: list.transitionDuration
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).
@@ -93,20 +108,6 @@ Item {
                    will be already in the correct position when the outro finishes */
                 windowInfo.activate()
                 list.state = ""
-            }
-
-            /* HACK: This is an hack that is needed to ensure that we consider the
-               spread finished when the animation of all the windows back into
-               their starting positions is complete.
-               Attaching to onStateChange of the SpreadGrid component itself will not
-               work since the state change is triggered immediately, and the
-               animations of the children will still be running. */
-            onOutroFinished: {
-                list.finishedChildCount++
-                if (list.finishedChildCount == list.count) {
-                    list.finishedChildCount = 0
-                    list.spreadFinished()
-                }
             }
         }
     }
