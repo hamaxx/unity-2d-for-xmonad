@@ -104,7 +104,7 @@ Item {
     /* This grouping window is necessary to calculate properly the size of
        the label. See below */
     Item {
-        id: windowExtras
+        id: overlay
 
         anchors.fill: parent
 
@@ -112,7 +112,7 @@ Item {
         visible: false
 
         /* A darkened rectangle that by default covers all shots
-           in grid mode, except the currently selected window. See windowExtras.states */
+           in grid mode, except the currently selected window. See overlay.states */
         Rectangle {
             id: darken
 
@@ -123,7 +123,7 @@ Item {
         }
 
         /* A label with the window title centered over the shot.
-           It will appear only for the currently selected window. See windowExtras.states */
+           It will appear only for the currently selected window. See overlay.states */
         Rectangle {
             id: labelBox
 
@@ -162,7 +162,7 @@ Item {
                 id: label
 
                 anchors.centerIn: parent
-                width: windowExtras.width - parent.labelMargins
+                width: overlay.width - parent.labelMargins
 
                 text: windowInfo.title
                 elide: Text.ElideRight
@@ -217,7 +217,7 @@ Item {
             SequentialAnimation {
                PropertyAction { target: shot; property: "smooth"; value: false }
                 PropertyAction { target: windowArea; property: "hoverEnabled"; value: false }
-                PropertyAction { target: windowExtras; property: "visible"; value: false }
+                PropertyAction { target: overlay; property: "visible"; value: false }
                 NumberAnimation {
                     target: window
                     properties: "x,y,width,height"
@@ -226,7 +226,7 @@ Item {
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
                 PropertyAction { target: windowArea; property: "hoverEnabled"; value: (window.state == "spread") }
-                PropertyAction { target: windowExtras; property: "visible"; value: true }
+                PropertyAction { target: overlay; property: "visible"; value: true }
             }
         }
     ]
