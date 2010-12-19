@@ -69,7 +69,6 @@ private:
 private:
     BamfWindow *m_bamfWindow;
     BamfApplication *m_bamfApplication;
-    QPixmap *shot;
 };
 
 QML_DECLARE_TYPE(WindowInfo)
