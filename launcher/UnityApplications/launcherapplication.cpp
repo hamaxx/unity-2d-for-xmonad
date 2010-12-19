@@ -464,8 +464,8 @@ void
 LauncherApplication::spread()
 {
     qDebug() << "Triggering spread via DBUS";
-    QDBusInterface iface("com.canonical.UnityQtSpread.Spread", "/Spread",
-                         "com.canonical.UnityQtSpread.Spread");
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
     iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
 }
 

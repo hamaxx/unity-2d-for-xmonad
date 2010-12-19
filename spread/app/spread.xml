@@ -5,7 +5,7 @@
 
           An interface to activate the windows spread in UnityQt.
         ]]></dox:d>
-        <interface name="com.canonical.UnityQtSpread.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <interface name="com.canonical.UnityQt.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
                 <dox:d>
                   An interface to activate the windows spread in UnityQt.
                 </dox:d>

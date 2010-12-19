@@ -27,7 +27,7 @@
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
 
-static const char* DBUS_SERVICE = "com.canonical.UnityQtSpread.Spread";
+static const char* DBUS_SERVICE = "com.canonical.UnityQt.Spread";
 static const char* DBUS_OBJECT_PATH = "/Spread";
 
 SpreadControl::SpreadControl(QObject *parent) :
