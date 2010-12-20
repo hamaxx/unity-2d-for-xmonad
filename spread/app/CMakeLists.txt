@@ -25,6 +25,7 @@ qt4_add_dbus_adaptor(spread_SRCS spread.xml
 add_executable(unity-qt-spread ${spread_SRCS} ${spread_MOC_SRCS})
 
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
     )
