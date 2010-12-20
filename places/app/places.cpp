@@ -61,8 +61,8 @@ static bool registerDBusService(DashDeclarativeView* view)
     return true;
 }
 
-static int SUPER_L = 133;
-static int SUPER_R = 134;
+static uint SUPER_L = 133;
+static uint SUPER_R = 134;
 
 static void grabSuperKey()
 {
@@ -104,7 +104,7 @@ static bool eventFilter(void* message)
     if (event->type == KeyRelease)
     {
         XKeyEvent* key = (XKeyEvent*) event;
-        int code = key->keycode;
+        uint code = key->keycode;
         if (code == SUPER_L || code == SUPER_R) {
             getView()->activateHome();
         }
