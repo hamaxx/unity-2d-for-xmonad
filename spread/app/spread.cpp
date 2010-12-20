@@ -70,6 +70,9 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(unityQtDirectory() + "/places/");
     }
 
+    /* This is needed by GnomeBackground.qml */
+    view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
+
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
               instantiated on the QML side */
