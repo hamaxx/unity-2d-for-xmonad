@@ -32,18 +32,18 @@ Item {
 
     /* Values applied when in 'spread' mode */
     property int minMargin: 20
-    property int availableWidth: cellWidth-minMargin
-    property int availableHeight: cellHeight-minMargin
+    property int availableWidth: cellWidth - minMargin
+    property int availableHeight: cellHeight - minMargin
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
-    property bool isHorizontal: windowInfo.size.width-availableWidth >= windowInfo.size.height-availableHeight
+    property bool isHorizontal: windowInfo.size.width - availableWidth >= windowInfo.size.height - availableHeight
     property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
     property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : windowInfo.size.width * maxHeight / windowInfo.size.height
     property int spreadHeight: !isHorizontal ? maxHeight : windowInfo.size.height * maxWidth / windowInfo.size.width
     /* Center window within its cell */
-    property int spreadX: column * cellWidth + (cellWidth-spreadWidth)/2
-    property int spreadY: row * cellHeight + (cellHeight-spreadHeight)/2
+    property int spreadX: column * cellWidth + (cellWidth - spreadWidth) / 2
+    property int spreadY: row * cellHeight + (cellHeight - spreadHeight) / 2
 
     signal clicked
 
