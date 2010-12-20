@@ -83,13 +83,31 @@ static void ungrabSuperKey()
     XUngrabKey(display, SUPER_R, 0, window);
 }
 
+static DashDeclarativeView* getView()
+{
+    /* Return a pointer to the application's top-level declarative view */
+    DashDeclarativeView* view;
+    QWidgetList toplevel = QApplication::topLevelWidgets();
+    QWidgetList::const_iterator i;
+    for (i = toplevel.constBegin(); i != toplevel.constEnd(); ++i) {
+        view = qobject_cast<DashDeclarativeView*>(*i);
+        if (view != NULL) {
+            break;
+        }
+    }
+    return view;
+}
+
 static bool eventFilter(void* message)
 {
     XEvent* event = static_cast<XEvent*>(message);
     if (event->type == KeyRelease)
     {
         XKeyEvent* key = (XKeyEvent*) event;
-        qDebug() << "key released:" << key->keycode;
+        int code = key->keycode;
+        if (code == SUPER_L || code == SUPER_R) {
+            getView()->activateHome();
+        }
     }
     return false;
 }
@@ -143,6 +161,7 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
+    /* Grab the "super" keys */
     grabSuperKey();
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
