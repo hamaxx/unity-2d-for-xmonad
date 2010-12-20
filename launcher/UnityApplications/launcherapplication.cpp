@@ -326,6 +326,10 @@ LauncherApplication::launch()
 {
     if(m_appInfo == NULL) return false;
 
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
+    iface.call("CancelSpread");
+
     GError* error = NULL;
     GdkAppLaunchContext *context;
     GTimeVal timeval;
@@ -398,6 +402,10 @@ LauncherApplication::show()
     if (xids->size() < 1) {
         return;
     }
+
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
+    iface.call("CancelSpread");
 
     /* FIXME: pick the most important window, not just the first one */
     uint xid = xids->at(0);

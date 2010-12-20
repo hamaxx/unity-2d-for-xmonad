@@ -57,11 +57,17 @@ Item {
     Connections {
         target: control
 
-        /* Go to spread mode once the windows are loaded */
+        /* If there's a spread already in progress, cancel it.
+           Otherwise start the spread once the windows in the
+           model are loaded. */
         onActivateSpread: {
-            spreadView.show()
-            windows.load(applicationId)
-            layout.state = "spread"
+            if (layout.state == "spread") {
+                layout.state = ""
+            } else {
+                spreadView.show()
+                windows.load(applicationId)
+                layout.state = "spread"
+            }
         }
 
         /* Go to screen mode */
