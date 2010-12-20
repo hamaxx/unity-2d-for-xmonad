@@ -7,7 +7,8 @@
 #include <X11/extensions/Xcomposite.h>
 
 WindowImageProvider::WindowImageProvider() :
-    QDeclarativeImageProvider(QDeclarativeImageProvider::Image) {
+    QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
+{
     /* Always activate composite, so we can capture windows that are partially obscured
        Ideally we want to activate it only when QX11Info::isCompositingManagerRunning()
        is false, but in my experience it is not reliable at all.
@@ -19,12 +20,14 @@ WindowImageProvider::WindowImageProvider() :
     activateComposite();
 }
 
-WindowImageProvider::~WindowImageProvider() {
+WindowImageProvider::~WindowImageProvider()
+{
 }
 
 QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
-                                              const QSize &requestedSize) {
+                                              const QSize &requestedSize)
+{
     Window win = (Window) id.toULong();
     XWindowAttributes attr;
     XGetWindowAttributes(QX11Info::display(), win, &attr);
@@ -54,7 +57,8 @@ QImage WindowImageProvider::requestImage(const QString &id,
     any effect if another application already requested the same
     thing (typically the window manager does this).
 */
-void WindowImageProvider::activateComposite() {
+void WindowImageProvider::activateComposite()
+{
     int event_base;
     int error_base;
 
@@ -87,4 +91,3 @@ void WindowImageProvider::activateComposite() {
         }
     }
 }
-

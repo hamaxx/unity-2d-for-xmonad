@@ -30,7 +30,8 @@ SpreadControl::SpreadControl(QObject *parent) : QObject(parent)
 {
 }
 
-SpreadControl::~SpreadControl() {
+SpreadControl::~SpreadControl()
+{
     QDBusConnection::sessionBus().unregisterService(DBUS_SERVICE);
 }
 
@@ -46,17 +47,20 @@ bool SpreadControl::connectToBus()
     return true;
 }
 
-void SpreadControl::SpreadAllWindows() {
+void SpreadControl::SpreadAllWindows()
+{
     qDebug() << "DBUS: Received request to spread all windows";
     Q_EMIT activateSpread(0);
 }
 
-void SpreadControl::SpreadApplicationWindows(unsigned int applicationId) {
+void SpreadControl::SpreadApplicationWindows(unsigned int applicationId)
+{
     qDebug() << "DBUS: Received request to spread application windows of" << applicationId;
     Q_EMIT activateSpread(applicationId);
 }
 
-void SpreadControl::CancelSpread() {
+void SpreadControl::CancelSpread()
+{
     qDebug() << "DBUS: Received request to cancel the spread";
     Q_EMIT cancelSpread();
 }

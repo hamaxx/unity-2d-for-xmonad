@@ -18,11 +18,13 @@ WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
     setXid(xid);
 }
 
-unsigned int WindowInfo::xid() const {
+unsigned int WindowInfo::xid() const
+{
     return m_xid;
 }
 
-void WindowInfo::setXid(unsigned int xid) {
+void WindowInfo::setXid(unsigned int xid)
+{
     if (xid == m_xid) {
         return;
     }
@@ -72,15 +74,18 @@ void WindowInfo::setXid(unsigned int xid) {
     emit iconChanged(icon());
 }
 
-QPoint WindowInfo::position() const {
+QPoint WindowInfo::position() const
+{
     return m_position;
 }
 
-QSize WindowInfo::size() const {
+QSize WindowInfo::size() const
+{
     return m_size;
 }
 
-unsigned int WindowInfo::z() const {
+unsigned int WindowInfo::z() const
+{
     int z = 0;
     GList *stack = wnck_screen_get_windows_stacked(wnck_screen_get_default());
     GList *cur = stack;
@@ -95,11 +100,13 @@ unsigned int WindowInfo::z() const {
     return z;
 }
 
-QString WindowInfo::title() const {
+QString WindowInfo::title() const
+{
     return (m_bamfWindow == NULL) ? QString() : m_bamfWindow->name();
 }
 
-QString WindowInfo::icon() const {
+QString WindowInfo::icon() const
+{
     /* m_bamfWindow and m_bamfApplication should always both
        be null or non-null at the same time. */
     if (m_bamfWindow == NULL) {
@@ -110,11 +117,13 @@ QString WindowInfo::icon() const {
 
 }
 
-void WindowInfo::activate() {
+void WindowInfo::activate()
+{
     showWindow(m_wnckWindow);
 }
 
-void WindowInfo::updateGeometry() {
+void WindowInfo::updateGeometry()
+{
     int x, y, w, h;
 
     wnck_window_get_client_window_geometry(m_wnckWindow, &x, &y, &w, &h);
@@ -154,7 +163,8 @@ void WindowInfo::showWindow(WnckWindow* window)
 }
 
 /* FIXME: copied from UnityApplications/launcherapplication.cpp */
-void WindowInfo::moveViewportToWindow(WnckWindow* window) {
+void WindowInfo::moveViewportToWindow(WnckWindow* window)
+{
     WnckWorkspace* workspace = wnck_window_get_workspace(window);
     WnckScreen* screen = wnck_window_get_screen(window);
 
@@ -177,4 +187,3 @@ void WindowInfo::moveViewportToWindow(WnckWindow* window) {
     wnck_screen_move_viewport(screen, viewport_column * screen_width,
                                       viewport_row * screen_height);
 }
-

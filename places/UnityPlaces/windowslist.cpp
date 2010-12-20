@@ -38,7 +38,8 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     return QVariant::fromValue(info);
 }
 
-void WindowsList::load(unsigned long applicationId) {
+void WindowsList::load(unsigned long applicationId)
+{
     if (m_loaded && m_applicationId == applicationId) {
         return;
     }
@@ -99,7 +100,8 @@ void WindowsList::load(unsigned long applicationId) {
     Q_EMIT countChanged(m_windows.count());
 }
 
-void WindowsList::unload() {
+void WindowsList::unload()
+{
     beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
     qDeleteAll(m_windows);
     m_windows.clear();

@@ -22,11 +22,13 @@
 #include <QDesktopWidget>
 #include <QApplication>
 
-SpreadView::SpreadView() : QDeclarativeView() {
+SpreadView::SpreadView() : QDeclarativeView()
+{
 }
 
 /* FIXME: copied from places/app/dashdeclarativeview.cpp */
-void SpreadView::fitToAvailableSpace(int screen) {
+void SpreadView::fitToAvailableSpace(int screen)
+{
     QDesktopWidget *desktop = QApplication::desktop();
     int current_screen = desktop->screenNumber(this);
 
@@ -37,5 +39,3 @@ void SpreadView::fitToAvailableSpace(int screen) {
         setFixedSize(geometry.size());
     }
 }
-
-
