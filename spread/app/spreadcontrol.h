@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QDBusContext>
 #include <QtDeclarative/qdeclarative.h>
+#include <time.h>
 
 class SpreadControl : public QObject, protected QDBusContext
 {
