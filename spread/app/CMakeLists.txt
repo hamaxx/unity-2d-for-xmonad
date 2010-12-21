@@ -33,6 +33,7 @@ include_directories(
 target_link_libraries(unity-qt-spread
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
+    ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     )
