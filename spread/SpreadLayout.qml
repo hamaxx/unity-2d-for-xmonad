@@ -36,6 +36,7 @@ Item {
        the signal transitionCompleted */
     property int transitionDuration: 250
     signal transitionCompleted
+    property variant windowToActivate
 
     transitions: Transition {
         ScriptAction { script: transitionTimer.restart() }
@@ -47,7 +48,6 @@ Item {
         interval: transitionDuration
         onTriggered: transitionCompleted()
     }
-
 
     Repeater {
         id: repeater
@@ -89,10 +89,7 @@ Item {
                    before starting the outro, but it's ok since at the end of the outro
                    all the windows will be unloaded (and we will never have >9999 windows) */
                 z = 9999
-                /* Immediately activate the window. Since spread is an
-                   always-on-top window, we can raise the window now so it
-                   will be already in the correct position when the outro finishes */
-                windowInfo.activate()
+                layout.windowToActivate = window
                 layout.state = ""
             }
         }

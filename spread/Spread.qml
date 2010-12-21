@@ -49,6 +49,10 @@ Item {
         onTransitionCompleted: {
             if (layout.state == "") {
                 spreadView.hide()
+                if (layout.windowToActivate) {
+                    layout.windowToActivate.activate()
+                    layout.windowToActivate = null
+                }
                 windows.unload()
             }
         }
