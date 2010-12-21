@@ -59,7 +59,15 @@ Item {
         anchors.fill: parent
         fillMode: Image.Stretch
 
-        source: "image://window/" + windowInfo.xid
+        /* HACK: QML uses an internal cache for Image objects that seems to use as
+           key the source property of the image.
+           This is great for normal images but in this case we really want the
+           screenshot to reload everytime.
+           Since I could not find any way to disable this cache, I am using this
+           hack which essentially appends the current time to the source URL of the
+           Image, tricking the cache into doing a request to the image provider.
+        */
+        source: "image://window/" + windowInfo.xid + "@" + control.currentTime()
 
         /* This will be disabled during intro/outro animations for performance reasons,
            but it's good to have in spread mode when the window is */

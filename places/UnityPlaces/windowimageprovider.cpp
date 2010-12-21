@@ -28,7 +28,14 @@ QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize)
 {
-    Window win = (Window) id.toULong();
+    /* Throw away the part of the id after the @ (if any) since it's just a timestamp
+       added to force the QML image cache to request to this image provider
+       a new image instead of re-using the old. See SpreadWindow.qml for more
+       details on the problem */
+    int atPos = id.indexOf('@');
+    QString windowId = (atPos == -1) ? id : id.left(atPos);
+
+    Window win = (Window) windowId.toULong();
     XWindowAttributes attr;
     XGetWindowAttributes(QX11Info::display(), win, &attr);
     if (attr.map_state != IsViewable) {
