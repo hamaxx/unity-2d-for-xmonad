@@ -400,7 +400,10 @@ LauncherApplication::show()
         return;
     }
 
-    /* Pick the most important window. */
+    /* Pick the most important window.
+       The primary criterion to determine the most important window is urgency.
+       The secondary criterion is the last_active timestamp (the last time the
+       window was activated). */
     BamfWindow* important = windows->at(0);
     for (int i = 0; i < size; ++i) {
         BamfWindow* current = windows->at(i);
