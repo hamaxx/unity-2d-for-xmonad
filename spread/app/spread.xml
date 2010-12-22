@@ -1,0 +1,32 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <dox:d><![CDATA[
+          @mainpage
+
+          An interface to activate the windows spread in UnityQt.
+        ]]></dox:d>
+        <interface name="com.canonical.UnityQt.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+                <dox:d>
+                  An interface to activate the windows spread in UnityQt.
+                </dox:d>
+                <method name="SpreadAllWindows">
+                        <dox:d><![CDATA[
+                           Activate a spread including all windows in all workspaces.
+                        ]]></dox:d>
+                </method>
+                <method name="SpreadApplicationWindows">
+                        <dox:d><![CDATA[
+                           Activate a spread including all windows belonging to the application
+                           to which the window specified by the input parameter applicationId belongs to.
+                        ]]></dox:d>
+                        <arg name="applicationId" type="u" direction="in">
+                                <dox:d>The XWindow ID of the window</dox:d>
+                        </arg>
+                </method>
+                <method name="CancelSpread">
+                        <dox:d><![CDATA[
+                           Cancel any currently active spread.
+                        ]]></dox:d>
+                </method>
+        </interface>
+</node>

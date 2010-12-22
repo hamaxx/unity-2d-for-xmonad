@@ -4,7 +4,6 @@ pkg_check_modules(X11 REQUIRED x11)
 
 # Sources
 set(launcher_SRCS
-    launcher.cpp
     launcherview.cpp
     )
 
@@ -15,7 +14,8 @@ set(launcher_MOC_HDRS
 qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
 
 # Build
-add_executable(unity-qt-launcher ${launcher_SRCS} ${launcher_MOC_SRCS})
+add_library(uqlauncher ${launcher_SRCS} ${launcher_MOC_SRCS})
+add_executable(unity-qt-launcher launcher.cpp)
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -23,13 +23,16 @@ include_directories(
     ${X11_INCLUDE_DIRS}
     )
 
-target_link_libraries(unity-qt-launcher
+target_link_libraries(uqlauncher
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     ${X11_LDFLAGS}
     )
+
+target_link_libraries(unity-qt-launcher
+    uqlauncher)
 
 # Install
 install(TARGETS unity-qt-launcher

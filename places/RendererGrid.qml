@@ -71,10 +71,10 @@ Renderer {
                and compute their position manually to compensate for the position
                changes when flicking the ListView.
 
-               We assume that renderer.parent is the ListView we nest our
+               We assume that renderer.parentListView is the ListView we nest our
                GridView into.
             */
-            property variant flickable: renderer.parent
+            property variant flickable: renderer.parentListView
 
             /* flickable.contentY*0 is equal to 0 but is necessary in order to
                have the entire expression being evaluated at the right moment.

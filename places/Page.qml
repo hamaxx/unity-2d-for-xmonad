@@ -6,4 +6,6 @@ Item {
     property int activeSection
     property variant sections
     property string searchQuery
+    /* globalSearchQuery has the same value for all Pages */
+    property string globalSearchQuery: pages.globalSearchQuery
 }

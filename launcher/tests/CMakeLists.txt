@@ -1,4 +1,4 @@
-macro(panel_tests)
+macro(launcher_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
         add_test(${_test} ${_test})
@@ -6,26 +6,27 @@ macro(panel_tests)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
-            uqapplets
-            uqpanel
+            uqlauncher
+            UnityApplications
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
 
-    add_custom_target(panel_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+    add_custom_target(launcher_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
-endmacro(panel_tests)
+endmacro(launcher_tests)
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-    ${CMAKE_CURRENT_SOURCE_DIR}/../applets/homebutton
+    ${CMAKE_CURRENT_SOURCE_DIR}/../app
+    ${CMAKE_CURRENT_SOURCE_DIR}/../UnityApplications
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
 enable_testing()
 
-panel_tests(
-    paneltest
-    homebuttonapplettest
+launcher_tests(
+    launchermenutest
+    launcherviewtest
     )
+
