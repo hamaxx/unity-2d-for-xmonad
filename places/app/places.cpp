@@ -85,17 +85,8 @@ static void ungrabSuperKey()
 
 static DashDeclarativeView* getView()
 {
-    /* Return a pointer to the application's top-level declarative view */
-    DashDeclarativeView* view;
-    QWidgetList toplevel = QApplication::topLevelWidgets();
-    QWidgetList::const_iterator i;
-    for (i = toplevel.constBegin(); i != toplevel.constEnd(); ++i) {
-        view = qobject_cast<DashDeclarativeView*>(*i);
-        if (view != NULL) {
-            break;
-        }
-    }
-    return view;
+    QVariant viewProperty = QApplication::instance()->property("view");
+    return viewProperty.value<DashDeclarativeView*>();
 }
 
 static bool eventFilter(void* message)
@@ -165,6 +156,7 @@ int main(int argc, char *argv[])
     grabSuperKey();
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
+    application.setProperty("view", QVariant::fromValue(&view));
     int result = application.exec();
 
     ungrabSuperKey();

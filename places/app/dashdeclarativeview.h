@@ -41,4 +41,6 @@ private:
     bool m_active;
 };
 
+Q_DECLARE_METATYPE(DashDeclarativeView*)
+
 #endif // DashDeclarativeView_H
