@@ -18,6 +18,7 @@ extern "C" {
 
 #include <QDebug>
 #include <QAction>
+#include <QDBusInterface>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -308,8 +309,7 @@ LauncherApplication::activate()
 {
     if (active())
     {
-        show();
-        expose();
+        spread();
     }
     else if (running() && has_visible_window())
     {
@@ -325,6 +325,10 @@ bool
 LauncherApplication::launch()
 {
     if(m_appInfo == NULL) return false;
+
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
+    iface.call("CancelSpread");
 
     GError* error = NULL;
     GdkAppLaunchContext *context;
@@ -399,6 +403,10 @@ LauncherApplication::show()
         return;
     }
 
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
+    iface.call("CancelSpread");
+
     /* FIXME: pick the most important window, not just the first one */
     uint xid = xids->at(0);
 
@@ -406,6 +414,12 @@ LauncherApplication::show()
     wnck_screen_force_update(screen);
 
     WnckWindow* window = wnck_window_get(xid);
+    showWindow(window);
+}
+
+void
+LauncherApplication::showWindow(WnckWindow* window)
+{
     WnckWorkspace* workspace = wnck_window_get_workspace(window);
 
     /* Using X.h's CurrentTime (= 0) */
@@ -455,10 +469,12 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 }
 
 void
-LauncherApplication::expose()
+LauncherApplication::spread()
 {
-    /* IMPLEMENT ME: see unity’s expose manager */
-    qDebug() << "FIXME: Expose mode not implemented yet.";
+    qDebug() << "Triggering spread via DBUS";
+    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
+                         "com.canonical.UnityQt.Spread");
+    iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
 }
 
 void

@@ -1,0 +1,3 @@
+usr/bin/unity-qt-spread
+usr/share/dbus-1/services/unity-qt-spread.service
+usr/share/unity-qt/spread/*.qml
