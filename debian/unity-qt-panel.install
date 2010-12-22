@@ -1,5 +1,4 @@
 usr/bin/unity-qt-panel
 usr/share/applications/unity-qt-panel.desktop
-usr/lib/libuqapplets.so
 usr/share/unity-qt/panel/artwork/background.png
 usr/share/unity-qt/panel/artwork/divider.png

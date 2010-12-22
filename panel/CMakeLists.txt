@@ -10,6 +10,9 @@ add_subdirectory(applets)
 add_subdirectory(app)
 add_subdirectory(tests)
 
+# Tests
+add_custom_target(check DEPENDS panel_check launcher_check)
+
 # Install
 install(DIRECTORY artwork
     DESTINATION ${UNITY_QT_DIR}/panel
