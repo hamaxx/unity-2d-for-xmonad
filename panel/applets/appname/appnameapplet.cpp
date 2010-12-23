@@ -191,9 +191,8 @@ AppNameApplet::~AppNameApplet()
 
 static bool isBlackListed(const QString& desktopFile)
 {
-    static QSet<QString> blackList = QSet<QString>() << "unity-qt-panel" << "unity-qt-launcher" << "unity-qt-places";
     QString name = QFileInfo(desktopFile).completeBaseName();
-    return blackList.contains(name);
+    return name.startsWith("unity-qt-");
 }
 
 void AppNameApplet::updateWidgets()
