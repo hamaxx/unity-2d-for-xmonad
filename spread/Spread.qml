@@ -69,6 +69,7 @@ Item {
                 layout.state = ""
             } else {
                 spreadView.show()
+                spreadView.forceActivateWindow()
                 windows.load(applicationId)
                 layout.state = "spread"
             }
