@@ -49,9 +49,11 @@ Item {
         onTransitionCompleted: {
             if (layout.state == "") {
                 spreadView.hide()
-                if (layout.windowToActivate) {
-                    layout.windowToActivate.activate()
-                    layout.windowToActivate = null
+
+                /* If there's any selected window activate it, then clean up the selection */
+                if (layout.selectedWindow) {
+                    layout.selectedWindow.windowInfo.activate()
+                    layout.selectedWindow = null
                 }
                 windows.unload()
             }

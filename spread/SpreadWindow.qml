@@ -45,7 +45,14 @@ Item {
     property int spreadX: column * cellWidth + (cellWidth - spreadWidth) / 2
     property int spreadY: row * cellHeight + (cellHeight - spreadHeight) / 2
 
-    signal clicked
+    /* Maintain the selection status of this item to adjust visual appearence,
+       but never change it from inside the component. Since all selection logic
+       need to be managed at component level due to interaction with keyboard,
+       we just emit signals when mouse action would trigger a selection change. */
+    property bool isSelected: false
+    signal selectionChanged(bool selected)
+
+    signal exitRequested
 
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
@@ -122,6 +129,8 @@ Item {
 
             color: "black"
             opacity: 0.1
+
+            visible: !window.isSelected
         }
 
         /* A label with the window title centered over the shot.
@@ -158,7 +167,7 @@ Item {
                opaque instead */
             color: "#99000000"
             radius: 3
-            visible: false
+            visible: window.isSelected
 
             Text {
                 id: label
@@ -173,14 +182,6 @@ Item {
                 color: "white"
             }
         }
-
-        /* If we are hovering this window, show the label and hide the dark box.
-           The opposite should happen when we're not hovering the window */
-        states: State {
-            when: mouseArea.containsMouse
-            PropertyChanges { target: darken; visible: false }
-            PropertyChanges { target: labelBox; visible: true }
-        }
     }
 
     MouseArea {
@@ -189,8 +190,11 @@ Item {
         width: shot.paintedWidth
         height: shot.paintedHeight
         anchors.centerIn: parent
+        hoverEnabled: true
 
-        onClicked: window.clicked()
+        onClicked: exitRequested()
+        onEntered: selectionChanged(true)
+        onExited: selectionChanged(false)
     }
 
     states: [
@@ -215,7 +219,7 @@ Item {
         Transition {
             SequentialAnimation {
                PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: mouseArea; property: "hoverEnabled"; value: false }
+                PropertyAction { target: mouseArea; property: "enabled"; value: false }
                 PropertyAction { target: overlay; property: "visible"; value: false }
                 NumberAnimation {
                     target: window
@@ -224,7 +228,7 @@ Item {
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: mouseArea; property: "hoverEnabled"; value: (window.state == "spread") }
+                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "spread") }
                 PropertyAction { target: overlay; property: "visible"; value: true }
             }
         }

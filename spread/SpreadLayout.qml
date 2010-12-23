@@ -36,7 +36,26 @@ Item {
        the signal transitionCompleted */
     property int transitionDuration: 250
     signal transitionCompleted
-    property variant windowToActivate
+
+    /* There can be only one (or none) selected window at the same time and
+       selection needs to be possible with both the keyboard and the mouse.
+       Therefore we just maintain the current selection globally at the SpreadLayout
+       level, and update it based on selection events from the MouseArea
+       inside each SpreadWindow and from the KeyboardNavigator */
+    property variant selectedWindow
+    function select(selected) {
+        if (selectedWindow) selectedWindow.isSelected = false
+        if (selected) selected.isSelected = true
+        selectedWindow = selected
+    }
+
+    function exitSpread() {
+        /* This is a bit of an hack, to raise the window above all the others
+           before starting the outro, but it's ok since at the end of the outro
+           all the windows will be unloaded (and we will never have >9999 windows) */
+        if (layout.selectedWindow) layout.selectedWindow.z = 9999
+        layout.state = ""
+    }
 
     transitions: Transition {
         ScriptAction { script: transitionTimer.restart() }
@@ -49,10 +68,41 @@ Item {
         onTriggered: transitionCompleted()
     }
 
+    /* This component handles all the logic related to navigation with the
+       keyboard inside the SpreadLayout when we are in grid mode. */
+    KeyboardNavigator {
+        id: navigator
+
+        /* Disable keyboard focus when not in spread mode to prevent accidental
+           keypresses from messing up the selection. */
+        focus: layout.state == "spread"
+
+        /* The keyboard navigator needs to know what is the currently global
+           selected window (to know what is the next one to select in reaction to
+           cursor key navigation) */
+        selectedWindow: layout.selectedWindow
+        onSelectionChanged: layout.select(newSelection)
+        onExitRequested: layout.exitSpread()
+
+        /* It is very important to clean up the internal state of the
+           navigator when a spread is completed, otherwise it will keep
+           un-needed references to SpreadWindow instances.
+
+           NOTE: it is safe to use this property change notification for this because
+           due to the way the WindowsList's load() and unload() methods work, the count
+           value is either zero or the full count of the items in the model. It
+           can never take any other value. */
+        Connections {
+            target: layout.windows
+            onCountChanged: if (count == 0) navigator.unload()
+        }
+    }
+
     Repeater {
         id: repeater
 
         delegate: SpreadWindow {
+            id: spreadWindow
             transitionDuration: layout.transitionDuration
 
             /* The following group of properties is the only thing needed to position
@@ -84,14 +134,20 @@ Item {
             state: layout.state
             windowInfo: window
 
-            onClicked: {
-                /* This is a bit of an hack, to raise the window above all the others
-                   before starting the outro, but it's ok since at the end of the outro
-                   all the windows will be unloaded (and we will never have >9999 windows) */
-                z = 9999
-                layout.windowToActivate = window
-                layout.state = ""
-            }
+            onExitRequested: layout.exitSpread()
+            onSelectionChanged: layout.select((selected) ? spreadWindow : null)
+
+            /* This is a workaround for an issue with how QML handles the "children"
+               property.
+               According to the documentation children are *inserted* in order into their
+               parent's children list (in our case they are inserted into the SpreadLayout
+               by the Repeater).
+               However they are apparently not *maintained* in the same order.
+               In other words, the list of children can be re-arranged whenver the parent
+               feels like, with no rules that I could find documented anywhere.
+               Since we need an ordered list for keyboard navigation, we need to maintain
+               it ourselves. */
+            Component.onCompleted: navigator.addWindowAt(index, spreadWindow)
         }
     }
 }
