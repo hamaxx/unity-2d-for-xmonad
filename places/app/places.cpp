@@ -97,7 +97,14 @@ static bool eventFilter(void* message)
         XKeyEvent* key = (XKeyEvent*) event;
         uint code = key->keycode;
         if (code == SUPER_L || code == SUPER_R) {
-            getView()->activateHome();
+            /* Super (aka the "windows" key) shows/hides the dash. */
+            DashDeclarativeView* view = getView();
+            if (view->active()) {
+                view->setActive(false);
+            }
+            else {
+                view->activateHome();
+            }
         }
     }
     return false;
