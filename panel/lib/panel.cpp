@@ -104,6 +104,7 @@ Panel::Panel(QWidget* parent)
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
     setAutoFillBackground(true);
+    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), this, SLOT(desktopResized(int)));
 }
 
 Panel::~Panel()
@@ -128,6 +129,13 @@ void Panel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
+}
+
+void Panel::desktopResized(int screen)
+{
+    if (this->x11Info().screen() == screen) {
+        d->updateEdge();
+    }
 }
 
 void Panel::paintEvent(QPaintEvent* event)
