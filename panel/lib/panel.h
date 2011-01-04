@@ -46,6 +46,9 @@ protected:
 private:
     Q_DISABLE_COPY(Panel)
     PanelPrivate* const d;
+
+protected Q_SLOTS:
+    void workAreaResized(int screen);
 };
 
 } // namespace
