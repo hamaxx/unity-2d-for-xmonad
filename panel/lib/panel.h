@@ -48,7 +48,7 @@ private:
     PanelPrivate* const d;
 
 protected Q_SLOTS:
-    void desktopResized(int screen);
+    void workAreaResized(int screen);
 };
 
 } // namespace
