@@ -189,25 +189,19 @@ AppNameApplet::~AppNameApplet()
     delete d;
 }
 
-static bool isBlackListed(const QString& desktopFile)
-{
-    QString name = QFileInfo(desktopFile).completeBaseName();
-    return name.startsWith("unity-qt-");
-}
-
 void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool menuBarIsEmpty = d->m_menuBarWidget->isEmpty();
 
     BamfApplication* app = BamfMatcher::get_default().active_application();
-    bool blackListed = app ? isBlackListed(app->desktop_file()) : false;
+    bool isUserVisibleApp = app ? app->user_visible() : false;
 
-    bool showMenu = window()->underMouse() && !menuBarIsEmpty && !blackListed;
+    bool showMenu = window()->underMouse() && !menuBarIsEmpty && isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
-    bool showLabel = !(isMaximized && showMenu) && !blackListed;
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
     d->m_label->setVisible(showLabel);
     if (showLabel) {
         // Define text
