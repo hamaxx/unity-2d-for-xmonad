@@ -24,7 +24,7 @@ static const char* DBUS_PATH = "/dash";
 static const char* DBUS_IFACE = "local.DashDeclarativeView";
 
 HomeButtonApplet::HomeButtonApplet()
-: m_button(new QToolButton)
+: m_button(new QToolButton), m_dash_iface(NULL)
 {
     m_button->setAutoRaise(true);
     QIcon::setThemeName("unity-icon-theme");
@@ -48,23 +48,32 @@ HomeButtonApplet::HomeButtonApplet()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_button);
+
+    m_dash_iface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
+    connect(m_dash_iface, SIGNAL(activeChanged(bool)), SLOT(dashActiveChanged(bool)));
+}
+
+HomeButtonApplet::~HomeButtonApplet()
+{
+    disconnect(this, SLOT(dashActiveChanged(bool)));
+    delete m_dash_iface;
+}
+
+void HomeButtonApplet::dashActiveChanged(bool active)
+{
+    m_button->setChecked(active);
 }
 
 void HomeButtonApplet::slotButtonClicked()
 {
-    QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
-
-    bool dashActive = iface.property("active").toBool();
+    bool dashActive = m_dash_iface->property("active").toBool();
 
     if (dashActive) {
-        iface.setProperty("active", false);
+        m_dash_iface->setProperty("active", false);
     } else {
         /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
-        iface.call(QDBus::Block, "activateHome");
+        m_dash_iface->call(QDBus::Block, "activateHome");
     }
-
-    /* Re-synchronise the dash's state with the button's checked state, just in case. */
-    m_button->setChecked(!dashActive);
 }
 
 #include "homebuttonapplet.moc"
