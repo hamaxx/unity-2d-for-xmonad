@@ -18,6 +18,7 @@
 #include <QToolButton>
 
 class QDBusInterface;
+class QDBusServiceWatcher;
 
 class HomeButtonApplet : public UnityQt::Applet
 {
@@ -29,11 +30,13 @@ public:
 private Q_SLOTS:
     void slotButtonClicked();
     void dashActiveChanged(bool active);
+    void serviceRegistered(QString name);
 
 private:
     Q_DISABLE_COPY(HomeButtonApplet)
     QToolButton* m_button;
-    QDBusInterface* m_dash_iface;
+    QDBusInterface* m_dashInterface;
+    QDBusServiceWatcher* m_serviceWatcher;
 };
 
 #endif /* HOMEBUTTONAPPLET_H */
