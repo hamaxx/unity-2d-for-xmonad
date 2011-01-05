@@ -15,19 +15,12 @@ import Qt 4.7
    - The ESC key will cancel any selection and trigger a spread outro.
    - The ENTER key trigger a spread outro and cause the currently selected window
      to activate (as if it was clicked).
-
-   We don't perform any of the actions mentioned above, we just emit signals and let
-   the SpreadLayout take care of everything else.
 */
-
 
 Item {
     id: navigator
 
     property variant selectedWindow
-
-    signal selectionRequested(variant newSelection)
-    signal exitRequested()
 
     property variant orderedWindows: []
     function addWindowAt(index, window) {
@@ -47,11 +40,10 @@ Item {
     }
 
     /* Given row and column, calculate the index of the SpreadWindow in the orderedWindows list
-       and then emit a signal to notify the layout, which will use its own logic to choose the
-       globally selected window. */
+       and then ask to make it the globally selected window. */
     function selectAt(row, column) {
         var index = row * layout.columns + column
-        selectionRequested(orderedWindows[index])
+        selectWindow(orderedWindows[index])
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
@@ -60,13 +52,13 @@ Item {
         case Qt.Key_Escape:
             /* This will cancel the selection, so at the end of the
                outro no window will be activated */
-            selectionRequested(null)
-            exitRequested()
+            selectWindow(null)
+            layout.exitSpread()
             return true
 
         case Qt.Key_Enter:
         case Qt.Key_Return:
-            if (selectedWindow) exitRequested()
+            if (selectedWindow) layout.exitSpread()
             return true
 
         case Qt.Key_Right:
@@ -108,5 +100,11 @@ Item {
         }
 
         return false
+    }
+
+    function selectWindow(selected) {
+        if (selectedWindow) selectedWindow.isSelected = false
+        if (selected) selected.isSelected = true
+        selectedWindow = selected
     }
 }

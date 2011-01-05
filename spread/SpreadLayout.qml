@@ -48,18 +48,13 @@ Item {
        Therefore we just maintain the current selection globally at the SpreadLayout
        level, and update it based on selection events from the MouseArea
        inside each SpreadWindow and from the KeyboardNavigator */
-    property variant selectedWindow
-    function selectWindow(selected) {
-        if (selectedWindow) selectedWindow.isSelected = false
-        if (selected) selected.isSelected = true
-        selectedWindow = selected
-    }
+    property alias selectedWindow: navigator.selectedWindow
 
     function exitSpread() {
         /* This is a bit of an hack, to raise the window above all the others
            before starting the outro, but it's ok since at the end of the outro
            all the windows will be unloaded (and we will never have >9999 windows) */
-        if (layout.selectedWindow) layout.selectedWindow.z = 9999
+        if (navigator.selectedWindow) navigator.selectedWindow.z = 9999
         layout.state = ""
     }
 
@@ -82,13 +77,6 @@ Item {
         /* Disable keyboard focus when not in spread mode to prevent accidental
            keypresses from messing up the selection. */
         focus: layout.state == "spread"
-
-        /* The keyboard navigator needs to know what is the currently global
-           selected window (to know what is the next one to select in reaction to
-           cursor key navigation) */
-        selectedWindow: layout.selectedWindow
-        onSelectionRequested: layout.selectWindow(newSelection)
-        onExitRequested: layout.exitSpread()
 
         /* It is very important to clean up the internal state of the
            navigator when a spread is completed, otherwise it will keep
@@ -136,8 +124,9 @@ Item {
             state: layout.state
             windowInfo: window
 
-            onExitRequested: layout.exitSpread()
-            onSelectionRequested: layout.selectWindow((selected) ? spreadWindow : null)
+            onClicked: layout.exitSpread()
+            onExited: navigator.selectWindow(null)
+            onEntered: navigator.selectWindow(spreadWindow)
 
             /* This is a workaround for an issue with how QML handles the "children"
                property.

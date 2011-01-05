@@ -47,12 +47,13 @@ Item {
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
-       need to be managed at component level due to interaction with keyboard,
-       we just emit signals when mouse action would trigger a selection change. */
+       need to be managed outside of the component due to interaction with keyboard,
+       we just forward mouse signals. */
     property bool isSelected: false
-    signal selectionRequested(bool selected)
 
-    signal exitRequested
+    signal clicked
+    signal entered
+    signal exited
 
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
@@ -192,9 +193,9 @@ Item {
         anchors.centerIn: parent
         hoverEnabled: true
 
-        onClicked: exitRequested()
-        onEntered: selectionRequested(true)
-        onExited: selectionRequested(false)
+        onClicked: window.clicked()
+        onEntered: window.entered()
+        onExited: window.exited()
     }
 
     states: [
