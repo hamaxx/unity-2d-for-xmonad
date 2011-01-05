@@ -26,7 +26,7 @@ Item {
 
     property variant selectedWindow
 
-    signal selectionChanged(variant newSelection)
+    signal selectionRequested(variant newSelection)
     signal exitRequested()
 
     property variant orderedWindows: []
@@ -51,7 +51,7 @@ Item {
        globally selected window. */
     function selectAt(row, column) {
         var index = row * layout.columns + column
-        selectionChanged(orderedWindows[index])
+        selectionRequested(orderedWindows[index])
     }
 
     /* Tiny convenience helper to make the code in handleKeyPress more readable.
@@ -66,7 +66,7 @@ Item {
         case Qt.Key_Escape:
             /* This will cancel the selection, so at the end of the
                outro no window will be activated */
-            selectionChanged(null)
+            selectionRequested(null)
             exitRequested()
             return true
 

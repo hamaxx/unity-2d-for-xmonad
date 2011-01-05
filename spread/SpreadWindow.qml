@@ -50,7 +50,7 @@ Item {
        need to be managed at component level due to interaction with keyboard,
        we just emit signals when mouse action would trigger a selection change. */
     property bool isSelected: false
-    signal selectionChanged(bool selected)
+    signal selectionRequested(bool selected)
 
     signal exitRequested
 
@@ -193,8 +193,8 @@ Item {
         hoverEnabled: true
 
         onClicked: exitRequested()
-        onEntered: selectionChanged(true)
-        onExited: selectionChanged(false)
+        onEntered: selectionRequested(true)
+        onExited: selectionRequested(false)
     }
 
     states: [
