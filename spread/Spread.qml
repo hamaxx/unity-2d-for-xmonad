@@ -70,9 +70,12 @@ Item {
             if (layout.state == "spread") {
                 layout.state = ""
             } else {
+                /* Please note that the windows list needs to be loaded before the
+                   spread view is shown, otherwise windows.lastActiveWindow will not
+                   be correct */
+                windows.load(applicationId)
                 spreadView.show()
                 spreadView.forceActivateWindow()
-                windows.load(applicationId)
                 layout.state = "spread"
             }
         }

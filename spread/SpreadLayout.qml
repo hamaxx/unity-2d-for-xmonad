@@ -63,7 +63,11 @@ Item {
         id: transitionTimer
 
         interval: transitionDuration
-        onTriggered: transitionCompleted()
+        onTriggered: {
+            transitionCompleted()
+            if (state == "spread")
+                navigator.selectWindowByWindowInfo(windows.lastActiveWindow)
+        }
     }
 
     /* This component handles all the logic related to selection and to

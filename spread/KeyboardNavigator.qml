@@ -107,4 +107,14 @@ Item {
         if (selected) selected.isSelected = true
         selectedWindow = selected
     }
+
+    function selectWindowByWindowInfo(selected) {
+        if (!selected) return;
+        for (var i = 0; i < orderedWindows.length; i++) {
+            if (orderedWindows[i].windowInfo.xid == selected.xid) {
+                selectWindow(orderedWindows[i])
+                return
+            }
+        }
+    }
 }
