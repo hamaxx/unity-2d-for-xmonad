@@ -4,9 +4,16 @@ Item {
     property variant current_page
 
     function activatePage(page) {
-        if (current_page != undefined)
+        if (page == current_page) {
+            return
+        }
+
+        if (current_page != undefined) {
             current_page.visible = false
+            current_page.active = false
+        }
         current_page = page
+        current_page.active = true
         current_page.visible = true
         /* FIXME: For some reason current_page gets the focus when it becomes
            visible. Reset the focus to the search_bar instead.
@@ -17,7 +24,7 @@ Item {
     }
 
     function activatePlace(place, section) {
-        place.setActiveSection(section)
+        place.activeSection = section
         activatePage(place)
     }
 
@@ -54,6 +61,15 @@ Item {
         }
 
         Item {
+            id: pages
+
+            /* globalSearchQuery is used to store the Page.globalSearchQuery string
+               common to all the Page components */
+            property string globalSearchQuery
+            /* FIXME: hardcoded list of places
+                      Ref: https://bugs.launchpad.net/bugs/684152 */
+            property variant places: [files_place, applications_place]
+
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
             anchors.bottom: parent.bottom
@@ -82,6 +98,7 @@ Item {
                 name: "Applications"
                 dBusObjectPath: "/com/canonical/unity/applicationsplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
+                icon: "/usr/share/unity/applications.png"
             }
 
             Place {
@@ -97,6 +114,7 @@ Item {
                 name: "Files"
                 dBusObjectPath: "/com/canonical/unity/filesplace"
                 dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
+                icon: "/usr/share/unity/files.png"
             }
         }
     }

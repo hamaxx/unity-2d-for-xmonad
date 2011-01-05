@@ -18,16 +18,97 @@
  */
 
 #include <QApplication>
+#include <QDebug>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
 #include <QDesktopWidget>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
+#include <QX11Info>
+#include <QAbstractEventDispatcher>
+
+#include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
 
 #include "config.h"
+
+/* Register a D-Bus service for activation and deactivation of the dash */
+static bool registerDBusService(DashDeclarativeView* view)
+{
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    if (!bus.registerService("com.canonical.UnityQt")) {
+        qCritical() << "Failed to register DBus service, is there another instance already running?";
+        return false;
+    }
+    /* FIXME: use an adaptor class in order not to expose all of the view's
+       properties and methods. */
+    if (!bus.registerObject("/dash", view, QDBusConnection::ExportAllContents)) {
+        qCritical() << "Failed to register /dash, this should not happen!";
+        return false;
+    }
+    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
+       property change notification that Qt 4.7 does not implement.
+
+        org.freedesktop.DBus.Properties.PropertiesChanged (
+            STRING interface_name,
+            DICT<STRING,VARIANT> changed_properties,
+            ARRAY<STRING> invalidated_properties);
+
+       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
+    */
+    return true;
+}
+
+static uint SUPER_L = 133;
+static uint SUPER_R = 134;
+
+static void grabSuperKey()
+{
+    Display* display = QX11Info::display();
+    Window window = QX11Info::appRootWindow();
+    Bool owner = True;
+    int pointer = GrabModeAsync;
+    int keyboard = GrabModeAsync;
+    XGrabKey(display, SUPER_L, 0, window, owner, pointer, keyboard);
+    XGrabKey(display, SUPER_R, 0, window, owner, pointer, keyboard);
+}
+
+static void ungrabSuperKey()
+{
+    Display* display = QX11Info::display();
+    Window window = QX11Info::appRootWindow();
+    XUngrabKey(display, SUPER_L, 0, window);
+    XUngrabKey(display, SUPER_R, 0, window);
+}
+
+static DashDeclarativeView* getView()
+{
+    QVariant viewProperty = QApplication::instance()->property("view");
+    return viewProperty.value<DashDeclarativeView*>();
+}
+
+static bool eventFilter(void* message)
+{
+    XEvent* event = static_cast<XEvent*>(message);
+    if (event->type == KeyRelease)
+    {
+        XKeyEvent* key = (XKeyEvent*) event;
+        uint code = key->keycode;
+        if (code == SUPER_L || code == SUPER_R) {
+            /* Super (aka the "windows" key) shows/hides the dash. */
+            DashDeclarativeView* view = getView();
+            if (view->active()) {
+                view->setActive(false);
+            }
+            else {
+                view->activateHome();
+            }
+        }
+    }
+    return false;
+}
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +124,10 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
+
+    if (!registerDBusService(&view)) {
+        return -1;
+    }
 
     /* The dash window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -74,22 +159,14 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
-    /* Register a D-Bus service for activation and deactivation of the dash */
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerService("com.canonical.UnityQt");
-    /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */
-    bus.registerObject("/dash", &view, QDBusConnection::ExportAllContents);
-    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
-       property change notification that Qt 4.7 does not implement.
+    /* Grab the "super" keys */
+    grabSuperKey();
+    QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
-        org.freedesktop.DBus.Properties.PropertiesChanged (
-            STRING interface_name,
-            DICT<STRING,VARIANT> changed_properties,
-            ARRAY<STRING> invalidated_properties);
+    application.setProperty("view", QVariant::fromValue(&view));
+    int result = application.exec();
 
-       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
-    */
+    ungrabSuperKey();
 
-    return application.exec();
+    return result;
 }

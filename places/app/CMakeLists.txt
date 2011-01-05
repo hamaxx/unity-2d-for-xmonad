@@ -39,3 +39,7 @@ install(TARGETS unity-qt-places
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-places.service
     DESTINATION share/dbus-1/services
     )
+
+install(FILES unity-qt-places.desktop
+    DESTINATION share/applications
+    )

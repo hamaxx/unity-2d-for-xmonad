@@ -49,6 +49,8 @@ public:
 
 Q_SIGNALS:
     void WindowRegistered(WId wid, const QString& service, const QDBusObjectPath&);
+    void WindowUnregistered(WId wid);
+
 public Q_SLOTS:
     Q_NOREPLY void RegisterWindow(WId wid, const QDBusObjectPath& menuObjectPath);
     Q_NOREPLY void UnregisterWindow(WId wid);

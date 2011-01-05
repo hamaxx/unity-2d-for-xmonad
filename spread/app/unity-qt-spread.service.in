@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.canonical.UnityQt.Spread
+Exec=@CMAKE_INSTALL_PREFIX@/bin/unity-qt-spread

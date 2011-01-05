@@ -4,7 +4,7 @@ Button {
     property alias icon: icon.source
     property alias label: label.text
     property bool folded: true
-    property bool moreAvailable
+    property int availableCount
 
 
     Image {
@@ -35,7 +35,7 @@ Button {
     Image {
         id: arrow
 
-        visible: moreAvailable
+        visible: availableCount > 0
         rotation: folded ? 0 : 90
         source: "artwork/arrow.png"
         width: 7

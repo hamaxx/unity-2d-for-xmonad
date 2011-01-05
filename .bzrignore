@@ -1,10 +1,24 @@
+config.h
+libuqpanel.pc
+
+launcher/UnityApplications/libUnityApplications.so*
+launcher/app/unity-qt-launcher
+
+places/UnityPlaces/libUnityPlaces.so*
+places/app/unity-qt-places
+places/app/unity-qt-places.service
+
+spread/app/unity-qt-spread
+spread/app/unity-qt-spread.service
+spread/app/spreadadaptor.*
+
+panel/app/unity-qt-panel
+panel/applets/registraradaptor.*
+panel/lib/libuqpanel.so*
+panel/tests/paneltest
+
+# Cmake files and generated files
 Makefile
-UnityApplications/Makefile
-UnityApplications/tmp
-UnityApplications/libUnityApplications.so*
-launcher/Makefile
-launcher/tmp
-launcher/bin
 .bzr-repo
 *.cmake
 CMakeFiles
@@ -13,9 +27,10 @@ CMakeCache*
 moc_*.cxx
 *.moc
 
-# KDevelop
+# KDevelop and Qtcreator
 *.kdev4
 .kdev_include_paths
+CMakeLists.txt.user
 
 # Debian packaging files
 obj-x86_64-linux-gnu

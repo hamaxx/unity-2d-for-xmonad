@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
+pkg_check_modules(WNCK REQUIRED libwnck-1.0)
+pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 
 # Dependencies
 include(FindPkgConfig)
@@ -10,6 +12,9 @@ set(UnityPlaces_SRCS
     qdbusconnectionqml.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
+    windowimageprovider.cpp
+    windowinfo.cpp
+    windowslist.cpp
     )
 
 set(UnityPlaces_MOC_HDRS
@@ -19,12 +24,16 @@ set(UnityPlaces_MOC_HDRS
     qdbusconnectionqml.h
     qsortfilterproxymodelqml.h
     blendedimageprovider.h
+    windowimageprovider.h
+    windowinfo.h
+    windowslist.h
     )
 
 qt4_wrap_cpp(UnityPlaces_MOC_SRCS ${UnityPlaces_MOC_HDRS})
 
 # Build
 add_library(UnityPlaces SHARED ${UnityPlaces_SRCS} ${UnityPlaces_MOC_SRCS})
+add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
 
 set_target_properties(UnityPlaces PROPERTIES
     SOVERSION 1
@@ -33,12 +42,16 @@ set_target_properties(UnityPlaces PROPERTIES
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${WNCK_INCLUDE_DIRS}
+    ${QTBAMF_INCLUDE_DIRS}
     )
 
 target_link_libraries(UnityPlaces
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
+    ${WNCK_LDFLAGS}
+    ${QTBAMF_LDFLAGS}
     )
 
 # Install

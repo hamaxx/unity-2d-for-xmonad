@@ -7,24 +7,48 @@ import "utils.js" as Utils
 Page {
     id: place
 
-    property string name
     property string dBusObjectPath
     property string dBusObjectPathPlaceEntry
+    property string icon
 
     property string dBusService: "com.canonical.Unity." + name + "Place"
     property string dBusDeePrefix: "/com/canonical/dee/model/com/canonical/Unity/" + name + "Place/"
 
-    /* FIXME: this is a bit of a hack due to the lack of D-Bus property
-              giving the current section id for a place
-    */
-    property int activeSection
-    property bool hasSections: true
+    /* The PlaceEntry D-Bus API does not expose properties but only setters.
+       We make sure the setters are always synchronised with our local properties. */
+    Component.onCompleted: {
+        place_entry.SetActive(active)
+        place_entry.SetActiveSection(activeSection)
+        place_entry.SetSearch(searchQuery, [])
+        place_entry.SetGlobalSearch(globalSearchQuery, [])
+    }
+    onActiveChanged: {
+        place_entry.SetActive(active)
+        /* PlaceEntry.SetActiveSection needs to be called after PlaceEntry.SetActive
+           in order for it to have an effect. */
+        if (active) {
+            place_entry.SetActiveSection(activeSection)
+        }
+    }
+    onActiveSectionChanged: place_entry.SetActiveSection(activeSection)
+    onSearchQueryChanged: place_entry.SetSearch(searchQuery, [])
+    onGlobalSearchQueryChanged: place_entry.SetGlobalSearch(globalSearchQuery, [])
+
+    /* Sections model containing the list of available sections for the place */
+    sections: DeeListModel {
+                   service: dBusService
+                   objectPath: dBusDeePrefix ? dBusDeePrefix + "SectionsModel" : ""
+              }
 
     /* ResultsModel containing data for all the Groups. Each Group will filter
        it locally. */
     property variant resultsModel: DeeListModel {
                                         service: dBusService
                                         objectPath: dBusDeePrefix +"ResultsModel"
+                                   }
+    property variant globalResultsModel: DeeListModel {
+                                        service: dBusService
+                                        objectPath: dBusDeePrefix ? dBusDeePrefix + "GlobalResultsModel" : ""
                                    }
     property variant dBusInterface: UnityPlace {
                                          service: dBusService
@@ -62,18 +86,6 @@ Page {
         }
     }
 
-    function setActiveSection(section) {
-        /* FIXME: SetActive(false) should happen when exiting the place */
-        place_entry.SetActive(false)
-        place_entry.SetActive(true)
-        activeSection = section
-        place_entry.SetActiveSection(section)
-    }
-
-    function search(query) {
-        place_entry.SetSearch(query, [])
-    }
-
     UnityPlaceEntry {
         id: place_entry
 
@@ -81,40 +93,10 @@ Page {
         objectPath: dBusObjectPathPlaceEntry
     }
 
-    ListView {
+    ListViewWithScrollbar {
         id: place_results
 
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        /* Take all available horizontal space if the scrollbar is invisible */
-        anchors.right: scrollbar.opacity > 0 ? scrollbar.left : parent.right
-
-        clip: true
-        /* FIXME: proper spacing cannot be set because of the hack in Group.qml
-           whereby empty groups are still in the list but invisible and of
-           height 0.
-        */
-        //spacing: 31
-
-        orientation: ListView.Vertical
-
-        /* WARNING - HACK - FIXME
-           Issue:
-           User wise annoying jumps in the list are observable if cacheBuffer is
-           set to 0 (which is the default value). States such as 'folded' are
-           lost when scrolling a lot.
-
-           Explanation:
-           The height of the Group delegate depends on its content. However its
-           content is not known until the delegate is instantiated because it
-           depends on the number of results displayed by its GridView.
-
-           Resolution:
-           We set the cacheBuffer to the biggest possible int in order to make
-           sure all delegates are always instantiated.
-        */
-        cacheBuffer: 2147483647
+        anchors.fill: parent
 
         /* The group's delegate is chosen dynamically depending on what
            groupRenderer is returned by the GroupsModel.
@@ -126,7 +108,7 @@ Page {
            If groupRenderer == 'UnityShowcaseRenderer' then it will look for
            the file 'UnityShowcaseRenderer.qml' and use it to render the group.
         */
-        delegate: Loader {
+        list.delegate: Loader {
             property string groupRenderer: column_0
             property string displayName: column_1
             property string iconHint: column_2
@@ -153,12 +135,10 @@ Page {
                 */
                 filterRole: 2 /* second column (see above comment) */
                 filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
-
-                /* Maximum number of items in the model; -1 is unlimited */
-                limit: item.modelCountLimit
             }
 
             onLoaded: {
+                item.parentListView = place_results.list
                 item.displayName = displayName
                 item.iconHint = iconHint
                 item.model = group_model
@@ -166,23 +146,10 @@ Page {
             }
         }
 
-        model: DeeListModel {
+        list.model: DeeListModel {
             service: dBusService
             objectPath: dBusDeePrefix + "GroupsModel"
         }
     }
 
-    Scrollbar {
-        id: scrollbar
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-
-        targetFlickable: place_results
-
-        /* Hide the scrollbar if there is less than a page of results */
-        opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
-        Behavior on opacity {NumberAnimation {duration: 100}}
-    }
 }

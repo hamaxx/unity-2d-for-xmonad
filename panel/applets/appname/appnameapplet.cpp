@@ -25,14 +25,18 @@
 // Qt
 #include <QAbstractButton>
 #include <QEvent>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
 #include <QPainter>
+#include <QSet>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
 static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
+
+static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
 namespace UnityQt
 {
@@ -120,6 +124,8 @@ struct AppNameAppletPrivate
         m_label = new CroppedLabel;
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         m_label->setTextFormat(Qt::PlainText);
+        // Align left of label with left of menubar
+        m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
@@ -156,6 +162,8 @@ struct AppNameAppletPrivate
         m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
+        QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
+            q, SLOT(updateWidgets()));
     }
 };
 
@@ -187,27 +195,28 @@ AppNameApplet::~AppNameApplet()
 
 void AppNameApplet::updateWidgets()
 {
+    BamfApplication* app = BamfMatcher::get_default().active_application();
+
     bool isMaximized = d->m_windowHelper->isMaximized();
-    bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
-    bool showMenu = window()->underMouse() && !menuBarIsEmpty;
+    bool isUserVisibleApp = app ? app->user_visible() : false;
+    bool showMenu = window()->underMouse() && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
-    bool showLabel = !(isMaximized && showMenu);
     d->m_label->setVisible(showLabel);
     if (showLabel) {
         // Define text
         QString text;
-        if (isMaximized) {
-            // When maximized, show window title
-            BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-            if (bamfWindow) {
-                text = bamfWindow->name();
-            }
-        } else {
-            // When not maximized, show application name
-            BamfApplication* app = BamfMatcher::get_default().active_application();
-            if (app) {
+        if (app) {
+            if (isMaximized) {
+                // When maximized, show window title
+                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                if (bamfWindow) {
+                    text = bamfWindow->name();
+                }
+            } else {
+                // When not maximized, show application name
                 text = app->name();
             }
         }

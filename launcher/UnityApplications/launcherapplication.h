@@ -50,10 +50,13 @@ public:
     /* methods */
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE void close();
-    Q_INVOKABLE void expose();
+    Q_INVOKABLE void spread();
     Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, uint xid=0);
 
     Q_INVOKABLE virtual void createMenuActions();
+
+    static void showWindow(WnckWindow* window);
+    static void moveViewportToWindow(WnckWindow* window);
 
 signals:
     void stickyChanged(bool);
@@ -88,7 +91,6 @@ private:
     QTimer m_launching_timer;
     bool m_has_visible_window;
 
-    void moveViewportToWindow(WnckWindow* window);
     void updateBamfApplicationDependentProperties();
 };
 

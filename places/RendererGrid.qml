@@ -14,7 +14,6 @@ Renderer {
 
     property variant cellRenderer
     property bool folded: true
-    modelCountLimit: folded ? results.cellsPerLine : -1
 
     property int cellWidth: 158
     property int cellHeight: 76
@@ -35,7 +34,7 @@ Renderer {
         id: header
 
         visible: results.count > 0
-        moreAvailable: results.count >= results.cellsPerLine
+        availableCount: results.count - results.cellsPerLine
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
@@ -72,10 +71,10 @@ Renderer {
                and compute their position manually to compensate for the position
                changes when flicking the ListView.
 
-               We assume that renderer.parent is the ListView we nest our
+               We assume that renderer.parentListView is the ListView we nest our
                GridView into.
             */
-            property variant flickable: renderer.parent
+            property variant flickable: renderer.parentListView
 
             /* flickable.contentY*0 is equal to 0 but is necessary in order to
                have the entire expression being evaluated at the right moment.
@@ -84,13 +83,18 @@ Renderer {
             property int compensateY: inFlickableY > 0 ? 0 : -inFlickableY
 
             width: flickable.width
-            height: flickable.height
-            y: compensateY
-            contentY: compensateY
+            height: Math.min(totalHeight, flickable.height)
+            onCompensateYChanged: {
+                if (flickable.height > 0 && totalHeight >= flickable.height) {
+                    y = compensateY
+                    contentY = compensateY
+                }
+            }
 
             property int cellsPerLine: Math.floor(width/results.cellWidth)
-            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerLine)
-
+            /* Only display one line of items when folded */
+            property int displayedCount: folded ? cellsPerLine : count
+            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerLine)
 
             cellWidth: renderer.cellWidth+renderer.horizontalSpacing
             cellHeight: renderer.cellHeight+renderer.verticalSpacing
