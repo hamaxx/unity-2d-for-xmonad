@@ -69,7 +69,7 @@ Item {
     }
 
     /* This component handles all the logic related to navigation with the
-       keyboard inside the SpreadLayout when we are in grid mode. */
+       keyboard inside the SpreadLayout when we are in spread mode. */
     KeyboardNavigator {
         id: navigator
 

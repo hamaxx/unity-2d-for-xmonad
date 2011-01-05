@@ -2,16 +2,16 @@ import Qt 4.7
 
 /* This component groups together all the keboard handling
    for the SpreadLayout, but more importantly it does also take care of the
-   logic deciding which item in the grid will be selected in response to a
+   logic deciding which item in the spread will be selected in response to a
    cursor key press.
 
    The rules for keyboard interaction are the following:
 
-   - Keyboard interaction is enabled only in grid mode.
+   - Keyboard interaction is enabled only in spread mode.
    - If there's no window selected, pressing any cursor key will select the item
-     at the top-left corner of the grid.
+     at the top-left corner.
    - If there's a selected window, then the cursor keys will move selection to the
-     neighbour element in the grid in that direction, wrapping at all edges.
+     neighbour element in that direction, wrapping at all edges.
    - The ESC key will cancel any selection and trigger a spread outro.
    - The ENTER key trigger a spread outro and cause the currently selected window
      to activate (as if it was clicked).
