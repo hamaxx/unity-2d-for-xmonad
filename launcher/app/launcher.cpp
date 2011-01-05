@@ -69,6 +69,14 @@ int main(int argc, char *argv[])
     view.workAreaResized(desktop->screenNumber(&view));
     QObject::connect(desktop, SIGNAL(workAreaResized(int)), &view, SLOT(workAreaResized(int)));
 
+    /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
+       applications) to use the same client id.
+       This would prevent some applications (e.g. nautilus) from launching when
+       the launcher itself was autostarted (which is the common case when
+       running installed).
+       For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
+    g_unsetenv("DESKTOP_AUTOSTART_ID");
+
     return application.exec();
 }
 

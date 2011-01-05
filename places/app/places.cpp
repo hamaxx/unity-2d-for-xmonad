@@ -25,6 +25,10 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
+#include <QX11Info>
+#include <QAbstractEventDispatcher>
+
+#include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
 
@@ -55,6 +59,55 @@ static bool registerDBusService(DashDeclarativeView* view)
        ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
     */
     return true;
+}
+
+static uint SUPER_L = 133;
+static uint SUPER_R = 134;
+
+static void grabSuperKey()
+{
+    Display* display = QX11Info::display();
+    Window window = QX11Info::appRootWindow();
+    Bool owner = True;
+    int pointer = GrabModeAsync;
+    int keyboard = GrabModeAsync;
+    XGrabKey(display, SUPER_L, 0, window, owner, pointer, keyboard);
+    XGrabKey(display, SUPER_R, 0, window, owner, pointer, keyboard);
+}
+
+static void ungrabSuperKey()
+{
+    Display* display = QX11Info::display();
+    Window window = QX11Info::appRootWindow();
+    XUngrabKey(display, SUPER_L, 0, window);
+    XUngrabKey(display, SUPER_R, 0, window);
+}
+
+static DashDeclarativeView* getView()
+{
+    QVariant viewProperty = QApplication::instance()->property("view");
+    return viewProperty.value<DashDeclarativeView*>();
+}
+
+static bool eventFilter(void* message)
+{
+    XEvent* event = static_cast<XEvent*>(message);
+    if (event->type == KeyRelease)
+    {
+        XKeyEvent* key = (XKeyEvent*) event;
+        uint code = key->keycode;
+        if (code == SUPER_L || code == SUPER_R) {
+            /* Super (aka the "windows" key) shows/hides the dash. */
+            DashDeclarativeView* view = getView();
+            if (view->active()) {
+                view->setActive(false);
+            }
+            else {
+                view->activateHome();
+            }
+        }
+    }
+    return false;
 }
 
 int main(int argc, char *argv[])
@@ -106,5 +159,14 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
-    return application.exec();
+    /* Grab the "super" keys */
+    grabSuperKey();
+    QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
+
+    application.setProperty("view", QVariant::fromValue(&view));
+    int result = application.exec();
+
+    ungrabSuperKey();
+
+    return result;
 }
