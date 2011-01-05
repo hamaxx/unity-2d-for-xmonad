@@ -68,6 +68,7 @@ protected:
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
+    void slotWindowUnregistered(WId);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
     void updateMenuBar();
