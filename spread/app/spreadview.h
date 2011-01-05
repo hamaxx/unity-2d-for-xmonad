@@ -30,6 +30,9 @@ public slots:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
     void fitToAvailableSpace(int screen);
 
+    /* FIXME: copied from places/app/dashdeclarativeview.h */
+    void forceActivateWindow();
+
 public:
     explicit SpreadView();
 };

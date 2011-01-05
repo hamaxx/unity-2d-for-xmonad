@@ -49,9 +49,11 @@ Item {
         onTransitionCompleted: {
             if (layout.state == "") {
                 spreadView.hide()
-                if (layout.windowToActivate) {
-                    layout.windowToActivate.activate()
-                    layout.windowToActivate = null
+
+                /* If there's any selected window activate it, then clean up the selection */
+                if (layout.selectedWindow) {
+                    layout.selectedWindow.windowInfo.activate()
+                    layout.selectedWindow = null
                 }
                 windows.unload()
             }
@@ -68,8 +70,12 @@ Item {
             if (layout.state == "spread") {
                 layout.state = ""
             } else {
-                spreadView.show()
+                /* Please note that the windows list needs to be loaded before the
+                   spread view is shown, otherwise windows.lastActiveWindow will not
+                   be correct */
                 windows.load(applicationId)
+                spreadView.show()
+                spreadView.forceActivateWindow()
                 layout.state = "spread"
             }
         }
