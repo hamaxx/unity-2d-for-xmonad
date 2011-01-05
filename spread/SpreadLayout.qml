@@ -43,11 +43,8 @@ Item {
     property int transitionDuration: 250
     signal transitionCompleted
 
-    /* There can be only one (or none) selected window at the same time and
-       selection needs to be possible with both the keyboard and the mouse.
-       Therefore we just maintain the current selection globally at the SpreadLayout
-       level, and update it based on selection events from the MouseArea
-       inside each SpreadWindow and from the KeyboardNavigator */
+    /* We need to make this information available to the parent, so that it
+       knows which window to activate at the end of the spread (if any) */
     property alias selectedWindow: navigator.selectedWindow
 
     function exitSpread() {
@@ -69,8 +66,8 @@ Item {
         onTriggered: transitionCompleted()
     }
 
-    /* This component handles all the logic related to navigation with the
-       keyboard inside the SpreadLayout when we are in spread mode. */
+    /* This component handles all the logic related to selection and to
+       navigation with the keyboard while we are in spread mode. */
     KeyboardNavigator {
         id: navigator
 
@@ -125,7 +122,7 @@ Item {
             windowInfo: window
 
             onClicked: layout.exitSpread()
-            onExited: navigator.selectWindow(null)
+            onExited: if (navigator.selectedWindow == spreadWindow) navigator.selectWindow(null)
             onEntered: navigator.selectWindow(spreadWindow)
 
             /* This is a workaround for an issue with how QML handles the "children"
