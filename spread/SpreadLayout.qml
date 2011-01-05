@@ -29,8 +29,14 @@ Item {
     property int columns: Math.ceil (Math.sqrt (count))
     property int rows: Math.ceil(count / layout.columns)
 
-    /* Number of cells in the last row: (as described above) */
+    /* Number of cells in the last row: (as described above) and small
+       convenience function to quickly know how many cells are in any
+       given row. */
     property int lastRowCells: count - (columns * (rows - 1))
+    function columnsInRow(row) {
+        return (row == layout.rows - 1 && layout.lastRowCells != 0) ?
+                layout.lastRowCells : layout.columns;
+    }
 
     /* After any state change wait for transitionDuration (ms) and then emit
        the signal transitionCompleted */
@@ -122,11 +128,7 @@ Item {
 
             /* Height and width of the current cell. See header for details. */
             cellHeight: (layout.height - layout.anchors.margins) / rows
-            cellWidth: {
-                var cellsInRow = (row == layout.rows - 1 && layout.lastRowCells != 0) ?
-                        layout.lastRowCells : layout.columns;
-                return (layout.width - layout.anchors.margins) / cellsInRow
-            }
+            cellWidth: (layout.width - layout.anchors.margins) / columnsInRow(row)
 
             /* Pass on a few properties so that they can be referenced from inside the
                SpreadWindow itself. The state is particularly important as it drives

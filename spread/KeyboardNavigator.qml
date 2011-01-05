@@ -54,12 +54,6 @@ Item {
         selectionRequested(orderedWindows[index])
     }
 
-    /* Tiny convenience helper to make the code in handleKeyPress more readable.
-       The same is true for splitting handleKeyPress from Keys.onPressed. */
-    function columnsInRow(row) {
-        return (row == layout.rows -1) ? layout.lastRowCells : layout.columns
-    }
-
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
         switch (key) {
@@ -88,13 +82,13 @@ Item {
 
             switch (key) {
             case Qt.Key_Right:
-                if (at.column < columnsInRow(at.row) - 1) selectAt(at.row, at.column + 1)
+                if (at.column < layout.columnsInRow(at.row) - 1) selectAt(at.row, at.column + 1)
                 else selectAt(at.row, 0)
                 return true
 
             case Qt.Key_Left:
                 if (at.column > 0) selectAt(at.row, at.column - 1)
-                else selectAt(at.row, columnsInRow(at.row) - 1)
+                else selectAt(at.row, layout.columnsInRow(at.row) - 1)
                 return true
 
             case Qt.Key_Up:
