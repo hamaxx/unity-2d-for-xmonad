@@ -389,6 +389,10 @@ LauncherApplication::close()
         WnckWindow* window = wnck_window_get(xids->at(i));
         wnck_window_close(window, CurrentTime);
     }
+
+    /* Manually update hasVisibleWindow since we stopped listening to WindowAdded
+       and WindowRemoved signals. */
+    updateHasVisibleWindow();
 }
 
 void
