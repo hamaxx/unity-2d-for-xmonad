@@ -34,6 +34,8 @@ static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
 static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
+static const int APPNAME_LABEL_LEFT_MARGIN = 12;
+
 namespace UnityQt
 {
 
@@ -120,6 +122,8 @@ struct AppNameAppletPrivate
         m_label = new CroppedLabel;
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         m_label->setTextFormat(Qt::PlainText);
+        // Align left of label with left of menubar
+        m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
