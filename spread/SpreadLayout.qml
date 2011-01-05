@@ -125,7 +125,10 @@ Item {
             state: layout.state
             windowInfo: window
 
-            onClicked: layout.exitSpread()
+            onClicked: {
+                navigator.selectWindow(spreadWindow)
+                layout.exitSpread()
+            }
             onExited: if (navigator.selectedWindow == spreadWindow) navigator.selectWindow(null)
             onEntered: navigator.selectWindow(spreadWindow)
 
