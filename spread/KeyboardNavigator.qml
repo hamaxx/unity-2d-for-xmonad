@@ -82,30 +82,27 @@ Item {
 
             switch (key) {
             case Qt.Key_Right:
-                if (at.column < layout.columnsInRow(at.row) - 1) selectAt(at.row, at.column + 1)
-                else selectAt(at.row, 0)
+                selectAt(at.row, (at.column + 1) % layout.columnsInRow(at.row))
                 return true
 
             case Qt.Key_Left:
-                if (at.column > 0) selectAt(at.row, at.column - 1)
-                else selectAt(at.row, layout.columnsInRow(at.row) - 1)
+                selectAt(at.row, (at.column > 0) ? (at.column - 1) : (layout.columnsInRow(at.row) - 1))
                 return true
 
             case Qt.Key_Up:
                 /* If we're going up, and we're on the first row, then we wrap to the last row.
                    However it may have less columns than the others, so we need to make sure we
                    clamp the destination column to an existing one. */
-                if (at.row > 0) selectAt(at.row - 1, at.column)
-                else selectAt(layout.rows - 1, Math.min(at.column, layout.lastRowCells - 1))
+                var targetRow = (at.row > 0) ? (at.row - 1) : (layout.rows - 1)
+                selectAt(targetRow, Math.min(at.column, layout.columnsInRow(targetRow) - 1))
                 return true
 
             case Qt.Key_Down:
                 /* When we're going down, if we are on the last row, we just wrap to the first.
                    If we are on the row before the last row, we need to consider that the last row
                    my have less columns than the current one and clamp the destination column. */
-                if (at.row == layout.rows - 2) selectAt(at.row + 1, Math.min(at.column, layout.lastRowCells - 1))
-                else if (at.row == layout.rows - 1) selectAt(0, at.column)
-                else selectAt(at.row + 1, at.column)
+                var targetRow = (at.row + 1) % layout.rows
+                selectAt(targetRow, Math.min(at.column, layout.columnsInRow(targetRow) - 1))
                 return true
             }
         }
