@@ -43,7 +43,7 @@ Item {
        level, and update it based on selection events from the MouseArea
        inside each SpreadWindow and from the KeyboardNavigator */
     property variant selectedWindow
-    function select(selected) {
+    function selectWindow(selected) {
         if (selectedWindow) selectedWindow.isSelected = false
         if (selected) selected.isSelected = true
         selectedWindow = selected
@@ -81,7 +81,7 @@ Item {
            selected window (to know what is the next one to select in reaction to
            cursor key navigation) */
         selectedWindow: layout.selectedWindow
-        onSelectionRequested: layout.select(newSelection)
+        onSelectionRequested: layout.selectWindow(newSelection)
         onExitRequested: layout.exitSpread()
 
         /* It is very important to clean up the internal state of the
@@ -135,7 +135,7 @@ Item {
             windowInfo: window
 
             onExitRequested: layout.exitSpread()
-            onSelectionRequested: layout.select((selected) ? spreadWindow : null)
+            onSelectionRequested: layout.selectWindow((selected) ? spreadWindow : null)
 
             /* This is a workaround for an issue with how QML handles the "children"
                property.
