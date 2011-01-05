@@ -69,6 +69,8 @@ void MenuBarWidget::setupRegistrar()
 
     connect(m_registrar, SIGNAL(WindowRegistered(WId, const QString&, const QDBusObjectPath&)),
         SLOT(slotWindowRegistered(WId, const QString&, const QDBusObjectPath&)));
+    connect(m_registrar, SIGNAL(WindowUnregistered(WId)),
+        SLOT(slotWindowUnregistered(WId)));
 }
 
 void MenuBarWidget::setupMenuBar()
@@ -110,6 +112,18 @@ void MenuBarWidget::slotWindowRegistered(WId wid, const QString& service, const 
     connect(importer, SIGNAL(menuUpdated()), SLOT(slotMenuUpdated()));
     connect(importer, SIGNAL(actionActivationRequested(QAction*)), SLOT(slotActionActivationRequested(QAction*)));
     QMetaObject::invokeMethod(importer, "updateMenu", Qt::QueuedConnection);
+}
+
+void MenuBarWidget::slotWindowUnregistered(WId wid)
+{
+    MyDBusMenuImporter* importer = m_importers.take(wid);
+    if (importer) {
+        importer->deleteLater();
+    }
+    if (wid == m_activeWinId) {
+        m_activeWinId = 0;
+        updateMenuBar();
+    }
 }
 
 void MenuBarWidget::slotMenuUpdated()
