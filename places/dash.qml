@@ -4,9 +4,6 @@ import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
 Item {
     id: dash
 
-    /* globalSearchQuery is used to store the PlaceEntryModel.globalSearchQuery string
-       common to all the PlaceEntryModel components */
-    property string globalSearchQuery
     property variant currentPage
 
     function activatePage(page) {

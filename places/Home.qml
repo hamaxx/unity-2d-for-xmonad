@@ -4,17 +4,17 @@ import UnityPlaces 1.0 /* Necessary for QSortFilterProxyModelQML */
 import gconf 1.0
 
 Item {
-    property variant model: PageModel {}
+    property variant model: PageModel {
+        /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
+        onEntrySearchQueryChanged: {
+            for (var i = 0; i < dash.places.rowCount(); i++) {
+                dash.places.get(i).globalSearchQuery = entrySearchQuery
+            }
+        }
+    }
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
-    property bool globalSearchActive: model.searchQuery != ""
-
-    Binding {
-        target: dash
-        property: "globalSearchQuery"
-        value: model.searchQuery
-        when: globalSearchActive
-    }
+    property bool globalSearchActive: model.entrySearchQuery != ""
 
     ListViewWithScrollbar {
         id: globalSearch

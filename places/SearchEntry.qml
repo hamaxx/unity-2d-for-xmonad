@@ -5,7 +5,7 @@ FocusScope {
 
     Binding {
         target: dash.currentPage != undefined ? dash.currentPage.model : null
-        property: "searchQuery"
+        property: "entrySearchQuery"
         value: searchQuery
     }
 
