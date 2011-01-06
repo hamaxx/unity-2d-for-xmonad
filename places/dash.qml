@@ -64,9 +64,7 @@ Item {
         fileName: "/usr/share/unity/places/applications.place"
         groupName: "Files"
 
-        /* FIXME: these 2 properties need to be extracted from the place configuration file
-                  located in /usr/share/unity/places/applications.place
-        */
+        /* FIXME: these properties need to be extracted from the configuration file */
         name: "Applications"
         placeDBusObjectPath: "/com/canonical/unity/applicationsplace"
         dBusObjectPath: placeDBusObjectPath+"/applications"
@@ -79,9 +77,7 @@ Item {
         fileName: "/usr/share/unity/places/files.place"
         groupName: "Files"
 
-        /* FIXME: these 2 properties need to be extracted from the place configuration file
-                  located in /usr/share/unity/places/files.place
-        */
+        /* FIXME: these properties need to be extracted from the configuration file */
         name: "Files"
         placeDBusObjectPath: "/com/canonical/unity/filesplace"
         dBusObjectPath: placeDBusObjectPath+"/files"
