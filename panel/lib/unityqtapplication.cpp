@@ -25,7 +25,7 @@ UnityQtApplication::UnityQtApplication(int& argc, char** argv)
 
 UnityQtApplication* UnityQtApplication::instance()
 {
-    return static_cast<UnityQtApplication*>(QCoreApplication::instance());
+    return qobject_cast<UnityQtApplication*>(QCoreApplication::instance());
 }
 
 void UnityQtApplication::installX11EventFilter(AbstractX11EventFilter* filter)
@@ -47,3 +47,5 @@ bool UnityQtApplication::x11EventFilter(XEvent* event)
     }
     return QApplication::x11EventFilter(event);
 }
+
+#include <unityqtapplication.moc>

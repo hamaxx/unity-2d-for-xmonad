@@ -14,15 +14,22 @@
 // Qt
 #include <QApplication>
 
+class UnityQtApplication;
+
 class AbstractX11EventFilter
 {
 public:
     virtual ~AbstractX11EventFilter();
+
+protected:
     virtual bool x11EventFilter(XEvent*) = 0;
+
+    friend class UnityQtApplication;
 };
 
 class UnityQtApplication : public QApplication
 {
+Q_OBJECT
 public:
     UnityQtApplication(int& argc, char** argv);
 
@@ -30,7 +37,7 @@ public:
     void removeX11EventFilter(AbstractX11EventFilter*);
 
     /**
-     * Note: This function will return a broken pointer if you did not use a UnityQtApplication in your application!
+     * Note: This function will return a null pointer if you did not use a UnityQtApplication in your application!
      */
     static UnityQtApplication* instance();
 
