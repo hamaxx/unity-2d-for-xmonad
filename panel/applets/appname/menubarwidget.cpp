@@ -14,6 +14,7 @@
 // Local
 #include "config.h"
 #include "debug_p.h"
+#include "keyboardmodifiersmonitor.h"
 #include "registrar.h"
 
 // dbusmenu-qt
@@ -93,6 +94,11 @@ void MenuBarWidget::setupMenuBar()
     m_updateMenuBarTimer->setInterval(0);
     connect(m_updateMenuBarTimer, SIGNAL(timeout()),
         SLOT(updateMenuBar()));
+
+    // Repaint the menubar when modifiers change so that the shortcut underline
+    // is drawn or not
+    connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+        m_menuBar, SLOT(update()));
 }
 
 void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
