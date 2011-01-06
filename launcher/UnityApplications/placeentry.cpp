@@ -493,6 +493,7 @@ PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
         delete m_entryGroupsModel;
         m_entryGroupsModel = NULL;
         emit entryGroupsModelNameChanged();
+        emit entryGroupsModelChanged();
     }
 }
 
@@ -517,6 +518,7 @@ PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
         delete m_entryResultsModel;
         m_entryResultsModel = NULL;
         emit entryResultsModelNameChanged();
+        emit entryResultsModelChanged();
     }
 }
 
@@ -557,6 +559,7 @@ PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
         delete m_globalGroupsModel;
         m_globalGroupsModel = NULL;
         emit globalGroupsModelNameChanged();
+        emit globalGroupsModelChanged();
     }
 }
 
@@ -581,6 +584,7 @@ PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
         delete m_globalResultsModel;
         m_globalResultsModel = NULL;
         emit globalResultsModelNameChanged();
+        emit globalResultsModelChanged();
     }
 }
 
