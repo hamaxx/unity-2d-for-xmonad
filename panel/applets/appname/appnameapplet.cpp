@@ -17,6 +17,7 @@
 
 // Unity-qt
 #include <debug_p.h>
+#include <keyboardmodifiersmonitor.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -116,6 +117,7 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
+    KeyboardModifiersMonitor* m_keyboardModifiersMonitor;
 
     void setupLabel()
     {
@@ -161,6 +163,13 @@ struct AppNameAppletPrivate
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
     }
+
+    void setupKeyboardModifiersMonitor()
+    {
+        m_keyboardModifiersMonitor = new KeyboardModifiersMonitor(q);
+        QObject::connect(m_keyboardModifiersMonitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+            q, SLOT(updateWidgets()));
+    }
 };
 
 AppNameApplet::AppNameApplet()
@@ -173,6 +182,7 @@ AppNameApplet::AppNameApplet()
     d->setupLabel();
     d->setupWindowButtonWidget();
     d->setupMenuBarWidget();
+    d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -193,7 +203,9 @@ void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
-    bool showMenu = window()->underMouse() && !menuBarIsEmpty;
+    bool showMenu =
+        (window()->underMouse() && !menuBarIsEmpty)
+        || d->m_keyboardModifiersMonitor->keyboardModifiers() == Qt::AltModifier;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
