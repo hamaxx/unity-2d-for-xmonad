@@ -91,37 +91,37 @@ Item {
         HomeButton {
             icon: "image://icons/unity-icon-theme/music"
             label: qsTr("Music")
-            onClicked: activatePlace(applications_place, 4)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/photos"
             label: qsTr("Photos & Videos")
-            onClicked: activatePlace(applications_place, 4)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/games"
             label: qsTr("Games")
-            onClicked: activatePlace(applications_place, 2)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 2)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/email_and_chat"
             label: qsTr("Email & Chat")
-            onClicked: activatePlace(applications_place, 3)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 3)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/work"
             label: qsTr("Office")
-            onClicked: activatePlace(applications_place, 5)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 5)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/filesandfolders"
             label: qsTr("Files & Folders")
-            onClicked: activatePlace(files_place, 0)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
         }
 
         HomeButton {

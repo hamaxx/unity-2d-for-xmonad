@@ -26,7 +26,23 @@ Item {
         search_bar.focus = true
     }
 
-    function activatePlace(placeEntryModel, section) {
+    function findPlaceEntryModel(fileName, groupName) {
+        var place
+        for (var i = 0; i < places.length; i++) {
+            place = places[i]
+            if (place.fileName == fileName && place.groupName == groupName)
+                return place
+        }
+        return null
+    }
+
+    function activatePlaceEntry(fileName, groupName, section) {
+        var placeEntryModel = findPlaceEntryModel(fileName, groupName)
+        if (placeEntryModel == null) {
+            console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
+            return
+        }
+
         placeEntryModel.activeSection = section
         placeEntryModel.active = true
         placeEntryView.model = placeEntryModel
@@ -44,7 +60,9 @@ Item {
 
     PlaceEntryModel {
         id: applications_place
-        objectName: "applications_place"
+
+        fileName: "/usr/share/unity/places/applications.place"
+        groupName: "Files"
 
         /* FIXME: these 2 properties need to be extracted from the place configuration file
                   located in /usr/share/unity/places/applications.place
@@ -57,7 +75,9 @@ Item {
 
     PlaceEntryModel {
         id: files_place
-        objectName: "files_place"
+
+        fileName: "/usr/share/unity/places/files.place"
+        groupName: "Files"
 
         /* FIXME: these 2 properties need to be extracted from the place configuration file
                   located in /usr/share/unity/places/files.place

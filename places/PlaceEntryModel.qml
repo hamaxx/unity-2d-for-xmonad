@@ -9,6 +9,8 @@ QtObject {
     /* === API === */
 
     /* Same as C++ */
+    property string fileName
+    property string groupName
     property string name
     property string icon
     property DeeListModel sections
