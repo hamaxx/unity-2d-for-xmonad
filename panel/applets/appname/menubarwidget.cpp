@@ -70,6 +70,8 @@ void MenuBarWidget::setupRegistrar()
 
     connect(m_registrar, SIGNAL(WindowRegistered(WId, const QString&, const QDBusObjectPath&)),
         SLOT(slotWindowRegistered(WId, const QString&, const QDBusObjectPath&)));
+    connect(m_registrar, SIGNAL(WindowUnregistered(WId)),
+        SLOT(slotWindowUnregistered(WId)));
 }
 
 void MenuBarWidget::setupMenuBar()
@@ -116,6 +118,18 @@ void MenuBarWidget::slotWindowRegistered(WId wid, const QString& service, const 
     connect(importer, SIGNAL(menuUpdated()), SLOT(slotMenuUpdated()));
     connect(importer, SIGNAL(actionActivationRequested(QAction*)), SLOT(slotActionActivationRequested(QAction*)));
     QMetaObject::invokeMethod(importer, "updateMenu", Qt::QueuedConnection);
+}
+
+void MenuBarWidget::slotWindowUnregistered(WId wid)
+{
+    MyDBusMenuImporter* importer = m_importers.take(wid);
+    if (importer) {
+        importer->deleteLater();
+    }
+    if (wid == m_activeWinId) {
+        m_activeWinId = 0;
+        updateMenuBar();
+    }
 }
 
 void MenuBarWidget::slotMenuUpdated()
@@ -201,17 +215,27 @@ bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
+bool MenuBarWidget::isEmpty() const
+{
+    return m_menuBar->actions().isEmpty();
+}
+
+bool MenuBarWidget::isOpened() const
+{
+    return m_menuBar->activeAction();
+}
+
 // MenuBarClosedHelper ----------------------------------------
 MenuBarClosedHelper::MenuBarClosedHelper(MenuBarWidget* widget)
 : QObject(widget)
 , m_widget(widget)
 {
-    widget->menuBar()->installEventFilter(this);
+    widget->m_menuBar->installEventFilter(this);
 }
 
 bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
 {
-    if (object == m_widget->menuBar()) {
+    if (object == m_widget->m_menuBar) {
         switch (event->type()) {
             case QEvent::ActionAdded:
             case QEvent::ActionRemoved:
@@ -224,7 +248,7 @@ bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
     } else {
         // Top-level menus
         if (event->type() == QEvent::Hide) {
-            // menu hides themselves when the menubar is closed but also when
+            // menu hide themselves when the menubar is closed but also when
             // one goes from one menu to another. The way to know this is to
             // check the value of QMenuBar::activeAction(), but at this point
             // it has not been updated yet, so we check in a delayed method.
@@ -236,29 +260,36 @@ bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
 
 void MenuBarClosedHelper::emitMenuBarClosed()
 {
-    if (!m_widget->menuBar()->activeAction()) {
+    if (!m_widget->m_menuBar->activeAction()) {
         QMetaObject::invokeMethod(m_widget, "menuBarClosed");
     }
 }
 
 void MenuBarClosedHelper::menuBarActionEvent(QActionEvent* event)
 {
-    // Install/remove event filters on top level menus so that we can know when
-    // they hide themselves (to emit menuBarClosed())
     QMenu* menu = event->action()->menu();
-    if (!menu) {
-        return;
+    if (menu) {
+        // Install/remove event filters on top level menus so that know when
+        // they hide themselves and can emit menuBarClosed()
+        switch (event->type()) {
+        case QEvent::ActionAdded:
+        case QEvent::ActionChanged:
+            menu->installEventFilter(this);
+            break;
+        case QEvent::ActionRemoved:
+            menu->removeEventFilter(this);
+            break;
+        default:
+            break;
+        }
     }
-    switch (event->type()) {
-    case QEvent::ActionAdded:
-    case QEvent::ActionChanged:
-        menu->installEventFilter(this);
-        break;
-    case QEvent::ActionRemoved:
-        menu->removeEventFilter(this);
-        break;
-    default:
-        break;
+
+    // Emit isEmptyChanged() if necessary
+    QList<QAction*> actions = m_widget->m_menuBar->actions();
+    if (event->type() == QEvent::ActionAdded && actions.count() == 1) {
+        QMetaObject::invokeMethod(m_widget, "isEmptyChanged");
+    } else if (event->type() == QEvent::ActionRemoved && actions.isEmpty()) {
+        QMetaObject::invokeMethod(m_widget, "isEmptyChanged");
     }
 }
 

@@ -85,6 +85,7 @@ void Registrar::RegisterWindow(WId wid, const QDBusObjectPath& menuObjectPath)
 void Registrar::UnregisterWindow(WId wid)
 {
     mDb.remove(wid);
+    WindowUnregistered(wid);
 }
 
 QString Registrar::GetMenuForWindow(WId winId, QDBusObjectPath& menuObjectPath)
@@ -107,7 +108,9 @@ void Registrar::slotServiceUnregistered(const QString& service)
         end = mDb.end();
     for (;it != end;) {
         if (it.value().service == service) {
+            WId id = it.key();
             it = mDb.erase(it);
+            WindowUnregistered(id);
         } else {
             ++it;
         }

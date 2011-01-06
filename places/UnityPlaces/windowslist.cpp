@@ -8,7 +8,8 @@
 #include "bamf-application.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent), m_applicationId(0), m_loaded(false)
+    QAbstractListModel(parent), m_applicationId(0),
+    m_loaded(false), m_lastActiveWindow(NULL)
 {
     QHash<int, QByteArray> roles;
     roles[0] = "window";
@@ -59,6 +60,8 @@ void WindowsList::load(unsigned long applicationId)
         applications.append(matcher.application_for_xid(applicationId));
     }
 
+    BamfWindow* activeWindow = matcher.active_window();
+
     /* Build a list of windowInfos for windows that are 'user_visible' according to BAMF */
     QList<WindowInfo*> newWindows;
 
@@ -76,6 +79,10 @@ void WindowsList::load(unsigned long applicationId)
 
             WindowInfo *info = new WindowInfo(window->xid());
             newWindows.append(info);
+
+            if (activeWindow != NULL && window->xid() == activeWindow->xid()) {
+                m_lastActiveWindow = info;
+            }
         }
     }
 
@@ -98,6 +105,7 @@ void WindowsList::load(unsigned long applicationId)
     m_loaded = true;
 
     Q_EMIT countChanged(m_windows.count());
+    Q_EMIT lastActiveWindowChanged(m_lastActiveWindow);
 }
 
 void WindowsList::unload()
@@ -110,4 +118,8 @@ void WindowsList::unload()
     m_loaded = false;
 
     Q_EMIT countChanged(m_windows.count());
+}
+
+WindowInfo* WindowsList::lastActiveWindow() const {
+    return m_lastActiveWindow;
 }

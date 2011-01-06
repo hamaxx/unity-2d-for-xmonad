@@ -57,10 +57,12 @@ Q_OBJECT
 public:
     MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
 
-    QMenuBar* menuBar() const { return m_menuBar; }
+    bool isEmpty() const;
+    bool isOpened() const;
 
 Q_SIGNALS:
     void menuBarClosed();
+    void isEmptyChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*); // reimp
@@ -68,6 +70,7 @@ protected:
 private Q_SLOTS:
     void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
     void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
+    void slotWindowUnregistered(WId);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
     void updateMenuBar();
@@ -86,6 +89,8 @@ private:
     void setupMenuBar();
     QMenu* menuForWinId(WId) const;
     void updateActiveWinId(BamfWindow*);
+
+    friend class MenuBarClosedHelper;
 };
 
 #endif /* MENUBARWIDGET_H */

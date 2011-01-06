@@ -22,8 +22,17 @@ QSortFilterProxyModelQML::sourceModelQObject() const
 void
 QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 {
-    setSourceModel((QAbstractItemModel*)model);
+    QAbstractItemModel* itemModel = qobject_cast<QAbstractItemModel*>(model);
+    if (itemModel == NULL) {
+        qWarning() << "QSortFilterProxyModelQML only accepts objects of type QAbstractItemModel as its model";
+        return;
+    }
+
+    if (sourceModel() != NULL) {
+        sourceModel()->disconnect(this);
+    }
+
+    setSourceModel(itemModel);
     updateRoleNames();
-    QObject::connect(model, SIGNAL(modelReset()),
-                     this, SLOT(updateRoleNames()));
+    QObject::connect(itemModel, SIGNAL(modelReset()), this, SLOT(updateRoleNames()));
 }

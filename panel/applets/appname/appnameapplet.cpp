@@ -161,6 +161,8 @@ struct AppNameAppletPrivate
         m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
+        QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
+            q, SLOT(updateWidgets()));
     }
 
     void setupKeyboardModifiersMonitor()
@@ -199,31 +201,32 @@ AppNameApplet::~AppNameApplet()
 
 void AppNameApplet::updateWidgets()
 {
+    BamfApplication* app = BamfMatcher::get_default().active_application();
+
     bool isMaximized = d->m_windowHelper->isMaximized();
-    bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
-    bool menuBarIsOpened = d->m_menuBarWidget->menuBar()->activeAction();
-    bool showMenu = !menuBarIsEmpty
+    bool isUserVisibleApp = app ? app->user_visible() : false;
+    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp)
         && (window()->underMouse()
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
-        || menuBarIsOpened);
+        || d->m_menuBarWidget->isOpened()
+        );
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
-    bool showLabel = !(isMaximized && showMenu);
     d->m_label->setVisible(showLabel);
     if (showLabel) {
         // Define text
         QString text;
-        if (isMaximized) {
-            // When maximized, show window title
-            BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-            if (bamfWindow) {
-                text = bamfWindow->name();
-            }
-        } else {
-            // When not maximized, show application name
-            BamfApplication* app = BamfMatcher::get_default().active_application();
-            if (app) {
+        if (app) {
+            if (isMaximized) {
+                // When maximized, show window title
+                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                if (bamfWindow) {
+                    text = bamfWindow->name();
+                }
+            } else {
+                // When not maximized, show application name
                 text = app->name();
             }
         }
