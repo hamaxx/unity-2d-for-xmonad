@@ -331,3 +331,14 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
     m_querying = false;
 }
 
+PlaceEntry*
+Place::findPlaceEntry(const QString& groupName)
+{
+    Q_FOREACH(PlaceEntry* entry, m_entries) {
+        if (entry->groupName() == groupName) {
+            return entry;
+        }
+    }
+
+    return NULL;
+}

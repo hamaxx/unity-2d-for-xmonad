@@ -58,6 +58,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    PlaceEntry* findPlaceEntry(const QString& groupName);
+
 Q_SIGNALS:
     void entryAdded(PlaceEntry*);
     void entryRemoved(PlaceEntry*);
