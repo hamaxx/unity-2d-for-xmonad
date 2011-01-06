@@ -153,3 +153,9 @@ ListAggregatorModel::data(const QModelIndex& index, int role) const
     // For the sake of completeness, should never happen.
     return QVariant();
 }
+
+QVariant
+ListAggregatorModel::get(int row) const
+{
+    return data(QAbstractListModel::index(row), 0);
+}
