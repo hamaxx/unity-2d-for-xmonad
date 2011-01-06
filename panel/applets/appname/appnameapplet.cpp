@@ -203,9 +203,11 @@ void AppNameApplet::updateWidgets()
 {
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool menuBarIsEmpty = d->m_menuBarWidget->menuBar()->actions().isEmpty();
+    bool menuBarIsOpened = d->m_menuBarWidget->menuBar()->activeAction();
     bool showMenu =
         (window()->underMouse() && !menuBarIsEmpty)
-        || d->m_keyboardModifiersMonitor->keyboardModifiers() == Qt::AltModifier;
+        || d->m_keyboardModifiersMonitor->keyboardModifiers() == Qt::AltModifier
+        || menuBarIsOpened;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 
