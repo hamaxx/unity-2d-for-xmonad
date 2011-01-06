@@ -1,4 +1,5 @@
 import Qt 4.7
+import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
 
 Item {
     id: dash
@@ -26,18 +27,8 @@ Item {
         search_bar.focus = true
     }
 
-    function findPlaceEntryModel(fileName, groupName) {
-        var place
-        for (var i = 0; i < places.length; i++) {
-            place = places[i]
-            if (place.fileName == fileName && place.groupName == groupName)
-                return place
-        }
-        return null
-    }
-
     function activatePlaceEntry(fileName, groupName, section) {
-        var placeEntryModel = findPlaceEntryModel(fileName, groupName)
+        var placeEntryModel = places.findPlaceEntry(fileName, groupName)
         if (placeEntryModel == null) {
             console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
             return
@@ -53,37 +44,7 @@ Item {
         activatePage(home)
     }
 
-
-    /* FIXME: hardcoded list of places
-              Ref: https://bugs.launchpad.net/bugs/684152 */
-    property variant places: [files_place, applications_place]
-
-    PlaceEntryModel {
-        id: applications_place
-
-        fileName: "/usr/share/unity/places/applications.place"
-        groupName: "Files"
-
-        /* FIXME: these properties need to be extracted from the configuration file */
-        name: "Applications"
-        placeDBusObjectPath: "/com/canonical/unity/applicationsplace"
-        dBusObjectPath: placeDBusObjectPath+"/applications"
-        icon: "/usr/share/unity/applications.png"
-    }
-
-    PlaceEntryModel {
-        id: files_place
-
-        fileName: "/usr/share/unity/places/files.place"
-        groupName: "Files"
-
-        /* FIXME: these properties need to be extracted from the configuration file */
-        name: "Files"
-        placeDBusObjectPath: "/com/canonical/unity/filesplace"
-        dBusObjectPath: placeDBusObjectPath+"/files"
-        icon: "/usr/share/unity/files.png"
-    }
-
+    property variant places: LauncherPlacesList {}
 
     GnomeBackground {
         anchors.fill: parent
