@@ -17,6 +17,13 @@
 // Qt
 
 struct KeyboardModifiersMonitorPrivate;
+
+/**
+ * This class monitor keyboard modifiers. It is able to track changes even if
+ * the active window does not belong to the application.
+ *
+ * You *must* use UnityQtApplication to be able to use this class.
+ */
 class KeyboardModifiersMonitor : public QObject, protected AbstractX11EventFilter
 {
 Q_OBJECT
