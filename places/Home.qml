@@ -3,14 +3,16 @@ import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://
 import UnityPlaces 1.0 /* Necessary for QSortFilterProxyModelQML */
 import gconf 1.0
 
-Page {
+Item {
+    property variant model: PageModel {}
+
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
-    property bool globalSearchActive: searchQuery != ""
+    property bool globalSearchActive: model.searchQuery != ""
 
     Binding {
-        target: pages
+        target: dash
         property: "globalSearchQuery"
-        value: searchQuery
+        value: model.searchQuery
         when: globalSearchActive
     }
 
@@ -20,14 +22,14 @@ Page {
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
-        list.model: pages.places
+        list.model: dash.places
 
         list.delegate: UnityDefaultRenderer {
             /* -2 is here because no rightMargin is set in ListViewWithScrollbar.list yet */
             width: ListView.view.width-2
 
             parentListView: list
-            place: modelData
+            placeEntryModel: modelData
             displayName: modelData.name
             iconHint: modelData.icon
 
