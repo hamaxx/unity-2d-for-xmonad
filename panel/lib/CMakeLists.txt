@@ -2,6 +2,7 @@
 set(libuqpanel_SRCS
     applet.cpp
     panel.cpp
+    unityqtapplication.cpp
     unityqtstyle.cpp
     )
 
