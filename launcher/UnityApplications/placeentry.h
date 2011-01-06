@@ -78,6 +78,8 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+    Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
     /* Entry rendering info */
     Q_PROPERTY(QString entrySearchQuery READ entrySearchQuery WRITE setEntrySearchQuery NOTIFY entrySearchQueryChanged)
@@ -118,6 +120,7 @@ public:
     bool sensitive() const;
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
+    int activeSection() const;
 
     QString entrySearchQuery() const;
     QString entryRendererName() const;
@@ -147,6 +150,8 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
+    void setActiveSection(int);
+    void setActive(bool);
 
     void setEntrySearchQuery(QString);
     void setEntryRendererName(QString);
@@ -180,6 +185,8 @@ Q_SIGNALS:
     void sensitiveChanged(bool);
     void sectionsChanged();
     void hintsChanged();
+    void activeSectionChanged();
+    void activeChanged();
 
     void entrySearchQueryChanged();
     void entryRendererNameChanged();
@@ -215,6 +222,8 @@ private:
        QVariant values in order to allow exposing it as a property (see
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
+    int m_activeSection;
+    bool m_active;
 
     QString m_entrySearchQuery;
     QString m_entryRendererName;
