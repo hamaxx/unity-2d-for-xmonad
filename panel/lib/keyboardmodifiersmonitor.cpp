@@ -58,6 +58,12 @@ KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
     delete d;
 }
 
+KeyboardModifiersMonitor* KeyboardModifiersMonitor::instance()
+{
+    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(UnityQtApplication::instance());
+    return monitor;
+}
+
 bool KeyboardModifiersMonitor::x11EventFilter(XEvent* event)
 {
     if (event->type == sXkbBaseEventType + XkbEventCode) {

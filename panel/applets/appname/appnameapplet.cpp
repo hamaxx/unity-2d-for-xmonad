@@ -117,7 +117,6 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
-    KeyboardModifiersMonitor* m_keyboardModifiersMonitor;
 
     void setupLabel()
     {
@@ -166,8 +165,7 @@ struct AppNameAppletPrivate
 
     void setupKeyboardModifiersMonitor()
     {
-        m_keyboardModifiersMonitor = new KeyboardModifiersMonitor(q);
-        QObject::connect(m_keyboardModifiersMonitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+        QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
             q, SLOT(updateWidgets()));
     }
 };
@@ -206,7 +204,7 @@ void AppNameApplet::updateWidgets()
     bool menuBarIsOpened = d->m_menuBarWidget->menuBar()->activeAction();
     bool showMenu =
         (window()->underMouse() && !menuBarIsEmpty)
-        || d->m_keyboardModifiersMonitor->keyboardModifiers() == Qt::AltModifier
+        || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || menuBarIsOpened;
 
     d->m_windowButtonWidget->setVisible(isMaximized);

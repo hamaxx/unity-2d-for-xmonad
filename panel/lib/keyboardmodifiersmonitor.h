@@ -23,6 +23,9 @@ struct KeyboardModifiersMonitorPrivate;
  * the active window does not belong to the application.
  *
  * You *must* use UnityQtApplication to be able to use this class.
+ *
+ * In most case you don't need your own instance: use the one returned by
+ * instance() instead.
  */
 class KeyboardModifiersMonitor : public QObject, protected AbstractX11EventFilter
 {
@@ -32,6 +35,8 @@ public:
     ~KeyboardModifiersMonitor();
 
     Qt::KeyboardModifiers keyboardModifiers() const;
+
+    static KeyboardModifiersMonitor* instance();
 
 Q_SIGNALS:
     void keyboardModifiersChanged(Qt::KeyboardModifiers);
