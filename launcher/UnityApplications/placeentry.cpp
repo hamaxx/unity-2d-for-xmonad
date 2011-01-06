@@ -155,6 +155,7 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
     qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
+    qDBusRegisterMetaType<QHash<QString, QString>>();
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
@@ -168,10 +169,12 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_mimetypes(other.m_mimetypes),
     m_sensitive(other.m_sensitive),
 
+    m_entrySearchQuery(other.m_entrySearchQuery),
     m_entryRendererName(other.m_entryRendererName),
     m_entryGroupsModelName(other.m_entryGroupsModelName),
     m_entryResultsModelName(other.m_entryResultsModelName),
 
+    m_globalSearchQuery(other.m_globalSearchQuery),
     m_globalRendererName(other.m_globalRendererName),
     m_globalGroupsModelName(other.m_globalGroupsModelName),
     m_globalResultsModelName(other.m_globalResultsModelName)
@@ -312,6 +315,12 @@ PlaceEntry::hints() const
 }
 
 QString
+PlaceEntry::entrySearchQuery() const
+{
+    return m_entrySearchQuery;
+}
+
+QString
 PlaceEntry::entryRendererName() const
 {
     return m_entryRendererName;
@@ -363,6 +372,12 @@ QMap<QString, QVariant>
 PlaceEntry::entryRendererHints() const
 {
     return m_entryRendererHints;
+}
+
+QString
+PlaceEntry::globalSearchQuery() const
+{
+    return m_globalSearchQuery;
 }
 
 QString
@@ -477,6 +492,19 @@ PlaceEntry::setHints(QMap<QString, QVariant> hints)
 }
 
 void
+PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
+{
+    if (entrySearchQuery != m_entrySearchQuery) {
+        m_entrySearchQuery = entrySearchQuery;
+        if (m_dbusIface != NULL) {
+            QHash<QString, QString> searchHints;
+            m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+        }
+        emit entrySearchQueryChanged();
+    }
+}
+
+void
 PlaceEntry::setEntryRendererName(QString entryRendererName)
 {
     if (entryRendererName != m_entryRendererName) {
@@ -540,6 +568,19 @@ PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
 {
     m_entryRendererHints = entryRendererHints;
     emit entryRendererHintsChanged();
+}
+
+void
+PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
+{
+    if (globalSearchQuery != m_globalSearchQuery) {
+        m_globalSearchQuery = globalSearchQuery;
+        if (m_dbusIface != NULL) {
+            QHash<QString, QString> searchHints;
+            m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
+        }
+        emit globalSearchQueryChanged();
+    }
 }
 
 void
@@ -708,6 +749,11 @@ PlaceEntry::connectToRemotePlaceEntry()
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
                        "PlaceEntryInfoChanged", this,
                        SLOT(updateInfo(const PlaceEntryInfoStruct&)));
+
+    /* Update state of D-Bus daemon according to the values of local properties */
+    QHash<QString, QString> searchHints;
+    m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+    m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
 }
 
 void
