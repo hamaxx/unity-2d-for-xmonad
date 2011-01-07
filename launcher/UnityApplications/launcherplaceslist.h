@@ -37,6 +37,7 @@ public:
     ~LauncherPlacesList();
 
     Q_INVOKABLE PlaceEntry* findPlaceEntry(const QString& fileName, const QString& groupName);
+    Q_INVOKABLE void startAllPlaceServices();
 
 private:
     QStringList m_placeFiles;

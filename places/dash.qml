@@ -41,7 +41,9 @@ Item {
         activatePage(home)
     }
 
-    property variant places: LauncherPlacesList {}
+    property variant places: LauncherPlacesList {
+        Component.onCompleted: startAllPlaceServices()
+    }
 
     GnomeBackground {
         anchors.fill: parent

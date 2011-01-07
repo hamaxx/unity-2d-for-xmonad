@@ -145,3 +145,12 @@ LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& group
 
     return NULL;
 }
+
+void
+LauncherPlacesList::startAllPlaceServices()
+{
+    Q_FOREACH(QAbstractListModel* model, m_models) {
+        Place* place = static_cast<Place*>(model);
+        place->connectToRemotePlace();
+    }
+}
