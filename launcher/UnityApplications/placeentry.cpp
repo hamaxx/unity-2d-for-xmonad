@@ -148,6 +148,7 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_sections(NULL),
     m_activeSection(-1),
     m_active(false),
+    m_place((Place*)parent),
     m_entryGroupsModel(NULL),
     m_entryResultsModel(NULL),
     m_globalGroupsModel(NULL),
@@ -172,6 +173,7 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_sensitive(other.m_sensitive),
     m_activeSection(other.m_activeSection),
     m_active(other.m_active),
+    m_place(other.m_place),
 
     m_entrySearchQuery(other.m_entrySearchQuery),
     m_entryRendererName(other.m_entryRendererName),
@@ -321,6 +323,12 @@ bool
 PlaceEntry::active() const
 {
     return m_active;
+}
+
+Place*
+PlaceEntry::place() const
+{
+    return m_place;
 }
 
 QString

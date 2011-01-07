@@ -64,6 +64,7 @@ Q_DECLARE_METATYPE(QList<PlaceEntryInfoStruct>)
 QDBusArgument &operator<<(QDBusArgument &, const PlaceEntryInfoStruct &);
 const QDBusArgument &operator>>(const QDBusArgument &, PlaceEntryInfoStruct &);
 
+class Place;
 
 class PlaceEntry : public LauncherItem
 {
@@ -80,6 +81,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
     Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(Place* place READ place)
 
     /* Entry rendering info */
     Q_PROPERTY(QString entrySearchQuery READ entrySearchQuery WRITE setEntrySearchQuery NOTIFY entrySearchQueryChanged)
@@ -121,6 +123,7 @@ public:
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
     int activeSection() const;
+    Place* place() const;
 
     QString entrySearchQuery() const;
     QString entryRendererName() const;
@@ -224,6 +227,7 @@ private:
     QMap<QString, QVariant> m_hints;
     int m_activeSection;
     bool m_active;
+    Place* m_place;
 
     QString m_entrySearchQuery;
     QString m_entryRendererName;
