@@ -13,6 +13,7 @@ class WindowsList : public QAbstractListModel
     Q_OBJECT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged);
+    Q_PROPERTY(WindowInfo* lastActiveWindow READ lastActiveWindow NOTIFY lastActiveWindowChanged);
 
 public:
     WindowsList(QObject *parent = 0);
@@ -22,17 +23,20 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     int count() const { return rowCount(); }
+    WindowInfo* lastActiveWindow() const;
 
     Q_INVOKABLE void load(unsigned long applicationId);
     Q_INVOKABLE void unload();
 
 signals:
     void countChanged(int count);
+    void lastActiveWindowChanged(WindowInfo* lastActiveWindow);
 
 private:
     QList<WindowInfo*> m_windows;
     unsigned long m_applicationId;
     bool m_loaded;
+    WindowInfo* m_lastActiveWindow;
 };
 
 QML_DECLARE_TYPE(WindowsList)
