@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusServiceWatcher>
+#include <QDBusConnectionInterface>
 #include <QTimer>
 #include <QUrl>
 #include <QDesktopServices>
@@ -39,6 +40,12 @@ Place::Place(QObject* parent) :
     m_dbusIface(NULL),
     m_querying(false)
 {
+    m_serviceWatcher = new QDBusServiceWatcher(this);
+    m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
+    connect(m_serviceWatcher, SIGNAL(serviceRegistered(QString)),
+            SLOT(onPlaceServiceRegistered()));
+    connect(m_serviceWatcher, SIGNAL(serviceUnregistered(QString)),
+            SLOT(onPlaceServiceUnregistered()));
 }
 
 Place::Place(const Place &other)
@@ -49,6 +56,7 @@ Place::Place(const Place &other)
 
 Place::~Place()
 {
+    delete m_serviceWatcher;
     delete m_dbusIface;
     delete m_file;
     m_entries.clear();
@@ -64,6 +72,13 @@ Place::fileName() const
 void
 Place::setFileName(const QString &file)
 {
+    if (!m_dbusName.isNull()) {
+        m_serviceWatcher->removeWatchedService(m_dbusName);
+    }
+    if (m_dbusIface != NULL) {
+        delete m_dbusIface;
+    }
+
     m_file = new QSettings(file, QSettings::IniFormat);
     if (m_file->childGroups().contains("Place"))
     {
@@ -90,8 +105,19 @@ Place::setFileName(const QString &file)
             m_static_entries[entry->dbusObjectPath()] = entry;
             m_entries.append(entry);
         }
-        /* Start the live place delayed to not impact startup time. */
-        QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
+
+        /* Monitor the corresponding D-Bus place service */
+        m_serviceWatcher->addWatchedService(m_dbusName);
+
+        /* Connect to the live place immediately if the service is already running
+           otherwise wait for around 10 seconds as to not impact startup time */
+        QDBusConnectionInterface* iface = QDBusConnection::sessionBus().interface();
+        QDBusReply<bool> registered = iface->isServiceRegistered(m_dbusName);
+        if (registered) {
+            connectToRemotePlace();
+        } else {
+            QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
+        }
     }
     else
     {
@@ -141,17 +167,9 @@ Place::rowCount(const QModelIndex& parent) const
 void
 Place::connectToRemotePlace()
 {
-    if (m_online) {
+    if (m_dbusIface != NULL) {
         return;
     }
-
-    QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(this);
-    serviceWatcher->setConnection(QDBusConnection::sessionBus());
-    serviceWatcher->addWatchedService(m_dbusName);
-    connect(serviceWatcher, SIGNAL(serviceRegistered(QString)),
-            SLOT(slotRemotePlaceConnected()));
-    connect(serviceWatcher, SIGNAL(serviceUnregistered(QString)),
-            SLOT(slotRemotePlaceDisconnected()));
 
     m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
                                      UNITY_PLACE_INTERFACE);
@@ -162,10 +180,7 @@ Place::connectToRemotePlace()
         return;
     }
 
-    if (m_dbusIface->isValid()) {
-        slotRemotePlaceConnected();
-    }
-    else {
+    if (!m_dbusIface->isValid()) {
         /* A call to the interface will spawn the corresponding place daemon. */
         getEntries();
     }
@@ -208,8 +223,10 @@ Place::stopMonitoringEntries()
 }
 
 void
-Place::slotRemotePlaceConnected()
+Place::onPlaceServiceRegistered()
 {
+    connectToRemotePlace();
+
     m_online = true;
     Q_EMIT onlineChanged(m_online);
 
@@ -218,7 +235,7 @@ Place::slotRemotePlaceConnected()
 }
 
 void
-Place::slotRemotePlaceDisconnected()
+Place::onPlaceServiceUnregistered()
 {
     m_online = false;
     Q_EMIT onlineChanged(m_online);
@@ -308,7 +325,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
         qWarning() << "ERROR:" << m_dbusName << reply.error().message();
-        slotRemotePlaceDisconnected();
+        onPlaceServiceUnregistered();
     } else {
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
         QList<PlaceEntryInfoStruct>::const_iterator i;
