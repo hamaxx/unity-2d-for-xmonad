@@ -3,6 +3,8 @@ libuqpanel.pc
 
 launcher/UnityApplications/libUnityApplications.so*
 launcher/app/unity-qt-launcher
+launcher/tests/launchermenutest
+launcher/tests/launcherviewtest
 
 places/UnityPlaces/libUnityPlaces.so*
 places/app/unity-qt-places
@@ -16,6 +18,7 @@ panel/app/unity-qt-panel
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
 panel/tests/paneltest
+panel/tests/homebuttonapplettest
 
 # Cmake files and generated files
 Makefile
