@@ -114,7 +114,7 @@ Place::setFileName(const QString &file)
         QDBusConnectionInterface* iface = QDBusConnection::sessionBus().interface();
         QDBusReply<bool> registered = iface->isServiceRegistered(m_dbusName);
         if (registered) {
-            connectToRemotePlace();
+            onPlaceServiceRegistered();
         } else {
             QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
         }
