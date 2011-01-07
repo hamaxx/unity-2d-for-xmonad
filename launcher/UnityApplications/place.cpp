@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "launcherapplication.h"
 #include "place.h"
 
 #include <QStringList>
@@ -24,8 +25,12 @@
 #include <QDBusPendingReply>
 #include <QDBusServiceWatcher>
 #include <QTimer>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QDBusReply>
 
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
+static const char* UNITY_ACTIVATION_INTERFACE = "com.canonical.Unity.Activation";
 
 Place::Place(QObject* parent) :
     QAbstractListModel(parent),
@@ -341,4 +346,45 @@ Place::findPlaceEntry(const QString& groupName)
     }
 
     return NULL;
+}
+
+void
+Place::activate(QString uri)
+{
+    /* Tries various methods to trigger a sensible action for the given 'uri'.
+       First it asks the place backend via its 'Activate' method. If that fails
+       it does its best to select a relevant action for the uri's schema. If it
+       has no understanding of the given schema it falls back on asking Qt to
+       open the uri.
+    */
+    QUrl url(uri);
+    if (url.scheme() == "file") {
+        /* Override the files place's default URI handler: we want the file
+           manager to handle opening folders, not the dash.
+
+           Ref: https://bugs.launchpad.net/upicek/+bug/689667
+        */
+        QDesktopServices::openUrl(url);
+        return;
+    }
+
+    QDBusInterface dbusActivationInterface(m_dbusName, m_dbusObjectPath,
+                                           UNITY_ACTIVATION_INTERFACE);
+    QDBusReply<uint> reply = dbusActivationInterface.call("Activate", uri);
+    if (reply != 0) {
+        return;
+    }
+
+    if (url.scheme() == "application") {
+        qDebug() << "application scheme activation" << url.host();
+        LauncherApplication* application = new LauncherApplication;
+        application->setDesktopFile(url.host());
+        application->activate();
+        return;
+    }
+
+    qWarning() << "FIXME: Possibly no handler for scheme: " << url.scheme();
+    qWarning() << "Trying to open" << uri;
+    /* Try our luck */
+    QDesktopServices::openUrl(url);
 }

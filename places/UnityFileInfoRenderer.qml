@@ -30,7 +30,7 @@ RendererGrid {
                 return directoryName
             }
 
-            onClicked: placeEntryModel.activate(uri.toString())
+            onClicked: placeEntryModel.place.activate(uri.toString())
 
             Image {
                 id: icon

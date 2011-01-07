@@ -36,7 +36,7 @@ Renderer {
             /* If no uri is available then disable the button entirely (no
                hovering, no clicking, etc. */
             enabled: uri != ""
-            onClicked: placeEntryModel.activate(uri)
+            onClicked: placeEntryModel.place.activate(uri)
 
             TextCustom {
                 text: displayName
