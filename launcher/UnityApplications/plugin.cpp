@@ -24,6 +24,8 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
     qmlRegisterType<LauncherPlacesList>(uri, 0, 1, "LauncherPlacesList");
     qmlRegisterType<Place>(uri, 0, 1, "Place");
     qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
+    /* DeeListModel is exposed to QML by PlaceEntry */
+    qmlRegisterType<DeeListModel>(uri, 0, 1, "DeeListModel");
 
     qmlRegisterType<LauncherDevicesList>(uri, 0, 1, "LauncherDevicesList");
     qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
