@@ -33,12 +33,18 @@ Item {
 
         placeEntryModel.activeSection = section
         placeEntryModel.active = true
-        placeEntryView.model = placeEntryModel
-        activatePage(placeEntryView)
+        pageLoader.source = "PlaceEntryView.qml"
+        /* Take advantage of the fact that the loaded qml is local and setting
+           the source loads it immediately making pageLoader.item valid */
+        pageLoader.item.model = placeEntryModel
+        activatePage(pageLoader.item)
     }
 
     function activateHome() {
-        activatePage(home)
+        pageLoader.source = "Home.qml"
+        /* Take advantage of the fact that the loaded qml is local and setting
+           the source loads it immediately making pageLoader.item valid */
+        activatePage(pageLoader.item)
     }
 
     property variant places: LauncherPlacesList {
@@ -73,8 +79,8 @@ Item {
             height: 47
         }
 
-        Item {
-            id: pages
+        Loader {
+            id: pageLoader
 
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
@@ -84,18 +90,6 @@ Item {
             anchors.leftMargin: 7
             anchors.right: parent.right
             anchors.rightMargin: 8
-
-            Home {
-                id: home
-                anchors.fill: parent
-                visible: false
-            }
-
-            PlaceEntryView {
-                id: placeEntryView
-                anchors.fill: parent
-                visible: false
-            }
         }
     }
 }
