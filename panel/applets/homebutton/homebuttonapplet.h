@@ -25,18 +25,15 @@ class HomeButtonApplet : public UnityQt::Applet
 Q_OBJECT
 public:
     HomeButtonApplet();
-    ~HomeButtonApplet();
 
 private Q_SLOTS:
-    void slotButtonClicked();
-    void dashActiveChanged(bool active);
-    void serviceRegistered(QString name);
+    void toggleDash();
+    void connectToDash(QString dashInterfaceName);
 
 private:
     Q_DISABLE_COPY(HomeButtonApplet)
     QToolButton* m_button;
     QDBusInterface* m_dashInterface;
-    QDBusServiceWatcher* m_serviceWatcher;
 };
 
 #endif /* HOMEBUTTONAPPLET_H */

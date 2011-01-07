@@ -23,8 +23,7 @@ static const char* DBUS_SERVICE = "com.canonical.UnityQt";
 static const char* DBUS_PATH = "/dash";
 static const char* DBUS_IFACE = "local.DashDeclarativeView";
 
-HomeButtonApplet::HomeButtonApplet()
-: m_button(new QToolButton), m_dashInterface(NULL), m_serviceWatcher(NULL)
+HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterface(NULL)
 {
     m_button->setAutoRaise(true);
     QIcon::setThemeName("unity-icon-theme");
@@ -35,7 +34,7 @@ HomeButtonApplet::HomeButtonApplet()
     m_button->setIconSize(QSize(24, 24));
     m_button->setIcon(QIcon::fromTheme("distributor-logo"));
     m_button->setCheckable(true);
-    connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
+    connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
 
     m_button->setStyleSheet(
             "QToolButton { border: none; margin: 0; padding: 0; width: 54 }"
@@ -49,44 +48,35 @@ HomeButtonApplet::HomeButtonApplet()
     layout->setMargin(0);
     layout->addWidget(m_button);
 
-    m_dashInterface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
+    m_dashInterface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE,
+                                         QDBusConnection::sessionBus(), this);
     if (!m_dashInterface->isValid()) {
         /* If we fail to connect to the dash via DBus it may be because it was not started yet.
            In this case we monitor the session bus waiting for the dash to register, and when it does
            we connect to its activeChanged signal so we can update the button. */
         delete m_dashInterface;
         m_dashInterface = NULL;
-        QDBusServiceWatcher* m_serviceWatcher = new QDBusServiceWatcher(DBUS_SERVICE, QDBusConnection::sessionBus(),
-                                                                        QDBusServiceWatcher::WatchForRegistration);
-        connect(m_serviceWatcher, SIGNAL(serviceRegistered(QString)), SLOT(serviceRegistered(QString)));
+        QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(DBUS_SERVICE, QDBusConnection::sessionBus(),
+                                                                      QDBusServiceWatcher::WatchForRegistration, this);
+        connect(serviceWatcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash(QString)));
+    } else {
+        m_button->connect(m_dashInterface, SIGNAL(activeChanged(bool)), SLOT(setChecked(bool)));
     }
-    else {
-        connect(m_dashInterface, SIGNAL(activeChanged(bool)), SLOT(dashActiveChanged(bool)));
-    }
 }
 
-HomeButtonApplet::~HomeButtonApplet()
+void HomeButtonApplet::connectToDash(QString dashInterfaceName)
 {
-    disconnect(this, SLOT(dashActiveChanged(bool)));
-    disconnect(this, SLOT(serviceRegistered(QString)));
-    delete m_dashInterface;
-    delete m_serviceWatcher;
+    Q_UNUSED(dashInterfaceName)
+
+    m_dashInterface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE,
+                                         QDBusConnection::sessionBus(), this);
+    m_button->connect(m_dashInterface, SIGNAL(activeChanged(bool)), SLOT(setChecked(bool)));
+
+    /* Immediately update the home button with the current state of the dash */
+    m_button->setChecked(m_dashInterface->property("active").toBool());
 }
 
-void HomeButtonApplet::dashActiveChanged(bool active)
-{
-    m_button->setChecked(active);
-}
-
-void HomeButtonApplet::serviceRegistered(QString name)
-{
-    Q_UNUSED(name)
-
-    m_dashInterface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
-    connect(m_dashInterface, SIGNAL(activeChanged(bool)), SLOT(dashActiveChanged(bool)));
-}
-
-void HomeButtonApplet::slotButtonClicked()
+void HomeButtonApplet::toggleDash()
 {
     if (m_dashInterface == NULL) return; // The dash is not active yet.
 
