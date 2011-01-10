@@ -26,11 +26,15 @@
 
 #include <QX11Info>
 #include <X11/Xlib.h>
+#include <QApplication>
 
 
 class SpreadView : public QDeclarativeView
 {
     Q_OBJECT
+
+public:
+    explicit SpreadView();
 
 public slots:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
@@ -39,46 +43,13 @@ public slots:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
     void forceActivateWindow();
 
-    Q_INVOKABLE void grabAll() {
-        qDebug() << "Visible:" << this->isVisible();
-
-        XWindowAttributes attr;
-        XGetWindowAttributes(QX11Info::display(), this->winId(), &attr);
-        qDebug() << "Viewable X11:" << ((attr.map_state == IsViewable) ? "IsViewable" :
-                                       (attr.map_state == IsUnmapped) ? "IsUnmapped" :
-                                       (attr.map_state == IsUnviewable) ? "IsUnviewable" : "<?>");
-
-        if (mouseGrabber()) mouseGrabber()->releaseMouse();
-        int status = XGrabPointer(QX11Info::display(), this->winId(), False,
-                      (uint)(ButtonPressMask | ButtonReleaseMask |
-                             PointerMotionMask | EnterWindowMask | LeaveWindowMask),
-                      GrabModeAsync, GrabModeAsync,
-                      None, None, CurrentTime);
-        const char *s =
-        status == GrabNotViewable ? "\"GrabNotViewable\"" :
-        status == AlreadyGrabbed  ? "\"AlreadyGrabbed\"" :
-        status == GrabFrozen      ? "\"GrabFrozen\"" :
-        status == GrabInvalidTime ? "\"GrabInvalidTime\"" :
-        "<?>";
-
-        qDebug() << "Grabbing mouse status:" << status << "(" << s << ")";
-
-        qDebug() << "Mouse grabber: " << mouseGrabber();
-        qDebug() << "Mouse grabber: " << (this == mouseGrabber());
-
-        grabKeyboard();
-        qDebug() << "Keyb grabber: " << keyboardGrabber();
-        qDebug() << "Keyb grabber: " << (this == keyboardGrabber());
-    }
-
 protected:
-    virtual void showEvent ( QShowEvent * event ) {
-        qDebug() << "++++++++++++++++++ ShowEvent. spontaneous:" << event->spontaneous();
-        grabAll();
-    }
+    virtual void focusInEvent( QFocusEvent * event );
+    virtual void focusOutEvent( QFocusEvent * event );
+    bool eventFilter(QObject *obj, QEvent *event);
 
-public:
-    explicit SpreadView();
+signals:
+    void outsideClick();
 };
 
 #endif // SPREADVIEW_H

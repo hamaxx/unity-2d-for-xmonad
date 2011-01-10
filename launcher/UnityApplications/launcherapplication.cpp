@@ -326,10 +326,6 @@ LauncherApplication::launch()
 {
     if(m_appInfo == NULL) return false;
 
-    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
-                         "com.canonical.UnityQt.Spread");
-    iface.call("CancelSpread");
-
     GError* error = NULL;
     GdkAppLaunchContext *context;
     GTimeVal timeval;
@@ -397,10 +393,6 @@ LauncherApplication::show()
     if (size < 1) {
         return;
     }
-
-    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
-                         "com.canonical.UnityQt.Spread");
-    iface.call("CancelSpread");
 
     /* Pick the most important window.
        The primary criterion to determine the most important window is urgency.
