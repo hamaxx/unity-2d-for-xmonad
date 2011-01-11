@@ -3,6 +3,8 @@ libuqpanel.pc
 
 launcher/UnityApplications/libUnityApplications.so*
 launcher/app/unity-qt-launcher
+launcher/app/launcheradaptor.*
+launcher/app/unity-qt-launcher.service
 launcher/tests/launchermenutest
 launcher/tests/launcherviewtest
 

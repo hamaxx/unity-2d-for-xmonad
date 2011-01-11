@@ -143,4 +143,9 @@ Item {
         target: launcherView
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
     }
+
+    Connections {
+        target: launcherControl
+        onAddWebFavorite: console.log("TODO: add " + url + " to favorites.")
+    }
 }

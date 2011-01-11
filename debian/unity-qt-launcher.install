@@ -1,4 +1,5 @@
 usr/bin/unity-qt-launcher
+usr/share/dbus-1/services/unity-qt-launcher.service
 usr/share/applications/unity-qt-launcher.desktop
 usr/share/unity-qt/launcher/*.qml
 usr/share/unity-qt/launcher/launchermenu.css

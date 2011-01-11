@@ -5,13 +5,21 @@ pkg_check_modules(X11 REQUIRED x11)
 # Sources
 set(launcher_SRCS
     launcherview.cpp
+    launchercontrol.cpp
     )
 
 set(launcher_MOC_HDRS
     launcherview.h
+    launchercontrol.h
     )
 
 qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
+
+configure_file(unity-qt-launcher.service.in unity-qt-launcher.service)
+
+qt4_add_dbus_adaptor(launcher_SRCS launcher.xml
+    launchercontrol.h LauncherControl
+    )
 
 # Build
 add_library(uqlauncher ${launcher_SRCS} ${launcher_MOC_SRCS})
@@ -26,6 +34,7 @@ include_directories(
 target_link_libraries(uqlauncher
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
+    ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     ${X11_LDFLAGS}
@@ -42,3 +51,8 @@ install(TARGETS unity-qt-launcher
 install(FILES unity-qt-launcher.desktop
     DESTINATION share/applications
     )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-launcher.service
+    DESTINATION share/dbus-1/services
+    )
+

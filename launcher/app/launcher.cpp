@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "launcherview.h"
+#include "launchercontrol.h"
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +63,11 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/launcher/"));
 
     view.rootContext()->setContextProperty("launcherView", &view);
+
+    LauncherControl control;
+    view.rootContext()->setContextProperty("launcherControl", &control);
+    control.connectToBus();
+
     view.setSource(QUrl("./Launcher.qml"));
 
     view.show();
