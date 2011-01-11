@@ -392,7 +392,6 @@ Place::activate(QString uri)
     }
 
     if (url.scheme() == "application") {
-        qDebug() << "application scheme activation" << url.host();
         LauncherApplication* application = new LauncherApplication;
         application->setDesktopFile(url.host());
         application->activate();
