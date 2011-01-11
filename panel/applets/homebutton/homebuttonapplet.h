@@ -18,7 +18,6 @@
 #include <QToolButton>
 
 class QDBusInterface;
-class QDBusServiceWatcher;
 
 class HomeButtonApplet : public UnityQt::Applet
 {
