@@ -42,6 +42,8 @@ private:
 
     GConfItemQmlWrapper* m_enable_setting;
 
+    bool getEnableSettingValue() const;
+
     void startMonitoring();
     void stopMonitoring();
 

@@ -29,7 +29,7 @@ SuperKeyMonitor::SuperKeyMonitor()
 
     m_enable_setting = new GConfItemQmlWrapper(this);
     m_enable_setting->setKey("/desktop/unity/launcher/super_key_enable");
-    if (m_enable_setting->getValue().toBool()) {
+    if (getEnableSettingValue()) {
         startMonitoring();
     }
     connect(m_enable_setting, SIGNAL(valueChanged()), SLOT(slotEnableSettingChanged()));
@@ -39,10 +39,23 @@ SuperKeyMonitor::~SuperKeyMonitor()
 {
 }
 
+bool
+SuperKeyMonitor::getEnableSettingValue() const
+{
+    QVariant value = m_enable_setting->getValue();
+    if (!value.isValid()) {
+        /* The key is not set, assume true. */
+        return true;
+    }
+    else {
+        return value.toBool();
+    }
+}
+
 void
 SuperKeyMonitor::slotEnableSettingChanged()
 {
-    if (m_enable_setting->getValue().toBool()) {
+    if (getEnableSettingValue()) {
         startMonitoring();
     }
     else {
