@@ -31,7 +31,8 @@ public:
     ~ListAggregatorModel();
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    Q_INVOKABLE int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    Q_INVOKABLE QVariant get(int row) const;
 
     /* This method is the QML equivalent of aggregateListModel.
        The reason why aggregateListModel wasn't directly exposed to QML is that

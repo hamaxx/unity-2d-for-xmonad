@@ -3,16 +3,18 @@ import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://
 import UnityPlaces 1.0 /* Necessary for QSortFilterProxyModelQML */
 import gconf 1.0
 
-Page {
-    /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
-    property bool globalSearchActive: searchQuery != ""
-
-    Binding {
-        target: pages
-        property: "globalSearchQuery"
-        value: searchQuery
-        when: globalSearchActive
+Item {
+    property variant model: PageModel {
+        /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
+        onEntrySearchQueryChanged: {
+            for (var i = 0; i < dash.places.rowCount(); i++) {
+                dash.places.get(i).globalSearchQuery = entrySearchQuery
+            }
+        }
     }
+
+    /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
+    property bool globalSearchActive: model.entrySearchQuery != ""
 
     ListViewWithScrollbar {
         id: globalSearch
@@ -20,14 +22,14 @@ Page {
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
-        list.model: pages.places
+        list.model: dash.places
 
         list.delegate: UnityDefaultRenderer {
             /* -2 is here because no rightMargin is set in ListViewWithScrollbar.list yet */
             width: ListView.view.width-2
 
             parentListView: list
-            place: modelData
+            placeEntryModel: modelData
             displayName: modelData.name
             iconHint: modelData.icon
 
@@ -89,37 +91,37 @@ Page {
         HomeButton {
             icon: "image://icons/unity-icon-theme/music"
             label: qsTr("Music")
-            onClicked: activatePlace(applications_place, 4)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/photos"
             label: qsTr("Photos & Videos")
-            onClicked: activatePlace(applications_place, 4)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/games"
             label: qsTr("Games")
-            onClicked: activatePlace(applications_place, 2)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 2)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/email_and_chat"
             label: qsTr("Email & Chat")
-            onClicked: activatePlace(applications_place, 3)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 3)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/work"
             label: qsTr("Office")
-            onClicked: activatePlace(applications_place, 5)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 5)
         }
 
         HomeButton {
             icon: "image://icons/unity-icon-theme/filesandfolders"
             label: qsTr("Files & Folders")
-            onClicked: activatePlace(files_place, 0)
+            onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
         }
 
         HomeButton {

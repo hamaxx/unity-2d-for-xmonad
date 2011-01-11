@@ -37,6 +37,7 @@ public slots:
 private:
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
     bool m_active;
 };

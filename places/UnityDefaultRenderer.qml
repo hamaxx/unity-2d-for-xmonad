@@ -14,12 +14,12 @@ RendererGrid {
             property string displayName
             property string comment
 
-            onClicked: place.activate(uri.toString())
+            onClicked: placeEntryModel.place.activate(uri.toString())
 
             Image {
                 id: icon
 
-                source: "image://icons/"+iconHint
+                source: iconHint != "" ? "image://icons/"+iconHint : ""
                 width: 48
                 height: 48
                 anchors.horizontalCenter: parent.horizontalCenter
