@@ -56,20 +56,18 @@ HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterfac
     QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
     QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DBUS_SERVICE);
     if (reply.isValid() && reply.value() == true) {
-        connectToDash(DBUS_SERVICE);
+        connectToDash();
     } else {
         /* If the dash is not running, setup a notification so that we can
            connect to it later when it comes up */
         QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(DBUS_SERVICE, QDBusConnection::sessionBus(),
                                                                       QDBusServiceWatcher::WatchForRegistration, this);
-        serviceWatcher->connect(serviceWatcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash(QString)));
+        connect(serviceWatcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
     }
 }
 
-void HomeButtonApplet::connectToDash(QString dashInterfaceName)
+void HomeButtonApplet::connectToDash()
 {
-    Q_UNUSED(dashInterfaceName)
-
     if (m_dashInterface != NULL) {
         return;
     }
@@ -84,7 +82,9 @@ void HomeButtonApplet::connectToDash(QString dashInterfaceName)
 
 void HomeButtonApplet::toggleDash()
 {
-    if (m_dashInterface == NULL || !m_dashInterface->isValid()) return; // The dash is not active yet.
+    if (m_dashInterface == NULL || !m_dashInterface->isValid()) {
+        connectToDash();
+    }
 
     bool dashActive = m_dashInterface->property("active").toBool();
 

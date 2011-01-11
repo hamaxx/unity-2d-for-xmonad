@@ -27,7 +27,7 @@ public:
 
 private Q_SLOTS:
     void toggleDash();
-    void connectToDash(QString dashInterfaceName);
+    void connectToDash();
 
 private:
     Q_DISABLE_COPY(HomeButtonApplet)
