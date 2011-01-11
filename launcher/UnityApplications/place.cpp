@@ -392,9 +392,9 @@ Place::activate(QString uri)
     }
 
     if (url.scheme() == "application") {
-        LauncherApplication* application = new LauncherApplication;
-        application->setDesktopFile(url.host());
-        application->activate();
+        LauncherApplication application;
+        application.setDesktopFile(url.host());
+        application.activate();
         return;
     }
 
