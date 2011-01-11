@@ -43,12 +43,12 @@ bool
 SuperKeyMonitor::getEnableSettingValue() const
 {
     QVariant value = m_enable_setting->getValue();
-    if (!value.isValid()) {
-        /* The key is not set, assume true. */
-        return true;
+    if (value.isValid()) {
+        return value.toBool();
     }
     else {
-        return value.toBool();
+        /* The key is not set, assume true. */
+        return true;
     }
 }
 
