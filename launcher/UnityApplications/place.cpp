@@ -56,7 +56,6 @@ Place::Place(const Place &other)
 
 Place::~Place()
 {
-    delete m_serviceWatcher;
     delete m_dbusIface;
     delete m_file;
     m_entries.clear();
