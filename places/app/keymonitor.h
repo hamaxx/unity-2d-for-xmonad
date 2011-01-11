@@ -30,7 +30,6 @@ public:
     KeyMonitor(int keycode, QObject* parent=0);
     ~KeyMonitor();
 
-public:
     void grabKey();
     void ungrabKey();
 
