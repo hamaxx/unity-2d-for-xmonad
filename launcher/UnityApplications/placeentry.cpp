@@ -146,6 +146,9 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_position(0),
     m_sensitive(false),
     m_sections(NULL),
+    m_activeSection(-1),
+    m_active(false),
+    m_place((Place*)parent),
     m_entryGroupsModel(NULL),
     m_entryResultsModel(NULL),
     m_globalGroupsModel(NULL),
@@ -155,6 +158,7 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
     qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
+    qDBusRegisterMetaType<QHash<QString, QString>>();
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
@@ -167,11 +171,16 @@ PlaceEntry::PlaceEntry(const PlaceEntry& other) :
     m_position(other.m_position),
     m_mimetypes(other.m_mimetypes),
     m_sensitive(other.m_sensitive),
+    m_activeSection(other.m_activeSection),
+    m_active(other.m_active),
+    m_place(other.m_place),
 
+    m_entrySearchQuery(other.m_entrySearchQuery),
     m_entryRendererName(other.m_entryRendererName),
     m_entryGroupsModelName(other.m_entryGroupsModelName),
     m_entryResultsModelName(other.m_entryResultsModelName),
 
+    m_globalSearchQuery(other.m_globalSearchQuery),
     m_globalRendererName(other.m_globalRendererName),
     m_globalGroupsModelName(other.m_globalGroupsModelName),
     m_globalResultsModelName(other.m_globalResultsModelName)
@@ -192,13 +201,6 @@ PlaceEntry::~PlaceEntry()
 {
     delete m_sections;
     delete m_dbusIface;
-}
-
-bool
-PlaceEntry::active() const
-{
-    // TODO: implement me
-    return false;
 }
 
 bool
@@ -311,6 +313,30 @@ PlaceEntry::hints() const
     return m_hints;
 }
 
+int
+PlaceEntry::activeSection() const
+{
+    return m_activeSection;
+}
+
+bool
+PlaceEntry::active() const
+{
+    return m_active;
+}
+
+Place*
+PlaceEntry::place() const
+{
+    return m_place;
+}
+
+QString
+PlaceEntry::entrySearchQuery() const
+{
+    return m_entrySearchQuery;
+}
+
 QString
 PlaceEntry::entryRendererName() const
 {
@@ -363,6 +389,12 @@ QMap<QString, QVariant>
 PlaceEntry::entryRendererHints() const
 {
     return m_entryRendererHints;
+}
+
+QString
+PlaceEntry::globalSearchQuery() const
+{
+    return m_globalSearchQuery;
 }
 
 QString
@@ -477,6 +509,51 @@ PlaceEntry::setHints(QMap<QString, QVariant> hints)
 }
 
 void
+PlaceEntry::setActiveSection(int activeSection)
+{
+    if (activeSection != m_activeSection) {
+        m_activeSection = activeSection;
+        if (m_dbusIface != NULL) {
+            /* the cast to uint is necessary for the D-Bus call to succeed as the
+               interface expects that type */
+            m_dbusIface->call("SetActiveSection", (uint)m_activeSection);
+        }
+        emit activeSectionChanged();
+    }
+}
+
+void
+PlaceEntry::setActive(bool active)
+{
+    if (active != m_active) {
+        m_active = active;
+        if (m_dbusIface != NULL) {
+            m_dbusIface->call("SetActive", m_active);
+        }
+        emit activeChanged();
+
+        if (m_dbusIface && m_active) {
+            /* SetActiveSection needs to be called after SetActive(true)
+               in order for it to have an effect. */
+            m_dbusIface->call("SetActiveSection", m_activeSection);
+        }
+    }
+}
+
+void
+PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
+{
+    if (entrySearchQuery != m_entrySearchQuery) {
+        m_entrySearchQuery = entrySearchQuery;
+        if (m_dbusIface != NULL) {
+            QHash<QString, QString> searchHints;
+            m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+        }
+        emit entrySearchQueryChanged();
+    }
+}
+
+void
 PlaceEntry::setEntryRendererName(QString entryRendererName)
 {
     if (entryRendererName != m_entryRendererName) {
@@ -493,6 +570,7 @@ PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
         delete m_entryGroupsModel;
         m_entryGroupsModel = NULL;
         emit entryGroupsModelNameChanged();
+        emit entryGroupsModelChanged();
     }
 }
 
@@ -517,6 +595,7 @@ PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
         delete m_entryResultsModel;
         m_entryResultsModel = NULL;
         emit entryResultsModelNameChanged();
+        emit entryResultsModelChanged();
     }
 }
 
@@ -541,6 +620,19 @@ PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
 }
 
 void
+PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
+{
+    if (globalSearchQuery != m_globalSearchQuery) {
+        m_globalSearchQuery = globalSearchQuery;
+        if (m_dbusIface != NULL) {
+            QHash<QString, QString> searchHints;
+            m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
+        }
+        emit globalSearchQueryChanged();
+    }
+}
+
+void
 PlaceEntry::setGlobalRendererName(QString globalRendererName)
 {
     if (globalRendererName != m_globalRendererName) {
@@ -557,6 +649,7 @@ PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
         delete m_globalGroupsModel;
         m_globalGroupsModel = NULL;
         emit globalGroupsModelNameChanged();
+        emit globalGroupsModelChanged();
     }
 }
 
@@ -581,6 +674,7 @@ PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
         delete m_globalResultsModel;
         m_globalResultsModel = NULL;
         emit globalResultsModelNameChanged();
+        emit globalResultsModelChanged();
     }
 }
 
@@ -704,6 +798,13 @@ PlaceEntry::connectToRemotePlaceEntry()
     connection.connect(m_dbusName, m_dbusObjectPath, UNITY_PLACE_ENTRY_INTERFACE,
                        "PlaceEntryInfoChanged", this,
                        SLOT(updateInfo(const PlaceEntryInfoStruct&)));
+
+    /* Update state of D-Bus daemon according to the values of local properties */
+    QHash<QString, QString> searchHints;
+    m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+    m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
+    m_dbusIface->call("SetActive", m_active);
+    m_dbusIface->call("SetActiveSection", m_activeSection);
 }
 
 void

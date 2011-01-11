@@ -14,7 +14,7 @@ RendererGrid {
             property string displayName
             property string comment
 
-            onClicked: place.activate(uri.toString())
+            onClicked: placeEntryModel.place.activate(uri.toString())
 
             Image {
                 id: icon

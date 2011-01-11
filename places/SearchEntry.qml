@@ -4,8 +4,8 @@ FocusScope {
     property string searchQuery
 
     Binding {
-        target: current_page != undefined ? current_page : null
-        property: "searchQuery"
+        target: dash.currentPage != undefined ? dash.currentPage.model : null
+        property: "entrySearchQuery"
         value: searchQuery
     }
 
@@ -108,8 +108,8 @@ FocusScope {
                 text: {
                     if(search_input.text)
                         return ""
-                    else if(current_page != undefined && current_page.name)
-                        return qsTr("Search %1").arg(current_page.name)
+                    else if(dash.currentPage != undefined && dash.currentPage.model.name)
+                        return qsTr("Search %1").arg(dash.currentPage.model.name)
                     else
                         return qsTr("Search")
                 }

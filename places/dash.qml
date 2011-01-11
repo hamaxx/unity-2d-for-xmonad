@@ -1,21 +1,22 @@
 import Qt 4.7
+import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
 
 Item {
-    property variant current_page
+    id: dash
+
+    property variant currentPage
 
     function activatePage(page) {
-        if (page == current_page) {
+        if (page == currentPage) {
             return
         }
 
-        if (current_page != undefined) {
-            current_page.visible = false
-            current_page.active = false
+        if (currentPage != undefined) {
+            currentPage.visible = false
         }
-        current_page = page
-        current_page.active = true
-        current_page.visible = true
-        /* FIXME: For some reason current_page gets the focus when it becomes
+        currentPage = page
+        currentPage.visible = true
+        /* FIXME: For some reason currentPage gets the focus when it becomes
            visible. Reset the focus to the search_bar instead.
            It could be due to Qt bug QTBUG-13380:
            "Listview gets focus when it becomes visible"
@@ -23,13 +24,29 @@ Item {
         search_bar.focus = true
     }
 
-    function activatePlace(place, section) {
-        place.activeSection = section
-        activatePage(place)
+    function activatePlaceEntry(fileName, groupName, section) {
+        var placeEntryModel = places.findPlaceEntry(fileName, groupName)
+        if (placeEntryModel == null) {
+            console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
+            return
+        }
+
+        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
+           PlaceEntry.SetActive in order for it to have an effect.
+           This is likely a bug in the place daemons.
+        */
+        placeEntryModel.active = true
+        placeEntryModel.activeSection = section
+        placeEntryView.model = placeEntryModel
+        activatePage(placeEntryView)
     }
 
     function activateHome() {
         activatePage(home)
+    }
+
+    property variant places: LauncherPlacesList {
+        Component.onCompleted: startAllPlaceServices()
     }
 
     GnomeBackground {
@@ -63,13 +80,6 @@ Item {
         Item {
             id: pages
 
-            /* globalSearchQuery is used to store the Page.globalSearchQuery string
-               common to all the Page components */
-            property string globalSearchQuery
-            /* FIXME: hardcoded list of places
-                      Ref: https://bugs.launchpad.net/bugs/684152 */
-            property variant places: [files_place, applications_place]
-
             anchors.top: search_bar.bottom
             anchors.topMargin: 12
             anchors.bottom: parent.bottom
@@ -85,36 +95,10 @@ Item {
                 visible: false
             }
 
-            Place {
-                id: applications_place
-                objectName: "applications_place"
-
-                visible: false
+            PlaceEntryView {
+                id: placeEntryView
                 anchors.fill: parent
-
-                /* FIXME: these 2 properties need to be extracted from the place configuration file
-                          located in /usr/share/unity/places/applications.place
-                */
-                name: "Applications"
-                dBusObjectPath: "/com/canonical/unity/applicationsplace"
-                dBusObjectPathPlaceEntry: dBusObjectPath+"/applications"
-                icon: "/usr/share/unity/applications.png"
-            }
-
-            Place {
-                id: files_place
-                objectName: "files_place"
-
                 visible: false
-                anchors.fill: parent
-
-                /* FIXME: these 2 properties need to be extracted from the place configuration file
-                          located in /usr/share/unity/places/files.place
-                */
-                name: "Files"
-                dBusObjectPath: "/com/canonical/unity/filesplace"
-                dBusObjectPathPlaceEntry: dBusObjectPath+"/files"
-                icon: "/usr/share/unity/files.png"
             }
         }
     }
