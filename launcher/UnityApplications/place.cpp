@@ -370,7 +370,7 @@ Place::activate(QString uri)
     /* Tries various methods to trigger a sensible action for the given 'uri'.
        First it asks the place backend via its 'Activate' method. If that fails
        it does its best to select a relevant action for the uri's scheme. If it
-       has no understanding of the given schema it falls back on asking Qt to
+       has no understanding of the given scheme it falls back on asking Qt to
        open the uri.
     */
     QUrl url(uri);
