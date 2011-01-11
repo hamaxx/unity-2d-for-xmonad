@@ -28,7 +28,7 @@ static void setupXkb()
 {
     int opcode, error;
     XkbQueryExtension(QX11Info::display(), &opcode, &sXkbBaseEventType,  &error, NULL, NULL);
-    XkbSelectEvents(QX11Info::display(), XkbUseCoreKbd, XkbAllEventsMask, XkbAllEventsMask);
+    XkbSelectEvents(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask, XkbStateNotifyMask);
 }
 
 struct KeyboardModifiersMonitorPrivate
