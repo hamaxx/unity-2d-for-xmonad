@@ -26,7 +26,6 @@
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
 #include <QAbstractEventDispatcher>
-#include <QScopedPointer>
 
 #include <X11/Xlib.h>
 
@@ -139,7 +138,7 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     /* Grab the "super" keys */
-    QScopedPointer<SuperKeyMonitor> superKeys(new SuperKeyMonitor);
+    SuperKeyMonitor superKeys;
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
     application.setProperty("view", QVariant::fromValue(&view));
