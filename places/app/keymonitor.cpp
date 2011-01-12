@@ -20,7 +20,6 @@
 #include "keymonitor.h"
 
 #include <X11/Xlib.h>
-#include <X11/Xproto.h>
 
 #include <QX11Info>
 
@@ -38,26 +37,6 @@ KeyMonitor::~KeyMonitor()
     }
 }
 
-static bool xerror = false;
-
-static int (*_original_x_errhandler)(Display* display, XErrorEvent* event);
-
-static int _x_errhandler(Display* display, XErrorEvent* event)
-{
-    Q_UNUSED(display);
-    switch (event->error_code) {
-    case BadAccess:
-    case BadValue:
-    case BadWindow:
-        if (event->request_code == X_GrabKey ||
-            event->request_code == X_UngrabKey) {
-            xerror  = true;
-        }
-    default:
-        return 0;
-    }
-}
-
 void
 KeyMonitor::grabKey()
 {
@@ -66,13 +45,9 @@ KeyMonitor::grabKey()
     Bool owner = True;
     int pointer = GrabModeAsync;
     int keyboard = GrabModeAsync;
-    xerror = false;
-    _original_x_errhandler = XSetErrorHandler(_x_errhandler);
     XGrabKey(display, m_keycode, 0, window, owner, pointer, keyboard);
-    XSetErrorHandler(_original_x_errhandler);
-    if (!xerror) {
-        m_grabbed = true;
-    }
+    /* Assume no X error. */
+    m_grabbed = true;
 }
 
 void
@@ -80,12 +55,8 @@ KeyMonitor::ungrabKey()
 {
     Display* display = QX11Info::display();
     Window window = QX11Info::appRootWindow();
-    xerror = false;
-    _original_x_errhandler = XSetErrorHandler(_x_errhandler);
     XUngrabKey(display, m_keycode, 0, window);
-    XSetErrorHandler(_original_x_errhandler);
-    if (!xerror) {
-        m_grabbed = false;
-    }
+    /* Assume no X error. */
+    m_grabbed = false;
 }
 

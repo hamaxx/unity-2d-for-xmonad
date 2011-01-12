@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     /* Grab the "super" keys */
-    SuperKeyMonitor superKeys;
+    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
     application.setProperty("view", QVariant::fromValue(&view));
