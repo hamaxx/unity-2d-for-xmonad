@@ -1,7 +1,9 @@
 # Sources
 set(libuqpanel_SRCS
     applet.cpp
+    keyboardmodifiersmonitor.cpp
     panel.cpp
+    unityqtapplication.cpp
     unityqtstyle.cpp
     )
 
