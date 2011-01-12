@@ -12,6 +12,9 @@ public:
     ~WindowImageProvider();
     virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
     static void activateComposite();
+
+private:
+    bool m_x11supportsShape;
 };
 
 #endif // X11WINDOWIMAGEPROVIDER_H

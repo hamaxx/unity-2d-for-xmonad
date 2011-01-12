@@ -1,13 +1,17 @@
 #include <QX11Info>
 #include <QDebug>
+#include <QPixmap>
+#include <QPainter>
+#include <QImage>
 
 #include "windowimageprovider.h"
 
 #include <X11/Xlib.h>
 #include <X11/extensions/Xcomposite.h>
+#include <X11/extensions/shape.h>
 
 WindowImageProvider::WindowImageProvider() :
-    QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
+    QDeclarativeImageProvider(QDeclarativeImageProvider::Image), m_x11supportsShape(false)
 {
     /* Always activate composite, so we can capture windows that are partially obscured
        Ideally we want to activate it only when QX11Info::isCompositingManagerRunning()
@@ -18,6 +22,10 @@ WindowImageProvider::WindowImageProvider() :
        not.
     */
     activateComposite();
+
+    int event_base, error_base;
+    m_x11supportsShape = XShapeQueryExtension(QX11Info::display(),
+                                              &event_base, &error_base);
 }
 
 WindowImageProvider::~WindowImageProvider()
@@ -43,20 +51,48 @@ QImage WindowImageProvider::requestImage(const QString &id,
     }
 
     QPixmap shot = QPixmap::fromX11Pixmap(win);
-    if (!shot.isNull()) {
-        /* Copy the pixmap to a QImage and then back again to Pixmap. This will create
-           a real static copy of the pixmap that's not tied to the server anymore.
-           It will be handled by the raster engine *much* faster */
-        if (requestedSize.isValid()) {
-            shot = shot.scaled(requestedSize);
-        }
-        size->setWidth(shot.width());
-        size->setHeight(shot.height());
-        return shot.toImage();
-    } else {
+    if (shot.isNull()) {
         return QImage();
     }
 
+    QImage result;
+    if (m_x11supportsShape) {
+        /* The borders of the window may be irregularly shaped.
+           To capture this correctly we need to ask the Shape extension
+           to decompose the non-transparent window are into rectangles,
+           then copy each of them from the screenshot to our
+           destination image (which is entirely transparent initally) */
+        XRectangle *rectangles;
+        int rectangle_count, rectangle_order;
+        rectangles = XShapeGetRectangles (QX11Info::display(),
+                                          win,
+                                          ShapeBounding,
+                                          &rectangle_count,
+                                          &rectangle_order);
+
+        result = QImage(shot.size(), QImage::Format_ARGB32_Premultiplied);
+        result.fill(Qt::transparent);
+        QPainter painter(&result);
+
+        for (int i = 0; i < rectangle_count; i++) {
+            XRectangle r = rectangles[i];
+            painter.drawPixmap(QPointF(r.x, r.y), shot,
+                               QRectF(r.x, r.y, r.width, r.height));
+        }
+
+        painter.end();
+        XFree(rectangles);
+    } else {
+        result = shot.toImage();
+    }
+
+    if (requestedSize.isValid()) {
+        result = result.scaled(requestedSize);
+    }
+    size->setWidth(result.width());
+    size->setHeight(result.height());
+
+    return result;
 }
 
 /*! Tries to ask the X Composite extension (if supported) to redirect all
