@@ -133,3 +133,24 @@ LauncherPlacesList::slotPlaceOnlineChanged(bool online)
     }
 }
 
+PlaceEntry*
+LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& groupName)
+{
+    Q_FOREACH(QAbstractListModel* model, m_models) {
+        Place* place = static_cast<Place*>(model);
+        if (place->fileName() == fileName) {
+            return place->findPlaceEntry(groupName);
+        }
+    }
+
+    return NULL;
+}
+
+void
+LauncherPlacesList::startAllPlaceServices()
+{
+    Q_FOREACH(QAbstractListModel* model, m_models) {
+        Place* place = static_cast<Place*>(model);
+        place->connectToRemotePlace();
+    }
+}

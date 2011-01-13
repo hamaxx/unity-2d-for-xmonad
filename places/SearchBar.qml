@@ -63,7 +63,7 @@ FocusScope {
             anchors.verticalCenter: parent.verticalCenter
             horizontalPadding: 4
             verticalPadding: 3
-            /* FIXME: check for current_page.sections != undefined is a
+            /* FIXME: check for sections.model != undefined is a
                workaround for a crash in Qt happening when setting the model of
                a ListView to undefined after it being non-empty.
                It seems that the model count is not 0 and delegates are still
@@ -72,16 +72,16 @@ FocusScope {
                To reproduce the crash: go to the applications place, exit the
                dash and then go to the home page of the dash.
             */
-            label: current_page.sections != undefined ? column_0 : ""
-            isActiveSection: current_page.activeSection == index
+            label: sections.model != undefined ? column_0 : ""
+            isActiveSection: dash.currentPage.model.activeSection == index
 
             onClicked: {
                 sections.focus = false
                 search_entry.focus = true
-                current_page.activeSection = model.index
+                dash.currentPage.model.activeSection = model.index
             }
         }
 
-        model: current_page != undefined ? current_page.sections : undefined
+        model: dash.currentPage != undefined ? dash.currentPage.model.sections : undefined
     }
 }

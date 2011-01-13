@@ -22,6 +22,10 @@ QSortFilterProxyModelQML::sourceModelQObject() const
 void
 QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 {
+    if (model == NULL) {
+        return;
+    }
+
     QAbstractItemModel* itemModel = qobject_cast<QAbstractItemModel*>(model);
     if (itemModel == NULL) {
         qWarning() << "QSortFilterProxyModelQML only accepts objects of type QAbstractItemModel as its model";

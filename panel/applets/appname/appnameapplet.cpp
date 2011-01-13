@@ -17,6 +17,7 @@
 
 // Unity-qt
 #include <debug_p.h>
+#include <keyboardmodifiersmonitor.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -25,12 +26,10 @@
 // Qt
 #include <QAbstractButton>
 #include <QEvent>
-#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
 #include <QPainter>
-#include <QSet>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
@@ -165,6 +164,12 @@ struct AppNameAppletPrivate
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));
     }
+
+    void setupKeyboardModifiersMonitor()
+    {
+        QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+            q, SLOT(updateWidgets()));
+    }
 };
 
 AppNameApplet::AppNameApplet()
@@ -177,6 +182,7 @@ AppNameApplet::AppNameApplet()
     d->setupLabel();
     d->setupWindowButtonWidget();
     d->setupMenuBarWidget();
+    d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -199,7 +205,11 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool showMenu = window()->underMouse() && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp)
+        && (window()->underMouse()
+        || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
+        || d->m_menuBarWidget->isOpened()
+        );
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(isMaximized);

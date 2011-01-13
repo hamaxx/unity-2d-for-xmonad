@@ -26,6 +26,7 @@
 #include <QFileSystemWatcher>
 
 class Place;
+class PlaceEntry;
 
 class LauncherPlacesList : public ListAggregatorModel
 {
@@ -34,6 +35,9 @@ class LauncherPlacesList : public ListAggregatorModel
 public:
     LauncherPlacesList(QObject* parent = 0);
     ~LauncherPlacesList();
+
+    Q_INVOKABLE PlaceEntry* findPlaceEntry(const QString& fileName, const QString& groupName);
+    Q_INVOKABLE void startAllPlaceServices();
 
 private:
     QStringList m_placeFiles;

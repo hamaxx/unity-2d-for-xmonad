@@ -64,6 +64,7 @@ Q_DECLARE_METATYPE(QList<PlaceEntryInfoStruct>)
 QDBusArgument &operator<<(QDBusArgument &, const PlaceEntryInfoStruct &);
 const QDBusArgument &operator>>(const QDBusArgument &, PlaceEntryInfoStruct &);
 
+class Place;
 
 class PlaceEntry : public LauncherItem
 {
@@ -78,8 +79,12 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+    Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(Place* place READ place)
 
     /* Entry rendering info */
+    Q_PROPERTY(QString entrySearchQuery READ entrySearchQuery WRITE setEntrySearchQuery NOTIFY entrySearchQueryChanged)
     Q_PROPERTY(QString entryRendererName READ entryRendererName WRITE setEntryRendererName NOTIFY entryRendererNameChanged)
     Q_PROPERTY(QString entryGroupsModelName READ entryGroupsModelName WRITE setEntryGroupsModelName NOTIFY entryGroupsModelNameChanged)
     Q_PROPERTY(DeeListModel* entryGroupsModel READ entryGroupsModel WRITE setEntryGroupsModel NOTIFY entryGroupsModelChanged)
@@ -88,6 +93,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(QMap entryRendererHints READ entryRendererHints WRITE setEntryRendererHints NOTIFY entryRendererHintsChanged)
 
     /* Global rendering info */
+    Q_PROPERTY(QString globalSearchQuery READ globalSearchQuery WRITE setGlobalSearchQuery NOTIFY globalSearchQueryChanged)
     Q_PROPERTY(QString globalRendererName READ globalRendererName WRITE setGlobalRendererName NOTIFY globalRendererNameChanged)
     Q_PROPERTY(QString globalGroupsModelName READ globalGroupsModelName WRITE setGlobalGroupsModelName NOTIFY globalGroupsModelNameChanged)
     Q_PROPERTY(DeeListModel* globalGroupsModel READ globalGroupsModel WRITE setGlobalGroupsModel NOTIFY globalGroupsModelChanged)
@@ -116,7 +122,10 @@ public:
     bool sensitive() const;
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
+    int activeSection() const;
+    Place* place() const;
 
+    QString entrySearchQuery() const;
     QString entryRendererName() const;
     QString entryGroupsModelName() const;
     DeeListModel* entryGroupsModel();
@@ -124,6 +133,7 @@ public:
     DeeListModel* entryResultsModel();
     QMap<QString, QVariant> entryRendererHints() const;
 
+    QString globalSearchQuery() const;
     QString globalRendererName() const;
     QString globalGroupsModelName() const;
     DeeListModel* globalGroupsModel();
@@ -143,7 +153,10 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
+    void setActiveSection(int);
+    void setActive(bool);
 
+    void setEntrySearchQuery(QString);
     void setEntryRendererName(QString);
     void setEntryGroupsModelName(QString);
     void setEntryGroupsModel(DeeListModel*);
@@ -151,6 +164,7 @@ public:
     void setEntryResultsModel(DeeListModel*);
     void setEntryRendererHints(QMap<QString, QVariant>);
 
+    void setGlobalSearchQuery(QString);
     void setGlobalRendererName(QString);
     void setGlobalGroupsModelName(QString);
     void setGlobalGroupsModel(DeeListModel*);
@@ -174,7 +188,10 @@ Q_SIGNALS:
     void sensitiveChanged(bool);
     void sectionsChanged();
     void hintsChanged();
+    void activeSectionChanged();
+    void activeChanged();
 
+    void entrySearchQueryChanged();
     void entryRendererNameChanged();
     void entryGroupsModelNameChanged();
     void entryGroupsModelChanged();
@@ -182,6 +199,7 @@ Q_SIGNALS:
     void entryResultsModelChanged();
     void entryRendererHintsChanged();
 
+    void globalSearchQueryChanged();
     void globalRendererNameChanged();
     void globalGroupsModelNameChanged();
     void globalGroupsModelChanged();
@@ -207,7 +225,11 @@ private:
        QVariant values in order to allow exposing it as a property (see
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
+    int m_activeSection;
+    bool m_active;
+    Place* m_place;
 
+    QString m_entrySearchQuery;
     QString m_entryRendererName;
     QString m_entryGroupsModelName;
     DeeListModel* m_entryGroupsModel;
@@ -216,6 +238,7 @@ private:
     /* The remark about m_hints also applies to m_entryRendererHints. */
     QMap<QString, QVariant> m_entryRendererHints;
 
+    QString m_globalSearchQuery;
     QString m_globalRendererName;
     QString m_globalGroupsModelName;
     DeeListModel* m_globalGroupsModel;
@@ -243,6 +266,11 @@ private Q_SLOTS:
 };
 
 Q_DECLARE_METATYPE(PlaceEntry*)
+
+/* Necessary workaround otherwise the preprocessor complains about
+   Q_DECLARE_METATYPE receiving 2 arguments instead of 1 */
+typedef QHash<QString, QString> __QHashQStringQString;
+Q_DECLARE_METATYPE(__QHashQStringQString)
 
 #endif // PLACEENTRY_H
 

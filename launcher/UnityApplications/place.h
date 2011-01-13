@@ -28,6 +28,7 @@
 #include <QMetaType>
 #include <QDBusInterface>
 #include <QDBusPendingCallWatcher>
+#include <QDBusServiceWatcher>
 
 #include "placeentry.h"
 
@@ -58,6 +59,9 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    PlaceEntry* findPlaceEntry(const QString& groupName);
+    Q_INVOKABLE void activate(QString uri);
+
 Q_SIGNALS:
     void entryAdded(PlaceEntry*);
     void entryRemoved(PlaceEntry*);
@@ -68,6 +72,7 @@ private:
     QSettings* m_file;
     QString m_dbusName;
     QString m_dbusObjectPath;
+    QDBusServiceWatcher* m_serviceWatcher;
 
     /* Initial dictionary (dbusObjectPath → entry) as parsed in the place file */
     QHash<QString, PlaceEntry*> m_static_entries;
@@ -93,8 +98,8 @@ private Q_SLOTS:
     void onEntryRemoved(const QString&);
     void onEntryPositionChanged(uint);
 
-    void slotRemotePlaceConnected();
-    void slotRemotePlaceDisconnected();
+    void onPlaceServiceRegistered();
+    void onPlaceServiceUnregistered();
 
     void gotEntries(QDBusPendingCallWatcher*);
 };

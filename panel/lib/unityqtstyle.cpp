@@ -15,9 +15,11 @@
 
 // uqpanel
 #include <debug_p.h>
+#include <keyboardmodifiersmonitor.h>
 
 // Qt
 #include <QGtkStyle>
+#include <QMenu>
 #include <QPainter>
 #include <QStyleOptionFrame>
 #include <QWidget>
@@ -57,4 +59,23 @@ QSize UnityQtStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOpti
         size.setHeight(widget->height());
     }
     return size;
+}
+
+int UnityQtStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+{
+    if (hint == QStyle::SH_UnderlineShortcut) {
+        // The shortcut of an opened menu can be triggered without holding Alt
+        // down, so we always show the underline. For all other widgets we only
+        // show the underlines if alt is down.
+        // Note that this is a bit hackish: it only works reliably if the
+        // widget repaints itself when alt is pressed or released. For now only
+        // the MenuBarWidget from the AppNameApplets does this.
+        if (qobject_cast<const QMenu*>(widget)) {
+            return true;
+        } else {
+            return KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier;
+        }
+    } else {
+        return QProxyStyle::styleHint(hint, option, widget, returnData);
+    }
 }

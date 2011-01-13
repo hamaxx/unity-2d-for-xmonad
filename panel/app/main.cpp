@@ -20,6 +20,7 @@
 
 // Unity
 #include <panel.h>
+#include <unityqtapplication.h>
 #include <unityqtstyle.h>
 
 // Qt
@@ -83,7 +84,7 @@ int main(int argc, char** argv)
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication app(argc, argv);
+    UnityQtApplication app(argc, argv);
     QApplication::setStyle(new UnityQtStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);

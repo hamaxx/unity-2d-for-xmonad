@@ -17,15 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "launcherapplication.h"
 #include "place.h"
 
 #include <QStringList>
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusServiceWatcher>
+#include <QDBusConnectionInterface>
 #include <QTimer>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QDBusReply>
 
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
+static const char* UNITY_ACTIVATION_INTERFACE = "com.canonical.Unity.Activation";
 
 Place::Place(QObject* parent) :
     QAbstractListModel(parent),
@@ -34,6 +40,12 @@ Place::Place(QObject* parent) :
     m_dbusIface(NULL),
     m_querying(false)
 {
+    m_serviceWatcher = new QDBusServiceWatcher(this);
+    m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
+    connect(m_serviceWatcher, SIGNAL(serviceRegistered(QString)),
+            SLOT(onPlaceServiceRegistered()));
+    connect(m_serviceWatcher, SIGNAL(serviceUnregistered(QString)),
+            SLOT(onPlaceServiceUnregistered()));
 }
 
 Place::Place(const Place &other)
@@ -59,6 +71,13 @@ Place::fileName() const
 void
 Place::setFileName(const QString &file)
 {
+    if (!m_dbusName.isNull()) {
+        m_serviceWatcher->removeWatchedService(m_dbusName);
+    }
+    if (m_dbusIface != NULL) {
+        delete m_dbusIface;
+    }
+
     m_file = new QSettings(file, QSettings::IniFormat);
     if (m_file->childGroups().contains("Place"))
     {
@@ -85,8 +104,19 @@ Place::setFileName(const QString &file)
             m_static_entries[entry->dbusObjectPath()] = entry;
             m_entries.append(entry);
         }
-        /* Start the live place delayed to not impact startup time. */
-        QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
+
+        /* Monitor the corresponding D-Bus place service */
+        m_serviceWatcher->addWatchedService(m_dbusName);
+
+        /* Connect to the live place immediately if the service is already running
+           otherwise wait for around 10 seconds as to not impact startup time */
+        QDBusConnectionInterface* iface = QDBusConnection::sessionBus().interface();
+        QDBusReply<bool> registered = iface->isServiceRegistered(m_dbusName);
+        if (registered) {
+            onPlaceServiceRegistered();
+        } else {
+            QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
+        }
     }
     else
     {
@@ -136,17 +166,9 @@ Place::rowCount(const QModelIndex& parent) const
 void
 Place::connectToRemotePlace()
 {
-    if (m_online) {
+    if (m_dbusIface != NULL) {
         return;
     }
-
-    QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(this);
-    serviceWatcher->setConnection(QDBusConnection::sessionBus());
-    serviceWatcher->addWatchedService(m_dbusName);
-    connect(serviceWatcher, SIGNAL(serviceRegistered(QString)),
-            SLOT(slotRemotePlaceConnected()));
-    connect(serviceWatcher, SIGNAL(serviceUnregistered(QString)),
-            SLOT(slotRemotePlaceDisconnected()));
 
     m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
                                      UNITY_PLACE_INTERFACE);
@@ -157,10 +179,7 @@ Place::connectToRemotePlace()
         return;
     }
 
-    if (m_dbusIface->isValid()) {
-        slotRemotePlaceConnected();
-    }
-    else {
+    if (!m_dbusIface->isValid()) {
         /* A call to the interface will spawn the corresponding place daemon. */
         getEntries();
     }
@@ -203,8 +222,10 @@ Place::stopMonitoringEntries()
 }
 
 void
-Place::slotRemotePlaceConnected()
+Place::onPlaceServiceRegistered()
 {
+    connectToRemotePlace();
+
     m_online = true;
     Q_EMIT onlineChanged(m_online);
 
@@ -213,7 +234,7 @@ Place::slotRemotePlaceConnected()
 }
 
 void
-Place::slotRemotePlaceDisconnected()
+Place::onPlaceServiceUnregistered()
 {
     m_online = false;
     Q_EMIT onlineChanged(m_online);
@@ -303,7 +324,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
         qWarning() << "ERROR:" << m_dbusName << reply.error().message();
-        slotRemotePlaceDisconnected();
+        onPlaceServiceUnregistered();
     } else {
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
         QList<PlaceEntryInfoStruct>::const_iterator i;
@@ -331,3 +352,54 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
     m_querying = false;
 }
 
+PlaceEntry*
+Place::findPlaceEntry(const QString& groupName)
+{
+    Q_FOREACH(PlaceEntry* entry, m_entries) {
+        if (entry->groupName() == groupName) {
+            return entry;
+        }
+    }
+
+    return NULL;
+}
+
+void
+Place::activate(QString uri)
+{
+    /* Tries various methods to trigger a sensible action for the given 'uri'.
+       First it asks the place backend via its 'Activate' method. If that fails
+       it does its best to select a relevant action for the uri's scheme. If it
+       has no understanding of the given scheme it falls back on asking Qt to
+       open the uri.
+    */
+    QUrl url(uri);
+    if (url.scheme() == "file") {
+        /* Override the files place's default URI handler: we want the file
+           manager to handle opening folders, not the dash.
+
+           Ref: https://bugs.launchpad.net/upicek/+bug/689667
+        */
+        QDesktopServices::openUrl(url);
+        return;
+    }
+
+    QDBusInterface dbusActivationInterface(m_dbusName, m_dbusObjectPath,
+                                           UNITY_ACTIVATION_INTERFACE);
+    QDBusReply<uint> reply = dbusActivationInterface.call("Activate", uri);
+    if (reply != 0) {
+        return;
+    }
+
+    if (url.scheme() == "application") {
+        LauncherApplication application;
+        application.setDesktopFile(url.host());
+        application.activate();
+        return;
+    }
+
+    qWarning() << "FIXME: Possibly no handler for scheme: " << url.scheme();
+    qWarning() << "Trying to open" << uri;
+    /* Try our luck */
+    QDesktopServices::openUrl(url);
+}
