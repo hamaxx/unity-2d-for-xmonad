@@ -21,8 +21,9 @@
 
 #include <QDesktopWidget>
 #include <QApplication>
-
+#include <QMouseEvent>
 #include <QX11Info>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
@@ -90,7 +91,7 @@ SpreadView::forceActivateWindow()
 
    The first time the window seems to be actually visible is in focusEvent.
 */
-void SpreadView::focusInEvent( QFocusEvent * event )
+void SpreadView::focusInEvent(QFocusEvent * event)
 {
     /* Note that we grab mouse input from the viewport because doing it directly
        in the view won't work.
@@ -112,7 +113,7 @@ void SpreadView::focusInEvent( QFocusEvent * event )
    window is unmapped, and put them back in place when it's mapped again, but
    let's do it anyway for the sake of consistency.
 */
-void SpreadView::focusOutEvent( QFocusEvent * event )
+void SpreadView::focusOutEvent(QFocusEvent * event)
 {
     this->viewport()->releaseKeyboard();
     this->viewport()->releaseMouse();

@@ -21,13 +21,7 @@
 #define SPREADVIEW_H
 
 #include <QDeclarativeView>
-#include <QDebug>
-#include <QShowEvent>
-
-#include <QX11Info>
-#include <X11/Xlib.h>
-#include <QApplication>
-
+#include <QEvent>
 
 class SpreadView : public QDeclarativeView
 {
