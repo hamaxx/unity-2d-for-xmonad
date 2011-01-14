@@ -12,7 +12,7 @@
 #define KEYBOARDMODIFIERMONITOR_H
 
 // Local
-#include <unityqtapplication.h>
+#include <unity2dapplication.h>
 
 // Qt
 

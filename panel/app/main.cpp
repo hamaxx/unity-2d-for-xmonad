@@ -20,8 +20,8 @@
 
 // Unity
 #include <panel.h>
-#include <unityqtapplication.h>
-#include <unityqtstyle.h>
+#include <unity2dapplication.h>
+#include <unity2dstyle.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>

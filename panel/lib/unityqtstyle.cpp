@@ -9,7 +9,7 @@
  * License: GPL v3
  */
 // Self
-#include "unityqtstyle.h"
+#include "unity2dstyle.h"
 
 // Local
 

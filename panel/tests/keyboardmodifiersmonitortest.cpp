@@ -12,7 +12,7 @@
 // Local
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
-#include <unityqtapplication.h>
+#include <unity2dapplication.h>
 
 // Qt
 #include <QSignalSpy>

@@ -9,7 +9,7 @@
  * License: GPL v3
  */
 // Self
-#include "unityqtapplication.h"
+#include "unity2dapplication.h"
 
 // Qt
 
@@ -48,4 +48,4 @@ bool Unity2dApplication::x11EventFilter(XEvent* event)
     return QApplication::x11EventFilter(event);
 }
 
-#include <unityqtapplication.moc>
+#include <unity2dapplication.moc>
