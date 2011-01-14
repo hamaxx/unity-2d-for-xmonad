@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 # shared libraries are in plugins directory
-DEB_MAKESHLIBS_ARGS=-n
+DEB_DH_MAKESHLIBS_ARGS :=-n
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/cmake.mk
