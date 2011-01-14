@@ -4,12 +4,12 @@
 	  @mainpage
 	 
 	  An interface to register menus that are associated with a window in an application.  The
-	  main interface is docuemented here: @ref org::ayatana::AppMenu::Registrar.
+	  main interface is docuemented here: @ref com::canonical::AppMenu::Registrar.
 	    
 	  The actual menus are transported using the dbusmenu protocol which is available
-	  here: @ref org::ayatana::dbusmenu.
+	  here: @ref com::canonical::dbusmenu.
 	]]></dox:d>
-	<interface name="org.ayatana.AppMenu.Registrar" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+	<interface name="com.canonical.AppMenu.Registrar" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
 		<dox:d>
 		  An interface to register a menu from an application's window to be displayed in another
 		  window.  This manages that association between XWindow Window IDs and the dbus
@@ -49,7 +49,7 @@
 				<dox:d>The address of the connection on DBus (e.g. :1.23 or org.example.service)</dox:d>
 			</arg>
 			<arg name="menuObjectPath" type="o" direction="out">
-				<dox:d>The path to the object which implements the org.ayatana.dbusmenu interface.</dox:d>
+				<dox:d>The path to the object which implements the com.canonical.dbusmenu interface.</dox:d>
 			</arg>
 		</method>
 		<method name="GetMenus">
@@ -69,7 +69,7 @@
 				<dox:d>The address of the connection on DBus (e.g. :1.23 or org.example.service)</dox:d>
 			</arg>
 			<arg name="menuObjectPath" type="o" direction="out">
-				<dox:d>The path to the object which implements the org.ayatana.dbusmenu interface.</dox:d>
+				<dox:d>The path to the object which implements the com.canonical.dbusmenu interface.</dox:d>
 			</arg>
 		</signal>
 		<signal name="WindowUnregistered">

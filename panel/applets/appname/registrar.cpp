@@ -20,8 +20,8 @@
 // Local
 #include "registraradaptor.h"
 
-static const char* DBUS_SERVICE = "org.ayatana.AppMenu.Registrar";
-static const char* DBUS_OBJECT_PATH = "/org/ayatana/AppMenu/Registrar";
+static const char* DBUS_SERVICE = "com.canonical.AppMenu.Registrar";
+static const char* DBUS_OBJECT_PATH = "/com/canonical/AppMenu/Registrar";
 
 // Marshalling code for MenuInfo
 QDBusArgument& operator<<(QDBusArgument& argument, const MenuInfo& info)
