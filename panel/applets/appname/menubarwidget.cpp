@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -77,7 +77,7 @@ void MenuBarWidget::setupRegistrar()
 void MenuBarWidget::setupMenuBar()
 {
     QLabel* separatorLabel = new QLabel;
-    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
     separatorLabel->setPixmap(pix);
     separatorLabel->setFixedSize(pix.size());
 

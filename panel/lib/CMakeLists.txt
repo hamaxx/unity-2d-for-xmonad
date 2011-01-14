@@ -3,8 +3,8 @@ set(libuqpanel_SRCS
     applet.cpp
     keyboardmodifiersmonitor.cpp
     panel.cpp
-    unityqtapplication.cpp
-    unityqtstyle.cpp
+    unity2dapplication.cpp
+    unity2dstyle.cpp
     )
 
 set(libuqpanel_VERSION 0.0.0)

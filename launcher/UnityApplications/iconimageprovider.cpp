@@ -24,7 +24,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
 {
     /* Special case handling for image resources that belong to the unity
        package. If unity is not installed, as a fallback we rewrite the path to
-       try and locate them in our (unity-qt) resource directory.
+       try and locate them in our (unity-2d) resource directory.
        See https://launchpad.net/bugs/672450 for a discussion. */
     /* It is not using common facilities from config.h because the last attempt
        to do so was a failure due to the fragility of the code path. For example
@@ -39,7 +39,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         else
         {
             QString rid(id);
-            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-qt/");
+            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-2d/");
             /* No need to check whether the file exists, we don’t have a
                fallback anyway. */
             return QImage(rid);

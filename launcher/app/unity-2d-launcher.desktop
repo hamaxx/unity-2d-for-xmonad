@@ -1,13 +1,13 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Unity Qt Launcher
+Name=Unity 2d Launcher
 Comment=A Qt-based applications launcher
 Icon=gnome-fs-desktop
-Exec=unity-qt-launcher
+Exec=unity-2d-launcher
 Terminal=false
 Type=Application
 Categories=
 NoDisplay=true
-X-Ubuntu-Gettext-Domain=unity-qt-launcher
+X-Ubuntu-Gettext-Domain=unity-2d-launcher
 X-GNOME-Autostart-Notify=false
 X-GNOME-Autorestart=true

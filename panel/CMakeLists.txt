@@ -1,4 +1,4 @@
-project(unity-qt-panel)
+project(unity-2d-panel)
 
 # Source
 include_directories(
@@ -15,5 +15,5 @@ add_custom_target(check DEPENDS panel_check launcher_check)
 
 # Install
 install(DIRECTORY artwork
-    DESTINATION ${UNITY_QT_DIR}/panel
+    DESTINATION ${UNITY_2D_DIR}/panel
     )

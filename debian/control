@@ -35,7 +35,7 @@ Description: Unity 2D Panel - shared library
 Package: libuqpanel-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libuqpanel0 (= ${binary:Version}), ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libuqpanel0 (= ${binary:Version})
 Description: Unity 2D Panel - development files
  This library is used to create panel applets for the Unity 2D panel.
  .
