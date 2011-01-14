@@ -11,7 +11,7 @@ if [ "$1" = "upgrade" ]; then
     fi
 
     # unity-2d-launcher is now started by gnome-session as a required component
-    rm -f /etc/xdg/xdg-unity-2d/autostart/unity-qt-launcher.desktop
+    rm -f /etc/xdg/xdg-unity-2d/autostart/unity-2d-launcher.desktop
 
     exit 0
 fi

@@ -14,7 +14,7 @@ set(places_MOC_HDRS
 qt4_wrap_cpp(places_MOC_SRCS ${places_MOC_HDRS})
 
 # Build
-configure_file(unity-2d-places.service.in unity-qt-places.service)
+configure_file(unity-2d-places.service.in unity-2d-places.service)
 
 add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 

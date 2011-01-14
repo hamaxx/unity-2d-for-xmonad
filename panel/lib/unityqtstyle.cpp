@@ -24,7 +24,7 @@
 #include <QStyleOptionFrame>
 #include <QWidget>
 
-Unity2dStyle::UnityQtStyle()
+Unity2dStyle::Unity2dStyle()
 : QProxyStyle(new QGtkStyle)
 {
 }

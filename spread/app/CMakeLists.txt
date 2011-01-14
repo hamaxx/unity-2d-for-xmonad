@@ -16,7 +16,7 @@ set(spread_MOC_HDRS
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
 
-configure_file(unity-2d-spread.service.in unity-qt-spread.service)
+configure_file(unity-2d-spread.service.in unity-2d-spread.service)
 
 qt4_add_dbus_adaptor(spread_SRCS spread.xml
     spreadcontrol.h SpreadControl

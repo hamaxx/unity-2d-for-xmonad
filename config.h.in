@@ -1,5 +1,5 @@
 #define INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-#define UNITY_2D_DIR "${UNITY_QT_DIR}"
+#define UNITY_2D_DIR "${UNITY_2D_DIR}"
 #define UNITY_DIR "${UNITY_DIR}"
 
 #include <QCoreApplication>

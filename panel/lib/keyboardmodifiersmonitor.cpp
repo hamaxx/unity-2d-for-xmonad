@@ -48,7 +48,7 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject* parent)
         setupXkb();
     }
 
-    Unity2dApplication* app = UnityQtApplication::instance();
+    Unity2dApplication* app = Unity2dApplication::instance();
     Q_ASSERT(app);
     Unity2dApplication::instance()->installX11EventFilter(this);
 }

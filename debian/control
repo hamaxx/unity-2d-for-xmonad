@@ -50,7 +50,7 @@ Description: Unity 2d Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqtdee, unity-2d-launcher, unity-qt-places
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqtdee, unity-2d-launcher, unity-2d-places
 Description: Unity 2d Spread
  The Unity 2d spread allows you to display a quick thumbnailed view of open windows
  so you can quickly and effectively choose which one you want to switch to.

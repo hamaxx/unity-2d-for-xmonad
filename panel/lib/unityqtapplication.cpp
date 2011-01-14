@@ -18,12 +18,12 @@ AbstractX11EventFilter::~AbstractX11EventFilter()
     Unity2dApplication::instance()->removeX11EventFilter(this);
 }
 
-Unity2dApplication::UnityQtApplication(int& argc, char** argv)
+Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 : QApplication(argc, argv)
 {
 }
 
-Unity2dApplication* UnityQtApplication::instance()
+Unity2dApplication* Unity2dApplication::instance()
 {
     return qobject_cast<Unity2dApplication*>(QCoreApplication::instance());
 }
