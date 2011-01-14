@@ -1,4 +1,4 @@
-project(unity-qt-places)
+project(unity-2d-places)
 
 # Source
 add_subdirectory(app)

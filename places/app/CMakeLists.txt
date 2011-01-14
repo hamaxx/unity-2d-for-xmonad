@@ -14,15 +14,15 @@ set(places_MOC_HDRS
 qt4_wrap_cpp(places_MOC_SRCS ${places_MOC_HDRS})
 
 # Build
-configure_file(unity-qt-places.service.in unity-qt-places.service)
+configure_file(unity-2d-places.service.in unity-qt-places.service)
 
-add_executable(unity-qt-places ${places_SRCS} ${places_MOC_SRCS})
+add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-target_link_libraries(unity-qt-places
+target_link_libraries(unity-2d-places
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
@@ -32,14 +32,14 @@ target_link_libraries(unity-qt-places
     )
 
 # Install
-install(TARGETS unity-qt-places
+install(TARGETS unity-2d-places
     RUNTIME DESTINATION bin
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-places.service
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-places.service
     DESTINATION share/dbus-1/services
     )
 
-install(FILES unity-qt-places.desktop
+install(FILES unity-2d-places.desktop
     DESTINATION share/applications
     )

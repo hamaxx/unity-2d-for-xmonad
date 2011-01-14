@@ -1,4 +1,4 @@
-usr/bin/unity-qt-panel
-usr/share/applications/unity-qt-panel.desktop
-usr/share/unity-qt/panel/artwork/background.png
-usr/share/unity-qt/panel/artwork/divider.png
+usr/bin/unity-2d-panel
+usr/share/applications/unity-2d-panel.desktop
+usr/share/unity-2d/panel/artwork/background.png
+usr/share/unity-2d/panel/artwork/divider.png

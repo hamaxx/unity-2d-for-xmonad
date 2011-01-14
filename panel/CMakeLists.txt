@@ -1,4 +1,4 @@
-project(unity-qt-panel)
+project(unity-2d-panel)
 
 # Source
 include_directories(

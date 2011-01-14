@@ -1,9 +1,9 @@
-usr/bin/unity-qt-places
-usr/share/applications/unity-qt-places.desktop
-usr/share/dbus-1/services/unity-qt-places.service
-usr/share/unity-qt/places/*.qml
-usr/share/unity-qt/places/utils.js
-usr/share/unity-qt/places/artwork
+usr/bin/unity-2d-places
+usr/share/applications/unity-2d-places.desktop
+usr/share/dbus-1/services/unity-2d-places.service
+usr/share/unity-2d/places/*.qml
+usr/share/unity-2d/places/utils.js
+usr/share/unity-2d/places/artwork
 usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1.0.0
 usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1
 usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so

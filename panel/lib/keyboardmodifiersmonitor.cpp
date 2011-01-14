@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *

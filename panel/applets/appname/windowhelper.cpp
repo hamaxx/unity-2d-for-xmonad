@@ -13,7 +13,7 @@
 
 // Local
 
-// unity-qt
+// unity-2d
 #include <debug_p.h>
 
 // Bamf

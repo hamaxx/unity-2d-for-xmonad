@@ -1,4 +1,4 @@
-project(unity-qt-launcher)
+project(unity-2d-launcher)
 
 # Source
 add_subdirectory(UnityApplications)

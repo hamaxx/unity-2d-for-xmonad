@@ -1,4 +1,4 @@
-project(unity-qt-spread)
+project(unity-2d-spread)
 
 # Source
 add_subdirectory(app)
