@@ -9,7 +9,7 @@ inline bool isRunningInstalled() {
     return cachedResult;
 }
 
-inline QString unityQtDirectory() {
+inline QString unity2dDirectory() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/" UNITY_2D_DIR);
     } else {
@@ -17,7 +17,7 @@ inline QString unityQtDirectory() {
     }
 }
 
-inline QString unityQtImportPath() {
+inline QString unity2dImportPath() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/lib/qt4/imports");
     } else {

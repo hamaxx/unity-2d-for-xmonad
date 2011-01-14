@@ -77,7 +77,7 @@ void MenuBarWidget::setupRegistrar()
 void MenuBarWidget::setupMenuBar()
 {
     QLabel* separatorLabel = new QLabel;
-    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
     separatorLabel->setPixmap(pix);
     separatorLabel->setFixedSize(pix.size());
 

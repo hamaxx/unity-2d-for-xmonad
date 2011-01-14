@@ -137,15 +137,15 @@ int main(int argc, char *argv[])
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
 
-    view.engine()->addImportPath(unityQtImportPath());
+    view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/places/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
 
     if (!isRunningInstalled()) {
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
-        view.engine()->addImportPath(unityQtDirectory() + "/launcher/");
+        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
     }
 
     /* Load the QML UI, focus and show the window */

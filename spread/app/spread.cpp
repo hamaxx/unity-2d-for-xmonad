@@ -56,18 +56,18 @@ int main(int argc, char *argv[])
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
 
-    view.engine()->addImportPath(unityQtImportPath());
+    view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/spread/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
     if (!isRunningInstalled()) {
         /* Spread.qml imports UnityApplications, which is part of the launcher
            component */
-        view.engine()->addImportPath(unityQtDirectory() + "/launcher/");
+        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Spread.qml imports UnityPlaces, which is part of the places
            component */
-        view.engine()->addImportPath(unityQtDirectory() + "/places/");
+        view.engine()->addImportPath(unity2dDirectory() + "/places/");
     }
 
     /* This is needed by GnomeBackground.qml (see explanation in there)
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
        wallpaper to work, so we just re-use it instead of having our own here
        in the spread too. FIXME: this should be removed when spread and dash
        are merged together. */
-    view.rootContext()->setContextProperty("engineBaseUrl", unityQtDirectory() + "/places/");
+    view.rootContext()->setContextProperty("engineBaseUrl", unity2dDirectory() + "/places/");
 
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and

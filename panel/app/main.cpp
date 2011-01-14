@@ -54,7 +54,7 @@ QPalette getPalette()
 
          QBrush bg(QPixmap("theme:/panel_background.png"));
     */
-    QBrush bg(QPixmap(unityQtDirectory() + "/panel/artwork/background.png"));
+    QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     palette.setColor(QPalette::WindowText, Qt::white);
@@ -65,7 +65,7 @@ QPalette getPalette()
 QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
-    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
     label->setPixmap(pix);
     label->setFixedSize(pix.size());
     return label;
