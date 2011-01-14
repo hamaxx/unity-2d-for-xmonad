@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Unity Qt Places
+Name=Unity 2d Places
 Comment=A Qt-based implementation of Unity Places
 Icon=gnome-fs-desktop
 Exec=unity-qt-places

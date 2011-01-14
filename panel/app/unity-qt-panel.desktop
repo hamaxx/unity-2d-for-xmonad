@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Unity Qt Panel
+Name=Unity 2d Panel
 Comment=A Qt-based panel
 Icon=gnome-fs-desktop
 Exec=unity-qt-panel
