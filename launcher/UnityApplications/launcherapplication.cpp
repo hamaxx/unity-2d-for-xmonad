@@ -269,7 +269,9 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
 void
 LauncherApplication::onWindowAdded(BamfWindow* window)
 {
-    windowAdded(window->xid());
+    if (window != NULL) {
+        windowAdded(window->xid());
+    }
 }
 
 int
