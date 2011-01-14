@@ -19,7 +19,7 @@
 
 class QDBusInterface;
 
-class HomeButtonApplet : public UnityQt::Applet
+class HomeButtonApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

@@ -18,7 +18,7 @@
 #include <QDBusInterface>
 #include <QMenuBar>
 
-class AppIndicatorApplet : public UnityQt::Applet
+class AppIndicatorApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

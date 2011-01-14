@@ -26,7 +26,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-namespace UnityQt
+namespace Unity2d
 {
 
 struct PanelPrivate

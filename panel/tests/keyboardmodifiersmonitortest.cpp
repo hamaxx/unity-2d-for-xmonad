@@ -24,12 +24,12 @@
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
 
-// Equivalent to QTEST_MAIN, but using UnityQtApplication instead of
+// Equivalent to QTEST_MAIN, but using Unity2dApplication instead of
 // QApplication
 #define UQ_TEST_MAIN(TestObject) \
 int main(int argc, char *argv[]) \
 { \
-    UnityQtApplication app(argc, argv); \
+    Unity2dApplication app(argc, argv); \
     QTEST_DISABLE_KEYPAD_NAVIGATION \
     TestObject tc; \
     return QTest::qExec(&tc, argc, argv); \

@@ -18,7 +18,7 @@
 
 class QEvent;
 
-namespace UnityQt
+namespace Unity2d
 {
 
 struct AppNameAppletPrivate;

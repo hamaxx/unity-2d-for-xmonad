@@ -29,7 +29,7 @@
 #include <QFSFileEngine>
 #include <QLabel>
 
-using namespace UnityQt;
+using namespace Unity2d;
 
 class ThemeEngineHandler : public QAbstractFileEngineHandler
 {
@@ -84,8 +84,8 @@ int main(int argc, char** argv)
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    UnityQtApplication app(argc, argv);
-    QApplication::setStyle(new UnityQtStyle);
+    Unity2dApplication app(argc, argv);
+    QApplication::setStyle(new Unity2dStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());

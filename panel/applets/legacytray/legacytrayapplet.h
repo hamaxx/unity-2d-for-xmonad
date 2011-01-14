@@ -22,7 +22,7 @@ class FdoSelectionManager;
 class Task;
 }
 
-class LegacyTrayApplet : public UnityQt::Applet
+class LegacyTrayApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

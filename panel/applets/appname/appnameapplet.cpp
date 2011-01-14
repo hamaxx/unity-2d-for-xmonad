@@ -37,7 +37,7 @@ static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
-namespace UnityQt
+namespace Unity2d
 {
 
 class WindowButton : public QAbstractButton

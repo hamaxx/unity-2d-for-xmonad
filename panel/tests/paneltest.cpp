@@ -17,7 +17,7 @@
 #include <QDesktopWidget>
 #include <QtTestGui>
 
-using namespace UnityQt;
+using namespace Unity2d;
 
 class PanelTest : public QObject
 {

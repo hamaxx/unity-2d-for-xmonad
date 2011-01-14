@@ -15,7 +15,7 @@
 // Qt
 #include <QtTestGui>
 
-using namespace UnityQt;
+using namespace Unity2d;
 
 class HomeButtonAppletTest : public QObject
 {

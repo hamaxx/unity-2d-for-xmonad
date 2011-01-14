@@ -16,10 +16,10 @@
 // Qt
 #include <QProxyStyle>
 
-class UnityQtStyle : public QProxyStyle
+class Unity2dStyle : public QProxyStyle
 {
 public:
-    UnityQtStyle();
+    Unity2dStyle();
 
     virtual void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = 0) const;
 

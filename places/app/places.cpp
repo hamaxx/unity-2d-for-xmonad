@@ -38,7 +38,7 @@
 static bool registerDBusService(DashDeclarativeView* view)
 {
     QDBusConnection bus = QDBusConnection::sessionBus();
-    if (!bus.registerService("com.canonical.UnityQt")) {
+    if (!bus.registerService("com.canonical.Unity2d")) {
         qCritical() << "Failed to register DBus service, is there another instance already running?";
         return false;
     }

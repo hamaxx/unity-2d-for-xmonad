@@ -16,7 +16,7 @@
 // Qt
 #include <QWidget>
 
-namespace UnityQt
+namespace Unity2d
 {
 
 struct PanelPrivate;

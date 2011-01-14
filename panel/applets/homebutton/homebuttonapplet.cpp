@@ -20,7 +20,7 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnectionInterface>
 
-static const char* DBUS_SERVICE = "com.canonical.UnityQt";
+static const char* DBUS_SERVICE = "com.canonical.Unity2d";
 static const char* DBUS_PATH = "/dash";
 static const char* DBUS_IFACE = "local.DashDeclarativeView";
 

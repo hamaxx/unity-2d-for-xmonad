@@ -22,7 +22,7 @@ class QX11EmbedContainer;
 
 struct _IndicatorPlugin;
 
-class IndicatorApplet : public UnityQt::Applet
+class IndicatorApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

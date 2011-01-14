@@ -21,7 +21,7 @@
 // System
 #include <iostream>
 
-namespace UnityQt
+namespace Unity2d
 {
 
 struct AppletPrivate
