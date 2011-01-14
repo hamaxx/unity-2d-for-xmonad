@@ -15,7 +15,7 @@
 #include "menubarwidget.h"
 #include "windowhelper.h"
 
-// Unity-qt
+// Unity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 
