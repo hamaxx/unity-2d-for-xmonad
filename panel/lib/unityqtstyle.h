@@ -8,8 +8,8 @@
  *
  * License: GPL v3
  */
-#ifndef UNITYQTSTYLE_H
-#define UNITYQTSTYLE_H
+#ifndef UNITY2DSTYLE_H
+#define UNITY2DSTYLE_H
 
 // Local
 
@@ -30,4 +30,4 @@ public:
     virtual int styleHint(StyleHint hint, const QStyleOption* option = 0, const QWidget* widget = 0, QStyleHintReturn* returnData = 0) const;
 };
 
-#endif /* UNITYQTSTYLE_H */
+#endif /* UNITY2DSTYLE_H */

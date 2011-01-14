@@ -8,8 +8,8 @@
  *
  * License: GPL v3
  */
-#ifndef UNITYQTAPPLICATION_H
-#define UNITYQTAPPLICATION_H
+#ifndef UNITY2DAPPLICATION_H
+#define UNITY2DAPPLICATION_H
 
 // Qt
 #include <QApplication>
@@ -48,4 +48,4 @@ private:
     QList<AbstractX11EventFilter*> m_x11EventFilters;
 };
 
-#endif // UNITYQTAPPLICATION_H
+#endif // UNITY2DAPPLICATION_H
