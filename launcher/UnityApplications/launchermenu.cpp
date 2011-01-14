@@ -67,7 +67,7 @@ LauncherContextualMenu::~LauncherContextualMenu()
 void
 LauncherContextualMenu::loadCSS()
 {
-    QString cssFilePath = unityQtDirectory() + "/launcher/launchermenu.css";
+    QString cssFilePath = unity2dDirectory() + "/launcher/launchermenu.css";
 
     QFile file(cssFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))

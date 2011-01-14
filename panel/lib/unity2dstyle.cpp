@@ -9,7 +9,7 @@
  * License: GPL v3
  */
 // Self
-#include "unityqtstyle.h"
+#include "unity2dstyle.h"
 
 // Local
 
@@ -24,12 +24,12 @@
 #include <QStyleOptionFrame>
 #include <QWidget>
 
-UnityQtStyle::UnityQtStyle()
+Unity2dStyle::Unity2dStyle()
 : QProxyStyle(new QGtkStyle)
 {
 }
 
-void UnityQtStyle::drawControl(QStyle::ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void Unity2dStyle::drawControl(QStyle::ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
 {
     if (element == QStyle::CE_MenuBarItem && widget) {
         // Avoid solid gray background behind the menubar items
@@ -41,7 +41,7 @@ void UnityQtStyle::drawControl(QStyle::ControlElement element, const QStyleOptio
     }
 }
 
-int UnityQtStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
+int Unity2dStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
 {
     if (metric == QStyle::PM_MenuBarVMargin) {
         // Avoid one-pixel gap above menuitem
@@ -51,7 +51,7 @@ int UnityQtStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption* op
     }
 }
 
-QSize UnityQtStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOption* option, const QSize& contentsSize, const QWidget* widget) const
+QSize Unity2dStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOption* option, const QSize& contentsSize, const QWidget* widget) const
 {
     QSize size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
     if (type == QStyle::CT_MenuBarItem && widget) {
@@ -61,7 +61,7 @@ QSize UnityQtStyle::sizeFromContents(QStyle::ContentsType type, const QStyleOpti
     return size;
 }
 
-int UnityQtStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+int Unity2dStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
 {
     if (hint == QStyle::SH_UnderlineShortcut) {
         // The shortcut of an opened menu can be triggered without holding Alt

@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -22,7 +22,7 @@ class FdoSelectionManager;
 class Task;
 }
 
-class LegacyTrayApplet : public UnityQt::Applet
+class LegacyTrayApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

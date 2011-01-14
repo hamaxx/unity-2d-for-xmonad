@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -15,7 +15,7 @@
 #include "menubarwidget.h"
 #include "windowhelper.h"
 
-// Unity-qt
+// Unity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 
@@ -37,7 +37,7 @@ static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
-namespace UnityQt
+namespace Unity2d
 {
 
 class WindowButton : public QAbstractButton

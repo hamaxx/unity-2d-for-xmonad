@@ -3,11 +3,11 @@
         <dox:d><![CDATA[
           @mainpage
 
-          An interface to activate the windows spread in UnityQt.
+          An interface to activate the windows spread in Unity2d.
         ]]></dox:d>
-        <interface name="com.canonical.UnityQt.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <interface name="com.canonical.Unity2d.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
                 <dox:d>
-                  An interface to activate the windows spread in UnityQt.
+                  An interface to activate the windows spread in Unity2d.
                 </dox:d>
                 <method name="SpreadAllWindows">
                         <dox:d><![CDATA[

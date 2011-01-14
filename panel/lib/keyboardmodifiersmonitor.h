@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *
@@ -12,7 +12,7 @@
 #define KEYBOARDMODIFIERMONITOR_H
 
 // Local
-#include <unityqtapplication.h>
+#include <unity2dapplication.h>
 
 // Qt
 
@@ -22,7 +22,7 @@ struct KeyboardModifiersMonitorPrivate;
  * This class monitor keyboard modifiers. It is able to track changes even if
  * the active window does not belong to the application.
  *
- * You *must* use UnityQtApplication to be able to use this class.
+ * You *must* use Unity2dApplication to be able to use this class.
  *
  * In most case you don't need your own instance: use the one returned by
  * instance() instead.

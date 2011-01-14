@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -17,7 +17,7 @@
 #include <QDesktopWidget>
 #include <QtTestGui>
 
-using namespace UnityQt;
+using namespace Unity2d;
 
 class PanelTest : public QObject
 {

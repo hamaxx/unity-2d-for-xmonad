@@ -1,8 +1,8 @@
-project(unity-qt)
+project(unity-2d)
 cmake_minimum_required(VERSION 2.8)
 
 # Dirs
-set(UNITY_QT_DIR share/unity-qt)
+set(UNITY_2D_DIR share/unity-2d)
 set(UNITY_DIR /usr/share/unity/)
 
 configure_file(config.h.in config.h)

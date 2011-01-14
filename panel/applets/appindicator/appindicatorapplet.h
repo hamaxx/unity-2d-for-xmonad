@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -18,7 +18,7 @@
 #include <QDBusInterface>
 #include <QMenuBar>
 
-class AppIndicatorApplet : public UnityQt::Applet
+class AppIndicatorApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:

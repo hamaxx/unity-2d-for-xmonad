@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *
@@ -48,9 +48,9 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject* parent)
         setupXkb();
     }
 
-    UnityQtApplication* app = UnityQtApplication::instance();
+    Unity2dApplication* app = Unity2dApplication::instance();
     Q_ASSERT(app);
-    UnityQtApplication::instance()->installX11EventFilter(this);
+    Unity2dApplication::instance()->installX11EventFilter(this);
 }
 
 KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
@@ -60,7 +60,7 @@ KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
 
 KeyboardModifiersMonitor* KeyboardModifiersMonitor::instance()
 {
-    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(UnityQtApplication::instance());
+    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(Unity2dApplication::instance());
     return monitor;
 }
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -20,8 +20,8 @@
 
 // Unity
 #include <panel.h>
-#include <unityqtapplication.h>
-#include <unityqtstyle.h>
+#include <unity2dapplication.h>
+#include <unity2dstyle.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>
@@ -29,7 +29,7 @@
 #include <QFSFileEngine>
 #include <QLabel>
 
-using namespace UnityQt;
+using namespace Unity2d;
 
 class ThemeEngineHandler : public QAbstractFileEngineHandler
 {
@@ -54,7 +54,7 @@ QPalette getPalette()
 
          QBrush bg(QPixmap("theme:/panel_background.png"));
     */
-    QBrush bg(QPixmap(unityQtDirectory() + "/panel/artwork/background.png"));
+    QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     palette.setColor(QPalette::WindowText, Qt::white);
@@ -65,7 +65,7 @@ QPalette getPalette()
 QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
-    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
     label->setPixmap(pix);
     label->setFixedSize(pix.size());
     return label;
@@ -84,8 +84,8 @@ int main(int argc, char** argv)
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    UnityQtApplication app(argc, argv);
-    QApplication::setStyle(new UnityQtStyle);
+    Unity2dApplication app(argc, argv);
+    QApplication::setStyle(new Unity2dStyle);
     Panel panel;
     panel.setEdge(Panel::TopEdge);
     panel.setPalette(getPalette());

@@ -1,8 +1,8 @@
-usr/bin/unity-qt-launcher
-usr/share/applications/unity-qt-launcher.desktop
-usr/share/unity-qt/launcher/*.qml
-usr/share/unity-qt/launcher/launchermenu.css
-usr/share/unity-qt/launcher/artwork
+usr/bin/unity-2d-launcher
+usr/share/applications/unity-2d-launcher.desktop
+usr/share/unity-2d/launcher/*.qml
+usr/share/unity-2d/launcher/launchermenu.css
+usr/share/unity-2d/launcher/artwork
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir
@@ -10,6 +10,6 @@ usr/lib/qt4/imports/UnityApplications/libUnityApplications.so
 
 # Install places artwork to work around bug #672447 in Unity.
 # See https://launchpad.net/bugs/672450.
-usr/share/unity-qt/applications.png
-usr/share/unity-qt/files.png
+usr/share/unity-2d/applications.png
+usr/share/unity-2d/files.png
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
@@ -16,7 +16,7 @@
 // Qt
 #include <QWidget>
 
-namespace UnityQt
+namespace Unity2d
 {
 
 struct AppletPrivate;
