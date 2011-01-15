@@ -1,5 +1,5 @@
-unity-2d (0.1-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (0.1-0ubuntu1) natty; urgency=low
 
-  * Initial Release (LP: #XXXXXX)
+  * Initial Release (LP: #703156)
 
- -- Michael Casadevall <mcasadevall@ubuntu.com>  Fri, 14 Jan 2011 13:08:24 -0800
+ -- Michael Casadevall <mcasadevall@ubuntu.com>  Fri, 14 Jan 2011 17:42:08 -0800
