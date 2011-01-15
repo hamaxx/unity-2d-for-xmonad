@@ -1,3 +1,9 @@
+unity-2d (0.1-0ubuntu2) natty; urgency=low
+
+  * Fix libuqpanel.symbols for platform independence
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Sat, 15 Jan 2011 02:27:19 +0000
+
 unity-2d (0.1-0ubuntu1) natty; urgency=low
 
   * Initial Release (LP: #703156)

@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 0.1 i386
 libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZN12Unity2dStyleC1Ev@Base 0.1
  _ZN12Unity2dStyleC2Ev@Base 0.1
@@ -30,13 +31,13 @@ libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZN24KeyboardModifiersMonitorD0Ev@Base 0.1
  _ZN24KeyboardModifiersMonitorD1Ev@Base 0.1
  _ZN24KeyboardModifiersMonitorD2Ev@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterE13detach_helperEi@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterE13detach_helperEv@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterE18detach_helper_growEii@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterE6appendERKS1_@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterE9removeAllERKS1_@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterED1Ev@Base 0.1
- _ZN5QListIP22AbstractX11EventFilterED2Ev@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE13detach_helperEi@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE13detach_helperEv@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE18detach_helper_growEii@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE6appendERKS1_@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE9removeAllERKS1_@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterED1Ev@Base 0.1
+ (optional=templinst)_ZN5QListIP22AbstractX11EventFilterED2Ev@Base 0.1
  _ZN7Unity2d5Panel10paintEventEP11QPaintEvent@Base 0.1
  _ZN7Unity2d5Panel11qt_metacallEN11QMetaObject4CallEiPPv@Base 0.1
  _ZN7Unity2d5Panel11qt_metacastEPKc@Base 0.1
@@ -87,10 +88,7 @@ libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZTV24KeyboardModifiersMonitor@Base 0.1
  _ZTVN7Unity2d5PanelE@Base 0.1
  _ZTVN7Unity2d6AppletE@Base 0.1
- _ZThn16_N24KeyboardModifiersMonitor14x11EventFilterEP7_XEvent@Base 0.1
- _ZThn16_N24KeyboardModifiersMonitorD0Ev@Base 0.1
- _ZThn16_N24KeyboardModifiersMonitorD1Ev@Base 0.1
- _ZThn16_N7Unity2d5PanelD0Ev@Base 0.1
- _ZThn16_N7Unity2d5PanelD1Ev@Base 0.1
- _ZThn16_N7Unity2d6AppletD0Ev@Base 0.1
- _ZThn16_N7Unity2d6AppletD1Ev@Base 0.1
+ (c++)"non-virtual thunk to KeyboardModifiersMonitor::x11EventFilter(_XEvent*)@Base" 0.1
+ (c++)"non-virtual thunk to KeyboardModifiersMonitor::~KeyboardModifiersMonitor()@Base" 0.1
+ (c++)"non-virtual thunk to Unity2d::Applet::~Applet()@Base" 0.1
+ (c++)"non-virtual thunk to Unity2d::Panel::~Panel()@Base" 0.1
