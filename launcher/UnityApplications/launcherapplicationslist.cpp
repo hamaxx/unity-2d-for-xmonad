@@ -7,6 +7,7 @@
 
 #include <QStringList>
 #include <QDir>
+#include <QCryptographicHash>
 #include <QDebug>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
@@ -144,17 +145,15 @@ LauncherApplicationsList::insertWebFavorite(const QString& url)
     contents.replace("{name}", url);
     contents.replace("{url}", url);
 
-    const char* percentEncoded = QUrl::toPercentEncoding(url).constData();
-    QString noPercent(percentEncoded);
-    noPercent.remove("%");
-    QString filename = LOCAL_STORE + noPercent + ".desktop";
+    const char* id = QCryptographicHash::hash(url.toUtf8(), QCryptographicHash::Md5).toHex().constData();
+    QString desktop_file = LOCAL_STORE + "webfav-" + id + ".desktop";
 
-    QFile file(filename);
+    QFile file(desktop_file);
     file.open(QIODevice::WriteOnly);
     file.write(contents.toUtf8());
     file.close();
 
-    application->setDesktopFile(filename);
+    application->setDesktopFile(desktop_file);
     insertApplication(application);
     application->setSticky(true);
 }
