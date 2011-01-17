@@ -40,7 +40,7 @@ Item {
 
     /* After any state change wait for transitionDuration (ms) and then emit
        the signal transitionCompleted */
-    property int transitionDuration: 4000
+    property int transitionDuration: 250
     signal transitionCompleted
 
     /* We need to make this information available to the parent, so that it

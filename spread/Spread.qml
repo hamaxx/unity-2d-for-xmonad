@@ -19,41 +19,29 @@ import UnityPlaces 1.0
    screen minus launcher, panels, etc.).
 */
 
-Rectangle {
+Item {
     width: availableGeometry.width
     height: availableGeometry.height
 
-    property bool active: false
     property int applicationId
 
-    property int row
-    property int column
+    signal exiting
 
-    color: "yellow"
-    border.color: "red"
-    border.width: 2
-
-    Rectangle {
-        anchors.top:  parent.top
-        anchors.left: parent.left
-        color: "white"
-        border.color: "black"
-        border.width: 1
-        Text {
-            font.pixelSize: 30
-            text: "(" + row + "," + column + ")"
-        }
+    /* List of windows that will be shown in the spread. */
+    WindowsList {
+        id: windows
     }
 
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0
-    }
 
-    /* List of windows that will be shown in the spread. */
-    WindowsList {
-        id: windows
+        MouseArea {
+            /* FIXME: SPREAD: disable this MouseArea when we're not switching workspaces */
+            anchors.fill: parent
+            onClicked: layout.state = ""
+        }
     }
 
     /* This is our main view.
@@ -81,9 +69,7 @@ Rectangle {
             }
         }
 
-        onStateChanged: {
-            if (state == "") exitSwitch()
-        }
+        onStateChanged: if (state == "") exiting()
     }
 
     function cancelSpread() {
@@ -111,6 +97,4 @@ Rectangle {
         target: spreadView
         onOutsideClick: cancelSpread()
     }
-
-    signal exitSwitch
 }

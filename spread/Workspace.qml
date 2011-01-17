@@ -12,8 +12,7 @@ Item {
     property int cellY
 
     onStateChanged: {
-        console.log("STATE changed to " + state + ".")
-        if (state == "switching") spread.activateSpread();
+        if (state == "switcher") spread.activateSpread();
         else spread.cancelSpread();
     }
 
@@ -23,20 +22,12 @@ Item {
 
     Spread {
         id: spread
-
-        onExitSwitch: {
-            console.log("EXITING EXITING")
-            workspace.state = ""
-        }
-    }
-
-    Component.onCompleted: {
-        console.log("x, y " + x + ", " + y)
+        onExiting: switcher.state = ""
     }
 
     states: [
         State {
-            name: "switching"
+            name: "switcher"
             PropertyChanges {
                 target: workspace
                 scale: cellScale
@@ -51,7 +42,7 @@ Item {
             NumberAnimation {
                 target: workspace
                 properties: "x,y,scale"
-                duration: 4000
+                duration: 250
                 easing.type: Easing.InOutSine
             }
         }

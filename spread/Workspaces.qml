@@ -4,10 +4,11 @@ import UnityPlaces 1.0
 
 Rectangle {
     id: switcher
+
     width: availableGeometry.width
     height: availableGeometry.height
 
-    color: "green"
+    color: "black"
 
     property int applicationId
 
@@ -15,6 +16,7 @@ Rectangle {
     property int columns: Math.ceil(Math.sqrt(workspaces))
     property int rows: columns
 
+    /* These values are completely random. FIXME: pull from unity the proper ones */
     property int leftMargin: 40
     property int rightMargin: 40
     property int topMargin: 30
@@ -37,8 +39,6 @@ Rectangle {
             cellX: leftMargin + column * (switcher.width * cellScale) + (column * switcher.spacing)
             cellY: topMargin + row * (switcher.height * cellScale) + (row * switcher.spacing)
             cellScale:  switcher.cellScale
-
-            onStateChanged: if (state == "") switcher.state = ""
        }
     }
 
@@ -47,16 +47,10 @@ Rectangle {
 
         onActivateSpread: {
             switcher.applicationId = applicationId
-            switcher.state = "switching"
+            switcher.state = "switcher"
         }
 
         onCancelSpread: switcher.state = ""
-    }
-
-    Component.onCompleted: {
-        console.log(width + "x" + height)
-        console.log(rows + "x" + columns)
-        console.log(cellScale)
     }
 }
 
