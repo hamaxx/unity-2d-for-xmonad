@@ -146,6 +146,6 @@ Item {
 
     Connections {
         target: launcherControl
-        onAddWebFavorite: console.log("TODO: add " + url + " to favorites.")
+        onAddWebFavorite: applications.insertWebFavorite(url)
     }
 }

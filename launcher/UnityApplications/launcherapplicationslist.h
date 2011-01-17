@@ -24,6 +24,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
+    Q_INVOKABLE void insertWebFavorite(const QString& url);
 
 private:
     void load();

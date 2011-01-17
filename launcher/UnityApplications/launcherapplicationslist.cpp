@@ -11,6 +11,28 @@
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
 
+static const QString REL_STORE = ".local/share/applications/";
+static const QString LOCAL_STORE = QDir::homePath() + "/" + REL_STORE;
+
+static void check_local_store_exists()
+{
+    QDir store(LOCAL_STORE);
+    if (!store.exists()) {
+        QDir::home().mkpath(REL_STORE);
+    }
+}
+
+static const QString WEBFAV_DESKTOP_ENTRY =
+    "[Desktop Entry]\n"
+    "Version=1.0\n"
+    "Name={name}\n"
+    "Exec=xdg-open {url}\n"
+    "Type=Application\n"
+    "Icon=emblem-web\n"
+    "Categories=Network;\n"
+    "MimeType=text/html;\n"
+    "StartupNotify=true\n";
+
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -110,6 +132,31 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     } else {
         insertApplication(application);
     }
+}
+
+void
+LauncherApplicationsList::insertWebFavorite(const QString& url)
+{
+    LauncherApplication* application = new LauncherApplication;
+    check_local_store_exists();
+
+    QString contents = WEBFAV_DESKTOP_ENTRY;
+    contents.replace("{name}", url);
+    contents.replace("{url}", url);
+
+    const char* percentEncoded = QUrl::toPercentEncoding(url).constData();
+    QString noPercent(percentEncoded);
+    noPercent.remove("%");
+    QString filename = LOCAL_STORE + noPercent + ".desktop";
+
+    QFile file(filename);
+    file.open(QIODevice::WriteOnly);
+    file.write(contents.toUtf8());
+    file.close();
+
+    application->setDesktopFile(filename);
+    insertApplication(application);
+    application->setSticky(true);
 }
 
 void
