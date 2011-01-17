@@ -54,6 +54,8 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
+
+    void slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)

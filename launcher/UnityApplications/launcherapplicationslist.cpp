@@ -1,5 +1,6 @@
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
+#include "webscrapper.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -156,6 +157,20 @@ LauncherApplicationsList::insertWebFavorite(const QString& url)
     application->setDesktopFile(desktop_file);
     insertApplication(application);
     application->setSticky(true);
+
+    WebScrapper* scrapper = new WebScrapper(application, QUrl(url), this);
+    connect(scrapper, SIGNAL(finished(LauncherApplication*, const QString&, const QString&)),
+            SLOT(slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&)));
+    scrapper->fetchAndScrap();
+}
+
+void
+LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* application, const QString& title, const QString& favicon)
+{
+    WebScrapper* scrapper = static_cast<WebScrapper*>(sender());
+    qDebug() << "slotWebscrapperFinished:" << application << title << favicon;
+    // TODO: change the application’s title and icon
+    scrapper->deleteLater();
 }
 
 void

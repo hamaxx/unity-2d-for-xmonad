@@ -20,6 +20,7 @@ set(UnityApplications_SRCS
     launcherplaceslist.cpp
     trash.cpp
     launchermenu.cpp
+    webscrapper.cpp
     plugin.cpp
     )
 
@@ -35,6 +36,7 @@ set(UnityApplications_MOC_HDRS
     launcherplaceslist.h
     trash.h
     launchermenu.h
+    webscrapper.h
     plugin.h
     )
 
