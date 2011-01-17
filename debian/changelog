@@ -1,3 +1,10 @@
+unity-2d (0.1-0ubuntu3) UNRELEASED; urgency=low
+
+  * drop the unity-place-files and unity-place-applications recommends and 
+    dependencies as these are uninstallable in natty right now
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Mon, 17 Jan 2011 15:20:28 +0100
+
 unity-2d (0.1-0ubuntu2) natty; urgency=low
 
   * Fix libuqpanel.symbols for platform independence

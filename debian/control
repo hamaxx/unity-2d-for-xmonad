@@ -13,7 +13,6 @@ Standards-Version: 3.9.1
 Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
-Recommends: unity-place-files, unity-place-applications
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.
@@ -50,7 +49,7 @@ Description: Unity 2D Panel - development files
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-place-files, unity-place-applications
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It part of Unity 2D and can not run
