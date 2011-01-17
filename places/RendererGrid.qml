@@ -12,7 +12,15 @@ Renderer {
     id: renderer
 
     property variant cellRenderer
-    property bool folded: true
+    property bool folded
+    folded: {
+        /* Look for the groupId as a complete word inside the list of expanded groups.
+           Examples of ExpandedGroups hint: "2", "1 3 7", "1 2", etc.
+         */
+        var re = RegExp("\\b%1\\b".arg(renderer.groupId))
+        var expandedGroups = placeEntryModel.entryRendererHints["ExpandedGroups"]
+        return !re.test(expandedGroups)
+    }
 
     property int cellWidth: 158
     property int cellHeight: 76
