@@ -60,6 +60,13 @@ Item {
         }
     }
 
+    function cancelSpread() {
+        /* When the spread is canceled we do not want to keep focused whatever
+           window was focused before the spread started */
+        layout.selectedWindow = null;
+        layout.state = ""
+    }
+
     Connections {
         target: control
 
@@ -80,7 +87,11 @@ Item {
             }
         }
 
-        /* Go to screen mode */
-        onCancelSpread: layout.state = ""
+        onCancelSpread: cancelSpread()
+    }
+
+    Connections {
+        target: spreadView
+        onOutsideClick: cancelSpread()
     }
 }

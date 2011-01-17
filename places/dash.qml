@@ -31,8 +31,12 @@ Item {
             return
         }
 
-        placeEntryModel.activeSection = section
+        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
+           PlaceEntry.SetActive in order for it to have an effect.
+           This is likely a bug in the place daemons.
+        */
         placeEntryModel.active = true
+        placeEntryModel.activeSection = section
         pageLoader.source = "PlaceEntryView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */

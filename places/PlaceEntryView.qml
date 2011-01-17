@@ -55,6 +55,7 @@ Item {
                 item.parentListView = results.list
                 item.displayName = displayName
                 item.iconHint = iconHint
+                item.groupId = groupId
                 item.model = group_model
                 item.placeEntryModel = placeEntryView.model
             }

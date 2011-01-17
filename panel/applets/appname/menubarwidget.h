@@ -58,6 +58,7 @@ public:
     MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
 
     bool isEmpty() const;
+    bool isOpened() const;
 
 Q_SIGNALS:
     void menuBarClosed();

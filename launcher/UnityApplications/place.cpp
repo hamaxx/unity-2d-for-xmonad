@@ -56,7 +56,6 @@ Place::Place(const Place &other)
 
 Place::~Place()
 {
-    delete m_serviceWatcher;
     delete m_dbusIface;
     delete m_file;
     m_entries.clear();
@@ -370,8 +369,8 @@ Place::activate(QString uri)
 {
     /* Tries various methods to trigger a sensible action for the given 'uri'.
        First it asks the place backend via its 'Activate' method. If that fails
-       it does its best to select a relevant action for the uri's schema. If it
-       has no understanding of the given schema it falls back on asking Qt to
+       it does its best to select a relevant action for the uri's scheme. If it
+       has no understanding of the given scheme it falls back on asking Qt to
        open the uri.
     */
     QUrl url(uri);
@@ -393,10 +392,9 @@ Place::activate(QString uri)
     }
 
     if (url.scheme() == "application") {
-        qDebug() << "application scheme activation" << url.host();
-        LauncherApplication* application = new LauncherApplication;
-        application->setDesktopFile(url.host());
-        application->activate();
+        LauncherApplication application;
+        application.setDesktopFile(url.host());
+        application.activate();
         return;
     }
 

@@ -17,6 +17,8 @@
 // Qt
 #include <QToolButton>
 
+class QDBusInterface;
+
 class HomeButtonApplet : public UnityQt::Applet
 {
 Q_OBJECT
@@ -24,11 +26,13 @@ public:
     HomeButtonApplet();
 
 private Q_SLOTS:
-    void slotButtonClicked();
+    void toggleDash();
+    void connectToDash();
 
 private:
     Q_DISABLE_COPY(HomeButtonApplet)
     QToolButton* m_button;
+    QDBusInterface* m_dashInterface;
 };
 
 #endif /* HOMEBUTTONAPPLET_H */

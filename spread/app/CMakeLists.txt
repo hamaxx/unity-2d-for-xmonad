@@ -1,5 +1,6 @@
 # Dependencies
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
+find_package(X11 REQUIRED)
 
 # Sources
 set(spread_SRCS
@@ -36,6 +37,8 @@ target_link_libraries(unity-qt-spread
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
+    ${X11_Xext_LIB}
+    ${X11_X11_LIB}
     )
 
 # Install

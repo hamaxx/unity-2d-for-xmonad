@@ -128,3 +128,15 @@ DashDeclarativeView::availableGeometry() const
     return desktop->availableGeometry(this);
 }
 
+void
+DashDeclarativeView::keyPressEvent(QKeyEvent* event)
+{
+    switch (event->key()) {
+        case Qt::Key_Escape:
+            setActive(false);
+            break;
+        default:
+            QDeclarativeView::keyPressEvent(event);
+            break;
+    }
+}
