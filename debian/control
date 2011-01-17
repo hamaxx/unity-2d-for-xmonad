@@ -1,57 +1,58 @@
 Source: unity-qt
-Section: gnome
+Section: x11
 Priority: optional
-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: cdbs, debhelper (>= 7),
                cmake, libqt4-dev,
                libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
                libx11-dev, libindicator-dev, libgtk2.0-dev
-Standards-Version: 3.8.3
-Vcs-Bzr: lp:~upicek-team/upicek/trunk
+Standards-Version: 3.9.1
 
 Package: unity-qt-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
 Recommends: unity-place-files, unity-place-applications
-Description: Unity Qt Launcher
- The Unity Qt launcher displays a list of running applications as well as a
+Description: Unity 2D Launcher
+ The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.
 
 Package: unity-qt-panel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Unity Qt Panel
- The Unity Qt panel displays a top panel containing the application menu and
+Description: Unity 2D Panel
+ The Unity 2D panel displays a top panel containing the application menu and
  various indicators.
 
 Package: libuqpanel0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Unity Qt Panel - shared library
- This library is used to create panel applets for the Unity Qt panel.
+Description: Unity 2D Panel - shared library
+ This library is used to create panel applets for the Unity 2D panel.
 
 Package: libuqpanel-dev
 Section: libdevel
 Architecture: any
-Depends: libuqpanel0 (= ${binary:Version}), ${misc:Depends}
-Description: Unity Qt Panel - development files
- This library is used to create panel applets for the Unity Qt panel.
+Depends: ${shlibs:Depends}, ${misc:Depends}, libuqpanel0 (= ${binary:Version})
+Description: Unity 2D Panel - development files
+ This library is used to create panel applets for the Unity 2D panel.
  .
  This package contains the development header files.
 
 Package: unity-qt-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqtdee, unity-qt-launcher, unity-place-files, unity-place-applications
-Description: Unity Qt Places
- The Unity Qt places overlay over the desktop to provide quick access to
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-place-files, unity-place-applications
+Description: Unity 2D Places
+ The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications.
 
 Package: unity-qt-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libqtdee, unity-qt-launcher, unity-qt-places
-Description: Unity Qt Spread
- The Unity Qt spread allows you to display a quick thumbnailed view of open windows
- so you can quickly and effectively choose which one you want to switch to.
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-qt-places
+Description: Unity 2D Spread
+ The Unity 2D spread allows you to display a quick thumbnailed view of open
+  windows so you can quickly and effectively choose which one you want to 
+ switch to.
 
