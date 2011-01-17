@@ -19,9 +19,31 @@ import UnityPlaces 1.0
    screen minus launcher, panels, etc.).
 */
 
-Item {
+Rectangle {
     width: availableGeometry.width
     height: availableGeometry.height
+
+    property bool active: false
+    property int applicationId
+
+    property int row
+    property int column
+
+    color: "yellow"
+    border.color: "red"
+    border.width: 2
+
+    Rectangle {
+        anchors.top:  parent.top
+        anchors.left: parent.left
+        color: "white"
+        border.color: "black"
+        border.width: 1
+        Text {
+            font.pixelSize: 30
+            text: "(" + row + "," + column + ")"
+        }
+    }
 
     GnomeBackground {
         anchors.fill: parent
@@ -58,6 +80,10 @@ Item {
                 windows.unload()
             }
         }
+
+        onStateChanged: {
+            if (state == "") exitSwitch()
+        }
     }
 
     function cancelSpread() {
@@ -67,31 +93,24 @@ Item {
         layout.state = ""
     }
 
-    Connections {
-        target: control
-
-        /* If there's a spread already in progress, cancel it.
-           Otherwise start the spread once the windows in the
-           model are loaded. */
-        onActivateSpread: {
-            if (layout.state == "spread") {
-                layout.state = ""
-            } else {
-                /* Please note that the windows list needs to be loaded before the
-                   spread view is shown, otherwise windows.lastActiveWindow will not
-                   be correct */
-                windows.load(applicationId)
-                spreadView.show()
-                spreadView.forceActivateWindow()
-                layout.state = "spread"
-            }
+    function activateSpread() {
+        if (layout.state == "spread") {
+            layout.state = ""
+        } else {
+            /* Please note that the windows list needs to be loaded before the
+               spread view is shown, otherwise windows.lastActiveWindow will not
+               be correct */
+            windows.load(applicationId)
+            spreadView.show()
+            spreadView.forceActivateWindow()
+            layout.state = "spread"
         }
-
-        onCancelSpread: cancelSpread()
     }
 
     Connections {
         target: spreadView
         onOutsideClick: cancelSpread()
     }
+
+    signal exitSwitch
 }

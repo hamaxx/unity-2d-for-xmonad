@@ -6,6 +6,7 @@ import UnityPlaces 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
+    clip: true
 
     GConfItem {
         id: primary_color
