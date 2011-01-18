@@ -22,7 +22,7 @@
 
 #include <QtDBus/QDBusConnection>
 
-static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.UnityQt.Launcher";
+static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 
 LauncherControl::LauncherControl(QObject* parent) : QObject(parent)

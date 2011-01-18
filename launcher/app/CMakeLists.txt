@@ -15,7 +15,7 @@ set(launcher_MOC_HDRS
 
 qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
 
-configure_file(unity-qt-launcher.service.in unity-qt-launcher.service)
+configure_file(unity-2d-launcher.service.in unity-2d-launcher.service)
 
 qt4_add_dbus_adaptor(launcher_SRCS launcher.xml
     launchercontrol.h LauncherControl
@@ -52,7 +52,7 @@ install(FILES unity-2d-launcher.desktop
     DESTINATION share/applications
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-launcher.service
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
     DESTINATION share/dbus-1/services
     )
 
