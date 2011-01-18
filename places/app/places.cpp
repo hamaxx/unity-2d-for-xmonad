@@ -114,13 +114,13 @@ int main(int argc, char *argv[])
 {
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
-       with 'raster' by calling QApplication::setColorSpec.
+       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
+       behaviour with 'raster' by calling QApplication::setColorSpec because
+       of a bug where some pixmaps become blueish:
 
-       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+       https://bugs.launchpad.net/unity-2d/+bug/689877
     */
     QApplication::setGraphicsSystem("raster");
-    QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
