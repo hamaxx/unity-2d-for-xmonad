@@ -22,7 +22,7 @@ Description: Unity 2D Launcher
  Notifications from individual applications are also highlighted in the
  launcher.
  
-Package: unity-qt-panel
+Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: unity-qt-panel
