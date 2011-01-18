@@ -62,36 +62,42 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
 {
     QNetworkAccessManager* manager = static_cast<QNetworkAccessManager*>(sender());
 
-    if (reply->error() == QNetworkReply::NoError &&
-        // FIXME: handle HTTP redirects
-        reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 200) {
-        QString data = reply->readAll();
-
-        /* lookup title */
-        QRegExp reTitle("<title>(.*)</title>", Qt::CaseInsensitive);
-        int index = reTitle.indexIn(data);
-        if (index != -1) {
-            m_title = reTitle.cap(1).simplified();
+    if (reply->error() == QNetworkReply::NoError) {
+        QVariant redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+        if (redirect.isValid()) {
+            // FIXME: handle redirect loops (with a max number of redirects)
+            m_url = redirect.toUrl();
+            fetchAndScrap();
         }
+        else {
+            QString data = reply->readAll();
 
-        /* favicons lookup */
-        QRegExp reFavicon1("<link rel=\"apple-touch-icon\".*href=\"(.*)\"", Qt::CaseInsensitive);
-        reFavicon1.setMinimal(true);
-        index = reFavicon1.indexIn(data);
-        if (index != -1) {
-            m_favicons << reFavicon1.cap(1);
-        }
-        QRegExp reFavicon2("<link rel=\"(shortcut )?icon\".*href=\"(.*)\"", Qt::CaseInsensitive);
-        reFavicon2.setMinimal(true);
-        index = reFavicon2.indexIn(data);
-        if (index != -1) {
-            m_favicons << reFavicon2.cap(2);
-        }
-        m_favicons << "/apple-touch-icon.png";
-        m_favicons << "/favicon.ico";
+            /* lookup title */
+            QRegExp reTitle("<title>(.*)</title>", Qt::CaseInsensitive);
+            int index = reTitle.indexIn(data);
+            if (index != -1) {
+                m_title = reTitle.cap(1).simplified();
+            }
 
-        m_current_favicon = m_favicons.constBegin();
-        tryNextFavicon();
+            /* favicons lookup */
+            QRegExp reFavicon1("<link rel=\"apple-touch-icon\".*href=\"(.*)\"", Qt::CaseInsensitive);
+            reFavicon1.setMinimal(true);
+            index = reFavicon1.indexIn(data);
+            if (index != -1) {
+                m_favicons << reFavicon1.cap(1);
+            }
+            QRegExp reFavicon2("<link rel=\"(shortcut )?icon\".*href=\"(.*)\"", Qt::CaseInsensitive);
+            reFavicon2.setMinimal(true);
+            index = reFavicon2.indexIn(data);
+            if (index != -1) {
+                m_favicons << reFavicon2.cap(2);
+            }
+            m_favicons << "/apple-touch-icon.png";
+            m_favicons << "/favicon.ico";
+
+            m_current_favicon = m_favicons.begin();
+            tryNextFavicon();
+        }
     }
     else {
         done();
@@ -104,7 +110,7 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
 void
 WebScrapper::tryNextFavicon()
 {
-    if (m_current_favicon == m_favicons.constEnd()) {
+    if (m_current_favicon == m_favicons.end()) {
         done();
         return;
     }
@@ -125,21 +131,27 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
 {
     QNetworkAccessManager* manager = static_cast<QNetworkAccessManager*>(sender());
 
-    if (reply->error() == QNetworkReply::NoError &&
-        // FIXME: handle HTTP redirects
-        reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 200) {
-        QUrl url = reply->url();
+    if (reply->error() == QNetworkReply::NoError) {
+        QVariant redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+        if (redirect.isValid()) {
+            // FIXME: handle redirect loops (with a max number of redirects)
+            *m_current_favicon = redirect.toUrl().toEncoded();
+            tryNextFavicon();
+        }
+        else {
+            QUrl url = reply->url();
 
-        check_icon_store_exists();
-        QString filename = ABS_ICON_STORE + computeUrlHash(url);
-        QString extension = url.path().mid(url.path().lastIndexOf("."));
-        QFile file(filename + extension);
-        file.open(QIODevice::WriteOnly);
-        file.write(reply->readAll());
-        file.close();
+            check_icon_store_exists();
+            QString filename = ABS_ICON_STORE + computeUrlHash(url);
+            QString extension = url.path().mid(url.path().lastIndexOf("."));
+            QFile file(filename + extension);
+            file.open(QIODevice::WriteOnly);
+            file.write(reply->readAll());
+            file.close();
 
-        m_favicon = file.fileName();
-        done();
+            m_favicon = file.fileName();
+            done();
+        }
     }
     else {
         m_current_favicon++;

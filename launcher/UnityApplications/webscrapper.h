@@ -44,7 +44,7 @@ private:
 
     QString m_title;
     QStringList m_favicons;
-    QStringList::const_iterator m_current_favicon;
+    QStringList::iterator m_current_favicon;
     QString m_favicon;
 
     void tryNextFavicon();
