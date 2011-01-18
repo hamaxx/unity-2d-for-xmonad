@@ -49,7 +49,6 @@ void LauncherView::dragEnterEvent(QDragEnterEvent *event)
     if (!event->mimeData()->hasUrls()) return;
 
     foreach (QUrl url, event->mimeData()->urls()) {
-        qDebug() << "drag enter with" << url;
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
             url.scheme().startsWith("http")) {
             event->acceptProposedAction();
