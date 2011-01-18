@@ -1,5 +1,5 @@
 #define INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-#define UNITY_QT_DIR "${UNITY_QT_DIR}"
+#define UNITY_2D_DIR "${UNITY_2D_DIR}"
 #define UNITY_DIR "${UNITY_DIR}"
 
 #include <QCoreApplication>
@@ -9,15 +9,15 @@ inline bool isRunningInstalled() {
     return cachedResult;
 }
 
-inline QString unityQtDirectory() {
+inline QString unity2dDirectory() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/" UNITY_QT_DIR);
+        return QString(INSTALL_PREFIX "/" UNITY_2D_DIR);
     } else {
         return QString(QCoreApplication::applicationDirPath()+"/../../");
     }
 }
 
-inline QString unityQtImportPath() {
+inline QString unity2dImportPath() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/lib/qt4/imports");
     } else {

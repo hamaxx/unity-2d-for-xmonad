@@ -1,13 +1,24 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 // Self
 #include "datetimeindicator.h"
 
@@ -22,12 +33,12 @@
 #include <QDateTime>
 
 // From dbus-shared.h
-#define  SERVICE_NAME     "org.ayatana.indicator.datetime"
-#define  SERVICE_IFACE    "org.ayatana.indicator.datetime.service"
-#define  SERVICE_OBJ      "/org/ayatana/indicator/datetime/service"
+#define  SERVICE_NAME     "com.canonical.indicator.datetime"
+#define  SERVICE_IFACE    "com.canonical.indicator.datetime.service"
+#define  SERVICE_OBJ      "/com.canonical/indicator/datetime/service"
 #define  SERVICE_VERSION  1
 
-#define  MENU_OBJ      "/org/ayatana/indicator/datetime/menu"
+#define  MENU_OBJ      "/com.canonical/indicator/datetime/menu"
 
 #define  DBUSMENU_CALENDAR_MENUITEM_TYPE "x-canonical-calendar-item"
 ////

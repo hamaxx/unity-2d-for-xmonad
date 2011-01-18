@@ -1,4 +1,4 @@
-Compiling unity-qt
+Compiling unity-2d
 ==================
 
 cmake . && make
@@ -7,9 +7,9 @@ cmake . && make
 Running separate components
 ===========================
 
-./launcher/app/unity-qt-launcher
-./panel/app/unity-qt-panel
-./places/app/unity-qt-places
+./launcher/app/unity-2d-launcher
+./panel/app/unity-2d-panel
+./places/app/unity-2d-places
 
 
 Notes on the dash (places)
@@ -24,5 +24,5 @@ gconftool-2 -s /apps/nautilus/preferences/show_desktop -t bool false
 
 The dash exposes a D-Bus property for activation and deactivation:
 
-com.canonical.UnityQt /dash local.DashDeclarativeView.active true|false
+com.canonical.Unity2d /dash local.DashDeclarativeView.active true|false
 

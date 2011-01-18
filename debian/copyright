@@ -3,7 +3,7 @@ on Mon, 30 Aug 2010 14:56:59 +0200
 
 It was downloaded from:
 
-    <https://code.launchpad.net/~watuppa-team/watuppa/launcher>
+    <https://code.launchpad.net/~upicek-team/upicek/trunk>
 
 Upstream Author(s):
 
@@ -19,8 +19,7 @@ License:
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    the Free Software Foundation, version 3.
 
     This package is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,8 +32,75 @@ License:
 On Debian systems, the complete text of the GNU General
 Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
+The following files are licensed under the GNU General Public License 
+version 2:
+
+panel/applets/indicator/indicator.h
+panel/applets/indicator/indicator.c
+panel/applets/legacytray/fdoselectionmanager.c
+panel/applets/legacytray/fdoselectionmanager.h
+panel/applets/legacytray/x11embedpainter.cpp
+panel/applets/legacytray/x11embedpainter.h
+panel/applets/legacytray/x11embeddelegate.cpp
+panel/applets/legacytray/x11embeddelegate.h
+panel/applets/legacytray/x11embedcontainer.cpp
+panel/applets/legacytray/x11embedcontainer.h
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+On Debian systems, the complete text of the GNU General
+Public License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+Individual parts of this package are licensed under the GNU Lesser General Public
+3 License:
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as 
+    published by the Free Software Foundation, version 3.
+
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+On Debian systems, the complete text of the GNU General
+Public License version 3 can be found in `/usr/share/common-licenses/LGPL-3'.
+
+The file panel/lib/debug_p.h licensed under the GNU Library General Public
+2.1 License :
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Library General Public License as 
+    published by the Free Software Foundation, version 2.
+
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Library General Public License for more details.
+
+    You should have received a copy of the GNU Library General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+On Debian systems, the complete text of the GNU General
+Public License version 2 can be found in `/usr/share/common-licenses/LGPL-2'.
+
 The Debian packaging is:
 
     Copyright (C) 2010 Canonical Ltd.
 
 and is licensed under the GPL version 3, see above.
+

@@ -1,13 +1,24 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 // Self
 #include "keyboardmodifiersmonitor.h"
 
@@ -48,9 +59,9 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject* parent)
         setupXkb();
     }
 
-    UnityQtApplication* app = UnityQtApplication::instance();
+    Unity2dApplication* app = Unity2dApplication::instance();
     Q_ASSERT(app);
-    UnityQtApplication::instance()->installX11EventFilter(this);
+    Unity2dApplication::instance()->installX11EventFilter(this);
 }
 
 KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
@@ -60,7 +71,7 @@ KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
 
 KeyboardModifiersMonitor* KeyboardModifiersMonitor::instance()
 {
-    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(UnityQtApplication::instance());
+    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(Unity2dApplication::instance());
     return monitor;
 }
 

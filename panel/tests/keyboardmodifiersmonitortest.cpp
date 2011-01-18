@@ -1,18 +1,28 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // Local
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
-#include <unityqtapplication.h>
+#include <unity2dapplication.h>
 
 // Qt
 #include <QSignalSpy>
@@ -24,12 +34,12 @@
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
 
-// Equivalent to QTEST_MAIN, but using UnityQtApplication instead of
+// Equivalent to QTEST_MAIN, but using Unity2dApplication instead of
 // QApplication
 #define UQ_TEST_MAIN(TestObject) \
 int main(int argc, char *argv[]) \
 { \
-    UnityQtApplication app(argc, argv); \
+    Unity2dApplication app(argc, argv); \
     QTEST_DISABLE_KEYPAD_NAVIGATION \
     TestObject tc; \
     return QTest::qExec(&tc, argc, argv); \
