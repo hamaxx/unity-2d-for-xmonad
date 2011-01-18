@@ -33,7 +33,7 @@ set(uqapplets_SRCS
     legacytray/x11embedpainter.cpp
     )
 
-qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
+qt4_add_dbus_adaptor(uqapplets_SRCS appname/org.ayatana.AppMenu.Registrar.xml
     registrar.h Registrar
     )
 
