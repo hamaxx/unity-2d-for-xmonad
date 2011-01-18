@@ -7,43 +7,74 @@ Item {
     property int row
     property int column
 
-    property real cellScale
-    property int cellX
-    property int cellY
+    z: 1
 
-    onStateChanged: {
-        if (state == "switcher") spread.activateSpread();
-        else spread.cancelSpread();
+    Connections {
+        target: control
+        onActivateSpread: {
+            spread.applicationId = applicationId
+            spread.activateSpread()
+        }
     }
 
     transformOrigin: Item.TopLeft
     x: column * childrenRect.width
     y: row * childrenRect.height
 
+    onStateChanged: if (state == "screen") spread.cancelSpread()
+
     Spread {
         id: spread
-        onExiting: switcher.state = ""
+        onExiting: workspace.state = "screen"
+        onBackgroundClicked: {
+            if (switcher.zoomedWorkspace) {
+                // If another workspace is zoomed, cancel the current zoom.
+                // If we are zooomed, then exit to our workspace.
+                if (switcher.zoomedWorkspace != workspace)
+                    switcher.zoomedWorkspace.state = ""
+                else workspace.state = "screen"
+                switcher.zoomedWorkspace = null
+            } else if (workspace.state == "") {
+                workspace.state = "zoomed"
+                switcher.zoomedWorkspace = workspace
+            }
+        }
     }
 
     states: [
         State {
-            name: "switcher"
+            name: "zoomed"
             PropertyChanges {
                 target: workspace
-                scale: cellScale
-                x: cellX
-                y: cellY
+                scale: switcher.zoomedScale
+                z: 2
+                x: switcher.leftMargin
+                y: switcher.topMargin
+            }
+        },
+        State {
+            name: "screen"
+            PropertyChanges {
+                target: workspace
+                scale: 1.0
+                z: 2
+                x: 0
+                y: 0
             }
         }
     ]
 
     transitions: [
         Transition {
-            NumberAnimation {
-                target: workspace
-                properties: "x,y,scale"
-                duration: 250
-                easing.type: Easing.InOutSine
+            SequentialAnimation {
+                PropertyAction { target: workspace; property: "z"; value: 2 }
+                NumberAnimation {
+                    target: workspace
+                    properties: "x,y,scale"
+                    duration: 250
+                    easing.type: Easing.InOutSine
+                }
+                PropertyAction { target: workspace; property: "z"; value: 2 }
             }
         }
     ]

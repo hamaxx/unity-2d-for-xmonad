@@ -10,8 +10,6 @@ Rectangle {
 
     color: "black"
 
-    property int applicationId
-
     property int workspaces: 3
     property int columns: Math.ceil(Math.sqrt(workspaces))
     property int rows: columns
@@ -22,35 +20,25 @@ Rectangle {
     property int topMargin: 30
     property int spacing: 25
 
+    /* FIXME: cell scale isn't correct in case the workspaces layout is taller than wider */
     property int availableWidth: switcher.width - ((columns - 1) * spacing) - rightMargin - leftMargin
-    property real cellScale: (availableWidth / columns) / switcher.width
+    property real cellScale: availableWidth / columns / switcher.width
+    property real zoomedScale: availableWidth / switcher.width
+
+    property variant zoomedWorkspace
 
     Repeater {
         model: switcher.workspaces
         delegate: Workspace {
             id: workspace
 
-            state: switcher.state
-            applicationId: switcher.applicationId
-
             row: Math.floor(index / columns)
             column: index % columns
 
-            cellX: leftMargin + column * (switcher.width * cellScale) + (column * switcher.spacing)
-            cellY: topMargin + row * (switcher.height * cellScale) + (row * switcher.spacing)
-            cellScale:  switcher.cellScale
+            x: column * (switcher.width * cellScale) + (column * switcher.spacing)
+            y: row * (switcher.height * cellScale) + (row * switcher.spacing)
+            scale:  switcher.cellScale
        }
-    }
-
-    Connections {
-        target: control
-
-        onActivateSpread: {
-            switcher.applicationId = applicationId
-            switcher.state = "switcher"
-        }
-
-        onCancelSpread: switcher.state = ""
     }
 }
 

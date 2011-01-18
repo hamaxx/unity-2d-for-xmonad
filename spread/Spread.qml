@@ -26,6 +26,7 @@ Item {
     property int applicationId
 
     signal exiting
+    signal backgroundClicked
 
     /* List of windows that will be shown in the spread. */
     WindowsList {
@@ -40,7 +41,7 @@ Item {
         MouseArea {
             /* FIXME: SPREAD: disable this MouseArea when we're not switching workspaces */
             anchors.fill: parent
-            onClicked: layout.state = ""
+            onClicked: backgroundClicked()
         }
     }
 
