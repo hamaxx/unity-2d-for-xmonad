@@ -84,7 +84,7 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
                 m_title = reTitle.cap(1).simplified();
             }
 
-            /* favicons lookup */
+            /* lookup favicons */
             QRegExp reFavicon1("<link rel=\"apple-touch-icon\".*href=\"(.*)\"", Qt::CaseInsensitive);
             reFavicon1.setMinimal(true);
             index = reFavicon1.indexIn(data);
