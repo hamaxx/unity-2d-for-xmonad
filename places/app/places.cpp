@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
        behaviour with 'raster' by calling QApplication::setColorSpec because
        of a bug where some pixmaps become blueish:
 
-       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+       https://bugs.launchpad.net/unity-2d/+bug/689877
     */
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
