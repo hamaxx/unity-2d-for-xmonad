@@ -62,7 +62,9 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
 {
     QNetworkAccessManager* manager = static_cast<QNetworkAccessManager*>(sender());
 
-    if (reply->error() == QNetworkReply::NoError) {
+    if (reply->error() == QNetworkReply::NoError &&
+        // FIXME: handle HTTP redirects
+        reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 200) {
         QString data = reply->readAll();
 
         /* lookup title */
@@ -123,7 +125,9 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
 {
     QNetworkAccessManager* manager = static_cast<QNetworkAccessManager*>(sender());
 
-    if (reply->error() == QNetworkReply::NoError) {
+    if (reply->error() == QNetworkReply::NoError &&
+        // FIXME: handle HTTP redirects
+        reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 200) {
         QUrl url = reply->url();
 
         check_icon_store_exists();
