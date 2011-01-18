@@ -44,12 +44,14 @@ LauncherView::LauncherView() :
 
 void LauncherView::dragEnterEvent(QDragEnterEvent *event)
 {
-    // Check that data has a list of URLs and that at least one is
-    // a desktop file.
+    // Check that data has a list of URLs and that at least one is either
+    // a desktop file or a web page.
     if (!event->mimeData()->hasUrls()) return;
 
     foreach (QUrl url, event->mimeData()->urls()) {
-        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+        qDebug() << "drag enter with" << url;
+        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+            url.scheme().startsWith("http")) {
             event->acceptProposedAction();
             break;
         }
@@ -68,6 +70,10 @@ void LauncherView::dropEvent(QDropEvent *event)
     foreach (QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
+            accepted = true;
+        }
+        else if (url.scheme().startsWith("http")) {
+            emit webpageUrlDropped(url.toEncoded());
             accepted = true;
         }
     }

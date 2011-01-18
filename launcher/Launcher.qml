@@ -142,6 +142,7 @@ Item {
     Connections {
         target: launcherView
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
+        onWebpageUrlDropped: applications.insertWebFavorite(url)
     }
 
     Connections {

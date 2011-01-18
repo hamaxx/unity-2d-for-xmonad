@@ -33,6 +33,7 @@ public:
 
 signals:
     void desktopFileDropped(QString path);
+    void webpageUrlDropped(QString url);
 
 public slots:
     void workAreaResized(int screen);
