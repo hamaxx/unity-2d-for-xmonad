@@ -37,10 +37,13 @@ static void check_icon_store_exists()
     }
 }
 
+static const uint MAX_REDIRECTS = 6;
+
 WebScrapper::WebScrapper(LauncherApplication* application, const QUrl& url, QObject* parent)
     : QObject(parent)
     , m_application(application)
     , m_url(url)
+    , m_redirects(0)
 {
 }
 
@@ -65,9 +68,11 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
     if (reply->error() == QNetworkReply::NoError) {
         QVariant redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
         if (redirect.isValid()) {
-            // FIXME: handle redirect loops (with a max number of redirects)
-            m_url = redirect.toUrl();
-            fetchAndScrap();
+            m_redirects++;
+            if (m_redirects < MAX_REDIRECTS) {
+                m_url = redirect.toUrl();
+                fetchAndScrap();
+            }
         }
         else {
             QString data = reply->readAll();
@@ -96,6 +101,7 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
             m_favicons << "/favicon.ico";
 
             m_current_favicon = m_favicons.begin();
+            m_redirects = 0;
             tryNextFavicon();
         }
     }
@@ -134,8 +140,14 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
     if (reply->error() == QNetworkReply::NoError) {
         QVariant redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
         if (redirect.isValid()) {
-            // FIXME: handle redirect loops (with a max number of redirects)
-            *m_current_favicon = redirect.toUrl().toEncoded();
+            m_redirects++;
+            if (m_redirects < MAX_REDIRECTS) {
+                *m_current_favicon = redirect.toUrl().toEncoded();
+            }
+            else {
+                m_current_favicon++;
+                m_redirects = 0;
+            }
             tryNextFavicon();
         }
         else {
@@ -155,6 +167,7 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
     }
     else {
         m_current_favicon++;
+        m_redirects = 0;
         tryNextFavicon();
     }
 

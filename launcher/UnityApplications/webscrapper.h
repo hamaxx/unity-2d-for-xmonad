@@ -46,6 +46,7 @@ private:
     QStringList m_favicons;
     QStringList::iterator m_current_favicon;
     QString m_favicon;
+    uint m_redirects;
 
     void tryNextFavicon();
     static QString computeUrlHash(const QUrl& url);
