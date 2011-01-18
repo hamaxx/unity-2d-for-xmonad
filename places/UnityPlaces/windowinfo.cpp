@@ -25,12 +25,6 @@ unsigned int WindowInfo::contentXid() const
     return m_contentXid;
 }
 
-BamfApplication* WindowInfo::getBamApplicationForXid(unsigned int xid)
-{
-    BamfMatcher &matcher = BamfMatcher::get_default();
-    return matcher.application_for_xid(xid);
-}
-
 BamfWindow* WindowInfo::getBamfWindowForApplication(BamfApplication *application,
                                                     unsigned int xid)
 {
@@ -94,7 +88,7 @@ void WindowInfo::setContentXid(unsigned int contentXid)
        belongs. However what we need is the actual BamfWindow, so we search
        for it among all the BamfWindows for that app. */
     BamfApplication *bamfApplication;
-    bamfApplication = getBamApplicationForXid(contentXid);
+    bamfApplication = BamfMatcher::get_default().application_for_xid(contentXid);
     BamfWindow *bamfWindow = getBamfWindowForApplication(bamfApplication, contentXid);
     if (bamfWindow == NULL) {
         return;
