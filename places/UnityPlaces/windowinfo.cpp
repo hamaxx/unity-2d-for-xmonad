@@ -25,6 +25,62 @@ unsigned int WindowInfo::contentXid() const
     return m_contentXid;
 }
 
+BamfWindow* WindowInfo::getBamfWindowAndApplicationForXid(unsigned int xid,
+                                                          BamfApplication **application)
+{
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    *application = matcher.application_for_xid(xid);
+    if (*application == NULL) {
+        return NULL;
+    }
+
+    BamfWindow *window = NULL;
+    BamfWindowList *windows = (*application)->windows();
+    for (int i = 0; i < windows->size(); i++) {
+        window = windows->at(i);
+        if (window->xid() == xid) {
+            break;
+        }
+    }
+
+    return window;
+}
+
+
+WnckWindow* WindowInfo::getWnckWindowForXid(unsigned int xid)
+{
+    /* Since WNCK does not update its window list in real time,
+       it may be possible that it doesn't know yet know about xid.
+       In that case, we first ask it to update its list, then try
+       again. */
+    WnckWindow *window = wnck_window_get(xid);
+    if (window == NULL) {
+        wnck_screen_force_update(wnck_screen_get_default());
+        window = wnck_window_get(xid);
+    }
+    return window;
+}
+
+unsigned int WindowInfo::findTopmostAncerstor(unsigned int xid)
+{
+    unsigned long root, *children;
+    unsigned long parent = xid;
+    unsigned int nchildren;
+    unsigned int topmost;
+    do {
+        topmost = parent;
+
+        if (XQueryTree (QX11Info::display(), topmost, &root,
+                        &parent, &children, &nchildren) == 0) {
+            /* In case the query fails, fallback to our original xid */
+            topmost = xid;
+            break;
+        }
+    } while (parent != root);
+
+    return topmost;
+}
+
 void WindowInfo::setContentXid(unsigned int contentXid)
 {
     if (contentXid == m_contentXid) {
@@ -33,38 +89,17 @@ void WindowInfo::setContentXid(unsigned int contentXid)
 
     /* First figure out what's the BamfApplication to which the content Xid
        belongs. However what we need is the actual BamfWindow, so we search
-       for it among all the BamfWindows for that app.
-       Finally we ask WNCK to give us its own WnckWindow, since BAMF doesn't
-       provide us enough features to handle on its own all we need. */
-    BamfMatcher &matcher = BamfMatcher::get_default();
-    BamfApplication *bamfApplication = matcher.application_for_xid(contentXid);
-    if (bamfApplication == NULL) {
-        return;
-    }
-
-    BamfWindow *bamfWindow;
-    BamfWindowList *bamfWindows = bamfApplication->windows();
-    for (int i = 0; i < bamfWindows->size(); i++) {
-        bamfWindow = bamfWindows->at(i);
-        if (bamfWindow->xid() == contentXid) {
-            break;
-        }
-    }
-
+       for it among all the BamfWindows for that app. */
+    BamfApplication *bamfApplication;
+    BamfWindow *bamfWindow = getBamfWindowAndApplicationForXid(contentXid,
+                                                               &bamfApplication);
     if (bamfWindow == NULL) {
         return;
     }
 
-    /* Since WNCK does not update its window list in real time,
-       it may be possible that it doesn't know yet know about xid.
-       In that case, we first ask it to update its list, then try
-       again. */
-    WnckWindow *wnckWindow = wnck_window_get(contentXid);
-    if (wnckWindow == NULL) {
-        wnck_screen_force_update(wnck_screen_get_default());
-        wnckWindow = wnck_window_get(contentXid);
-    }
-
+    /* We ask WNCK to give us its own WnckWindow, since BAMF doesn't
+       provide us enough features to handle on its own all we need. */
+    WnckWindow *wnckWindow = getWnckWindowForXid(contentXid);
     if (wnckWindow == NULL) {
         return;
     }
@@ -76,19 +111,7 @@ void WindowInfo::setContentXid(unsigned int contentXid)
        Therefore we climb up the X11 window tree to find the topmost ancestor
        for the content window, which should be where the WM places the decorations.
     */
-    unsigned long root, *children;
-    unsigned long parent = contentXid;
-    unsigned int nchildren;
-    unsigned int decoratedXid;
-    do {
-        decoratedXid = parent;
-
-        if (XQueryTree (QX11Info::display(), decoratedXid, &root,
-                        &parent, &children, &nchildren) == 0) {
-            decoratedXid = contentXid;
-            break;
-        }
-    } while (parent != root);
+    unsigned int decoratedXid = findTopmostAncerstor(contentXid);
 
     /* Set member variables and emit changed signals */
     m_bamfApplication = bamfApplication;

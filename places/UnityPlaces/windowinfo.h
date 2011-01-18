@@ -25,6 +25,10 @@ typedef struct _WnckWindow WnckWindow;
    decorated window, while the title and icon are relative to the content.
 */
 
+class BamfWindow;
+class BamfApplication;
+typedef struct _WnckWindow WnckWindow;
+
 /* FIXME: position, size, z, title and icon values are not updated real time */
 class WindowInfo : public QObject
 {
@@ -71,8 +75,11 @@ Q_SIGNALS:
 
 private:
     void updateGeometry();
+    BamfWindow* getBamfWindowAndApplicationForXid(unsigned int xid,
+                                                  BamfApplication **application);
+    WnckWindow* getWnckWindowForXid(unsigned int xid);
+    unsigned int findTopmostAncerstor(unsigned int xid);
 
-private:
     BamfApplication *m_bamfApplication;
     BamfWindow *m_bamfWindow;
     WnckWindow *m_wnckWindow;
