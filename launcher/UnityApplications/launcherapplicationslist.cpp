@@ -8,6 +8,7 @@
 
 #include <QStringList>
 #include <QDir>
+#include <QByteArray>
 #include <QCryptographicHash>
 #include <QDebug>
 
@@ -186,12 +187,12 @@ LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* applicati
             if (!favicon.isEmpty()) {
                 g_key_file_set_string(key_file, "Desktop Entry", "Icon", favicon.toUtf8().constData());
             }
-            QString contents = g_key_file_to_data(key_file, NULL, NULL);
+            QByteArray contents = g_key_file_to_data(key_file, NULL, NULL);
             g_key_file_free(key_file);
 
             QFile file(filename);
             file.open(QIODevice::WriteOnly);
-            file.write(contents.toUtf8());
+            file.write(contents);
             file.close();
 
             application->setDesktopFile(filename);
