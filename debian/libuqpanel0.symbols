@@ -4,7 +4,6 @@ libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZN12Unity2dStyleC2Ev@Base 0.1
  _ZN12Unity2dStyleD0Ev@Base 0.1
  _ZN12Unity2dStyleD1Ev@Base 0.1
- _ZN12Unity2dStyleD2Ev@Base 0.1
  _ZN18Unity2dApplication11qt_metacallEN11QMetaObject4CallEiPPv@Base 0.1
  _ZN18Unity2dApplication11qt_metacastEPKc@Base 0.1
  _ZN18Unity2dApplication14x11EventFilterEP7_XEvent@Base 0.1
@@ -16,7 +15,6 @@ libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZN18Unity2dApplicationC2ERiPPc@Base 0.1
  _ZN18Unity2dApplicationD0Ev@Base 0.1
  _ZN18Unity2dApplicationD1Ev@Base 0.1
- _ZN18Unity2dApplicationD2Ev@Base 0.1
  _ZN22AbstractX11EventFilterD0Ev@Base 0.1
  _ZN22AbstractX11EventFilterD1Ev@Base 0.1
  _ZN22AbstractX11EventFilterD2Ev@Base 0.1
@@ -32,12 +30,8 @@ libuqpanel.so.0 libuqpanel0 #MINVER#
  _ZN24KeyboardModifiersMonitorD1Ev@Base 0.1
  _ZN24KeyboardModifiersMonitorD2Ev@Base 0.1
  (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE13detach_helperEi@Base 0.1
- (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE13detach_helperEv@Base 0.1
- (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE18detach_helper_growEii@Base 0.1
  (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE6appendERKS1_@Base 0.1
- (optional=templinst)_ZN5QListIP22AbstractX11EventFilterE9removeAllERKS1_@Base 0.1
  (optional=templinst)_ZN5QListIP22AbstractX11EventFilterED1Ev@Base 0.1
- (optional=templinst)_ZN5QListIP22AbstractX11EventFilterED2Ev@Base 0.1
  _ZN7Unity2d5Panel10paintEventEP11QPaintEvent@Base 0.1
  _ZN7Unity2d5Panel11qt_metacallEN11QMetaObject4CallEiPPv@Base 0.1
  _ZN7Unity2d5Panel11qt_metacastEPKc@Base 0.1
