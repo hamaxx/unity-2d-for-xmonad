@@ -26,6 +26,7 @@ add_library(uqlauncher ${launcher_SRCS} ${launcher_MOC_SRCS})
 add_executable(unity-2d-launcher launcher.cpp)
 
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
