@@ -25,17 +25,21 @@ unsigned int WindowInfo::contentXid() const
     return m_contentXid;
 }
 
-BamfWindow* WindowInfo::getBamfWindowAndApplicationForXid(unsigned int xid,
-                                                          BamfApplication **application)
+BamfApplication* WindowInfo::getBamApplicationForXid(unsigned int xid)
 {
     BamfMatcher &matcher = BamfMatcher::get_default();
-    *application = matcher.application_for_xid(xid);
-    if (*application == NULL) {
+    return matcher.application_for_xid(xid);
+}
+
+BamfWindow* WindowInfo::getBamfWindowForApplication(BamfApplication *application,
+                                                    unsigned int xid)
+{
+    if (application == NULL) {
         return NULL;
     }
 
     BamfWindow *window = NULL;
-    BamfWindowList *windows = (*application)->windows();
+    BamfWindowList *windows = application->windows();
     for (int i = 0; i < windows->size(); i++) {
         window = windows->at(i);
         if (window->xid() == xid) {
@@ -45,7 +49,6 @@ BamfWindow* WindowInfo::getBamfWindowAndApplicationForXid(unsigned int xid,
 
     return window;
 }
-
 
 WnckWindow* WindowInfo::getWnckWindowForXid(unsigned int xid)
 {
@@ -61,7 +64,7 @@ WnckWindow* WindowInfo::getWnckWindowForXid(unsigned int xid)
     return window;
 }
 
-unsigned int WindowInfo::findTopmostAncerstor(unsigned int xid)
+unsigned int WindowInfo::findTopmostAncestor(unsigned int xid)
 {
     unsigned long root, *children;
     unsigned long parent = xid;
@@ -91,8 +94,8 @@ void WindowInfo::setContentXid(unsigned int contentXid)
        belongs. However what we need is the actual BamfWindow, so we search
        for it among all the BamfWindows for that app. */
     BamfApplication *bamfApplication;
-    BamfWindow *bamfWindow = getBamfWindowAndApplicationForXid(contentXid,
-                                                               &bamfApplication);
+    bamfApplication = getBamApplicationForXid(contentXid);
+    BamfWindow *bamfWindow = getBamfWindowForApplication(bamfApplication, contentXid);
     if (bamfWindow == NULL) {
         return;
     }
@@ -111,7 +114,7 @@ void WindowInfo::setContentXid(unsigned int contentXid)
        Therefore we climb up the X11 window tree to find the topmost ancestor
        for the content window, which should be where the WM places the decorations.
     */
-    unsigned int decoratedXid = findTopmostAncerstor(contentXid);
+    unsigned int decoratedXid = findTopmostAncestor(contentXid);
 
     /* Set member variables and emit changed signals */
     m_bamfApplication = bamfApplication;

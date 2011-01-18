@@ -75,10 +75,10 @@ Q_SIGNALS:
 
 private:
     void updateGeometry();
-    BamfWindow* getBamfWindowAndApplicationForXid(unsigned int xid,
-                                                  BamfApplication **application);
+    BamfApplication* getBamApplicationForXid(unsigned int xid);
+    BamfWindow* getBamfWindowForApplication(BamfApplication *application, unsigned int xid);
     WnckWindow* getWnckWindowForXid(unsigned int xid);
-    unsigned int findTopmostAncerstor(unsigned int xid);
+    unsigned int findTopmostAncestor(unsigned int xid);
 
     BamfApplication *m_bamfApplication;
     BamfWindow *m_bamfWindow;
