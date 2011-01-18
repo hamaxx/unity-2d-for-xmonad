@@ -1,3 +1,12 @@
+unity-2d (0.4) UNRELEASED; urgency=low
+
+  * Merged packaging improvements from natty including:
+    - Fix libuqpanel.symbols for platform independence
+    - Renamed packages from unity-qt-* to unity-2d-* adding a Conflicts/Replaces
+      for safe upgrade
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 18 Jan 2011 09:42:11 -0200
+
 unity-qt (0.2~bzr289) maverick; urgency=low
 
   * Snapshot release.

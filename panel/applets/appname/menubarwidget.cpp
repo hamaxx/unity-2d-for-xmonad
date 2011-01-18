@@ -1,19 +1,31 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 // Self
 #include "menubarwidget.h"
 
 // Local
 #include "config.h"
 #include "debug_p.h"
+#include "keyboardmodifiersmonitor.h"
 #include "registrar.h"
 
 // dbusmenu-qt
@@ -76,7 +88,7 @@ void MenuBarWidget::setupRegistrar()
 void MenuBarWidget::setupMenuBar()
 {
     QLabel* separatorLabel = new QLabel;
-    QPixmap pix(unityQtDirectory() + "/panel/artwork/divider.png");
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
     separatorLabel->setPixmap(pix);
     separatorLabel->setFixedSize(pix.size());
 
@@ -95,6 +107,11 @@ void MenuBarWidget::setupMenuBar()
     m_updateMenuBarTimer->setInterval(0);
     connect(m_updateMenuBarTimer, SIGNAL(timeout()),
         SLOT(updateMenuBar()));
+
+    // Repaint the menubar when modifiers change so that the shortcut underline
+    // is drawn or not
+    connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+        m_menuBar, SLOT(update()));
 }
 
 void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
@@ -212,6 +229,11 @@ bool MenuBarWidget::eventFilter(QObject* object, QEvent* event)
 bool MenuBarWidget::isEmpty() const
 {
     return m_menuBar->actions().isEmpty();
+}
+
+bool MenuBarWidget::isOpened() const
+{
+    return m_menuBar->activeAction();
 }
 
 // MenuBarClosedHelper ----------------------------------------

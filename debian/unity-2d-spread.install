@@ -1,0 +1,3 @@
+usr/bin/unity-2d-spread
+usr/share/dbus-1/services/unity-2d-spread.service
+usr/share/unity-2d/spread/*.qml

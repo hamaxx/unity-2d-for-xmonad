@@ -38,7 +38,7 @@
 static bool registerDBusService(DashDeclarativeView* view)
 {
     QDBusConnection bus = QDBusConnection::sessionBus();
-    if (!bus.registerService("com.canonical.UnityQt")) {
+    if (!bus.registerService("com.canonical.Unity2d")) {
         qCritical() << "Failed to register DBus service, is there another instance already running?";
         return false;
     }
@@ -114,13 +114,13 @@ int main(int argc, char *argv[])
 {
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
-       with 'raster' by calling QApplication::setColorSpec.
+       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
+       behaviour with 'raster' by calling QApplication::setColorSpec because
+       of a bug where some pixmaps become blueish:
 
-       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+       https://bugs.launchpad.net/unity-2d/+bug/689877
     */
     QApplication::setGraphicsSystem("raster");
-    QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
 
     DashDeclarativeView view;
@@ -137,15 +137,15 @@ int main(int argc, char *argv[])
     view.setAttribute(Qt::WA_OpaquePaintEvent);
     view.setAttribute(Qt::WA_NoSystemBackground);
 
-    view.engine()->addImportPath(unityQtImportPath());
+    view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/places/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
 
     if (!isRunningInstalled()) {
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
-        view.engine()->addImportPath(unityQtDirectory() + "/launcher/");
+        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
     }
 
     /* Load the QML UI, focus and show the window */

@@ -21,10 +21,14 @@
 #define SPREADVIEW_H
 
 #include <QDeclarativeView>
+#include <QEvent>
 
 class SpreadView : public QDeclarativeView
 {
     Q_OBJECT
+
+public:
+    explicit SpreadView();
 
 public slots:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
@@ -33,8 +37,13 @@ public slots:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
     void forceActivateWindow();
 
-public:
-    explicit SpreadView();
+protected:
+    virtual void focusInEvent( QFocusEvent * event );
+    virtual void focusOutEvent( QFocusEvent * event );
+    bool eventFilter(QObject *obj, QEvent *event);
+
+signals:
+    void outsideClick();
 };
 
 #endif // SPREADVIEW_H

@@ -3,24 +3,24 @@ set(panel_SRCS
     )
 
 qt4_automoc(${panel_SRCS})
-add_executable(unity-qt-panel ${panel_SRCS})
+add_executable(unity-2d-panel ${panel_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../applets
     )
 
-target_link_libraries(unity-qt-panel
+target_link_libraries(unity-2d-panel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     uqapplets
     uqpanel
     )
 
-install(TARGETS unity-qt-panel
+install(TARGETS unity-2d-panel
     RUNTIME DESTINATION bin
     )
 
-install(FILES unity-qt-panel.desktop
+install(FILES unity-2d-panel.desktop
     DESTINATION share/applications
     )

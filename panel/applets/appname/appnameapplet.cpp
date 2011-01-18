@@ -1,13 +1,24 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 // Self
 #include "appnameapplet.h"
 
@@ -15,8 +26,9 @@
 #include "menubarwidget.h"
 #include "windowhelper.h"
 
-// Unity-qt
+// Unity-2d
 #include <debug_p.h>
+#include <keyboardmodifiersmonitor.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -25,12 +37,10 @@
 // Qt
 #include <QAbstractButton>
 #include <QEvent>
-#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenuBar>
 #include <QPainter>
-#include <QSet>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
@@ -38,7 +48,7 @@ static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
-namespace UnityQt
+namespace Unity2d
 {
 
 class WindowButton : public QAbstractButton
@@ -165,6 +175,12 @@ struct AppNameAppletPrivate
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));
     }
+
+    void setupKeyboardModifiersMonitor()
+    {
+        QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+            q, SLOT(updateWidgets()));
+    }
 };
 
 AppNameApplet::AppNameApplet()
@@ -177,6 +193,7 @@ AppNameApplet::AppNameApplet()
     d->setupLabel();
     d->setupWindowButtonWidget();
     d->setupMenuBarWidget();
+    d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -199,7 +216,11 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool showMenu = window()->underMouse() && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp)
+        && (window()->underMouse()
+        || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
+        || d->m_menuBarWidget->isOpened()
+        );
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(isMaximized);

@@ -28,4 +28,5 @@ enable_testing()
 panel_tests(
     paneltest
     homebuttonapplettest
+    keyboardmodifiersmonitortest
     )

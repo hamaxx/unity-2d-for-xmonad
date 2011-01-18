@@ -1,13 +1,24 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 // Self
 #include "homebuttonapplet.h"
 
@@ -17,14 +28,14 @@
 // Qt
 #include <QHBoxLayout>
 #include <QDBusInterface>
-#include <QDBusPendingCall>
+#include <QDBusServiceWatcher>
+#include <QDBusConnectionInterface>
 
-static const char* DBUS_SERVICE = "com.canonical.UnityQt";
+static const char* DBUS_SERVICE = "com.canonical.Unity2d";
 static const char* DBUS_PATH = "/dash";
 static const char* DBUS_IFACE = "local.DashDeclarativeView";
 
-HomeButtonApplet::HomeButtonApplet()
-: m_button(new QToolButton)
+HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterface(NULL)
 {
     m_button->setAutoRaise(true);
     QIcon::setThemeName("unity-icon-theme");
@@ -35,7 +46,7 @@ HomeButtonApplet::HomeButtonApplet()
     m_button->setIconSize(QSize(24, 24));
     m_button->setIcon(QIcon::fromTheme("distributor-logo"));
     m_button->setCheckable(true);
-    connect(m_button, SIGNAL(clicked()), SLOT(slotButtonClicked()));
+    connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
 
     m_button->setStyleSheet(
             "QToolButton { border: none; margin: 0; padding: 0; width: 54 }"
@@ -48,23 +59,52 @@ HomeButtonApplet::HomeButtonApplet()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_button);
+
+    /* Check if the dash is already up and running by asking the bus instead of
+       trying to create an instance of the interface. Creating an instance
+       will cause DBUS to activate the dash and we don't want this to happen, especially
+       during startup where the dash is started with a delay. */
+    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DBUS_SERVICE);
+    if (reply.isValid() && reply.value() == true) {
+        connectToDash();
+    } else {
+        /* If the dash is not running, setup a notification so that we can
+           connect to it later when it comes up */
+        QDBusServiceWatcher* serviceWatcher = new QDBusServiceWatcher(DBUS_SERVICE, QDBusConnection::sessionBus(),
+                                                                      QDBusServiceWatcher::WatchForRegistration, this);
+        connect(serviceWatcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
+    }
 }
 
-void HomeButtonApplet::slotButtonClicked()
+void HomeButtonApplet::connectToDash()
 {
-    QDBusInterface iface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE);
-
-    bool dashActive = iface.property("active").toBool();
-
-    if (dashActive) {
-        iface.setProperty("active", false);
-    } else {
-        /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
-        iface.call(QDBus::Block, "activateHome");
+    if (m_dashInterface != NULL) {
+        return;
     }
 
-    /* Re-synchronise the dash's state with the button's checked state, just in case. */
-    m_button->setChecked(!dashActive);
+    m_dashInterface = new QDBusInterface(DBUS_SERVICE, DBUS_PATH, DBUS_IFACE,
+                                        QDBusConnection::sessionBus(), this);
+    m_button->connect(m_dashInterface, SIGNAL(activeChanged(bool)), SLOT(setChecked(bool)));
+
+    /* Immediately update the home button with the current state of the dash */
+    m_button->setChecked(m_dashInterface->property("active").toBool());
+}
+
+void HomeButtonApplet::toggleDash()
+{
+    if (m_dashInterface == NULL || !m_dashInterface->isValid()) {
+        connectToDash();
+    }
+
+    bool dashActive = m_dashInterface->property("active").toBool();
+
+    if (dashActive) {
+        m_dashInterface->setProperty("active", false);
+    } else {
+        /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
+        m_dashInterface->call(QDBus::Block, "activateHome");
+    }
 }
 
 #include "homebuttonapplet.moc"

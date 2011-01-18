@@ -23,7 +23,7 @@ qt4_add_dbus_adaptor(launcher_SRCS launcher.xml
 
 # Build
 add_library(uqlauncher ${launcher_SRCS} ${launcher_MOC_SRCS})
-add_executable(unity-qt-launcher launcher.cpp)
+add_executable(unity-2d-launcher launcher.cpp)
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -40,15 +40,15 @@ target_link_libraries(uqlauncher
     ${X11_LDFLAGS}
     )
 
-target_link_libraries(unity-qt-launcher
+target_link_libraries(unity-2d-launcher
     uqlauncher)
 
 # Install
-install(TARGETS unity-qt-launcher
+install(TARGETS unity-2d-launcher
     RUNTIME DESTINATION bin
     )
 
-install(FILES unity-qt-launcher.desktop
+install(FILES unity-2d-launcher.desktop
     DESTINATION share/applications
     )
 

@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
     /* Configure "artwork:" prefix so that any access to a file whose name starts
        with that prefix resolves properly. */
-    QDir::addSearchPath("artwork", unityQtDirectory() + "/launcher/artwork");
+    QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
     LauncherView view;
     view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
@@ -57,10 +57,10 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.setFocus();
 
-    view.engine()->addImportPath(unityQtImportPath());
+    view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unityQtDirectory() + "/launcher/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
 
     view.rootContext()->setContextProperty("launcherView", &view);
 

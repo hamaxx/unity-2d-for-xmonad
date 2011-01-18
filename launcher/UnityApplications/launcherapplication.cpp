@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2010 Canonical, Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* Those have to be included before any QObject-style header to avoid
    compilation errors. */
 #include <gdk/gdk.h>
@@ -269,7 +285,9 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
 void
 LauncherApplication::onWindowAdded(BamfWindow* window)
 {
-    windowAdded(window->xid());
+    if (window != NULL) {
+        windowAdded(window->xid());
+    }
 }
 
 int
@@ -325,10 +343,6 @@ bool
 LauncherApplication::launch()
 {
     if(m_appInfo == NULL) return false;
-
-    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
-                         "com.canonical.UnityQt.Spread");
-    iface.call("CancelSpread");
 
     GError* error = NULL;
     GdkAppLaunchContext *context;
@@ -397,10 +411,6 @@ LauncherApplication::show()
     if (size < 1) {
         return;
     }
-
-    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
-                         "com.canonical.UnityQt.Spread");
-    iface.call("CancelSpread");
 
     /* Pick the most important window.
        The primary criterion to determine the most important window is urgency.
@@ -481,8 +491,8 @@ void
 LauncherApplication::spread()
 {
     qDebug() << "Triggering spread via DBUS";
-    QDBusInterface iface("com.canonical.UnityQt.Spread", "/Spread",
-                         "com.canonical.UnityQt.Spread");
+    QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
+                         "com.canonical.Unity2d.Spread");
     iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
 }
 

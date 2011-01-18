@@ -1,5 +1,6 @@
 # Dependencies
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
+find_package(X11 REQUIRED)
 
 # Sources
 set(spread_SRCS
@@ -15,14 +16,14 @@ set(spread_MOC_HDRS
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})
 
-configure_file(unity-qt-spread.service.in unity-qt-spread.service)
+configure_file(unity-2d-spread.service.in unity-2d-spread.service)
 
 qt4_add_dbus_adaptor(spread_SRCS spread.xml
     spreadcontrol.h SpreadControl
     )
 
 # Build
-add_executable(unity-qt-spread ${spread_SRCS} ${spread_MOC_SRCS})
+add_executable(unity-2d-spread ${spread_SRCS} ${spread_MOC_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -30,20 +31,22 @@ include_directories(
     ${GTK_INCLUDE_DIRS}
     )
 
-target_link_libraries(unity-qt-spread
+target_link_libraries(unity-2d-spread
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
+    ${X11_Xext_LIB}
+    ${X11_X11_LIB}
     )
 
 # Install
-install(TARGETS unity-qt-spread
+install(TARGETS unity-2d-spread
     RUNTIME DESTINATION bin
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-qt-spread.service
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-spread.service
     DESTINATION share/dbus-1/services
     )
 

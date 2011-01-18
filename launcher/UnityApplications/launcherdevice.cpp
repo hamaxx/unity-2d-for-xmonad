@@ -77,7 +77,7 @@ LauncherDevice::name() const
 QString
 LauncherDevice::icon() const
 {
-    return QString(unityQtDirectory() + "/launcher/artwork/devices.png");
+    return QString(unity2dDirectory() + "/launcher/artwork/devices.png");
 }
 
 bool

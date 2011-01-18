@@ -68,7 +68,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return QString(unityQtDirectory() + "/launcher/artwork/trash.png");
+    return QString(unity2dDirectory() + "/launcher/artwork/trash.png");
 }
 
 bool

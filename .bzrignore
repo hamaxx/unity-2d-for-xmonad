@@ -2,21 +2,21 @@ config.h
 libuqpanel.pc
 
 launcher/UnityApplications/libUnityApplications.so*
-launcher/app/unity-qt-launcher
+launcher/app/unity-2d-launcher
 launcher/app/launcheradaptor.*
 launcher/app/unity-qt-launcher.service
 launcher/tests/launchermenutest
 launcher/tests/launcherviewtest
 
 places/UnityPlaces/libUnityPlaces.so*
-places/app/unity-qt-places
-places/app/unity-qt-places.service
+places/app/unity-2d-places
+places/app/unity-2d-places.service
 
-spread/app/unity-qt-spread
-spread/app/unity-qt-spread.service
+spread/app/unity-2d-spread
+spread/app/unity-2d-spread.service
 spread/app/spreadadaptor.*
 
-panel/app/unity-qt-panel
+panel/app/unity-2d-panel
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
 panel/tests/paneltest
@@ -47,6 +47,6 @@ debian/stamp-*
 debian/libuqpanel-dev
 debian/libuqpanel0
 debian/tmp
-debian/unity-qt-launcher
-debian/unity-qt-panel
-debian/unity-qt-places
+debian/unity-2d-launcher
+debian/unity-2d-panel
+debian/unity-2d-places

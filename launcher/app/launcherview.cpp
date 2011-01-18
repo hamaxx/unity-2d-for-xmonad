@@ -27,14 +27,10 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QDeclarativeImageProvider>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-
-/* FIXME: import of private Qt headers. See rationale in the implementation of
-          'iconAverageColor' */
-#include "qdeclarativepixmapcache_p.h"
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false)
@@ -120,17 +116,8 @@ LauncherView::workAreaResized(int screen)
 QColor
 LauncherView::iconAverageColor(QUrl source, QSize size)
 {
-    /* FIXME: QDeclarativePixmap is a private class in Qt and should not be used
-       here. However it provides us with pixmaps caching and avoids the
-       unnecessary reloading of icons (once to display it, once to compute its
-       average color.
-       The code that would do that and not require access to private classes
-       is the following:
-
-       QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
-    */
-    QDeclarativePixmap declarativePixmap(engine(), source, size);
-    QImage icon = declarativePixmap.pixmap().toImage();
+    /* FIXME: we are loading again an icon that was already loaded */
+    QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
 
     if (icon.width() == 0 || icon.height() == 0)
     {
@@ -146,7 +133,7 @@ LauncherView::iconAverageColor(QUrl source, QSize size)
     {
         for (int x=0; x<icon.width(); ++x)
         {
-            QColor color(icon.pixel(x, y));
+            QColor color = QColor::fromRgba(icon.pixel(x, y));
 
             if (color.alphaF() < 0.5)
                 continue;
