@@ -137,10 +137,9 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 }
 
 void
-LauncherApplicationsList::insertWebFavorite(const QString& url)
+LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 {
-    QUrl _url(url);
-    if (!_url.isValid() || _url.isRelative()) {
+    if (!url.isValid() || url.isRelative()) {
         qWarning() << "Invalid URL:" << url;
         return;
     }
@@ -149,10 +148,11 @@ LauncherApplicationsList::insertWebFavorite(const QString& url)
     check_local_store_exists();
 
     QString contents = WEBFAV_DESKTOP_ENTRY;
-    contents.replace("{name}", url);
-    contents.replace("{url}", url);
+    QByteArray encoded = url.toEncoded();
+    contents.replace("{name}", encoded);
+    contents.replace("{url}", encoded);
 
-    const char* id = QCryptographicHash::hash(url.toUtf8(), QCryptographicHash::Md5).toHex().constData();
+    const char* id = QCryptographicHash::hash(encoded, QCryptographicHash::Md5).toHex().constData();
     QString desktop_file = LOCAL_STORE + "webfav-" + id + ".desktop";
 
     QFile file(desktop_file);
@@ -164,7 +164,7 @@ LauncherApplicationsList::insertWebFavorite(const QString& url)
     insertApplication(application);
     application->setSticky(true);
 
-    WebScrapper* scrapper = new WebScrapper(application, _url, this);
+    WebScrapper* scrapper = new WebScrapper(application, url, this);
     connect(scrapper, SIGNAL(finished(LauncherApplication*, const QString&, const QString&)),
             SLOT(slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&)));
     scrapper->fetchAndScrap();

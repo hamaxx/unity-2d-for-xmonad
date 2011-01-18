@@ -5,6 +5,7 @@
 #include <QList>
 #include <QVariant>
 #include <QString>
+#include <QUrl>
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
 
@@ -24,7 +25,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
-    Q_INVOKABLE void insertWebFavorite(const QString& url);
+    Q_INVOKABLE void insertWebFavorite(const QUrl& url);
 
 private:
     void load();

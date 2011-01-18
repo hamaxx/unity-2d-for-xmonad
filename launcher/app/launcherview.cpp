@@ -72,7 +72,7 @@ void LauncherView::dropEvent(QDropEvent *event)
             accepted = true;
         }
         else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url.toEncoded());
+            emit webpageUrlDropped(url);
             accepted = true;
         }
     }

@@ -21,6 +21,7 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
+#include <QUrl>
 #include <QDragEnterEvent>
 
 class LauncherView : public QDeclarativeView
@@ -33,7 +34,7 @@ public:
 
 signals:
     void desktopFileDropped(QString path);
-    void webpageUrlDropped(QString url);
+    void webpageUrlDropped(const QUrl& url);
 
 public slots:
     void workAreaResized(int screen);
