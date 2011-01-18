@@ -75,7 +75,7 @@ WebScrapper::slotFetchPageFinished(QNetworkReply* reply)
             }
         }
         else {
-            QString data = reply->readAll();
+            QString data = QString::fromUtf8(reply->readAll());
 
             /* lookup title */
             QRegExp reTitle("<title>(.*)</title>", Qt::CaseInsensitive);
