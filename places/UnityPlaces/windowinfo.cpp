@@ -9,28 +9,35 @@
 #include "bamf-window.h"
 
 #include "windowinfo.h"
-#include <X11/X.h>
 
+#include <X11/Xlib.h>
+#include <QX11Info>
 
-WindowInfo::WindowInfo(unsigned int xid, QObject *parent) :
-    QObject(parent), m_bamfApplication(NULL), m_bamfWindow(NULL), m_wnckWindow(NULL), m_xid(0)
+WindowInfo::WindowInfo(unsigned int contentXid, QObject *parent) :
+    QObject(parent), m_bamfApplication(NULL), m_bamfWindow(NULL), m_wnckWindow(NULL),
+    m_contentXid(0), m_decoratedXid(0)
 {
-    setXid(xid);
+    setContentXid(contentXid);
 }
 
-unsigned int WindowInfo::xid() const
+unsigned int WindowInfo::contentXid() const
 {
-    return m_xid;
+    return m_contentXid;
 }
 
-void WindowInfo::setXid(unsigned int xid)
+void WindowInfo::setContentXid(unsigned int contentXid)
 {
-    if (xid == m_xid) {
+    if (contentXid == m_contentXid) {
         return;
     }
 
-    /* Find out BamfApplication and BamfWindow correponding to xid */
-    BamfApplication *bamfApplication = BamfMatcher::get_default().application_for_xid(xid);
+    /* First figure out what's the BamfApplication to which the content Xid
+       belongs. However what we need is the actual BamfWindow, so we search
+       for it among all the BamfWindows for that app.
+       Finally we ask WNCK to give us its own WnckWindow, since BAMF doesn't
+       provide us enough features to handle on its own all we need. */
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    BamfApplication *bamfApplication = matcher.application_for_xid(contentXid);
     if (bamfApplication == NULL) {
         return;
     }
@@ -39,7 +46,7 @@ void WindowInfo::setXid(unsigned int xid)
     BamfWindowList *bamfWindows = bamfApplication->windows();
     for (int i = 0; i < bamfWindows->size(); i++) {
         bamfWindow = bamfWindows->at(i);
-        if (bamfWindow->xid() == xid) {
+        if (bamfWindow->xid() == contentXid) {
             break;
         }
     }
@@ -48,30 +55,61 @@ void WindowInfo::setXid(unsigned int xid)
         return;
     }
 
-    /* Find out WnckWindow and BamfWindow correponding to xid */
-    WnckWindow *wnckWindow = wnck_window_get(xid);
+    /* Since WNCK does not update its window list in real time,
+       it may be possible that it doesn't know yet know about xid.
+       In that case, we first ask it to update its list, then try
+       again. */
+    WnckWindow *wnckWindow = wnck_window_get(contentXid);
     if (wnckWindow == NULL) {
         wnck_screen_force_update(wnck_screen_get_default());
-        wnckWindow = wnck_window_get(xid);
+        wnckWindow = wnck_window_get(contentXid);
     }
 
     if (wnckWindow == NULL) {
         return;
     }
 
+    /* The above would be enough if we wanted the spread to only work by
+       displaying screenshots of the window contents.
+       However we want also the decorations, to maximize the illusion that we
+       are actually spreading the real windows.
+       Therefore we climb up the X11 window tree to find the topmost ancestor
+       for the content window, which should be where the WM places the decorations.
+    */
+    unsigned long root, *children;
+    unsigned long parent = contentXid;
+    unsigned int nchildren;
+    unsigned int decoratedXid;
+    do {
+        decoratedXid = parent;
+
+        if (XQueryTree (QX11Info::display(), decoratedXid, &root,
+                        &parent, &children, &nchildren) == 0) {
+            decoratedXid = contentXid;
+            break;
+        }
+    } while (parent != root);
+
     /* Set member variables and emit changed signals */
     m_bamfApplication = bamfApplication;
     m_bamfWindow = bamfWindow;
     m_wnckWindow = wnckWindow;
-    m_xid = xid;
+    m_contentXid = contentXid;
+    m_decoratedXid = decoratedXid;
 
-    emit xidChanged(xid);
+    emit contentXidChanged(m_contentXid);
+    emit decoratedXidChanged(m_decoratedXid);
 
     updateGeometry();
 
     emit zChanged(z());
     emit titleChanged(title());
     emit iconChanged(icon());
+}
+
+unsigned int WindowInfo::decoratedXid() const
+{
+    return m_decoratedXid;
 }
 
 QPoint WindowInfo::position() const
@@ -92,7 +130,7 @@ unsigned int WindowInfo::z() const
     while (cur) {
         z++;
         WnckWindow *window = (WnckWindow*) cur->data;
-        if (wnck_window_get_xid(window) == m_xid) {
+        if (wnck_window_get_xid(window) == m_contentXid) {
             break;
         }
         cur = g_list_next(cur);
@@ -107,8 +145,8 @@ QString WindowInfo::title() const
 
 QString WindowInfo::icon() const
 {
-    /* m_bamfWindow and m_bamfApplication should always both
-       be null or non-null at the same time. */
+    /* m_bamfWindow and m_bamfApplication will always both
+       be null or non-null at the same time, so we can just check one. */
     if (m_bamfWindow == NULL) {
         return QString();
     }
@@ -126,7 +164,7 @@ void WindowInfo::updateGeometry()
 {
     int x, y, w, h;
 
-    wnck_window_get_client_window_geometry(m_wnckWindow, &x, &y, &w, &h);
+    wnck_window_get_geometry(m_wnckWindow, &x, &y, &w, &h);
 
     m_position.setX(x);
     m_position.setY(y);
