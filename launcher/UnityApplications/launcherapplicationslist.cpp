@@ -139,6 +139,12 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 void
 LauncherApplicationsList::insertWebFavorite(const QString& url)
 {
+    QUrl _url(url);
+    if (!_url.isValid() || _url.isRelative()) {
+        qWarning() << "Invalid URL:" << url;
+        return;
+    }
+
     LauncherApplication* application = new LauncherApplication;
     check_local_store_exists();
 
@@ -158,7 +164,7 @@ LauncherApplicationsList::insertWebFavorite(const QString& url)
     insertApplication(application);
     application->setSticky(true);
 
-    WebScrapper* scrapper = new WebScrapper(application, QUrl(url), this);
+    WebScrapper* scrapper = new WebScrapper(application, _url, this);
     connect(scrapper, SIGNAL(finished(LauncherApplication*, const QString&, const QString&)),
             SLOT(slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&)));
     scrapper->fetchAndScrap();
