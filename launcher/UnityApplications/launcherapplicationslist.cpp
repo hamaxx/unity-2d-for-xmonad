@@ -168,8 +168,29 @@ void
 LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* application, const QString& title, const QString& favicon)
 {
     WebScrapper* scrapper = static_cast<WebScrapper*>(sender());
-    qDebug() << "slotWebscrapperFinished:" << application << title << favicon;
-    // TODO: change the application’s title and icon
+    if (!title.isEmpty() || !favicon.isEmpty()) {
+        QString filename = application->desktop_file();
+        GKeyFile* key_file = g_key_file_new();
+        gboolean res = g_key_file_load_from_file(key_file, filename.toUtf8().constData(),
+            (GKeyFileFlags) (G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS), NULL);
+        if (res) {
+            if (!title.isEmpty()) {
+                g_key_file_set_string(key_file, "Desktop Entry", "Name", title.toUtf8().constData());
+            }
+            if (!favicon.isEmpty()) {
+                g_key_file_set_string(key_file, "Desktop Entry", "Icon", favicon.toUtf8().constData());
+            }
+            QString contents = g_key_file_to_data(key_file, NULL, NULL);
+            g_key_file_free(key_file);
+
+            QFile file(filename);
+            file.open(QIODevice::WriteOnly);
+            file.write(contents.toUtf8());
+            file.close();
+
+            application->setDesktopFile(filename);
+        }
+    }
     scrapper->deleteLater();
 }
 
