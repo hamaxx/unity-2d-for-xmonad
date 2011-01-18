@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2010 Canonical, Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "iconimageprovider.h"
@@ -24,7 +40,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
 {
     /* Special case handling for image resources that belong to the unity
        package. If unity is not installed, as a fallback we rewrite the path to
-       try and locate them in our (unity-qt) resource directory.
+       try and locate them in our (unity-2d) resource directory.
        See https://launchpad.net/bugs/672450 for a discussion. */
     /* It is not using common facilities from config.h because the last attempt
        to do so was a failure due to the fragility of the code path. For example
@@ -39,7 +55,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         else
         {
             QString rid(id);
-            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-qt/");
+            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-2d/");
             /* No need to check whether the file exists, we don’t have a
                fallback anyway. */
             return QImage(rid);

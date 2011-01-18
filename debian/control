@@ -1,4 +1,4 @@
-Source: unity-qt
+Source: unity-2d
 Section: x11
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -10,19 +10,23 @@ Build-Depends: cdbs, debhelper (>= 7),
                libx11-dev, libindicator-dev, libgtk2.0-dev
 Standards-Version: 3.9.1
 
-Package: unity-qt-launcher
+Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
 Recommends: unity-place-files, unity-place-applications
+Conflicts: unity-qt-launcher
+Replaces: unity-qt-launcher
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.
  Notifications from individual applications are also highlighted in the
  launcher.
  
-Package: unity-qt-panel
+Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: unity-qt-panel
+Replaces: unity-qt-panel
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
  various indicators. It part of Unity 2D and can not run  as a standalone
@@ -48,17 +52,21 @@ Description: Unity 2D Panel - development files
  .
  This package contains the development header files.
 
-Package: unity-qt-places
+Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-place-files, unity-place-applications
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
+Conflicts: unity-qt-places
+Replaces: unity-qt-places
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It part of Unity 2D and can not run
  as a standalone application outside of the Unity 2D environment.
 
-Package: unity-qt-spread
+Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-qt-places
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-2d-places
+Conflicts: unity-qt-spread
+Replaces: unity-qt-spread
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
  windows so you can quickly and effectively choose which one you want to 

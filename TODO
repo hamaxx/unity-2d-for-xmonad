@@ -1,0 +1,2 @@
+ * FIXME: Determine if everything being installed to /usr/bin should actually be there
+          or if its better off being installed into a subfolder in /usr/lib/unity-2d?
