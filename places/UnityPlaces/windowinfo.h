@@ -49,6 +49,7 @@ typedef struct _WnckWindow WnckWindow;
 class WindowInfo : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(RoleNames)
 
     Q_PROPERTY(QPoint position READ position NOTIFY positionChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
@@ -58,6 +59,8 @@ class WindowInfo : public QObject
     Q_PROPERTY(unsigned int contentXid READ contentXid WRITE setContentXid
                                                        NOTIFY contentXidChanged)
     Q_PROPERTY(unsigned int decoratedXid READ decoratedXid NOTIFY decoratedXidChanged)
+    Q_PROPERTY(QString desktopFile READ desktopFile NOTIFY desktopFileChanged)
+    Q_PROPERTY(int workspace READ workspace NOTIFY workspaceChanged)
 
 public:
     explicit WindowInfo(unsigned int contentXid = 0, QObject *parent = 0);
@@ -70,6 +73,8 @@ public:
     unsigned int z() const;
     QString title() const;
     QString icon() const;
+    QString desktopFile() const;
+    int workspace() const;
 
     /* setters */
     void setContentXid(unsigned int contentXid);
@@ -80,6 +85,12 @@ public:
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
 
+    enum RoleNames {
+        RoleWindowInfo,
+        RoleDesktopFile,
+        RoleWorkspace
+    };
+
 Q_SIGNALS:
     void contentXidChanged(unsigned int contentXid);
     void decoratedXidChanged(unsigned int decoratedXid);
@@ -88,6 +99,8 @@ Q_SIGNALS:
     void zChanged(unsigned int z);
     void titleChanged(QString title);
     void iconChanged(QString icon);
+    void desktopFileChanged(QString desktopFile);
+    void workspaceChanged(int workspace);
 
 private:
     void updateGeometry();

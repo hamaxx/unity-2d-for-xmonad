@@ -15,6 +15,7 @@
  */
 
 #include <QDebug>
+#include <QRegExp>
 
 #include "windowslist.h"
 #include "windowinfo.h"
@@ -28,7 +29,9 @@ WindowsList::WindowsList(QObject *parent) :
     m_loaded(false), m_lastActiveWindow(NULL)
 {
     QHash<int, QByteArray> roles;
-    roles[0] = "window";
+    roles[WindowInfo::RoleWindowInfo] = "window";
+    roles[WindowInfo::RoleDesktopFile] = "desktopFile";
+    roles[WindowInfo::RoleWorkspace] = "workspace";
     setRoleNames(roles);
 }
 
@@ -46,13 +49,21 @@ int WindowsList::rowCount(const QModelIndex &parent) const
 
 QVariant WindowsList::data(const QModelIndex &index, int role) const
 {
-    Q_UNUSED(role);
-
     if (!index.isValid())
         return QVariant();
 
     WindowInfo *info = m_windows.at(index.row());
-    return QVariant::fromValue(info);
+    switch (role) {
+    case WindowInfo::RoleWindowInfo:
+        return QVariant::fromValue(info);
+    case WindowInfo::RoleDesktopFile:
+        return QVariant::fromValue(info->desktopFile());
+    case WindowInfo::RoleWorkspace:
+        return QVariant::fromValue(info->workspace());
+    default:
+        qDebug() << "Requested invalid role (index" << role << ")";
+        return QVariant();
+    }
 }
 
 void WindowsList::load(unsigned long applicationId)
@@ -139,3 +150,10 @@ void WindowsList::unload()
 WindowInfo* WindowsList::lastActiveWindow() const {
     return m_lastActiveWindow;
 }
+
+QString WindowsList::desktopFileForApplication(int applicationId)
+{
+    BamfApplication* application = BamfMatcher::get_default().application_for_xid(applicationId);
+    return (application != NULL) ? application->desktop_file() : QString();
+}
+

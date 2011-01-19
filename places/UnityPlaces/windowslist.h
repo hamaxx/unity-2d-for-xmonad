@@ -41,6 +41,8 @@ public:
     int count() const { return rowCount(); }
     WindowInfo* lastActiveWindow() const;
 
+    Q_INVOKABLE QString desktopFileForApplication(int applicationId);
+
     Q_INVOKABLE void load(unsigned long applicationId);
     Q_INVOKABLE void unload();
 

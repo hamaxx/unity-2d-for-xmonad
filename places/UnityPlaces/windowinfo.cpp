@@ -141,6 +141,8 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     emit zChanged(z());
     emit titleChanged(title());
     emit iconChanged(icon());
+    emit desktopFileChanged(desktopFile());
+    emit workspaceChanged(workspace());
 }
 
 unsigned int WindowInfo::decoratedXid() const
@@ -189,6 +191,30 @@ QString WindowInfo::icon() const
     return (m_bamfWindow->icon().isEmpty()) ?
             m_bamfApplication->icon() : m_bamfWindow->icon();
 
+}
+
+QString WindowInfo::desktopFile() const
+{
+    if (m_bamfApplication == NULL) {
+        return QString();
+    }
+    return m_bamfApplication->desktop_file();
+}
+
+int WindowInfo::workspace() const
+{
+    if (m_wnckWindow != NULL) {
+        WnckWorkspace *workspace = wnck_window_get_workspace(m_wnckWindow);
+        if (workspace != NULL) {
+            return wnck_workspace_get_number(workspace);
+        } else {
+            if (wnck_window_is_pinned(m_wnckWindow)) {
+                return -2;
+            }
+        }
+    }
+
+    return -1;
 }
 
 void WindowInfo::activate()
