@@ -40,5 +40,14 @@ Rectangle {
             scale:  switcher.cellScale
        }
     }
+
+    property variant allWindows: globalWindowsList
+    WindowsList {
+        id: globalWindowsList
+    }
+
+    Component.onCompleted: {
+        globalWindowsList.load(0)
+    }
 }
 

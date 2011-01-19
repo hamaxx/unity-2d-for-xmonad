@@ -29,8 +29,9 @@ Item {
     signal backgroundClicked
 
     /* List of windows that will be shown in the spread. */
-    WindowsList {
-        id: windows
+    QSortFilterProxyModelQML {
+        id: filteredWindows
+        model: switcher.allWindows
     }
 
     GnomeBackground {
@@ -55,7 +56,7 @@ Item {
         id: layout
 
         anchors.fill: parent
-        windows: windows
+        windows: filteredWindows
 
         onTransitionCompleted: {
             if (layout.state == "") {
@@ -66,7 +67,6 @@ Item {
                     layout.selectedWindow.windowInfo.activate()
                     layout.selectedWindow = null
                 }
-                windows.unload()
             }
         }
 
@@ -84,10 +84,6 @@ Item {
         if (layout.state == "spread") {
             layout.state = ""
         } else {
-            /* Please note that the windows list needs to be loaded before the
-               spread view is shown, otherwise windows.lastActiveWindow will not
-               be correct */
-            windows.load(applicationId)
             spreadView.show()
             spreadView.forceActivateWindow()
             layout.state = "spread"
