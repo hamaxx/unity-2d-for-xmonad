@@ -14,6 +14,7 @@ Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
 Recommends: unity-place-files, unity-place-applications
+Provides: unity-qt-launcher
 Conflicts: unity-qt-launcher (<= 0.2)
 Replaces: unity-qt-launcher (<= 0.2)
 Description: Unity 2D Launcher
@@ -25,6 +26,7 @@ Description: Unity 2D Launcher
 Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: unity-qt-panel
 Conflicts: unity-qt-panel (<= 0.2)
 Replaces: unity-qt-panel (<= 0.2)
 Description: Unity 2D Panel
@@ -55,6 +57,7 @@ Description: Unity 2D Panel - development files
 Package: unity-2d-places
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
+Provides: unity-qt-places
 Conflicts: unity-qt-places (<= 0.2)
 Replaces: unity-qt-places (<= 0.2)
 Description: Unity 2D Places
@@ -65,6 +68,7 @@ Description: Unity 2D Places
 Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-2d-places
+Provides: unity-qt-spread
 Conflicts: unity-qt-spread (<= 0.2)
 Replaces: unity-qt-spread (<= 0.2)
 Description: Unity 2D Spread
@@ -73,3 +77,34 @@ Description: Unity 2D Spread
  switch to. It part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
+Package: unity-qt-launcher
+Architecture: any
+Depends: ${misc:Depends}, unity-2d-launcher
+Description: dummy transitional package for unity-2d-launcher
+ This transitional package helps users transition to the
+ unity-2d-launcher package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: unity-qt-panel
+Architecture: any
+Depends: ${misc:Depends}, unity-2d-panel
+Description: dummy transitional package for unity-2d-panel
+ This transitional package helps users transition to the
+ unity-2d-panel package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: unity-qt-places
+Architecture: any
+Depends: ${misc:Depends}, unity-2d-places
+Description: dummy transitional package for unity-2d-places
+ This transitional package helps users transition to the
+ unity-2d-places package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: unity-qt-spread
+Architecture: any
+Depends: ${misc:Depends}, unity-2d-spread
+Description: dummy transitional package for unity-2d-spread
+ This transitional package helps users transition to the
+ unity-2d-spread package.  Once this package and its dependencies
+ are installed you can safely remove it.
