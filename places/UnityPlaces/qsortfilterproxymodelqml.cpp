@@ -60,8 +60,9 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
     setSourceModel(itemModel);
     updateRoleNames();
 
-    connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
-    connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(updateCount()));
-    connect(itemModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(updateCount()));
-    connect(itemModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)), SLOT(updateCount()));
+    connect(this, SIGNAL(modelReset()), SLOT(updateRoleNames()));
+    connect(this, SIGNAL(modelReset()), SLOT(updateCount()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(updateCount()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(updateCount()));
+    connect(this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)), SLOT(updateCount()));
 }
