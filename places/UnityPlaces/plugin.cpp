@@ -40,7 +40,15 @@ extern "C" {
 #include "windowslist.h"
 #include "plugin.h"
 
+#include <X11/Xlib.h>
 
+static int _x_errhandler(Display* display, XErrorEvent* event)
+{
+    Q_UNUSED(display);
+    Q_UNUSED(event);
+
+    return 0;
+ }
 
 void UnityPlacesPlugin::registerTypes(const char *uri)
 {
@@ -55,6 +63,8 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
 void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     Q_UNUSED(uri);
+
+    XSetErrorHandler(_x_errhandler);
 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);
