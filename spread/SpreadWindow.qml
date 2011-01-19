@@ -36,8 +36,8 @@ Item {
     property int availableHeight: cellHeight - minMargin
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
-    property double availableAspectRatio: availableWidth/availableHeight
-    property double windowAspectRatio: windowInfo.size.width/windowInfo.size.height
+    property double availableAspectRatio: availableWidth / availableHeight
+    property double windowAspectRatio: windowInfo.size.width / windowInfo.size.height
     property bool isHorizontal: windowAspectRatio >= availableAspectRatio
     property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
     property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
