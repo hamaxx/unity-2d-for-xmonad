@@ -2,26 +2,30 @@ import Qt 4.7
 
 Item {
     id: workspace
+    z: 1
 
-    property alias applicationId: spread.applicationId
     property int row
     property int column
 
-    z: 1
+    property int workspaceNumber
+
+    signal exiting
 
     Connections {
-        target: control
-        onActivateSpread: {
-            spread.applicationId = applicationId
-            spread.activateSpread()
-        }
+        target: switcher
+        onActivated: spread.state = "spread"
     }
 
     transformOrigin: Item.TopLeft
     x: column * childrenRect.width
     y: row * childrenRect.height
 
-    onStateChanged: if (state == "screen") spread.cancelSpread()
+    onStateChanged: {
+        if (state == "screen")  {
+            spread.cancelSpread()
+            exiting()
+        }
+    }
 
     Spread {
         id: spread
@@ -39,6 +43,8 @@ Item {
                 switcher.zoomedWorkspace = workspace
             }
         }
+        application: switcher.application
+        workspace: workspaceNumber
     }
 
     states: [
@@ -71,11 +77,16 @@ Item {
                 NumberAnimation {
                     target: workspace
                     properties: "x,y,scale"
-                    duration: 250
+                    duration: switcher.transitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: workspace; property: "z"; value: 2 }
             }
         }
     ]
+
+    Connections {
+        target: spreadView
+        onOutsideClick: workspace.state = "screen"
+    }
 }

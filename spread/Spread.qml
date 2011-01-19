@@ -23,15 +23,35 @@ Item {
     width: availableGeometry.width
     height: availableGeometry.height
 
-    property int applicationId
+    property string application
+    property int workspace
+
+    property alias state: layout.state
 
     signal exiting
     signal backgroundClicked
 
     /* List of windows that will be shown in the spread. */
     QSortFilterProxyModelQML {
-        id: filteredWindows
+        id: filteredByApplication
         model: switcher.allWindows
+        dynamicSortFilter: true
+
+        filterRole: WindowInfo.RoleDesktopFile
+        filterRegExp: RegExp("%1".arg(application))
+
+        onCountChanged: console.log("workspace " + workspace + " has " + count + " windows (@app)")
+    }
+
+    QSortFilterProxyModelQML {
+        id: filteredByWorkspace
+        model: filteredByApplication
+        dynamicSortFilter: true
+
+        filterRole: WindowInfo.RoleWorkspace
+        filterRegExp: RegExp("^%1|-2$".arg(workspace))
+
+        onCountChanged: console.log(workspace + " has " + count + " windows (@wks)")
     }
 
     GnomeBackground {
@@ -56,12 +76,10 @@ Item {
         id: layout
 
         anchors.fill: parent
-        windows: filteredWindows
+        windows: filteredByWorkspace
 
         onTransitionCompleted: {
             if (layout.state == "") {
-                spreadView.hide()
-
                 /* If there's any selected window activate it, then clean up the selection */
                 if (layout.selectedWindow) {
                     layout.selectedWindow.windowInfo.activate()
@@ -78,20 +96,5 @@ Item {
            window was focused before the spread started */
         layout.selectedWindow = null;
         layout.state = ""
-    }
-
-    function activateSpread() {
-        if (layout.state == "spread") {
-            layout.state = ""
-        } else {
-            spreadView.show()
-            spreadView.forceActivateWindow()
-            layout.state = "spread"
-        }
-    }
-
-    Connections {
-        target: spreadView
-        onOutsideClick: cancelSpread()
     }
 }

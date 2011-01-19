@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+    //view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
 
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);

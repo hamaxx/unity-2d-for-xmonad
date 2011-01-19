@@ -26,18 +26,32 @@ Rectangle {
     property real zoomedScale: availableWidth / switcher.width
 
     property variant zoomedWorkspace
+    property int transitionDuration: 250
+    property string application
+
+    Timer {
+        id: exitTransitionTimer
+
+        interval: transitionDuration
+        onTriggered: {
+            spreadView.hide()
+        }
+    }
 
     Repeater {
         model: switcher.workspaces
         delegate: Workspace {
             id: workspace
 
+            workspaceNumber: index //FIXME: this should be fixed when we read the workspaces from WM
             row: Math.floor(index / columns)
             column: index % columns
 
             x: column * (switcher.width * cellScale) + (column * switcher.spacing)
             y: row * (switcher.height * cellScale) + (row * switcher.spacing)
             scale:  switcher.cellScale
+
+            onExiting: exitTransitionTimer.start()
        }
     }
 
@@ -46,8 +60,16 @@ Rectangle {
         id: globalWindowsList
     }
 
-    Component.onCompleted: {
-        globalWindowsList.load(0)
+    signal activated
+    Connections {
+        target: control
+        onActivateSpread: {
+            application = switcher.allWindows.desktopFileForApplication(applicationId)
+            globalWindowsList.load(0)
+            spreadView.show()
+            spreadView.forceActivateWindow()
+            activated()
+        }
     }
 }
 
