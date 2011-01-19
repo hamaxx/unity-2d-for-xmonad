@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "upgrade" ]; then
+    # Versions of the package pre 0.0~bzr80 installed the desktop file for all
+    # sessions (in /etc/xdg/autostart/).
+    # Remove it first (see https://launchpad.net/bugs/645416).
+    if [ -f /etc/xdg/autostart/unity-2d-launcher.desktop ]; then
+        rm -f /etc/xdg/autostart/unity-2d-launcher.desktop || true
+    fi
+
+    # unity-2d-launcher is now started by gnome-session as a required component
+    rm -f /etc/xdg/xdg-unity-2d/autostart/unity-2d-launcher.desktop
+
+    exit 0
+fi
+
+#DEBHELPER#

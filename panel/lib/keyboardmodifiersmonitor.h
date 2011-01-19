@@ -1,18 +1,29 @@
 /*
- * This file is part of unity-qt
+ * This file is part of unity-2d
  *
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
- * License: GPL v3
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef KEYBOARDMODIFIERMONITOR_H
 #define KEYBOARDMODIFIERMONITOR_H
 
 // Local
-#include <unityqtapplication.h>
+#include <unity2dapplication.h>
 
 // Qt
 
@@ -22,7 +33,7 @@ struct KeyboardModifiersMonitorPrivate;
  * This class monitor keyboard modifiers. It is able to track changes even if
  * the active window does not belong to the application.
  *
- * You *must* use UnityQtApplication to be able to use this class.
+ * You *must* use Unity2dApplication to be able to use this class.
  *
  * In most case you don't need your own instance: use the one returned by
  * instance() instead.

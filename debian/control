@@ -1,4 +1,4 @@
-Source: unity-qt
+Source: unity-2d
 Section: x11
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
@@ -10,49 +10,70 @@ Build-Depends: cdbs, debhelper (>= 7),
                libx11-dev, libindicator-dev, libgtk2.0-dev
 Standards-Version: 3.9.1
 
-Package: unity-qt-launcher
+Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
 Recommends: unity-place-files, unity-place-applications
+Provides: unity-qt-launcher
+Conflicts: unity-qt-launcher (<= 0.2)
+Replaces: unity-qt-launcher (<= 0.2)
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.
-
-Package: unity-qt-panel
+ Notifications from individual applications are also highlighted in the
+ launcher.
+ 
+Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: unity-qt-panel
+Conflicts: unity-qt-panel (<= 0.2)
+Replaces: unity-qt-panel (<= 0.2)
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
- various indicators.
+ various indicators. It part of Unity 2D and can not run  as a standalone
+ application outside of the Unity 2D environment.
 
 Package: libuqpanel0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Unity 2D Panel - shared library
- This library is used to create panel applets for the Unity 2D panel.
+ This library is used to create panel applets for the Unity 2D panel and
+ provides various support functions for Unity 2D. It is only needed as
+ part of a Unity 2D installation
 
 Package: libuqpanel-dev
 Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libuqpanel0 (= ${binary:Version})
 Description: Unity 2D Panel - development files
- This library is used to create panel applets for the Unity 2D panel.
+ This library is used to create panel applets for the Unity 2D panel and
+ provides various support functions for Unity 2D. It is only needed as part
+ of a Unity 2D installation.
  .
  This package contains the development header files.
 
-Package: unity-qt-places
+Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-place-files, unity-place-applications
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
+Provides: unity-qt-places
+Conflicts: unity-qt-places (<= 0.2)
+Replaces: unity-qt-places (<= 0.2)
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
- various categories of applications.
+ various categories of applications. It part of Unity 2D and can not run
+ as a standalone application outside of the Unity 2D environment.
 
-Package: unity-qt-spread
+Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-qt-launcher, unity-qt-places
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-2d-places
+Provides: unity-qt-spread
+Conflicts: unity-qt-spread (<= 0.2)
+Replaces: unity-qt-spread (<= 0.2)
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
-  windows so you can quickly and effectively choose which one you want to 
- switch to.
+ windows so you can quickly and effectively choose which one you want to 
+ switch to. It part of Unity 2D and can not run  as a standalone application
+ outside of the Unity 2D environment.
 

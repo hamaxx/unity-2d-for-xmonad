@@ -101,8 +101,8 @@ Item {
         Image {
             id: icon
 
-            width: 30
-            height: 30
+            width: 32
+            height: 32
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             fillMode: Image.PreserveAspectFit

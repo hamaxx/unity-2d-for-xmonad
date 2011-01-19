@@ -1,13 +1,12 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=Unity Qt Panel
+Name=Unity 2D Panel
 Comment=A Qt-based panel
 Icon=gnome-fs-desktop
-Exec=unity-qt-panel
+Exec=unity-2d-panel
 Terminal=false
 Type=Application
-Categories=
+Categories=Utility
 NoDisplay=true
-X-Ubuntu-Gettext-Domain=unity-qt-panel
+X-Ubuntu-Gettext-Domain=unity-2d-panel
 X-GNOME-Autostart-Notify=false
 X-GNOME-Autorestart=true
