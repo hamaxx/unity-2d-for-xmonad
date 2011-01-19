@@ -35,12 +35,12 @@ Item {
     property int availableWidth: cellWidth - minMargin
     property int availableHeight: cellHeight - minMargin
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
-       ratio of the window. Never scale up the window. */
-    property bool isHorizontal: windowInfo.size.width - availableWidth >= windowInfo.size.height - availableHeight
-    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
-    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
-    property int spreadWidth: isHorizontal ? maxWidth : windowInfo.size.width * maxHeight / windowInfo.size.height
-    property int spreadHeight: !isHorizontal ? maxHeight : windowInfo.size.height * maxWidth / windowInfo.size.width
+       ratio of the window. */
+    property double availableAspectRatio: availableWidth/availableHeight
+    property double windowAspectRatio: windowInfo.size.width/windowInfo.size.height
+    property bool isHorizontal: windowAspectRatio >= availableAspectRatio
+    property int spreadWidth: isHorizontal ? availableWidth : availableHeight * windowAspectRatio
+    property int spreadHeight: !isHorizontal ? availableHeight : availableWidth / windowAspectRatio
     /* Center window within its cell */
     property int spreadX: column * cellWidth + (cellWidth - spreadWidth) / 2
     property int spreadY: row * cellHeight + (cellHeight - spreadHeight) / 2
