@@ -1,3 +1,10 @@
+unity-2d (0.1-0ubuntu4) UNRELEASED; urgency=low
+
+  * add Vcs-Bzr location to debian/control
+  * update branch location in debian/copyright
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Wed, 19 Jan 2011 15:53:45 +0100
+
 unity-2d (0.1-0ubuntu3) natty; urgency=low
 
   * drop the unity-place-files and unity-place-applications recommends and 
