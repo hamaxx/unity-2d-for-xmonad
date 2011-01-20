@@ -80,13 +80,13 @@ static void stateChangedCB(GObject* window,
     WnckWindowState new_state,
     WindowHelper*  watcher)
 {
-    QMetaObject::invokeMethod(watcher, "nameChanged");
+    QMetaObject::invokeMethod(watcher, "stateChanged");
 }
 
 static void nameChangedCB(GObject* window,
     WindowHelper*  watcher)
 {
-    QMetaObject::invokeMethod(watcher, "stateChanged");
+    QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
 void WindowHelper::scheduleUpdate()
