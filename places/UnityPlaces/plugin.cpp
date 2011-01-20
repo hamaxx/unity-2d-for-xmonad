@@ -38,10 +38,13 @@ extern "C" {
 #include "windowimageprovider.h"
 #include "windowinfo.h"
 #include "windowslist.h"
+#include "screeninfo.h"
 #include "plugin.h"
 
 #include <X11/Xlib.h>
 
+/* FIXME: This should be done more properly, it's just an hack this way.
+          We should silence only the errors that we know we can produce */
 static int _x_errhandler(Display* display, XErrorEvent* event)
 {
     Q_UNUSED(display);
@@ -58,6 +61,7 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
+    qmlRegisterType<ScreenInfo>(); // Register the type as non creatable
 }
 
 void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -75,6 +79,8 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
                                               QApplication::desktop()->availableGeometry());
     engine->rootContext()->setContextProperty("screenGeometry",
                                               QApplication::desktop()->geometry());
+
+    engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.

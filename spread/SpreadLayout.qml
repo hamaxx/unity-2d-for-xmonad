@@ -142,7 +142,10 @@ Item {
                feels like, with no rules that I could find documented anywhere.
                Since we need an ordered list for keyboard navigation, we need to maintain
                it ourselves. */
-            Component.onCompleted: navigator.addWindowAt(index, spreadWindow)
+
+            // FIXME: THIS CAUSES A CRASH WHEN ADDING AND REMOVING ITEMS FROM THE MODEL
+            //        Leave disabled for now until we find a different solution
+            //Component.onCompleted: navigator.addWindowAt(index, spreadWindow)
         }
     }
 }

@@ -10,9 +10,9 @@ Rectangle {
 
     color: "black"
 
-    property int workspaces: 3
-    property int columns: Math.ceil(Math.sqrt(workspaces))
-    property int rows: columns
+    property int workspaces: screen.workspaces
+    property int columns: screen.columns
+    property int rows: screen.rows
 
     /* These values are completely random. FIXME: pull from unity the proper ones */
     property int leftMargin: 40
@@ -21,7 +21,7 @@ Rectangle {
     property int spacing: 25
 
     /* FIXME: cell scale isn't correct in case the workspaces layout is taller than wider */
-    property int availableWidth: switcher.width - ((columns - 1) * spacing) - rightMargin - leftMargin
+    property int availableWidth: switcher.width - ((columns - 1) * spacing)
     property real cellScale: availableWidth / columns / switcher.width
     property real zoomedScale: availableWidth / switcher.width
 
@@ -69,6 +69,23 @@ Rectangle {
             spreadView.show()
             spreadView.forceActivateWindow()
             activated()
+        }
+    }
+
+    property string oldApp
+    Rectangle {
+        width: 100
+        height: 100
+        z: 500
+        color: "red"
+
+        MouseArea {
+            anchors.fill:  parent
+            onClicked: {
+                var tmp = application
+                application = oldApp
+                oldApp = tmp
+            }
         }
     }
 }
