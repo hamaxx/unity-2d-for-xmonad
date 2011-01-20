@@ -1,6 +1,6 @@
 import Qt 4.7
 import gconf 1.0
-/* Necessary to access the blended image provider */
+/* Necessary to access the blended image provider and CacheEffect */
 import UnityPlaces 1.0
 
 Item {
@@ -36,6 +36,7 @@ Item {
 
     Image {
         id: picture
+        effect: CacheEffect {}
 
         visible: picture_filename.value
         source: {
