@@ -65,13 +65,14 @@ Rectangle {
         target: control
         onActivateSpread: {
             application = switcher.allWindows.desktopFileForApplication(applicationId)
-            globalWindowsList.load(0)
+            globalWindowsList.load()
             spreadView.show()
             spreadView.forceActivateWindow()
             activated()
         }
     }
 
+    /* FIXME: This is here to allow debugging the filtering by a single app */
     property string oldApp
     Rectangle {
         width: 100

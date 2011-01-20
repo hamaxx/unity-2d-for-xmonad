@@ -73,8 +73,7 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);
 
-    // FIXME: these are probably not very proper here, since clearly not all users
-    // of this plugin wish to have this object in their context
+    // FIXME: move these inside WindowInfo. Make sure no one else is using them !!!
     engine->rootContext()->setContextProperty("availableGeometry",
                                               QApplication::desktop()->availableGeometry());
     engine->rootContext()->setContextProperty("screenGeometry",

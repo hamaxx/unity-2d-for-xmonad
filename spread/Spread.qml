@@ -31,7 +31,17 @@ Item {
     signal exiting
     signal backgroundClicked
 
-    /* List of windows that will be shown in the spread. */
+    GnomeBackground {
+        anchors.fill: parent
+        overlay_color: "black"
+        overlay_alpha: 0
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: backgroundClicked()
+        }
+    }
+
     QSortFilterProxyModelQML {
         id: filteredByApplication
         model: switcher.allWindows
@@ -39,8 +49,6 @@ Item {
 
         filterRole: WindowInfo.RoleDesktopFile
         filterRegExp: RegExp("%1".arg(application))
-
-        onCountChanged: console.log("workspace " + workspace + " has " + count + " windows (@app)")
     }
 
     QSortFilterProxyModelQML {
@@ -50,20 +58,6 @@ Item {
 
         filterRole: WindowInfo.RoleWorkspace
         filterRegExp: RegExp("^%1|-2$".arg(workspace))
-
-        onCountChanged: console.log(workspace + " has " + count + " windows (@wks)")
-    }
-
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0
-
-        MouseArea {
-            /* FIXME: SPREAD: disable this MouseArea when we're not switching workspaces */
-            anchors.fill: parent
-            onClicked: backgroundClicked()
-        }
     }
 
     /* This is our main view.

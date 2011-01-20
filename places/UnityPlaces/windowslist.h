@@ -24,11 +24,15 @@
 
 class WindowInfo;
 
+/* FIXME: this should be update dynamically whenever new windows are opened
+   or go away. Both wnck and bamf have signals for this */
 class WindowsList : public QAbstractListModel
 {
     Q_OBJECT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged);
+
+    /* FIXME: this should be moved to ScreenInfo probably */
     Q_PROPERTY(WindowInfo* lastActiveWindow READ lastActiveWindow NOTIFY lastActiveWindowChanged);
 
 public:
@@ -41,9 +45,10 @@ public:
     int count() const { return rowCount(); }
     WindowInfo* lastActiveWindow() const;
 
+    /* FIXME: Should probably be moved to ScreenInfo */
     Q_INVOKABLE QString desktopFileForApplication(int applicationId);
 
-    Q_INVOKABLE void load(unsigned long applicationId);
+    Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
 
 signals:
@@ -52,7 +57,6 @@ signals:
 
 private:
     QList<WindowInfo*> m_windows;
-    unsigned long m_applicationId;
     bool m_loaded;
     WindowInfo* m_lastActiveWindow;
 };

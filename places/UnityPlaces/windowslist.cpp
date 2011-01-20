@@ -25,7 +25,7 @@
 #include "bamf-application.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent), m_applicationId(0),
+    QAbstractListModel(parent),
     m_loaded(false), m_lastActiveWindow(NULL)
 {
     QHash<int, QByteArray> roles;
@@ -66,25 +66,19 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     }
 }
 
-void WindowsList::load(unsigned long applicationId)
+void WindowsList::load()
 {
-    if (m_loaded && m_applicationId == applicationId) {
+    if (m_loaded) {
         return;
     }
 
     BamfMatcher &matcher = BamfMatcher::get_default();
     QList<BamfApplication*> applications;
 
-    if (applicationId == 0) {
-        /* List the windows of all the applications */
-        BamfApplicationList *allapplications = matcher.applications();
-        for (int i = 0; i < allapplications->size(); i++) {
-             applications.append(allapplications->at(i));
-        }
-    } else {
-        /* List the windows of the application that has for group leader the window
-           with XID applicationId */
-        applications.append(matcher.application_for_xid(applicationId));
+    /* List the windows of all the applications */
+    BamfApplicationList *allapplications = matcher.applications();
+    for (int i = 0; i < allapplications->size(); i++) {
+         applications.append(allapplications->at(i));
     }
 
     BamfWindow* activeWindow = matcher.active_window();
@@ -128,7 +122,6 @@ void WindowsList::load(unsigned long applicationId)
         endInsertRows();
     }
 
-    m_applicationId = applicationId;
     m_loaded = true;
 
     Q_EMIT countChanged(m_windows.count());
