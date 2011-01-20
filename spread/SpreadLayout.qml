@@ -38,10 +38,7 @@ Item {
                 layout.lastRowCells : layout.columns;
     }
 
-    /* After any state change wait for transitionDuration (ms) and then emit
-       the signal transitionCompleted */
-    property int transitionDuration: 250
-    signal transitionCompleted
+    signal windowClicked
 
     /* We need to make this information available to the parent, so that it
        knows which window to activate at the end of the spread (if any) */
@@ -62,9 +59,8 @@ Item {
     Timer {
         id: transitionTimer
 
-        interval: transitionDuration
+        interval: switcher.transitionDuration
         onTriggered: {
-            transitionCompleted()
             if (state == "spread")
                 navigator.selectWindowByWindowInfo(windows.lastActiveWindow)
         }
@@ -98,7 +94,7 @@ Item {
 
         delegate: SpreadWindow {
             id: spreadWindow
-            transitionDuration: layout.transitionDuration
+            transitionDuration: switcher.transitionDuration
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).
@@ -127,7 +123,7 @@ Item {
 
             onClicked: {
                 navigator.selectWindow(spreadWindow)
-                layout.exitSpread()
+                layout.windowClicked()
             }
             onExited: if (navigator.selectedWindow == spreadWindow) navigator.selectWindow(null)
             onEntered: navigator.selectWindow(spreadWindow)

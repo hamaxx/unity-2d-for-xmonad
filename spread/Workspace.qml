@@ -8,43 +8,72 @@ Item {
     property int column
 
     property int workspaceNumber
+    property alias selectedWindow: spread.selectedWindow
 
-    signal exiting
+    signal activated
 
     Connections {
         target: switcher
-        onActivated: spread.state = "spread"
+        onRequestedToStart: {
+            // FIXME: i don't know why this is not working, but the current workspace should
+            // start in screen state then zoom out to the default state just after shown.
+            workspace.state = (workspaceNumber == switcher.currentWorkspace) ? "screen" : ""
+            console.log("WE " + workspace.state)
+            spread.state = ""
+        }
+
+        onStarted: {
+            workspace.state = ""
+            spread.state = "spread"
+        }
     }
 
     transformOrigin: Item.TopLeft
     x: column * childrenRect.width
     y: row * childrenRect.height
 
-    onStateChanged: {
-        if (state == "screen")  {
-            spread.cancelSpread()
-            exiting()
+    /* If another workspace is zoomed, cancel the current zoom.
+       If we are zooomed, then exit to our workspace (optionally
+       to the selected window if any) */
+    function handleSpreadClick(on_window)
+    {
+        if (switcher.zoomedWorkspace) {
+            if (switcher.zoomedWorkspace != workspace)
+                switcher.zoomedWorkspace.state = ""
+            else {
+                /* We are exiting the switcher */
+                workspace.state = "screen"
+                spread.state = ""
+                activated()
+            }
+            switcher.zoomedWorkspace = null
+        } else if (workspace.state == "") {
+            /* We are zooming this workspace */
+            workspace.state = "zoomed"
+            switcher.zoomedWorkspace = workspace
         }
     }
 
     Spread {
         id: spread
-        onExiting: workspace.state = "screen"
-        onBackgroundClicked: {
-            if (switcher.zoomedWorkspace) {
-                // If another workspace is zoomed, cancel the current zoom.
-                // If we are zooomed, then exit to our workspace.
-                if (switcher.zoomedWorkspace != workspace)
-                    switcher.zoomedWorkspace.state = ""
-                else workspace.state = "screen"
-                switcher.zoomedWorkspace = null
-            } else if (workspace.state == "") {
-                workspace.state = "zoomed"
-                switcher.zoomedWorkspace = workspace
-            }
-        }
         application: switcher.application
         workspace: workspaceNumber
+
+        onBackgroundClicked: handleSpreadClick(false)
+        onWindowClicked: handleSpreadClick(true)
+    }
+
+    Connections {
+        target: spreadView
+        onOutsideClick: {
+            selectedWindow = null
+            if (workspaceNumber == switcher.currentWorkspace) {
+                /* Go immediately to screen state regardless
+                   of previous states if we are the current workspace */
+                workspace.state = "screen"
+                activated()
+            }
+        }
     }
 
     states: [
@@ -84,9 +113,4 @@ Item {
             }
         }
     ]
-
-    Connections {
-        target: spreadView
-        onOutsideClick: workspace.state = "screen"
-    }
 }

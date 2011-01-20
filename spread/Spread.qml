@@ -27,9 +27,11 @@ Item {
     property int workspace
 
     property alias state: layout.state
+    property alias selectedWindow: layout.selectedWindow
 
     signal exiting
     signal backgroundClicked
+    signal windowClicked
 
     GnomeBackground {
         anchors.fill: parent
@@ -72,23 +74,6 @@ Item {
         anchors.fill: parent
         windows: filteredByWorkspace
 
-        onTransitionCompleted: {
-            if (layout.state == "") {
-                /* If there's any selected window activate it, then clean up the selection */
-                if (layout.selectedWindow) {
-                    layout.selectedWindow.windowInfo.activate()
-                    layout.selectedWindow = null
-                }
-            }
-        }
-
-        onStateChanged: if (state == "") exiting()
-    }
-
-    function cancelSpread() {
-        /* When the spread is canceled we do not want to keep focused whatever
-           window was focused before the spread started */
-        layout.selectedWindow = null;
-        layout.state = ""
+        onWindowClicked: spread.windowClicked()
     }
 }

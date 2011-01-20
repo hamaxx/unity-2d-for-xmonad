@@ -25,25 +25,21 @@ Rectangle {
     property real cellScale: availableWidth / columns / switcher.width
     property real zoomedScale: availableWidth / switcher.width
 
-    property variant zoomedWorkspace
     property int transitionDuration: 250
+    property variant zoomedWorkspace
+
+    /* FIXME: this should be screen.currentWorkspace */
+    property variant currentWorkspace: 0
     property string application
-
-    Timer {
-        id: exitTransitionTimer
-
-        interval: transitionDuration
-        onTriggered: {
-            spreadView.hide()
-        }
-    }
 
     Repeater {
         model: switcher.workspaces
         delegate: Workspace {
             id: workspace
 
-            workspaceNumber: index //FIXME: this should be fixed when we read the workspaces from WM
+            /* FIXME: This is ok right now since we ignore screen.orientation and
+               screen.startingCorner, but we should respect them eventually */
+            workspaceNumber: index
             row: Math.floor(index / columns)
             column: index % columns
 
@@ -51,7 +47,7 @@ Rectangle {
             y: row * (switcher.height * cellScale) + (row * switcher.spacing)
             scale:  switcher.cellScale
 
-            onExiting: exitTransitionTimer.start()
+            onActivated: exitTransitionTimer.start()
        }
     }
 
@@ -60,25 +56,56 @@ Rectangle {
         id: globalWindowsList
     }
 
-    signal activated
+    /* This controls the activation of the switcher */
+    signal requestedToStart
+    signal started
     Connections {
         target: control
         onActivateSpread: {
             application = switcher.allWindows.desktopFileForApplication(applicationId)
+
+            // This gives a chance to any component to reset iself *before* being shown
+            // FIXME: even though this should probably happen *after* we hide.
+            requestedToStart()
             globalWindowsList.load()
             spreadView.show()
             spreadView.forceActivateWindow()
-            activated()
+            started()
         }
     }
 
-    /* FIXME: This is here to allow debugging the filtering by a single app */
+    /* This controls the deactivation of the switcher */
+    function exitSwitcher()
+    {
+        if (zoomedWorkspace && zoomedWorkspace.selectedWindow) {
+            /* If there's any selected window activate it, then clean up the selection */
+            if (layout.selectedWindow) {
+                zoomedWorkspace.selectedWindow.windowInfo.activate()
+                zoomedWorkspace.selectedWindow = null
+            }
+        }
+        zoomedWorkspace = null
+        spreadView.hide()
+    }
+
+    Timer {
+        id: exitTransitionTimer
+        interval: transitionDuration
+        onTriggered: exitSwitcher()
+    }
+
+    /* ---------------- FIXME: Anything below this line is here to allow debugging ----------------------- */
     property string oldApp
     Rectangle {
-        width: 100
-        height: 100
+        id: debug1
+        width: 150
+        height: 30
         z: 500
-        color: "red"
+        color: "green"
+
+        Text {
+            text: "Switch App/All"
+        }
 
         MouseArea {
             anchors.fill:  parent
@@ -87,6 +114,22 @@ Rectangle {
                 application = oldApp
                 oldApp = tmp
             }
+        }
+    }
+    Rectangle {
+        width: 150
+        height: 30
+        anchors.top: debug1.bottom
+        z: 500
+        color: "red"
+
+        Text {
+            text: "Hide!"
+        }
+
+        MouseArea {
+            anchors.fill:  parent
+            onClicked: spreadView.hide()
         }
     }
 }
