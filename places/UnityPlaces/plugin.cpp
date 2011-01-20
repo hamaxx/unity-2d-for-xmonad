@@ -39,6 +39,7 @@ extern "C" {
 #include "windowinfo.h"
 #include "windowslist.h"
 #include "plugin.h"
+#include "cacheeffect.h"
 
 
 
@@ -50,6 +51,7 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
+    qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
 }
 
 void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
