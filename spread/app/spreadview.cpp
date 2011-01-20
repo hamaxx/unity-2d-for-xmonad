@@ -102,10 +102,11 @@ void SpreadView::focusInEvent(QFocusEvent * event)
        Keyboard events doesn't seem to go the same route and would be unaffected,
        but for consistency let's grab everything from the viewport anyway.
      */
-    this->viewport()->installEventFilter(this);
-    this->viewport()->grabKeyboard();
-    this->viewport()->grabMouse();
-
+    if (!this->property("nonblocking").toBool()) {
+        this->viewport()->installEventFilter(this);
+        this->viewport()->grabKeyboard();
+        this->viewport()->grabMouse();
+    }
     QDeclarativeView::focusInEvent(event);
 }
 
