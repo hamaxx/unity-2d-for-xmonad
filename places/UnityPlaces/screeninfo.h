@@ -14,6 +14,7 @@ class ScreenInfo : public QObject
     Q_ENUMS(Orientation)
     Q_ENUMS(Corner)
     Q_PROPERTY(int workspaces READ workspaces NOTIFY workspacesChanged)
+    Q_PROPERTY(int currentWorkspace READ currentWorkspace NOTIFY currentWorkspaceChanged)
     Q_PROPERTY(int rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(int columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged)
@@ -34,6 +35,7 @@ public:
 
     static ScreenInfo* instance();
     int workspaces() const { return m_workspaces; }
+    int currentWorkspace() const { return m_currentWorkspace; }
     int rows() const { return m_rows; }
     int columns() const { return m_columns; }
     Orientation orientation() const { return m_orientation; }
@@ -41,6 +43,7 @@ public:
 
 signals:
     void workspacesChanged(int workspaces);
+    void currentWorkspaceChanged(int currentWorkspace);
     void rowsChanged(int rows);
     void columnsChanged(int columns);
     void orientationChanged(Orientation orientation);
@@ -49,11 +52,16 @@ signals:
 private:
     explicit ScreenInfo(QObject *parent = 0);
     static bool globalEventFilter(void* message);
-    void update_workspace_geometry();
+
+    void updateWorkspaceGeometry();
+    void updateCurrentWorkspace();
+
     unsigned long * getX11IntProperty(Atom property, long length);
+    static void internX11Atoms();
 
 private:
     int m_workspaces;
+    int m_currentWorkspace;
     int m_rows;
     int m_columns;
     Orientation m_orientation;

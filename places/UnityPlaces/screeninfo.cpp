@@ -20,10 +20,15 @@
 #include <math.h>
 
 QAbstractEventDispatcher::EventFilter oldEventFilter;
+Atom _NET_DESKTOP_LAYOUT;
+Atom _NET_NUMBER_OF_DESKTOPS;
+Atom _NET_CURRENT_DESKTOP;
 
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent)
 {
+    ScreenInfo::internX11Atoms();
+
     /* Setup an low-level event filter so that we can get X11 events directly,
        then ask X11 to notify us of property changes on the root window. This
        will include notiication on workspace geometry changes.
@@ -32,7 +37,8 @@ ScreenInfo::ScreenInfo(QObject *parent) :
     oldEventFilter = dispatcher->setEventFilter(ScreenInfo::globalEventFilter);
     XSelectInput(QX11Info::display(), QX11Info::appRootWindow(), PropertyChangeMask);
 
-    update_workspace_geometry();
+    updateWorkspaceGeometry();
+    updateCurrentWorkspace();
 }
 
 ScreenInfo* ScreenInfo::instance()
@@ -56,17 +62,11 @@ bool ScreenInfo::globalEventFilter(void* message)
 
     XPropertyEvent* notify = (XPropertyEvent*) event;
 
-    /* Atoms never change, so let's just avoid repeating these calls */
-    static Atom _NET_DESKTOP_LAYOUT = XInternAtom(QX11Info::display(),
-                                                  "_NET_DESKTOP_LAYOUT",
-                                                  False);
-    static Atom _NET_NUMBER_OF_DESKTOPS = XInternAtom(QX11Info::display(),
-                                                      "_NET_NUMBER_OF_DESKTOPS",
-                                                      False);
     if (notify->atom == _NET_DESKTOP_LAYOUT ||
         notify->atom == _NET_NUMBER_OF_DESKTOPS) {
-        ScreenInfo *screenInfo = ScreenInfo::instance();
-        screenInfo->update_workspace_geometry();
+        ScreenInfo::instance()->updateWorkspaceGeometry();
+    } else if (notify->atom == _NET_CURRENT_DESKTOP) {
+        ScreenInfo::instance()->updateCurrentWorkspace();
     }
 
     return ret;
@@ -95,9 +95,21 @@ unsigned long * ScreenInfo::getX11IntProperty(Atom property, long length)
     return NULL;
 }
 
-/* FIXME: split this function into smaller chunks for readability.
-   Maybe intern the atoms in the constructor or somewhere that's just done once */
-void ScreenInfo::update_workspace_geometry()
+/* X11 Atoms never change, so let's just avoid repeating these calls more than once */
+void ScreenInfo::internX11Atoms()
+{
+    _NET_DESKTOP_LAYOUT = XInternAtom(QX11Info::display(),
+                                      "_NET_DESKTOP_LAYOUT",
+                                      False);
+    _NET_NUMBER_OF_DESKTOPS = XInternAtom(QX11Info::display(),
+                                          "_NET_NUMBER_OF_DESKTOPS",
+                                          False);
+    _NET_CURRENT_DESKTOP = XInternAtom(QX11Info::display(),
+                                       "_NET_CURRENT_DESKTOP",
+                                       False);
+}
+
+void ScreenInfo::updateWorkspaceGeometry()
 {
     int workspaces;
     int rows;
@@ -109,9 +121,6 @@ void ScreenInfo::update_workspace_geometry()
     /* First obtain the number of workspaces, that will be needed to
        also calculate some properties of the layout which could be missing
        from the property we will retrieve after this one */
-    static Atom _NET_NUMBER_OF_DESKTOPS = XInternAtom(QX11Info::display(),
-                                                      "_NET_NUMBER_OF_DESKTOPS",
-                                                      False);
     result = getX11IntProperty(_NET_NUMBER_OF_DESKTOPS, 1);
     if (result == NULL) {
         workspaces = 1;
@@ -121,8 +130,6 @@ void ScreenInfo::update_workspace_geometry()
     XFree(result);
 
     /* Then ask X11 the layout of the workspaces. */
-    static Atom _NET_DESKTOP_LAYOUT = XInternAtom(QX11Info::display(),
-                                                  "_NET_DESKTOP_LAYOUT", False);
     result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
     if (result == NULL) {
             /* In case of errors, default to a 1-row layout with "natural" orientation
@@ -178,5 +185,23 @@ void ScreenInfo::update_workspace_geometry()
     if (m_startingCorner != startingCorner) {
         m_startingCorner = startingCorner;
         Q_EMIT startingCornerChanged(m_startingCorner);
+    }
+}
+
+void ScreenInfo::updateCurrentWorkspace()
+{
+    int currentWorkspace;
+    unsigned long *result;
+    result = getX11IntProperty(_NET_CURRENT_DESKTOP, 1);
+    if (result == NULL) {
+        currentWorkspace = 0;
+    } else {
+        currentWorkspace = result[0];
+    }
+    XFree(result);
+
+    if (m_currentWorkspace != currentWorkspace) {
+        m_currentWorkspace = currentWorkspace;
+        Q_EMIT currentWorkspaceChanged(m_currentWorkspace);
     }
 }
