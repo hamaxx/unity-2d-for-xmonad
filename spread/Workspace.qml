@@ -111,7 +111,7 @@ Item {
                 NumberAnimation {
                     target: workspace
                     properties: "x,y,scale"
-                    duration: switcher.transitionDuration
+                    duration: switcher.currentTransitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: workspace; property: "z"; value: 2 }

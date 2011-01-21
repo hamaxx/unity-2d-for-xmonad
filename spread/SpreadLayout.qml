@@ -94,7 +94,7 @@ Item {
 
         delegate: SpreadWindow {
             id: spreadWindow
-            transitionDuration: switcher.transitionDuration
+            transitionDuration: switcher.currentTransitionDuration
 
             /* The following group of properties is the only thing needed to position
                this window in screen mode (almost exactly where the window is).

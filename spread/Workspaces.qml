@@ -43,7 +43,10 @@ Rectangle {
     property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
                                                        ((width - topMargin - bottomMargin) / switcher.height)
 
+    /* We don't really want to animate anything that happens while the window isn't visible,
+       so we set the transition duration for all animations to zero unless we're visible */
     property int transitionDuration: 250
+    property int currentTransitionDuration: 0
     property variant zoomedWorkspace
 
     property string application
@@ -88,16 +91,14 @@ Rectangle {
                              Requested by Bill)
         */
         onActivateSpread: {
-            /* We don't really want to animate anything that happens before we show
-               the window. */
-            /* FIXME: do this with states dependent on spreadView.visible or the like */
-            transitionDuration = 0
-
             singleApplication = switcher.allWindows.desktopFileForApplication(applicationId)
+
+            /* FIXME: all code below should be refactored in function once the other DBUS
+                      methods are added. */
             beforeShowing()
             globalWindowsList.load()
 
-            transitionDuration = 250
+            currentTransitionDuration = transitionDuration
             spreadView.show()
             spreadView.forceActivateWindow()
             afterShowing()
@@ -110,18 +111,23 @@ Rectangle {
         if (zoomedWorkspace && zoomedWorkspace.selectedWindow) {
             /* If there's any selected window activate it, then clean up the selection */
             if (layout.selectedWindow) {
+                console.log("WE ARE SELECTING A WINDOW")
                 zoomedWorkspace.selectedWindow.windowInfo.activate()
                 zoomedWorkspace.selectedWindow = null
             }
         }
         zoomedWorkspace = null
-        spreadView.hide()
-        afterHiding()
-        transitionDuration = 0
 
-        /* Nothing should be allowed to touch the windows anymore here, so
-           it should be safe to unload them. The only exception is if a transition is
-           still in effect */
+        spreadView.hide()
+        currentTransitionDuration = 0
+        afterHiding()
+
+        /* Nothing should be allowed to touch the windows anymore here, so it should
+           be safe to unload them to save memory.
+           NOTE: i'm not exactly sure any memory will actually be saved since the biggest
+           usage is the window screenshots, and Qt is caching them (see SpreadWindow.qml
+           for the trick I use to force them to refresh and more info on this cache)
+        */
         globalWindowsList.unload()
     }
 
