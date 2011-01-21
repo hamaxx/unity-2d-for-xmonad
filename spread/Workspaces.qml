@@ -13,6 +13,7 @@ Rectangle {
     property int workspaces: screen.workspaces
     property int columns: screen.columns
     property int rows: screen.rows
+    property variant currentWorkspace: screen.currentWorkspace
 
     /* These values are completely random. FIXME: pull from unity the proper ones */
     property int leftMargin: 40
@@ -45,8 +46,6 @@ Rectangle {
     property int transitionDuration: 250
     property variant zoomedWorkspace
 
-    /* FIXME: this should be screen.currentWorkspace */
-    property variant currentWorkspace: 0
     property string application
 
     Repeater {
@@ -73,21 +72,35 @@ Rectangle {
         id: globalWindowsList
     }
 
-    /* This controls the activation of the switcher */
-    signal requestedToStart
-    signal started
+    signal beforeShowing
+    signal afterShowing
+    signal afterHiding
     Connections {
         target: control
-        onActivateSpread: {
-            application = switcher.allWindows.desktopFileForApplication(applicationId)
 
-            // This gives a chance to any component to reset iself *before* being shown
-            // FIXME: even though this should probably happen *after* we hide.
-            requestedToStart()
+        /* This controls the activation of the switcher */
+        /* FIXME: there should be more DBUS messages (names are not final):
+           - SpreadAllWindows: workspace switcher of all windows
+           - SpreadWorkspace: same as above but with 1 workspace already zoomed
+           - SpreadApplicationWindows: like SpreadAllWindows but for only 1 app
+           - ActivateSpread: like SpreadWorkspace but for 1 app and with no other
+                             workspaces in the background (like the old one.
+                             Requested by Bill)
+        */
+        onActivateSpread: {
+            /* We don't really want to animate anything that happens before we show
+               the window. */
+            /* FIXME: do this with states dependent on spreadView.visible or the like */
+            transitionDuration = 0
+
+            singleApplication = switcher.allWindows.desktopFileForApplication(applicationId)
+            beforeShowing()
             globalWindowsList.load()
+
+            transitionDuration = 250
             spreadView.show()
             spreadView.forceActivateWindow()
-            started()
+            afterShowing()
         }
     }
 
@@ -103,6 +116,13 @@ Rectangle {
         }
         zoomedWorkspace = null
         spreadView.hide()
+        afterHiding()
+        transitionDuration = 0
+
+        /* Nothing should be allowed to touch the windows anymore here, so
+           it should be safe to unload them. The only exception is if a transition is
+           still in effect */
+        globalWindowsList.unload()
     }
 
     Timer {
@@ -112,41 +132,48 @@ Rectangle {
     }
 
     /* ---------------- FIXME: Anything below this line is here to allow debugging ----------------------- */
-    property string oldApp
+
+    property string singleApplication
     Rectangle {
         id: debug1
-        width: 150
-        height: 30
+        width: text1.paintedWidth
+        height: text1.paintedHeight
+        anchors.bottom: debug2.top
+        border.color: "yellow"
+        border.width: 1
+
         z: 500
-        color: "green"
+        color: "white"
 
         Text {
-            text: "Switch App/All"
+            id: text1
+            text: "Only " + singleApplication
         }
 
         MouseArea {
             anchors.fill:  parent
-            onClicked: {
-                var tmp = application
-                application = oldApp
-                oldApp = tmp
-            }
+            onClicked: application = singleApplication
         }
     }
     Rectangle {
-        width: 150
-        height: 30
-        anchors.top: debug1.bottom
+        id: debug2
         z: 500
-        color: "red"
+        width: text2.paintedWidth
+        height: text2.paintedHeight
+        color: "white"
+        anchors.bottom: switcher.bottom
+        border.color: "yellow"
+        border.width: 1
+
 
         Text {
-            text: "Hide!"
+            id: text2
+            text: "All windows"
         }
 
         MouseArea {
             anchors.fill:  parent
-            onClicked: spreadView.hide()
+            onClicked: application = ""
         }
     }
 }

@@ -14,16 +14,21 @@ Item {
 
     Connections {
         target: switcher
-        onRequestedToStart: {
-            // FIXME: i don't know why this is not working, but the current workspace should
-            // start in screen state then zoom out to the default state just after shown.
-            workspace.state = (workspaceNumber == switcher.currentWorkspace) ? "screen" : ""
-            spread.state = ""
+        onBeforeShowing: {
+            if (workspaceNumber == switcher.currentWorkspace) workspace.state = "screen"
         }
 
-        onStarted: {
-            workspace.state = ""
+        onAfterShowing: {
+            if (workspaceNumber == switcher.currentWorkspace) {
+                switcher.zoomedWorkspace = workspace
+                workspace.state = "zoomed"
+            }
             spread.state = "spread"
+        }
+
+        onAfterHiding: {
+            workspace.state = ""
+            spread.state = ""
         }
     }
 
@@ -69,6 +74,7 @@ Item {
             if (workspaceNumber == switcher.currentWorkspace) {
                 /* Go immediately to screen state regardless
                    of previous states if we are the current workspace */
+                spread.state = ""
                 workspace.state = "screen"
                 activated()
             }
