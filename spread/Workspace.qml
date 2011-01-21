@@ -18,7 +18,6 @@ Item {
             // FIXME: i don't know why this is not working, but the current workspace should
             // start in screen state then zoom out to the default state just after shown.
             workspace.state = (workspaceNumber == switcher.currentWorkspace) ? "screen" : ""
-            console.log("WE " + workspace.state)
             spread.state = ""
         }
 

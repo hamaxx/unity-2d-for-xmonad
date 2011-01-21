@@ -20,10 +20,27 @@ Rectangle {
     property int topMargin: 30
     property int spacing: 25
 
-    /* FIXME: cell scale isn't correct in case the workspaces layout is taller than wider */
+    /* Effective area available for laying out the workspaces after considering
+       inter-workspace spaces */
     property int availableWidth: switcher.width - ((columns - 1) * spacing)
-    property real cellScale: availableWidth / columns / switcher.width
-    property real zoomedScale: availableWidth / switcher.width
+    property int availableHeight: switcher.height - ((rows - 1) * spacing)
+
+    /* Scale of each workspace when laid out in the switcher grid
+       Note that all scale calculations are done using the desktop's available
+       geometry as this is the "natural" (initial) size of every workspace.
+
+       FIXME: this seems to be broken in the case of 10 workspaces and 4x4 layout.
+              it does only display a 3x3 grid for some reason.
+    */
+    property bool isLayoutHorizontal: (columns * availableGeometry.width) > (rows * availableGeometry.height)
+    property real cellScale: (isLayoutHorizontal) ? (availableWidth / columns / switcher.width) :
+                                                    (availableHeight / rows / switcher.height)
+
+    /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
+       the corners of the other workspaces below it) */
+    property bool isDesktopHorizontal: availableGeometry.width > availableGeometry.height
+    property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
+                                                       ((width - topMargin - bottomMargin) / switcher.height)
 
     property int transitionDuration: 250
     property variant zoomedWorkspace
