@@ -45,7 +45,7 @@ static const QString WEBFAV_DESKTOP_ENTRY =
     "[Desktop Entry]\n"
     "Version=1.0\n"
     "Name={name}\n"
-    "Exec=xdg-open {url}\n"
+    "Exec=xdg-open \"{url}\"\n"
     "Type=Application\n"
     "Icon=emblem-web\n"
     "Categories=Network;\n"
