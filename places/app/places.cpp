@@ -90,6 +90,9 @@ static bool eventFilter(void* message)
 
 int main(int argc, char *argv[])
 {
+    QApplication::setApplicationName("Unity 2D Dash");
+    qInstallMsgHandler(globalMessageHandler);
+
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We do _not_ mimick that

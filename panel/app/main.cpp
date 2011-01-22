@@ -86,6 +86,9 @@ int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
 
+    QApplication::setApplicationName("Unity 2D Panel");
+    qInstallMsgHandler(globalMessageHandler);
+
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We mimick that behaviour
