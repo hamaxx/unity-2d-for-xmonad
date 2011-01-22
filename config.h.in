@@ -3,6 +3,7 @@
 #define UNITY_DIR "${UNITY_DIR}"
 
 #include <QCoreApplication>
+#include <stdio.h>
 
 inline bool isRunningInstalled() {
     static bool cachedResult = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
