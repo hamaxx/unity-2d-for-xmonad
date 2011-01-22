@@ -32,8 +32,8 @@
 #include <QDBusConnectionInterface>
 
 static const char* DBUS_SERVICE = "com.canonical.Unity2d";
-static const char* DBUS_PATH = "/dash";
-static const char* DBUS_IFACE = "local.DashDeclarativeView";
+static const char* DBUS_PATH = "/Dash";
+static const char* DBUS_IFACE = "com.canonical.Unity2d.Dash";
 
 HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterface(NULL)
 {
@@ -102,7 +102,7 @@ void HomeButtonApplet::toggleDash()
     if (dashActive) {
         m_dashInterface->setProperty("active", false);
     } else {
-        /* Call local.DashDeclarativeView.activateHome (will set local.DashDeclarativeView.active to true */
+        /* Call com.canonical.Unity2d.Dash.activateHome (will set com.canonical.Unity2d.Dash.active to true */
         m_dashInterface->call(QDBus::Block, "activateHome");
     }
 }
