@@ -39,6 +39,6 @@ inline void globalMessageHandler(QtMsgType type, const char *message)
             break;
         case QtFatalMsg:
             fprintf(stderr, "%s: [FATAL] %s\n", qPrintable(QCoreApplication::applicationName()), message);
-            break;
+            abort();
     }
 }
