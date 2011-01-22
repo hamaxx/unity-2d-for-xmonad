@@ -24,6 +24,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QRegExp>
+#include <QPixmap>
 #include <QCryptographicHash>
 
 static const QString REL_ICON_STORE = ".local/share/icons/";
@@ -151,18 +152,26 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
             tryNextFavicon();
         }
         else {
-            QUrl url = reply->url();
-
-            check_icon_store_exists();
-            QString filename = ABS_ICON_STORE + computeUrlHash(url);
-            QString extension = url.path().mid(url.path().lastIndexOf("."));
-            QFile file(filename + extension);
-            file.open(QIODevice::WriteOnly);
-            file.write(reply->readAll());
-            file.close();
-
-            m_favicon = file.fileName();
-            done();
+            /* Check that the data is actually an image. This will cope with
+               badly configured web servers that don’t return error codes on
+               non-existing files. */
+            QPixmap pixmap;
+            bool valid = pixmap.loadFromData(reply->readAll());
+            if (valid) {
+                check_icon_store_exists();
+                QUrl url = reply->url();
+                QString filepath = ABS_ICON_STORE + computeUrlHash(url);
+                QString extension = url.path().mid(url.path().lastIndexOf("."));
+                QString filename = filepath + extension;
+                pixmap.save(filename);
+                m_favicon = filename;
+                done();
+            }
+            else {
+                m_current_favicon++;
+                m_redirects = 0;
+                tryNextFavicon();
+            }
         }
     }
     else {
