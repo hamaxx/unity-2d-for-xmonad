@@ -24,3 +24,21 @@ inline QString unity2dImportPath() {
         return QString(QCoreApplication::applicationDirPath()+"/../");
     }
 }
+
+inline void globalMessageHandler(QtMsgType type, const char *message)
+{
+    switch (type) {
+        case QtDebugMsg:
+            fprintf(stderr, "%s: [DEBUG] %s\n", qPrintable(QCoreApplication::applicationName()), message);
+            break;
+        case QtWarningMsg:
+            fprintf(stderr, "%s: [WARNING] %s\n", qPrintable(QCoreApplication::applicationName()), message);
+            break;
+        case QtCriticalMsg:
+            fprintf(stderr, "%s: [CRITICAL] %s\n", qPrintable(QCoreApplication::applicationName()), message);
+            break;
+        case QtFatalMsg:
+            fprintf(stderr, "%s: [FATAL] %s\n", qPrintable(QCoreApplication::applicationName()), message);
+            abort();
+    }
+}
