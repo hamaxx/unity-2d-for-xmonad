@@ -97,7 +97,7 @@ LauncherView::workAreaResized(int screen)
         this->move(left, available.y());
 
         qDebug("LauncherView::workAreaResized: resize to (%d, %d) and move to (%d, %d)",
-               this->size().width(), this->size().height(), this->x(), this->y() );
+               this->size().width(), this->size().height(), this->x(), this->y());
 
         m_resizing = true;
 
