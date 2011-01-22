@@ -40,6 +40,8 @@ public slots:
     void workAreaResized(int screen);
 
 private:
+    QList<QUrl> getEventUrls(QDropEvent*);
+
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);

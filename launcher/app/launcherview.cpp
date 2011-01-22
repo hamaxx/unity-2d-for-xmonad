@@ -38,13 +38,46 @@ LauncherView::LauncherView() :
     setAcceptDrops(true);
 }
 
+QList<QUrl>
+LauncherView::getEventUrls(QDropEvent* event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    if (mimeData->hasUrls()) {
+        return mimeData->urls();
+    }
+    else if (mimeData->hasText()) {
+        /* When dragging an URL from firefox’s address bar, it is properly
+           recognized as such by the event. However, the same doesn’t work
+           for chromium: the URL is recognized as plain text.
+           We cope with this unfriendly behaviour by trying to build a URL out
+           of the text. This assumes there’s only one URL. */
+        QString text = mimeData->text();
+        QUrl url(text);
+        if (url.isRelative()) {
+            /* On top of that, chromium sometimes chops off the scheme… */
+            url = QUrl("http://" + text);
+        }
+        if (url.isValid()) {
+            QList<QUrl> urls;
+            urls.append(url);
+            return urls;
+        }
+    }
+
+    return QList<QUrl>();
+}
+
 void LauncherView::dragEnterEvent(QDragEnterEvent *event)
 {
     // Check that data has a list of URLs and that at least one is either
     // a desktop file or a web page.
-    if (!event->mimeData()->hasUrls()) return;
+    QList<QUrl> urls = getEventUrls(event);
 
-    foreach (QUrl url, event->mimeData()->urls()) {
+    if (urls.isEmpty()) {
+        return;
+    }
+
+    foreach (QUrl url, urls) {
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
             url.scheme().startsWith("http")) {
             event->acceptProposedAction();
@@ -62,7 +95,8 @@ void LauncherView::dropEvent(QDropEvent *event)
 {
     bool accepted = false;
 
-    foreach (QUrl url, event->mimeData()->urls()) {
+    QList<QUrl> urls = getEventUrls(event);
+    foreach (QUrl url, urls) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
             accepted = true;
