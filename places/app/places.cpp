@@ -44,8 +44,8 @@ static bool registerDBusService(DashDeclarativeView* view)
     }
     /* FIXME: use an adaptor class in order not to expose all of the view's
        properties and methods. */
-    if (!bus.registerObject("/dash", view, QDBusConnection::ExportAllContents)) {
-        qCritical() << "Failed to register /dash, this should not happen!";
+    if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
+        qCritical() << "Failed to register /Dash, this should not happen!";
         return false;
     }
     /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
