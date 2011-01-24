@@ -2,82 +2,95 @@ import Qt 4.7
 
 Item {
     id: workspace
+
+    transformOrigin: Item.TopLeft
     z: 1
 
     property int row
     property int column
-
     property int workspaceNumber
-    property alias selectedWindow: spread.selectedWindow
+    property alias selectedXid: spread.selectedXid
 
+    /* Give keyboard focus (among all workspaces) only to the zoomed Workspace */
+    property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
+    focus: isZoomed
+
+    /* This is emitted, by the zoomed workspace only, whenever a window or the workspace
+       background is clicked or ENTER is pressed while a window is selected */
     signal activated
 
+    function activate() {
+        workspace.state = "screen"
+        spread.state = ""
+        activated()
+    }
+
+    function unzoom() {
+        spread.selectedXid = 0
+        workspace.state = ""
+        switcher.zoomedWorkspace = -1
+    }
+
+    function zoom() {
+        workspace.state = "zoomed"
+        switcher.zoomedWorkspace = workspace.workspaceNumber
+    }
+
+    /* We listen to the switcher's signals during its startup and exit phases
+       to setup and cleanup the state of this specific workspace, so that it
+       will interact correctly each time the switcher is summoned.
+       The currently active workspace shoud start maximized, then transition
+       to zoomed state. All the others should remain in the background. */
     Connections {
         target: switcher
         onBeforeShowing: {
-            if (workspaceNumber == switcher.currentWorkspace) workspace.state = "screen"
+            if (workspaceNumber == switcher.currentWorkspace) {
+                switcher.zoomedWorkspace = workspace.workspaceNumber
+                workspace.state = "screen"
+            }
         }
 
         onAfterShowing: {
-            if (workspaceNumber == switcher.currentWorkspace) {
-                switcher.zoomedWorkspace = workspace
-                workspace.state = "zoomed"
-            }
+            if (isZoomed) workspace.state = "zoomed"
             spread.state = "spread"
         }
 
         onAfterHiding: {
+            if (isZoomed) activateSelectedWindow(true)
             workspace.state = ""
             spread.state = ""
-        }
-    }
-
-    transformOrigin: Item.TopLeft
-    x: column * childrenRect.width
-    y: row * childrenRect.height
-
-    /* If another workspace is zoomed, cancel the current zoom.
-       If we are zooomed, then exit to our workspace (optionally
-       to the selected window if any) */
-    function handleSpreadClick(on_window)
-    {
-        if (switcher.zoomedWorkspace) {
-            if (switcher.zoomedWorkspace != workspace)
-                switcher.zoomedWorkspace.state = ""
-            else {
-                /* We are exiting the switcher */
-                workspace.state = "screen"
-                spread.state = ""
-                activated()
-            }
-            switcher.zoomedWorkspace = null
-        } else if (workspace.state == "") {
-            /* We are zooming this workspace */
-            workspace.state = "zoomed"
-            switcher.zoomedWorkspace = workspace
+            z = 1
         }
     }
 
     Spread {
         id: spread
         application: switcher.application
-        workspace: workspaceNumber
 
-        onBackgroundClicked: handleSpreadClick(false)
-        onWindowClicked: handleSpreadClick(true)
+        /* When a window or the spread background is clicked or a window is
+           activated by keyboard interact in the following way:
+           - If another workspace is zoomed, cancel the current zoom.
+           - If we are zooomed, then maximize our workspace and trigger an exit.
+           - If no workspace is zoomed, then make us the zoomed workspace. */
+        onWindowActivated: {
+            if (switcher.zoomedWorkspace != -1) {
+                var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
+                if (zoomed) {
+                    if (zoomed != workspace) zoomed.unzoom()
+                    else zoomed.activate()
+                }
+            } else if (workspace.state == "") zoom()
+        }
     }
 
-    Connections {
-        target: spreadView
-        onOutsideClick: {
-            selectedWindow = null
-            if (workspaceNumber == switcher.currentWorkspace) {
-                /* Go immediately to screen state regardless
-                   of previous states if we are the current workspace */
-                spread.state = ""
-                workspace.state = "screen"
-                activated()
-            }
+    /* When this is called whatever window was selected (by keyboard or mouse) on
+       this workspace, will be made the active window. As a convenience, we allow
+       to clean the selection afterwards. */
+    function activateSelectedWindow(clearSelection) {
+        if (spread.selectedXid != 0) {
+            var selectedWindow = spread.windowForXid(spread.selectedXid)
+            if (selectedWindow != null) selectedWindow.windowInfo.activate()
+            if (clearSelection) spread.selectedXid = 0;
         }
     }
 
@@ -106,6 +119,8 @@ Item {
 
     transitions: [
         Transition {
+            /* We want the value of z to be set to 2 immediately, and during the entire animation,
+               regardless of the final state it will have */
             SequentialAnimation {
                 PropertyAction { target: workspace; property: "z"; value: 2 }
                 NumberAnimation {

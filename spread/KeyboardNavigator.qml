@@ -20,57 +20,56 @@ import Qt 4.7
 Item {
     id: navigator
 
-    property variant selectedWindow
+    property int selectedXid: 0
+    property variant orderedXids: []
 
-    property variant orderedWindows: []
-    function addWindowAt(index, window) {
-        /* Here we can't assign directly use orderedWindows[index] = window
+    function addXidAt(index, xid) {
+        /* Here we can't assign directly use orderedXids[index] = window
            because, due to restrictions in the way list properties are implemented
            in QML, reading from a list-type property returns *a copy* of the list.
            Therefore we take that copy, add the item, then reassign it to the property.
            See: http://doc.qt.nokia.com/4.7-snapshot/qml-list.html
         */
-        var copy = orderedWindows;
-        copy[index] = window
-        orderedWindows = copy
+        var copy = orderedXids;
+        copy[index] = xid
+        orderedXids = copy
+    }
+    function removeXidAt(index) {
+        var copy = orderedXids;
+        copy.splice(index, 1)
+        orderedXids = copy
     }
 
     function unload() {
-        orderedWindows = []
+        orderedXids = []
     }
 
-    /* Given row and column, calculate the index of the SpreadWindow in the orderedWindows list
+    /* Given row and column, calculate the index of the SpreadWindow in the orderedXids list
        and then ask to make it the globally selected window. */
     function selectAt(row, column) {
         var index = row * layout.columns + column
-        selectWindow(orderedWindows[index])
+        selectXid(orderedXids[index])
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
         switch (key) {
-        case Qt.Key_Escape:
-            /* This will cancel the selection, so at the end of the
-               outro no window will be activated */
-            selectWindow(null)
-            layout.exitSpread()
-            return true
-
         case Qt.Key_Enter:
         case Qt.Key_Return:
-            if (selectedWindow) layout.exitSpread()
+            if (navigator.selectedXid != 0) layout.windowActivated()
             return true
 
         case Qt.Key_Right:
         case Qt.Key_Left:
         case Qt.Key_Up:
         case Qt.Key_Down:
-            if (!selectedWindow) {
+            if (navigator.selectedXid == 0) {
                 selectAt(0,0)
                 return true
             }
 
-            var at = selectedWindow
+            var at = spread.windowForXid(navigator.selectedXid)
+            if (at == null) return true
 
             switch (key) {
             case Qt.Key_Right:
@@ -102,17 +101,22 @@ Item {
         return false
     }
 
-    function selectWindow(selected) {
+    function selectXid(requestedXid) {
+        if (requestedXid == navigator.selectedXid) return
+
+        var selectedWindow = spread.windowForXid(navigator.selectedXid)
+        var requestedWindow = (requestedXid == 0) ? null : spread.windowForXid(requestedXid)
+
         if (selectedWindow) selectedWindow.isSelected = false
-        if (selected) selected.isSelected = true
-        selectedWindow = selected
+        if (requestedWindow) requestedWindow.isSelected = true
+        navigator.selectedXid = requestedXid
     }
 
     function selectWindowByWindowInfo(selected) {
         if (!selected) return;
-        for (var i = 0; i < orderedWindows.length; i++) {
-            if (orderedWindows[i].windowInfo.xid == selected.xid) {
-                selectWindow(orderedWindows[i])
+        for (var i = 0; i < orderedXids.length; i++) {
+            if (orderedXids[i].windowInfo.xid == selected.xid) {
+                selectWindow(orderedXids[i])
                 return
             }
         }

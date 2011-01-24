@@ -47,56 +47,90 @@ Rectangle {
        so we set the transition duration for all animations to zero unless we're visible */
     property int transitionDuration: 250
     property int currentTransitionDuration: 0
-    property variant zoomedWorkspace
 
+    /* FIXME: this shouldn't be kept here. Remove when the DBUS API settles */
     property string application
 
-    Repeater {
-        model: switcher.workspaces
-        delegate: Workspace {
-            id: workspace
+    /* The number of the currently zoomed workspace. Use workspaceForNumber to find the
+       actual Workspace component. -1 Means that no workspace is zoomed */
+    property int zoomedWorkspace: -1
 
-            /* FIXME: This is ok right now since we ignore screen.orientation and
-               screen.startingCorner, but we should respect them eventually */
-            workspaceNumber: index
-            row: Math.floor(index / columns)
-            column: index % columns
+    /* This is the master model containing all the windows recognized by bamf for the entire
+       screen. Each workspace will individually filter them to select only those that
+       belong to it. */
+    property variant allWindows: WindowsList { }
 
-            x: column * (switcher.width * cellScale) + (column * switcher.spacing)
-            y: row * (switcher.height * cellScale) + (row * switcher.spacing)
-            scale:  switcher.cellScale
-
-            onActivated: exitTransitionTimer.start()
-       }
-    }
-
-    property variant allWindows: globalWindowsList
-    WindowsList {
-        id: globalWindowsList
-    }
-
+    /* Those signals are emitted by the swicher while it starts (beforeShowing
+       and afterShowing) and while it exits (beforeHiding and afterHiding). The single
+       workspaces react to these signals and perform the appropriate setup and cleanup
+       operations */
     signal beforeShowing
     signal afterShowing
+    signal beforeHiding
     signal afterHiding
+
+    /* Group all Workspace elements into a single focus scope, so that only one of them
+       has keyboard focus at the same time. This grouping also helps workspaceByNumber
+       iterate over less items than it would need to if the Repeater was adding children
+       to the switcher itself. */
+    FocusScope {
+        id: spaces
+        Repeater {
+            model: switcher.workspaces
+            delegate: Workspace {
+                id: workspace
+
+                /* FIXME: This is ok right now since we ignore screen.orientation and
+                   screen.startingCorner, but we should respect them eventually */
+                workspaceNumber: index
+                row: Math.floor(index / columns)
+                column: index % columns
+
+                x: column * (switcher.width * cellScale) + (column * switcher.spacing)
+                y: row * (switcher.height * cellScale) + (row * switcher.spacing)
+                scale:  switcher.cellScale
+
+                /* We need to let the transition animation finish entirely before hiding
+                   the window and performing cleanup operations */
+                onActivated: exitTransitionTimer.start()
+            }
+        }
+    }
+
+    /* We want to avoid storing references to Workspace objects directly in
+       properties of the switcher. This is because items may disappear at any
+       time from the underlying model, making these refereces unreliable.
+       Therefore we just go and find them by their workspace number among the
+       children list on demand. */
+    function workspaceByNumber(number) {
+        if (number != null) {
+            for (var i = 0; i < spaces.children.length; i++) {
+                var child = spaces.children[i];
+                if (child.workspaceNumber == number)
+                    return child;
+            }
+        }
+        return null
+    }
+
+    /* This controls the activation of the switcher via DBUS */
+    /* FIXME: there should be more DBUS messages (names are not final):
+       - SpreadAllWindows: workspace switcher of all windows
+       - SpreadWorkspace: same as above but with 1 workspace already zoomed
+       - SpreadApplicationWindows: like SpreadAllWindows but for only 1 app
+       - ActivateSpread: like SpreadWorkspace but for 1 app and with no other
+                         workspaces in the background (like the old one.
+                         Requested by Bill)
+    */
     Connections {
         target: control
 
-        /* This controls the activation of the switcher */
-        /* FIXME: there should be more DBUS messages (names are not final):
-           - SpreadAllWindows: workspace switcher of all windows
-           - SpreadWorkspace: same as above but with 1 workspace already zoomed
-           - SpreadApplicationWindows: like SpreadAllWindows but for only 1 app
-           - ActivateSpread: like SpreadWorkspace but for 1 app and with no other
-                             workspaces in the background (like the old one.
-                             Requested by Bill)
-        */
         onActivateSpread: {
+            /* FIXME: desktopFileForApplication should be moved to ScreenInfo */
             singleApplication = switcher.allWindows.desktopFileForApplication(applicationId)
 
-            /* FIXME: all code below should be refactored in function once the other DBUS
-                      methods are added. */
             beforeShowing()
-            globalWindowsList.load()
+            allWindows.load()
 
             currentTransitionDuration = transitionDuration
             spreadView.show()
@@ -105,36 +139,70 @@ Rectangle {
         }
     }
 
-    /* This controls the deactivation of the switcher */
-    function exitSwitcher()
-    {
-        if (zoomedWorkspace && zoomedWorkspace.selectedWindow) {
-            /* If there's any selected window activate it, then clean up the selection */
-            if (layout.selectedWindow) {
-                console.log("WE ARE SELECTING A WINDOW")
-                zoomedWorkspace.selectedWindow.windowInfo.activate()
-                zoomedWorkspace.selectedWindow = null
-            }
-        }
-        zoomedWorkspace = null
-
-        spreadView.hide()
-        currentTransitionDuration = 0
-        afterHiding()
-
-        /* Nothing should be allowed to touch the windows anymore here, so it should
-           be safe to unload them to save memory.
-           NOTE: i'm not exactly sure any memory will actually be saved since the biggest
-           usage is the window screenshots, and Qt is caching them (see SpreadWindow.qml
-           for the trick I use to force them to refresh and more info on this cache)
-        */
-        globalWindowsList.unload()
-    }
-
+    /* This controls the exit from the switcher.
+       Note that we can't just hide the workspaces switcher immediately when the user
+       wants to activate a window or cancel the switching process. We first want any
+       transitions to complete, so we need to start this timer, and when it's triggered
+       it will actually do all that is necessary to hide the switcher and cleanup */
     Timer {
         id: exitTransitionTimer
         interval: transitionDuration
-        onTriggered: exitSwitcher()
+        onTriggered: {
+            beforeHiding()
+
+            spreadView.hide()
+            currentTransitionDuration = 0
+
+            afterHiding()
+
+            /* Nothing should be allowed to touch the windows anymore here, so it should
+               be safe to unload them all to save memory.
+               NOTE: i'm not exactly sure any memory will actually be saved since the biggest
+               usage is the window screenshots, and Qt is caching them (see SpreadWindow.qml
+               for the trick I use to force them to refresh and more info on this cache)
+            */
+            allWindows.unload()
+            zoomedWorkspace = -1
+        }
+    }
+
+
+    /* Handle both the ESC keypress and any click on the area outside of the
+       switcher in the same way: maximize the currently active workspace to screen
+       size and hide the switcher (effectively canceling the switching operation).
+       If another workspace was zoomed unzoom it first. */
+    Keys.onPressed: {
+        switch (event.key) {
+        case Qt.Key_Escape:
+            cancelAndExit()
+            event.accepted = true
+            return
+        }
+    }
+
+    Connections {
+        target: spreadView
+        onOutsideClick: cancelAndExit()
+    }
+
+    function cancelAndExit() {
+        /* If the currently active workspace is also the zoomed one, don't
+           bother unzooming it */
+        if (zoomedWorkspace != -1 && zoomedWorkspace != currentWorkspace) {
+
+            var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
+            if (zoomed) zoomed.unzoom()
+        }
+
+        var current = switcher.workspaceByNumber(switcher.currentWorkspace)
+        if (current) {
+            current.selectedXid = 0
+            current.activate()
+        }
+
+        /* Let the transition finish and the hide the switcher and perform
+           cleanup */
+        exitTransitionTimer.start()
     }
 
     /* ---------------- FIXME: Anything below this line is here to allow debugging ----------------------- */
@@ -183,4 +251,3 @@ Rectangle {
         }
     }
 }
-

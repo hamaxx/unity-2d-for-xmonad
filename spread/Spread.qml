@@ -20,18 +20,16 @@ import UnityPlaces 1.0
 */
 
 Item {
+    id: spread
     width: availableGeometry.width
     height: availableGeometry.height
 
     property string application
-    property int workspace
 
     property alias state: layout.state
-    property alias selectedWindow: layout.selectedWindow
+    property alias selectedXid: layout.selectedXid
 
-    signal exiting
-    signal backgroundClicked
-    signal windowClicked
+    signal windowActivated
 
     GnomeBackground {
         anchors.fill: parent
@@ -40,7 +38,10 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: backgroundClicked()
+            onClicked: {
+                spread.selectedXid = 0
+                spread.windowActivated()
+            }
         }
     }
 
@@ -59,7 +60,7 @@ Item {
         dynamicSortFilter: true
 
         filterRole: WindowInfo.RoleWorkspace
-        filterRegExp: RegExp("^%1|-2$".arg(workspace))
+        filterRegExp: RegExp("^%1|-2$".arg(workspace.workspaceNumber))
     }
 
     /* This is our main view.
@@ -74,6 +75,21 @@ Item {
         anchors.fill: parent
         windows: filteredByWorkspace
 
-        onWindowClicked: spread.windowClicked()
+        onWindowActivated: {
+            layout.raiseSelectedWindow()
+            spread.windowActivated()
+        }
+    }
+
+    function windowForXid(xid)
+    {
+        var children = layout.children
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i]
+            if (child.windowInfo && child.windowInfo.contentXid == xid) {
+                return child;
+            }
+        }
+        return null;
     }
 }

@@ -38,18 +38,20 @@ Item {
                 layout.lastRowCells : layout.columns;
     }
 
-    signal windowClicked
+    signal windowActivated
 
     /* We need to make this information available to the parent, so that it
        knows which window to activate at the end of the spread (if any) */
-    property alias selectedWindow: navigator.selectedWindow
+    property alias selectedXid: navigator.selectedXid
 
-    function exitSpread() {
+    function raiseSelectedWindow() {
         /* This is a bit of an hack, to raise the window above all the others
            before starting the outro, but it's ok since at the end of the outro
            all the windows will be unloaded (and we will never have >9999 windows) */
-        if (navigator.selectedWindow) navigator.selectedWindow.z = 9999
-        layout.state = ""
+        if (navigator.selectedXid != 0) {
+            var selectedWindow = spread.windowForXid(navigator.selectedXid)
+            if (selectedWindow) selectedWindow.z = 9999
+        }
     }
 
     transitions: Transition {
@@ -70,23 +72,7 @@ Item {
        navigation with the keyboard while we are in spread mode. */
     KeyboardNavigator {
         id: navigator
-
-        /* Disable keyboard focus when not in spread mode to prevent accidental
-           keypresses from messing up the selection. */
-        focus: layout.state == "spread"
-
-        /* It is very important to clean up the internal state of the
-           navigator when a spread is completed, otherwise it will keep
-           un-needed references to SpreadWindow instances.
-
-           NOTE: it is safe to use this property change notification for this because
-           due to the way the WindowsList's load() and unload() methods work, the count
-           value is either zero or the full count of the items in the model. It
-           can never take any other value. */
-        Connections {
-            target: layout.windows
-            onCountChanged: if (count == 0) navigator.unload()
-        }
+        focus: workspace.isZoomed
     }
 
     Repeater {
@@ -122,11 +108,12 @@ Item {
             windowInfo: window
 
             onClicked: {
-                navigator.selectWindow(spreadWindow)
-                layout.windowClicked()
+                navigator.selectXid(spreadWindow.windowInfo.contentXid)
+                layout.windowActivated()
             }
-            onExited: if (navigator.selectedWindow == spreadWindow) navigator.selectWindow(null)
-            onEntered: navigator.selectWindow(spreadWindow)
+            onExited: if (navigator.selectedXid == spreadWindow.windowInfo.contentXid)
+                          navigator.selectXid(0)
+            onEntered: navigator.selectXid(spreadWindow.windowInfo.contentXid)
 
             /* This is a workaround for an issue with how QML handles the "children"
                property.
@@ -138,10 +125,8 @@ Item {
                feels like, with no rules that I could find documented anywhere.
                Since we need an ordered list for keyboard navigation, we need to maintain
                it ourselves. */
-
-            // FIXME: THIS CAUSES A CRASH WHEN ADDING AND REMOVING ITEMS FROM THE MODEL
-            //        Leave disabled for now until we find a different solution
-            //Component.onCompleted: navigator.addWindowAt(index, spreadWindow)
+            Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
+            Component.onDestruction: navigator.removeXidAt(index)
         }
     }
 }
