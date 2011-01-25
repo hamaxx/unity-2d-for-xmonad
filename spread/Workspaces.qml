@@ -9,6 +9,7 @@ Rectangle {
     height: availableGeometry.height
 
     color: "black"
+    focus: true
 
     property int workspaces: screen.workspaces
     property int columns: screen.columns
@@ -59,6 +60,7 @@ Rectangle {
        screen. Each workspace will individually filter them to select only those that
        belong to it. */
     property variant allWindows: WindowsList { }
+    property int lastActiveWindow: 0
 
     /* Those signals are emitted by the swicher while it starts (beforeShowing
        and afterShowing) and while it exits (beforeHiding and afterHiding). The single
@@ -69,11 +71,10 @@ Rectangle {
     signal beforeHiding
     signal afterHiding
 
-    /* Group all Workspace elements into a single focus scope, so that only one of them
-       has keyboard focus at the same time. This grouping also helps workspaceByNumber
+    /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
-    FocusScope {
+    Item {
         id: spaces
         Repeater {
             model: switcher.workspaces
@@ -122,14 +123,14 @@ Rectangle {
                          workspaces in the background (like the old one.
                          Requested by Bill)
     */
-    property int lastActiveWindow: 0
     Connections {
         target: control
 
         onActivateSpread: {
-            /* FIXME: desktopFileForApplication should be moved to ScreenInfo */
-            singleApplication = screen.desktopFileForApplication(applicationId)
+            /* Save the currently active window before showing and activating the switcher,
+               so that we can use it to pre-select the active window on the workspace */
             lastActiveWindow = screen.activeWindow
+            singleApplication = screen.desktopFileForApplication(applicationId)
 
             beforeShowing()
             allWindows.load()

@@ -72,7 +72,7 @@ Item {
        navigation with the keyboard while we are in spread mode. */
     KeyboardNavigator {
         id: navigator
-        focus: workspace.isZoomed
+        focus: true
     }
 
     Repeater {

@@ -40,7 +40,6 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
     int count() const { return rowCount(); }
-    WindowInfo* lastActiveWindow() const;
 
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();

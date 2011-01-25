@@ -1,6 +1,6 @@
 import Qt 4.7
 
-Item {
+FocusScope {
     id: workspace
 
     transformOrigin: Item.TopLeft
@@ -10,9 +10,11 @@ Item {
     property int column
     property int workspaceNumber
     property alias selectedXid: spread.selectedXid
-
-    /* Give keyboard focus (among all workspaces) only to the zoomed Workspace */
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
+
+    /* Give keyboard focus (among all workspaces) only to the zoomed Workspace.
+       Since the workspace is a FocusScope, only one Item inside it can have focus.
+       In our case it's always the KeyboardNavigator inside the SpreadLayout. */
     focus: isZoomed
 
     /* This is emitted, by the zoomed workspace only, whenever a window or the workspace
