@@ -81,8 +81,6 @@ void WindowsList::load()
          applications.append(allapplications->at(i));
     }
 
-    BamfWindow* activeWindow = matcher.active_window();
-
     /* Build a list of windowInfos for windows that are 'user_visible' according to BAMF */
     QList<WindowInfo*> newWindows;
 
