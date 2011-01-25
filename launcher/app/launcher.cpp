@@ -33,6 +33,9 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
+    QApplication::setApplicationName("Unity 2D Launcher");
+    qInstallMsgHandler(globalMessageHandler);
+
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We mimick that behaviour

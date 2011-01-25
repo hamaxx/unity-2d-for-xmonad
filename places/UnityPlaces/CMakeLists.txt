@@ -16,6 +16,7 @@ set(UnityPlaces_SRCS
     windowinfo.cpp
     windowslist.cpp
     screeninfo.cpp
+    cacheeffect.cpp
     )
 
 set(UnityPlaces_MOC_HDRS
@@ -29,6 +30,7 @@ set(UnityPlaces_MOC_HDRS
     windowinfo.h
     windowslist.h
     screeninfo.h
+    cacheeffect.h
     )
 
 qt4_wrap_cpp(UnityPlaces_MOC_SRCS ${UnityPlaces_MOC_HDRS})

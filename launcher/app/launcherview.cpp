@@ -76,6 +76,8 @@ LauncherView::workAreaResized(int screen)
 {
     if (m_resizing)
     {
+        qDebug("Second call to LauncherView::workAreaResized. Ignoring.");
+
         /* FIXME: this is a hack to avoid infinite recursion: reserving space
            at the left of the screen triggers the emission of the
            workAreaResized signal… */
@@ -93,6 +95,9 @@ LauncherView::workAreaResized(int screen)
         /* This assumes that we are the only panel on the left of the screen */
         if (m_reserved) left -= this->size().width();
         this->move(left, available.y());
+
+        qDebug("LauncherView::workAreaResized: resize to (%d, %d) and move to (%d, %d)",
+               this->size().width(), this->size().height(), this->x(), this->y());
 
         m_resizing = true;
 

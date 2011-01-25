@@ -1,12 +1,15 @@
 import Qt 4.7
 import gconf 1.0
-/* Necessary to access the blended image provider */
+/* Necessary to access the blended image provider and CacheEffect */
 import UnityPlaces 1.0
 
 Item {
     property string overlay_color
     property real overlay_alpha
     clip: true
+
+    /* Avoid redraw at rendering */
+    effect: CacheEffect {}
 
     GConfItem {
         id: primary_color
