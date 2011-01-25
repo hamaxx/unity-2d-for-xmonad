@@ -1,9 +1,10 @@
-unity-2d (0.1-0ubuntu4) UNRELEASED; urgency=low
+unity-2d (0.1-0ubuntu4) natty; urgency=low
 
   * add Vcs-Bzr location to debian/control
   * update branch location in debian/copyright
+  * pull in some upstream fixes
 
- -- Oliver Grawert <ogra@ubuntu.com>  Wed, 19 Jan 2011 15:53:45 +0100
+ -- Oliver Grawert <ogra@ubuntu.com>  Wed, 21 Jan 2011 13:11:45 +0100
 
 unity-2d (0.1-0ubuntu3) natty; urgency=low
 

@@ -9,7 +9,7 @@ Build-Depends: cdbs, debhelper (>= 7),
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
                libx11-dev, libindicator-dev, libgtk2.0-dev
 Standards-Version: 3.9.1
-Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
+Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/natty-release
 
 Package: unity-2d-launcher
 Architecture: any
