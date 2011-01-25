@@ -8,8 +8,9 @@ Item {
     property real overlay_alpha
     clip: true
 
-    /* Avoid redraw at rendering */
-    effect: CacheEffect {}
+// FIXME: disabled since it doesn't work properly with a size animation
+//    /* Avoid redraw at rendering */
+//    effect: CacheEffect {}
 
     GConfItem {
         id: primary_color
