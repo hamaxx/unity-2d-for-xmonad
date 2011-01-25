@@ -242,3 +242,18 @@ void ScreenInfo::updateActiveWindow(WnckScreen *screen)
         Q_EMIT activeWindowChanged(m_activeWindow);
     }
 }
+
+/* FIXME: this will not work with wm using large desktops and viewports
+   to implement their workspaces.*/
+void ScreenInfo::activateWorkspace(int workspaceNumber)
+{
+    WnckScreen *screen = wnck_screen_get_default();
+    WnckWorkspace *workspace = wnck_screen_get_workspace(screen, workspaceNumber);
+    if (workspace == NULL) {
+        qWarning() << "Requested activation workspace" << workspaceNumber << " but it does not exist.";
+        return;
+    }
+
+    wnck_workspace_activate(workspace, CurrentTime);
+}
+

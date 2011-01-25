@@ -36,6 +36,7 @@ public:
 
     static ScreenInfo* instance();
     Q_INVOKABLE QString desktopFileForApplication(int applicationId);
+    Q_INVOKABLE void activateWorkspace(int workspaceNumber);
 
     int workspaces() const { return m_workspaces; }
     int currentWorkspace() const { return m_currentWorkspace; }

@@ -57,8 +57,17 @@ FocusScope {
             spread.state = "spread"
         }
 
+        onBeforeHiding: {
+            if (isZoomed) screen.activateWorkspace(workspace.workspaceNumber)
+        }
+
         onAfterHiding: {
+            /* FIXME: this should be done before hiding. However for some reason
+               it always fail for windows on the current workspace. Should be put
+               back in onBeforeHiding though, since it does cause a minor visual
+               glitch if done here. */
             if (isZoomed) activateSelectedWindow(true)
+
             workspace.state = ""
             spread.state = ""
             z = 1
@@ -86,8 +95,8 @@ FocusScope {
     }
 
     /* When this is called whatever window was selected (by keyboard or mouse) on
-       this workspace, will be made the active window. As a convenience, we allow
-       to clean the selection afterwards. */
+       this workspace, if any, will be made the active window. As a convenience,
+       we allow to clean the selection afterwards. */
     function activateSelectedWindow(clearSelection) {
         if (spread.selectedXid != 0) {
             var selectedWindow = spread.windowForXid(spread.selectedXid)

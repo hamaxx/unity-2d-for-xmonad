@@ -81,9 +81,7 @@ public:
 
     Q_INVOKABLE void activate();
 
-    /* FIXME: copied from UnityApplications/launcherapplication.h */
     static void showWindow(WnckWindow* window);
-    static void moveViewportToWindow(WnckWindow* window);
 
     enum RoleNames {
         RoleWindowInfo,
