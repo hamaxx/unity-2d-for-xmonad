@@ -32,9 +32,6 @@ class WindowsList : public QAbstractListModel
 
     Q_PROPERTY(int count READ count NOTIFY countChanged);
 
-    /* FIXME: this should be moved to ScreenInfo probably */
-    Q_PROPERTY(WindowInfo* lastActiveWindow READ lastActiveWindow NOTIFY lastActiveWindowChanged);
-
 public:
     WindowsList(QObject *parent = 0);
     ~WindowsList();
@@ -45,20 +42,15 @@ public:
     int count() const { return rowCount(); }
     WindowInfo* lastActiveWindow() const;
 
-    /* FIXME: Should probably be moved to ScreenInfo */
-    Q_INVOKABLE QString desktopFileForApplication(int applicationId);
-
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
 
 signals:
     void countChanged(int count);
-    void lastActiveWindowChanged(WindowInfo* lastActiveWindow);
 
 private:
     QList<WindowInfo*> m_windows;
     bool m_loaded;
-    WindowInfo* m_lastActiveWindow;
 };
 
 QML_DECLARE_TYPE(WindowsList)

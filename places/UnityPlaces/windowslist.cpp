@@ -26,7 +26,7 @@
 
 WindowsList::WindowsList(QObject *parent) :
     QAbstractListModel(parent),
-    m_loaded(false), m_lastActiveWindow(NULL)
+    m_loaded(false)
 {
     QHash<int, QByteArray> roles;
     roles[WindowInfo::RoleWindowInfo] = "window";
@@ -100,10 +100,6 @@ void WindowsList::load()
 
             WindowInfo *info = new WindowInfo(window->xid());
             newWindows.append(info);
-
-            if (activeWindow != NULL && window->xid() == activeWindow->xid()) {
-                m_lastActiveWindow = info;
-            }
         }
     }
 
@@ -125,7 +121,6 @@ void WindowsList::load()
     m_loaded = true;
 
     Q_EMIT countChanged(m_windows.count());
-    Q_EMIT lastActiveWindowChanged(m_lastActiveWindow);
 }
 
 void WindowsList::unload()
@@ -139,14 +134,3 @@ void WindowsList::unload()
 
     Q_EMIT countChanged(m_windows.count());
 }
-
-WindowInfo* WindowsList::lastActiveWindow() const {
-    return m_lastActiveWindow;
-}
-
-QString WindowsList::desktopFileForApplication(int applicationId)
-{
-    BamfApplication* application = BamfMatcher::get_default().application_for_xid(applicationId);
-    return (application != NULL) ? application->desktop_file() : QString();
-}
-

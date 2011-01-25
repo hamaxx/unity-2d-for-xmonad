@@ -63,8 +63,8 @@ Item {
 
         interval: switcher.transitionDuration
         onTriggered: {
-            if (state == "spread")
-                navigator.selectWindowByWindowInfo(windows.lastActiveWindow)
+            if (state == "spread" && workspace.isZoomed)
+                navigator.selectXid(switcher.lastActiveWindow)
         }
     }
 

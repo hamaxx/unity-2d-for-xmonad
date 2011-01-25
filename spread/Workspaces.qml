@@ -122,12 +122,14 @@ Rectangle {
                          workspaces in the background (like the old one.
                          Requested by Bill)
     */
+    property int lastActiveWindow: 0
     Connections {
         target: control
 
         onActivateSpread: {
             /* FIXME: desktopFileForApplication should be moved to ScreenInfo */
-            singleApplication = switcher.allWindows.desktopFileForApplication(applicationId)
+            singleApplication = screen.desktopFileForApplication(applicationId)
+            lastActiveWindow = screen.activeWindow
 
             beforeShowing()
             allWindows.load()

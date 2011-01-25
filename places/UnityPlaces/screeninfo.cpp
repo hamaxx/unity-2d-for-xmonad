@@ -4,9 +4,9 @@
 
 #include <glib-2.0/glib.h>
 
-//#include "bamf-matcher.h"
-//#include "bamf-application.h"
-//#include "bamf-window.h"
+#include "bamf-matcher.h"
+#include "bamf-application.h"
+#include "bamf-window.h"
 
 #include "screeninfo.h"
 
@@ -39,7 +39,14 @@ ScreenInfo::ScreenInfo(QObject *parent) :
 
     updateWorkspaceGeometry();
     updateCurrentWorkspace();
+
+    WnckScreen *screen = wnck_screen_get_default();
+    g_signal_connect(G_OBJECT(screen), "active-window-changed",
+                     G_CALLBACK(ScreenInfo::onActiveWindowChanged), NULL);
+
+    updateActiveWindow(screen);
 }
+
 
 ScreenInfo* ScreenInfo::instance()
 {
@@ -203,5 +210,35 @@ void ScreenInfo::updateCurrentWorkspace()
     if (m_currentWorkspace != currentWorkspace) {
         m_currentWorkspace = currentWorkspace;
         Q_EMIT currentWorkspaceChanged(m_currentWorkspace);
+    }
+}
+
+QString ScreenInfo::desktopFileForApplication(int applicationId)
+{
+    BamfApplication* application = BamfMatcher::get_default().application_for_xid(applicationId);
+    return (application != NULL) ? application->desktop_file() : QString();
+}
+
+void ScreenInfo::onActiveWindowChanged(WnckScreen *screen,
+                                       WnckWindow *previously_active_window,
+                                       gpointer    user_data)
+{
+    Q_UNUSED(previously_active_window);
+    Q_UNUSED(user_data);
+
+    ScreenInfo::instance()->updateActiveWindow(screen);
+}
+
+void ScreenInfo::updateActiveWindow(WnckScreen *screen)
+{
+    unsigned int activeWindow = 0;
+    WnckWindow *wnckActiveWindow = wnck_screen_get_active_window(screen);
+    if (wnckActiveWindow != NULL) {
+        activeWindow = wnck_window_get_xid(wnckActiveWindow);
+    }
+
+    if (activeWindow != m_activeWindow) {
+        m_activeWindow = activeWindow;
+        Q_EMIT activeWindowChanged(m_activeWindow);
     }
 }
