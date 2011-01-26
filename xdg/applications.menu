@@ -1,0 +1,33 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+
+<Menu>
+
+  <Name>Applications</Name>
+  <MergeFile>../../menus/applications.menu</MergeFile>
+
+<!-- Exclude some desktop file for UNE session -->
+  <Menu>
+    <Name>Accessories</Name>
+    <Exclude>
+      <Filename>baobab.desktop</Filename>
+      <Filename>brasero-nautilus.desktop</Filename>
+      <Filename>gnome-screenshot.desktop</Filename>
+      <Filename>gnome-search-tool.desktop</Filename>
+      <Filename>manage-print-jobs.desktop</Filename>
+    </Exclude>
+  </Menu>
+  <Menu>
+    <Name>Office</Name>
+    <Exclude>
+      <Filename>gnome-dictionary.desktop</Filename>
+    </Exclude>
+  </Menu>
+  <Menu>
+    <Name>Multimedia</Name>
+    <Exclude>
+      <Filename>brasero.desktop</Filename>
+    </Exclude>
+  </Menu>
+
+</Menu> <!-- End Applications -->

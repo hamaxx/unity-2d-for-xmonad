@@ -11,6 +11,33 @@ Build-Depends: cdbs, debhelper (>= 7),
 Standards-Version: 3.9.1
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/natty-release
 
+Package: unity-2d
+Architecture: all
+Depends: ${misc:Depends},
+ unity-2d-launcher, unity-2d-panel, unity-2d-places, unity-2d-spread,
+ metacity ( >= 2.30.3-0ubuntu3 ), gnome-session-bin
+Recommends: indicator-application, indicator-appmenu, indicator-datetime, 
+ indicator-me, indicator-messages, indicator-session, indicator-sound, 
+ gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
+ gtk2-engines-pixbuf
+Provides: unity-2d-default-settings
+Conflicts: unity-2d-default-settings (<= 0.4)
+Replaces:  unity-2d-default-settings (<= 0.4)
+Description: The Unity 2D interface for non-accelerated graphics cards
+ This package installs a fully usable Unity 2D session and provides the 
+ common configuration files and defaults. Installing this package will 
+ offer the Unity 2D session in your login manager.
+ .
+ Unity 2D is designed to run smoothly without and graphics acceleration.
+
+Package: unity-2d-default-settings
+Architecture: all
+Depends: unity-2d
+Description: Transitional package for upgrades to the new unity-2d package
+ This is a transitional package to properly handle upgrading from natty
+ pre-release installations of unity-2d and also for handling upgrades of 
+ maverick installs from the unity-2d team PPA.
+
 Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool

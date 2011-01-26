@@ -1,3 +1,10 @@
+unity-2d (3.2-0ubuntu2) UNRELEASED; urgency=low
+
+  * merge unity-2d-default-settings package as new unity-2d toplevel 
+    package.
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 25 Jan 2011 16:52:29 +0100
+
 unity-2d (3.2-0ubuntu1) natty; urgency=low
 
   * switch to proper upstream versioning, we are actually at 3.2 not 1.0
