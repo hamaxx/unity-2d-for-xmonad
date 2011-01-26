@@ -2,8 +2,9 @@ unity-2d (3.2-0ubuntu2) UNRELEASED; urgency=low
 
   * merge unity-2d-default-settings package as new unity-2d toplevel 
     package.
+  * fix various typos in package descriptions (LP: #703170)
 
- -- Oliver Grawert <ogra@ubuntu.com>  Tue, 25 Jan 2011 16:52:29 +0100
+ -- Oliver Grawert <ogra@ubuntu.com>  Wed, 26 Jan 2011 18:07:04 +0100
 
 unity-2d (3.2-0ubuntu1) natty; urgency=low
 
