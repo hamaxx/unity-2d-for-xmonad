@@ -24,7 +24,6 @@
 #include <QObject>
 #include <QDBusContext>
 #include <QtDeclarative/qdeclarative.h>
-#include <time.h>
 
 class SpreadControl : public QObject, protected QDBusContext
 {
@@ -35,11 +34,6 @@ public:
     ~SpreadControl();
 
     bool connectToBus();
-
-    /* This should be removed when we find a cleaner way to bypass the
-       QML Image cache. See SpreadWindow.qml and WindowImageProvider::requestImage
-       for details. */
-    Q_INVOKABLE QString currentTime() { return QString::number(time(NULL)); }
 
 public Q_SLOTS:
     Q_NOREPLY void SpreadAllWindows();

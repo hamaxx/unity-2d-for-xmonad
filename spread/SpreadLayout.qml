@@ -86,8 +86,8 @@ Item {
                this window in screen mode (almost exactly where the window is).
                Note that we subtract the availableGeometry x and y since window.location is
                expressed in screen coordinates. */
-            x: window.position.x - availableGeometry.x
-            y: window.position.y - availableGeometry.y
+            x: window.position.x - screen.availableGeometry.x
+            y: window.position.y - screen.availableGeometry.y
             width: window.size.width
             height: window.size.height
             z: window.z

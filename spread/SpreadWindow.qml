@@ -30,10 +30,11 @@ Item {
     property real cellWidth
     property real cellHeight
 
-    /* Values applied when in 'spread' mode */
+    /* Values applied when in "spread" mode */
     property int minMargin: 20
     property int availableWidth: cellWidth - minMargin
     property int availableHeight: cellHeight - minMargin
+
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
     property double availableAspectRatio: availableWidth / availableHeight
@@ -77,7 +78,7 @@ Item {
            hack which essentially appends the current time to the source URL of the
            Image, tricking the cache into doing a request to the image provider.
         */
-        source: "image://window/" + windowInfo.decoratedXid + "@" + control.currentTime()
+        source: "image://window/" + windowInfo.decoratedXid + "@" + screen.currentTime()
 
         /* This will be disabled during intro/outro animations for performance reasons,
            but it's good to have in spread mode when the window is */

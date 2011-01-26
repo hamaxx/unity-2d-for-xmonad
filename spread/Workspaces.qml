@@ -5,8 +5,8 @@ import UnityPlaces 1.0
 Rectangle {
     id: switcher
 
-    width: availableGeometry.width
-    height: availableGeometry.height
+    width: screen.availableGeometry.width
+    height: screen.availableGeometry.height
 
     color: "black"
     focus: true
@@ -34,13 +34,14 @@ Rectangle {
        FIXME: this seems to be broken in the case of 10 workspaces and 4x4 layout.
               it does only display a 3x3 grid for some reason.
     */
-    property bool isLayoutHorizontal: (columns * availableGeometry.width) > (rows * availableGeometry.height)
+    property bool isLayoutHorizontal: (columns * screen.availableGeometry.width) >
+                                      (rows * screen.availableGeometry.height)
     property real cellScale: (isLayoutHorizontal) ? (availableWidth / columns / switcher.width) :
                                                     (availableHeight / rows / switcher.height)
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
-    property bool isDesktopHorizontal: availableGeometry.width > availableGeometry.height
+    property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
     property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
                                                        ((width - topMargin - bottomMargin) / switcher.height)
 

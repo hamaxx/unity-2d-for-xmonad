@@ -62,11 +62,11 @@ Item {
             else
                 return filename
         }
-        width: screenGeometry.width
-        height: screenGeometry.height
+        width: screen.geometry.width
+        height: screen.geometry.height
         sourceSize.width: width
-        x: -availableGeometry.x
-        y: -availableGeometry.y
+        x: - screen.availableGeometry.x
+        y: - screen.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"

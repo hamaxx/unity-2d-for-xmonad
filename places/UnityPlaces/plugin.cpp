@@ -76,12 +76,8 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);
 
-    // FIXME: move these inside WindowInfo. Make sure no one else is using them !!!
-    engine->rootContext()->setContextProperty("availableGeometry",
-                                              QApplication::desktop()->availableGeometry());
-    engine->rootContext()->setContextProperty("screenGeometry",
-                                              QApplication::desktop()->geometry());
-
+    /* ScreenInfo is exposed as a context property as it's a singleton and therefore
+       not creatable directly in QML */
     engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
 
     /* Critically important to set the client type to pager because wnck

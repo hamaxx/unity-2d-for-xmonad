@@ -13,11 +13,15 @@
 #include <QDebug>
 #include <QAbstractEventDispatcher>
 #include <QX11Info>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/X.h>
 
 #include <math.h>
+#include <time.h>
 
 QAbstractEventDispatcher::EventFilter oldEventFilter;
 Atom _NET_DESKTOP_LAYOUT;
@@ -45,6 +49,11 @@ ScreenInfo::ScreenInfo(QObject *parent) :
                      G_CALLBACK(ScreenInfo::onActiveWindowChanged), NULL);
 
     updateActiveWindow(screen);
+
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+                                     SLOT(updateGeometry(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                                     SLOT(updateAvailableGeometry(int)));
 }
 
 
@@ -257,3 +266,36 @@ void ScreenInfo::activateWorkspace(int workspaceNumber)
     wnck_workspace_activate(workspace, CurrentTime);
 }
 
+/* FIXME: This should be removed when we find a cleaner way to bypass the
+   QML Image cache. See SpreadWindow.qml and WindowImageProvider::requestImage
+   for details. */
+QString ScreenInfo::currentTime()
+{
+    return QString::number(time(NULL));
+}
+
+QRect ScreenInfo::availableGeometry() const
+{
+    return QApplication::desktop()->availableGeometry(QX11Info::appScreen());
+}
+
+QRect ScreenInfo::geometry() const
+{
+    return QApplication::desktop()->screenGeometry(QX11Info::appScreen());
+}
+
+void ScreenInfo::updateGeometry(int screen)
+{
+    qDebug() << "geometry updated on screen" << screen;
+    if (screen == QX11Info::appScreen()) {
+        Q_EMIT geometryChanged(geometry());
+    }
+}
+
+void ScreenInfo::updateAvailableGeometry(int screen)
+{
+    qDebug() << "available geometry updated on screen" << screen;
+    if (screen == QX11Info::appScreen()) {
+        Q_EMIT availableGeometryChanged(availableGeometry());
+    }
+}

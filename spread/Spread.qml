@@ -15,14 +15,14 @@ import UnityPlaces 1.0
    The context property called control is the initiator of the entire spread process, and
    is triggered by D-Bus calls on the C++ side.
 
-   The context property called availableGeometry represents the available space on the screen (i.e.
+   The ScreenInfo's property availableGeometry represents the available space on the screen (i.e.
    screen minus launcher, panels, etc.).
 */
 
 Item {
     id: spread
-    width: availableGeometry.width
-    height: availableGeometry.height
+    width: screen.availableGeometry.width
+    height: screen.availableGeometry.height
 
     property string application
 
