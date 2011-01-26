@@ -19,6 +19,7 @@
 #include "placeentry.h"
 #include "launcherdevice.h"
 #include "trash.h"
+#include "workspaces.h"
 #include "listaggregatormodel.h"
 #include "launcherapplicationslist.h"
 #include "launcherdeviceslist.h"
@@ -48,6 +49,9 @@ void UnityApplicationsPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Trashes>(uri, 0, 1, "Trashes");
     qmlRegisterType<Trash>(uri, 0, 1, "Trash");
+
+    qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
+    qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
 }
 
 void UnityApplicationsPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
