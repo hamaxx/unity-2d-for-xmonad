@@ -9,7 +9,6 @@ find_package(Qt4 REQUIRED)
 # Sources
 set(UnityPlaces_SRCS
     plugin.cpp
-    qdbusconnectionqml.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
     windowimageprovider.cpp
@@ -19,10 +18,7 @@ set(UnityPlaces_SRCS
     )
 
 set(UnityPlaces_MOC_HDRS
-    unity_place.h
-    unity_place_entry.h
     plugin.h
-    qdbusconnectionqml.h
     qsortfilterproxymodelqml.h
     blendedimageprovider.h
     windowimageprovider.h
