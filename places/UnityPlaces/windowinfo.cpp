@@ -201,6 +201,12 @@ QString WindowInfo::desktopFile() const
     return m_bamfApplication->desktop_file();
 }
 
+/* This returns the number of the workspace where the window is.
+   It return -1 if the window is not on any workspace (not sure if this can happen,
+   but better be safe rather than sorry).
+   And as a special case it does return -2 for a window that is on all workspaces
+   (also called a "pinned" window).
+*/
 int WindowInfo::workspace() const
 {
     if (m_wnckWindow != NULL) {

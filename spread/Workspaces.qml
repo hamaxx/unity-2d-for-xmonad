@@ -14,7 +14,6 @@ Rectangle {
     property int workspaces: screen.workspaces
     property int columns: screen.columns
     property int rows: screen.rows
-    property variant currentWorkspace: screen.currentWorkspace
 
     /* These values are completely random. FIXME: pull from unity the proper ones */
     property int leftMargin: 40
@@ -50,11 +49,12 @@ Rectangle {
     property int transitionDuration: 250
     property int currentTransitionDuration: 0
 
-    /* FIXME: this shouldn't be kept here. Remove when the DBUS API settles */
-    property string application
+    /* When this is set, it is used to filter the global list of windows to limit it to
+       a single application. See the QSortFilterProxyModelQML used in Spread.qml */
+    property string applicationFilter
 
-    /* The number of the currently zoomed workspace. Use workspaceForNumber to find the
-       actual Workspace component. -1 Means that no workspace is zoomed */
+    /* The number of the currently zoomed workspace (-1 means no workspace)
+       Use workspaceForNumber to find the actual Workspace component. */
     property int zoomedWorkspace: -1
 
     /* This is the master model containing all the windows recognized by bamf for the entire
@@ -115,23 +115,20 @@ Rectangle {
         return null
     }
 
-    /* This controls the activation of the switcher via DBUS */
-    /* FIXME: there should be more DBUS messages (names are not final):
-       - SpreadAllWindows: workspace switcher of all windows
-       - SpreadWorkspace: same as above but with 1 workspace already zoomed
-       - SpreadApplicationWindows: like SpreadAllWindows but for only 1 app
-       - ActivateSpread: like SpreadWorkspace but for 1 app and with no other
-                         workspaces in the background (like the old one.
-                         Requested by Bill)
-    */
+    /* This connection receives all commands from the DBUS API */
     Connections {
         target: control
 
-        onActivateSpread: {
+        onShow: {
+            /* Setup application pre-filtering and initially zoomed desktop, if any
+               were specified as arguments */
+            applicationFilter = applicationDesktopFile
+            if (!zoomCurrentWorkspace) zoomedWorkspace = -1
+            else zoomedWorkspace = screen.currentWorkspace
+
             /* Save the currently active window before showing and activating the switcher,
                so that we can use it to pre-select the active window on the workspace */
             lastActiveWindow = screen.activeWindow
-            singleApplication = screen.desktopFileForApplication(applicationId)
 
             beforeShowing()
             allWindows.load()
@@ -141,6 +138,10 @@ Rectangle {
             spreadView.forceActivateWindow()
             afterShowing()
         }
+
+        onHide: cancelAndExit()
+
+        onFilterByApplication: applicationFilter = applicationDesktopFile
     }
 
     /* This controls the exit from the switcher.
@@ -190,68 +191,21 @@ Rectangle {
     }
 
     function cancelAndExit() {
-        /* If the currently active workspace is also the zoomed one, don't
-           bother unzooming it */
-        if (zoomedWorkspace != -1 && zoomedWorkspace != currentWorkspace) {
-
+        /* Unzoom the currently zoome workspace (except if the currently zoomed is
+           also the current workspaces, since it's the one we're expanding to screen size) */
+        if (zoomedWorkspace != -1 && zoomedWorkspace != screen.currentWorkspace) {
             var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
             if (zoomed) zoomed.unzoom()
         }
 
-        var current = switcher.workspaceByNumber(switcher.currentWorkspace)
+        /* Expand back to screen size the current workspace */
+        var current = switcher.workspaceByNumber(screen.currentWorkspace)
         if (current) {
             current.selectedXid = 0
             current.activate()
         }
 
-        /* Let the transition finish and the hide the switcher and perform
-           cleanup */
+        /* Let the transition finish and then hide the switcher and perform cleanup */
         exitTransitionTimer.start()
-    }
-
-    /* ---------------- FIXME: Anything below this line is here to allow debugging ----------------------- */
-
-    property string singleApplication
-    Rectangle {
-        id: debug1
-        width: text1.paintedWidth
-        height: text1.paintedHeight
-        anchors.bottom: debug2.top
-        border.color: "yellow"
-        border.width: 1
-
-        z: 500
-        color: "white"
-
-        Text {
-            id: text1
-            text: "Only " + singleApplication
-        }
-
-        MouseArea {
-            anchors.fill:  parent
-            onClicked: application = singleApplication
-        }
-    }
-    Rectangle {
-        id: debug2
-        z: 500
-        width: text2.paintedWidth
-        height: text2.paintedHeight
-        color: "white"
-        anchors.bottom: switcher.bottom
-        border.color: "yellow"
-        border.width: 1
-
-
-        Text {
-            id: text2
-            text: "All windows"
-        }
-
-        MouseArea {
-            anchors.fill:  parent
-            onClicked: application = ""
-        }
     }
 }

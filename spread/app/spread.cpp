@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
               instantiated on the QML side */
     SpreadControl control;
     control.connectToBus();
+    control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(updateIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
 
     /* Load the QML UI, focus and show the window */

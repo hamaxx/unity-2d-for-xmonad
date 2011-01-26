@@ -23,6 +23,8 @@
 
 #include <QDebug>
 #include <QAction>
+#include <QDBusInterface>
+#include <QDBusReply>
 
 Workspaces::Workspaces()
 {
@@ -75,7 +77,15 @@ Workspaces::launching() const
 void
 Workspaces::activate()
 {
-    qDebug() << "WORKSPACES activated";
+    qDebug() << "Triggering spread via DBUS";
+    QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
+                         "com.canonical.Unity2d.Spread");
+    QDBusReply<bool> isShown = iface.call("IsShown");
+    if (isShown.value() == true) {
+        iface.call("FilterByApplication", QString());
+    } else {
+        iface.call("ShowAllWorkspaces", QString());
+    }
 }
 
 void

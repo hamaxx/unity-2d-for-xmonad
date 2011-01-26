@@ -46,10 +46,8 @@ FocusScope {
     Connections {
         target: switcher
         onBeforeShowing: {
-            if (workspaceNumber == switcher.currentWorkspace) {
-                switcher.zoomedWorkspace = workspace.workspaceNumber
+            if (workspaceNumber == switcher.zoomedWorkspace)
                 workspace.state = "screen"
-            }
         }
 
         onAfterShowing: {
@@ -76,7 +74,6 @@ FocusScope {
 
     Spread {
         id: spread
-        application: switcher.application
 
         /* When a window or the spread background is clicked or a window is
            activated by keyboard interact in the following way:

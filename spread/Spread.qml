@@ -45,22 +45,26 @@ Item {
         }
     }
 
-    QSortFilterProxyModelQML {
-        id: filteredByApplication
-        model: switcher.allWindows
-        dynamicSortFilter: true
-
-        filterRole: WindowInfo.RoleDesktopFile
-        filterRegExp: RegExp("%1".arg(application))
-    }
-
+    /* This proxy model takes care of removing all windows that are not on
+       the current workspace and that are not pinned to all workspaces. */
     QSortFilterProxyModelQML {
         id: filteredByWorkspace
-        model: filteredByApplication
+        model: switcher.allWindows
         dynamicSortFilter: true
 
         filterRole: WindowInfo.RoleWorkspace
         filterRegExp: RegExp("^%1|-2$".arg(workspace.workspaceNumber))
+    }
+
+    /* If there's any application filter set, this proxy model will remove
+       all windows that do not belong to it. */
+    QSortFilterProxyModelQML {
+        id: filteredByApplication
+        model: filteredByWorkspace
+        dynamicSortFilter: true
+
+        filterRole: WindowInfo.RoleDesktopFile
+        filterRegExp: RegExp("%1".arg(switcher.applicationFilter))
     }
 
     /* This is our main view.
@@ -73,7 +77,7 @@ Item {
         id: layout
 
         anchors.fill: parent
-        windows: filteredByWorkspace
+        windows: filteredByApplication
 
         onWindowActivated: {
             layout.raiseSelectedWindow()

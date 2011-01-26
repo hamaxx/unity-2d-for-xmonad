@@ -35,6 +35,7 @@ extern "C" {
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
+#include <QDBusReply>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -493,7 +494,13 @@ LauncherApplication::spread()
     qDebug() << "Triggering spread via DBUS";
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
-    iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
+    QDBusReply<bool> isShown = iface.call("IsShown");
+    if (isShown.value() == true) {
+        iface.call("FilterByApplication", m_application->desktop_file());
+    } else {
+        iface.call("ShowCurrentWorkspace", m_application->desktop_file());
+    }
+
 }
 
 void
