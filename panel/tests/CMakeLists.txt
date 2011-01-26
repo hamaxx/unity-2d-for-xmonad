@@ -7,7 +7,6 @@ macro(panel_tests)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
             uqapplets
-            uqpanel
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
@@ -17,8 +16,8 @@ macro(panel_tests)
 endmacro(panel_tests)
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-    ${CMAKE_CURRENT_SOURCE_DIR}/../applets/homebutton
+    ${uqapplets_SOURCE_DIR}/homebutton
+    ${uqapplets_SOURCE_DIR}/common
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     )
@@ -27,5 +26,4 @@ enable_testing()
 
 panel_tests(
     homebuttonapplettest
-    keyboardmodifiersmonitortest
     )

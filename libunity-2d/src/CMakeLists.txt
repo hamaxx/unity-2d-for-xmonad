@@ -1,5 +1,7 @@
 # Sources
 set(libunity-2d_SRCS
+    keyboardmodifiersmonitor.cpp
+    unity2dapplication.cpp
     unity2dpanel.cpp
     )
 
@@ -8,6 +10,7 @@ qt4_automoc(${libunity-2d_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
 add_library(unity-2d SHARED ${libunity-2d_SRCS})

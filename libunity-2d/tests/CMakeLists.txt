@@ -24,5 +24,6 @@ include_directories(
 enable_testing()
 
 libunity_2d_tests(
+    keyboardmodifiersmonitortest
     paneltest
     )
