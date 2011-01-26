@@ -21,7 +21,7 @@ Recommends: indicator-application, indicator-appmenu, indicator-datetime,
  gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
  gtk2-engines-pixbuf
 Provides: unity-2d-default-settings
-Conflicts: unity-2d-default-settings (<= 0.4)
+Breaks: unity-2d-default-settings (<= 0.4)
 Replaces:  unity-2d-default-settings (<= 0.4)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
