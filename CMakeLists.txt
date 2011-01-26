@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")
 # Dependencies
 include(FindPkgConfig)
 find_package(Qt4 REQUIRED)
+find_package(X11 REQUIRED)
 
 include_directories(
     ${CMAKE_BINARY_DIR}
@@ -22,9 +23,11 @@ include_directories(
     ${QT_QTDECLARATIVE_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR}
+    ${X11_INCLUDE_DIR}
     )
 
 # Source
+add_subdirectory(libunity-2d)
 add_subdirectory(launcher)
 add_subdirectory(panel)
 add_subdirectory(places)

@@ -48,3 +48,5 @@ debian/tmp
 debian/unity-2d-launcher
 debian/unity-2d-panel
 debian/unity-2d-places
+debian/libunity-2d-dev
+debian/libunity-2d0
