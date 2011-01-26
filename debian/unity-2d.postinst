@@ -4,7 +4,7 @@ set -e
 signal_daemons()
 {
     # Tell all running daemons to reload their databases
-    kill -s HUP `pidof gconfd-2` >/dev/null 2>&1 || true
+    pkill -HUP -x gconfd-2 >/dev/null 2>&1 || true
 }
 
 case "$1" in
