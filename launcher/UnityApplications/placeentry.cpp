@@ -711,7 +711,7 @@ PlaceEntry::activateEntry(const int section)
         startRemotePlaceOnDemand();
     }
 
-    QDBusInterface iface("com.canonical.Unity2d", "/dash", "local.DashDeclarativeView");
+    QDBusInterface iface("com.canonical.Unity2d", "/Dash", "com.canonical.Unity2d.Dash");
     QDBusReply<void> reply = iface.call(QLatin1String("activatePlaceEntry"),
                                         m_fileName, m_groupName, section);
     if (!reply.isValid()) {

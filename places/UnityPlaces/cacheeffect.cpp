@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical, Ltd.
+ * Copyright (C) 2011 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,23 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef X11WINDOWIMAGEPROVIDER_H
-#define X11WINDOWIMAGEPROVIDER_H
+#include "cacheeffect.h"
 
-#include <QDeclarativeImageProvider>
-#include <QImage>
-#include <QSize>
-
-class WindowImageProvider : public QDeclarativeImageProvider
+CacheEffect::CacheEffect(QObject *parent) : QGraphicsEffect(parent)
 {
-public:
-    WindowImageProvider();
-    ~WindowImageProvider();
-    virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
-    static void activateComposite();
+}
 
-private:
-    bool m_x11supportsShape;
-};
-
-#endif // X11WINDOWIMAGEPROVIDER_H
+void
+CacheEffect::draw(QPainter *painter)
+{
+    QPoint point;
+    QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &point);
+    painter->setCompositionMode(QPainter::CompositionMode_Source);
+    painter->drawPixmap(point, pixmap);
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+}
