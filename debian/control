@@ -10,7 +10,7 @@ Build-Depends: cdbs, debhelper (>= 7),
                libx11-dev, libindicator-dev, libgtk2.0-dev
 Standards-Version: 3.9.1
 
-Package: libunity-2d-0
+Package: libunity-2d0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -22,7 +22,7 @@ Description: Unity 2D shared library
 Package: libunity-2d-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-0 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0 (= ${binary:Version})
 Conflicts: libuqpanel-dev
 Replaces: libuqpanel-dev
 Description: Unity 2D shared library - development files
@@ -56,7 +56,7 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-0
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
 Provides: unity-qt-places
 Conflicts: unity-qt-places (<= 0.2)
 Replaces: unity-qt-places (<= 0.2)
@@ -67,7 +67,7 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-0
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
 Provides: unity-qt-spread
 Conflicts: unity-qt-spread (<= 0.2)
 Replaces: unity-qt-spread (<= 0.2)
