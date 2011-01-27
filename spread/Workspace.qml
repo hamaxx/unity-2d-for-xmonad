@@ -11,6 +11,7 @@ FocusScope {
     property int workspaceNumber
     property alias selectedXid: spread.selectedXid
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
+    property bool isCurrent: workspaceNumber == screen.currentWorkspace
 
     /* Give keyboard focus (among all workspaces) only to the zoomed Workspace.
        Since the workspace is a FocusScope, only one Item inside it can have focus.
@@ -46,12 +47,12 @@ FocusScope {
     Connections {
         target: switcher
         onBeforeShowing: {
-            if (workspaceNumber == switcher.zoomedWorkspace)
-                workspace.state = "screen"
+            if (isCurrent) workspace.state = "screen"
+            else if (!isZoomed) spread.state = "spread"
         }
 
         onAfterShowing: {
-            if (isZoomed) workspace.state = "zoomed"
+            workspace.state = (isZoomed) ? "zoomed" : ""
             spread.state = "spread"
         }
 
