@@ -14,8 +14,6 @@ Package: libunity-2d0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Conflicts: libuqpanel0
-Replaces: libuqpanel0
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
 
@@ -23,8 +21,6 @@ Package: libunity-2d-dev
 Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0 (= ${binary:Version})
-Conflicts: libuqpanel-dev
-Replaces: libuqpanel-dev
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  .
@@ -107,4 +103,21 @@ Depends: ${misc:Depends}, unity-2d-spread
 Description: dummy transitional package for unity-2d-spread
  This transitional package helps users transition to the
  unity-2d-spread package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: libuqpanel0
+Architecture: any
+Depends: ${misc:Depends}, libunity-2d0
+Description: dummy transitional package for libuqpanel0
+ This transitional package helps users transition to the
+ libunity-2d0 package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: libuqpanel-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libunity-2d-dev
+Description: dummy transitional package for libuqpanel-dev
+ This transitional package helps users transition to the
+ libunity-2d-dev package.  Once this package and its dependencies
  are installed you can safely remove it.
