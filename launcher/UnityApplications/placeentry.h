@@ -248,6 +248,7 @@ private:
     QMap<QString, QVariant> m_globalRendererHints;
 
     QDBusInterface* m_dbusIface;
+    QDBusInterface* m_dashDbusIface;
 
     void setSection(const QString&);
     void activateEntry(const int section);
@@ -256,6 +257,10 @@ private:
 
 private Q_SLOTS:
     void onRendererInfoChanged(const RendererInfoStruct&);
+
+    void connectToDash();
+    void slotDashActiveChanged(bool);
+    void slotDashActivePlaceEntryChanged(const QString&);
 
     void startMonitoringSections();
     void stopMonitoringSections();
