@@ -68,9 +68,8 @@ int main(int argc, char *argv[])
         /* Spread.qml imports UnityApplications, which is part of the launcher
            component */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
-        /* Spread.qml imports UnityPlaces, which is part of the places
-           component */
-        view.engine()->addImportPath(unity2dDirectory() + "/places/");
+        /* Spread.qml imports Unity2d */
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
     }
 
     /* This is needed by GnomeBackground.qml (see explanation in there)

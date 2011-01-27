@@ -1,6 +1,6 @@
 import Qt 4.7
 import UnityApplications 1.0
-import UnityPlaces 1.0
+import Unity2d 1.0
 
 /* The main component that manages the spread.
    This only acts as an outer shell, the actual logic is pretty much all in SpreadLayout.qml
