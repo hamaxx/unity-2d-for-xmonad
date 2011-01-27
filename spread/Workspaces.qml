@@ -46,7 +46,7 @@ Rectangle {
 
     /* We don't really want to animate anything that happens while the window isn't visible,
        so we set the transition duration for all animations to zero unless we're visible */
-    property int transitionDuration: 4000 //250
+    property int transitionDuration: 250
     property int currentTransitionDuration: 0
 
     /* When this is set, it is used to filter the global list of windows to limit it to
