@@ -183,6 +183,11 @@ Item {
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
 
+                property real originalFontSize
+                Component.onCompleted: {
+                    originalFontSize = font.pointSize
+                }
+
                 color: "white"
             }
         }
@@ -214,6 +219,15 @@ Item {
                 x: spreadX
                 y: spreadY
             }
+
+            /* Keep the font the same size it would have if the Spread wasn't scaled down to
+               fit into the workspace switcher.
+               The check on originalFontSize not being zero is to prevent errors in assigning
+               a zero point size when originalFontSize is not initialized yet. */
+            PropertyChanges {
+                target:label
+                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
+            }
         }
     ]
 
@@ -222,7 +236,7 @@ Item {
            It will be executed in the same sequence for both the intro and outro. */
         Transition {
             SequentialAnimation {
-               PropertyAction { target: shot; property: "smooth"; value: false }
+                PropertyAction { target: shot; property: "smooth"; value: false }
                 PropertyAction { target: mouseArea; property: "enabled"; value: false }
                 PropertyAction { target: overlay; property: "visible"; value: false }
                 NumberAnimation {

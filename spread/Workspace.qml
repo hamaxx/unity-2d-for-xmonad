@@ -74,6 +74,7 @@ FocusScope {
 
     Spread {
         id: spread
+        property real workspaceScale: workspace.scale
 
         /* When a window or the spread background is clicked or a window is
            activated by keyboard interact in the following way:
