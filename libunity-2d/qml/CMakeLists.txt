@@ -3,7 +3,7 @@ pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 
 # Sources
-set(Unity2dQml_SRCS
+set(unity-2d-qml_SRCS
     plugin.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
@@ -13,17 +13,17 @@ set(Unity2dQml_SRCS
     cacheeffect.cpp
     )
 
-set(Unity2dQml_MOC_HDRS
+set(unity-2d-qml_MOC_HDRS
     plugin.h
     qsortfilterproxymodelqml.h
     windowinfo.h
     windowslist.h
     )
 
-qt4_wrap_cpp(Unity2dQml_MOC_SRCS ${Unity2dQml_MOC_HDRS})
+qt4_wrap_cpp(unity-2d-qml_MOC_SRCS ${unity-2d-qml_MOC_HDRS})
 
 # Build
-add_library(Unity2dQml SHARED ${Unity2dQml_SRCS} ${Unity2dQml_MOC_SRCS})
+add_library(unity-2d-qml SHARED ${unity-2d-qml_SRCS} ${unity-2d-qml_MOC_SRCS})
 add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
 
 include_directories(
@@ -32,7 +32,7 @@ include_directories(
     ${QTBAMF_INCLUDE_DIRS}
     )
 
-target_link_libraries(Unity2dQml
+target_link_libraries(unity-2d-qml
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
@@ -43,7 +43,7 @@ target_link_libraries(Unity2dQml
 # Install
 set(IMPORT_INSTALL_DIR lib/qt4/imports/Unity2d)
 
-install(TARGETS Unity2dQml
+install(TARGETS unity-2d-qml
     LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
     )
 
