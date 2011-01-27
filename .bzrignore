@@ -17,8 +17,11 @@ spread/app/spreadadaptor.*
 panel/app/unity-2d-panel
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
-panel/tests/paneltest
 panel/tests/homebuttonapplettest
+
+libunity-2d/src/libunity-2d.so.*
+libunity-2d/tests/keyboardmodifiersmonitortest
+libunity-2d/tests/paneltest
 
 # Cmake files and generated files
 Makefile
