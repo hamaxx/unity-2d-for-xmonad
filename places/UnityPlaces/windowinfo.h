@@ -45,6 +45,7 @@ class BamfWindow;
 class BamfApplication;
 class BamfView;
 typedef struct _WnckWindow WnckWindow;
+typedef void* gpointer;
 
 /* FIXME: position, size, z, title and icon values are not updated real time */
 class WindowInfo : public QObject
@@ -90,9 +91,6 @@ public:
         RoleWorkspace
     };
 
-private:
-    bool isSameBamfWindow(BamfWindow *other);
-
 Q_SIGNALS:
     void contentXidChanged(unsigned int contentXid);
     void decoratedXidChanged(unsigned int decoratedXid);
@@ -106,10 +104,14 @@ Q_SIGNALS:
 
 private:
     void updateGeometry();
+    void updateWorkspace();
     BamfWindow* getBamfWindowForApplication(BamfApplication *application, unsigned int xid);
     WnckWindow* getWnckWindowForXid(unsigned int xid);
     unsigned int findTopmostAncestor(unsigned int xid);
+    bool isSameBamfWindow(BamfWindow *other);
+    static void onWorkspaceChanged(WnckWindow *window, gpointer user_data);
 
+private:
     BamfApplication *m_bamfApplication;
     BamfWindow *m_bamfWindow;
     WnckWindow *m_wnckWindow;

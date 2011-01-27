@@ -51,6 +51,7 @@ signals:
 public slots:
     void addWindow(BamfView *view);
     void removeWindow(BamfView *view);
+    void updateWorkspaceRole(int workspace);
 
 private:
     QList<WindowInfo*> m_windows;

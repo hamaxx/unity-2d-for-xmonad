@@ -25,7 +25,6 @@
 #include "bamf-window.h"
 
 #include "windowinfo.h"
-
 #include <X11/Xlib.h>
 #include <QX11Info>
 
@@ -132,6 +131,9 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     m_wnckWindow = wnckWindow;
     m_contentXid = contentXid;
     m_decoratedXid = decoratedXid;
+
+    g_signal_connect(G_OBJECT(m_wnckWindow), "workspace-changed",
+                     G_CALLBACK(WindowInfo::onWorkspaceChanged), this);
 
     emit contentXidChanged(m_contentXid);
     emit decoratedXidChanged(m_decoratedXid);
@@ -251,4 +253,20 @@ void WindowInfo::showWindow(WnckWindow* window)
 bool WindowInfo::isSameBamfWindow(BamfWindow *other)
 {
     return (m_bamfWindow == other);
+}
+
+void WindowInfo::onWorkspaceChanged(WnckWindow *window, gpointer user_data)
+{
+    Q_UNUSED(window);
+
+    WindowInfo *instance = static_cast<WindowInfo*>(user_data);
+    if (instance != NULL) {
+        instance->updateWorkspace();
+    }
+}
+
+void WindowInfo::updateWorkspace()
+{
+    qDebug() << "Workspace changed";
+    emit workspaceChanged(workspace());
 }

@@ -103,6 +103,7 @@ void WindowsList::load()
 
             WindowInfo *info = new WindowInfo(window->xid());
             newWindows.append(info);
+            connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
         }
     }
 
@@ -154,6 +155,7 @@ void WindowsList::addWindow(BamfView *view)
     }
 
     WindowInfo *info = new WindowInfo(window->xid());
+    connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
 
     beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
     m_windows.append(info);
@@ -188,6 +190,24 @@ void WindowsList::removeWindow(BamfView *view)
             Q_EMIT countChanged(m_windows.count());
 
             return;
+        }
+    }
+}
+
+/* When the window is moved to another workspace, we need to have the list
+   notify that something changed in the item corresponding to the window.
+   If we don't do this, the proxy models will not refresh and the window
+   won't be moved to the other workspace */
+void WindowsList::updateWorkspaceRole(int workspace)
+{
+    Q_UNUSED(workspace);
+
+    WindowInfo *window = qobject_cast<WindowInfo*>(sender());
+    if (window != NULL) {
+        int row = m_windows.indexOf(window);
+        if (row != 1) {
+            QModelIndex changedItem = index(row);
+            Q_EMIT dataChanged(changedItem, changedItem);
         }
     }
 }
