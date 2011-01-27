@@ -5,6 +5,7 @@ Item {
     id: dash
 
     property variant currentPage
+    property variant activePlaceEntry
 
     function activatePage(page) {
         if (page == currentPage) {
@@ -42,6 +43,7 @@ Item {
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = placeEntryModel
         activatePage(pageLoader.item)
+        activePlaceEntry = placeEntryModel
     }
 
     function activateHome() {
@@ -49,6 +51,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
+        activePlaceEntry = null
     }
 
     property variant places: LauncherPlacesList {

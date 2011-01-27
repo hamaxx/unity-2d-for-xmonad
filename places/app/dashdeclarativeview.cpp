@@ -28,7 +28,7 @@
 #include <X11/Xatom.h>
 
 DashDeclarativeView::DashDeclarativeView() :
-    QDeclarativeView(), m_active(false)
+    QDeclarativeView(), m_active(false), m_activePlaceEntry()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
@@ -46,6 +46,21 @@ DashDeclarativeView::fitToAvailableSpace(int screen)
         QRect geometry = desktop->availableGeometry(this);
         setGeometry(geometry);
         setFixedSize(geometry.size());
+    }
+}
+
+void
+DashDeclarativeView::slotActivePlaceEntryChanged()
+{
+    QGraphicsObject* dash = rootObject();
+    QObject* entry = dash->property("activePlaceEntry").value<QObject*>();
+    QString objectPath;
+    if (entry != NULL) {
+        objectPath = entry->property("dbusObjectPath").toString();
+    }
+    if (objectPath != m_activePlaceEntry) {
+        m_activePlaceEntry = objectPath;
+        Q_EMIT activePlaceEntryChanged(m_activePlaceEntry);
     }
 }
 
@@ -80,6 +95,12 @@ bool
 DashDeclarativeView::active() const
 {
     return m_active;
+}
+
+const QString&
+DashDeclarativeView::activePlaceEntry() const
+{
+    return m_activePlaceEntry;
 }
 
 void

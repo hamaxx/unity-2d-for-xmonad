@@ -140,6 +140,12 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
+    /* Monitor the 'activePlaceEntry' property of the dash to update accordingly
+       the 'activePlaceEntry' property of the view. */
+    QGraphicsObject* dash = view.rootObject();
+    view.connect((QObject*) dash, SIGNAL(activePlaceEntryChanged()),
+                 SLOT(slotActivePlaceEntryChanged()));
+
     /* Grab the "super" keys */
     SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
