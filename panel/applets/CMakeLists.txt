@@ -71,5 +71,4 @@ target_link_libraries(uqapplets
     ${X11_Xcomposite_LIB}
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
-    uqpanel
     )
