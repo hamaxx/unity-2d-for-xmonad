@@ -1,8 +1,8 @@
-unity-2d (3.2.1-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (3.2.1-0ubuntu1) natty; urgency=low
 
   * new upstream version, we have minor upstream versions now
 
- -- Oliver Grawert <ogra@ubuntu.com>  Thu, 27 Jan 2011 14:58:23 +0100
+ -- Oliver Grawert <ogra@ubuntu.com>  Thu, 27 Jan 2011 15:00:23 +0100
 
 unity-2d (3.2-0ubuntu3) natty; urgency=low
 
