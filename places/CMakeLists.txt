@@ -2,7 +2,6 @@ project(unity-2d-places)
 
 # Source
 add_subdirectory(app)
-add_subdirectory(UnityPlaces)
 
 file(GLOB places_QML *.qml *.js)
 

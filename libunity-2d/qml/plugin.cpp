@@ -40,7 +40,7 @@ extern "C" {
 #include <libwnck/util.h>
 }
 
-void UnityPlacesPlugin::registerTypes(const char *uri)
+void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "QSortFilterProxyModelQML");
 
@@ -49,7 +49,7 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
 }
 
-void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     Q_UNUSED(uri);
 
@@ -75,4 +75,4 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 }
 
-Q_EXPORT_PLUGIN2(UnityPlaces, UnityPlacesPlugin);
+Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

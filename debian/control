@@ -56,7 +56,7 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
 Provides: unity-qt-places
 Conflicts: unity-qt-places (<= 0.2)
 Replaces: unity-qt-places (<= 0.2)
@@ -67,7 +67,7 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-2d-places
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
 Provides: unity-qt-spread
 Conflicts: unity-qt-spread (<= 0.2)
 Replaces: unity-qt-spread (<= 0.2)
