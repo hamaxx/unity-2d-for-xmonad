@@ -28,7 +28,7 @@ Description: Unity 2D shared library - development files
 
 Package: unity-2d-launcher
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool, libqt4-svg
 Recommends: unity-place-files, unity-place-applications
 Provides: unity-qt-launcher
 Conflicts: unity-qt-launcher (<= 0.2)
@@ -52,7 +52,7 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0, libqt4-svg
 Provides: unity-qt-places
 Conflicts: unity-qt-places (<= 0.2)
 Replaces: unity-qt-places (<= 0.2)
@@ -63,7 +63,8 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0,
+         libqt4-svg
 Provides: unity-qt-spread
 Conflicts: unity-qt-spread (<= 0.2)
 Replaces: unity-qt-spread (<= 0.2)
