@@ -1,3 +1,9 @@
+unity-2d (3.2-0ubuntu3) natty; urgency=low
+
+  * Conflicts/Replaces needs to be Breaks/Replaces
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Wed, 26 Jan 2011 20:36:09 +0100
+
 unity-2d (3.2-0ubuntu2) natty; urgency=low
 
   * merge unity-2d-default-settings package as new unity-2d toplevel 
