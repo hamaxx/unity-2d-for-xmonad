@@ -104,7 +104,7 @@ Item {
             /* Pass on a few properties so that they can be referenced from inside the
                SpreadWindow itself. The state is particularly important as it drives
                all the animations that make up intro and outro */
-            state: layout.state
+            //state: layout.state
             windowInfo: window
 
             onClicked: {
@@ -127,6 +127,42 @@ Item {
                it ourselves. */
             Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
             Component.onDestruction: navigator.removeXidAt(index)
+
+            onParentChanged: if (parent != null) followLayout = true
+            property bool followLayout: false
+            Binding {
+                target: spreadWindow
+                property: "state"
+                value: spread.state
+                when: followLayout
+            }
+
+            Behavior on x {
+                NumberAnimation {
+                                duration: switcher.currentTransitionDuration;
+                                easing.type: Easing.InOutSine;
+                            }
+            }
+            Behavior on y {
+                NumberAnimation {
+                                duration: switcher.currentTransitionDuration;
+                                easing.type: Easing.InOutSine;
+                            }
+            }
+            Behavior on height {
+                NumberAnimation {
+                                duration: switcher.currentTransitionDuration;
+                                easing.type: Easing.InOutSine;
+                            }
+            }
+            Behavior on width {
+                NumberAnimation {
+                                duration: switcher.currentTransitionDuration;
+                                easing.type: Easing.InOutSine;
+                            }
+            }
+
+
         }
     }
 }

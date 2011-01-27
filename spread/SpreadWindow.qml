@@ -217,24 +217,24 @@ Item {
         }
     ]
 
-    transitions: [
-        /* This is the animation that is exectuted when moving between any of the two states.
-           It will be executed in the same sequence for both the intro and outro. */
-        Transition {
-            SequentialAnimation {
-               PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: mouseArea; property: "enabled"; value: false }
-                PropertyAction { target: overlay; property: "visible"; value: false }
-                NumberAnimation {
-                    target: window
-                    properties: "x,y,width,height"
-                    duration: window.transitionDuration
-                    easing.type: Easing.InOutSine
-                }
-                PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "spread") }
-                PropertyAction { target: overlay; property: "visible"; value: true }
-            }
-        }
-    ]
+//    transitions: [
+//        /* This is the animation that is exectuted when moving between any of the two states.
+//           It will be executed in the same sequence for both the intro and outro. */
+//        Transition {
+//            SequentialAnimation {
+//               PropertyAction { target: shot; property: "smooth"; value: false }
+//                PropertyAction { target: mouseArea; property: "enabled"; value: false }
+//                PropertyAction { target: overlay; property: "visible"; value: false }
+//                NumberAnimation {
+//                    target: window
+//                    properties: "x,y,width,height"
+//                    duration: window.transitionDuration
+//                    easing.type: Easing.InOutSine
+//                }
+//                PropertyAction { target: shot; property: "smooth"; value: true }
+//                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "spread") }
+//                PropertyAction { target: overlay; property: "visible"; value: true }
+//            }
+//        }
+//    ]
 }
