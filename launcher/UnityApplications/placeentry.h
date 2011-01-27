@@ -261,6 +261,7 @@ private Q_SLOTS:
     void connectToDash();
     void slotDashActiveChanged(bool);
     void slotDashActivePlaceEntryChanged(const QString&);
+    void updateActiveState(bool, const QString&);
 
     void startMonitoringSections();
     void stopMonitoringSections();

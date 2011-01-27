@@ -737,47 +737,28 @@ PlaceEntry::connectToDash()
     connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
             SLOT(slotDashActivePlaceEntryChanged(const QString&)));
 
-    bool active = false;
-    if (!m_dbusObjectPath.isEmpty()) {
-        if (m_dashDbusIface->property("active").toBool()) {
-            if (m_dashDbusIface->property("activePlaceEntry").toString() == m_dbusObjectPath) {
-                active = true;
-            }
-        }
-    }
-    if (active != m_active) {
-        m_active = active;
-        Q_EMIT activeChanged();
-    }
+    updateActiveState(m_dashDbusIface->property("active").toBool(),
+                      m_dashDbusIface->property("activePlaceEntry").toString());
 }
 
 void
 PlaceEntry::slotDashActiveChanged(bool dashActive)
 {
-    bool active = false;
-    if (dashActive) {
-        if (!m_dbusObjectPath.isEmpty()) {
-            if (m_dashDbusIface->property("activePlaceEntry").toString() == m_dbusObjectPath) {
-                active = true;
-            }
-        }
-    }
-    if (active != m_active) {
-        m_active = active;
-        Q_EMIT activeChanged();
-    }
+    updateActiveState(dashActive, m_dashDbusIface->property("activePlaceEntry").toString());
 }
 
 void
 PlaceEntry::slotDashActivePlaceEntryChanged(const QString& activePlaceEntry)
 {
+    updateActiveState(m_dashDbusIface->property("active").toBool(), activePlaceEntry);
+}
+
+void
+PlaceEntry::updateActiveState(bool dashActive, const QString& activePlaceEntry)
+{
     bool active = false;
-    if (!m_dbusObjectPath.isEmpty()) {
-        if (activePlaceEntry == m_dbusObjectPath) {
-            if (m_dashDbusIface->property("active").toBool()) {
-                active = true;
-            }
-        }
+    if (dashActive && !m_dbusObjectPath.isEmpty() && (activePlaceEntry == m_dbusObjectPath)) {
+        active = true;
     }
     if (active != m_active) {
         m_active = active;
