@@ -248,3 +248,7 @@ void WindowInfo::showWindow(WnckWindow* window)
     wnck_window_activate(window, CurrentTime);
 }
 
+bool WindowInfo::isSameBamfWindow(BamfWindow *other)
+{
+    return (m_bamfWindow == other);
+}

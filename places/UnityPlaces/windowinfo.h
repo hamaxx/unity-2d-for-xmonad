@@ -43,6 +43,7 @@ typedef struct _WnckWindow WnckWindow;
 
 class BamfWindow;
 class BamfApplication;
+class BamfView;
 typedef struct _WnckWindow WnckWindow;
 
 /* FIXME: position, size, z, title and icon values are not updated real time */
@@ -89,6 +90,9 @@ public:
         RoleWorkspace
     };
 
+private:
+    bool isSameBamfWindow(BamfWindow *other);
+
 Q_SIGNALS:
     void contentXidChanged(unsigned int contentXid);
     void decoratedXidChanged(unsigned int decoratedXid);
@@ -113,6 +117,10 @@ private:
     unsigned int m_decoratedXid;
     QPoint m_position;
     QSize m_size;
+
+/* This is needed so that WindowsList can access isSameBamfWindow.
+   Check WindowInfo::removeWindow for an explanation of why. */
+friend class WindowsList;
 };
 
 QML_DECLARE_TYPE(WindowInfo)

@@ -23,6 +23,7 @@
 #include <QtDeclarative/qdeclarative.h>
 
 class WindowInfo;
+class BamfView;
 
 /* FIXME: this should be update dynamically whenever new windows are opened
    or go away. Both wnck and bamf have signals for this */
@@ -46,6 +47,10 @@ public:
 
 signals:
     void countChanged(int count);
+
+public slots:
+    void addWindow(BamfView *view);
+    void removeWindow(BamfView *view);
 
 private:
     QList<WindowInfo*> m_windows;

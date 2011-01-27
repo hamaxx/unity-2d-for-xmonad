@@ -23,6 +23,7 @@
 #include "bamf-matcher.h"
 #include "bamf-window.h"
 #include "bamf-application.h"
+#include "bamf-view.h"
 
 WindowsList::WindowsList(QObject *parent) :
     QAbstractListModel(parent),
@@ -33,6 +34,10 @@ WindowsList::WindowsList(QObject *parent) :
     roles[WindowInfo::RoleDesktopFile] = "desktopFile";
     roles[WindowInfo::RoleWorkspace] = "workspace";
     setRoleNames(roles);
+
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(addWindow(BamfView*)));
+    connect(&matcher, SIGNAL(ViewClosed(BamfView*)), SLOT(removeWindow(BamfView*)));
 }
 
 WindowsList::~WindowsList()
@@ -131,4 +136,58 @@ void WindowsList::unload()
     m_loaded = false;
 
     Q_EMIT countChanged(m_windows.count());
+}
+
+void WindowsList::addWindow(BamfView *view)
+{
+    BamfWindow *window = qobject_cast<BamfWindow*>(view);
+    if (window == NULL) {
+        /* It is common for this to be null since Bamf sends
+           us also one ViewOpened with BamfApplication* for the
+           first window opened of each application. */
+        return;
+    }
+
+    if (window->xid() == 0) {
+        qWarning() << "Received ViewOpened but window's xid is zero";
+        return;
+    }
+
+    WindowInfo *info = new WindowInfo(window->xid());
+
+    beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
+    m_windows.append(info);
+    endInsertRows();
+
+    Q_EMIT countChanged(m_windows.count());
+}
+
+void WindowsList::removeWindow(BamfView *view)
+{
+    BamfWindow *window = qobject_cast<BamfWindow*>(view);
+    if (window == NULL) {
+        /* It is common for this to be null since Bamf sends
+           us also one ViewOpened with BamfApplication* for the
+           last window closed of each application. */
+        return;
+    }
+
+    /* The BamfMatcher::ViewClosed signal is emitted after the
+       window is already gone. This means that it's not possible to
+       retrieve the XID from the BamfWindow to find the window itself
+       in the list.
+       To workaround this, we compare directly the BamfWindow pointer
+       to the one in the WindowInfo.
+    */
+    for (int i = 0; i < m_windows.length(); i++) {
+        if (m_windows.at(i)->isSameBamfWindow(window)) {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_windows.removeAt(i);
+            endRemoveRows();
+
+            Q_EMIT countChanged(m_windows.count());
+
+            return;
+        }
+    }
 }
