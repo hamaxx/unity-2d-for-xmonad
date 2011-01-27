@@ -267,6 +267,5 @@ void WindowInfo::onWorkspaceChanged(WnckWindow *window, gpointer user_data)
 
 void WindowInfo::updateWorkspace()
 {
-    qDebug() << "Workspace changed";
     emit workspaceChanged(workspace());
 }
