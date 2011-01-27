@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
            component */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Spread.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/qml/");
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
     }
 
     /* This is needed by GnomeBackground.qml (see explanation in there)
