@@ -139,6 +139,9 @@ void WindowsList::unload()
     Q_EMIT countChanged(m_windows.count());
 }
 
+#include <QApplication>
+#include <QWidget>
+
 void WindowsList::addWindow(BamfView *view)
 {
     BamfWindow *window = qobject_cast<BamfWindow*>(view);
@@ -151,6 +154,12 @@ void WindowsList::addWindow(BamfView *view)
 
     if (window->xid() == 0) {
         qWarning() << "Received ViewOpened but window's xid is zero";
+        return;
+    }
+
+    /* Prevent adding ourselves to the windows in the model */
+    QWidget *ownWindow = QApplication::activeWindow();
+    if (ownWindow != NULL && ownWindow->winId() == window->xid()) {
         return;
     }
 
