@@ -13,6 +13,7 @@ macro(libunity_2d_tests)
 
     add_custom_target(libunity-2d_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
+    add_dependencies(check libunity-2d_check)
 endmacro(libunity_2d_tests)
 
 include_directories(

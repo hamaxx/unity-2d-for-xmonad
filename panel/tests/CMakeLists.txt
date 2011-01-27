@@ -13,6 +13,7 @@ macro(panel_tests)
 
     add_custom_target(panel_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
+    add_dependencies(check panel_check)
 endmacro(panel_tests)
 
 include_directories(

@@ -26,6 +26,9 @@ include_directories(
     ${X11_INCLUDE_DIR}
     )
 
+# Tests
+add_custom_target(check)
+
 # Source
 add_subdirectory(libunity-2d)
 add_subdirectory(launcher)
