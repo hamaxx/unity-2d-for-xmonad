@@ -86,16 +86,22 @@ Renderer {
                have the entire expression being evaluated at the right moment.
             */
             property int inFlickableY: flickable.contentY*0+parent.mapToItem(flickable, 0, 0).y
-            property int compensateY: inFlickableY > 0 ? 0 : -inFlickableY
+            property int compensateY: inFlickableY > 0 || flickable.height < 0 || totalHeight < flickable.height ? 0 : -inFlickableY
+
+            /* Synchronise the position and content's position of the GridView
+               with the current position of flickable's visibleArea */
+            function synchronisePosition() {
+                y = compensateY
+                contentY = compensateY
+            }
+
+            onCompensateYChanged: synchronisePosition()
+            /* Any change in content needs to trigger a synchronisation */
+            onCountChanged: synchronisePosition()
+            onModelChanged: synchronisePosition()
 
             width: flickable.width
             height: Math.min(totalHeight, flickable.height)
-            onCompensateYChanged: {
-                if (flickable.height > 0 && totalHeight >= flickable.height) {
-                    y = compensateY
-                    contentY = compensateY
-                }
-            }
 
             property int cellsPerLine: Math.floor(width/results.cellWidth)
             /* Only display one line of items when folded */
