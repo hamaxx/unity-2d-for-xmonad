@@ -8,6 +8,8 @@
 #include "bamf-application.h"
 #include "bamf-window.h"
 
+#include "gconfitem-qml-wrapper.h"
+
 #include "screeninfo.h"
 
 #include <QDebug>
@@ -23,10 +25,13 @@
 #include <math.h>
 #include <time.h>
 
+
 QAbstractEventDispatcher::EventFilter oldEventFilter;
 Atom _NET_DESKTOP_LAYOUT;
 Atom _NET_NUMBER_OF_DESKTOPS;
 Atom _NET_CURRENT_DESKTOP;
+
+#define GNOME_WORKSPACES_ROWS_KEY "/apps/panel/applets/workspace_switcher_screen%1/prefs/num_rows"
 
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent)
@@ -125,6 +130,46 @@ void ScreenInfo::internX11Atoms()
                                        False);
 }
 
+/* Read the workspace configuration.
+   For now, we only read the number of rows from the gconf key of
+   gnome's panel workspaces applet.
+   FIXME: check what compiz uses and read it when compiz is running */
+bool ScreenInfo::readWorkspacesConfiguration(int *rows)
+{
+    GConfItemQmlWrapper item;
+    QString key = QString(GNOME_WORKSPACES_ROWS_KEY);
+    item.setKey(key.arg(QString::number(QX11Info::appScreen())));
+    bool valid;
+    *rows = item.getValue().toInt(&valid);
+    if (!valid) {
+        *rows = 0;
+    }
+    return valid;
+}
+
+bool ScreenInfo::setWorkspacesGeometryFromConfiguration()
+{
+    int rows;
+    bool success = readWorkspacesConfiguration(&rows);
+    if (success) {
+        /* According to the WNCK documentation, it should be possible to
+           set both columns and rows. However WNCK throws an error if one
+           of the two isn't zero. So let's just pass the number of rows
+           and then read again the rest of the settings. */
+        WnckScreen *screen = wnck_screen_get_default();
+        int token = wnck_screen_try_set_workspace_layout(screen, 0, rows, 0);
+        if (token != 0) {
+            wnck_screen_release_workspace_layout(screen, token);
+            return true;
+        } else {
+            qWarning() << "Failed to set workspaces layout via WNCK.";
+        }
+    } else {
+       qWarning("Failed to read number of workspace rows from configuration.");
+    }
+    return false;
+}
+
 void ScreenInfo::updateWorkspaceGeometry()
 {
     int workspaces;
@@ -148,16 +193,18 @@ void ScreenInfo::updateWorkspaceGeometry()
     /* Then ask X11 the layout of the workspaces. */
     result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
     if (result == NULL) {
-            /* In case of errors, default to a 1-row layout with "natural" orientation
-               and starting corner (natural for westerners, at least)
-               Note that if no pager has been started (which is the case with the
-               default unity-2d session, then this property will not exist.
-            */
-            orientation = ScreenInfo::OrientationHorizontal;
-            startingCorner = ScreenInfo::CornerTopLeft;
-            rows = 1;
-            columns = workspaces;
-    } else {
+        /* In this property does not exist (as is the case if you
+           don't login into the regular gnome session before unity-2d),
+           read the values available in gconf and calculate the others,
+           then set layout via WNCK and read the property again. */
+        bool success = setWorkspacesGeometryFromConfiguration();
+        if (success) {
+            result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
+        }
+    }
+    if (result != NULL) {
+        /* If we read the values correctly the first time or re-read them
+           correctly after setting them from config, just use them. */
         orientation = (Orientation) result[0];
         columns = result[1];
         rows = result[2];
@@ -179,6 +226,12 @@ void ScreenInfo::updateWorkspaceGeometry()
         }
 
         XFree(result);
+    } else {
+        /* If we are still failing, then just set some decent defaults. */
+        rows = 1;
+        columns = workspaces;
+        orientation = ScreenInfo::OrientationHorizontal;
+        startingCorner = ScreenInfo::CornerTopLeft;
     }
 
     /* Notify of changes, if any */
@@ -203,6 +256,7 @@ void ScreenInfo::updateWorkspaceGeometry()
         Q_EMIT startingCornerChanged(m_startingCorner);
     }
 }
+
 
 void ScreenInfo::updateCurrentWorkspace()
 {

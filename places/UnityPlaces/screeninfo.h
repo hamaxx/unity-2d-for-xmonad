@@ -80,6 +80,8 @@ private:
 
     unsigned long * getX11IntProperty(Atom property, long length);
     static void internX11Atoms();
+    bool readWorkspacesConfiguration(int *rows);
+    bool setWorkspacesGeometryFromConfiguration();
 
     static void onActiveWindowChanged(WnckScreen *screen,
                                       WnckWindow *previously_active_window,

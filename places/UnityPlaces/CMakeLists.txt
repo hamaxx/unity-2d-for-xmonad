@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
+pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
 # Dependencies
 include(FindPkgConfig)
@@ -48,6 +49,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${WNCK_INCLUDE_DIRS}
     ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
     )
 
 target_link_libraries(UnityPlaces
@@ -56,6 +58,7 @@ target_link_libraries(UnityPlaces
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${WNCK_LDFLAGS}
     ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
     )
 
 # Install
