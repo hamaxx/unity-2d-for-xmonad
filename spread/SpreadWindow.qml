@@ -24,24 +24,38 @@ Item {
     property variant windowInfo
     property int transitionDuration
 
-    /* Position and size of our cell inside the spread */
-    property int column
-    property int row
+    /* The following group of properties is the only thing needed to position
+       this window in screen mode (exactly where the real window is).
+       Note that we subtract the availableGeometry x and y since window.location is
+       expressed in global screen coordinates. */
+     property int realX: (windowInfo.position.x - screen.availableGeometry.x)
+     property int realY: (windowInfo.position.y - screen.availableGeometry.y)
+     property int realWidth: windowInfo.size.width
+     property int realHeight: windowInfo.size.height
+     property int realZ: windowInfo.z
 
-    /* Values applied when in "spread" mode */
+    /* These values are applied only when in spread state */
     property int minMargin: 20
-    property int availableWidth: grid.cellWidth - minMargin
-    property int availableHeight: grid.cellHeight - minMargin
+    property int availableWidth: cell.width - minMargin
+    property int availableHeight: cell.height - minMargin
 
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
     property double availableAspectRatio: availableWidth / availableHeight
-    property double windowAspectRatio: windowInfo.size.width / windowInfo.size.height
+    property double windowAspectRatio: realWidth / realHeight
     property bool isHorizontal: windowAspectRatio >= availableAspectRatio
-    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
-    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
+    property int maxWidth: Math.min(realWidth, availableWidth)
+    property int maxHeight: Math.min(realHeight, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
     property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
+
+    /* In the default state the spread window is exactly at the same position an size as
+       the real windwo */
+    x: realX
+    y: realY
+    width: realWidth
+    height: realHeight
+    z: realZ
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
@@ -258,8 +272,8 @@ Item {
                 height: spreadHeight
 
                 /* Center window within the cell */
-                x: cell.x + (grid.cellWidth - spreadWidth) / 2
-                y: cell.y + (grid.cellHeight - spreadHeight) / 2
+                x: cell.x + (cell.width - spreadWidth) / 2
+                y: cell.y + (cell.height - spreadHeight) / 2
             }
 
             /* Keep the font the same size it would have if the Spread wasn't scaled down to

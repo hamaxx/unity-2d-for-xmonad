@@ -86,9 +86,24 @@ Item {
         cellWidth: Math.floor(layout.width / layout.columns)
         cellHeight: layout.height / layout.rows
 
+
+        /* If gaps is > 0, then there are missing cells in the last row.
+           In that case, extraSpace is the amount of extra space that is
+           available in the last row due to the fact they are missing */
+        property int gaps: (layout.columns * layout.rows) - layout.count
+        property real extraSpace: (gaps * cellWidth) / (layout.columns - gaps)
+
         delegate: Item {
             id: cell
-            width: grid.cellWidth
+
+            property int column: index % layout.columns
+            property int row: Math.floor(index / layout.columns)
+
+            /* If expand is true, this cell is one of those in the last row that
+               need to share the exta space left by the missing cells */
+            property bool expand: grid.gaps > 0 && row == layout.rows - 1
+
+            width: grid.cellWidth + ((expand) ? grid.extraSpace : 0)
             height: grid.cellHeight
 
             /* When a cell is added or removed, trigger the corresponding window
@@ -99,29 +114,32 @@ Item {
             SpreadWindow {
                 id: spreadWindow
 
+                /* If we expanded this cell to use part of the empty space in the
+                   last row, and it's not the first one, we need to shift it left by
+                   the amount of extra space consumed by the previous expanded rows. */
+                transform: [
+                   Translate {
+                        x: (cell.expand) ? (grid.extraSpace * column)  : 0
+                    }
+                ]
+
                 /* The key to make the window "slide" into its new position when windows
                    elements appear or disappear before its position in the grid is:
                    - reparent the item to some element that is not the delegate.
                    - assign x and y of the window to follow the cell's x and y
-                   - assign Behaviors on x and y that animate the change smoothly. */
+                   - assign Behaviors on x and y that animate the change smoothly.
+
+                   The reason for this AFAIK is that the GridView doesn't apply
+                   any behavior when it moves the delegates around to new positions.
+                   And if the window is parented to the delegate it is basically considered
+                   part of it for this purpose. However if we reparent it an make it follow
+                   the delegate, then we can apply whatever behavior we need.
+
+                   See example: http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView
+                */
                 parent: holder
 
                 transitionDuration: switcher.currentTransitionDuration
-
-               /* The following group of properties is the only thing needed to position
-                  this window in screen mode (exactly where the real window is).
-                  Note that we subtract the availableGeometry x and y since window.location is
-                  expressed in screen coordinates. */
-                x: (window.position.x - screen.availableGeometry.x)
-                y: (window.position.y - screen.availableGeometry.y)
-                width: window.size.width
-                height: window.size.height
-                z: window.z
-
-                /* Decide in which cell of the layout this window should position itself in
-                   (based on the index of the current model value) */
-                column: index % layout.columns
-                row: Math.floor(index / layout.columns)
 
                 /* Pass on a few properties so that they can be referenced from inside the
                    SpreadWindow itself. The state is particularly important as it drives
