@@ -16,7 +16,7 @@ class ScreenInfo : public QObject
     Q_ENUMS(Orientation)
     Q_ENUMS(Corner)
 
-    /* FIXME: workspaces should be called differently, for example: workspacesCount */
+    /* FIXME: workspaces should be called differently, for example: workspaceCount */
     Q_PROPERTY(int workspaces READ workspaces NOTIFY workspacesChanged)
     Q_PROPERTY(int currentWorkspace READ currentWorkspace NOTIFY currentWorkspaceChanged)
     Q_PROPERTY(int rows READ rows NOTIFY rowsChanged)
