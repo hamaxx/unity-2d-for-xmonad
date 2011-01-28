@@ -4,8 +4,3 @@ usr/share/dbus-1/services/unity-2d-places.service
 usr/share/unity-2d/places/*.qml
 usr/share/unity-2d/places/utils.js
 usr/share/unity-2d/places/artwork
-usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1.0.0
-usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so.1
-usr/lib/qt4/imports/UnityPlaces/libUnityPlaces.so
-usr/lib/qt4/imports/UnityPlaces/qmldir
-
