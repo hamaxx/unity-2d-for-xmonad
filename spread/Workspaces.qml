@@ -16,7 +16,7 @@ Item {
     property int columns: screen.columns
     property int rows: screen.rows
 
-    /* These values are completely random. FIXME: pull from unity the proper ones */
+    /* FIXME: These values are completely random. Pull from unity the proper ones */
     property int leftMargin: 40
     property int rightMargin: 40
     property int topMargin: 30
