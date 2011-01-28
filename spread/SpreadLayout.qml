@@ -21,7 +21,7 @@ import Qt 4.7
 Item {
     id: layout
 
-    property alias windows: repeater.model
+    property alias windows: grid.model
 
     /* Number of columns and rows based on the total number of windows.
        Formulas are lifted straight from Unity. */
@@ -75,58 +75,85 @@ Item {
         focus: true
     }
 
-    Repeater {
-        id: repeater
+    GridView {
+        id: grid
+        anchors.fill: parent
+        interactive: false
 
-        delegate: SpreadWindow {
-            id: spreadWindow
-            transitionDuration: switcher.currentTransitionDuration
+        /* We need to round these values down otherwise if there's even a small
+           rounding error and the sum of the columns' widths is larger than the
+           gridview's width, it will wrap the last columns to new rows */
+        cellWidth: Math.floor(layout.width / layout.columns)
+        cellHeight: layout.height / layout.rows
 
-            /* The following group of properties is the only thing needed to position
-               this window in screen mode (almost exactly where the window is).
-               Note that we subtract the availableGeometry x and y since window.location is
-               expressed in screen coordinates. */
-            x: window.position.x - screen.availableGeometry.x
-            y: window.position.y - screen.availableGeometry.y
-            width: window.size.width
-            height: window.size.height
-            z: window.z
+        delegate: Item {
+            id: cell
+            width: grid.cellWidth
+            height: grid.cellHeight
 
-            /* Decide in which cell of the layout this window should position itself in
-               (based on the index of the current model value) */
-            column: index % layout.columns
-            row: Math.floor(index / layout.columns)
+            /* When a cell is added or removed, trigger the corresponding window
+               animations so that the new window fades in or out smoothly in place. */
+            GridView.onAdd: spreadWindow.enterAnimation.start()
+            GridView.onRemove: spreadWindow.exitAnimation.start()
 
-            /* Height and width of the current cell. See header for details. */
-            cellHeight: (layout.height - layout.anchors.margins) / rows
-            cellWidth: (layout.width - layout.anchors.margins) / columnsInRow(row)
+            SpreadWindow {
+                id: spreadWindow
 
-            /* Pass on a few properties so that they can be referenced from inside the
-               SpreadWindow itself. The state is particularly important as it drives
-               all the animations that make up intro and outro */
-            state: layout.state
-            windowInfo: window
+                /* The key to make the window "slide" into its new position when windows
+                   elements appear or disappear before its position in the grid is:
+                   - reparent the item to some element that is not the delegate.
+                   - assign x and y of the window to follow the cell's x and y
+                   - assign Behaviors on x and y that animate the change smoothly. */
+                parent: holder
 
-            onClicked: {
-                navigator.selectXid(spreadWindow.windowInfo.contentXid)
-                layout.windowActivated()
+                transitionDuration: switcher.currentTransitionDuration
+
+               /* The following group of properties is the only thing needed to position
+                  this window in screen mode (exactly where the real window is).
+                  Note that we subtract the availableGeometry x and y since window.location is
+                  expressed in screen coordinates. */
+                x: (window.position.x - screen.availableGeometry.x)
+                y: (window.position.y - screen.availableGeometry.y)
+                width: window.size.width
+                height: window.size.height
+                z: window.z
+
+                /* Decide in which cell of the layout this window should position itself in
+                   (based on the index of the current model value) */
+                column: index % layout.columns
+                row: Math.floor(index / layout.columns)
+
+                /* Pass on a few properties so that they can be referenced from inside the
+                   SpreadWindow itself. The state is particularly important as it drives
+                   all the animations that make up intro and outro */
+                state: layout.state
+                windowInfo: window
+
+                onClicked: {
+                    navigator.selectXid(spreadWindow.windowInfo.contentXid)
+                    layout.windowActivated()
+                }
+                onExited: if (navigator.selectedXid == spreadWindow.windowInfo.contentXid)
+                              navigator.selectXid(0)
+                onEntered: navigator.selectXid(spreadWindow.windowInfo.contentXid)
+
+                /* This is a workaround for an issue with how QML handles the "children"
+                   property.
+                   According to the documentation children are *inserted* in order into their
+                   parent's children list (in our case they are inserted into the SpreadLayout
+                   by the Repeater).
+                   However they are apparently not *maintained* in the same order.
+                   In other words, the list of children can be re-arranged whenver the parent
+                   feels like, with no rules that I could find documented anywhere.
+                   Since we need an ordered list for keyboard navigation, we need to maintain
+                   it ourselves. */
+                Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
+                Component.onDestruction: navigator.removeXidAt(index)
             }
-            onExited: if (navigator.selectedXid == spreadWindow.windowInfo.contentXid)
-                          navigator.selectXid(0)
-            onEntered: navigator.selectXid(spreadWindow.windowInfo.contentXid)
+        }
 
-            /* This is a workaround for an issue with how QML handles the "children"
-               property.
-               According to the documentation children are *inserted* in order into their
-               parent's children list (in our case they are inserted into the SpreadLayout
-               by the Repeater).
-               However they are apparently not *maintained* in the same order.
-               In other words, the list of children can be re-arranged whenver the parent
-               feels like, with no rules that I could find documented anywhere.
-               Since we need an ordered list for keyboard navigation, we need to maintain
-               it ourselves. */
-            Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
-            Component.onDestruction: navigator.removeXidAt(index)
+        Item {
+            id: holder
         }
     }
 }

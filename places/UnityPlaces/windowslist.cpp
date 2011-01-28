@@ -77,6 +77,13 @@ void WindowsList::load()
         return;
     }
 
+    if (m_windows.count() > 0) {
+        beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
+        qDeleteAll(m_windows);
+        m_windows.clear();
+        endRemoveRows();
+    }
+
     BamfMatcher &matcher = BamfMatcher::get_default();
     QList<BamfApplication*> applications;
 
@@ -86,9 +93,8 @@ void WindowsList::load()
          applications.append(allapplications->at(i));
     }
 
-    /* Build a list of windowInfos for windows that are 'user_visible' according to BAMF */
-    QList<WindowInfo*> newWindows;
-
+    /* Add to the list only WindowInfo for windows that are
+      'user_visible' according to BAMF */
     Q_FOREACH (BamfApplication* application, applications) {
         if (!application->user_visible()) {
             continue;
@@ -102,29 +108,22 @@ void WindowsList::load()
             }
 
             WindowInfo *info = new WindowInfo(window->xid());
-            newWindows.append(info);
             connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
+
+            /* It may seem less efficient to add items one by one instead of adding them
+               to a list and appending the entire list at the end and notify only one
+               size change.
+               However doing it that way for some reason prevents the GridView connected
+               to this model from emitting *any* onAdd signal, and the logic in Spread
+               relies on these signals being reliably emitted. */
+            beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
+            m_windows.append(info);
+            endInsertRows();
+            Q_EMIT countChanged(m_windows.count());
         }
     }
 
-    qDebug() << "Matched" << newWindows.count() << "Windows in" << applications.count() << "Applications";
-
-    if (m_windows.count() > 0) {
-        beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
-        qDeleteAll(m_windows);
-        m_windows.clear();
-        endRemoveRows();
-    }
-
-    if (newWindows.count() > 0) {
-        beginInsertRows(QModelIndex(), 0, newWindows.count() - 1);
-        m_windows.append(newWindows);
-        endInsertRows();
-    }
-
     m_loaded = true;
-
-    Q_EMIT countChanged(m_windows.count());
 }
 
 void WindowsList::unload()

@@ -77,7 +77,7 @@ Item {
         id: layout
 
         anchors.fill: parent
-        windows: filteredByApplication
+        windows: switcher.allWindows //filteredByApplication
 
         onWindowActivated: {
             layout.raiseSelectedWindow()

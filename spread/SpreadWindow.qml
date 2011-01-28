@@ -27,13 +27,11 @@ Item {
     /* Position and size of our cell inside the spread */
     property int column
     property int row
-    property real cellWidth
-    property real cellHeight
 
     /* Values applied when in "spread" mode */
     property int minMargin: 20
-    property int availableWidth: cellWidth - minMargin
-    property int availableHeight: cellHeight - minMargin
+    property int availableWidth: grid.cellWidth - minMargin
+    property int availableHeight: grid.cellHeight - minMargin
 
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
@@ -44,9 +42,6 @@ Item {
     property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
     property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
-    /* Center window within its cell */
-    property int spreadX: column * cellWidth + (cellWidth - spreadWidth) / 2
-    property int spreadY: row * cellHeight + (cellHeight - spreadHeight) / 2
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
@@ -57,6 +52,8 @@ Item {
     signal clicked
     signal entered
     signal exited
+
+    property bool enableBehaviors: false
 
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
@@ -206,6 +203,49 @@ Item {
         onExited: window.exited()
     }
 
+    /* The following behaviors smoothly treansition all changes in size and position
+       of the window, especially when it "follows" the position of the grid cell it is
+       related to. The are enabled after the item has completed adding. */
+    Behavior on x {
+        enabled: enableBehaviors
+        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
+    }
+    Behavior on y {
+        enabled: enableBehaviors
+        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
+    }
+    Behavior on width {
+        enabled: enableBehaviors
+        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
+    }
+    Behavior on height {
+        enabled: enableBehaviors
+        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
+    }
+
+    /* It is very important that we enable the behaviors at the end of the enterAnimation
+       so that items will be able to slide around in the grid when other items before them
+       are added or removed. */
+    property variant enterAnimation: SequentialAnimation {
+        PropertyAction { target: window; properties: "opacity, scale"; value: 0.0 }
+        NumberAnimation { target: window; properties: "opacity, scale";
+                          to: 1.0; duration: transitionDuration; easing.type: Easing.InOutSine }
+        PropertyAction { target: window; property: "enableBehaviors"; value: true }
+    }
+
+    /* When a delegate is about to be removed from a GridView the GridView.onRemove
+       signal will be fired, and it's setup to run this animation.
+       To make sure that the delegate is not destroyed until the animation is complete
+       GridView makes available the property GridView.delayRemove that prevents the
+       grid from actually destroying the delegate while it's set to true, and then
+       destroys it when set to false. */
+    property variant exitAnimation: SequentialAnimation {
+        PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
+        NumberAnimation { target: window; properties: "opacity,scale"; to: 0.0;
+                          duration: transitionDuration; easing.type: Easing.InOutSine }
+        PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
+    }
+
     states: [
         /* This state is what we want to have at the end of the intro.
            In other words, it puts the window in its right place and size when in spread mode. */
@@ -216,8 +256,10 @@ Item {
 
                 width: spreadWidth
                 height: spreadHeight
-                x: spreadX
-                y: spreadY
+
+                /* Center window within the cell */
+                x: cell.x + (grid.cellWidth - spreadWidth) / 2
+                y: cell.y + (grid.cellHeight - spreadHeight) / 2
             }
 
             /* Keep the font the same size it would have if the Spread wasn't scaled down to
