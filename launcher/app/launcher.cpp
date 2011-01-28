@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
+    launcherView->rootContext()->setContextProperty("panel", &panel);
     launcherView->setSource(QUrl("./Launcher.qml"));
 
     /* Composing the QML declarative view inside the panel */
