@@ -1,17 +1,18 @@
 import Qt 4.7
 import UnityApplications 1.0
-import UnityPlaces 1.0
+import UnityPlaces 1.0 /* Necessary import to have access to 'screen' context property of type ScreenInfo */
 
-Rectangle {
+Item {
     id: switcher
 
-    width: screen.availableGeometry.width
-    height: screen.availableGeometry.height
+    /* FIXME: setting width and height is not useful since we use
+       view.setResizeMode(QDeclarativeView::SizeRootObjectToView)
+    */
+    /*width: screen.availableGeometry.width
+    height: screen.availableGeometry.height*/
 
-    color: "black"
     focus: true
 
-    property int workspaces: screen.workspaces
     property int columns: screen.columns
     property int rows: screen.rows
 
@@ -78,7 +79,7 @@ Rectangle {
     Item {
         id: spaces
         Repeater {
-            model: switcher.workspaces
+            model: screen.workspaces
             delegate: Workspace {
                 id: workspace
 
