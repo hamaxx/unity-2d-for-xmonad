@@ -209,6 +209,8 @@ LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* applicati
             file.write(contents);
             file.close();
 
+            /* The desktop file has been modified, but the application doesn’t
+               monitor it, so force it to reload it to pick up the changes. */
             application->setDesktopFile(filename);
         }
     }
