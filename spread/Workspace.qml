@@ -111,8 +111,8 @@ FocusScope {
                 target: workspace
                 scale: switcher.zoomedScale
                 z: 2
-                x: switcher.leftMargin
-                y: switcher.topMargin
+                x: switcher.margin
+                y: switcher.margin
             }
         },
         State {

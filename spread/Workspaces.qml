@@ -17,9 +17,7 @@ Item {
     property int rows: screen.rows
 
     /* FIXME: These values are completely random. Pull from unity the proper ones */
-    property int leftMargin: 40
-    property int rightMargin: 40
-    property int topMargin: 30
+    property int margin: 40
     property int spacing: 25
 
     /* Effective area available for laying out the workspaces after considering
@@ -42,8 +40,8 @@ Item {
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
     property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
-    property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
-                                                       ((width - topMargin - bottomMargin) / switcher.height)
+    property real zoomedScale: (isDesktopHorizontal) ? ((width - 2*margin) / switcher.width) :
+                                                       ((width - 2*margin) / switcher.height)
 
     /* We don't really want to animate anything that happens while the window isn't visible,
        so we set the transition duration for all animations to zero unless we're visible */
