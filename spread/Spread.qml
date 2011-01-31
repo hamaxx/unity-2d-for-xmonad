@@ -1,6 +1,7 @@
 import Qt 4.7
 import UnityApplications 1.0
 import UnityPlaces 1.0
+import "utils.js" as Utils
 
 /* The main component that manages the spread.
    This only acts as an outer shell, the actual logic is pretty much all in SpreadLayout.qml
@@ -67,25 +68,6 @@ Item {
         filterRegExp: RegExp("%1".arg(switcher.applicationFilter))
     }
 
-    /* This is our main view.
-       It's essentially just a container where we do our own positioning of
-       the windows.
-       It has two states: the default one (named "") where it positions the
-       items according to screen mode. And the other named "spread" where
-       the items are positioned according to spread mode. */
-//    SpreadLayout {
-//        id: layout
-
-//        anchors.fill: parent
-//        windows: filteredByApplication
-
-//        onWindowActivated: {
-//            layout.raiseSelectedWindow()
-//            spread.windowActivated()
-//        }
-//    }
-
-
     GridView {
         id: grid
         anchors.fill: parent
@@ -104,7 +86,8 @@ Item {
 
         model: filteredByApplication
         delegate: Rectangle {
-            color: "green"
+            id: cell
+            color: "transparent"
             border.width: 1
 
             property int column: index % grid.columns
@@ -113,30 +96,115 @@ Item {
             /* If expand is true, this cell is one of those in the last row that
                need to share the exta space left by the missing cells */
             property bool expand: grid.gaps > 0 && row == (grid.rows - 1)
+            property int expandShift: (expand) ? (grid.extraSpace * column)  : 0
 
             width: grid.cellWidth + ((expand) ? grid.extraSpace : 0)
             height: grid.cellHeight
 
-            /* If we expanded this cell to use part of the empty space in the
-               last row, and it's not the first one, we need to shift it left by
-               the amount of extra space consumed by the previous expanded rows. */
-            transform: [
-               Translate {
-                    x: (expand) ? (grid.extraSpace * column)  : 0
-                }
-            ]
+            transform: Translate { x: expandShift }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: console.log("" + grid.count + ":" + grid.rows + "x" + grid.columns +
-                                       " @ " + column + ", " + row + " : " + index)
+            /* When a cell is added or removed, trigger the corresponding window
+               animations so that the new window fades in or out smoothly in place. */
+            GridView.onAdd: { console.log("ADDED"); addAnimation.start() }
+            GridView.onRemove: { console.log("REMOVED"); removeAnimation.start() }
+
+            /* When a delegate is about to be removed from a GridView the GridView.onRemove
+               signal will be fired, and it's setup to run this animation.
+               To make sure that the delegate is not destroyed until the animation is complete
+               GridView makes available the property GridView.delayRemove that prevents the
+               grid from actually destroying the delegate while it's set to true, and then
+               destroys it when set to false. */
+            SequentialAnimation {
+                id: removeAnimation
+                PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
+                NumberAnimation {
+                    target: cellFollower
+                    properties: "opacity,scale"
+                    to: 0.0;
+                    duration: Utils.currentTransitionDuration
+                    easing.type: Easing.InOutSine
+                }
+                PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
+            }
+
+            /* It is very important that we enable the behaviors at the end of the enterAnimation
+               so that items will be able to slide around in the grid when other items before them
+               are added or removed. */
+            SequentialAnimation {
+                id: addAnimation
+                PropertyAction { target: cellFollower; properties: "opacity, scale"; value: 0.0 }
+                NumberAnimation {
+                    target: cellFollower
+                    properties: "opacity, scale"
+                    to: 1.0
+                    duration: Utils.currentTransitionDuration
+                    easing.type: Easing.InOutSine
+                }
+                PropertyAction { target: cell; property: "enableBehaviors"; value: true }
+            }
+
+            /* This property should be directly on the cellFollower, but for some reason
+               the onAdd transition can't see it (probably because it is already reparented
+               by the time the transitions are run, and thus out of the component scope)
+               So we need to bind it via a property on the cell */
+            property bool enableBehaviors: false
+
+            Item {
+                id: cellFollower
+                parent: holder
+
+                /* If we expanded this cell to use part of the empty space in the
+                   last row, and it's not the first one, we need to shift it left by
+                   the amount of extra space consumed by the previous expanded rows. */
+                x: cell.x + cell.expandShift
+                y: cell.y
+                width: cell.width
+                height: cell.height
+
+                Behavior on x {
+                    enabled: cell.enableBehaviors
+                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+                }
+                Behavior on y {
+                    enabled: cell.enableBehaviors
+                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+                }
+                Behavior on width {
+                    enabled: cell.enableBehaviors
+                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+                }
+                Behavior on height {
+                    enabled: cell.enableBehaviors
+                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+                }
+
+                SpreadWindow {
+                    id: spreadWindow
+
+                    anchors.centerIn: parent
+                    cellWidth: cell.width
+                    cellHeight: cell.height
+
+                    state: spread.state
+
+                    windowInfo: window
+
+                    //        onWindowActivated: {
+                    //            layout.raiseSelectedWindow()
+                    //            spread.windowActivated()
+                    //        }
+                }
             }
         }
     }
 
+    Item {
+        id: holder
+    }
+
     function windowForXid(xid)
     {
-        var children = layout.children
+        var children = grid.children
         for (var i = 0; i < children.length; i++) {
             var child = children[i]
             if (child.windowInfo && child.windowInfo.contentXid == xid) {

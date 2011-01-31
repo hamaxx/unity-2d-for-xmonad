@@ -1,6 +1,7 @@
 import Qt 4.7
 import UnityApplications 1.0
 import UnityPlaces 1.0
+import "utils.js" as Utils
 
 Rectangle {
     id: switcher
@@ -43,11 +44,6 @@ Rectangle {
     property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
     property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
                                                        ((width - topMargin - bottomMargin) / switcher.height)
-
-    /* We don't really want to animate anything that happens while the window isn't visible,
-       so we set the transition duration for all animations to zero unless we're visible */
-    property int transitionDuration: 250
-    property int currentTransitionDuration: 0
 
     /* When this is set, it is used to filter the global list of windows to limit it to
        a single application. See the QSortFilterProxyModelQML used in Spread.qml */
@@ -120,6 +116,10 @@ Rectangle {
         target: control
 
         onShow: {
+            /* We don't really want to animate anything that happens while the window isn't visible,
+               so we set the transition duration for all animations to zero unless we're visible */
+            Utils.currentTransitionDuration = 0
+
             /* Setup application pre-filtering and initially zoomed desktop, if any
                were specified as arguments */
             applicationFilter = applicationDesktopFile
@@ -133,7 +133,7 @@ Rectangle {
             beforeShowing()
             allWindows.load()
 
-            currentTransitionDuration = transitionDuration
+            Utils.currentTransitionDuration = Utils.transitionDuration
             spreadView.show()
             spreadView.forceActivateWindow()
             afterShowing()
@@ -151,12 +151,12 @@ Rectangle {
        it will actually do all that is necessary to hide the switcher and cleanup */
     Timer {
         id: exitTransitionTimer
-        interval: transitionDuration
+        interval: Utils.currentTransitionDuration
         onTriggered: {
             beforeHiding()
 
             spreadView.hide()
-            currentTransitionDuration = 0
+            Utils.currentTransitionDuration = 0
 
             afterHiding()
 

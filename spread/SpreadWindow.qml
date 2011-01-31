@@ -1,4 +1,5 @@
 import Qt 4.7
+import "utils.js" as Utils
 
 /*
 Each SpreadWindow represents a real window on the desktop (we are
@@ -20,9 +21,9 @@ maintain the same aspect ratio as the original window.
 
 Item {
     id: window
+    //anchors.centerIn: parent
 
     property variant windowInfo
-    property int transitionDuration
 
     /* The following group of properties is the only thing needed to position
        this window in screen mode (exactly where the real window is).
@@ -35,9 +36,11 @@ Item {
      property int realZ: windowInfo.z
 
     /* These values are applied only when in spread state */
+    property int cellWidth
+    property int cellHeight
     property int minMargin: 20
-    property int availableWidth: cell.width - minMargin
-    property int availableHeight: cell.height - minMargin
+    property int availableWidth: cellWidth - minMargin
+    property int availableHeight: cellHeight - minMargin
 
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
@@ -49,13 +52,10 @@ Item {
     property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
     property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
 
-    /* In the default state the spread window is exactly at the same position an size as
-       the real windwo */
-    x: realX
-    y: realY
-    width: realWidth
-    height: realHeight
-    z: realZ
+    /* In the default state the spread window is positioned by the view it is
+       contained into. */
+    width: spreadWidth
+    height: spreadHeight
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
@@ -67,7 +67,7 @@ Item {
     signal entered
     signal exited
 
-    property bool enableBehaviors: false
+    property bool enableBehaviors: true
 
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
@@ -133,7 +133,7 @@ Item {
         anchors.fill: parent
 
         /* Shown only in spread state, see transitions */
-        visible: false
+        visible: (state == "")
 
         /* A darkening rectangle that covers every window in spread state,
            except the currently selected window. See overlay.states */
@@ -212,7 +212,7 @@ Item {
         anchors.centerIn: parent
         hoverEnabled: true
 
-        onClicked: window.clicked()
+        onClicked: { console.log(" " + window.x + ", " + window.y + "(" + window.state + ")"); window.clicked() }
         onEntered: window.entered()
         onExited: window.exited()
     }
@@ -220,70 +220,45 @@ Item {
     /* The following behaviors smoothly treansition all changes in size and position
        of the window, especially when it "follows" the position of the grid cell it is
        related to. The are enabled after the item has completed adding. */
-    Behavior on x {
-        enabled: enableBehaviors
-        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
-    }
-    Behavior on y {
-        enabled: enableBehaviors
-        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
-    }
-    Behavior on width {
-        enabled: enableBehaviors
-        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
-    }
-    Behavior on height {
-        enabled: enableBehaviors
-        NumberAnimation { easing.type: Easing.InOutSine; duration: transitionDuration }
-    }
-
-    /* It is very important that we enable the behaviors at the end of the enterAnimation
-       so that items will be able to slide around in the grid when other items before them
-       are added or removed. */
-    property variant enterAnimation: SequentialAnimation {
-        PropertyAction { target: window; properties: "opacity, scale"; value: 0.0 }
-        NumberAnimation { target: window; properties: "opacity, scale";
-                          to: 1.0; duration: transitionDuration; easing.type: Easing.InOutSine }
-        PropertyAction { target: window; property: "enableBehaviors"; value: true }
-    }
-
-    /* When a delegate is about to be removed from a GridView the GridView.onRemove
-       signal will be fired, and it's setup to run this animation.
-       To make sure that the delegate is not destroyed until the animation is complete
-       GridView makes available the property GridView.delayRemove that prevents the
-       grid from actually destroying the delegate while it's set to true, and then
-       destroys it when set to false. */
-    property variant exitAnimation: SequentialAnimation {
-        PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
-        NumberAnimation { target: window; properties: "opacity,scale"; to: 0.0;
-                          duration: transitionDuration; easing.type: Easing.InOutSine }
-        PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
-    }
+//    Behavior on x {
+//        enabled: enableBehaviors
+//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+//    }
+//    Behavior on y {
+//        enabled: enableBehaviors
+//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+//    }
+//    Behavior on width {
+//        enabled: enableBehaviors
+//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+//    }
+//    Behavior on height {
+//        enabled: enableBehaviors
+//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
+//    }
 
     states: [
         /* This state is what we want to have at the end of the intro.
            In other words, it puts the window in its right place and size when in spread mode. */
         State {
-            name: "spread"
+            name: "screen"
             PropertyChanges {
                 target: window
 
-                width: spreadWidth
-                height: spreadHeight
-
-                /* Center window within the cell */
-                x: cell.x + (cell.width - spreadWidth) / 2
-                y: cell.y + (cell.height - spreadHeight) / 2
+                x: realX
+                y: realY
+                width: realWidth
+                height: realHeight
             }
 
-            /* Keep the font the same size it would have if the Spread wasn't scaled down to
-               fit into the workspace switcher.
-               The check on originalFontSize not being zero is to prevent errors in assigning
-               a zero point size when originalFontSize is not initialized yet. */
-            PropertyChanges {
-                target:label
-                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
-            }
+//            /* Keep the font the same size it would have if the Spread wasn't scaled down to
+//               fit into the workspace switcher.
+//               The check on originalFontSize not being zero is to prevent errors in assigning
+//               a zero point size when originalFontSize is not initialized yet. */
+//            PropertyChanges {
+//                target:label
+//                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
+//            }
         }
     ]
 
@@ -298,11 +273,11 @@ Item {
                 NumberAnimation {
                     target: window
                     properties: "x,y,width,height"
-                    duration: window.transitionDuration
+                    duration: Utils.currentTransitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "spread") }
+                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "") }
                 PropertyAction { target: overlay; property: "visible"; value: true }
             }
         }

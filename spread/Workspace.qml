@@ -1,4 +1,5 @@
 import Qt 4.7
+import "utils.js" as Utils
 
 FocusScope {
     id: workspace
@@ -24,7 +25,7 @@ FocusScope {
 
     function activate() {
         workspace.state = "screen"
-        spread.state = ""
+        spread.state = "screen"
         activated()
     }
 
@@ -48,12 +49,12 @@ FocusScope {
         target: switcher
         onBeforeShowing: {
             if (isCurrent) workspace.state = "screen"
-            else if (!isZoomed) spread.state = "spread"
+            else if (!isZoomed) spread.state = ""
         }
 
         onAfterShowing: {
             workspace.state = (isZoomed) ? "zoomed" : ""
-            spread.state = "spread"
+            spread.state = ""
         }
 
         onBeforeHiding: {
@@ -68,7 +69,7 @@ FocusScope {
             if (isZoomed) activateSelectedWindow(true)
 
             workspace.state = ""
-            spread.state = ""
+            spread.state = "screen"
             z = 1
         }
     }
@@ -136,7 +137,7 @@ FocusScope {
                 NumberAnimation {
                     target: workspace
                     properties: "x,y,scale"
-                    duration: switcher.currentTransitionDuration
+                    duration: Utils.currentTransitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: workspace; property: "z"; value: 2 }
