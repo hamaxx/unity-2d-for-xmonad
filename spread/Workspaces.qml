@@ -62,7 +62,7 @@ Item {
     property variant allWindows: WindowsList { }
     property int lastActiveWindow: 0
 
-    /* Those signals are emitted by the swicher while it starts (beforeShowing
+    /* Those signals are emitted by the switcher while it starts (beforeShowing
        and afterShowing) and while it exits (beforeHiding and afterHiding). The single
        workspaces react to these signals and perform the appropriate setup and cleanup
        operations */
