@@ -194,9 +194,9 @@ LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* applicati
     if (!title.isEmpty() || !favicon.isEmpty()) {
         QString filename = application->desktop_file();
         GKeyFile* key_file = g_key_file_new();
-        gboolean res = g_key_file_load_from_file(key_file, filename.toUtf8().constData(),
+        gboolean loaded = g_key_file_load_from_file(key_file, filename.toUtf8().constData(),
             (GKeyFileFlags) (G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS), NULL);
-        if (res) {
+        if (loaded) {
             if (!title.isEmpty()) {
                 g_key_file_set_string(key_file, "Desktop Entry", "Name", title.toUtf8().constData());
             }
