@@ -63,6 +63,7 @@ Item {
 
         interval: switcher.transitionDuration
         onTriggered: {
+            /* FIXME: avoid references to parent ids if possible: 'workspace' and 'switcher' */
             if (state == "spread" && workspace.isZoomed)
                 navigator.selectXid(switcher.lastActiveWindow)
         }
