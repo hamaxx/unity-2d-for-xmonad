@@ -67,8 +67,6 @@ Item {
     signal entered
     signal exited
 
-    property bool enableBehaviors: true
-
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
        Please note that the screenshot is taken at the moment the source property is
@@ -212,7 +210,7 @@ Item {
         anchors.centerIn: parent
         hoverEnabled: true
 
-        onClicked: { console.log(" " + window.x + ", " + window.y + "(" + window.state + ")"); window.clicked() }
+        onClicked: window.clicked()
         onEntered: window.entered()
         onExited: window.exited()
     }
@@ -237,49 +235,49 @@ Item {
 //        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
 //    }
 
-    states: [
-        /* This state is what we want to have at the end of the intro.
-           In other words, it puts the window in its right place and size when in spread mode. */
-        State {
-            name: "screen"
-            PropertyChanges {
-                target: window
-
-                x: realX
-                y: realY
-                width: realWidth
-                height: realHeight
-            }
-
-//            /* Keep the font the same size it would have if the Spread wasn't scaled down to
-//               fit into the workspace switcher.
-//               The check on originalFontSize not being zero is to prevent errors in assigning
-//               a zero point size when originalFontSize is not initialized yet. */
+//    states: [
+//        /* This state is what we want to have at the end of the intro.
+//           In other words, it puts the window in its right place and size when in spread mode. */
+//        State {
+//            name: "screen"
 //            PropertyChanges {
-//                target:label
-//                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
-//            }
-        }
-    ]
+//                target: window
 
-    transitions: [
-        /* This is the animation that is exectuted when moving between any of the two states.
-           It will be executed in the same sequence for both the intro and outro. */
-        Transition {
-            SequentialAnimation {
-                PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: mouseArea; property: "enabled"; value: false }
-                PropertyAction { target: overlay; property: "visible"; value: false }
-                NumberAnimation {
-                    target: window
-                    properties: "x,y,width,height"
-                    duration: Utils.currentTransitionDuration
-                    easing.type: Easing.InOutSine
-                }
-                PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "") }
-                PropertyAction { target: overlay; property: "visible"; value: true }
-            }
-        }
-    ]
+//                x: realX
+//                y: realY
+//                width: realWidth
+//                height: realHeight
+//            }
+
+////            /* Keep the font the same size it would have if the Spread wasn't scaled down to
+////               fit into the workspace switcher.
+////               The check on originalFontSize not being zero is to prevent errors in assigning
+////               a zero point size when originalFontSize is not initialized yet. */
+////            PropertyChanges {
+////                target:label
+////                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
+////            }
+//        }
+//    ]
+
+//    transitions: [
+//        /* This is the animation that is exectuted when moving between any of the two states.
+//           It will be executed in the same sequence for both the intro and outro. */
+//        Transition {
+//            SequentialAnimation {
+//                PropertyAction { target: shot; property: "smooth"; value: false }
+//                PropertyAction { target: mouseArea; property: "enabled"; value: false }
+//                PropertyAction { target: overlay; property: "visible"; value: false }
+//                NumberAnimation {
+//                    target: window
+//                    properties: "x,y,width,height"
+//                    duration: Utils.currentTransitionDuration
+//                    easing.type: Easing.InOutSine
+//                }
+//                PropertyAction { target: shot; property: "smooth"; value: true }
+//                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "") }
+//                PropertyAction { target: overlay; property: "visible"; value: true }
+//            }
+//        }
+//    ]
 }

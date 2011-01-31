@@ -105,7 +105,7 @@ Item {
 
             /* When a cell is added or removed, trigger the corresponding window
                animations so that the new window fades in or out smoothly in place. */
-            GridView.onAdd: { console.log("ADDED"); addAnimation.start() }
+            GridView.onAdd: { console.log("ADDED " + index); addAnimation.start() }
             GridView.onRemove: { console.log("REMOVED"); removeAnimation.start() }
 
             /* When a delegate is about to be removed from a GridView the GridView.onRemove
@@ -117,6 +117,7 @@ Item {
             SequentialAnimation {
                 id: removeAnimation
                 PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
+                ScriptAction { script: cell.enableBehaviors = false; }
                 NumberAnimation {
                     target: cellFollower
                     properties: "opacity,scale"
@@ -140,14 +141,14 @@ Item {
                     duration: Utils.currentTransitionDuration
                     easing.type: Easing.InOutSine
                 }
-                PropertyAction { target: cell; property: "enableBehaviors"; value: true }
+                ScriptAction { script: cell.enableBehaviors = true; }
             }
 
             /* This property should be directly on the cellFollower, but for some reason
                the onAdd transition can't see it (probably because it is already reparented
                by the time the transitions are run, and thus out of the component scope)
                So we need to bind it via a property on the cell */
-            property bool enableBehaviors: false
+            property variant enableBehaviors: false
 
             Item {
                 id: cellFollower
@@ -160,6 +161,8 @@ Item {
                 y: cell.y
                 width: cell.width
                 height: cell.height
+
+                property alias windowInfo: spreadWindow.windowInfo
 
                 Behavior on x {
                     enabled: cell.enableBehaviors

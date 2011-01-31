@@ -101,7 +101,7 @@ FocusScope {
         if (spread.selectedXid != 0) {
             var selectedWindow = spread.windowForXid(spread.selectedXid)
             if (selectedWindow != null) selectedWindow.windowInfo.activate()
-            if (clearSelection) spread.selectedXid = 0;
+//            if (clearSelection) spread.selectedXid = 0;
         }
     }
 
