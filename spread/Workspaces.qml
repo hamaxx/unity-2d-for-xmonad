@@ -2,7 +2,7 @@ import Qt 4.7
 import UnityApplications 1.0
 import UnityPlaces 1.0 /* Necessary import to have access to 'screen' context property of type ScreenInfo */
 
-Item {
+Rectangle {
     id: switcher
 
     /* FIXME: setting width and height is not useful since we use
@@ -11,6 +11,7 @@ Item {
     /*width: screen.availableGeometry.width
     height: screen.availableGeometry.height*/
 
+    color: "black"
     focus: true
 
     property int columns: screen.columns
