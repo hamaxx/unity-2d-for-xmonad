@@ -200,10 +200,10 @@ Rectangle {
 
         /* Expand back to screen size the current workspace */
         var current = switcher.workspaceByNumber(screen.currentWorkspace)
-        if (current) {
-            current.selectedXid = 0
-            current.activate()
-        }
+//        if (current) {
+//            current.selectedXid = 0
+//            current.activate()
+//        }
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
         exitTransitionTimer.start()

@@ -42,7 +42,7 @@ Item {
 
     /* We need to make this information available to the parent, so that it
        knows which window to activate at the end of the spread (if any) */
-    property alias selectedXid: navigator.selectedXid
+//    property alias selectedXid: navigator.selectedXid
 
     function raiseSelectedWindow() {
         /* This is a bit of an hack, to raise the window above all the others
@@ -54,19 +54,19 @@ Item {
         }
     }
 
-    transitions: Transition {
-        ScriptAction { script: transitionTimer.restart() }
-    }
+//    transitions: Transition {
+//        ScriptAction { script: transitionTimer.restart() }
+//    }
 
-    Timer {
-        id: transitionTimer
+//    Timer {
+//        id: transitionTimer
 
-        interval: switcher.transitionDuration
-        onTriggered: {
-            if (state == "spread" && workspace.isZoomed)
-                navigator.selectXid(switcher.lastActiveWindow)
-        }
-    }
+//        interval: switcher.transitionDuration
+//        onTriggered: {
+//            if (state == "spread" && workspace.isZoomed)
+//                navigator.selectXid(switcher.lastActiveWindow)
+//        }
+//    }
 
     /* This component handles all the logic related to selection and to
        navigation with the keyboard while we are in spread mode. */
@@ -78,13 +78,26 @@ Item {
     GridView {
         id: grid
         anchors.fill: parent
-        interactive: false
+        MouseArea {
+            anchors.fill: parent
+            onClicked: { console.log("HELLO"); spreadView.repaint() }
+        }
+        //interactive: false
 
         /* We need to round these values down otherwise if there's even a small
            rounding error and the sum of the columns' widths is larger than the
            gridview's width, it will wrap the last columns to new rows */
         cellWidth: Math.floor(layout.width / layout.columns)
         cellHeight: layout.height / layout.rows
+
+        property bool fullyLoaded: false
+        Component.onCompleted: fullyLoaded = true
+        onCountChanged: {
+            if (fullyLoaded) {
+                grid.positionViewAtIndex(0, GridView.Contain)
+                console.log("Fully: " + count)
+            } else console.log("Not Fully: " + count)
+        }
 
 
         /* If gaps is > 0, then there are missing cells in the last row.
@@ -93,8 +106,11 @@ Item {
         property int gaps: (layout.columns * layout.rows) - layout.count
         property real extraSpace: (gaps * cellWidth) / (layout.columns - gaps)
 
-        delegate: Item {
+        delegate: Rectangle {
             id: cell
+
+            color: "green"
+            border.width: 1
 
             property int column: index % layout.columns
             property int row: Math.floor(index / layout.columns)
@@ -106,72 +122,72 @@ Item {
             width: grid.cellWidth + ((expand) ? grid.extraSpace : 0)
             height: grid.cellHeight
 
-            /* When a cell is added or removed, trigger the corresponding window
-               animations so that the new window fades in or out smoothly in place. */
-            GridView.onAdd: spreadWindow.enterAnimation.start()
-            GridView.onRemove: spreadWindow.exitAnimation.start()
+//            /* When a cell is added or removed, trigger the corresponding window
+//               animations so that the new window fades in or out smoothly in place. */
+//            GridView.onAdd: spreadWindow.enterAnimation.start()
+//            GridView.onRemove: spreadWindow.exitAnimation.start()
 
-            SpreadWindow {
-                id: spreadWindow
+//            SpreadWindow {
+//                id: spreadWindow
 
-                /* If we expanded this cell to use part of the empty space in the
-                   last row, and it's not the first one, we need to shift it left by
-                   the amount of extra space consumed by the previous expanded rows. */
-                transform: [
-                   Translate {
-                        x: (cell.expand) ? (grid.extraSpace * column)  : 0
-                    }
-                ]
+//                /* If we expanded this cell to use part of the empty space in the
+//                   last row, and it's not the first one, we need to shift it left by
+//                   the amount of extra space consumed by the previous expanded rows. */
+//                transform: [
+//                   Translate {
+//                        x: (cell.expand) ? (grid.extraSpace * column)  : 0
+//                    }
+//                ]
 
-                /* The key to make the window "slide" into its new position when windows
-                   elements appear or disappear before its position in the grid is:
-                   - reparent the item to some element that is not the delegate.
-                   - assign x and y of the window to follow the cell's x and y
-                   - assign Behaviors on x and y that animate the change smoothly.
+//                /* The key to make the window "slide" into its new position when windows
+//                   elements appear or disappear before its position in the grid is:
+//                   - reparent the item to some element that is not the delegate.
+//                   - assign x and y of the window to follow the cell's x and y
+//                   - assign Behaviors on x and y that animate the change smoothly.
 
-                   The reason for this AFAIK is that the GridView doesn't apply
-                   any behavior when it moves the delegates around to new positions.
-                   And if the window is parented to the delegate it is basically considered
-                   part of it for this purpose. However if we reparent it an make it follow
-                   the delegate, then we can apply whatever behavior we need.
+//                   The reason for this AFAIK is that the GridView doesn't apply
+//                   any behavior when it moves the delegates around to new positions.
+//                   And if the window is parented to the delegate it is basically considered
+//                   part of it for this purpose. However if we reparent it an make it follow
+//                   the delegate, then we can apply whatever behavior we need.
 
-                   See example: http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView
-                */
-                parent: holder
+//                   See example: http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView
+//                */
+//                parent: holder
 
-                transitionDuration: switcher.currentTransitionDuration
+//                transitionDuration: switcher.currentTransitionDuration
 
-                /* Pass on a few properties so that they can be referenced from inside the
-                   SpreadWindow itself. The state is particularly important as it drives
-                   all the animations that make up intro and outro */
-                state: layout.state
-                windowInfo: window
+//                /* Pass on a few properties so that they can be referenced from inside the
+//                   SpreadWindow itself. The state is particularly important as it drives
+//                   all the animations that make up intro and outro */
+//                state: layout.state
+//                windowInfo: window
 
-                onClicked: {
-                    navigator.selectXid(spreadWindow.windowInfo.contentXid)
-                    layout.windowActivated()
-                }
-                onExited: if (navigator.selectedXid == spreadWindow.windowInfo.contentXid)
-                              navigator.selectXid(0)
-                onEntered: navigator.selectXid(spreadWindow.windowInfo.contentXid)
+//                onClicked: {
+//                    navigator.selectXid(spreadWindow.windowInfo.contentXid)
+//                    layout.windowActivated()
+//                }
+//                onExited: if (navigator.selectedXid == spreadWindow.windowInfo.contentXid)
+//                              navigator.selectXid(0)
+//                onEntered: navigator.selectXid(spreadWindow.windowInfo.contentXid)
 
-                /* This is a workaround for an issue with how QML handles the "children"
-                   property.
-                   According to the documentation children are *inserted* in order into their
-                   parent's children list (in our case they are inserted into the SpreadLayout
-                   by the Repeater).
-                   However they are apparently not *maintained* in the same order.
-                   In other words, the list of children can be re-arranged whenver the parent
-                   feels like, with no rules that I could find documented anywhere.
-                   Since we need an ordered list for keyboard navigation, we need to maintain
-                   it ourselves. */
-                Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
-                Component.onDestruction: navigator.removeXidAt(index)
-            }
-        }
-
-        Item {
-            id: holder
+//                /* This is a workaround for an issue with how QML handles the "children"
+//                   property.
+//                   According to the documentation children are *inserted* in order into their
+//                   parent's children list (in our case they are inserted into the SpreadLayout
+//                   by the Repeater).
+//                   However they are apparently not *maintained* in the same order.
+//                   In other words, the list of children can be re-arranged whenver the parent
+//                   feels like, with no rules that I could find documented anywhere.
+//                   Since we need an ordered list for keyboard navigation, we need to maintain
+//                   it ourselves. */
+//                Component.onCompleted: navigator.addXidAt(index, spreadWindow.windowInfo.contentXid)
+//                Component.onDestruction: navigator.removeXidAt(index)
+//            }
         }
     }
+
+//    Item {
+//        id: holder
+//    }
 }

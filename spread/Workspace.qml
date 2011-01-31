@@ -9,7 +9,7 @@ FocusScope {
     property int row
     property int column
     property int workspaceNumber
-    property alias selectedXid: spread.selectedXid
+//    property alias selectedXid: spread.selectedXid
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
     property bool isCurrent: workspaceNumber == screen.currentWorkspace
 

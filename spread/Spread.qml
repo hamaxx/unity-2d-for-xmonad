@@ -26,8 +26,8 @@ Item {
 
     property string application
 
-    property alias state: layout.state
-    property alias selectedXid: layout.selectedXid
+//    property alias state: layout.state
+//    property alias selectedXid: layout.selectedXid
 
     signal windowActivated
 
@@ -73,15 +73,64 @@ Item {
        It has two states: the default one (named "") where it positions the
        items according to screen mode. And the other named "spread" where
        the items are positioned according to spread mode. */
-    SpreadLayout {
-        id: layout
+//    SpreadLayout {
+//        id: layout
 
+//        anchors.fill: parent
+//        windows: filteredByApplication
+
+//        onWindowActivated: {
+//            layout.raiseSelectedWindow()
+//            spread.windowActivated()
+//        }
+//    }
+
+
+    GridView {
+        id: grid
         anchors.fill: parent
-        windows: switcher.allWindows //filteredByApplication
 
-        onWindowActivated: {
-            layout.raiseSelectedWindow()
-            spread.windowActivated()
+        property int columns: Math.ceil(Math.sqrt(count))
+        property int rows: Math.ceil(count / columns)
+
+        cellWidth: Math.floor(width / columns)
+        cellHeight: height / rows
+
+        /* If gaps is > 0, then there are missing cells in the last row.
+           In that case, extraSpace is the amount of extra space that is
+           available in the last row due to the fact they are missing */
+        property int gaps: (columns * rows) - count
+        property real extraSpace: (gaps * cellWidth) / (columns - gaps)
+
+        model: filteredByApplication
+        delegate: Rectangle {
+            color: "green"
+            border.width: 1
+
+            property int column: index % grid.columns
+            property int row: Math.floor(index / grid.columns)
+
+            /* If expand is true, this cell is one of those in the last row that
+               need to share the exta space left by the missing cells */
+            property bool expand: grid.gaps > 0 && row == (grid.rows - 1)
+
+            width: grid.cellWidth + ((expand) ? grid.extraSpace : 0)
+            height: grid.cellHeight
+
+            /* If we expanded this cell to use part of the empty space in the
+               last row, and it's not the first one, we need to shift it left by
+               the amount of extra space consumed by the previous expanded rows. */
+            transform: [
+               Translate {
+                    x: (expand) ? (grid.extraSpace * column)  : 0
+                }
+            ]
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: console.log("" + grid.count + ":" + grid.rows + "x" + grid.columns +
+                                       " @ " + column + ", " + row + " : " + index)
+            }
         }
     }
 
