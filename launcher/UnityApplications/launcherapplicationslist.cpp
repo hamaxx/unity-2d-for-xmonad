@@ -30,14 +30,12 @@
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
 
-static const QString REL_STORE = ".local/share/applications/";
-static const QString LOCAL_STORE = QDir::homePath() + "/" + REL_STORE;
+static const QString LOCAL_STORE = QDir::homePath() + "/.local/share/applications/";
 
 static void check_local_store_exists()
 {
-    QDir store(LOCAL_STORE);
-    if (!store.exists()) {
-        QDir::home().mkpath(REL_STORE);
+    if (!QDir(LOCAL_STORE).exists()) {
+        QDir().mkpath(LOCAL_STORE);
     }
 }
 

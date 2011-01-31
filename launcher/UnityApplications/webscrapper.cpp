@@ -27,14 +27,12 @@
 #include <QPixmap>
 #include <QCryptographicHash>
 
-static const QString REL_ICON_STORE = ".local/share/icons/";
-static const QString ABS_ICON_STORE = QDir::homePath() + "/" + REL_ICON_STORE;
+static const QString ICON_STORE = QDir::homePath() + "/.local/share/icons/";
 
 static void check_icon_store_exists()
 {
-    QDir store(ABS_ICON_STORE);
-    if (!store.exists()) {
-        QDir::home().mkpath(REL_ICON_STORE);
+    if (!QDir(ICON_STORE).exists()) {
+        QDir().mkpath(ICON_STORE);
     }
 }
 
@@ -160,7 +158,7 @@ WebScrapper::slotFetchFaviconFinished(QNetworkReply* reply)
             if (valid) {
                 check_icon_store_exists();
                 QUrl url = reply->url();
-                QString filepath = ABS_ICON_STORE + computeUrlHash(url);
+                QString filepath = ICON_STORE + computeUrlHash(url);
                 QString extension = url.path().mid(url.path().lastIndexOf("."));
                 QString filename = filepath + extension;
                 pixmap.save(filename);
