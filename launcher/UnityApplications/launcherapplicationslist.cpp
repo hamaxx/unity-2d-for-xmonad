@@ -181,7 +181,7 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
     insertApplication(application);
     application->setSticky(true);
 
-    WebScrapper* scrapper = new WebScrapper(application, url, this);
+    WebScrapper* scrapper = new WebScrapper(application, url, application);
     connect(scrapper, SIGNAL(finished(LauncherApplication*, const QString&, const QString&)),
             SLOT(slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&)));
     scrapper->fetchAndScrap();
