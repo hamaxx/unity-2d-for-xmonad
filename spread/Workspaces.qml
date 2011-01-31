@@ -190,7 +190,7 @@ Item {
     }
 
     function cancelAndExit() {
-        /* Unzoom the currently zoome workspace (except if the currently zoomed is
+        /* Unzoom the currently zoomed workspace (except if the currently zoomed is
            also the current workspaces, since it's the one we're expanding to screen size) */
         if (zoomedWorkspace != -1 && zoomedWorkspace != screen.currentWorkspace) {
             var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
