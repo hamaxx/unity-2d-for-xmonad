@@ -152,6 +152,15 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 }
 
 void
+LauncherApplicationsList::writeDesktopFile(const QString& filename, const QByteArray& contents)
+{
+    QFile file(filename);
+    file.open(QIODevice::WriteOnly);
+    file.write(contents);
+    file.close();
+}
+
+void
 LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 {
     if (!url.isValid() || url.isRelative()) {
@@ -170,10 +179,7 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
     const char* id = QCryptographicHash::hash(encoded, QCryptographicHash::Md5).toHex().constData();
     QString desktop_file = LOCAL_STORE + "webfav-" + id + ".desktop";
 
-    QFile file(desktop_file);
-    file.open(QIODevice::WriteOnly);
-    file.write(contents.toUtf8());
-    file.close();
+    writeDesktopFile(desktop_file, contents.toUtf8());
 
     application->setDesktopFile(desktop_file);
     insertApplication(application);
@@ -204,10 +210,7 @@ LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* applicati
             QByteArray contents = g_key_file_to_data(key_file, NULL, NULL);
             g_key_file_free(key_file);
 
-            QFile file(filename);
-            file.open(QIODevice::WriteOnly);
-            file.write(contents);
-            file.close();
+            writeDesktopFile(filename, contents);
 
             /* The desktop file has been modified, but the application doesn’t
                monitor it, so force it to reload it to pick up the changes. */
