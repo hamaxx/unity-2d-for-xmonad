@@ -44,6 +44,7 @@ public Q_SLOTS:
     bool IsShown() { return m_isShown; }
 
 private Q_SLOTS:
+    /* FIXME: should be called setIsShown */
     void updateIsShown(bool isShown) { m_isShown = isShown; }
 
 Q_SIGNALS:
