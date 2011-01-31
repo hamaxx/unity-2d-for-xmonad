@@ -84,6 +84,7 @@ FocusScope {
            - If another workspace is zoomed, cancel the current zoom.
            - If we are zooomed, then maximize our workspace and trigger an exit.
            - If no workspace is zoomed, then make us the zoomed workspace. */
+        /* FIXME: the zooming/unzooming of workspaces should be done in Workspaces.qml */
         onWindowActivated: {
             if (switcher.zoomedWorkspace != -1) {
                 var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
