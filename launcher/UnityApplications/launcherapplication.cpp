@@ -29,6 +29,9 @@ extern "C" {
 #include "launcherapplication.h"
 #include "launchermenu.h"
 #include "bamf-matcher.h"
+#include "bamf-indicator.h"
+
+#include "dbusmenuimporter.h"
 
 #include <X11/X.h>
 
@@ -518,6 +521,33 @@ LauncherApplication::createMenuActions()
         m_menu->addAction(quit);
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }
+
+    /* Append dynamic contextual actions */
+    if (m_application != NULL) {
+        QScopedPointer<BamfViewList> children(m_application->children());
+        for (int i = 0; i < children->size(); ++i) {
+            BamfIndicator* indicator = qobject_cast<BamfIndicator*>(children->at(i));
+            if (indicator != NULL) {
+                DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), indicator->dbus_menu_path());
+                connect(importer, SIGNAL(menuUpdated()), SLOT(slotDbusMenuUpdated()));
+                importer->updateMenu();
+            }
+        }
+    }
+}
+
+void
+LauncherApplication::slotDbusMenuUpdated()
+{
+    DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
+    QList<QAction*> actions = importer->menu()->actions();
+    if (!actions.isEmpty()) {
+        m_menu->addSeparator();
+    }
+    Q_FOREACH(QAction* action, actions) {
+        m_menu->addAction(action);
+    }
+    //importer->deleteLater();
 }
 
 void

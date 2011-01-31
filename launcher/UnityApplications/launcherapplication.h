@@ -99,6 +99,8 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
+    void slotDbusMenuUpdated();
+
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
