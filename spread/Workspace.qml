@@ -73,6 +73,8 @@ FocusScope {
         }
     }
 
+    /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
+              very well in Workspace.qml */
     Spread {
         id: spread
         property real workspaceScale: workspace.scale
