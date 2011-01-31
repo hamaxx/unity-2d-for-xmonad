@@ -204,9 +204,7 @@ LauncherApplication::setDesktopFile(QString desktop_file)
 
     /* Monitor the desktop file for live changes */
     if (m_appInfo != NULL) {
-        if (m_desktopFileWatcher != NULL) {
-            delete m_desktopFileWatcher;
-        }
+        delete m_desktopFileWatcher;
         m_desktopFileWatcher = new QFileSystemWatcher(this);
         m_desktopFileWatcher->addPath(this->desktop_file());
         connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
