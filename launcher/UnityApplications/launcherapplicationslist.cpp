@@ -16,7 +16,7 @@
 
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
-#include "webscrapper.h"
+#include "webfavorite.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -29,26 +29,6 @@
 #include <QDebug>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
-
-static const QString LOCAL_STORE = QDir::homePath() + "/.local/share/applications/";
-
-static void check_local_store_exists()
-{
-    if (!QDir(LOCAL_STORE).exists()) {
-        QDir().mkpath(LOCAL_STORE);
-    }
-}
-
-static const QString WEBFAV_DESKTOP_ENTRY =
-    "[Desktop Entry]\n"
-    "Version=1.0\n"
-    "Name={name}\n"
-    "Exec=xdg-open \"{url}\"\n"
-    "Type=Application\n"
-    "Icon=emblem-web\n"
-    "Categories=Network;\n"
-    "MimeType=text/html;\n"
-    "StartupNotify=true\n";
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -152,15 +132,6 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 }
 
 void
-LauncherApplicationsList::writeDesktopFile(const QString& filename, const QByteArray& contents)
-{
-    QFile file(filename);
-    file.open(QIODevice::WriteOnly);
-    file.write(contents);
-    file.close();
-}
-
-void
 LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 {
     if (!url.isValid() || url.isRelative()) {
@@ -169,55 +140,11 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
     }
 
     LauncherApplication* application = new LauncherApplication;
-    check_local_store_exists();
+    WebFavorite* webfav = new WebFavorite(url, application);
 
-    QString contents = WEBFAV_DESKTOP_ENTRY;
-    QByteArray encoded = url.toEncoded();
-    contents.replace("{name}", encoded);
-    contents.replace("{url}", encoded);
-
-    const char* id = QCryptographicHash::hash(encoded, QCryptographicHash::Md5).toHex().constData();
-    QString desktop_file = LOCAL_STORE + "webfav-" + id + ".desktop";
-
-    writeDesktopFile(desktop_file, contents.toUtf8());
-
-    application->setDesktopFile(desktop_file);
+    application->setDesktopFile(webfav->desktopFile());
     insertApplication(application);
     application->setSticky(true);
-
-    WebScrapper* scrapper = new WebScrapper(application, url, application);
-    connect(scrapper, SIGNAL(finished(LauncherApplication*, const QString&, const QString&)),
-            SLOT(slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&)));
-    scrapper->fetchAndScrap();
-}
-
-void
-LauncherApplicationsList::slotWebscrapperFinished(LauncherApplication* application, const QString& title, const QString& favicon)
-{
-    WebScrapper* scrapper = static_cast<WebScrapper*>(sender());
-    if (!title.isEmpty() || !favicon.isEmpty()) {
-        QString filename = application->desktop_file();
-        GKeyFile* key_file = g_key_file_new();
-        gboolean loaded = g_key_file_load_from_file(key_file, filename.toUtf8().constData(),
-            (GKeyFileFlags) (G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS), NULL);
-        if (loaded) {
-            if (!title.isEmpty()) {
-                g_key_file_set_string(key_file, "Desktop Entry", "Name", title.toUtf8().constData());
-            }
-            if (!favicon.isEmpty()) {
-                g_key_file_set_string(key_file, "Desktop Entry", "Icon", favicon.toUtf8().constData());
-            }
-            QByteArray contents = g_key_file_to_data(key_file, NULL, NULL);
-            g_key_file_free(key_file);
-
-            writeDesktopFile(filename, contents);
-
-            /* The desktop file has been modified, but the application doesn’t
-               monitor it, so force it to reload it to pick up the changes. */
-            application->setDesktopFile(filename);
-        }
-    }
-    scrapper->deleteLater();
 }
 
 void

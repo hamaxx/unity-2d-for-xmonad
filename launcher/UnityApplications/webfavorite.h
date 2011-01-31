@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WebScrapper_H
-#define WebScrapper_H
+#ifndef WebFavorite_H
+#define WebFavorite_H
 
 #include <QObject>
 #include <QUrl>
@@ -26,39 +26,37 @@
 #include <QStringList>
 
 class QNetworkReply;
-class LauncherApplication;
 
-class WebScrapper : public QObject
+class WebFavorite : public QObject
 {
     Q_OBJECT
 
 public:
-    WebScrapper(LauncherApplication* application, const QUrl& url, QObject* parent=0);
-    ~WebScrapper();
+    WebFavorite(const QUrl& url, QObject* parent=0);
+    ~WebFavorite();
 
-    void fetchAndScrap();
+    const QString& desktopFile() const;
 
 private:
-    LauncherApplication* m_application;
     QUrl m_url;
+    QString m_desktopFile;
 
-    QString m_title;
+    uint m_redirects;
     QStringList m_favicons;
     QStringList::iterator m_current_favicon;
-    QString m_favicon;
-    uint m_redirects;
 
-    void tryNextFavicon();
     static QString computeUrlHash(const QUrl& url);
-    void done();
+
+    void writeDesktopFile(const QByteArray& contents) const;
+    void modifyDesktopFile(const QString& key, const QString& value) const;
+
+    void fetchPage();
+    void tryNextFavicon();
 
 private Q_SLOTS:
     void slotFetchPageFinished(QNetworkReply*);
     void slotFetchFaviconFinished(QNetworkReply*);
-
-Q_SIGNALS:
-    void finished(LauncherApplication*, const QString& title, const QString& favicon);
 };
 
-#endif // WebScrapper_H
+#endif // WebFavorite_H
 

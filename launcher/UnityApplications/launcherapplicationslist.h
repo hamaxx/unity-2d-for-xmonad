@@ -56,8 +56,6 @@ private:
     void addApplicationToFavorites(LauncherApplication* application);
     void removeApplicationFromFavorites(LauncherApplication* application);
 
-    static void writeDesktopFile(const QString& filename, const QByteArray& contents);
-
     /* List of LauncherApplication displayed in the launcher. */
     QList<LauncherApplication*> m_applications;
     /* Hash of desktop file names to LauncherApplication used to reduce
@@ -73,8 +71,6 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
-
-    void slotWebscrapperFinished(LauncherApplication*, const QString&, const QString&);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)
