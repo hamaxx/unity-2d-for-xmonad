@@ -24,8 +24,6 @@
 
 #include <QStringList>
 #include <QDir>
-#include <QByteArray>
-#include <QCryptographicHash>
 #include <QDebug>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
