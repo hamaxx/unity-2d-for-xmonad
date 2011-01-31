@@ -30,6 +30,8 @@
 
 #include "bamf-application.h"
 
+class QFileSystemWatcher;
+
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
@@ -99,8 +101,11 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
+    void slotDesktopFileChanged(const QString&);
+
 private:
     BamfApplication *m_application;
+    QFileSystemWatcher *m_desktopFileWatcher;
     GDesktopAppInfo *m_appInfo;
     bool m_sticky;
     int m_priority;

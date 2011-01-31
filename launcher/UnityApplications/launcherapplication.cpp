@@ -35,9 +35,14 @@ extern "C" {
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
+#include <QFileSystemWatcher>
 
-LauncherApplication::LauncherApplication() :
-    m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
+LauncherApplication::LauncherApplication()
+    : m_application(NULL)
+    , m_desktopFileWatcher(NULL)
+    , m_appInfo(NULL)
+    , m_sticky(false)
+    , m_has_visible_window(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
@@ -196,6 +201,24 @@ LauncherApplication::setDesktopFile(QString desktop_file)
         emit nameChanged(name());
         emit iconChanged(icon());
     }
+
+    /* Monitor the desktop file for live changes */
+    if (m_appInfo != NULL) {
+        if (m_desktopFileWatcher != NULL) {
+            delete m_desktopFileWatcher;
+        }
+        m_desktopFileWatcher = new QFileSystemWatcher(this);
+        m_desktopFileWatcher->addPath(this->desktop_file());
+        connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
+                SLOT(slotDesktopFileChanged(const QString&)));
+    }
+}
+
+void
+LauncherApplication::slotDesktopFileChanged(const QString& path)
+{
+    /* Force re-loading the information from the desktop file. */
+    setDesktopFile(path);
 }
 
 void
