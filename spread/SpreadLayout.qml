@@ -38,6 +38,9 @@ Item {
                 layout.lastRowCells : layout.columns;
     }
 
+    /* FIXME: DOCME */
+    property int transitionDuration: switcher.currentTransitionDuration
+
     signal windowActivated
 
     /* We need to make this information available to the parent, so that it
@@ -61,7 +64,7 @@ Item {
     Timer {
         id: transitionTimer
 
-        interval: switcher.transitionDuration
+        interval: transitionDuration
         onTriggered: {
             /* FIXME: avoid references to parent ids if possible: 'workspace' and 'switcher' */
             if (state == "spread" && workspace.isZoomed)
@@ -140,7 +143,7 @@ Item {
                 */
                 parent: holder
 
-                transitionDuration: switcher.currentTransitionDuration
+                transitionDuration: layout.transitionDuration
 
                 /* Pass on a few properties so that they can be referenced from inside the
                    SpreadWindow itself. The state is particularly important as it drives
