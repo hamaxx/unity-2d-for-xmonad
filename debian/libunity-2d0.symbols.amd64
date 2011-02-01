@@ -1,4 +1,4 @@
-libunity-2d.so.0 libunity-2d #MINVER#
+libunity-2d.so.0 libunity-2d0 #MINVER#
  _ZN12Unity2dPanel10paintEventEP11QPaintEvent@Base 0.4
  _ZN12Unity2dPanel11qt_metacallEN11QMetaObject4CallEiPPv@Base 0.4
  _ZN12Unity2dPanel11qt_metacastEPKc@Base 0.4
