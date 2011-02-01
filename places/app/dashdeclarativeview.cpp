@@ -50,21 +50,6 @@ DashDeclarativeView::fitToAvailableSpace(int screen)
 }
 
 void
-DashDeclarativeView::slotActivePlaceEntryChanged()
-{
-    QGraphicsObject* dash = rootObject();
-    QObject* entry = dash->property("activePlaceEntry").value<QObject*>();
-    QString objectPath;
-    if (entry != NULL) {
-        objectPath = entry->property("dbusObjectPath").toString();
-    }
-    if (objectPath != m_activePlaceEntry) {
-        m_activePlaceEntry = objectPath;
-        Q_EMIT activePlaceEntryChanged(m_activePlaceEntry);
-    }
-}
-
-void
 DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
@@ -88,6 +73,15 @@ DashDeclarativeView::setActive(bool active)
     {
         hide();
         emit activeChanged(active);
+    }
+}
+
+void
+DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
+{
+    if (activePlaceEntry != m_activePlaceEntry) {
+        m_activePlaceEntry = activePlaceEntry;
+        Q_EMIT activePlaceEntryChanged(activePlaceEntry);
     }
 }
 

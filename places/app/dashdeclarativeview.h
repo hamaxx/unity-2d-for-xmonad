@@ -25,7 +25,7 @@ class DashDeclarativeView : public QDeclarativeView
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity2d.Dash")
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
-    Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry NOTIFY activePlaceEntryChanged)
+    Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
 
@@ -40,6 +40,7 @@ public:
 
     /* setters */
     Q_SLOT void setActive(bool active);
+    Q_INVOKABLE void setActivePlaceEntry(const QString& activePlaceEntry);
 
     /* methods */
     Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
@@ -54,9 +55,6 @@ signals:
 
 public slots:
     void fitToAvailableSpace(int screen);
-
-private slots:
-    void slotActivePlaceEntryChanged();
 
 private:
     void forceActivateWindow();
