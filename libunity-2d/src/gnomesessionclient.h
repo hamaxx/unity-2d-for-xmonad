@@ -19,10 +19,18 @@
 class QDBusPendingCallWatcher;
 
 struct GnomeSessionClientPrivate;
+/**
+ * This class makes it possible for an application to register with GNOME
+ * SessionManager. This is necessary for the SessionManager to be able to
+ * restart the application.
+ */
 class GnomeSessionClient : public QObject
 {
 Q_OBJECT
 public:
+    /**
+     * @param applicationId: absolute path to the application desktop file
+     */
     GnomeSessionClient(const QString& applicationId, QObject* parent = 0);
     ~GnomeSessionClient();
 
