@@ -175,7 +175,7 @@ LauncherApplication::setSticky(bool sticky)
 }
 
 void
-LauncherApplication::setDesktopFile(QString desktop_file)
+LauncherApplication::setDesktopFile(const QString& desktop_file)
 {
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
@@ -207,16 +207,11 @@ LauncherApplication::setDesktopFile(QString desktop_file)
         delete m_desktopFileWatcher;
         m_desktopFileWatcher = new QFileSystemWatcher(this);
         m_desktopFileWatcher->addPath(this->desktop_file());
+        /* Force re-loading the information from the desktop file
+           when it has changed. */
         connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
-                SLOT(slotDesktopFileChanged(const QString&)));
+                SLOT(setDesktopFile(const QString&)));
     }
-}
-
-void
-LauncherApplication::slotDesktopFileChanged(const QString& path)
-{
-    /* Force re-loading the information from the desktop file. */
-    setDesktopFile(path);
 }
 
 void

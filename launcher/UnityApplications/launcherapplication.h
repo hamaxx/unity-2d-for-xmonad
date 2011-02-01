@@ -62,7 +62,6 @@ public:
 
     /* setters */
     void setSticky(bool sticky);
-    void setDesktopFile(QString desktop_file);
     void setBamfApplication(BamfApplication *application);
 
     /* methods */
@@ -75,6 +74,9 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
+
+public Q_SLOTS:
+    void setDesktopFile(const QString& desktop_file);
 
 signals:
     void stickyChanged(bool);
@@ -100,8 +102,6 @@ private slots:
     void onQuitTriggered();
 
     void onWindowAdded(BamfWindow*);
-
-    void slotDesktopFileChanged(const QString&);
 
 private:
     BamfApplication *m_application;
