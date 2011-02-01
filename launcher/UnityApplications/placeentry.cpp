@@ -733,33 +733,24 @@ PlaceEntry::connectToDash()
     m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
-            SLOT(slotDashActiveChanged(bool)));
+            SLOT(updateActiveState()));
     connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
-            SLOT(slotDashActivePlaceEntryChanged(const QString&)));
+            SLOT(updateActiveState()));
 
-    updateActiveState(m_dashDbusIface->property("active").toBool(),
-                      m_dashDbusIface->property("activePlaceEntry").toString());
+    updateActiveState();
 }
 
 void
-PlaceEntry::slotDashActiveChanged(bool dashActive)
+PlaceEntry::updateActiveState()
 {
-    updateActiveState(dashActive, m_dashDbusIface->property("activePlaceEntry").toString());
-}
+    bool dashActive = m_dashDbusIface->property("active").toBool();
+    QString activePlaceEntry = m_dashDbusIface->property("activePlaceEntry").toString();
 
-void
-PlaceEntry::slotDashActivePlaceEntryChanged(const QString& activePlaceEntry)
-{
-    updateActiveState(m_dashDbusIface->property("active").toBool(), activePlaceEntry);
-}
-
-void
-PlaceEntry::updateActiveState(bool dashActive, const QString& activePlaceEntry)
-{
     bool active = false;
     if (dashActive && !m_dbusObjectPath.isEmpty() && (activePlaceEntry == m_dbusObjectPath)) {
         active = true;
     }
+
     if (active != m_active) {
         m_active = active;
         Q_EMIT activeChanged();
