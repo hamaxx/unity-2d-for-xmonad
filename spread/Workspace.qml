@@ -6,6 +6,10 @@ FocusScope {
 
     transformOrigin: Item.TopLeft /* FIXME: useful? */
 
+    property double zoomedScale
+    property int zoomedX
+    property int zoomedY
+
     signal clicked
 
     GnomeBackground {
@@ -43,9 +47,9 @@ FocusScope {
             name: "zoomed"
             PropertyChanges {
                 target: workspace
-                scale: switcher.zoomedScale
-                x: switcher.margin
-                y: switcher.margin
+                scale: zoomedScale
+                x: zoomedX
+                y: zoomedY
                 z: 1
             }
         },

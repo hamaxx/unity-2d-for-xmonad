@@ -80,6 +80,11 @@ Rectangle {
                 width: switcher.width
                 height: switcher.height
                 scale:  switcher.cellScale
+
+                zoomedX: switcher.margin
+                zoomedY: switcher.margin
+                zoomedScale: switcher.zoomedScale
+
                 state: {
                     if (initial) {
                         if (screen.currentWorkspace == workspaceNumber) {
