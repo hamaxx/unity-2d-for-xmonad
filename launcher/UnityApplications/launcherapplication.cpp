@@ -513,8 +513,8 @@ LauncherApplication::updateIndicatorMenus()
                 QString path = indicator->dbus_menu_path();
                 if (!m_indicatorMenus.contains(path)) {
                     DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), path, this);
+                    connect(importer, SIGNAL(menuUpdated()), SLOT(onIndicatorMenuUpdated()));
                     m_indicatorMenus[path] = importer;
-                    importer->updateMenu();
                 }
             }
         }
@@ -547,29 +547,36 @@ LauncherApplication::createMenuActions()
     /* Append dynamic contextual actions */
     /* FIXME: should be at the beginning of the menu, not at the end. */
     Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
-        QList<QAction*> actions = importer->menu()->actions();
-        if (!actions.isEmpty()) {
+        importer->updateMenu();
+    }
+}
+
+void
+LauncherApplication::onIndicatorMenuUpdated()
+{
+    DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
+    QList<QAction*> actions = importer->menu()->actions();
+    if (!actions.isEmpty()) {
+        m_menu->addSeparator();
+    }
+    Q_FOREACH(QAction* action, actions) {
+        if (action->isSeparator()) {
             m_menu->addSeparator();
         }
-        Q_FOREACH(QAction* action, actions) {
-            if (action->isSeparator()) {
-                m_menu->addSeparator();
-            }
-            else {
-                /* Copy the action so that the original is not deleted when the
-                   menu is hidden. */
-                QAction* copy = new QAction(action->icon(), action->text(), action);
-                copy->setVisible(action->isVisible());
-                copy->setEnabled(action->isEnabled());
-                if (action->isCheckable()) {
-                    copy->setCheckable(true);
-                    if (action->isChecked()) {
-                        copy->setChecked(true);
-                    }
+        else {
+            /* Copy the action so we can override the slot triggered on
+               activation. */
+            QAction* copy = new QAction(action->icon(), action->text(), action);
+            copy->setVisible(action->isVisible());
+            copy->setEnabled(action->isEnabled());
+            if (action->isCheckable()) {
+                copy->setCheckable(true);
+                if (action->isChecked()) {
+                    copy->setChecked(true);
                 }
-                connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
-                m_menu->addAction(copy);
             }
+            connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
+            m_menu->addAction(copy);
         }
     }
 }

@@ -104,6 +104,7 @@ private slots:
     void onWindowAdded(BamfWindow*);
 
     void updateIndicatorMenus();
+    void onIndicatorMenuUpdated();
 
 private:
     BamfApplication *m_application;
