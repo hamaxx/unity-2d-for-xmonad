@@ -90,7 +90,7 @@ Rectangle {
 
                 /* We need to let the transition animation finish entirely before hiding
                    the window and performing cleanup operations */
-                onActivated: exitTransitionTimer.start()
+                //onActivated: exitTransitionTimer.start()
             }
         }
     }

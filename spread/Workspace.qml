@@ -5,7 +5,6 @@ FocusScope {
     id: workspace
 
     transformOrigin: Item.TopLeft
-    z: 1
 
     property int row
     property int column
@@ -13,31 +12,6 @@ FocusScope {
 //    property alias selectedXid: spread.selectedXid
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
 
-    /* Give keyboard focus (among all workspaces) only to the zoomed Workspace.
-       Since the workspace is a FocusScope, only one Item inside it can have focus.
-       In our case it's always the KeyboardNavigator inside the SpreadLayout. */
-    focus: isZoomed
-
-    /* This is emitted, by the zoomed workspace only, whenever a window or the workspace
-       background is clicked or ENTER is pressed while a window is selected */
-    signal activated
-/*
-    function activate() {
-        //workspace.state = "screen"
-        //spread.state = "screen"
-        activated()
-    }
-
-    function unzoom() {
-        spread.selectedXid = 0
-        //workspace.state = ""
-        switcher.zoomedWorkspace = -1
-    }
-
-    function zoom() {
-        //workspace.state = "zoomed"
-        switcher.zoomedWorkspace = workspace.workspaceNumber
-    }*/
 
     /* We listen to the switcher's signals during its startup and exit phases
        to setup and cleanup the state of this specific workspace, so that it
@@ -116,9 +90,9 @@ FocusScope {
             PropertyChanges {
                 target: workspace
                 scale: switcher.zoomedScale
-                z: 2
                 x: switcher.leftMargin
                 y: switcher.topMargin
+                z: 2
             }
         },
         State {
@@ -126,9 +100,9 @@ FocusScope {
             PropertyChanges {
                 target: workspace
                 scale: 1.0
-                z: 2
                 x: 0
                 y: 0
+                z: 2
             }
         }
     ]
@@ -136,17 +110,13 @@ FocusScope {
     transitions: [
         Transition {
             to: "zoomed"
-            /* We want the value of z to be set to 2 immediately, and during the entire animation,
-               regardless of the final state it will have */
             SequentialAnimation {
-                PropertyAction { target: workspace; property: "z"; value: 2 }
                 NumberAnimation {
                     target: workspace
                     properties: "x,y,scale"
                     duration: Utils.transitionDuration
                     easing.type: Easing.InOutSine
                 }
-                PropertyAction { target: workspace; property: "z"; value: 2 }
             }
         }
     ]
