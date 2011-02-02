@@ -6,18 +6,18 @@ macro(libunity_2d_tests)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
-            unity-2d
+            unity-2d-private
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
 
-    add_custom_target(libunity-2d_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+    add_custom_target(libunity-2d-private_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
-    add_dependencies(check libunity-2d_check)
+    add_dependencies(check libunity-2d-private_check)
 endmacro(libunity_2d_tests)
 
 include_directories(
-    ${libunity-2d_SOURCE_DIR}/src
+    ${libunity-2d-private_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     )

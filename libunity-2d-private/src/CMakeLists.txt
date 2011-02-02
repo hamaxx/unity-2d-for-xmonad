@@ -1,39 +1,39 @@
 # Sources
-set(libunity-2d_SRCS
+set(libunity-2d-private_SRCS
     keyboardmodifiersmonitor.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
     )
 
 # Build
-qt4_automoc(${libunity-2d_SRCS})
+qt4_automoc(${libunity-2d-private_SRCS})
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-add_library(unity-2d SHARED ${libunity-2d_SRCS})
-set_target_properties(unity-2d PROPERTIES
-    VERSION ${libunity-2d_VERSION}
-    SOVERSION ${libunity-2d_SOVERSION}
+add_library(unity-2d-private SHARED ${libunity-2d-private_SRCS})
+set_target_properties(unity-2d-private PROPERTIES
+    VERSION ${libunity-2d-private_VERSION}
+    SOVERSION ${libunity-2d-private_SOVERSION}
     )
 
-target_link_libraries(unity-2d
+target_link_libraries(unity-2d-private
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${X11_LIBRARIES}
     )
 
 # Install
-install(TARGETS unity-2d
+install(TARGETS unity-2d-private
     LIBRARY DESTINATION lib${LIB_SUFFIX}
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     )
 
 install(DIRECTORY .
-    DESTINATION include/unity-2d
+    DESTINATION include/unity-2d-private
     FILES_MATCHING PATTERN "*.h"
     PATTERN "*_p.h" EXCLUDE
     )

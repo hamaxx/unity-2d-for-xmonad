@@ -2,7 +2,7 @@ project(unity-2d-panel)
 
 # Source
 include_directories(
-    ${libunity-2d_SOURCE_DIR}/src
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 add_subdirectory(applets)
