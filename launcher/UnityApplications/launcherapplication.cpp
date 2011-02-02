@@ -545,7 +545,26 @@ LauncherApplication::fetchIndicatorMenus()
 void
 LauncherApplication::createMenuActions()
 {
-    m_separator = m_menu->addSeparator();
+    if (m_application != NULL && !m_indicatorMenus.isEmpty()) {
+        /* Request indicator menus to be updated: this is asynchronous
+           and the corresponding actions are added to the menu in
+           SLOT(onIndicatorMenuUpdated()).
+           Static menu actions are appended after all indicator menus
+           have been updated.*/
+        m_indicatorMenusReady = 0;
+        Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
+            importer->updateMenu();
+        }
+    }
+    else {
+        createStaticMenuActions();
+    }
+}
+
+void
+LauncherApplication::createStaticMenuActions()
+{
+    m_menu->addSeparator();
 
     bool is_running = running();
 
@@ -566,15 +585,6 @@ LauncherApplication::createMenuActions()
         m_menu->addAction(quit);
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }
-
-    /* Request indicator menus to be updated: this is asynchronous
-       and the corresponding actions are added to the menu in
-       SLOT(onIndicatorMenuUpdated()). */
-    if (m_application != NULL) {
-        Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
-            importer->updateMenu();
-        }
-    }
 }
 
 void
@@ -588,7 +598,7 @@ LauncherApplication::onIndicatorMenuUpdated()
     QList<QAction*> actions = importer->menu()->actions();
     Q_FOREACH(QAction* action, actions) {
         if (action->isSeparator()) {
-            m_menu->insertSeparator(m_separator);
+            m_menu->addSeparator();
         }
         else {
             /* Copy the action so we can override the slot triggered on
@@ -603,8 +613,13 @@ LauncherApplication::onIndicatorMenuUpdated()
                 }
             }
             connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
-            m_menu->insertAction(m_separator, copy);
+            m_menu->addAction(copy);
         }
+    }
+
+    if (++m_indicatorMenusReady == m_indicatorMenus.size()) {
+        /* All indicator menus have been updated. */
+        createStaticMenuActions();
     }
 }
 
