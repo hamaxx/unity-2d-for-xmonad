@@ -1,24 +1,24 @@
 import Qt 4.7
-import UnityPlaces 1.0 /* Necessary for WindowsList */
+import UnityPlaces 1.0 /* Necessary for WindowsList and to have access to 'screen' context property of type ScreenInfo*/
 import "utils.js" as Utils
 
 Rectangle {
     id: switcher
 
-    width: screen.availableGeometry.width
-    height: screen.availableGeometry.height
+    /* FIXME: setting width and height is not useful since we use
+       view.setResizeMode(QDeclarativeView::SizeRootObjectToView)
+    */
+    /*width: screen.availableGeometry.width
+    height: screen.availableGeometry.height*/
 
     color: "black"
     focus: true
 
-    property int workspaces: screen.workspaces
     property int columns: screen.columns
     property int rows: screen.rows
 
-    /* These values are completely random. FIXME: pull from unity the proper ones */
-    property int leftMargin: 40
-    property int rightMargin: 40
-    property int topMargin: 30
+    /* FIXME: These values are completely random. Pull from unity the proper ones */
+    property int margin: 40
     property int spacing: 25
 
     /* Effective area available for laying out the workspaces after considering
@@ -41,8 +41,8 @@ Rectangle {
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
     property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
-    property real zoomedScale: (isDesktopHorizontal) ? ((width - leftMargin - rightMargin) / switcher.width) :
-                                                       ((width - topMargin - bottomMargin) / switcher.height)
+    property real zoomedScale: (isDesktopHorizontal) ? ((width - 2*margin) / switcher.width) :
+                                                       ((width - 2*margin) / switcher.height)
 
     /* When this is set, it is used to filter the global list of windows to limit it to
        a single application. See the QSortFilterProxyModelQML used in Spread.qml */
@@ -141,7 +141,7 @@ Rectangle {
                so that we can use it to pre-select the active window on the workspace */
             lastActiveWindow = screen.activeWindow
 
-            spaces.model = switcher.workspaces
+            spaces.model = screen.workspaces
             initial = true
             allWindows.load()
 

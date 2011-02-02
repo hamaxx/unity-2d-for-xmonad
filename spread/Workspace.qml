@@ -20,6 +20,8 @@ FocusScope {
         onClicked: workspace.clicked()
     }
 
+    /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
+              very well in Workspace.qml */
     Spread {
         id: spread
         state: workspace.state == "screen" ? "screen" : "spread"
@@ -42,8 +44,8 @@ FocusScope {
             PropertyChanges {
                 target: workspace
                 scale: switcher.zoomedScale
-                x: switcher.leftMargin
-                y: switcher.topMargin
+                x: switcher.margin
+                y: switcher.margin
                 z: 1
             }
         },

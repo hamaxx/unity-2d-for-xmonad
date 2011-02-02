@@ -44,9 +44,16 @@ public Q_SLOTS:
     bool IsShown() { return m_isShown; }
 
 private Q_SLOTS:
+    /* FIXME: should be called setIsShown */
     void updateIsShown(bool isShown) { m_isShown = isShown; }
 
 Q_SIGNALS:
+    /* FIXME: the D-Bus API was designed a certain way to make it easy to grasp.
+              We want our internal implementation to be as easy to understand.
+              Please map the D-Bus API directly and create signals:
+              - ShowAllWorkspaces
+              - ShowCurrentWorkspace
+    */
     void show(QString applicationDesktopFile, bool zoomCurrentWorkspace);
     void filterByApplication(QString applicationDesktopFile);
     void hide();
