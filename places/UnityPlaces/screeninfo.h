@@ -18,7 +18,7 @@ class ScreenInfo : public QObject
 
     /* FIXME: workspaces should be called differently, for example: workspaceCount */
     Q_PROPERTY(int workspaces READ workspaces NOTIFY workspacesChanged)
-    Q_PROPERTY(int currentWorkspace READ currentWorkspace NOTIFY currentWorkspaceChanged)
+    Q_PROPERTY(int currentWorkspace READ currentWorkspace WRITE setCurrentWorkspace NOTIFY currentWorkspaceChanged)
     /* FIXME: rows and columns should be called differently to indicate they relate to workspaces */
     Q_PROPERTY(int rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(int columns READ columns NOTIFY columnsChanged)
@@ -42,8 +42,6 @@ public:
 
     static ScreenInfo* instance();
 
-    Q_INVOKABLE void activateWorkspace(int workspaceNumber);
-
     /* The following two methods don't strictly belong to a "screen" class
        logically. It would be perhaps more appropriate to make an
        "utility" class to group them, but this will do for now. */
@@ -60,6 +58,9 @@ public:
     unsigned int activeWindow() const { return m_activeWindow; }
     QRect availableGeometry() const;
     QRect geometry() const;
+
+    /* Setters */
+    void setCurrentWorkspace(int currentWorkspace);
 
 signals:
     void workspacesChanged(int workspaces);

@@ -308,12 +308,12 @@ void ScreenInfo::updateActiveWindow(WnckScreen *screen)
 
 /* FIXME: this will not work with wm using large desktops and viewports
    to implement their workspaces.*/
-void ScreenInfo::activateWorkspace(int workspaceNumber)
+void ScreenInfo::setCurrentWorkspace(int currentWorkspace)
 {
     WnckScreen *screen = wnck_screen_get_default();
-    WnckWorkspace *workspace = wnck_screen_get_workspace(screen, workspaceNumber);
+    WnckWorkspace *workspace = wnck_screen_get_workspace(screen, currentWorkspace);
     if (workspace == NULL) {
-        qWarning() << "Requested activation workspace" << workspaceNumber << " but it does not exist.";
+        qWarning() << "Requested activation workspace" << currentWorkspace << " but it does not exist.";
         return;
     }
 
