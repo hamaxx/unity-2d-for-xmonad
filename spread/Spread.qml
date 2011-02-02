@@ -1,6 +1,5 @@
 import Qt 4.7
-import UnityApplications 1.0
-import UnityPlaces 1.0
+import UnityPlaces 1.0 /* Needed for QSortFilterProxyModelQML */
 import "utils.js" as Utils
 
 /* The main component that manages the spread.
