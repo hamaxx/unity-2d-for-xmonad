@@ -4,10 +4,22 @@ import "utils.js" as Utils
 FocusScope {
     id: workspace
 
-    transformOrigin: Item.TopLeft
+    transformOrigin: Item.TopLeft /* FIXME: useful? */
 
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
+    signal clicked
 
+    GnomeBackground {
+        anchors.fill: parent
+        overlay_color: "black"
+        overlay_alpha: 0
+    }
+
+    MouseArea {
+        z: 1 /* Above Spread */
+        anchors.fill: parent
+        onClicked: workspace.clicked()
+    }
 
     /* We listen to the switcher's signals during its startup and exit phases
        to setup and cleanup the state of this specific workspace, so that it
@@ -18,55 +30,21 @@ FocusScope {
         target: switcher
         onBeforeShowing: {
             if (isZoomed) {
-                workspace.state = "screen"
                 spread.state = "screen"
             } else {
-                workspace.state = ""
                 spread.state = "spread"
             }
         }
 
         onAfterShowing: {
             if (isZoomed) {
-                workspace.state = "zoomed"
                 spread.state = "spread"
             }
-        }
-/*
-        onBeforeHiding: {
-            if (isZoomed) screen.activateWorkspace(workspace.workspaceNumber)
-        }*/
-
-        onAfterHiding: {
-            /* FIXME: this should be done before hiding. However for some reason
-               it always fail for windows on the current workspace. Should be put
-               back in onBeforeHiding though, since it does cause a minor visual
-               glitch if done here. */
-            //if (isZoomed) activateSelectedWindow(true)
-
-            workspace.state = ""
-            //spread.state = "screen"
-            z = 1
         }
     }
 
     Spread {
         id: spread
-
-        /* When a window or the spread background is clicked or a window is
-           activated by keyboard interact in the following way:
-           - If another workspace is zoomed, cancel the current zoom.
-           - If we are zooomed, then maximize our workspace and trigger an exit.
-           - If no workspace is zoomed, then make us the zoomed workspace. */
-        /*onWindowActivated: {
-            if (switcher.zoomedWorkspace != -1) {
-                var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
-                if (zoomed) {
-                    if (zoomed != workspace) zoomed.unzoom()
-                    else zoomed.activate()
-                }
-            } else if (workspace.state == "") zoom()
-        }*/
     }
 
     /* When this is called whatever window was selected (by keyboard or mouse) on
@@ -88,7 +66,7 @@ FocusScope {
                 scale: switcher.zoomedScale
                 x: switcher.leftMargin
                 y: switcher.topMargin
-                z: 2
+                z: 1
             }
         },
         State {
@@ -98,14 +76,13 @@ FocusScope {
                 scale: 1.0
                 x: 0
                 y: 0
-                z: 2
+                z: 1
             }
         }
     ]
 
     transitions: [
         Transition {
-            to: "zoomed"
             SequentialAnimation {
                 NumberAnimation {
                     target: workspace
@@ -113,6 +90,16 @@ FocusScope {
                     duration: Utils.transitionDuration
                     easing.type: Easing.InOutSine
                 }
+            }
+        },
+        Transition {
+            from: "zoomed"
+            PropertyAction { property: "z"; value: 2 }
+            NumberAnimation {
+                target: workspace
+                properties: "x,y,scale"
+                duration: Utils.transitionDuration
+                easing.type: Easing.InOutSine
             }
         }
     ]

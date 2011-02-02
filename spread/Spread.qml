@@ -30,12 +30,6 @@ Item {
 
     signal windowActivated
 
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0
-    }
-
     /* This proxy model takes care of removing all windows that are not on
        the current workspace and that are not pinned to all workspaces. */
     QSortFilterProxyModelQML {

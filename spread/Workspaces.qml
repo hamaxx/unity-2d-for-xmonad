@@ -64,16 +64,15 @@ Rectangle {
        operations */
     signal beforeShowing
     signal afterShowing
-    signal beforeHiding
-    signal afterHiding
 
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
     Item {
         id: spaces
+        property variant model
         Repeater {
-            model: switcher.workspaces
+            model: parent.model
             delegate: Workspace {
                 id: workspace
 
@@ -85,7 +84,30 @@ Rectangle {
 
                 x: column * (switcher.width * cellScale) + (column * switcher.spacing)
                 y: row * (switcher.height * cellScale) + (row * switcher.spacing)
+                width: switcher.width
+                height: switcher.height
                 scale:  switcher.cellScale
+                state: {
+                    if (initial) {
+                        if (screen.currentWorkspace == workspaceNumber) {
+                            return "screen"
+                        } else {
+                            return ""
+                        }
+                    } else {
+                        if (zoomedWorkspace == workspaceNumber) {
+                            return "zoomed"
+                        } else {
+                            return ""
+                        }
+                    }
+                }
+
+                onClicked: if (zoomedWorkspace != -1) {
+                               zoomedWorkspace = -1
+                           } else {
+                               zoomedWorkspace = workspaceNumber
+                           }
 
                 /* We need to let the transition animation finish entirely before hiding
                    the window and performing cleanup operations */
@@ -109,6 +131,7 @@ Rectangle {
         }
         return null
     }
+    property bool initial
 
     /* This connection receives all commands from the DBUS API */
     Connections {
@@ -125,12 +148,15 @@ Rectangle {
                so that we can use it to pre-select the active window on the workspace */
             lastActiveWindow = screen.activeWindow
 
+            spaces.model = switcher.workspaces
+            initial = true
             beforeShowing()
             allWindows.load()
 
             spreadView.show()
             spreadView.forceActivateWindow()
             afterShowing()
+            initial = false
         }
 
         onHide: cancelAndExit()
@@ -147,11 +173,9 @@ Rectangle {
         id: exitTransitionTimer
         interval: Utils.transitionDuration
         onTriggered: {
-            beforeHiding()
-
             spreadView.hide()
 
-            afterHiding()
+            spaces.model = undefined
 
             /* Nothing should be allowed to touch the windows anymore here, so it should
                be safe to unload them all to save memory.
@@ -186,10 +210,10 @@ Rectangle {
     function cancelAndExit() {
         /* Unzoom the currently zoome workspace (except if the currently zoomed is
            also the current workspaces, since it's the one we're expanding to screen size) */
-        if (zoomedWorkspace != -1 && zoomedWorkspace != screen.currentWorkspace) {
+        /*if (zoomedWorkspace != -1 && zoomedWorkspace != screen.currentWorkspace) {
             var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
             if (zoomed) zoomed.unzoom()
-        }
+        }*/
 
         /* Expand back to screen size the current workspace */
         var current = switcher.workspaceByNumber(screen.currentWorkspace)
