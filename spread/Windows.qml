@@ -106,8 +106,9 @@ Item {
                             name: "spread"
                             PropertyChanges {
                                 target: spreadWindow
-                                x: followCell ? cell.x : x
-                                y: followCell ? cell.y : y
+                                /* Center the window in its cell */
+                                x: followCell ? (cell.x + (cell.width - spreadWidth) / 2) : x
+                                y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
                                 width: spreadWidth
                                 height: spreadHeight
                                 animateFollow: true
