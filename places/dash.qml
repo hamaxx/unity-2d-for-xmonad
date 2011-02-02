@@ -42,6 +42,7 @@ Item {
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = placeEntryModel
         activatePage(pageLoader.item)
+        dashView.activePlaceEntry = placeEntryModel.dbusObjectPath
     }
 
     function activateHome() {
@@ -49,6 +50,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
+        dashView.activePlaceEntry = ""
     }
 
     property variant places: LauncherPlacesList {

@@ -28,7 +28,7 @@
 #include <X11/Xatom.h>
 
 DashDeclarativeView::DashDeclarativeView() :
-    QDeclarativeView(), m_active(false)
+    QDeclarativeView(), m_active(false), m_activePlaceEntry()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
@@ -76,10 +76,25 @@ DashDeclarativeView::setActive(bool active)
     }
 }
 
+void
+DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
+{
+    if (activePlaceEntry != m_activePlaceEntry) {
+        m_activePlaceEntry = activePlaceEntry;
+        Q_EMIT activePlaceEntryChanged(activePlaceEntry);
+    }
+}
+
 bool
 DashDeclarativeView::active() const
 {
     return m_active;
+}
+
+const QString&
+DashDeclarativeView::activePlaceEntry() const
+{
+    return m_activePlaceEntry;
 }
 
 void
