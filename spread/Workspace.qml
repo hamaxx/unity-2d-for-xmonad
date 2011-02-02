@@ -6,7 +6,7 @@ FocusScope {
 
     transformOrigin: Item.TopLeft /* FIXME: useful? */
 
-    property double zoomedScale
+    property real zoomedScale
     property int zoomedX
     property int zoomedY
 
