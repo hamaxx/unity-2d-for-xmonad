@@ -21,8 +21,6 @@ import "utils.js" as Utils
 
 Item {
     id: spread
-    width: screen.availableGeometry.width
-    height: screen.availableGeometry.height
 
     property string application
 
