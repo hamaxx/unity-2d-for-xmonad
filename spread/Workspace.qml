@@ -63,13 +63,11 @@ FocusScope {
 
     transitions: [
         Transition {
-            SequentialAnimation {
-                NumberAnimation {
-                    target: workspace
-                    properties: "x,y,scale"
-                    duration: Utils.transitionDuration
-                    easing.type: Easing.InOutSine
-                }
+            NumberAnimation {
+                target: workspace
+                properties: "x,y,scale"
+                duration: Utils.transitionDuration
+                easing.type: Easing.InOutSine
             }
         },
         Transition {
