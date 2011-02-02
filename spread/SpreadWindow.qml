@@ -49,7 +49,8 @@ Item {
        but never change it from inside the component. Since all selection logic
        need to be managed outside of the component due to interaction with keyboard,
        we just forward mouse signals. */
-    property bool isSelected: false
+    property bool isSelected: activeFocus
+    onEntered: forceActiveFocus()
 
     signal clicked
     signal entered
@@ -118,9 +119,6 @@ Item {
 
         anchors.fill: parent
 
-        /* Shown only in spread state, see transitions */
-        visible: (state == "")
-
         /* A darkening rectangle that covers every window in spread state,
            except the currently selected window. See overlay.states */
         Rectangle {
@@ -179,11 +177,6 @@ Item {
                 text: windowInfo.title
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
-
-                property real originalFontSize
-                Component.onCompleted: {
-                    originalFontSize = font.pointSize
-                }
 
                 color: "white"
             }
