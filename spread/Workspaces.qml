@@ -124,7 +124,7 @@ Rectangle {
         }
         return null
     }
-    property bool initial
+    property bool initial: true
 
     /* This connection receives all commands from the DBUS API */
     Connections {
@@ -142,7 +142,6 @@ Rectangle {
             lastActiveWindow = screen.activeWindow
 
             spaces.model = screen.workspaces
-            initial = true
             allWindows.load()
 
             spreadView.show()
@@ -201,8 +200,7 @@ Rectangle {
     function cancelAndExit() {
         /* Expand back to screen size the current workspace */
         zoomedWorkspace = screen.currentWorkspace
-        var current = switcher.workspaceByNumber(screen.currentWorkspace)
-        current.state = "screen"
+        initial = true
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
         exitTransitionTimer.start()
