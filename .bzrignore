@@ -17,8 +17,11 @@ spread/app/spreadadaptor.*
 panel/app/unity-2d-panel
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
-panel/tests/paneltest
 panel/tests/homebuttonapplettest
+
+libunity-2d/src/libunity-2d.so.*
+libunity-2d/tests/keyboardmodifiersmonitortest
+libunity-2d/tests/paneltest
 
 # Cmake files and generated files
 Makefile
@@ -42,9 +45,16 @@ debian/*.debhelper.log
 debian/*.substvars
 debian/*.debhelper
 debian/stamp-*
-debian/libuqpanel-dev
-debian/libuqpanel0
 debian/tmp
 debian/unity-2d-launcher
 debian/unity-2d-panel
 debian/unity-2d-places
+debian/unity-2d-spread
+debian/libunity-2d-dev
+debian/libunity-2d0
+debian/unity-qt-launcher
+debian/unity-qt-panel
+debian/unity-qt-places
+debian/unity-qt-spread
+debian/libuqpanel-dev
+debian/libuqpanel0

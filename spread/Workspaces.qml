@@ -1,5 +1,5 @@
 import Qt 4.7
-import UnityPlaces 1.0 /* Necessary for WindowsList and to have access to 'screen' context property of type ScreenInfo*/
+import Unity2d 1.0
 import "utils.js" as Utils
 
 Rectangle {

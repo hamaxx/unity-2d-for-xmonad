@@ -127,6 +127,8 @@ int main(int argc, char *argv[])
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
+        /* Place.qml imports Unity2d */
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
     }
 
     /* Load the QML UI, focus and show the window */
