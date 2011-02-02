@@ -565,6 +565,7 @@ void
 LauncherApplication::createStaticMenuActions()
 {
     m_menu->addSeparator();
+    QList<QAction*> actions;
 
     bool is_running = running();
 
@@ -574,7 +575,7 @@ LauncherApplication::createStaticMenuActions()
         keep->setCheckable(is_running);
         keep->setChecked(sticky());
         keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
-        m_menu->addAction(keep);
+        actions.append(keep);
         QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
     }
 
@@ -582,9 +583,32 @@ LauncherApplication::createStaticMenuActions()
     {
         QAction* quit = new QAction(m_menu);
         quit->setText(tr("Quit"));
-        m_menu->addAction(quit);
+        actions.append(quit);
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }
+
+    /* Filter out duplicate actions. This typically happens with indicator
+       menus that contain a "Quit" action: we don’t want two "Quit" actions in
+       our menu. */
+    Q_FOREACH(QAction* pending, actions) {
+        bool duplicate = false;
+        Q_FOREACH(QAction* action, m_menu->actions()) {
+            /* The filtering is done on the text of the action. This will
+               obviously break if for example only one of the two actions is
+               localized ("Quit" != "Quitter"), but we don’t have a better way
+               to identify duplicate actions. */
+            if (pending->text() == action->text()) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate) {
+            m_menu->addAction(pending);
+        }
+        else {
+            delete pending;
+        }
+    } 
 }
 
 void
