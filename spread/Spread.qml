@@ -35,14 +35,6 @@ Item {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                spread.selectedXid = 0
-                spread.windowActivated()
-            }
-        }
     }
 
     /* This proxy model takes care of removing all windows that are not on
