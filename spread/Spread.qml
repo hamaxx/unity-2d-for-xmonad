@@ -145,16 +145,4 @@ Item {
                 }
         }
     }
-
-    function windowForXid(xid)
-    {
-        var children = grid.children
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i]
-            if (child.windowInfo && child.windowInfo.contentXid == xid) {
-                return child;
-            }
-        }
-        return null;
-    }
 }
