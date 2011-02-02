@@ -23,6 +23,7 @@
 #include "windowimageprovider.h"
 
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/shape.h>
 
@@ -48,6 +49,49 @@ WindowImageProvider::~WindowImageProvider()
 {
 }
 
+/* Static helper to read a property on a window that may exist if we are
+   running a specifically patched version of metacity.
+   If it does exist it contains a pixmap with a screenshot of the window
+   before it was unmapped (due to moving to another workspace or being
+   minimized.
+   NOTE: XID should really be Pixmap (from Xlib). However the definition
+   clashes with QImage's Pixmap, so I'm forced to use just XID. It's the
+   same underlying type anyway, so it doesn't cause issues.
+*/
+static bool tryGetWindowCapture(Window xwindow, XID *pixmap)
+{
+  /* Intern the atom only once, as its value never changes */
+  static Atom atom = XInternAtom(QX11Info::display(),
+                                 "_METACITY_WINDOW_CAPTURE", False);
+  Atom type;
+  int format;
+  unsigned long nitems;
+  unsigned long bytes_after;
+  Pixmap *data;
+  int result;
+
+  *pixmap = 0;
+
+  type = None;
+  result = XGetWindowProperty (QX11Info::display(),
+                               xwindow, atom,
+                               0, LONG_MAX,
+                               False, XA_PIXMAP, &type, &format, &nitems,
+                               &bytes_after, (unsigned char**)&data);
+  if (result != Success) {
+     return false;
+  }
+
+  if (type != XA_PIXMAP) {
+      XFree (data);
+      return false;
+  }
+
+  *pixmap = *data;
+  XFree (data);
+  return true;
+}
+
 QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize)
@@ -55,18 +99,40 @@ QImage WindowImageProvider::requestImage(const QString &id,
     /* Throw away the part of the id after the @ (if any) since it's just a timestamp
        added to force the QML image cache to request to this image provider
        a new image instead of re-using the old. See SpreadWindow.qml for more
-       details on the problem */
+       details on the problem. */
     int atPos = id.indexOf('@');
-    QString windowId = (atPos == -1) ? id : id.left(atPos);
+    QString windowIds = (atPos == -1) ? id : id.left(atPos);
 
-    Window win = (Window) windowId.toULong();
+    /* After doing this, split the rest of the id on the characted "|". The first
+       part is the window ID of the decorations, the latter of the actual content. */
+    atPos = windowIds.indexOf('|');
+    QString frameId = (atPos == -1) ? windowIds : windowIds.left(atPos);
+    QString contentId = (atPos == -1) ? windowIds : windowIds.mid(atPos + 1);
+
+    QPixmap shot;
     XWindowAttributes attr;
-    XGetWindowAttributes(QX11Info::display(), win, &attr);
-    if (attr.map_state != IsViewable) {
-        return QImage();
+    Window frame = (Window) frameId.toULong();
+
+    XGetWindowAttributes(QX11Info::display(), frame, &attr);
+    if (attr.map_state == IsViewable) {
+        shot = QPixmap::fromX11Pixmap(frame);
+    } else {
+        /* If the window is not viewable, grabbing the pixmap directly will fail.
+           Therefore we try to retrieve the captured pixmap from the special metacity
+           window property (if present).
+           NOTE: even if stored on the content window, this pixmap contains the entire
+           window including decorations.
+        */
+        XID pixmap;
+        Window content = (Window) contentId.toULong();
+        if (!tryGetWindowCapture(content, &pixmap)) {
+            return QImage();
+        }
+        else {
+            shot = QPixmap::fromX11Pixmap(pixmap);
+        }
     }
 
-    QPixmap shot = QPixmap::fromX11Pixmap(win);
     if (shot.isNull()) {
         return QImage();
     }
@@ -81,7 +147,7 @@ QImage WindowImageProvider::requestImage(const QString &id,
         XRectangle *rectangles;
         int rectangle_count, rectangle_order;
         rectangles = XShapeGetRectangles (QX11Info::display(),
-                                          win,
+                                          frame,
                                           ShapeBounding,
                                           &rectangle_count,
                                           &rectangle_order);
