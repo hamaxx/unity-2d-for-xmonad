@@ -21,19 +21,12 @@ maintain the same aspect ratio as the original window.
 
 Item {
     id: window
-    //anchors.centerIn: parent
 
     property variant windowInfo
 
-    /* The following group of properties is the only thing needed to position
-       this window in screen mode (exactly where the real window is).
-       Note that we subtract the availableGeometry x and y since window.location is
-       expressed in global screen coordinates. */
-     property int realX: (windowInfo.position.x - screen.availableGeometry.x)
-     property int realY: (windowInfo.position.y - screen.availableGeometry.y)
-     property int realWidth: windowInfo.size.width
-     property int realHeight: windowInfo.size.height
-     property int realZ: windowInfo.z
+    /* FIXME: unnecessary properties */
+    property int realWidth: windowInfo.size.width
+    property int realHeight: windowInfo.size.height
 
     /* These values are applied only when in spread state */
     property int cellWidth
@@ -51,11 +44,6 @@ Item {
     property int maxHeight: Math.min(realHeight, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
     property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
-
-    /* In the default state the spread window is positioned by the view it is
-       contained into. */
-    width: spreadWidth
-    height: spreadHeight
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
@@ -214,70 +202,4 @@ Item {
         onEntered: window.entered()
         onExited: window.exited()
     }
-
-    /* The following behaviors smoothly treansition all changes in size and position
-       of the window, especially when it "follows" the position of the grid cell it is
-       related to. The are enabled after the item has completed adding. */
-//    Behavior on x {
-//        enabled: enableBehaviors
-//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-//    }
-//    Behavior on y {
-//        enabled: enableBehaviors
-//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-//    }
-//    Behavior on width {
-//        enabled: enableBehaviors
-//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-//    }
-//    Behavior on height {
-//        enabled: enableBehaviors
-//        NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-//    }
-
-//    states: [
-//        /* This state is what we want to have at the end of the intro.
-//           In other words, it puts the window in its right place and size when in spread mode. */
-//        State {
-//            name: "screen"
-//            PropertyChanges {
-//                target: window
-
-//                x: realX
-//                y: realY
-//                width: realWidth
-//                height: realHeight
-//            }
-
-////            /* Keep the font the same size it would have if the Spread wasn't scaled down to
-////               fit into the workspace switcher.
-////               The check on originalFontSize not being zero is to prevent errors in assigning
-////               a zero point size when originalFontSize is not initialized yet. */
-////            PropertyChanges {
-////                target:label
-////                font.pointSize: (originalFontSize != 0) ? (originalFontSize / spread.workspaceScale) : 1
-////            }
-//        }
-//    ]
-
-//    transitions: [
-//        /* This is the animation that is exectuted when moving between any of the two states.
-//           It will be executed in the same sequence for both the intro and outro. */
-//        Transition {
-//            SequentialAnimation {
-//                PropertyAction { target: shot; property: "smooth"; value: false }
-//                PropertyAction { target: mouseArea; property: "enabled"; value: false }
-//                PropertyAction { target: overlay; property: "visible"; value: false }
-//                NumberAnimation {
-//                    target: window
-//                    properties: "x,y,width,height"
-//                    duration: Utils.currentTransitionDuration
-//                    easing.type: Easing.InOutSine
-//                }
-//                PropertyAction { target: shot; property: "smooth"; value: true }
-//                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "") }
-//                PropertyAction { target: overlay; property: "visible"; value: true }
-//            }
-//        }
-//    ]
 }

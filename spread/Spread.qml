@@ -27,7 +27,6 @@ Item {
 
     property string application
 
-//    property alias state: layout.state
 //    property alias selectedXid: layout.selectedXid
 
     signal windowActivated
@@ -78,131 +77,98 @@ Item {
         cellWidth: Math.floor(width / columns)
         cellHeight: height / rows
 
-        /* If gaps is > 0, then there are missing cells in the last row.
-           In that case, extraSpace is the amount of extra space that is
-           available in the last row due to the fact they are missing */
-        property int gaps: (columns * rows) - count
-        property real extraSpace: (gaps * cellWidth) / (columns - gaps)
-
         model: filteredByApplication
-        delegate: Rectangle {
-            id: cell
-            color: "transparent"
-            border.width: 1
-
-            property int column: index % grid.columns
-            property int row: Math.floor(index / grid.columns)
-
-            /* If expand is true, this cell is one of those in the last row that
-               need to share the exta space left by the missing cells */
-            property bool expand: grid.gaps > 0 && row == (grid.rows - 1)
-            property int expandShift: (expand) ? (grid.extraSpace * column)  : 0
-
-            width: grid.cellWidth + ((expand) ? grid.extraSpace : 0)
-            height: grid.cellHeight
-
-            transform: Translate { x: expandShift }
-
-            /* When a cell is added or removed, trigger the corresponding window
-               animations so that the new window fades in or out smoothly in place. */
-            GridView.onAdd: { console.log("ADDED " + index); addAnimation.start() }
-            GridView.onRemove: { console.log("REMOVED"); removeAnimation.start() }
-
-            /* When a delegate is about to be removed from a GridView the GridView.onRemove
-               signal will be fired, and it's setup to run this animation.
-               To make sure that the delegate is not destroyed until the animation is complete
-               GridView makes available the property GridView.delayRemove that prevents the
-               grid from actually destroying the delegate while it's set to true, and then
-               destroys it when set to false. */
-            SequentialAnimation {
-                id: removeAnimation
-                PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
-                ScriptAction { script: cell.enableBehaviors = false; }
-                NumberAnimation {
-                    target: cellFollower
-                    properties: "opacity,scale"
-                    to: 0.0;
-                    duration: Utils.currentTransitionDuration
-                    easing.type: Easing.InOutSine
-                }
-                PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
-            }
-
-            /* It is very important that we enable the behaviors at the end of the enterAnimation
-               so that items will be able to slide around in the grid when other items before them
-               are added or removed. */
-            SequentialAnimation {
-                id: addAnimation
-                PropertyAction { target: cellFollower; properties: "opacity, scale"; value: 0.0 }
-                NumberAnimation {
-                    target: cellFollower
-                    properties: "opacity, scale"
-                    to: 1.0
-                    duration: Utils.currentTransitionDuration
-                    easing.type: Easing.InOutSine
-                }
-                ScriptAction { script: cell.enableBehaviors = true; }
-            }
-
-            /* This property should be directly on the cellFollower, but for some reason
-               the onAdd transition can't see it (probably because it is already reparented
-               by the time the transitions are run, and thus out of the component scope)
-               So we need to bind it via a property on the cell */
-            property variant enableBehaviors: false
-
+        delegate:
             Item {
-                id: cellFollower
-                parent: holder
+                id: cell
 
-                /* If we expanded this cell to use part of the empty space in the
-                   last row, and it's not the first one, we need to shift it left by
-                   the amount of extra space consumed by the previous expanded rows. */
-                x: cell.x + cell.expandShift
-                y: cell.y
-                width: cell.width
-                height: cell.height
+                /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
+                //GridView.onAdd:
+                Component.onCompleted: if (spreadWindow.state != "screen") addAnimation.start()
+                GridView.onRemove: removeAnimation.start()
 
-                property alias windowInfo: spreadWindow.windowInfo
-
-                Behavior on x {
-                    enabled: cell.enableBehaviors
-                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-                }
-                Behavior on y {
-                    enabled: cell.enableBehaviors
-                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-                }
-                Behavior on width {
-                    enabled: cell.enableBehaviors
-                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-                }
-                Behavior on height {
-                    enabled: cell.enableBehaviors
-                    NumberAnimation { easing.type: Easing.InOutSine; duration: Utils.currentTransitionDuration }
-                }
+                width: grid.cellWidth
+                height: grid.cellHeight
 
                 SpreadWindow {
                     id: spreadWindow
 
-                    anchors.centerIn: parent
-                    cellWidth: cell.width
-                    cellHeight: cell.height
+                    property bool animateFollow
+                    property bool followCell: true
 
-                    state: spread.state
+                    /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
+                    parent: grid
+
+                    cellWidth: followCell ? cell.width : cellWidth
+                    cellHeight: followCell ? cell.height : cellHeight
+                    z: window.z
+
+                    Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                    Behavior on y { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                    Behavior on cellWidth { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                    Behavior on cellHeight { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
 
                     windowInfo: window
+                    state: spread.state
+                    states: [
+                        State {
+                            name: "screen"
+                            PropertyChanges {
+                                target: spreadWindow
+                                /* Note that we subtract the availableGeometry x and y since window.location is
+                                expressed in global screen coordinates. */
+                                x: window.position.x - screen.availableGeometry.x
+                                y: window.position.y - screen.availableGeometry.y
+                                width: window.size.width
+                                height: window.size.height
+                                animateFollow: false
+                            }
+                        },
+                        State {
+                            name: "spread"
+                            PropertyChanges {
+                                target: spreadWindow
+                                x: followCell ? cell.x : x
+                                y: followCell ? cell.y : y
+                                width: spreadWidth
+                                height: spreadHeight
+                                animateFollow: true
+                            }
+                        }
+                    ]
 
-                    //        onWindowActivated: {
-                    //            layout.raiseSelectedWindow()
-                    //            spread.windowActivated()
-                    //        }
+                    SequentialAnimation {
+                        id: addAnimation
+
+                        PropertyAction { target: spreadWindow; property: "animateFollow"; value: false }
+                        NumberAnimation { target: spreadWindow; property: "opacity"; from: 0; to: 1.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
+                        PropertyAction { target: spreadWindow; property: "animateFollow"; value: true }
+                    }
+                    SequentialAnimation {
+                        id: removeAnimation
+
+                        PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
+                        PropertyAction { target: spreadWindow; property: "followCell"; value: false }
+                        NumberAnimation { target: spreadWindow; property: "opacity"; to: 0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
+                        PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
+                    }
+                    transitions: [
+                        Transition {
+                            from: "screen"
+                            to: "spread"
+                            SequentialAnimation {
+                                NumberAnimation {
+                                    properties: "x,y,width,height"
+                                    duration: Utils.transitionDuration
+                                    easing.type: Easing.InOutQuad
+                                }
+                                /* Apply final value to spreadWindow.animateFollow by not specifying a value */
+                                PropertyAction { property: "animateFollow" }
+                            }
+                        }
+                    ]
                 }
-            }
         }
-    }
-
-    Item {
-        id: holder
     }
 
     function windowForXid(xid)

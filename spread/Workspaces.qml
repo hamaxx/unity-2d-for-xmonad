@@ -116,10 +116,6 @@ Rectangle {
         target: control
 
         onShow: {
-            /* We don't really want to animate anything that happens while the window isn't visible,
-               so we set the transition duration for all animations to zero unless we're visible */
-            Utils.currentTransitionDuration = 0
-
             /* Setup application pre-filtering and initially zoomed desktop, if any
                were specified as arguments */
             applicationFilter = applicationDesktopFile
@@ -133,7 +129,6 @@ Rectangle {
             beforeShowing()
             allWindows.load()
 
-            Utils.currentTransitionDuration = Utils.transitionDuration
             spreadView.show()
             spreadView.forceActivateWindow()
             afterShowing()
@@ -151,12 +146,11 @@ Rectangle {
        it will actually do all that is necessary to hide the switcher and cleanup */
     Timer {
         id: exitTransitionTimer
-        interval: Utils.currentTransitionDuration
+        interval: Utils.transitionDuration
         onTriggered: {
             beforeHiding()
 
             spreadView.hide()
-            Utils.currentTransitionDuration = 0
 
             afterHiding()
 

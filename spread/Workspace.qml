@@ -12,7 +12,6 @@ FocusScope {
     property int workspaceNumber
 //    property alias selectedXid: spread.selectedXid
     property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
-    property bool isCurrent: workspaceNumber == screen.currentWorkspace
 
     /* Give keyboard focus (among all workspaces) only to the zoomed Workspace.
        Since the workspace is a FocusScope, only one Item inside it can have focus.
@@ -22,23 +21,23 @@ FocusScope {
     /* This is emitted, by the zoomed workspace only, whenever a window or the workspace
        background is clicked or ENTER is pressed while a window is selected */
     signal activated
-
+/*
     function activate() {
-        workspace.state = "screen"
-        spread.state = "screen"
+        //workspace.state = "screen"
+        //spread.state = "screen"
         activated()
     }
 
     function unzoom() {
         spread.selectedXid = 0
-        workspace.state = ""
+        //workspace.state = ""
         switcher.zoomedWorkspace = -1
     }
 
     function zoom() {
-        workspace.state = "zoomed"
+        //workspace.state = "zoomed"
         switcher.zoomedWorkspace = workspace.workspaceNumber
-    }
+    }*/
 
     /* We listen to the switcher's signals during its startup and exit phases
        to setup and cleanup the state of this specific workspace, so that it
@@ -48,13 +47,20 @@ FocusScope {
     Connections {
         target: switcher
         onBeforeShowing: {
-            if (isCurrent) workspace.state = "screen"
-            else if (!isZoomed) spread.state = ""
+            if (isZoomed) {
+                workspace.state = "screen"
+                spread.state = "screen"
+            } else {
+                workspace.state = ""
+                spread.state = "spread"
+            }
         }
 
         onAfterShowing: {
-            workspace.state = (isZoomed) ? "zoomed" : ""
-            spread.state = ""
+            if (isZoomed) {
+                workspace.state = "zoomed"
+                spread.state = "spread"
+            }
         }
 
         onBeforeHiding: {
@@ -69,21 +75,20 @@ FocusScope {
             if (isZoomed) activateSelectedWindow(true)
 
             workspace.state = ""
-            spread.state = "screen"
+            //spread.state = "screen"
             z = 1
         }
     }
 
     Spread {
         id: spread
-        property real workspaceScale: workspace.scale
 
         /* When a window or the spread background is clicked or a window is
            activated by keyboard interact in the following way:
            - If another workspace is zoomed, cancel the current zoom.
            - If we are zooomed, then maximize our workspace and trigger an exit.
            - If no workspace is zoomed, then make us the zoomed workspace. */
-        onWindowActivated: {
+        /*onWindowActivated: {
             if (switcher.zoomedWorkspace != -1) {
                 var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
                 if (zoomed) {
@@ -91,7 +96,7 @@ FocusScope {
                     else zoomed.activate()
                 }
             } else if (workspace.state == "") zoom()
-        }
+        }*/
     }
 
     /* When this is called whatever window was selected (by keyboard or mouse) on
@@ -130,6 +135,7 @@ FocusScope {
 
     transitions: [
         Transition {
+            to: "zoomed"
             /* We want the value of z to be set to 2 immediately, and during the entire animation,
                regardless of the final state it will have */
             SequentialAnimation {
@@ -137,7 +143,7 @@ FocusScope {
                 NumberAnimation {
                     target: workspace
                     properties: "x,y,scale"
-                    duration: Utils.currentTransitionDuration
+                    duration: Utils.transitionDuration
                     easing.type: Easing.InOutSine
                 }
                 PropertyAction { target: workspace; property: "z"; value: 2 }
