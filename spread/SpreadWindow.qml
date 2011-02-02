@@ -51,6 +51,8 @@ Item {
        we just forward mouse signals. */
     property bool isSelected: activeFocus
     onEntered: forceActiveFocus()
+    /* FIXME: reference to switcher could be avoided */
+    onClicked: switcher.activateWindow(windowInfo)
 
     signal clicked
     signal entered

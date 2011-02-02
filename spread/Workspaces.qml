@@ -106,29 +106,10 @@ Rectangle {
                            } else {
                                zoomedWorkspace = workspaceNumber
                            }
-
-                /* We need to let the transition animation finish entirely before hiding
-                   the window and performing cleanup operations */
-                //onActivated: exitTransitionTimer.start()
             }
         }
     }
 
-    /* We want to avoid storing references to Workspace objects directly in
-       properties of the switcher. This is because items may disappear at any
-       time from the underlying model, making these refereces unreliable.
-       Therefore we just go and find them by their workspace number among the
-       children list on demand. */
-    function workspaceByNumber(number) {
-        if (number != null) {
-            for (var i = 0; i < spaces.children.length; i++) {
-                var child = spaces.children[i];
-                if (child.workspaceNumber == number)
-                    return child;
-            }
-        }
-        return null
-    }
     property bool initial: true
 
     /* This connection receives all commands from the DBUS API */
@@ -209,5 +190,15 @@ Rectangle {
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
         exitTransitionTimer.start()
+    }
+
+    function activateWindow(windowInfo) {
+        if (windowInfo.workspace != zoomedWorkspace) {
+            zoomedWorkspace = windowInfo.workspace
+        } else {
+            screen.currentWorkspace = zoomedWorkspace
+            windowInfo.activate()
+            cancelAndExit()
+        }
     }
 }

@@ -18,12 +18,6 @@ FocusScope {
         overlay_alpha: 0
     }
 
-    MouseArea {
-        z: 1 /* Above Spread */
-        anchors.fill: parent
-        onClicked: workspace.clicked()
-    }
-
     /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
               very well in Workspace.qml */
     Spread {
@@ -32,16 +26,11 @@ FocusScope {
         anchors.fill: parent
     }
 
-    /* When this is called whatever window was selected (by keyboard or mouse) on
-       this workspace, if any, will be made the active window. As a convenience,
-       we allow to clean the selection afterwards. */
-    /*function activateSelectedWindow(clearSelection) {
-        if (spread.selectedXid != 0) {
-            var selectedWindow = spread.windowForXid(spread.selectedXid)
-            if (selectedWindow != null) selectedWindow.windowInfo.activate()
-//            if (clearSelection) spread.selectedXid = 0;
-        }
-    }*/
+    MouseArea {
+        anchors.fill: parent
+        onClicked: workspace.clicked()
+        enabled: workspace.state != "zoomed"
+    }
 
     states: [
         State {
