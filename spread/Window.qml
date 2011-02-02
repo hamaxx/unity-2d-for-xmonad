@@ -52,7 +52,12 @@ Item {
     property bool isSelected: activeFocus
     onEntered: forceActiveFocus()
     /* FIXME: reference to switcher could be avoided */
-    onClicked: switcher.activateWindow(windowInfo)
+    onClicked: {
+        /* Hack to make sure the window is on top of the others during the
+           outro animation */
+        z = 9999
+        switcher.activateWindow(windowInfo)
+    }
 
     signal clicked
     signal entered
