@@ -39,13 +39,14 @@ extern "C" {
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
-#include <QDesktopWidget>
-#include <QApplication>
 
 #include <X11/Xlib.h>
 
 /* FIXME: This should be done more properly, it's just an hack this way.
-          We should silence only the errors that we know we can produce */
+          We should silence only the errors that we know we can produce.
+          We could probably also learn something from gdk-error-trap-push.
+          See: http://library.gnome.org/devel/gdk/stable/gdk-General.html#gdk-error-trap-push
+ */
 static int _x_errhandler(Display* display, XErrorEvent* event)
 {
     Q_UNUSED(display);

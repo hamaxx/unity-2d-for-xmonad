@@ -51,7 +51,9 @@ public:
 
 Q_DECLARE_METATYPE(Workspaces*)
 
-
+/* This class wouldn't be necessary if the launcher were able
+   to accept single LauncherItems instad of only groups of
+   LauncherItems in a list model. */
 class WorkspacesList : public QAbstractListModel
 {
     Q_OBJECT
