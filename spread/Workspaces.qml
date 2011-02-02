@@ -8,8 +8,8 @@ Rectangle {
     /* FIXME: setting width and height is not useful since we use
        view.setResizeMode(QDeclarativeView::SizeRootObjectToView)
     */
-    /*width: screen.availableGeometry.width
-    height: screen.availableGeometry.height*/
+    width: screen.availableGeometry.width
+    height: screen.availableGeometry.height
 
     color: "black"
     focus: true
