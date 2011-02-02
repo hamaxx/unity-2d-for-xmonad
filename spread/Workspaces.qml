@@ -80,9 +80,9 @@ Rectangle {
 
                 /* FIXME: This is ok right now since we ignore screen.orientation and
                    screen.startingCorner, but we should respect them eventually */
-                workspaceNumber: index
-                row: Math.floor(index / columns)
-                column: index % columns
+                property int workspaceNumber: index
+                property int row: Math.floor(index / columns)
+                property int column: index % columns
 
                 x: column * (switcher.width * cellScale) + (column * switcher.spacing)
                 y: row * (switcher.height * cellScale) + (row * switcher.spacing)
