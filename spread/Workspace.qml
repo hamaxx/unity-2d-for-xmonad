@@ -18,6 +18,12 @@ FocusScope {
         overlay_alpha: 0
     }
 
+    /* Eating all mouse events so that they are not passed beneath the workspace */
+    MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+    }
+
     /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
               very well in Workspace.qml */
     Windows {
