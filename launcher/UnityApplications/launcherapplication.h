@@ -31,6 +31,7 @@
 
 #include "bamf-application.h"
 
+class QAction;
 class DBusMenuImporter;
 
 class LauncherApplication : public LauncherItem
@@ -114,6 +115,7 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+    QAction* m_separator;
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;
 
     void updateBamfApplicationDependentProperties();

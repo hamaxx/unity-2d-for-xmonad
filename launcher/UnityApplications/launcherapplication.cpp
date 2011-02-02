@@ -545,6 +545,8 @@ LauncherApplication::fetchIndicatorMenus()
 void
 LauncherApplication::createMenuActions()
 {
+    m_separator = m_menu->addSeparator();
+
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
@@ -565,8 +567,9 @@ LauncherApplication::createMenuActions()
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }
 
-    /* Append dynamic contextual actions */
-    /* FIXME: should be at the beginning of the menu, not at the end. */
+    /* Request indicator menus to be updated: this is asynchronous
+       and the corresponding actions are added to the menu in
+       SLOT(onIndicatorMenuUpdated()). */
     if (m_application != NULL) {
         Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
             importer->updateMenu();
@@ -583,12 +586,9 @@ LauncherApplication::onIndicatorMenuUpdated()
 
     DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
     QList<QAction*> actions = importer->menu()->actions();
-    if (!actions.isEmpty()) {
-        m_menu->addSeparator();
-    }
     Q_FOREACH(QAction* action, actions) {
         if (action->isSeparator()) {
-            m_menu->addSeparator();
+            m_menu->insertSeparator(m_separator);
         }
         else {
             /* Copy the action so we can override the slot triggered on
@@ -603,7 +603,7 @@ LauncherApplication::onIndicatorMenuUpdated()
                 }
             }
             connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
-            m_menu->addAction(copy);
+            m_menu->insertAction(m_separator, copy);
         }
     }
 }
