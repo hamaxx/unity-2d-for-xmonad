@@ -67,7 +67,7 @@ Item {
                 width: grid.cellWidth
                 height: grid.cellHeight
 
-                SpreadWindow {
+                Window {
                     id: spreadWindow
 
                     property bool animateFollow
