@@ -22,12 +22,6 @@ import "utils.js" as Utils
 Item {
     id: spread
 
-    property string application
-
-//    property alias selectedXid: layout.selectedXid
-
-    signal windowActivated
-
     /* This proxy model takes care of removing all windows that are not on
        the current workspace and that are not pinned to all workspaces. */
     QSortFilterProxyModelQML {
