@@ -223,6 +223,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
+    QObject::connect(application, SIGNAL(ChildAdded(BamfView*)), this, SLOT(updateIndicatorMenus()));
+    // FIXME: should we also connect to ChildRemoved? This is not done in unity…
 
     connect(application, SIGNAL(WindowAdded(BamfWindow*)), SLOT(onWindowAdded(BamfWindow*)));
 
@@ -242,6 +244,7 @@ LauncherApplication::updateBamfApplicationDependentProperties()
     m_launching_timer.stop();
     emit launchingChanged(launching());
     updateHasVisibleWindow();
+    updateIndicatorMenus();
 }
 
 void
@@ -500,6 +503,25 @@ LauncherApplication::spread()
 }
 
 void
+LauncherApplication::updateIndicatorMenus()
+{
+    if (m_application != NULL) {
+        QScopedPointer<BamfViewList> children(m_application->children());
+        for (int i = 0; i < children->size(); ++i) {
+            BamfIndicator* indicator = qobject_cast<BamfIndicator*>(children->at(i));
+            if (indicator != NULL) {
+                QString path = indicator->dbus_menu_path();
+                if (!m_indicatorMenus.contains(path)) {
+                    DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), path, this);
+                    m_indicatorMenus[path] = importer;
+                    importer->updateMenu();
+                }
+            }
+        }
+    }
+}
+
+void
 LauncherApplication::createMenuActions()
 {
     bool is_running = running();
@@ -523,31 +545,33 @@ LauncherApplication::createMenuActions()
     }
 
     /* Append dynamic contextual actions */
-    if (m_application != NULL) {
-        QScopedPointer<BamfViewList> children(m_application->children());
-        for (int i = 0; i < children->size(); ++i) {
-            BamfIndicator* indicator = qobject_cast<BamfIndicator*>(children->at(i));
-            if (indicator != NULL) {
-                DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), indicator->dbus_menu_path());
-                connect(importer, SIGNAL(menuUpdated()), SLOT(slotDbusMenuUpdated()));
-                importer->updateMenu();
+    /* FIXME: should be at the beginning of the menu, not at the end. */
+    Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
+        QList<QAction*> actions = importer->menu()->actions();
+        if (!actions.isEmpty()) {
+            m_menu->addSeparator();
+        }
+        Q_FOREACH(QAction* action, actions) {
+            if (action->isSeparator()) {
+                m_menu->addSeparator();
+            }
+            else {
+                /* Copy the action so that the original is not deleted when the
+                   menu is hidden. */
+                QAction* copy = new QAction(action->icon(), action->text(), action);
+                copy->setVisible(action->isVisible());
+                copy->setEnabled(action->isEnabled());
+                if (action->isCheckable()) {
+                    copy->setCheckable(true);
+                    if (action->isChecked()) {
+                        copy->setChecked(true);
+                    }
+                }
+                connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
+                m_menu->addAction(copy);
             }
         }
     }
-}
-
-void
-LauncherApplication::slotDbusMenuUpdated()
-{
-    DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
-    QList<QAction*> actions = importer->menu()->actions();
-    if (!actions.isEmpty()) {
-        m_menu->addSeparator();
-    }
-    Q_FOREACH(QAction* action, actions) {
-        m_menu->addAction(action);
-    }
-    //importer->deleteLater();
 }
 
 void
@@ -564,5 +588,15 @@ LauncherApplication::onQuitTriggered()
 {
     m_menu->hide();
     close();
+}
+
+void LauncherApplication::onIndicatorMenuActionTriggered()
+{
+    QAction* action = static_cast<QAction*>(sender());
+    QAction* parent = qobject_cast<QAction*>(action->parent());
+    m_menu->hide();
+    if (parent != NULL) {
+        parent->trigger();
+    }
 }
 
