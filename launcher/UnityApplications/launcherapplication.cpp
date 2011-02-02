@@ -223,8 +223,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
-    QObject::connect(application, SIGNAL(ChildAdded(BamfView*)), this, SLOT(updateIndicatorMenus()));
-    // FIXME: should we also connect to ChildRemoved? This is not done in unity…
+    connect(application, SIGNAL(ChildAdded(BamfView*)), SLOT(slotChildAdded(BamfView*)));
+    connect(application, SIGNAL(ChildRemoved(BamfView*)), SLOT(slotChildRemoved(BamfView*)));
 
     connect(application, SIGNAL(WindowAdded(BamfWindow*)), SLOT(onWindowAdded(BamfWindow*)));
 
@@ -244,7 +244,7 @@ LauncherApplication::updateBamfApplicationDependentProperties()
     m_launching_timer.stop();
     emit launchingChanged(launching());
     updateHasVisibleWindow();
-    updateIndicatorMenus();
+    fetchIndicatorMenus();
 }
 
 void
@@ -503,20 +503,41 @@ LauncherApplication::spread()
 }
 
 void
-LauncherApplication::updateIndicatorMenus()
+LauncherApplication::slotChildAdded(BamfView* child)
 {
+    BamfIndicator* indicator = qobject_cast<BamfIndicator*>(child);
+    if (indicator != NULL) {
+        QString path = indicator->dbus_menu_path();
+        if (!m_indicatorMenus.contains(path)) {
+            DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), path, this);
+            connect(importer, SIGNAL(menuUpdated()), SLOT(onIndicatorMenuUpdated()));
+            m_indicatorMenus[path] = importer;
+        }
+    }
+}
+
+void
+LauncherApplication::slotChildRemoved(BamfView* child)
+{
+    BamfIndicator* indicator = qobject_cast<BamfIndicator*>(child);
+    if (indicator != NULL) {
+        QString path = indicator->dbus_menu_path();
+        if (m_indicatorMenus.contains(path)) {
+            m_indicatorMenus.take(path)->deleteLater();
+        }
+    }
+}
+
+void
+LauncherApplication::fetchIndicatorMenus()
+{
+    Q_FOREACH(QString path, m_indicatorMenus.keys()) {
+        m_indicatorMenus.take(path)->deleteLater();
+    }
     if (m_application != NULL) {
         QScopedPointer<BamfViewList> children(m_application->children());
         for (int i = 0; i < children->size(); ++i) {
-            BamfIndicator* indicator = qobject_cast<BamfIndicator*>(children->at(i));
-            if (indicator != NULL) {
-                QString path = indicator->dbus_menu_path();
-                if (!m_indicatorMenus.contains(path)) {
-                    DBusMenuImporter* importer = new DBusMenuImporter(indicator->address(), path, this);
-                    connect(importer, SIGNAL(menuUpdated()), SLOT(onIndicatorMenuUpdated()));
-                    m_indicatorMenus[path] = importer;
-                }
-            }
+            slotChildAdded(children->at(i));
         }
     }
 }
@@ -546,14 +567,20 @@ LauncherApplication::createMenuActions()
 
     /* Append dynamic contextual actions */
     /* FIXME: should be at the beginning of the menu, not at the end. */
-    Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
-        importer->updateMenu();
+    if (m_application != NULL) {
+        Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
+            importer->updateMenu();
+        }
     }
 }
 
 void
 LauncherApplication::onIndicatorMenuUpdated()
 {
+    if (!m_menu->isVisible()) {
+        return;
+    }
+
     DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
     QList<QAction*> actions = importer->menu()->actions();
     if (!actions.isEmpty()) {

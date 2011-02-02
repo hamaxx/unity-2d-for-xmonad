@@ -103,7 +103,8 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
-    void updateIndicatorMenus();
+    void slotChildAdded(BamfView*);
+    void slotChildRemoved(BamfView*);
     void onIndicatorMenuUpdated();
 
 private:
@@ -116,6 +117,7 @@ private:
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;
 
     void updateBamfApplicationDependentProperties();
+    void fetchIndicatorMenus();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
