@@ -29,6 +29,7 @@ FocusScope {
     Spread {
         id: spread
         state: workspace.state == "screen" ? "screen" : "spread"
+        anchors.fill: parent
     }
 
     /* When this is called whatever window was selected (by keyboard or mouse) on
