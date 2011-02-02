@@ -58,13 +58,6 @@ Rectangle {
     property variant allWindows: WindowsList { }
     property int lastActiveWindow: 0
 
-    /* Those signals are emitted by the swicher while it starts (beforeShowing
-       and afterShowing) and while it exits (beforeHiding and afterHiding). The single
-       workspaces react to these signals and perform the appropriate setup and cleanup
-       operations */
-    signal beforeShowing
-    signal afterShowing
-
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
@@ -150,12 +143,10 @@ Rectangle {
 
             spaces.model = switcher.workspaces
             initial = true
-            beforeShowing()
             allWindows.load()
 
             spreadView.show()
             spreadView.forceActivateWindow()
-            afterShowing()
             initial = false
         }
 
@@ -208,19 +199,10 @@ Rectangle {
     }
 
     function cancelAndExit() {
-        /* Unzoom the currently zoome workspace (except if the currently zoomed is
-           also the current workspaces, since it's the one we're expanding to screen size) */
-        /*if (zoomedWorkspace != -1 && zoomedWorkspace != screen.currentWorkspace) {
-            var zoomed = switcher.workspaceByNumber(switcher.zoomedWorkspace)
-            if (zoomed) zoomed.unzoom()
-        }*/
-
         /* Expand back to screen size the current workspace */
+        zoomedWorkspace = screen.currentWorkspace
         var current = switcher.workspaceByNumber(screen.currentWorkspace)
-//        if (current) {
-//            current.selectedXid = 0
-//            current.activate()
-//        }
+        current.state = "screen"
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
         exitTransitionTimer.start()

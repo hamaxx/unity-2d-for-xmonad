@@ -139,8 +139,6 @@ Item {
                     }
                     transitions: [
                         Transition {
-                            from: "screen"
-                            to: "spread"
                             SequentialAnimation {
                                 NumberAnimation {
                                     properties: "x,y,width,height"

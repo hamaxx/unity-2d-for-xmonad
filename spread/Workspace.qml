@@ -21,30 +21,9 @@ FocusScope {
         onClicked: workspace.clicked()
     }
 
-    /* We listen to the switcher's signals during its startup and exit phases
-       to setup and cleanup the state of this specific workspace, so that it
-       will interact correctly each time the switcher is summoned.
-       The currently active workspace shoud start maximized, then transition
-       to zoomed state. All the others should remain in the background. */
-    Connections {
-        target: switcher
-        onBeforeShowing: {
-            if (isZoomed) {
-                spread.state = "screen"
-            } else {
-                spread.state = "spread"
-            }
-        }
-
-        onAfterShowing: {
-            if (isZoomed) {
-                spread.state = "spread"
-            }
-        }
-    }
-
     Spread {
         id: spread
+        state: workspace.state == "screen" ? "screen" : "spread"
     }
 
     /* When this is called whatever window was selected (by keyboard or mouse) on
