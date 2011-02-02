@@ -6,7 +6,6 @@ FocusScope {
 
     transformOrigin: Item.TopLeft /* FIXME: useful? */
 
-    property bool isZoomed: switcher.workspaceByNumber(switcher.zoomedWorkspace) == workspace
     signal clicked
 
     GnomeBackground {
