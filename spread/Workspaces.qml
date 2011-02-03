@@ -12,7 +12,6 @@ Rectangle {
     height: screen.availableGeometry.height
 
     color: "black"
-    focus: true
 
     property int columns: screen.workspaces.columns
     property int rows: screen.workspaces.rows
@@ -83,6 +82,8 @@ Rectangle {
                 zoomedX: switcher.margin
                 zoomedY: switcher.margin
                 zoomedScale: switcher.zoomedScale
+
+                focus: zoomedWorkspace == workspaceNumber
 
                 state: {
                     if (initial) {

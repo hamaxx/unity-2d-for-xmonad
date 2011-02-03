@@ -29,6 +29,7 @@ FocusScope {
     Windows {
         state: workspace.state == "screen" ? "screen" : "spread"
         anchors.fill: parent
+        focus: true
     }
 
     MouseArea {

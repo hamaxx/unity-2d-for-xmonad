@@ -46,15 +46,7 @@ Item {
        but never change it from inside the component. Since all selection logic
        need to be managed outside of the component due to interaction with keyboard,
        we just forward mouse signals. */
-    property bool isSelected: activeFocus
-    onEntered: forceActiveFocus()
-    /* FIXME: reference to switcher could be avoided */
-    onClicked: {
-        /* Hack to make sure the window is on top of the others during the
-           outro animation */
-        z = 9999
-        switcher.activateWindow(windowInfo)
-    }
+    property bool isSelected
 
     signal clicked
     signal entered

@@ -65,11 +65,36 @@ GridView {
             width: windows.cellWidth
             height: windows.cellHeight
 
+            Keys.onPressed: {
+                switch (event.key) {
+                    case Qt.Key_Enter:
+                    case Qt.Key_Return:
+                        spreadWindow.activate()
+                        event.accepted = true
+                }
+            }
+
             Window {
                 id: spreadWindow
 
                 property bool animateFollow
                 property bool followCell: true
+
+                isSelected: cell.activeFocus
+
+                onEntered: {
+                    windows.currentIndex = index
+                    cell.forceActiveFocus()
+                }
+
+                onClicked: activate()
+
+                function activate() {
+                    /* Hack to make sure the window is on top of the others during the
+                       outro animation */
+                    z = 9999
+                    switcher.activateWindow(windowInfo)
+                }
 
                 /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
                 parent: windows
