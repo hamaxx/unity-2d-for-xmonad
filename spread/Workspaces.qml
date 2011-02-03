@@ -192,8 +192,6 @@ Rectangle {
     }
 
     function cancelAndExit() {
-        /* Expand back to screen size the current workspace */
-        zoomedWorkspace = screen.workspaces.current
         initial = true
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
