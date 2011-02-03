@@ -24,8 +24,6 @@ Atom _NET_DESKTOP_LAYOUT;
 Atom _NET_NUMBER_OF_DESKTOPS;
 Atom _NET_CURRENT_DESKTOP;
 
-#define GNOME_WORKSPACES_ROWS_KEY "/apps/panel/applets/workspace_switcher_screen%1/prefs/num_rows"
-
 WorkspacesInfo::WorkspacesInfo(QObject *parent) :
     QObject(parent)
 {
@@ -82,46 +80,6 @@ bool WorkspacesInfo::globalEventFilter(void* message)
     return ret;
 }
 
-/* Read the workspace configuration.
-   For now, we only read the number of rows from the gconf key of
-   gnome's panel workspaces applet.
-   FIXME: check what compiz uses and read it when compiz is running */
-bool WorkspacesInfo::readWorkspacesConfiguration(int *rows)
-{
-    GConfItemQmlWrapper item;
-    QString key = QString(GNOME_WORKSPACES_ROWS_KEY);
-    item.setKey(key.arg(QString::number(QX11Info::appScreen())));
-    bool valid;
-    *rows = item.getValue().toInt(&valid);
-    if (!valid) {
-        *rows = 0;
-    }
-    return valid;
-}
-
-bool WorkspacesInfo::setWorkspacesGeometryFromConfiguration()
-{
-    int rows;
-    bool success = readWorkspacesConfiguration(&rows);
-    if (success) {
-        /* According to the WNCK documentation, it should be possible to
-           set both columns and rows. However WNCK throws an error if one
-           of the two isn't zero. So let's just pass the number of rows
-           and then read again the rest of the settings. */
-        WnckScreen *screen = wnck_screen_get_default();
-        int token = wnck_screen_try_set_workspace_layout(screen, 0, rows, 0);
-        if (token != 0) {
-            wnck_screen_release_workspace_layout(screen, token);
-            return true;
-        } else {
-            qWarning() << "Failed to set workspaces layout via WNCK.";
-        }
-    } else {
-       qWarning("Failed to read number of workspace rows from configuration.");
-    }
-    return false;
-}
-
 void WorkspacesInfo::updateWorkspaceGeometry()
 {
     int workspaceCount;
@@ -136,7 +94,7 @@ void WorkspacesInfo::updateWorkspaceGeometry()
        from the property we will retrieve after this one */
     result = getX11IntProperty(_NET_NUMBER_OF_DESKTOPS, 1);
     if (result == NULL) {
-        workspaceCount = 1;
+        workspaceCount = 4;
     } else {
         workspaceCount = result[0];
     }
@@ -144,19 +102,9 @@ void WorkspacesInfo::updateWorkspaceGeometry()
 
     /* Then ask X11 the layout of the workspaces. */
     result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
-    if (result == NULL) {
-        /* In this property does not exist (as is the case if you
-           don't login into the regular gnome session before unity-2d),
-           read the values available in gconf and calculate the others,
-           then set layout via WNCK and read the property again. */
-        bool success = setWorkspacesGeometryFromConfiguration();
-        if (success) {
-            result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
-        }
-    }
     if (result != NULL) {
-        /* If we read the values correctly the first time or re-read them
-           correctly after setting them from config, just use them. */
+        /* If we read the values correctly (some pager or the user set them)
+           then just use them. */
         orientation = (Orientation) result[0];
         columns = result[1];
         rows = result[2];
@@ -167,7 +115,7 @@ void WorkspacesInfo::updateWorkspaceGeometry()
            calculate these values ourselves by using the total count
         */
         if (rows == 0 && columns == 0) {
-            rows = 1;
+            rows = 2;
             columns = workspaceCount;
         } else {
             if (rows == 0) {
@@ -179,9 +127,11 @@ void WorkspacesInfo::updateWorkspaceGeometry()
 
         XFree(result);
     } else {
-        /* If we are still failing, then just set some decent defaults. */
-        rows = 1;
-        columns = workspaceCount;
+        /* In this property does not exist (as is the case if you
+           don't login into the regular gnome session before unity-2d),
+           just fallback on reasonable defaults. */
+        rows = 2;
+        columns = ceil((float) workspaceCount / (float) rows);
         orientation = WorkspacesInfo::OrientationHorizontal;
         startingCorner = WorkspacesInfo::CornerTopLeft;
     }

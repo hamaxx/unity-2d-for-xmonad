@@ -55,8 +55,6 @@ private:
     void updateWorkspaceGeometry();
     void updateCurrentWorkspace();
     unsigned long * getX11IntProperty(Atom property, long length);
-    bool readWorkspacesConfiguration(int *rows);
-    bool setWorkspacesGeometryFromConfiguration();
 
 private:
     int m_count;
