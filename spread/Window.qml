@@ -24,10 +24,6 @@ Item {
 
     property variant windowInfo
 
-    /* FIXME: unnecessary properties */
-    property int realWidth: windowInfo.size.width
-    property int realHeight: windowInfo.size.height
-
     /* These values are applied only when in spread state */
     property int cellWidth
     property int cellHeight
@@ -38,10 +34,10 @@ Item {
     /* Scale down to fit availableWidth/availableHeight while preserving the aspect
        ratio of the window. Never scale up the window. */
     property double availableAspectRatio: availableWidth / availableHeight
-    property double windowAspectRatio: realWidth / realHeight
+    property double windowAspectRatio: windowInfo.size.width / windowInfo.size.height
     property bool isHorizontal: windowAspectRatio >= availableAspectRatio
-    property int maxWidth: Math.min(realWidth, availableWidth)
-    property int maxHeight: Math.min(realHeight, availableHeight)
+    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
+    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
     property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
     property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
 
