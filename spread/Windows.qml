@@ -86,7 +86,7 @@ GridView {
             Window {
                 id: spreadWindow
 
-                property bool animateFollow
+                property bool animateFollow: false
                 property bool followCell: true
 
                 isSelected: cell.activeFocus
