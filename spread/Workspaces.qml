@@ -63,9 +63,8 @@ Rectangle {
        to the switcher itself. */
     Item {
         id: spaces
-        property variant model
         Repeater {
-            model: parent.model
+            model: screen.workspaces
             delegate: Workspace {
                 id: workspace
 
@@ -127,7 +126,6 @@ Rectangle {
                so that we can use it to pre-select the active window on the workspace */
             lastActiveWindow = screen.activeWindow
 
-            spaces.model = screen.workspaces
             allWindows.load()
 
             spreadView.show()
@@ -150,8 +148,6 @@ Rectangle {
         interval: Utils.transitionDuration
         onTriggered: {
             spreadView.hide()
-
-            spaces.model = undefined
 
             /* Nothing should be allowed to touch the windows anymore here, so it should
                be safe to unload them all to save memory.
