@@ -23,6 +23,7 @@ Item {
     id: window
 
     property variant windowInfo
+    property bool animating
 
     /* These values are applied only when in spread state */
     property int cellWidth
@@ -81,9 +82,8 @@ Item {
         */
         source: "image://window/" + windowInfo.decoratedXid + "@" + screen.currentTime()
 
-        /* This will be disabled during intro/outro animations for performance reasons,
-           but it's good to have in spread mode when the window is */
-        smooth: true
+        /* Disabled during animations for performance reasons */
+        smooth: !animating
 
         visible: (status != Image.Error)
     }

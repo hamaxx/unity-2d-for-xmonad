@@ -131,6 +131,7 @@ GridView {
                 transitions: [
                     Transition {
                         SequentialAnimation {
+                            PropertyAction { target: spreadWindow; property: "animating"; value: true }
                             NumberAnimation {
                                 properties: "x,y,width,height"
                                 duration: Utils.transitionDuration
@@ -138,6 +139,7 @@ GridView {
                             }
                             /* Apply final value to spreadWindow.animateFollow by not specifying a value */
                             PropertyAction { property: "animateFollow" }
+                            PropertyAction { target: spreadWindow; property: "animating"; value: false }
                         }
                     }
                 ]
