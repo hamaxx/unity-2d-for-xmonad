@@ -102,8 +102,8 @@ GridView {
                 /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
                 parent: windows
 
-                cellWidth: followCell ? cell.width : cellWidth
-                cellHeight: followCell ? cell.height : cellHeight
+                cellWidth: cell.width
+                cellHeight: cell.height
                 z: window.z
 
                 Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
@@ -134,8 +134,8 @@ GridView {
                             /* Center the window in its cell */
                             x: followCell ? (cell.x + (cell.width - spreadWidth) / 2) : x
                             y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
-                            width: spreadWidth
-                            height: spreadHeight
+                            width: followCell ? spreadWidth : width
+                            height: followCell ? spreadHeight : height
                             animateFollow: !switcher.initial
                         }
                     }
