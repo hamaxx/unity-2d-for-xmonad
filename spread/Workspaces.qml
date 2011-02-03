@@ -16,9 +16,8 @@ Rectangle {
     property int columns: screen.workspaces.columns
     property int rows: screen.workspaces.rows
 
-    /* FIXME: These values are completely random. Pull from unity the proper ones */
-    property int margin: 40
-    property int spacing: 25
+    property int margin: 35
+    property int spacing: 5
 
     /* Effective area available for laying out the workspaces after considering
        inter-workspace spaces */
@@ -41,7 +40,7 @@ Rectangle {
        the corners of the other workspaces below it) */
     property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
     property real zoomedScale: (isDesktopHorizontal) ? ((width - 2*margin) / switcher.width) :
-                                                       ((width - 2*margin) / switcher.height)
+                                                       ((height - 2*margin) / switcher.height)
 
     /* When this is set, it is used to filter the global list of windows to limit it to
        a single application. See the QSortFilterProxyModelQML used in Spread.qml */
@@ -79,8 +78,9 @@ Rectangle {
                 height: switcher.height
                 scale:  switcher.cellScale
 
-                zoomedX: switcher.margin
-                zoomedY: switcher.margin
+                /* Center the workspace in 'zoomed' state */
+                zoomedX: (switcher.width - width*zoomedScale) / 2
+                zoomedY: (switcher.height - height*zoomedScale) / 2
                 zoomedScale: switcher.zoomedScale
 
                 focus: zoomedWorkspace == workspaceNumber
