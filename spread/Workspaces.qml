@@ -116,27 +116,35 @@ Rectangle {
     Connections {
         target: control
 
-        onShow: {
+        onShowCurrentWorkspace: {
             /* Setup application pre-filtering and initially zoomed desktop, if any
                were specified as arguments */
             applicationFilter = applicationDesktopFile
-            if (!zoomCurrentWorkspace) zoomedWorkspace = -1
-            else zoomedWorkspace = screen.workspaces.current
+            zoomedWorkspace = screen.workspaces.current
+            show()
+        }
 
-            /* Save the currently active window before showing and activating the switcher,
-               so that we can use it to pre-select the active window on the workspace */
-            lastActiveWindow = screen.activeWindow
-
-            allWindows.load()
-
-            spreadView.show()
-            spreadView.forceActivateWindow()
-            initial = false
+        onShowAllWorkspaces: {
+            applicationFilter = applicationDesktopFile
+            zoomedWorkspace = -1
+            show()
         }
 
         onHide: cancelAndExit()
 
         onFilterByApplication: applicationFilter = applicationDesktopFile
+    }
+
+    function show() {
+        /* Save the currently active window before showing and activating the switcher,
+           so that we can use it to pre-select the active window on the workspace */
+        lastActiveWindow = screen.activeWindow
+
+        allWindows.load()
+
+        spreadView.show()
+        spreadView.forceActivateWindow()
+        initial = false
     }
 
     /* This controls the exit from the switcher.

@@ -49,20 +49,11 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
-    bool nonBlocking = false;
-    foreach (QString arg, application.arguments()) {
-        if (arg == "--nonblocking") {
-            nonBlocking = true;
-        }
-    }
-
     SpreadView view;
-    view.setProperty("nonblocking", nonBlocking);
 
-    /* The spread window is borderless and not moveable by the user, yet not
-       fullscreen */
-    Qt::WidgetAttribute windowType = (nonBlocking) ? Qt::WA_X11NetWmWindowTypeSplash :
-                                                     Qt::WA_X11NetWmWindowTypeDock;
+    /* WA_X11NetWmWindowTypeDock means that spread window is borderless and
+       not moveable by the user, yet not fullscreen */
+    Qt::WidgetAttribute windowType = Qt::WA_X11NetWmWindowTypeDock;
     view.setAttribute(windowType, true);
 
     /* Performance tricks */

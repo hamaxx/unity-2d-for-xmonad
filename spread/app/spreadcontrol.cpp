@@ -50,12 +50,12 @@ bool SpreadControl::connectToBus()
 
 void SpreadControl::ShowAllWorkspaces(QString applicationDesktopFile)
 {
-    Q_EMIT show(applicationDesktopFile, false);
+    Q_EMIT showAllWorkspaces(applicationDesktopFile);
 }
 
 void SpreadControl::ShowCurrentWorkspace(QString applicationDesktopFile)
 {
-    Q_EMIT show(applicationDesktopFile, true);
+    Q_EMIT showCurrentWorkspace(applicationDesktopFile);
 }
 
 void SpreadControl::FilterByApplication(QString applicationDesktopFile)
