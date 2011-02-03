@@ -2,7 +2,6 @@
 #define SIGNALWAITER_H
 
 #include <QEventLoop>
-#include <QTimer>
 #include <QObject>
 
 class SignalWaiter : public QObject
@@ -11,17 +10,14 @@ class SignalWaiter : public QObject
 
 public:
     SignalWaiter(QObject *parent = 0);
+    bool waitForSignal(const QObject *sender, const char *signal, int timeout = 0);
 
-public:
-    static bool waitForSignal(const QObject *sender, const char *signal, int timeout = 0);
-    bool wait(const QObject *sender, const char *signal, int timeout = 0);
-
-public Q_SLOTS:
+private Q_SLOTS:
     void succeed();
     void fail();
 
 private:
-    QEventLoop loop;
+    QEventLoop m_loop;
 };
 
 #endif // SIGNALWAITER_H

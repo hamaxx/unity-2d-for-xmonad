@@ -189,7 +189,7 @@ bool WorkspacesInfo::changeCurrent(int newWorkspace)
         return false;
     }
 
-    if (wnck_screen_get_active_workspace(screen) == workspace) {
+    if (newWorkspace == current()) {
         return true;
     }
 
@@ -197,7 +197,7 @@ bool WorkspacesInfo::changeCurrent(int newWorkspace)
        if it succeeds or fails. To know that we can only wait to be notified of the workspace
        to actually change, or decide we waited too much and proceed anyway */
     wnck_workspace_activate(workspace, CurrentTime);
-    return SignalWaiter::waitForSignal(this, SIGNAL(currentChanged(int)), 50);
+    return SignalWaiter().waitForSignal(this, SIGNAL(currentChanged(int)), 50);
 }
 
 /* Helper function to read the value of an X11 window property of integer type of the

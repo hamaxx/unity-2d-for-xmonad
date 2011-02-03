@@ -1,5 +1,8 @@
 #include "signalwaiter.h"
 
+#include <QTimer>
+#include <QDebug>
+
 SignalWaiter::SignalWaiter(QObject *parent) : QObject(parent)
 {
 }
@@ -14,7 +17,7 @@ SignalWaiter::SignalWaiter(QObject *parent) : QObject(parent)
    events. See for more details:
    http://wiki.forum.nokia.com/index.php/How_to_wait_synchronously_for_a_Signal_in_Qt
 */
-bool SignalWaiter::wait(const QObject *sender, const char *signal, int timeout)
+bool SignalWaiter::waitForSignal(const QObject *sender, const char *signal, int timeout)
 {
     QObject::connect(sender, signal, this,  SLOT(succeed()));
     if (timeout > 0) {
@@ -26,22 +29,19 @@ bool SignalWaiter::wait(const QObject *sender, const char *signal, int timeout)
        Please note that this won't work on OSX:
        http://bugreports.qt.nokia.com/browse/QTBUG-15645
     */
-    int result = loop.exec(QEventLoop::ExcludeUserInputEvents);
+    int result = m_loop.exec(QEventLoop::ExcludeUserInputEvents);
+    if (result != 0) {
+        qWarning() << "Timeout expired while waiting for signal";
+    }
     return (result == 0);
 }
 
 void SignalWaiter::succeed()
 {
-    loop.exit(0);
+    m_loop.exit(0);
 }
 
 void SignalWaiter::fail()
 {
-    loop.exit(1);
-}
-
-bool SignalWaiter::waitForSignal(const QObject *sender, const char *signal, int timeout)
-{
-    SignalWaiter waiter;
-    return waiter.wait(sender, signal, timeout);
+    m_loop.exit(1);
 }
