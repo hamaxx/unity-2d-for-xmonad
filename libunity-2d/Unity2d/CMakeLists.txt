@@ -13,6 +13,7 @@ set(unity-2d-qml_SRCS
     windowslist.cpp
     screeninfo.cpp
     cacheeffect.cpp
+    workspacesinfo.cpp
     )
 
 set(unity-2d-qml_MOC_HDRS
@@ -22,6 +23,7 @@ set(unity-2d-qml_MOC_HDRS
     windowslist.h
     screeninfo.h
     cacheeffect.h
+    workspacesinfo.h
     )
 
 qt4_wrap_cpp(unity-2d-qml_MOC_SRCS ${unity-2d-qml_MOC_HDRS})

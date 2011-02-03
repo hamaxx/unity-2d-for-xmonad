@@ -14,8 +14,8 @@ Rectangle {
     color: "black"
     focus: true
 
-    property int columns: screen.columns
-    property int rows: screen.rows
+    property int columns: screen.workspaces.columns
+    property int rows: screen.workspaces.rows
 
     /* FIXME: These values are completely random. Pull from unity the proper ones */
     property int margin: 40
@@ -64,7 +64,7 @@ Rectangle {
     Item {
         id: spaces
         Repeater {
-            model: screen.workspaces
+            model: screen.workspaces.count
             delegate: Workspace {
                 id: workspace
 
@@ -86,7 +86,7 @@ Rectangle {
 
                 state: {
                     if (initial) {
-                        if (screen.currentWorkspace == workspaceNumber) {
+                        if (screen.workspaces.current == workspaceNumber) {
                             return "screen"
                         } else {
                             return ""
@@ -120,7 +120,7 @@ Rectangle {
                were specified as arguments */
             applicationFilter = applicationDesktopFile
             if (!zoomCurrentWorkspace) zoomedWorkspace = -1
-            else zoomedWorkspace = screen.currentWorkspace
+            else zoomedWorkspace = screen.workspaces.current
 
             /* Save the currently active window before showing and activating the switcher,
                so that we can use it to pre-select the active window on the workspace */
@@ -181,7 +181,7 @@ Rectangle {
 
     function cancelAndExit() {
         /* Expand back to screen size the current workspace */
-        zoomedWorkspace = screen.currentWorkspace
+        zoomedWorkspace = screen.workspaces.current
         initial = true
 
         /* Let the transition finish and then hide the switcher and perform cleanup */
@@ -192,7 +192,7 @@ Rectangle {
         if (windowInfo.workspace != zoomedWorkspace) {
             zoomedWorkspace = windowInfo.workspace
         } else {
-            screen.currentWorkspace = zoomedWorkspace
+            screen.workspaces.current = zoomedWorkspace
             windowInfo.activate()
             cancelAndExit()
         }
