@@ -16,6 +16,8 @@
 
 #include <QDebug>
 #include <QRegExp>
+#include <QApplication>
+#include <QWidget>
 
 #include "windowslist.h"
 #include "windowinfo.h"
@@ -119,7 +121,6 @@ void WindowsList::load()
             beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
             m_windows.append(info);
             endInsertRows();
-            Q_EMIT countChanged(m_windows.count());
         }
     }
 
@@ -134,12 +135,7 @@ void WindowsList::unload()
     endRemoveRows();
 
     m_loaded = false;
-
-    Q_EMIT countChanged(m_windows.count());
 }
-
-#include <QApplication>
-#include <QWidget>
 
 void WindowsList::addWindow(BamfView *view)
 {
@@ -174,8 +170,6 @@ void WindowsList::addWindow(BamfView *view)
     beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
     m_windows.append(info);
     endInsertRows();
-
-    Q_EMIT countChanged(m_windows.count());
 }
 
 void WindowsList::removeWindow(BamfView *view)
@@ -200,9 +194,6 @@ void WindowsList::removeWindow(BamfView *view)
             beginRemoveRows(QModelIndex(), i, i);
             m_windows.removeAt(i);
             endRemoveRows();
-
-            Q_EMIT countChanged(m_windows.count());
-
             return;
         }
     }

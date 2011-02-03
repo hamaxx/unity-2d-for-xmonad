@@ -28,12 +28,6 @@ QSortFilterProxyModelQML::updateRoleNames()
     setRoleNames(((QAbstractItemModel*)sourceModel())->roleNames());
 }
 
-void
-QSortFilterProxyModelQML::updateCount()
-{
-    Q_EMIT countChanged(rowCount());
-}
-
 QObject*
 QSortFilterProxyModelQML::sourceModelQObject() const
 {
@@ -61,8 +55,4 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
     updateRoleNames();
 
     connect(this, SIGNAL(modelReset()), SLOT(updateRoleNames()));
-    connect(this, SIGNAL(modelReset()), SLOT(updateCount()));
-    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(updateCount()));
-    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(updateCount()));
-    connect(this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)), SLOT(updateCount()));
 }

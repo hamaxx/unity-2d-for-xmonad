@@ -25,28 +25,14 @@ class QSortFilterProxyModelQML : public QSortFilterProxyModel
 
     Q_PROPERTY(QObject* model READ sourceModelQObject WRITE setSourceModelQObject)
 
-    /* FIXME: This property is only here as a workaround for the following Qt bug:
-              http://bugreports.qt.nokia.com/browse/QTBUG-12905
-              We need it so we can be notified of changes in the number of items,
-              but we should really use Repeater.count (in spread/Spread.qml)
-    */
-    Q_PROPERTY(int count READ count NOTIFY countChanged);
-
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
     /* getters */
     QObject* sourceModelQObject() const;
-    int count() const { return rowCount(); }
 
     /* setters */
     void setSourceModelQObject(QObject *model);
-
-Q_SIGNALS:
-    void countChanged(int count);
-
-public slots:
-    void updateCount();
 
 private slots:
     void updateRoleNames();

@@ -31,8 +31,6 @@ class WindowsList : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(int count READ count NOTIFY countChanged);
-
 public:
     WindowsList(QObject *parent = 0);
     ~WindowsList();
@@ -40,13 +38,8 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-    int count() const { return rowCount(); }
-
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
-
-signals:
-    void countChanged(int count);
 
 public slots:
     void addWindow(BamfView *view);
