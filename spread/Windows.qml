@@ -23,6 +23,15 @@ import Unity2d 1.0
 GridView {
     id: windows
 
+    signal clicked
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: windows.clicked()
+        /* Eating all mouse events so that they are not passed beneath the workspace */
+        hoverEnabled: true
+    }
+
     /* This proxy model takes care of removing all windows that are not on
        the current workspace and that are not pinned to all workspaces. */
     QSortFilterProxyModelQML {

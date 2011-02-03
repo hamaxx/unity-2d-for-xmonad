@@ -101,11 +101,15 @@ Rectangle {
                     }
                 }
 
-                onClicked: if (zoomedWorkspace != -1) {
-                               zoomedWorkspace = -1
-                           } else {
-                               zoomedWorkspace = workspaceNumber
-                           }
+                onClicked: {
+                    if (zoomedWorkspace == workspaceNumber) {
+                        activateWorkspace(workspaceNumber)
+                    } else if (zoomedWorkspace == -1) {
+                        zoomedWorkspace = workspaceNumber
+                    } else {
+                        zoomedWorkspace = -1
+                    }
+                }
             }
         }
     }
@@ -205,5 +209,10 @@ Rectangle {
             windowInfo.activate()
             cancelAndExit()
         }
+    }
+
+    function activateWorkspace(workspaceNumber) {
+        screen.workspaces.current = workspaceNumber
+        cancelAndExit()
     }
 }
