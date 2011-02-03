@@ -162,6 +162,12 @@ void WindowsList::addWindow(BamfView *view)
         return;
     }
 
+    /* Prevent adding windows that the user sholdn't be able to
+       manipulate in the switcher (i.e. the dash) */
+    if (!window->user_visible()) {
+        continue;
+    }
+
     WindowInfo *info = new WindowInfo(window->xid());
     connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
 
