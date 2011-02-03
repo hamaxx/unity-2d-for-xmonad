@@ -18,8 +18,6 @@ FocusScope {
         overlay_alpha: 0
     }
 
-    /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
-              very well in Workspace.qml */
     Windows {
         state: workspace.state == "screen" ? "screen" : "spread"
         anchors.fill: parent
