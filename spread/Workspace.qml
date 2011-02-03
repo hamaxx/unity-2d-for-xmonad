@@ -27,7 +27,6 @@ FocusScope {
     /* FIXME: it looks like Spread.qml is a useless extra layer whose content could fit
               very well in Workspace.qml */
     Windows {
-        id: spread
         state: workspace.state == "screen" ? "screen" : "spread"
         anchors.fill: parent
     }
