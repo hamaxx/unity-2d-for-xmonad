@@ -6,6 +6,9 @@ FocusScope {
 
     transformOrigin: Item.TopLeft /* FIXME: useful? */
 
+    property real unzoomedScale
+    property int unzoomedX
+    property int unzoomedY
     property real zoomedScale
     property int zoomedX
     property int zoomedY
@@ -36,6 +39,16 @@ FocusScope {
     }
 
     states: [
+        State {
+            name: "unzoomed"
+            PropertyChanges {
+                target: workspace
+                scale: unzoomedScale
+                x: unzoomedX
+                y: unzoomedY
+                z: 0
+            }
+        },
         State {
             name: "zoomed"
             PropertyChanges {
@@ -68,7 +81,7 @@ FocusScope {
             }
         },
         Transition {
-            to: ""
+            to: "unzoomed"
             SequentialAnimation {
                 /* When going to default state put the workspace underneath the
                    workspace in zoomed state but not on the same plane as the
@@ -80,7 +93,7 @@ FocusScope {
                     duration: Utils.transitionDuration
                     easing.type: Easing.InOutSine
                 }
-                PropertyAction { property: "z"; value: 0 }
+                PropertyAction { property: "z" }
             }
         }
     ]

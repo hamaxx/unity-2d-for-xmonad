@@ -72,11 +72,13 @@ Rectangle {
             property int row: Math.floor(index / columns)
             property int column: index % columns
 
-            x: column * (switcher.width * cellScale) + (column * switcher.spacing)
-            y: row * (switcher.height * cellScale) + (row * switcher.spacing)
             width: switcher.width
             height: switcher.height
-            scale:  switcher.cellScale
+
+            /* Organize the workspaces in a grid in 'unzoomed' state */
+            unzoomedX: column * (switcher.width * cellScale) + (column * switcher.spacing)
+            unzoomedY: row * (switcher.height * cellScale) + (row * switcher.spacing)
+            unzoomedScale:  switcher.cellScale
 
             /* Center the workspace in 'zoomed' state */
             zoomedX: (switcher.width - width*zoomedScale) / 2
@@ -90,13 +92,13 @@ Rectangle {
                     if (screen.workspaces.current == workspaceNumber) {
                         return "screen"
                     } else {
-                        return ""
+                        return "unzoomed"
                     }
                 } else {
                     if (zoomedWorkspace == workspaceNumber) {
                         return "zoomed"
                     } else {
-                        return ""
+                        return "unzoomed"
                     }
                 }
             }
