@@ -79,7 +79,7 @@ GridView {
                 switch (event.key) {
                     case Qt.Key_Enter:
                     case Qt.Key_Return:
-                        windows.windowActivated(windowInfo)
+                        windows.windowActivated(spreadWindow)
                         event.accepted = true
                 }
             }
