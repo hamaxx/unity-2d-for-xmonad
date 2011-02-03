@@ -4,7 +4,7 @@ import "utils.js" as Utils
 FocusScope {
     id: workspace
 
-    transformOrigin: Item.TopLeft /* FIXME: useful? */
+    transformOrigin: Item.TopLeft
 
     property real unzoomedScale
     property int unzoomedX
