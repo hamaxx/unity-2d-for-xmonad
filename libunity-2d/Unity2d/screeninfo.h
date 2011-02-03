@@ -37,7 +37,7 @@ public:
     QRect availableGeometry() const;
     QRect geometry() const;
 
-signals:
+Q_SIGNALS:
     void activeWindowChanged(unsigned int activeWindow);
     void geometryChanged(QRect geometry);
     void availableGeometryChanged(QRect availableGeometry);
@@ -50,7 +50,7 @@ private:
     static void onActiveWindowChanged(WnckScreen *screen,
                                       WnckWindow *previously_active_window,
                                       gpointer    user_data);
-private slots:
+private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
 

@@ -135,16 +135,16 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     g_signal_connect(G_OBJECT(m_wnckWindow), "workspace-changed",
                      G_CALLBACK(WindowInfo::onWorkspaceChanged), this);
 
-    emit contentXidChanged(m_contentXid);
-    emit decoratedXidChanged(m_decoratedXid);
+    Q_EMIT contentXidChanged(m_contentXid);
+    Q_EMIT decoratedXidChanged(m_decoratedXid);
 
     updateGeometry();
 
-    emit zChanged(z());
-    emit titleChanged(title());
-    emit iconChanged(icon());
-    emit desktopFileChanged(desktopFile());
-    emit workspaceChanged(workspace());
+    Q_EMIT zChanged(z());
+    Q_EMIT titleChanged(title());
+    Q_EMIT iconChanged(icon());
+    Q_EMIT desktopFileChanged(desktopFile());
+    Q_EMIT workspaceChanged(workspace());
 }
 
 unsigned int WindowInfo::decoratedXid() const
@@ -241,8 +241,8 @@ void WindowInfo::updateGeometry()
     m_size.setWidth(w);
     m_size.setHeight(h);
 
-    emit positionChanged(m_position);
-    emit sizeChanged(m_size);
+    Q_EMIT positionChanged(m_position);
+    Q_EMIT sizeChanged(m_size);
 }
 
 void WindowInfo::showWindow(WnckWindow* window)
@@ -267,5 +267,5 @@ void WindowInfo::onWorkspaceChanged(WnckWindow *window, gpointer user_data)
 
 void WindowInfo::updateWorkspace()
 {
-    emit workspaceChanged(workspace());
+    Q_EMIT workspaceChanged(workspace());
 }

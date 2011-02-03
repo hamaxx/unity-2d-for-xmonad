@@ -41,7 +41,7 @@ public:
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
 
-public slots:
+public Q_SLOTS:
     void addWindow(BamfView *view);
     void removeWindow(BamfView *view);
     void updateWorkspaceRole(int workspace);
