@@ -165,7 +165,7 @@ void WindowsList::addWindow(BamfView *view)
     /* Prevent adding windows that the user sholdn't be able to
        manipulate in the switcher (i.e. the dash) */
     if (!window->user_visible()) {
-        continue;
+        return;
     }
 
     WindowInfo *info = new WindowInfo(window->xid());
