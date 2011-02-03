@@ -24,6 +24,7 @@ GridView {
     id: windows
 
     signal clicked
+    signal windowActivated(variant window)
 
     MouseArea {
         anchors.fill: parent
@@ -78,7 +79,7 @@ GridView {
                 switch (event.key) {
                     case Qt.Key_Enter:
                     case Qt.Key_Return:
-                        spreadWindow.activate()
+                        windows.windowActivated(windowInfo)
                         event.accepted = true
                 }
             }
@@ -96,14 +97,7 @@ GridView {
                     cell.forceActiveFocus()
                 }
 
-                onClicked: activate()
-
-                function activate() {
-                    /* Hack to make sure the window is on top of the others during the
-                       outro animation */
-                    z = 9999
-                    switcher.activateWindow(windowInfo)
-                }
+                onClicked: windows.windowActivated(spreadWindow)
 
                 /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
                 parent: windows

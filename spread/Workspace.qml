@@ -25,6 +25,16 @@ FocusScope {
         anchors.fill: parent
         focus: true
         onClicked: workspace.clicked()
+        onWindowActivated: {
+            if (workspace.state != "zoomed") {
+                workspace.clicked()
+            } else {
+                /* Hack to make sure the window is on top of the others during the
+                   outro animation */
+                window.z = 9999
+                switcher.activateWindow(window.windowInfo)
+            }
+        }
     }
 
     states: [

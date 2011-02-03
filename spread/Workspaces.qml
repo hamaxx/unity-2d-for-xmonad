@@ -199,13 +199,9 @@ Rectangle {
     }
 
     function activateWindow(windowInfo) {
-        if (windowInfo.workspace != zoomedWorkspace) {
-            zoomedWorkspace = windowInfo.workspace
-        } else {
-            screen.workspaces.current = zoomedWorkspace
-            windowInfo.activate()
-            cancelAndExit()
-        }
+        screen.workspaces.current = zoomedWorkspace
+        windowInfo.activate()
+        cancelAndExit()
     }
 
     function activateWorkspace(workspaceNumber) {
