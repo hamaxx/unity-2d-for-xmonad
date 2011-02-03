@@ -328,7 +328,9 @@ LauncherApplication::activate()
 {
     if (active())
     {
-        spread();
+        if (m_application->windows()->size() > 1) {
+            spread();
+        }
     }
     else if (running() && has_visible_window())
     {
@@ -491,7 +493,6 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 void
 LauncherApplication::spread()
 {
-    qDebug() << "Triggering spread via DBUS";
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
     QDBusReply<bool> isShown = iface.call("IsShown");
