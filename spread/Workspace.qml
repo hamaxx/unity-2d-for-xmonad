@@ -43,7 +43,7 @@ FocusScope {
                 scale: zoomedScale
                 x: zoomedX
                 y: zoomedY
-                z: 1
+                z: 2
             }
         },
         State {
@@ -53,7 +53,7 @@ FocusScope {
                 scale: 1.0
                 x: 0
                 y: 0
-                z: 1
+                z: 2
             }
         }
     ]
@@ -68,13 +68,19 @@ FocusScope {
             }
         },
         Transition {
-            from: "zoomed"
-            PropertyAction { property: "z"; value: 2 }
-            NumberAnimation {
-                target: workspace
-                properties: "x,y,scale"
-                duration: Utils.transitionDuration
-                easing.type: Easing.InOutSine
+            to: ""
+            SequentialAnimation {
+                /* When going to default state put the workspace underneath the
+                   workspace in zoomed state but not on the same plane as the
+                   workspaces also in the default state until the end of the transition. */
+                PropertyAction { property: "z"; value: 1 }
+                NumberAnimation {
+                    target: workspace
+                    properties: "x,y,scale"
+                    duration: Utils.transitionDuration
+                    easing.type: Easing.InOutSine
+                }
+                PropertyAction { property: "z"; value: 0 }
             }
         }
     ]
