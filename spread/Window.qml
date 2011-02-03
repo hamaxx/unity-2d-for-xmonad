@@ -122,19 +122,6 @@ Item {
 
         anchors.fill: parent
 
-        /* A darkening rectangle that covers every window in spread state,
-           except the currently selected window. See overlay.states */
-        Rectangle {
-            id: darken
-
-            anchors.fill:  parent
-
-            color: "black"
-            opacity: 0.1
-
-            visible: !window.isSelected
-        }
-
         /* A label with the window title centered over the shot.
            It will appear only for the currently selected window. See overlay.states */
         Rectangle {
