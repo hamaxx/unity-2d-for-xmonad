@@ -28,8 +28,7 @@
 #include "bamf-view.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent),
-    m_loaded(false)
+    QAbstractListModel(parent)
 {
     QHash<int, QByteArray> roles;
     roles[WindowInfo::RoleWindowInfo] = "window";
@@ -75,10 +74,6 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
 
 void WindowsList::load()
 {
-    if (m_loaded) {
-        return;
-    }
-
     if (m_windows.count() > 0) {
         beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
         qDeleteAll(m_windows);
@@ -123,8 +118,6 @@ void WindowsList::load()
             endInsertRows();
         }
     }
-
-    m_loaded = true;
 }
 
 void WindowsList::unload()
@@ -133,8 +126,6 @@ void WindowsList::unload()
     qDeleteAll(m_windows);
     m_windows.clear();
     endRemoveRows();
-
-    m_loaded = false;
 }
 
 void WindowsList::addWindow(BamfView *view)

@@ -20,7 +20,6 @@
 #include <QObject>
 #include <QPoint>
 #include <QSize>
-#include <QVariant>
 #include <QtDeclarative/qdeclarative.h>
 
 class BamfWindow;

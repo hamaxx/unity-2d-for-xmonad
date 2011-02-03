@@ -48,7 +48,6 @@ public slots:
 
 private:
     QList<WindowInfo*> m_windows;
-    bool m_loaded;
 };
 
 QML_DECLARE_TYPE(WindowsList)
