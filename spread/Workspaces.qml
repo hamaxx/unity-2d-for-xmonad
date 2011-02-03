@@ -113,6 +113,7 @@ Rectangle {
         }
     }
 
+    /* FIXME: bad naming. Ideas: screenModeActivated, initialState */
     property bool initial: true
 
     /* This connection receives all commands from the DBUS API */
