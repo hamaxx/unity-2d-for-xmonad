@@ -323,12 +323,46 @@ LauncherApplication::has_visible_window() const
     return m_has_visible_window;
 }
 
+/* Returns the number of window for this application that reside on the
+   current workspace */
+int
+LauncherApplication::windowCountOnCurrentWorkspace()
+{
+    int windowCount = 0;
+    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
+
+    for (int i = 0; i < m_application->windows()->size(); i++) {
+        BamfWindow *window = m_application->windows()->at(i);
+        if (window == NULL) {
+            continue;
+        }
+
+        /* When geting the wnck window, it's possible we get a NULL
+           return value because wnck hasn't updated its internal list yet,
+           so we need to force it once to be sure */
+        WnckWindow *wnck_window = wnck_window_get(window->xid());
+        if (wnck_window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            wnck_window = wnck_window_get(window->xid());
+            if (wnck_window == NULL) {
+                continue;
+            }
+        }
+
+        WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
+        if (workspace == current) {
+            windowCount++;
+        }
+    }
+    return windowCount;
+}
+
 void
 LauncherApplication::activate()
 {
     if (active())
     {
-        if (m_application->windows()->size() > 1) {
+        if (windowCountOnCurrentWorkspace() > 1) {
             spread();
         }
     }
