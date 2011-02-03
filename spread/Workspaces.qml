@@ -59,56 +59,55 @@ Rectangle {
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
-    Item {
-        id: spaces
-        Repeater {
-            model: screen.workspaces.count
-            delegate: Workspace {
-                id: workspace
+    Repeater {
+        id: workspaces
 
-                /* FIXME: This is ok right now since we ignore screen.orientation and
-                   screen.startingCorner, but we should respect them eventually */
-                property int workspaceNumber: index
-                property int row: Math.floor(index / columns)
-                property int column: index % columns
+        model: screen.workspaces.count
+        delegate: Workspace {
+            id: workspace
 
-                x: column * (switcher.width * cellScale) + (column * switcher.spacing)
-                y: row * (switcher.height * cellScale) + (row * switcher.spacing)
-                width: switcher.width
-                height: switcher.height
-                scale:  switcher.cellScale
+            /* FIXME: This is ok right now since we ignore screen.orientation and
+               screen.startingCorner, but we should respect them eventually */
+            property int workspaceNumber: index
+            property int row: Math.floor(index / columns)
+            property int column: index % columns
 
-                /* Center the workspace in 'zoomed' state */
-                zoomedX: (switcher.width - width*zoomedScale) / 2
-                zoomedY: (switcher.height - height*zoomedScale) / 2
-                zoomedScale: switcher.zoomedScale
+            x: column * (switcher.width * cellScale) + (column * switcher.spacing)
+            y: row * (switcher.height * cellScale) + (row * switcher.spacing)
+            width: switcher.width
+            height: switcher.height
+            scale:  switcher.cellScale
 
-                focus: zoomedWorkspace == workspaceNumber
+            /* Center the workspace in 'zoomed' state */
+            zoomedX: (switcher.width - width*zoomedScale) / 2
+            zoomedY: (switcher.height - height*zoomedScale) / 2
+            zoomedScale: switcher.zoomedScale
 
-                state: {
-                    if (initial) {
-                        if (screen.workspaces.current == workspaceNumber) {
-                            return "screen"
-                        } else {
-                            return ""
-                        }
+            focus: zoomedWorkspace == workspaceNumber
+
+            state: {
+                if (initial) {
+                    if (screen.workspaces.current == workspaceNumber) {
+                        return "screen"
                     } else {
-                        if (zoomedWorkspace == workspaceNumber) {
-                            return "zoomed"
-                        } else {
-                            return ""
-                        }
+                        return ""
+                    }
+                } else {
+                    if (zoomedWorkspace == workspaceNumber) {
+                        return "zoomed"
+                    } else {
+                        return ""
                     }
                 }
+            }
 
-                onClicked: {
-                    if (zoomedWorkspace == workspaceNumber) {
-                        activateWorkspace(workspaceNumber)
-                    } else if (zoomedWorkspace == -1) {
-                        zoomedWorkspace = workspaceNumber
-                    } else {
-                        zoomedWorkspace = -1
-                    }
+            onClicked: {
+                if (zoomedWorkspace == workspaceNumber) {
+                    activateWorkspace(workspaceNumber)
+                } else if (zoomedWorkspace == -1) {
+                    zoomedWorkspace = workspaceNumber
+                } else {
+                    zoomedWorkspace = -1
                 }
             }
         }
