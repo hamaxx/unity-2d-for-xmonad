@@ -3,7 +3,7 @@ import "utils.js" as Utils
 import UnityApplications 1.0
 import Unity2d 1.0
 
-/* The main component that manages the spread.
+/* The main component that manages the windows.
    This only acts as an outer shell, the actual logic is pretty much all in SpreadLayout.qml
    and SpreadItem.qml
 
@@ -20,8 +20,8 @@ import Unity2d 1.0
    screen minus launcher, panels, etc.).
 */
 
-Item {
-    id: spread
+GridView {
+    id: windows
 
     /* This proxy model takes care of removing all windows that are not on
        the current workspace and that are not pinned to all workspaces. */
@@ -45,106 +45,102 @@ Item {
         filterRegExp: RegExp("%1".arg(switcher.applicationFilter))
     }
 
-    GridView {
-        id: grid
-        anchors.fill: parent
+    property int columns: Math.ceil(Math.sqrt(count))
+    property int rows: Math.ceil(count / columns)
 
-        property int columns: Math.ceil(Math.sqrt(count))
-        property int rows: Math.ceil(count / columns)
+    cellWidth: Math.floor(width / columns)
+    cellHeight: height / rows
 
-        cellWidth: Math.floor(width / columns)
-        cellHeight: height / rows
+    model: filteredByApplication
 
-        model: filteredByApplication
-        delegate:
-            Item {
-                id: cell
+    delegate:
+        Item {
+            id: cell
 
-                /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
-                //GridView.onAdd:
-                Component.onCompleted: if (spreadWindow.state != "screen") addAnimation.start()
-                GridView.onRemove: removeAnimation.start()
+            /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
+            //GridView.onAdd:
+            Component.onCompleted: if (spreadWindow.state != "screen") addAnimation.start()
+            GridView.onRemove: removeAnimation.start()
 
-                width: grid.cellWidth
-                height: grid.cellHeight
+            width: windows.cellWidth
+            height: windows.cellHeight
 
-                Window {
-                    id: spreadWindow
+            Window {
+                id: spreadWindow
 
-                    property bool animateFollow
-                    property bool followCell: true
+                property bool animateFollow
+                property bool followCell: true
 
-                    /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
-                    parent: grid
+                /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
+                parent: windows
 
-                    cellWidth: followCell ? cell.width : cellWidth
-                    cellHeight: followCell ? cell.height : cellHeight
-                    z: window.z
+                cellWidth: followCell ? cell.width : cellWidth
+                cellHeight: followCell ? cell.height : cellHeight
+                z: window.z
 
-                    Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                    Behavior on y { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                    Behavior on cellWidth { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                    Behavior on cellHeight { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                Behavior on y { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                Behavior on cellWidth { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
+                Behavior on cellHeight { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
 
-                    windowInfo: window
-                    state: spread.state
-                    states: [
-                        State {
-                            name: "screen"
-                            PropertyChanges {
-                                target: spreadWindow
-                                /* Note that we subtract the availableGeometry x and y since window.location is
-                                expressed in global screen coordinates. */
-                                x: window.position.x - screen.availableGeometry.x
-                                y: window.position.y - screen.availableGeometry.y
-                                width: window.size.width
-                                height: window.size.height
-                                animateFollow: false
-                            }
-                        },
-                        State {
-                            name: "spread"
-                            PropertyChanges {
-                                target: spreadWindow
-                                /* Center the window in its cell */
-                                x: followCell ? (cell.x + (cell.width - spreadWidth) / 2) : x
-                                y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
-                                width: spreadWidth
-                                height: spreadHeight
-                                animateFollow: true
-                            }
+                windowInfo: window
+                state: windows.state
+                states: [
+                    State {
+                        name: "screen"
+                        PropertyChanges {
+                            target: spreadWindow
+                            /* Note that we subtract the availableGeometry x and y since window.location is
+                            expressed in global screen coordinates. */
+                            x: window.position.x - screen.availableGeometry.x
+                            y: window.position.y - screen.availableGeometry.y
+                            width: window.size.width
+                            height: window.size.height
+                            animateFollow: false
                         }
-                    ]
-
-                    SequentialAnimation {
-                        id: addAnimation
-
-                        PropertyAction { target: spreadWindow; property: "animateFollow"; value: false }
-                        NumberAnimation { target: spreadWindow; property: "opacity"; from: 0; to: 1.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
-                        PropertyAction { target: spreadWindow; property: "animateFollow"; value: true }
-                    }
-                    SequentialAnimation {
-                        id: removeAnimation
-
-                        PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
-                        PropertyAction { target: spreadWindow; property: "followCell"; value: false }
-                        NumberAnimation { target: spreadWindow; property: "opacity"; to: 0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
-                        PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
-                    }
-                    transitions: [
-                        Transition {
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    properties: "x,y,width,height"
-                                    duration: Utils.transitionDuration
-                                    easing.type: Easing.InOutQuad
-                                }
-                                /* Apply final value to spreadWindow.animateFollow by not specifying a value */
-                                PropertyAction { property: "animateFollow" }
-                            }
+                    },
+                    State {
+                        name: "spread"
+                        PropertyChanges {
+                            target: spreadWindow
+                            /* Center the window in its cell */
+                            x: followCell ? (cell.x + (cell.width - spreadWidth) / 2) : x
+                            y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
+                            width: spreadWidth
+                            height: spreadHeight
+                            animateFollow: true
                         }
-                    ]
+                    }
+                ]
+
+                SequentialAnimation {
+                    id: addAnimation
+
+                    PropertyAction { target: spreadWindow; property: "animateFollow"; value: false }
+                    NumberAnimation { target: spreadWindow; property: "opacity"; from: 0; to: 1.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
+                    PropertyAction { target: spreadWindow; property: "animateFollow"; value: true }
                 }
-        }
+                SequentialAnimation {
+                    id: removeAnimation
+
+                    PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
+                    PropertyAction { target: spreadWindow; property: "followCell"; value: false }
+                    NumberAnimation { target: spreadWindow; property: "opacity"; to: 0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
+                    PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
+                }
+                transitions: [
+                    Transition {
+                        SequentialAnimation {
+                            NumberAnimation {
+                                properties: "x,y,width,height"
+                                duration: Utils.transitionDuration
+                                easing.type: Easing.InOutQuad
+                            }
+                            /* Apply final value to spreadWindow.animateFollow by not specifying a value */
+                            PropertyAction { property: "animateFollow" }
+                        }
+                    }
+                ]
+            }
     }
 }
