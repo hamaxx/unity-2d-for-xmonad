@@ -81,7 +81,7 @@ Workspaces::activate()
     if (isShown.value() == true) {
         iface.call("FilterByApplication", QString());
     } else {
-        iface.call("ShowCurrentWorkspace", QString());
+        iface.call("ShowAllWorkspaces", QString());
     }
 }
 
