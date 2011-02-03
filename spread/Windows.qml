@@ -68,8 +68,8 @@ GridView {
 
             /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
             //GridView.onAdd:
-            Component.onCompleted: if (spreadWindow.state != "screen") addAnimation.start()
-            GridView.onRemove: removeAnimation.start()
+            Component.onCompleted: if (spreadWindow.state == "spread") addAnimation.start()
+            GridView.onRemove: if (spreadWindow.state == "spread") removeAnimation.start()
 
             width: windows.cellWidth
             height: windows.cellHeight
