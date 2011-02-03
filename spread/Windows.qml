@@ -69,8 +69,8 @@ GridView {
 
             /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
             //GridView.onAdd:
-            Component.onCompleted: if (spreadWindow.state == "spread") addAnimation.start()
-            GridView.onRemove: if (spreadWindow.state == "spread") removeAnimation.start()
+            Component.onCompleted: if (!switcher.initial) addAnimation.start()
+            GridView.onRemove: if (!switcher.initial) removeAnimation.start()
 
             width: windows.cellWidth
             height: windows.cellHeight
@@ -136,7 +136,7 @@ GridView {
                             y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
                             width: spreadWidth
                             height: spreadHeight
-                            animateFollow: true
+                            animateFollow: !switcher.initial
                         }
                     }
                 ]
