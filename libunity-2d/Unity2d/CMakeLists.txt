@@ -14,6 +14,7 @@ set(unity-2d-qml_SRCS
     screeninfo.cpp
     cacheeffect.cpp
     workspacesinfo.cpp
+    signalwaiter.cpp
     )
 
 set(unity-2d-qml_MOC_HDRS
@@ -24,6 +25,7 @@ set(unity-2d-qml_MOC_HDRS
     screeninfo.h
     cacheeffect.h
     workspacesinfo.h
+    signalwaiter.h
     )
 
 qt4_wrap_cpp(unity-2d-qml_MOC_SRCS ${unity-2d-qml_MOC_HDRS})

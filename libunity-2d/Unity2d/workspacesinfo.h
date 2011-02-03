@@ -10,7 +10,7 @@ class WorkspacesInfo : public QObject
     Q_OBJECT
 
     Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(int current READ current WRITE setCurrent NOTIFY currentChanged)
+    Q_PROPERTY(int current READ current NOTIFY currentChanged)
     Q_PROPERTY(int rows READ rows NOTIFY rowsChanged)
     Q_PROPERTY(int columns READ columns NOTIFY columnsChanged)
     Q_PROPERTY(Orientation orientation READ orientation NOTIFY orientationChanged)
@@ -38,8 +38,8 @@ class WorkspacesInfo : public QObject
     Orientation orientation() const { return m_orientation; }
     Corner startingCorner() const { return m_startingCorner; }
 
-    /* Setters */
-    void setCurrent(int current);
+    /* Invokables */
+    Q_INVOKABLE bool changeCurrent(int newWorkspace);
 
 Q_SIGNALS:
     void countChanged(int count);

@@ -133,8 +133,6 @@ Rectangle {
             show()
         }
 
-        onHide: cancelAndExit()
-
         onFilterByApplication: applicationFilter = applicationDesktopFile
     }
 
@@ -199,13 +197,13 @@ Rectangle {
     }
 
     function activateWindow(windowInfo) {
-        screen.workspaces.current = zoomedWorkspace
+        screen.workspaces.changeCurrent(zoomedWorkspace);
         windowInfo.activate()
         cancelAndExit()
     }
 
     function activateWorkspace(workspaceNumber) {
-        screen.workspaces.current = workspaceNumber
+        screen.workspaces.changeCurrent(workspaceNumber);
         cancelAndExit()
     }
 }

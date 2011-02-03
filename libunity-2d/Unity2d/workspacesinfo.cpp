@@ -1,5 +1,6 @@
 #include "workspacesinfo.h"
 #include "screeninfo.h"
+#include "signalwaiter.h"
 
 #undef signals
 extern "C" {
@@ -179,16 +180,24 @@ void WorkspacesInfo::updateCurrentWorkspace()
 
 /* FIXME: this will not work with wm using large desktops and viewports
    to implement their workspaces.*/
-void WorkspacesInfo::setCurrent(int current)
+bool WorkspacesInfo::changeCurrent(int newWorkspace)
 {
     WnckScreen *screen = wnck_screen_get_default();
-    WnckWorkspace *workspace = wnck_screen_get_workspace(screen, current);
+    WnckWorkspace *workspace = wnck_screen_get_workspace(screen, newWorkspace);
     if (workspace == NULL) {
-        qWarning() << "Requested activation workspace" << current << " but it does not exist.";
-        return;
+        qWarning() << "Requested activation workspace" << newWorkspace << " but it does not exist.";
+        return false;
     }
 
+    if (wnck_screen_get_active_workspace(screen) == workspace) {
+        return true;
+    }
+
+    /* This function will ask the WM to change workspace. However we have no way to know
+       if it succeeds or fails. To know that we can only wait to be notified of the workspace
+       to actually change, or decide we waited too much and proceed anyway */
     wnck_workspace_activate(workspace, CurrentTime);
+    return SignalWaiter::waitForSignal(this, SIGNAL(currentChanged(int)), 50);
 }
 
 /* Helper function to read the value of an X11 window property of integer type of the
