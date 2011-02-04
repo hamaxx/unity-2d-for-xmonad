@@ -65,6 +65,7 @@ class WindowInfo : public QObject
 
 public:
     explicit WindowInfo(unsigned int contentXid = 0, QObject *parent = 0);
+    ~WindowInfo();
 
     /* getters */
     unsigned int decoratedXid() const;
