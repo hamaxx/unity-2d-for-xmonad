@@ -72,7 +72,9 @@ Item {
            hack which essentially appends the current time to the source URL of the
            Image, tricking the cache into doing a request to the image provider.
         */
-        source: "image://window/" + windowInfo.decoratedXid + "@" + screen.currentTime()
+        source: "image://window/" + windowInfo.decoratedXid + "|"
+                                  + windowInfo.contentXid + "@"
+                                  + screen.currentTime()
 
         /* Disabled during animations for performance reasons */
         smooth: !animating
