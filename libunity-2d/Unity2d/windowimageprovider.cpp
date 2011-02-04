@@ -49,11 +49,14 @@ WindowImageProvider::~WindowImageProvider()
 {
 }
 
-/* Static helper to read a property on a window that may exist if we are
-   running a specifically patched version of metacity.
+/* Static helper to read the _METACITY_WINDOW_CAPTURE window property
+   which contains the captured pixmap for unmapped windows.
+   This property is created only when running our patched version of
+   metacity that can be found in: lp:~unity-2d-team/unity-2d/metacity
    If it does exist it contains a pixmap with a screenshot of the window
    before it was unmapped (due to moving to another workspace or being
-   minimized.
+   minimized).
+
    NOTE: XID should really be Pixmap (from Xlib). However the definition
    clashes with QImage's Pixmap, so I'm forced to use just XID. It's the
    same underlying type anyway, so it doesn't cause issues.
@@ -103,7 +106,7 @@ QImage WindowImageProvider::requestImage(const QString &id,
     int atPos = id.indexOf('@');
     QString windowIds = (atPos == -1) ? id : id.left(atPos);
 
-    /* After doing this, split the rest of the id on the characted "|". The first
+    /* After doing this, split the rest of the id on the character "|". The first
        part is the window ID of the decorations, the latter of the actual content. */
     atPos = windowIds.indexOf('|');
     QString frameId = (atPos == -1) ? windowIds : windowIds.left(atPos);
