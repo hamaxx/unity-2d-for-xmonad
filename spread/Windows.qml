@@ -106,6 +106,10 @@ GridView {
                 cellHeight: cell.height
                 z: window.z
 
+                /* Duplicated animation code because QML does not support grouping
+                   of identical Behaviors yet.
+                   http://bugreports.qt.nokia.com/browse/QTBUG-16375
+                */
                 Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
                 Behavior on y { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
                 Behavior on width { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
