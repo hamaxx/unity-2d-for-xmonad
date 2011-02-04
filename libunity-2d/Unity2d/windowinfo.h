@@ -61,7 +61,7 @@ class WindowInfo : public QObject
                                                        NOTIFY contentXidChanged)
     Q_PROPERTY(unsigned int decoratedXid READ decoratedXid NOTIFY decoratedXidChanged)
     Q_PROPERTY(QString desktopFile READ desktopFile NOTIFY desktopFileChanged)
-    Q_PROPERTY(int workspace READ workspace NOTIFY workspaceChanged)
+    Q_PROPERTY(int workspace READ workspace WRITE setWorkspace NOTIFY workspaceChanged)
 
 public:
     explicit WindowInfo(unsigned int contentXid = 0, QObject *parent = 0);
@@ -79,6 +79,7 @@ public:
 
     /* setters */
     void setContentXid(unsigned int contentXid);
+    void setWorkspace(int workspaceNumber);
 
     Q_INVOKABLE void activate();
 

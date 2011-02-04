@@ -147,6 +147,12 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     Q_EMIT workspaceChanged(workspace());
 }
 
+void WindowInfo::setWorkspace(int workspaceNumber)
+{
+    WnckWorkspace* workspace = wnck_screen_get_workspace(wnck_screen_get_default(), workspaceNumber);
+    wnck_window_move_to_workspace(m_wnckWindow, workspace);
+}
+
 unsigned int WindowInfo::decoratedXid() const
 {
     return m_decoratedXid;
