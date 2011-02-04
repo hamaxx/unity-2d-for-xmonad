@@ -155,10 +155,11 @@ GridView {
                 SequentialAnimation {
                     id: removeAnimation
 
-                    PropertyAction { target: cell; property: "GridView.delayRemove"; value: true }
                     PropertyAction { target: spreadWindow; property: "followCell"; value: false }
-                    NumberAnimation { target: spreadWindow; property: "opacity"; to: 0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
-                    PropertyAction { target: cell; property: "GridView.delayRemove"; value: false }
+                    NumberAnimation { target: spreadWindow; property: "opacity"; to: 0.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
+                    /* spreadWindow was reparented from cell and will not be deleted when cell is.
+                       Delete it manually. */
+                    ScriptAction { script: spreadWindow.deleteLater() }
                 }
                 transitions: [
                     Transition {
