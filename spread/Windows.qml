@@ -155,6 +155,7 @@ GridView {
                 SequentialAnimation {
                     id: removeAnimation
 
+                    /* FIXME: do not work if windowInfo is destroyed */
                     PropertyAction { target: spreadWindow; property: "followCell"; value: false }
                     NumberAnimation { target: spreadWindow; property: "opacity"; to: 0.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
                     /* spreadWindow was reparented from cell and will not be deleted when cell is.
