@@ -201,7 +201,7 @@ void WindowsList::updateWorkspaceRole(int workspace)
     WindowInfo *window = qobject_cast<WindowInfo*>(sender());
     if (window != NULL) {
         int row = m_windows.indexOf(window);
-        if (row != 1) {
+        if (row != -1) {
             QModelIndex changedItem = index(row);
             Q_EMIT dataChanged(changedItem, changedItem);
         }
