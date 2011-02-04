@@ -35,6 +35,11 @@ WindowInfo::WindowInfo(unsigned int contentXid, QObject *parent) :
     setContentXid(contentXid);
 }
 
+WindowInfo::~WindowInfo()
+{
+    g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+}
+
 unsigned int WindowInfo::contentXid() const
 {
     return m_contentXid;
@@ -124,6 +129,11 @@ void WindowInfo::setContentXid(unsigned int contentXid)
        for the content window, which should be where the WM places the decorations.
     */
     unsigned int decoratedXid = findTopmostAncestor(contentXid);
+
+    /* Disconnect previously connected signals */
+    if (m_wnckWindow != NULL) {
+        g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    }
 
     /* Set member variables and emit changed signals */
     m_bamfApplication = bamfApplication;
