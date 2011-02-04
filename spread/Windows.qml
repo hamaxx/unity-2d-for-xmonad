@@ -163,6 +163,7 @@ GridView {
                 }
                 transitions: [
                     Transition {
+                        to: "screen,spread"
                         SequentialAnimation {
                             PropertyAction { target: spreadWindow; property: "animating"; value: true }
                             NumberAnimation {
