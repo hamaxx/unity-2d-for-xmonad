@@ -535,7 +535,6 @@ LauncherApplication::spread()
     } else {
         iface.call("ShowCurrentWorkspace", m_application->desktop_file());
     }
-
 }
 
 void
