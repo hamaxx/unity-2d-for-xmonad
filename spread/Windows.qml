@@ -57,6 +57,7 @@ GridView {
 
     property int columns: Math.ceil(Math.sqrt(count))
     property int rows: Math.ceil(count / columns)
+    property int cellSpacing: 10
 
     cellWidth: Math.floor(width / columns)
     cellHeight: height / rows
@@ -66,6 +67,15 @@ GridView {
     delegate:
         Item {
             id: cell
+
+            ScaledItem {
+                id: scaledCell
+
+                target: cell
+                itemWidth: window.size.width
+                itemHeight: window.size.height
+                parent: windows
+            }
 
             /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
             //GridView.onAdd:
@@ -102,8 +112,6 @@ GridView {
                 /* Reparenting hack inspired by http://developer.qt.nokia.com/wiki/Drag_and_Drop_within_a_GridView */
                 parent: windows
 
-                cellWidth: cell.width
-                cellHeight: cell.height
                 z: window.z
 
                 /* Duplicated animation code because QML does not support grouping
@@ -136,10 +144,10 @@ GridView {
                         PropertyChanges {
                             target: spreadWindow
                             /* Center the window in its cell */
-                            x: followCell ? (cell.x + (cell.width - spreadWidth) / 2) : x
-                            y: followCell ? (cell.y + (cell.height - spreadHeight) / 2) : y
-                            width: followCell ? spreadWidth : width
-                            height: followCell ? spreadHeight : height
+                            x: followCell ? scaledCell.x + cellSpacing : x
+                            y: followCell ? scaledCell.y + cellSpacing : y
+                            width: followCell ? scaledCell.width - cellSpacing * 2 : width
+                            height: followCell ? scaledCell.height - cellSpacing * 2: height
                             animateFollow: !switcher.initial
                         }
                     }

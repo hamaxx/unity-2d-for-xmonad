@@ -25,23 +25,6 @@ Item {
     property variant windowInfo
     property bool animating
 
-    /* These values are applied only when in spread state */
-    property int cellWidth
-    property int cellHeight
-    property int minMargin: 20
-    property int availableWidth: cellWidth - minMargin
-    property int availableHeight: cellHeight - minMargin
-
-    /* Scale down to fit availableWidth/availableHeight while preserving the aspect
-       ratio of the window. Never scale up the window. */
-    property double availableAspectRatio: availableWidth / availableHeight
-    property double windowAspectRatio: windowInfo.size.width / windowInfo.size.height
-    property bool isHorizontal: windowAspectRatio >= availableAspectRatio
-    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
-    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
-    property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
-    property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
-
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
        need to be managed outside of the component due to interaction with keyboard,
