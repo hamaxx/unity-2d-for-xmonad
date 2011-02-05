@@ -77,7 +77,7 @@ FocusScope {
                 target: workspace
                 properties: "x,y,scale"
                 duration: Utils.transitionDuration
-                easing.type: Easing.InOutSine
+                easing.type: Easing.InOutQuad
             }
         },
         Transition {
@@ -91,7 +91,7 @@ FocusScope {
                     target: workspace
                     properties: "x,y,scale"
                     duration: Utils.transitionDuration
-                    easing.type: Easing.InOutSine
+                    easing.type: Easing.InOutQuad
                 }
                 PropertyAction { property: "z" }
             }
