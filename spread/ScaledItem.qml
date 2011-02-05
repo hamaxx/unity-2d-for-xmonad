@@ -1,7 +1,7 @@
 import Qt 4.7
 
 Item {
-    property Item target
+    property variant target
     property int itemWidth
     property int itemHeight
 
