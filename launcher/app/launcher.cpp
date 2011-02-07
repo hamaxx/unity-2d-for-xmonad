@@ -18,6 +18,11 @@
  */
 
 #include <gtk/gtk.h>
+
+// unity-2d
+#include <gnomesessionclient.h>
+
+// Qt
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
@@ -47,6 +52,9 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
+
+    GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
+    client.connectToSessionManager();
 
     /* Configure "artwork:" prefix so that any access to a file whose name starts
        with that prefix resolves properly. */
