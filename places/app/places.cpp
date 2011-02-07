@@ -25,12 +25,12 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
-#include <QX11Info>
 #include <QAbstractEventDispatcher>
 
 #include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
+#include "superkeymonitor.h"
 
 #include "config.h"
 
@@ -44,8 +44,8 @@ static bool registerDBusService(DashDeclarativeView* view)
     }
     /* FIXME: use an adaptor class in order not to expose all of the view's
        properties and methods. */
-    if (!bus.registerObject("/dash", view, QDBusConnection::ExportAllContents)) {
-        qCritical() << "Failed to register /dash, this should not happen!";
+    if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
+        qCritical() << "Failed to register /Dash, this should not happen!";
         return false;
     }
     /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
@@ -61,28 +61,6 @@ static bool registerDBusService(DashDeclarativeView* view)
     return true;
 }
 
-static uint SUPER_L = 133;
-static uint SUPER_R = 134;
-
-static void grabSuperKey()
-{
-    Display* display = QX11Info::display();
-    Window window = QX11Info::appRootWindow();
-    Bool owner = True;
-    int pointer = GrabModeAsync;
-    int keyboard = GrabModeAsync;
-    XGrabKey(display, SUPER_L, 0, window, owner, pointer, keyboard);
-    XGrabKey(display, SUPER_R, 0, window, owner, pointer, keyboard);
-}
-
-static void ungrabSuperKey()
-{
-    Display* display = QX11Info::display();
-    Window window = QX11Info::appRootWindow();
-    XUngrabKey(display, SUPER_L, 0, window);
-    XUngrabKey(display, SUPER_R, 0, window);
-}
-
 static DashDeclarativeView* getView()
 {
     QVariant viewProperty = QApplication::instance()->property("view");
@@ -96,7 +74,7 @@ static bool eventFilter(void* message)
     {
         XKeyEvent* key = (XKeyEvent*) event;
         uint code = key->keycode;
-        if (code == SUPER_L || code == SUPER_R) {
+        if (code == SuperKeyMonitor::SUPER_L || code == SuperKeyMonitor::SUPER_R) {
             /* Super (aka the "windows" key) shows/hides the dash. */
             DashDeclarativeView* view = getView();
             if (view->active()) {
@@ -112,6 +90,9 @@ static bool eventFilter(void* message)
 
 int main(int argc, char *argv[])
 {
+    QApplication::setApplicationName("Unity 2D Dash");
+    qInstallMsgHandler(globalMessageHandler);
+
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
@@ -146,6 +127,8 @@ int main(int argc, char *argv[])
         /* Place.qml imports UnityApplications, which is part of the launcher
            component… */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
+        /* Place.qml imports Unity2d */
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
     }
 
     /* Load the QML UI, focus and show the window */
@@ -160,13 +143,9 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     /* Grab the "super" keys */
-    grabSuperKey();
+    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
     application.setProperty("view", QVariant::fromValue(&view));
-    int result = application.exec();
-
-    ungrabSuperKey();
-
-    return result;
+    return application.exec();
 }

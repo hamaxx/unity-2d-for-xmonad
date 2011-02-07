@@ -1,44 +1,30 @@
-cmake_minimum_required(VERSION 2.8)
+# Dependencies
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 
-# Dependencies
-include(FindPkgConfig)
-find_package(Qt4 REQUIRED)
-
 # Sources
-set(UnityPlaces_SRCS
+set(unity-2d-qml_SRCS
     plugin.cpp
-    qdbusconnectionqml.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
     windowimageprovider.cpp
     windowinfo.cpp
     windowslist.cpp
+    cacheeffect.cpp
     )
 
-set(UnityPlaces_MOC_HDRS
-    unity_place.h
-    unity_place_entry.h
+set(unity-2d-qml_MOC_HDRS
     plugin.h
-    qdbusconnectionqml.h
     qsortfilterproxymodelqml.h
-    blendedimageprovider.h
-    windowimageprovider.h
     windowinfo.h
     windowslist.h
     )
 
-qt4_wrap_cpp(UnityPlaces_MOC_SRCS ${UnityPlaces_MOC_HDRS})
+qt4_wrap_cpp(unity-2d-qml_MOC_SRCS ${unity-2d-qml_MOC_HDRS})
 
 # Build
-add_library(UnityPlaces SHARED ${UnityPlaces_SRCS} ${UnityPlaces_MOC_SRCS})
+add_library(unity-2d-qml SHARED ${unity-2d-qml_SRCS} ${unity-2d-qml_MOC_SRCS})
 add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
-
-set_target_properties(UnityPlaces PROPERTIES
-    SOVERSION 1
-    VERSION 1.0.0
-    )
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -46,7 +32,7 @@ include_directories(
     ${QTBAMF_INCLUDE_DIRS}
     )
 
-target_link_libraries(UnityPlaces
+target_link_libraries(unity-2d-qml
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
@@ -55,9 +41,9 @@ target_link_libraries(UnityPlaces
     )
 
 # Install
-set(IMPORT_INSTALL_DIR lib/qt4/imports/UnityPlaces)
+set(IMPORT_INSTALL_DIR lib/qt4/imports/Unity2d)
 
-install(TARGETS UnityPlaces
+install(TARGETS unity-2d-qml
     LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
     )
 

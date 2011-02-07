@@ -48,7 +48,7 @@ Item {
                 /* The menu needs to never overlap with the MouseArea of
                    item otherwise flickering happens when the mouse is on
                    an overlapping pixel (hence the -4). */
-                item.menu.show(width-4, y+height/2-list.contentY+launcherView.y)
+                item.menu.show(width-4, y+height/2-list.contentY+panel.y)
             }
 
             onClicked: {
@@ -82,7 +82,7 @@ Item {
 
             function setIconGeometry() {
                 if (running) {
-                    item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height)
+                    item.setIconGeometry(x + panel.x, y + panel.y, width, height)
                 }
             }
 
@@ -109,7 +109,7 @@ Item {
 
             Connections {
                 target: item
-                onWindowAdded: item.setIconGeometry(x + launcherView.x, y + launcherView.y, width, height, xid)
+                onWindowAdded: item.setIconGeometry(x + panel.x, y + panel.y, width, height, xid)
                 /* Not all items are applications. */
                 ignoreUnknownSignals: true
             }

@@ -24,7 +24,7 @@
 
 // Local
 
-// uqpanel
+// libunity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 

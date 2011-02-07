@@ -20,14 +20,12 @@
  */
 
 // Local
-#include <panel.h>
+#include <unity2dpanel.h>
 
 // Qt
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QtTestGui>
-
-using namespace Unity2d;
 
 class PanelTest : public QObject
 {
@@ -38,9 +36,9 @@ private Q_SLOTS:
         QRect screen = QApplication::desktop()->screenGeometry();
         QRect available = QApplication::desktop()->availableGeometry();
 
-        Panel panel;
+        Unity2dPanel panel;
         panel.setFixedHeight(16);
-        panel.setEdge(Panel::TopEdge);
+        panel.setEdge(Unity2dPanel::TopEdge);
         panel.show();
         QTest::qWait(500);
 
@@ -51,7 +49,7 @@ private Q_SLOTS:
 
     void testAddQWidget()
     {
-        Panel panel;
+        Unity2dPanel panel;
         QWidget* widget1 = new QWidget;
         QWidget* widget2 = new QWidget;
         panel.addWidget(widget1);
@@ -64,7 +62,7 @@ private Q_SLOTS:
 
     void testAddSpacer()
     {
-        Panel panel;
+        Unity2dPanel panel;
         QWidget* widget1 = new QWidget;
         widget1->setFixedWidth(100);
         QWidget* widget2 = new QWidget;

@@ -19,19 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PANEL_H
-#define PANEL_H
+#ifndef UNITY2DPANEL_H
+#define UNITY2DPANEL_H
 
 // Local
 
 // Qt
 #include <QWidget>
 
-namespace Unity2d
-{
-
-struct PanelPrivate;
-class Panel : public QWidget
+struct Unity2dPanelPrivate;
+class Unity2dPanel : public QWidget
 {
 Q_OBJECT
 public:
@@ -40,8 +37,8 @@ public:
         TopEdge
     };
 
-    Panel(QWidget* parent = 0);
-    ~Panel();
+    Unity2dPanel(QWidget* parent = 0);
+    ~Unity2dPanel();
 
     void setEdge(Edge);
     Edge edge() const;
@@ -54,14 +51,12 @@ protected:
     virtual void showEvent(QShowEvent*);
     virtual void paintEvent(QPaintEvent*);
 
-private:
-    Q_DISABLE_COPY(Panel)
-    PanelPrivate* const d;
+private Q_SLOTS:
+    void slotWorkAreaResized(int screen);
 
-protected Q_SLOTS:
-    void workAreaResized(int screen);
+private:
+    Q_DISABLE_COPY(Unity2dPanel)
+    Unity2dPanelPrivate* const d;
 };
 
-} // namespace
-
-#endif /* PANEL_H */
+#endif /* UNITY2DPANEL_H */

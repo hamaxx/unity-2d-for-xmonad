@@ -36,9 +36,6 @@ signals:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
 
-public slots:
-    void workAreaResized(int screen);
-
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
 

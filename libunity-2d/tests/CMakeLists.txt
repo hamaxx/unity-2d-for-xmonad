@@ -1,4 +1,4 @@
-macro(launcher_tests)
+macro(libunity_2d_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
         add_test(${_test} ${_test})
@@ -6,28 +6,25 @@ macro(launcher_tests)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
-            uqlauncher
-            UnityApplications
+            unity-2d
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
 
-    add_custom_target(launcher_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+    add_custom_target(libunity-2d_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
-    add_dependencies(check launcher_check)
-endmacro(launcher_tests)
+    add_dependencies(check libunity-2d_check)
+endmacro(libunity_2d_tests)
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../app
-    ${CMAKE_CURRENT_SOURCE_DIR}/../UnityApplications
+    ${libunity-2d_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
 enable_testing()
 
-launcher_tests(
-    launchermenutest
-    launcherviewtest
+libunity_2d_tests(
+    keyboardmodifiersmonitortest
+    paneltest
     )
-

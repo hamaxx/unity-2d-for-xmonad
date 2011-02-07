@@ -47,8 +47,6 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
         image = image.scaledToWidth(requestedSize.width(), Qt::SmoothTransformation);
     else if(requestedSize.isValid())
         image = image.scaled(requestedSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    else
-        return QImage();
 
     if(size)
         *size = image.size();

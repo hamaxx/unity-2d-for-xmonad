@@ -30,7 +30,7 @@
 #include <legacytray/legacytrayapplet.h>
 
 // Unity
-#include <panel.h>
+#include <unity2dpanel.h>
 #include <unity2dapplication.h>
 #include <unity2dstyle.h>
 
@@ -86,6 +86,9 @@ int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
 
+    QApplication::setApplicationName("Unity 2D Panel");
+    qInstallMsgHandler(globalMessageHandler);
+
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We mimick that behaviour
@@ -97,8 +100,8 @@ int main(int argc, char** argv)
     QApplication::setColorSpec(QApplication::ManyColor);
     Unity2dApplication app(argc, argv);
     QApplication::setStyle(new Unity2dStyle);
-    Panel panel;
-    panel.setEdge(Panel::TopEdge);
+    Unity2dPanel panel;
+    panel.setEdge(Unity2dPanel::TopEdge);
     panel.setPalette(getPalette());
     panel.setFixedHeight(24);
 
