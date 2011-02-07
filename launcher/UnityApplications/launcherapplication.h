@@ -61,6 +61,7 @@ public:
     bool has_visible_window() const;
 
     /* setters */
+    void setDesktopFile(const QString& desktop_file);
     void setSticky(bool sticky);
     void setBamfApplication(BamfApplication *application);
 
@@ -74,9 +75,6 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
-
-public Q_SLOTS:
-    void setDesktopFile(const QString& desktop_file);
 
 signals:
     void stickyChanged(bool);
@@ -103,9 +101,14 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
+    void monitorDesktopFile(const QString&);
+    void slotDesktopFileChanged(const QString&);
+    void slotCheckDesktopFileReallyRemoved();
+
 private:
     BamfApplication *m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
+    QString m_removedDesktopFile;
     GDesktopAppInfo *m_appInfo;
     bool m_sticky;
     int m_priority;
