@@ -59,6 +59,8 @@ WindowHelper::WindowHelper(QObject* parent)
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)),
         SLOT(update()));
+    // Work around a BAMF bug: it does not emit ActiveWindowChanged when the
+    // last window is closed. Should be removed when this bug is fixed.
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
         SLOT(update()));
 }
@@ -98,6 +100,7 @@ void WindowHelper::update()
         g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
     stateChanged();
+    nameChanged();
 }
 
 bool WindowHelper::isMaximized() const
