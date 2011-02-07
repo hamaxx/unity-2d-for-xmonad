@@ -86,6 +86,9 @@ Renderer {
                have the entire expression being evaluated at the right moment.
             */
             property int inFlickableY: flickable.contentY*0+parent.mapToItem(flickable, 0, 0).y
+            /* note: testing for flickable.height < 0 is probably useless since it is
+               unlikely flickable.height will ever be negative.
+            */
             property int compensateY: inFlickableY > 0 || flickable.height < 0 || totalHeight < flickable.height ? 0 : -inFlickableY
 
             /* Synchronise the position and content's position of the GridView
