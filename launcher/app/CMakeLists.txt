@@ -21,6 +21,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
+    ${libunity-2d_SOURCE_DIR}/src
     )
 
 target_link_libraries(uqlauncher
@@ -29,6 +30,7 @@ target_link_libraries(uqlauncher
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     ${X11_LDFLAGS}
+    unity-2d
     )
 
 target_link_libraries(unity-2d-launcher
