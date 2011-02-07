@@ -59,6 +59,8 @@ WindowHelper::WindowHelper(QObject* parent)
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)),
         SLOT(update()));
+    connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
+        SLOT(update()));
 }
 
 WindowHelper::~WindowHelper()
