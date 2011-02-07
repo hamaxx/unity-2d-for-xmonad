@@ -71,6 +71,23 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
 
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
+    connect(application, SIGNAL(desktopFileChanged(const QString&)),
+            SLOT(slotApplicationDesktopFileChanged(const QString&)));
+}
+
+void
+LauncherApplicationsList::slotApplicationDesktopFileChanged(const QString& path)
+{
+    if (path.isEmpty()) {
+        /* The desktop file has been removed, we don’t want to keep the
+           application in the launcher. */
+        LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+        /* Setting the 'sticky' property of the application to false will
+           trigger SLOT(onApplicationStickyChanged(bool)), which will remove
+           the application from favorites if relevant, and remove the
+           application from the launcher if it’s not running. */
+        application->setSticky(false);
+    }
 }
 
 void

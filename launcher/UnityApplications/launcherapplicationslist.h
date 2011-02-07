@@ -71,6 +71,7 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
+    void slotApplicationDesktopFileChanged(const QString&);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)

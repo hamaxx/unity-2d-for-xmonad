@@ -266,8 +266,10 @@ LauncherApplication::slotCheckDesktopFileReallyRemoved()
         setDesktopFile(m_removedDesktopFile);
     }
     else {
-        // TODO: notify the launcher that we should be removed.
-        //deleteLater();
+        /* Notify the outside world that our desktop file doesn’t exist any
+           longer. Clients may want to act accordingly, e.g. the launcher would
+           remove the application from its list. */
+        emit desktopFileChanged(QString());
     }
 }
 
