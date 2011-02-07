@@ -21,10 +21,10 @@
 
 // Self
 #include "unity2dpanel.h"
+#include <debug_p.h>
 
 // Qt
 #include <QApplication>
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QHBoxLayout>
@@ -47,8 +47,7 @@ struct Unity2dPanelPrivate
         const QRect available = desktop->availableGeometry(q);
         QRect rect;
 
-        qDebug("Unity2dPanel::updateStrut: available workspace is at (%d, %d) of size %dx%d",
-               available.width(), available.height(), available.x(), available.y());
+        UQ_DEBUG << "Available workspace:" << available;
 
         Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
 
@@ -74,8 +73,7 @@ struct Unity2dPanelPrivate
 
         q->setGeometry(rect);
 
-        qDebug("Unity2dPanel::updateStrut: panel is now at (%d, %d) of size %dx%d",
-               q->x(), q->y(), q->size().width(), q->size().height());
+        UQ_DEBUG << "Panel is now at:" << q->geometry();
 
         XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
                         XA_CARDINAL, 32, PropModeReplace,
