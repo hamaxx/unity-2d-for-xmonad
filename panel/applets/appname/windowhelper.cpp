@@ -40,12 +40,10 @@ extern "C" {
 
 // Qt
 #include <QDateTime>
-#include <QTimer>
 
 struct WindowHelperPrivate
 {
     WnckWindow* m_window;
-    QTimer* m_updateTimer;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -53,21 +51,14 @@ WindowHelper::WindowHelper(QObject* parent)
 , d(new WindowHelperPrivate)
 {
     d->m_window = 0;
-    d->m_updateTimer = new QTimer(this);
-    d->m_updateTimer->setSingleShot(true);
-    d->m_updateTimer->setInterval(0);
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
 
-    scheduleUpdate();
+    update();
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)),
-        SLOT(scheduleUpdate()));
-    connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
-        SLOT(scheduleUpdate()));
-
-    connect(d->m_updateTimer, SIGNAL(timeout()), SLOT(update()));
+        SLOT(update()));
 }
 
 WindowHelper::~WindowHelper()
@@ -87,11 +78,6 @@ static void nameChangedCB(GObject* window,
     WindowHelper*  watcher)
 {
     QMetaObject::invokeMethod(watcher, "nameChanged");
-}
-
-void WindowHelper::scheduleUpdate()
-{
-    d->m_updateTimer->start();
 }
 
 void WindowHelper::update()

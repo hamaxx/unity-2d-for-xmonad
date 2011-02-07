@@ -45,7 +45,6 @@ public Q_SLOTS:
     void unmaximize();
 
 private Q_SLOTS:
-    void scheduleUpdate();
     void update();
 
 Q_SIGNALS:
