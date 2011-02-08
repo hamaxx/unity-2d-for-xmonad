@@ -125,9 +125,21 @@ void SpreadView::focusOutEvent(QFocusEvent * event)
 bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::MouseButtonPress) {
         if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
-            emit outsideClick();
+            Q_EMIT outsideClick();
         }
     }
 
     return false;
+}
+
+void SpreadView::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event);
+    Q_EMIT visibleChanged(true);
+}
+
+void SpreadView::hideEvent(QHideEvent *event)
+{
+    Q_UNUSED(event);
+    Q_EMIT visibleChanged(false);
 }

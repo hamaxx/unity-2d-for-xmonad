@@ -108,6 +108,7 @@ private:
     bool m_has_visible_window;
 
     void updateBamfApplicationDependentProperties();
+    int windowCountOnCurrentWorkspace();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

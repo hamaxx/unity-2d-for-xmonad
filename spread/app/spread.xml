@@ -3,30 +3,54 @@
         <dox:d><![CDATA[
           @mainpage
 
-          An interface to activate the windows spread in Unity2d.
+          An interface to activate the workspace switcher in Unity 2D.
         ]]></dox:d>
         <interface name="com.canonical.Unity2d.Spread" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
                 <dox:d>
-                  An interface to activate the windows spread in Unity2d.
+                  An interface to activate the workspace switcher in Unity 2D.
                 </dox:d>
-                <method name="SpreadAllWindows">
+                <method name="ShowAllWorkspaces">
                         <dox:d><![CDATA[
-                           Activate a spread including all windows in all workspaces.
+                           Show the workspace switcher without any workspace zoomed in.
+                           Optionally show only the windows of the application with the
+                           specified applicationDesktopFile (if not an empty string).
                         ]]></dox:d>
-                </method>
-                <method name="SpreadApplicationWindows">
-                        <dox:d><![CDATA[
-                           Activate a spread including all windows belonging to the application
-                           to which the window specified by the input parameter applicationId belongs to.
-                        ]]></dox:d>
-                        <arg name="applicationId" type="u" direction="in">
-                                <dox:d>The XWindow ID of the window</dox:d>
+                        <arg name="applicationDesktopFile" type="s" direction="in">
+                                <dox:d>Desktop file of the application.</dox:d>
                         </arg>
                 </method>
-                <method name="CancelSpread">
+                <method name="ShowCurrentWorkspace">
                         <dox:d><![CDATA[
-                           Cancel any currently active spread.
+                            Show the workspace switcher with the current workspace zoomed in.
+                            Optionally show only the windows of the application with the
+                            specified applicationDesktopFile (if not an empty string).
                         ]]></dox:d>
+                        <arg name="applicationDesktopFile" type="s" direction="in">
+                                <dox:d>Desktop file of the application.</dox:d>
+                        </arg>
+                </method>
+                <method name="FilterByApplication">
+                        <dox:d><![CDATA[
+                            Activate filtering so that only the windows of the application with
+                            applicationDesktopFile are shown. Pass an empty string to disable filtering.
+                        ]]></dox:d>
+                        <arg name="applicationDesktopFile" type="s" direction="in">
+                                <dox:d>Desktop file of the application.</dox:d>
+                        </arg>
+                </method>
+                <method name="Hide">
+                        <dox:d><![CDATA[
+                           Hide the workspace switcher without changing the currently active
+                           workspace or application.
+                        ]]></dox:d>
+                </method>
+                <method name="IsShown">
+                        <dox:d><![CDATA[
+                            Query whether the workspace switcher is visible or not.
+                        ]]></dox:d>
+                        <arg name="result" type="b" direction="out">
+                            <dox:d>True if the workspace switcher is visible.</dox:d>
+                        </arg>
                 </method>
         </interface>
 </node>

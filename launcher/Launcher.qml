@@ -132,8 +132,13 @@ Item {
         id: trashes
     }
 
+    WorkspacesList {
+        id: workspaces
+    }
+
     Component.onCompleted: {
         items.appendModel(applications);
+        items.appendModel(workspaces);
         items.appendModel(places);
         items.appendModel(devices);
         items.appendModel(trashes);

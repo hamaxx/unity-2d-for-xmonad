@@ -34,7 +34,7 @@ public:
     /* setters */
     void setSourceModelQObject(QObject *model);
 
-private slots:
+private Q_SLOTS:
     void updateRoleNames();
 };
 
