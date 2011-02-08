@@ -27,6 +27,13 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
+static const int DASH_DESKTOP_WIDTH = 989;
+static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 78;
+static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
+
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
 , m_state(HiddenDash)
@@ -57,10 +64,28 @@ DashDeclarativeView::fitToAvailableSpace()
 }
 
 void
+DashDeclarativeView::resizeToDesktopDashSize()
+{
+    QRect rect = QApplication::desktop()->availableGeometry(this);
+
+    rect.setWidth(DASH_DESKTOP_WIDTH);
+    rect.setHeight(m_state == CollapsedDesktopDash ? DASH_DESKTOP_COLLAPSED_HEIGHT : DASH_DESKTOP_EXPANDED_HEIGHT);
+    setGeometry(rect);
+}
+
+void
 DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
     setActive(false);
+}
+
+static int getenvInt(const char* name, int defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    bool ok;
+    int value = stringValue.toInt(&ok);
+    return ok ? value : defaultValue;
 }
 
 void
@@ -68,7 +93,14 @@ DashDeclarativeView::setActive(bool value)
 {
     if (value != active()) {
         if (value) {
-            setDashState(FullScreenDash);
+            QRect rect = QApplication::desktop()->screenGeometry(this);
+            static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
+            static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
+            if (rect.width() <= minWidth && rect.height() <= minHeight) {
+                setDashState(FullScreenDash);
+            } else {
+                setDashState(CollapsedDesktopDash);
+            }
         } else {
             setDashState(HiddenDash);
         }
@@ -89,24 +121,20 @@ DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
     }
 
     m_state = state;
-    switch (state) {
-    case CollapsedDesktopDash:
-    case ExpandedDesktopDash:
-        // Fall-through for now
-
-    case FullScreenDash:
+    if (state == HiddenDash) {
+        hide();
+        activeChanged(false);
+    } else {
         show();
         raise();
         activateWindow();
         forceActivateWindow();
-        fitToAvailableSpace();
+        if (state == FullScreenDash) {
+            fitToAvailableSpace();
+        } else {
+            resizeToDesktopDashSize();
+        }
         activeChanged(true);
-        break;
-
-    case HiddenDash:
-        hide();
-        activeChanged(false);
-        break;
     }
     dashStateChanged(m_state);
 }

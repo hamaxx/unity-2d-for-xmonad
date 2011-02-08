@@ -69,6 +69,7 @@ private Q_SLOTS:
 
 private:
     void fitToAvailableSpace();
+    void resizeToDesktopDashSize();
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
