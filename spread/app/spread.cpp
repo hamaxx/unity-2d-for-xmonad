@@ -51,10 +51,9 @@ int main(int argc, char *argv[])
 
     SpreadView view;
 
-    /* WA_X11NetWmWindowTypeDock means that spread window is borderless and
-       not moveable by the user, yet not fullscreen */
-    Qt::WidgetAttribute windowType = Qt::WA_X11NetWmWindowTypeDock;
-    view.setAttribute(windowType, true);
+    /* The spread window is borderless and not moveable by the user, yet not
+       fullscreen */
+    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
 
     /* Performance tricks */
     view.setAttribute(Qt::WA_OpaquePaintEvent);
