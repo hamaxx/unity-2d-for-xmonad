@@ -252,7 +252,6 @@ LauncherApplication::slotDesktopFileChanged(const QString& path)
            file’s contents have changed. At this point there is no way to be
            sure that the file has been permanently removed, so we want to give
            the application a grace period before checking for real deletion. */
-        m_removedDesktopFile = path;
         QTimer::singleShot(1000, this, SLOT(slotCheckDesktopFileReallyRemoved()));
     }
 }
@@ -260,10 +259,11 @@ LauncherApplication::slotDesktopFileChanged(const QString& path)
 void
 LauncherApplication::slotCheckDesktopFileReallyRemoved()
 {
-    if (QFile::exists(m_removedDesktopFile)) {
+    QString path = desktop_file();
+    if (QFile::exists(path)) {
         /* The desktop file hasn’t really been removed, it was only temporarily
            deleted. */
-        setDesktopFile(m_removedDesktopFile);
+        setDesktopFile(path);
     }
     else {
         /* Notify the outside world that our desktop file doesn’t exist any

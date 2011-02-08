@@ -108,7 +108,6 @@ private slots:
 private:
     BamfApplication *m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
-    QString m_removedDesktopFile;
     GDesktopAppInfo *m_appInfo;
     bool m_sticky;
     int m_priority;
