@@ -27,8 +27,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-DashDeclarativeView::DashDeclarativeView() :
-    QDeclarativeView(), m_active(false), m_activePlaceEntry()
+DashDeclarativeView::DashDeclarativeView()
+: QDeclarativeView()
+, m_state(HiddenDash)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
@@ -57,23 +58,56 @@ DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 }
 
 void
-DashDeclarativeView::setActive(bool active)
+DashDeclarativeView::setActive(bool value)
 {
-    m_active = active;
+    if (value != active()) {
+        if (value) {
+            setDashState(FullScreenDash);
+        } else {
+            setDashState(HiddenDash);
+        }
+    }
+}
 
-    if(active)
-    {
-        emit activeChanged(active);
+bool
+DashDeclarativeView::active() const
+{
+    return m_state != HiddenDash;
+}
+
+void
+DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
+{
+    if (m_state == state) {
+        return;
+    }
+
+    m_state = state;
+    switch (state) {
+    case CollapsedDesktopDash:
+    case ExpandedDesktopDash:
+        // Fall-through for now
+
+    case FullScreenDash:
         show();
         raise();
         activateWindow();
         forceActivateWindow();
-    }
-    else
-    {
+        emit activeChanged(true);
+        break;
+
+    case HiddenDash:
         hide();
-        emit activeChanged(active);
+        emit activeChanged(false);
+        break;
     }
+    emit dashStateChanged(m_state);
+}
+
+DashDeclarativeView::DashState
+DashDeclarativeView::dashState() const
+{
+    return m_state;
 }
 
 void
@@ -83,12 +117,6 @@ DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
         m_activePlaceEntry = activePlaceEntry;
         Q_EMIT activePlaceEntryChanged(activePlaceEntry);
     }
-}
-
-bool
-DashDeclarativeView::active() const
-{
-    return m_active;
 }
 
 const QString&
