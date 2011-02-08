@@ -1,7 +1,7 @@
 import Qt 4.7
 import gconf 1.0
 /* Necessary to access the blended image provider and CacheEffect */
-import UnityPlaces 1.0
+import Unity2d 1.0
 
 Item {
     property string overlay_color
@@ -36,7 +36,6 @@ Item {
 
         anchors.fill: parent
         color: primary_color.value
-        visible: !picture.visible
     }
 
     Image {
@@ -64,7 +63,8 @@ Item {
         }
         width: screen.geometry.width
         height: screen.geometry.height
-        sourceSize.width: width
+
+        smooth: true
         x: - screen.availableGeometry.x
         y: - screen.availableGeometry.y
 
@@ -85,7 +85,7 @@ Item {
                 return Image.Stretch
             else if(picture_options.value == "zoom")
                 return Image.PreserveAspectCrop
-            else return Image.Tile
+            else return Image.PreserveAspectFit
         }
     }
 }

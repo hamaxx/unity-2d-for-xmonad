@@ -22,16 +22,6 @@
 // Self
 #include "applet.h"
 
-// Local
-#include <panel.h>
-
-// Qt
-#include <QApplication>
-#include <QPainter>
-
-// System
-#include <iostream>
-
 namespace Unity2d
 {
 

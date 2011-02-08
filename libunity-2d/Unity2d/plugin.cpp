@@ -20,27 +20,28 @@
 /* Required otherwise using wnck_set_client_type breaks linking with error:
    undefined reference to `wnck_set_client_type(WnckClientType)'
 */
-extern "C" {
-#include <libwnck/util.h>
-}
+#include "plugin.h"
 
-#include "unity_place.h"
-#include "unity_place_entry.h"
-#include "qsortfilterproxymodelqml.h"
 #include "blendedimageprovider.h"
-
-#include <QtDeclarative/qdeclarative.h>
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include <QDesktopWidget>
-#include <QApplication>
-
+#include "cacheeffect.h"
+#include "qsortfilterproxymodelqml.h"
 #include "windowimageprovider.h"
 #include "windowinfo.h"
 #include "windowslist.h"
 #include "screeninfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
+
+#include <QApplication>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QDesktopWidget>
+#include <QtDeclarative/qdeclarative.h>
+
+#undef signals
+extern "C" {
+#include <libwnck/util.h>
+}
 
 #include <X11/Xlib.h>
 
@@ -54,10 +55,8 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
     return 0;
  }
 
-void UnityPlacesPlugin::registerTypes(const char *uri)
+void Unity2dPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<UnityPlace>(uri, 0, 1, "UnityPlace");
-    qmlRegisterType<UnityPlaceEntry>(uri, 0, 1, "UnityPlaceEntry");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "QSortFilterProxyModelQML");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
@@ -67,7 +66,7 @@ void UnityPlacesPlugin::registerTypes(const char *uri)
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
 }
 
-void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
+void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
 {
     Q_UNUSED(uri);
 
@@ -92,4 +91,4 @@ void UnityPlacesPlugin::initializeEngine(QDeclarativeEngine *engine, const char 
     wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 }
 
-Q_EXPORT_PLUGIN2(UnityPlaces, UnityPlacesPlugin);
+Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

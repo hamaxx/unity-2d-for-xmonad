@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNITYPLACESPLUGIN_H
-#define UNITYPLACESPLUGIN_H
+#ifndef UNITY2DPLUGIN_H
+#define UNITY2DPLUGIN_H
 
 #include <QtDeclarative/QDeclarativeExtensionPlugin>
 
-class UnityPlacesPlugin : public QDeclarativeExtensionPlugin
+class Unity2dPlugin : public QDeclarativeExtensionPlugin
 {
     Q_OBJECT
 public:
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif // UNITYPLACESPLUGIN_H
+#endif // UNITY2DPLUGIN_H

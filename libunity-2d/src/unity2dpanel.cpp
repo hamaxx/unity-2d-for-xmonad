@@ -20,14 +20,11 @@
  */
 
 // Self
-#include "panel.h"
-
-// Local
-#include "applet.h"
+#include "unity2dpanel.h"
+#include <debug_p.h>
 
 // Qt
 #include <QApplication>
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QHBoxLayout>
@@ -37,13 +34,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-namespace Unity2d
+struct Unity2dPanelPrivate
 {
-
-struct PanelPrivate
-{
-    Panel* q;
-    Panel::Edge m_edge;
+    Unity2dPanel* q;
+    Unity2dPanel::Edge m_edge;
     QHBoxLayout* m_layout;
 
     void updateStrut()
@@ -53,11 +47,13 @@ struct PanelPrivate
         const QRect available = desktop->availableGeometry(q);
         QRect rect;
 
+        UQ_DEBUG << "Available workspace:" << available;
+
         Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
 
         ulong struts[12];
         switch (m_edge) {
-        case Panel::LeftEdge:
+        case Unity2dPanel::LeftEdge:
             rect = QRect(screen.left(), available.top(), q->width(), available.height());
             struts = {
                 q->width(), 0, 0, 0,
@@ -65,7 +61,7 @@ struct PanelPrivate
                 0, 0, 0, 0
                 };
             break;
-        case Panel::TopEdge:
+        case Unity2dPanel::TopEdge:
             rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
             struts = {
                 0, 0, q->height(), 0,
@@ -77,6 +73,8 @@ struct PanelPrivate
 
         q->setGeometry(rect);
 
+        UQ_DEBUG << "Panel is now at:" << q->geometry();
+
         XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
                         XA_CARDINAL, 32, PropModeReplace,
                         (unsigned char *) &struts, 12);
@@ -86,10 +84,10 @@ struct PanelPrivate
     {
         QBoxLayout::Direction direction;
         switch(m_edge) {
-        case Panel::TopEdge:
+        case Unity2dPanel::TopEdge:
             direction = QApplication::isRightToLeft() ? QBoxLayout::RightToLeft : QBoxLayout::LeftToRight;
             break;
-        case Panel::LeftEdge:
+        case Unity2dPanel::LeftEdge:
             direction = QBoxLayout::TopToBottom;
             break;
         }
@@ -103,27 +101,27 @@ struct PanelPrivate
     }
 };
 
-Panel::Panel(QWidget* parent)
+Unity2dPanel::Unity2dPanel(QWidget* parent)
 : QWidget(parent)
-, d(new PanelPrivate)
+, d(new Unity2dPanelPrivate)
 {
     d->q = this;
-    d->m_edge = Panel::TopEdge;
+    d->m_edge = Unity2dPanel::TopEdge;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
     setAutoFillBackground(true);
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(workAreaResized(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
 }
 
-Panel::~Panel()
+Unity2dPanel::~Unity2dPanel()
 {
     delete d;
 }
 
-void Panel::setEdge(Panel::Edge edge)
+void Unity2dPanel::setEdge(Unity2dPanel::Edge edge)
 {
     d->m_edge = edge;
     if (isVisible()) {
@@ -131,25 +129,25 @@ void Panel::setEdge(Panel::Edge edge)
     }
 }
 
-Panel::Edge Panel::edge() const
+Unity2dPanel::Edge Unity2dPanel::edge() const
 {
     return d->m_edge;
 }
 
-void Panel::showEvent(QShowEvent* event)
+void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
 }
 
-void Panel::workAreaResized(int screen)
+void Unity2dPanel::slotWorkAreaResized(int screen)
 {
-    if (this->x11Info().screen() == screen) {
+    if (x11Info().screen() == screen) {
         d->updateEdge();
     }
 }
 
-void Panel::paintEvent(QPaintEvent* event)
+void Unity2dPanel::paintEvent(QPaintEvent* event)
 {
     // Necessary because Oxygen thinks it knows better what to paint in the background
     QPainter painter(this);
@@ -157,16 +155,14 @@ void Panel::paintEvent(QPaintEvent* event)
     painter.fillRect(rect(), palette().brush(QPalette::Background));
 }
 
-void Panel::addWidget(QWidget* widget)
+void Unity2dPanel::addWidget(QWidget* widget)
 {
     d->m_layout->addWidget(widget);
 }
 
-void Panel::addSpacer()
+void Unity2dPanel::addSpacer()
 {
     d->m_layout->addStretch();
 }
 
-} // namespace
-
-#include "panel.moc"
+#include "unity2dpanel.moc"
