@@ -137,11 +137,6 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
 
-    /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
-
     /* Grab the "super" keys */
     SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
     QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);

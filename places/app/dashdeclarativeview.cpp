@@ -33,21 +33,27 @@ DashDeclarativeView::DashDeclarativeView()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(workAreaResized(int)), SIGNAL(availableGeometryChanged()));
+    connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 }
 
 void
-DashDeclarativeView::fitToAvailableSpace(int screen)
+DashDeclarativeView::onWorkAreaResized(int screen)
 {
-    QDesktopWidget *desktop = QApplication::desktop();    
-    int current_screen = desktop->screenNumber(this);
-
-    if(screen == current_screen)
-    {
-        QRect geometry = desktop->availableGeometry(this);
-        setGeometry(geometry);
-        setFixedSize(geometry.size());
+    if (QApplication::desktop()->screenNumber(this) != screen) {
+        return;
     }
+
+    if (m_state == FullScreenDash) {
+        fitToAvailableSpace();
+    }
+
+    availableGeometryChanged();
+}
+
+void
+DashDeclarativeView::fitToAvailableSpace()
+{
+    setGeometry(QApplication::desktop()->availableGeometry(this));
 }
 
 void
@@ -93,6 +99,7 @@ DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
         raise();
         activateWindow();
         forceActivateWindow();
+        fitToAvailableSpace();
         activeChanged(true);
         break;
 

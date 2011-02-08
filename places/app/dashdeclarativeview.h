@@ -64,10 +64,11 @@ signals:
     void screenGeometryChanged();
     void availableGeometryChanged();
 
-public slots:
-    void fitToAvailableSpace(int screen);
+private Q_SLOTS:
+    void onWorkAreaResized(int screen);
 
 private:
+    void fitToAvailableSpace();
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
