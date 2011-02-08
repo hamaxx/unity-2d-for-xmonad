@@ -1,0 +1,55 @@
+#!/bin/sh
+set -e
+
+HELPER_NAME=gnomesessionclienttesthelper
+SLEEP_TIME=2
+DESKTOP_DIR=@LIBUNITY_2D_TEST_DIR@
+
+PROGNAME=$(basename $0)
+
+die() {
+    log "ERROR: $*"
+    exit 1
+}
+
+log() {
+    echo "$PROGNAME: $*" 1>&2
+}
+
+get_helper_pid() {
+    if ! pidof $HELPER_NAME ; then
+        die "helper is not running"
+    fi
+}
+
+# Start an X server
+export DISPLAY=:5.0
+Xvfb $DISPLAY > /dev/null 2>&1 &
+trap "kill -15 $!" 0 HUP INT QUIT TRAP USR1 PIPE TERM
+
+# Start a DBus session
+eval $(dbus-launch --auto-syntax)
+
+# Start the session. It should start our helper
+log "Starting session"
+gnome-session -a $PWD &
+gs_pid=$!
+
+# Check our helper is running
+sleep $SLEEP_TIME
+pid=$(get_helper_pid)
+
+# Kill the helper. gs should restart it
+log "Kill helper"
+kill $pid
+sleep $SLEEP_TIME
+pid=$(get_helper_pid)
+
+# Stop session. Our helper should not prevent it from stopping
+log "Stopping session"
+qdbus org.gnome.SessionManager /org/gnome/SessionManager Logout 1
+sleep $SLEEP_TIME
+if [ -e /proc/$gs_pid ] ; then
+    die "gnome-session is still running"
+fi
+log "OK"
