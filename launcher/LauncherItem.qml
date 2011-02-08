@@ -107,8 +107,9 @@ Item {
             sourceSize.height: height
             smooth: true
 
-            onSourceChanged: if (icon.source) updateColors()
-            onSourceSizeChanged: if (icon.source) updateColors()
+            onWidthChanged: updateColors()
+            onHeightChanged: updateColors()
+            onSourceChanged: updateColors()
 
             function updateColors() {
                 var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
