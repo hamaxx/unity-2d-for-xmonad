@@ -1,6 +1,6 @@
 import Qt 4.7
 import UnityApplications 1.0
-import UnityPlaces 1.0 /* Necessary import to have access to 'screen' context property of type ScreenInfo */
+import Unity2d 1.0 /* Necessary import to have access to 'screen' context property of type ScreenInfo */
 
 Rectangle {
     id: switcher
