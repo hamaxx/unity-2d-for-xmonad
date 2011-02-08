@@ -213,7 +213,7 @@ LauncherApplication::monitorDesktopFile(const QString& path)
     if (m_desktopFileWatcher == NULL) {
         m_desktopFileWatcher = new QFileSystemWatcher(this);
         connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
-                SLOT(slotDesktopFileChanged(const QString&)));
+                SLOT(onDesktopFileChanged(const QString&)));
     }
 
     /* If the file is already being monitored, we shouldn’t need to do anything.
@@ -229,7 +229,7 @@ LauncherApplication::monitorDesktopFile(const QString& path)
 }
 
 void
-LauncherApplication::slotDesktopFileChanged(const QString& path)
+LauncherApplication::onDesktopFileChanged(const QString& path)
 {
     if (m_desktopFileWatcher->files().contains(path) || QFile::exists(path)) {
         /* The contents of the file have changed. */
@@ -252,12 +252,12 @@ LauncherApplication::slotDesktopFileChanged(const QString& path)
            file’s contents have changed. At this point there is no way to be
            sure that the file has been permanently removed, so we want to give
            the application a grace period before checking for real deletion. */
-        QTimer::singleShot(1000, this, SLOT(slotCheckDesktopFileReallyRemoved()));
+        QTimer::singleShot(1000, this, SLOT(checkDesktopFileReallyRemoved()));
     }
 }
 
 void
-LauncherApplication::slotCheckDesktopFileReallyRemoved()
+LauncherApplication::checkDesktopFileReallyRemoved()
 {
     QString path = desktop_file();
     if (QFile::exists(path)) {

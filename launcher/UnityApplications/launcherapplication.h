@@ -101,9 +101,8 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
-    void monitorDesktopFile(const QString&);
-    void slotDesktopFileChanged(const QString&);
-    void slotCheckDesktopFileReallyRemoved();
+    void onDesktopFileChanged(const QString&);
+    void checkDesktopFileReallyRemoved();
 
 private:
     BamfApplication *m_application;
@@ -115,6 +114,8 @@ private:
     bool m_has_visible_window;
 
     void updateBamfApplicationDependentProperties();
+
+    void monitorDesktopFile(const QString&);
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
