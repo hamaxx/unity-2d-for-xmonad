@@ -575,7 +575,7 @@ LauncherApplication::createMenuActions()
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
-    if (!desktop_file().isEmpty()) {
+    if (QFile::exists(desktop_file())) {
         QAction* keep = new QAction(m_menu);
         keep->setCheckable(is_running);
         keep->setChecked(sticky());
