@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QDBusContext>
 #include <QtDeclarative/qdeclarative.h>
-#include <time.h>
+#include <QWidget>
 
 class SpreadControl : public QObject, protected QDBusContext
 {
@@ -36,19 +36,24 @@ public:
 
     bool connectToBus();
 
-    /* This should be removed when we find a cleaner way to bypass the
-       QML Image cache. See SpreadWindow.qml and WindowImageProvider::requestImage
-       for details. */
-    Q_INVOKABLE QString currentTime() { return QString::number(time(NULL)); }
-
 public Q_SLOTS:
-    Q_NOREPLY void SpreadAllWindows();
-    Q_NOREPLY void SpreadApplicationWindows(unsigned int applicationId);
-    Q_NOREPLY void CancelSpread();
+    Q_NOREPLY void ShowAllWorkspaces(QString applicationDesktopFile);
+    Q_NOREPLY void ShowCurrentWorkspace(QString applicationDesktopFile);
+    Q_NOREPLY void FilterByApplication(QString applicationDesktopFile);
+    Q_NOREPLY void Hide();
+    bool IsShown() { return m_isShown; }
+
+private Q_SLOTS:
+    void setIsShown(bool isShown) { m_isShown = isShown; }
 
 Q_SIGNALS:
-    void activateSpread(unsigned int applicationId);
-    void cancelSpread();
+    void showAllWorkspaces(QString applicationDesktopFile);
+    void showCurrentWorkspace(QString applicationDesktopFile);
+    void filterByApplication(QString applicationDesktopFile);
+    void hide();
+
+private:
+    bool m_isShown;
 };
 
 QML_DECLARE_TYPE(SpreadControl)

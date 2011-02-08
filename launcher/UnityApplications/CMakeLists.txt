@@ -21,6 +21,7 @@ set(UnityApplications_SRCS
     trash.cpp
     launchermenu.cpp
     plugin.cpp
+    workspaces.cpp
     )
 
 set(UnityApplications_MOC_HDRS
@@ -36,6 +37,7 @@ set(UnityApplications_MOC_HDRS
     trash.h
     launchermenu.h
     plugin.h
+    workspaces.h
     )
 
 qt4_wrap_cpp(UnityApplications_MOC_SRCS ${UnityApplications_MOC_HDRS})

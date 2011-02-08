@@ -23,13 +23,13 @@
 #include <QtDeclarative/qdeclarative.h>
 
 class WindowInfo;
+class BamfView;
 
+/* FIXME: this should be update dynamically whenever new windows are opened
+   or go away. Both wnck and bamf have signals for this */
 class WindowsList : public QAbstractListModel
 {
     Q_OBJECT
-
-    Q_PROPERTY(int count READ count NOTIFY countChanged);
-    Q_PROPERTY(WindowInfo* lastActiveWindow READ lastActiveWindow NOTIFY lastActiveWindowChanged);
 
 public:
     WindowsList(QObject *parent = 0);
@@ -38,21 +38,16 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-    int count() const { return rowCount(); }
-    WindowInfo* lastActiveWindow() const;
-
-    Q_INVOKABLE void load(unsigned long applicationId);
+    Q_INVOKABLE void load();
     Q_INVOKABLE void unload();
 
-signals:
-    void countChanged(int count);
-    void lastActiveWindowChanged(WindowInfo* lastActiveWindow);
+public Q_SLOTS:
+    void addWindow(BamfView *view);
+    void removeWindow(BamfView *view);
+    void updateWorkspaceRole(int workspace);
 
 private:
     QList<WindowInfo*> m_windows;
-    unsigned long m_applicationId;
-    bool m_loaded;
-    WindowInfo* m_lastActiveWindow;
 };
 
 QML_DECLARE_TYPE(WindowsList)

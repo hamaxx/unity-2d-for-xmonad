@@ -35,6 +35,7 @@ extern "C" {
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
+#include <QDBusReply>
 
 LauncherApplication::LauncherApplication() :
     m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
@@ -322,12 +323,48 @@ LauncherApplication::has_visible_window() const
     return m_has_visible_window;
 }
 
+/* Returns the number of window for this application that reside on the
+   current workspace */
+int
+LauncherApplication::windowCountOnCurrentWorkspace()
+{
+    int windowCount = 0;
+    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
+
+    for (int i = 0; i < m_application->windows()->size(); i++) {
+        BamfWindow *window = m_application->windows()->at(i);
+        if (window == NULL) {
+            continue;
+        }
+
+        /* When geting the wnck window, it's possible we get a NULL
+           return value because wnck hasn't updated its internal list yet,
+           so we need to force it once to be sure */
+        WnckWindow *wnck_window = wnck_window_get(window->xid());
+        if (wnck_window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            wnck_window = wnck_window_get(window->xid());
+            if (wnck_window == NULL) {
+                continue;
+            }
+        }
+
+        WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
+        if (workspace == current) {
+            windowCount++;
+        }
+    }
+    return windowCount;
+}
+
 void
 LauncherApplication::activate()
 {
     if (active())
     {
-        spread();
+        if (windowCountOnCurrentWorkspace() > 1) {
+            spread();
+        }
     }
     else if (running() && has_visible_window())
     {
@@ -490,10 +527,14 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 void
 LauncherApplication::spread()
 {
-    qDebug() << "Triggering spread via DBUS";
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
-    iface.call("SpreadApplicationWindows", m_application->xids()->at(0));
+    QDBusReply<bool> isShown = iface.call("IsShown");
+    if (isShown.value() == true) {
+        iface.call("FilterByApplication", m_application->desktop_file());
+    } else {
+        iface.call("ShowCurrentWorkspace", m_application->desktop_file());
+    }
 }
 
 void
