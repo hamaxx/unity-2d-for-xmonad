@@ -35,6 +35,8 @@ Item {
     signal entered
     signal exited
 
+    property bool enableBehaviors: false
+
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
        Please note that the screenshot is taken at the moment the source property is
@@ -144,6 +146,11 @@ Item {
                 text: windowInfo.title
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
+
+                property real originalFontSize
+                Component.onCompleted: {
+                    originalFontSize = font.pointSize
+                }
 
                 color: "white"
             }

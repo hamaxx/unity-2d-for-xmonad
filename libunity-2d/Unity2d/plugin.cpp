@@ -20,10 +20,6 @@
 /* Required otherwise using wnck_set_client_type breaks linking with error:
    undefined reference to `wnck_set_client_type(WnckClientType)'
 */
-extern "C" {
-#include <libwnck/util.h>
-}
-
 #include "plugin.h"
 
 #include "blendedimageprovider.h"
@@ -39,6 +35,11 @@ extern "C" {
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+
+#undef signals
+extern "C" {
+#include <libwnck/util.h>
+}
 
 #include <X11/Xlib.h>
 

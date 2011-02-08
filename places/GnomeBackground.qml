@@ -34,7 +34,6 @@ Item {
 
         anchors.fill: parent
         color: primary_color.value
-        visible: !picture.visible
     }
 
     Image {
@@ -62,7 +61,8 @@ Item {
         }
         width: dashView.screenGeometry.width
         height: dashView.screenGeometry.height
-        sourceSize.width: width
+
+        smooth: true
         x: -dashView.availableGeometry.x
         y: -dashView.availableGeometry.y
 
@@ -83,7 +83,7 @@ Item {
                 return Image.Stretch
             else if(picture_options.value == "zoom")
                 return Image.PreserveAspectCrop
-            else return Image.Tile
+            else return Image.PreserveAspectFit
         }
     }
 }

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=GnomeSessionClient Test
+Exec=@LIBUNITY_2D_TEST_DIR@/gnomesessionclienttesthelper
+Terminal=false
+NoDisplay=true
+X-GNOME-AutoRestart=true
