@@ -38,12 +38,6 @@ ScreenInfo* ScreenInfo::instance()
     return singleton;
 }
 
-QString ScreenInfo::desktopFileForApplication(int applicationId)
-{
-    BamfApplication* application = BamfMatcher::get_default().application_for_xid(applicationId);
-    return (application != NULL) ? application->desktop_file() : QString();
-}
-
 void ScreenInfo::onActiveWindowChanged(WnckScreen *screen,
                                        WnckWindow *previously_active_window,
                                        gpointer    user_data)

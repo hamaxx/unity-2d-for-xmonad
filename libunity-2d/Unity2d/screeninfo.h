@@ -25,10 +25,9 @@ class ScreenInfo : public QObject
 public:
     static ScreenInfo* instance();
 
-    /* The following two methods don't strictly belong to a "screen" class
+    /* The following method doesn't strictly belong to a "screen" class
        logically. It would be perhaps more appropriate to make an
-       "utility" class to group them, but this will do for now. */
-    Q_INVOKABLE QString desktopFileForApplication(int applicationId);
+       "utility" class for it, but this will do for now. */
     Q_INVOKABLE QString currentTime();
 
     /* Getters */
