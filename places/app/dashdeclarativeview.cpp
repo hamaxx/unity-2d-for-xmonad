@@ -93,15 +93,15 @@ DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
         raise();
         activateWindow();
         forceActivateWindow();
-        emit activeChanged(true);
+        activeChanged(true);
         break;
 
     case HiddenDash:
         hide();
-        emit activeChanged(false);
+        activeChanged(false);
         break;
     }
-    emit dashStateChanged(m_state);
+    dashStateChanged(m_state);
 }
 
 DashDeclarativeView::DashState
