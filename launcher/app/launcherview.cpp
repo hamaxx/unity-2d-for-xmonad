@@ -71,8 +71,13 @@ void LauncherView::dropEvent(QDropEvent *event)
     if (accepted) event->accept();
 }
 
-QColor
-LauncherView::iconAverageColor(QUrl source, QSize size)
+/* Calculates both the background color and the glow color of a launcher tile
+   based on the colors in the specified icon (using the same algorithm as Unity).
+   The values are returned as list where the first item is the background color
+   and the second one is the glow color
+*/
+QList<QVariant>
+LauncherView::getColorsFromIcon(QUrl source, QSize size) const
 {
     /* FIXME: we are loading again an icon that was already loaded */
     QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
@@ -80,7 +85,7 @@ LauncherView::iconAverageColor(QUrl source, QSize size)
     if (icon.width() == 0 || icon.height() == 0)
     {
         qWarning() << "Unable to load icon at" << source;
-        return QColor();
+        return QList<QVariant>();
     }
 
     int total_r = 0, total_g = 0, total_b = 0;
@@ -131,5 +136,8 @@ LauncherView::iconAverageColor(QUrl source, QSize size)
         color.setHsvF(color.hueF(), saturation, value);
     }
 
-    return color;
+    QList<QVariant> result;
+    result.append(QVariant::fromValue(color));
+    result.append(QVariant::fromValue(color));
+    return result;
 }

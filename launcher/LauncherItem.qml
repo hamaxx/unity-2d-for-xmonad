@@ -92,9 +92,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             smooth: true
-            color: if(icon.source != "")
-                       return launcherView.iconAverageColor(icon.source,
-                                                            Qt.size(icon.width, icon.height))
             radius: 5
         }
 
@@ -109,6 +106,14 @@ Item {
             sourceSize.width: width
             sourceSize.height: height
             smooth: true
+
+            onSourceChanged: if (icon.source) updateColors()
+            onSourceSizeChanged: if (icon.source) updateColors()
+
+            function updateColors() {
+                var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                if (colors) background.color = colors[0]
+            }
 
             asynchronous: true
             opacity: status == Image.Ready ? 1 : 0
