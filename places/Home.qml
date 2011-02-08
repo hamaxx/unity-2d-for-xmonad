@@ -1,6 +1,7 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 import gconf 1.0
 
 Item {
@@ -9,6 +10,9 @@ Item {
         onEntrySearchQueryChanged: {
             for (var i = 0; i < dash.places.rowCount(); i++) {
                 dash.places.get(i).globalSearchQuery = entrySearchQuery
+            }
+            if (dashView.dashState == DashDeclarativeView.CollapsedDesktopDash) {
+                dashView.dashState = DashDeclarativeView.ExpandedDesktopDash
             }
         }
     }

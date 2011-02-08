@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QtDeclarative>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
 #include <QDesktopWidget>
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
+    qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
 
     if (!registerDBusService(&view)) {
