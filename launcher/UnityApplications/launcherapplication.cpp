@@ -555,8 +555,7 @@ LauncherApplication::createMenuActions()
         Q_FOREACH(DBusMenuImporter* importer, m_indicatorMenus) {
             importer->updateMenu();
         }
-    }
-    else {
+    } else {
         createStaticMenuActions();
     }
 }
@@ -604,8 +603,7 @@ LauncherApplication::createStaticMenuActions()
         }
         if (!duplicate) {
             m_menu->addAction(pending);
-        }
-        else {
+        } else {
             delete pending;
         }
     } 
@@ -623,8 +621,7 @@ LauncherApplication::onIndicatorMenuUpdated()
     Q_FOREACH(QAction* action, actions) {
         if (action->isSeparator()) {
             m_menu->addSeparator();
-        }
-        else {
+        } else {
             /* Copy the action so we can override the slot triggered on
                activation. */
             QAction* copy = new QAction(action->icon(), action->text(), action);
