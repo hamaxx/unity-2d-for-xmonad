@@ -114,6 +114,18 @@ Item {
             }
         }
 
+        MouseArea {
+            id: fullScreenButton
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            width: 40
+            height: 40
+
+            onClicked: {
+                dashView.dashState = DashDeclarativeView.FullScreenDash
+            }
+        }
+
         Loader {
             id: pageLoader
 
