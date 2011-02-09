@@ -28,7 +28,45 @@ Item {
     property bool urgent: false
     property bool launching: false
 
-    property real backlight: 0.9
+    property int pips: 3
+    function getPipShift(index) {
+        /* This works and is less convoluted than the generic formula.
+           and we're never dealing with more than 3 pips anyway. */
+        if (pips == 1) return 0;
+        if (pips == 2) return (index == 0) ? -2 : +2
+        else return (index == 0) ? 0 : (index == 1) ? -4 : +4
+    }
+
+    /* I'd rather use a Column here, but the pip images have an halo
+       around them, so they are pretty tall and would mess up the column.
+       As a workaround I center all of them, then shift up or down
+       depending on the index. The +1 on the translation is be Unity's
+       centering is 1px off compared to QML's (due to centering in an
+       even-sized parent).
+    */
+    Item {
+        height: 54
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+
+        Repeater {
+            model: launcherItem.pips
+            delegate: Image {
+                source: "image://blended/%1color=%2alpha=%3"
+                        .arg(engineBaseUrl +
+                             (launcherItem.pips == 1) ? "artwork/launcher_arrow_ltr.png"
+                                                      : "artwork/launcher_pip_ltr.png")
+                        .arg("lightgrey")
+                        .arg(1.0)
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+
+                transform: Translate {
+                    y: getPipShift(index) + 1
+                }
+            }
+        }
+    }
 
     Image {
         id: tileBackground
@@ -37,23 +75,6 @@ Item {
         width: 54
         height: 54
 
-        sourceSize.width: 54
-        sourceSize.height: 54
-
-        opacity: 0.75
-    }
-
-    Image {
-        id: tileOutline
-        width: 54
-        height: 54
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-
-        source: "artwork/round_outline_54x54.png"
-//        source: "image://blended/%1color=%2alpha=%3".arg(engineBaseUrl + "artwork/round_outline_54x54.png")
-//                                                    .arg("AAAAAA")
-//                                                    .arg(1.0 - launcherItem.backlight)
         sourceSize.width: 54
         sourceSize.height: 54
 
@@ -83,12 +104,11 @@ Item {
                     tileBackground.source = "image://blended/%1color=%2alpha=%3"
                                             .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
                                             .arg(colors[0].toString().replace("#", ""))
-                                            .arg(1.0) //launcherItem.backlight)
+                                            .arg(1.0)
                 }
             }
         }
     }
-
 
     Image {
         id: tileShine
@@ -98,9 +118,6 @@ Item {
         anchors.bottom: parent.bottom
 
         source: "artwork/round_shine_54x54.png"
-//        source: "image://blended/%1color=%2alpha=%3".arg(engineBaseUrl + "artwork/round_shine_54x54.png")
-//                                                    .arg("white")
-//                                                    .arg(launcherItem.backlight)
         sourceSize.width: 54
         sourceSize.height: 54
     }
