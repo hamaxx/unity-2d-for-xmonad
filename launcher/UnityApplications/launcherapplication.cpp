@@ -663,19 +663,8 @@ LauncherApplication::onIndicatorMenuUpdated()
         if (action->isSeparator()) {
             m_menu->addSeparator();
         } else {
-            /* Copy the action so we can override the slot triggered on
-               activation. */
-            QAction* copy = new QAction(action->icon(), action->text(), action);
-            copy->setVisible(action->isVisible());
-            copy->setEnabled(action->isEnabled());
-            if (action->isCheckable()) {
-                copy->setCheckable(true);
-                if (action->isChecked()) {
-                    copy->setChecked(true);
-                }
-            }
-            connect(copy, SIGNAL(triggered()), SLOT(onIndicatorMenuActionTriggered()));
-            m_menu->addAction(copy);
+            connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
+            m_menu->addAction(action);
         }
     }
 
@@ -699,15 +688,5 @@ LauncherApplication::onQuitTriggered()
 {
     m_menu->hide();
     close();
-}
-
-void LauncherApplication::onIndicatorMenuActionTriggered()
-{
-    QAction* action = static_cast<QAction*>(sender());
-    QAction* parent = qobject_cast<QAction*>(action->parent());
-    m_menu->hide();
-    if (parent != NULL) {
-        parent->trigger();
-    }
 }
 

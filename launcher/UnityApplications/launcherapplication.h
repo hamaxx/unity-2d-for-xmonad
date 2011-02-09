@@ -99,7 +99,6 @@ private slots:
     /* Contextual menu callbacks */
     void onKeepTriggered();
     void onQuitTriggered();
-    void onIndicatorMenuActionTriggered();
 
     void onWindowAdded(BamfWindow*);
 
