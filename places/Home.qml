@@ -68,7 +68,7 @@ Item {
     Flow {
         id: buttons
 
-        opacity: globalSearchActive ? 0 : 1
+        opacity: globalSearchActive || dashView.dashState == DashDeclarativeView.CollapsedDesktopDash ? 0 : 1
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 

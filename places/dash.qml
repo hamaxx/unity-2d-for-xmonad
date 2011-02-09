@@ -1,5 +1,6 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 
 Item {
     id: dash
@@ -80,9 +81,30 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.leftMargin: 3
+            width: 616
+            height: 47
+        }
+
+        Button {
+            id: shortcutsButton
+            anchors.top: parent.top
             anchors.right: parent.right
             anchors.rightMargin: 4
+            width: 80
             height: 47
+
+            TextCustom {
+                text: "Shortcuts"
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            opacity: dashView.dashState == DashDeclarativeView.CollapsedDesktopDash ? 1 : 0
+
+            onClicked: {
+                dashView.dashState = DashDeclarativeView.ExpandedDesktopDash
+            }
         }
 
         Loader {
