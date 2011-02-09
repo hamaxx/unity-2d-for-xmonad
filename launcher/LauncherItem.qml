@@ -36,28 +36,40 @@ Item {
         if (pips == 2) return (index == 0) ? -2 : +2
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
+    property string pipSource: engineBaseUrl + "artwork/launcher_" +
+                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
 
-    /* I'd rather use a Column here, but the pip images have an halo
-       around them, so they are pretty tall and would mess up the column.
-       As a workaround I center all of them, then shift up or down
-       depending on the index. The +1 on the translation is be Unity's
-       centering is 1px off compared to QML's (due to centering in an
-       even-sized parent).
-    */
     Item {
         height: 54
-        anchors.left: parent.left
+        width: parent.width
         anchors.bottom: parent.bottom
 
+        Image {
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            source: "image://blended/%1color=%2alpha=%3"
+                  .arg(engineBaseUrl + "artwork/launcher_arrow_rtl.png")
+                  .arg("lightgrey")
+                  .arg(1.0)
+
+            /* This extra shift is necessary (as is for the pips below)
+               since we are vertically centering in a parent with even height, so
+               there's an arbitrary shift of 1 pixel.
+               Unity chose to add it, QML to subtract it. So we adjust for that. */
+            transform: Translate {
+                y: 1
+            }
+        }
+
+        /* I'd rather use a Column here, but the pip images have an halo
+           around them, so they are pretty tall and would mess up the column.
+           As a workaround I center all of them, then shift up or down
+           depending on the index. */
         Repeater {
             model: launcherItem.pips
             delegate: Image {
                 source: "image://blended/%1color=%2alpha=%3"
-                        .arg(engineBaseUrl +
-                             (launcherItem.pips == 1) ? "artwork/launcher_arrow_ltr.png"
-                                                      : "artwork/launcher_pip_ltr.png")
-                        .arg("lightgrey")
-                        .arg(1.0)
+                        .arg(pipSource).arg("lightgrey").arg(1.0)
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
 

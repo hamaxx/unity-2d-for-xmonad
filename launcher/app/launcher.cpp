@@ -33,6 +33,8 @@
 #include "launcherview.h"
 #include "unity2dpanel.h"
 
+#include <QDebug>
+
 int main(int argc, char *argv[])
 {
     /* UnityApplications plugin uses GTK APIs to retrieve theme icons
@@ -82,6 +84,7 @@ int main(int argc, char *argv[])
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+    qDebug() << launcherView->engine()->baseUrl().toLocalFile();
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
     launcherView->setSource(QUrl("./Launcher.qml"));
