@@ -62,6 +62,13 @@ Item {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
+        visible: dashView.dashState == DashDeclarativeView.FullScreenDash
+    }
+
+    BorderImage {
+        anchors.fill: parent
+        visible: dashView.dashState == DashDeclarativeView.CollapsedDesktopDash || dashView.dashState == DashDeclarativeView.ExpandedDesktopDash
+        source: "artwork/desktop_dash.sci"
     }
 
     Item {
@@ -89,7 +96,7 @@ Item {
             id: shortcutsButton
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.rightMargin: 4
+            anchors.rightMargin: 44
             width: 80
             height: 47
 
