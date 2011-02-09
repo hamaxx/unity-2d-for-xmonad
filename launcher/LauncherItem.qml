@@ -1,4 +1,5 @@
 import Qt 4.7
+import Unity2d 1.0
 
 /* Item displaying a launcher item.
 
@@ -21,91 +22,56 @@ Item {
     id: launcherItem
 
     property alias icon: icon.source
-    property alias label: label.text
+    //property alias label: label.text
     property bool running: false
     property bool active: false
     property bool urgent: false
     property bool launching: false
 
-    signal clicked(variant mouse)
-    signal entered
-    signal exited
-
-    Keys.onPressed: {
-        if (event.key == Qt.Key_Return) {
-            clicked()
-            event.accepted = true;
-        }
-    }
+    property real backlight: 0.9
 
     Image {
-        id: shadow
-
-        source: "artwork/shadow.png"
-        asynchronous: true
-    }
-
-    Image {
-        id: glow
-
+        id: tileBackground
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: parent.bottom
+        width: 54
+        height: 54
 
-        source: "artwork/glow.png"
-        asynchronous: true
-        opacity: 0.0
+        sourceSize.width: 54
+        sourceSize.height: 54
 
-        SequentialAnimation on opacity {
-            loops: Animation.Infinite
-            alwaysRunToEnd: true
-            running: launching
-            NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
-            NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
-        }
+        opacity: 0.75
+    }
+
+    Image {
+        id: tileOutline
+        width: 54
+        height: 54
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+
+        source: "artwork/round_outline_54x54.png"
+//        source: "image://blended/%1color=%2alpha=%3".arg(engineBaseUrl + "artwork/round_outline_54x54.png")
+//                                                    .arg("AAAAAA")
+//                                                    .arg(1.0 - launcherItem.backlight)
+        sourceSize.width: 54
+        sourceSize.height: 54
+
+        opacity: 0.75
     }
 
     Item {
-        id: container
-
-        width: 50
-        height: 50
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-
-        MouseArea {
-            id: mouse
-
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            hoverEnabled: true
-            anchors.fill: parent
-            onClicked: launcherItem.clicked(mouse)
-            onEntered: launcherItem.entered()
-            onExited: launcherItem.exited()
-        }
-
-        Rectangle {
-            id: background
-
-            opacity: mouse.containsMouse ? 1.0 : 0.9
-            anchors.fill: parent
-            anchors.margins: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            smooth: true
-            radius: 5
-        }
+        anchors.bottom: parent.bottom
+        width: 54
+        height: 54
 
         Image {
             id: icon
+            anchors.centerIn: parent
 
-            width: 32
-            height: 32
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            fillMode: Image.PreserveAspectFit
-            sourceSize.width: width
-            sourceSize.height: height
-            smooth: true
+            sourceSize.width: 48
+            sourceSize.height: 48
 
             onWidthChanged: updateColors()
             onHeightChanged: updateColors()
@@ -113,95 +79,30 @@ Item {
 
             function updateColors() {
                 var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
-                if (colors) background.color = colors[0]
+                if (colors) {
+                    tileBackground.source = "image://blended/%1color=%2alpha=%3"
+                                            .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
+                                            .arg(colors[0].toString().replace("#", ""))
+                                            .arg(1.0) //launcherItem.backlight)
+                }
             }
-
-            asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
         }
-
-        Image {
-            id: foreground
-
-            anchors.fill: parent
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            fillMode: Image.PreserveAspectFit
-            sourceSize.width: width
-            sourceSize.height: height
-            smooth: true
-
-            source: "/usr/share/unity/themes/prism_icon_foreground.png"
-
-            asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-        }
-
-        SequentialAnimation {
-            id: nudging
-            running: urgent
-            SequentialAnimation {
-                loops: 30
-                NumberAnimation { target: container; property: "rotation"; to: 15; duration: 150 }
-                NumberAnimation { target: container; property: "rotation"; to: -15; duration: 150 }
-            }
-            NumberAnimation { target: container; property: "rotation"; to: 0; duration: 75 }
-        }
-
-        NumberAnimation {
-            id: end_nudging
-            running: !urgent
-            target: container
-            property: "rotation"
-            to: 0
-            duration: 75
-        }
-
     }
+
 
     Image {
-        id: running_arrow
-
-        z: -1
-        width: sourceSize.width
-        height: sourceSize.height
-        anchors.rightMargin: -2
-        anchors.right: container.left
-        anchors.verticalCenter: container.verticalCenter
-        opacity: running ? 1.0 : 0.0
-        source: urgent ? "/usr/share/unity/themes/application-running-notify.png" : "/usr/share/unity/themes/application-running.png"
-
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-    }
-
-    Image {
-        id: active_arrow
-
-        z: -1
-        width: sourceSize.width
-        height: sourceSize.height
-        anchors.leftMargin: -2
-        anchors.left: container.right
-        anchors.verticalCenter: container.verticalCenter
-        opacity: active ? 1.0 : 0.0
-        source: "/usr/share/unity/themes/application-selected.png"
-
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-    }
-
-    Text {
-        id: label
-
-        font.pointSize: 10
-        wrapMode: Text.WordWrap
-        horizontalAlignment: Text.AlignHCenter
-        anchors.top: parent.bottom
-        anchors.topMargin: 7
-        anchors.right: parent.right
+        id: tileShine
+        width: 54
+        height: 54
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        font.underline: parent.focus
+
+        source: "artwork/round_shine_54x54.png"
+//        source: "image://blended/%1color=%2alpha=%3".arg(engineBaseUrl + "artwork/round_shine_54x54.png")
+//                                                    .arg("white")
+//                                                    .arg(launcherItem.backlight)
+        sourceSize.width: 54
+        sourceSize.height: 54
     }
+
 }

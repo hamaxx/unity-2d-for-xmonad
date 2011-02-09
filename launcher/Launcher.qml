@@ -2,15 +2,14 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
-    width: 58
-    height: 1024
+    id: launcher
 
     Image {
         id: background
 
         anchors.fill: parent
         fillMode: Image.TileVertically
-        source: "/usr/share/unity/themes/launcher_background_middle.png"
+        source: "artwork/background.png"
     }
 
     ListView {
@@ -29,12 +28,16 @@ Item {
         delegate: LauncherItem {
             id: wrapper
 
-            width: 58; height: 54
+            width: launcher.width
+            height: 54 + 5
+
             icon: "image://icons/"+item.icon
             running: item.running
             active: item.active
             urgent: item.urgent
             launching: item.launching
+
+            anchors.horizontalCenter: parent.horizontalCenter
 
             Binding { target: item.menu; property: "title"; value: item.name }
 
@@ -51,30 +54,6 @@ Item {
                 item.menu.show(width-4, y+height/2-list.contentY+panel.y)
             }
 
-            onClicked: {
-                if (mouse.button == Qt.LeftButton) {
-                    item.menu.hide()
-                    item.activate()
-                }
-                else if (mouse.button == Qt.RightButton) {
-                    item.menu.folded = false
-                    showMenu()
-                }
-            }
-
-            /* Display the tooltip when hovering the item only when the list
-               is not moving */
-            onEntered: if (!list.moving) showMenu()
-            onExited: {
-                /* When unfolded, leave enough time for the user to reach the
-                   menu. Necessary because there is some void between the item
-                   and the menu. Also it fixes the case when the user
-                   overshoots. */
-                if (!item.menu.folded)
-                    item.menu.hideWithDelay(400)
-                else
-                    item.menu.hide()
-            }
             Connections {
                 target: list
                 onMovementStarted: item.menu.hide()
