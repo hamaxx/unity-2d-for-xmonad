@@ -24,6 +24,8 @@
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>
+#include <QDBusServiceWatcher>
+#include <QDBusConnectionInterface>
 #include <QDBusReply>
 
 // Marshall the RendererInfoStruct data into a D-Bus argument
@@ -141,6 +143,10 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
 static const char* SECTION_PROPERTY = "section";
 
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d";
+static const char* DASH_DBUS_PATH = "/Dash";
+static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
+
 PlaceEntry::PlaceEntry(QObject* parent) :
     LauncherItem(parent),
     m_position(0),
@@ -153,12 +159,31 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_entryResultsModel(NULL),
     m_globalGroupsModel(NULL),
     m_globalResultsModel(NULL),
-    m_dbusIface(NULL)
+    m_dbusIface(NULL),
+    m_dashDbusIface(NULL)
 {
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
     qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
     qDBusRegisterMetaType<QHash<QString, QString>>();
+
+    /* Check if the dash is already up and running by asking the bus instead of
+       trying to create an instance of the interface. Creating an instance would
+       cause D-Bus to activate the dash and we don’t want this to happen, the
+       dash should be started on demand only. */
+    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DASH_DBUS_SERVICE);
+    if (reply.isValid() && reply.value()) {
+        connectToDash();
+    } else {
+        /* The dash is not running: monitor its registration on the bus so we
+           can connect to it when it comes up. */
+        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(DASH_DBUS_SERVICE,
+                                                               QDBusConnection::sessionBus(),
+                                                               QDBusServiceWatcher::WatchForRegistration,
+                                                               this);
+        connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
+    }
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
@@ -355,10 +380,7 @@ PlaceEntry::entryGroupsModel()
     if (m_entryGroupsModel == NULL) {
         if (!m_entryGroupsModelName.isNull()) {
             m_entryGroupsModel = new DeeListModel;
-            QString path = m_entryGroupsModelName;
-            path.replace(".", "/");
-            m_entryGroupsModel->setObjectPath("/com/canonical/dee/model/" + path);
-            m_entryGroupsModel->setService(m_entryGroupsModelName);
+            m_entryGroupsModel->setName(m_entryGroupsModelName);
         }
     }
     return m_entryGroupsModel;
@@ -376,10 +398,7 @@ PlaceEntry::entryResultsModel()
     if (m_entryResultsModel == NULL) {
         if (!m_entryResultsModelName.isNull()) {
             m_entryResultsModel = new DeeListModel;
-            QString path = m_entryResultsModelName;
-            path.replace(".", "/");
-            m_entryResultsModel->setObjectPath("/com/canonical/dee/model/" + path);
-            m_entryResultsModel->setService(m_entryResultsModelName);
+            m_entryResultsModel->setName(m_entryResultsModelName);
         }
     }
     return m_entryResultsModel;
@@ -415,10 +434,7 @@ PlaceEntry::globalGroupsModel()
     if (m_globalGroupsModel == NULL) {
         if (!m_globalGroupsModelName.isNull()) {
             m_globalGroupsModel = new DeeListModel;
-            QString path = m_globalGroupsModelName;
-            path.replace(".", "/");
-            m_globalGroupsModel->setObjectPath("/com/canonical/dee/model/" + path);
-            m_globalGroupsModel->setService(m_globalGroupsModelName);
+            m_globalGroupsModel->setName(m_globalGroupsModelName);
         }
     }
     return m_globalGroupsModel;
@@ -436,10 +452,7 @@ PlaceEntry::globalResultsModel()
     if (m_globalResultsModel == NULL) {
         if (!m_globalResultsModelName.isNull()) {
             m_globalResultsModel = new DeeListModel;
-            QString path = m_globalResultsModelName;
-            path.replace(".", "/");
-            m_globalResultsModel->setObjectPath("/com/canonical/dee/model/" + path);
-            m_globalResultsModel->setService(m_globalResultsModelName);
+            m_globalResultsModel->setName(m_globalResultsModelName);
         }
     }
     return m_globalResultsModel;
@@ -699,6 +712,40 @@ PlaceEntry::setGlobalRendererHints(QMap<QString, QVariant> globalRendererHints)
 }
 
 void
+PlaceEntry::connectToDash()
+{
+    if (m_dashDbusIface != NULL) {
+        return;
+    }
+
+    m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
+                                         QDBusConnection::sessionBus(), this);
+    connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
+            SLOT(updateActiveState()));
+    connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
+            SLOT(updateActiveState()));
+
+    updateActiveState();
+}
+
+void
+PlaceEntry::updateActiveState()
+{
+    bool dashActive = m_dashDbusIface->property("active").toBool();
+    QString activePlaceEntry = m_dashDbusIface->property("activePlaceEntry").toString();
+
+    bool active = false;
+    if (dashActive && !m_dbusObjectPath.isEmpty() && (activePlaceEntry == m_dbusObjectPath)) {
+        active = true;
+    }
+
+    if (active != m_active) {
+        m_active = active;
+        Q_EMIT activeChanged();
+    }
+}
+
+void
 PlaceEntry::activate()
 {
     activateEntry(0);
@@ -711,7 +758,7 @@ PlaceEntry::activateEntry(const int section)
         startRemotePlaceOnDemand();
     }
 
-    QDBusInterface iface("com.canonical.Unity2d", "/dash", "local.DashDeclarativeView");
+    QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
     QDBusReply<void> reply = iface.call(QLatin1String("activatePlaceEntry"),
                                         m_fileName, m_groupName, section);
     if (!reply.isValid()) {
@@ -856,10 +903,7 @@ void
 PlaceEntry::setSection(const QString& sectionModelName)
 {
     DeeListModel* sections = new DeeListModel;
-    QString path = m_dbusName;
-    path.replace(".", "/");
-    sections->setObjectPath("/com/canonical/dee/model/" + path + "/SectionsModel");
-    sections->setService(sectionModelName);
+    sections->setName(sectionModelName);
     setSections(sections);
 }
 

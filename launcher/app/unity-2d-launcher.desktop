@@ -9,4 +9,4 @@ Categories=Utility
 NoDisplay=true
 X-Ubuntu-Gettext-Domain=unity-2d-launcher
 X-GNOME-Autostart-Notify=false
-X-GNOME-Autorestart=true
+X-GNOME-AutoRestart=true

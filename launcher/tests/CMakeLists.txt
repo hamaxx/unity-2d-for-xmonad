@@ -14,6 +14,7 @@ macro(launcher_tests)
 
     add_custom_target(launcher_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
         DEPENDS ${_test_list})
+    add_dependencies(check launcher_check)
 endmacro(launcher_tests)
 
 include_directories(

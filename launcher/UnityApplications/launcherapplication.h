@@ -120,6 +120,7 @@ private:
     void updateBamfApplicationDependentProperties();
     void fetchIndicatorMenus();
     void createStaticMenuActions();
+    int windowCountOnCurrentWorkspace();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

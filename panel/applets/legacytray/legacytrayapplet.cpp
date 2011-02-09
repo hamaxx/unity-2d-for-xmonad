@@ -26,7 +26,7 @@
 #include "fdoselectionmanager.h"
 #include "fdotask.h"
 
-// uqpanel
+// libunity-2d
 #include <debug_p.h>
 
 // Qt
