@@ -27,8 +27,11 @@
 #include <QMetaType>
 #include <QString>
 #include <QTimer>
+#include <QHash>
 
 #include "bamf-application.h"
+
+class DBusMenuImporter;
 
 class LauncherApplication : public LauncherItem
 {
@@ -99,6 +102,10 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
+    void slotChildAdded(BamfView*);
+    void slotChildRemoved(BamfView*);
+    void onIndicatorMenuUpdated();
+
 private:
     BamfApplication *m_application;
     GDesktopAppInfo *m_appInfo;
@@ -106,8 +113,12 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+    QHash<QString, DBusMenuImporter*> m_indicatorMenus;
+    int m_indicatorMenusReady;
 
     void updateBamfApplicationDependentProperties();
+    void fetchIndicatorMenus();
+    void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
 };
 
