@@ -36,6 +36,7 @@ IconImageProvider::~IconImageProvider()
         g_object_unref((GtkIconTheme*)theme);
 }
 
+#include <QDebug>
 QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     /* Special case handling for image resources that belong to the unity
@@ -46,25 +47,34 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
        to do so was a failure due to the fragility of the code path. For example
        it is very easy to break the entire mechanism by adding or forgetting a
        slash in any of the paths. */
-    if (id.startsWith(UNITY_RES_PATH))
-    {
-        if (QFile::exists(id))
-        {
-            return QImage(id);
+    QString iconFilePath;
+    if (id.startsWith(UNITY_RES_PATH)) {
+        iconFilePath = id;
+        if (!QFile::exists(iconFilePath)) {
+            iconFilePath.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-2d/");
         }
-        else
-        {
-            QString rid(id);
-            rid.replace(UNITY_RES_PATH, INSTALL_PREFIX "/share/unity-2d/");
-            /* No need to check whether the file exists, we don’t have a
-               fallback anyway. */
-            return QImage(rid);
-        }
+    } else if (id.startsWith("/")) {
+        iconFilePath = id;
     }
 
-    /* Dealing with case where id is an absolute path to the icon file */
-    if(id.startsWith("/"))
-        return QImage(id);
+    /* We have a direct path to the icon file. Let's load it, scale it if required and
+       we are done */
+    if (!iconFilePath.isEmpty()) {
+        QImage icon(iconFilePath);
+        if (icon.isNull()) {
+            qWarning() << "Failed to directly load icon at path:" << iconFilePath;
+            return QImage();
+        }
+
+        if (requestedSize.isValid()) {
+            icon = icon.scaled(requestedSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        }
+
+        if (size) {
+            *size = icon.size();
+        }
+        return icon;
+    }
 
     /* if id is of the form theme_name/icon_name then lookup the icon in the
        specified theme otherwise in the default theme */
