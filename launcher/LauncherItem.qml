@@ -1,14 +1,6 @@
 import Qt 4.7
 import Unity2d 1.0
 
-/* Item displaying a launcher item.
-
-   The 'icon' property holds the source of the image to load as an icon.
-   The 'label' property holds the text to display.
-   The 'running' property is a boolean indicating whether or not the
-   application is launched. When the application is launched, its 'windowCount'
-   property will have a value reflecting the number of open windows.
-*/
 Item {
     id: launcherItem
     anchors.horizontalCenter: parent.horizontalCenter
@@ -40,6 +32,8 @@ Item {
     signal entered
     signal exited
 
+    /* This is the arrow shown at the right of the tile when the application is
+       the active one */
     Image {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
@@ -57,7 +51,9 @@ Item {
         visible: active
     }
 
-    /* I'd rather use a Column here, but the pip images have an halo
+    /* This is the area on the left of the tile where the pips/arrow end up.
+
+       I'd rather use a Column here, but the pip images have an halo
        around them, so they are pretty tall and would mess up the column.
        As a workaround I center all of them, then shift up or down
        depending on the index. */
@@ -73,12 +69,17 @@ Item {
         }
     }
 
-    /* Container for centering the actual tile */
+    /* This is the for centering the actual tile in the launcher */
     Item {
+        id: tile
         anchors.centerIn: parent
         width: 54
         height: parent.height
 
+        /* This is the image providing the background image. The
+           color blended with this image is obtained from the color of the icon when it's
+           loaded.
+           While the application is launching, this will fade out and in. */
         Image {
             id: tileBackground
             anchors.fill: parent
@@ -86,9 +87,39 @@ Item {
             sourceSize.width: 54
             sourceSize.height: 54
 
-            opacity: 0.75
+            SequentialAnimation on opacity {
+                NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
+                NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
+
+                loops: Animation.Infinite
+                alwaysRunToEnd: true
+                running: launching
+            }
         }
 
+        /* This image appears only while launching, and pulses in and out in counterpoint
+           to the background, so that the outline of the tile is always visible. */
+        Image {
+            id: tileOutline
+            anchors.fill: parent
+
+            sourceSize.width: 54
+            sourceSize.height: 54
+            source: "artwork/round_outline_54x54.png"
+
+            opacity: 0
+
+            SequentialAnimation on opacity {
+                NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
+                NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
+
+                loops: Animation.Infinite
+                alwaysRunToEnd: true
+                running: launching
+            }
+        }
+
+        /* This is just the main icon of the tile */
         Image {
             id: icon
             anchors.centerIn: parent
@@ -114,6 +145,7 @@ Item {
             }
         }
 
+        /* This just adds some shiny effect to the tile */
         Image {
             id: tileShine
             anchors.fill: parent
@@ -121,6 +153,20 @@ Item {
             source: "artwork/round_shine_54x54.png"
             sourceSize.width: 54
             sourceSize.height: 54
+        }
+
+        /* The entire tile will "shake" when the window is marked as "urgent", to attract
+           the user's attention */
+        SequentialAnimation {
+            running: urgent
+            alwaysRunToEnd: true
+
+            SequentialAnimation {
+                loops: 30
+                NumberAnimation { target: tile; property: "rotation"; to: 15; duration: 150 }
+                NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
+            }
+            NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
         }
     }
 
