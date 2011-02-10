@@ -3,6 +3,7 @@ import UnityApplications 1.0
 
 Item {
     id: launcher
+    property int itemHeight: 54
 
     Image {
         id: background
@@ -14,12 +15,13 @@ Item {
 
     ListView {
         id: list
+        spacing: 5
+        anchors.topMargin: 5
+        anchors.fill: parent
+        focus: true
 
         /* Keep a reference to the currently visible contextual menu */
         property variant visibleMenu
-
-        anchors.fill: parent
-        focus: true
 
         model: ListAggregatorModel {
             id: items
@@ -29,7 +31,7 @@ Item {
             id: wrapper
 
             width: launcher.width
-            height: 54 + 5
+            height: launcher.itemHeight
 
             icon: "image://icons/"+item.icon
             running: item.running
@@ -37,8 +39,6 @@ Item {
             urgent: item.urgent
             launching: item.launching
             pips: Math.min(item.windowCount, 3)
-
-            anchors.horizontalCenter: parent.horizontalCenter
 
             Binding { target: item.menu; property: "title"; value: item.name }
 
@@ -48,11 +48,7 @@ Item {
                     list.visibleMenu.hide()
                 }
                 list.visibleMenu = item.menu
-
-                /* The menu needs to never overlap with the MouseArea of
-                   item otherwise flickering happens when the mouse is on
-                   an overlapping pixel (hence the -4). */
-                item.menu.show(width-4, y+height/2-list.contentY+panel.y)
+                item.menu.show(width, y + height / 2 - list.contentY + panel.y)
             }
 
             Connections {
@@ -68,7 +64,7 @@ Item {
 
             ListView.onAdd: SequentialAnimation {
                 PropertyAction { target: wrapper; property: "scale"; value: 0 }
-                NumberAnimation { target: wrapper; property: "height"; from: 0; to: 54; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: wrapper; property: "height"; from: 0; to: launcher.itemHeight; duration: 250; easing.type: Easing.InOutQuad }
                 NumberAnimation { target: wrapper; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
             }
 
