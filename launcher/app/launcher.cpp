@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setFixedWidth(58);
+    panel.setFixedWidth(66);
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
@@ -76,12 +76,15 @@ int main(int argc, char *argv[])
     launcherView->setFocus();
 
     launcherView->engine()->addImportPath(unity2dImportPath());
+    launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+    launcherView->rootContext()->setContextProperty("engineBaseUrl",
+                                                    launcherView->engine()->baseUrl().toLocalFile());
 
     LauncherControl control;
     launcherView->rootContext()->setContextProperty("launcherControl", &control);

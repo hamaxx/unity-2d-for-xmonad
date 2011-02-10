@@ -234,6 +234,12 @@ PlaceEntry::running() const
     return false;
 }
 
+int
+PlaceEntry::windowCount() const
+{
+    return 0;
+}
+
 bool
 PlaceEntry::urgent() const
 {

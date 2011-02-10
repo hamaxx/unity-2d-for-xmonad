@@ -54,6 +54,12 @@ LauncherDevice::running() const
     return false;
 }
 
+int
+LauncherDevice::windowCount() const
+{
+    return 0;
+}
+
 bool
 LauncherDevice::urgent() const
 {

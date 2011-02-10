@@ -23,6 +23,7 @@
 #include <QDeclarativeView>
 #include <QUrl>
 #include <QDragEnterEvent>
+#include <QList>
 
 class LauncherView : public QDeclarativeView
 {
@@ -30,7 +31,7 @@ class LauncherView : public QDeclarativeView
 
 public:
     explicit LauncherView();
-    Q_INVOKABLE QColor iconAverageColor(QUrl source, QSize size);
+    Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
 signals:
     void desktopFileDropped(QString path);

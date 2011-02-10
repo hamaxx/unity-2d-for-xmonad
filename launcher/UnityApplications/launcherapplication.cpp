@@ -109,6 +109,16 @@ LauncherApplication::running() const
     return false;
 }
 
+int
+LauncherApplication::windowCount() const
+{
+    if (m_application == NULL) {
+        return 0;
+    }
+
+    return m_application->windows()->size();
+}
+
 bool
 LauncherApplication::urgent() const
 {
@@ -394,6 +404,8 @@ LauncherApplication::updateHasVisibleWindow()
     }
     if (m_has_visible_window != prev)
         emit hasVisibleWindowChanged(m_has_visible_window);
+
+    Q_EMIT windowCountChanged(windowCount());
 }
 
 bool

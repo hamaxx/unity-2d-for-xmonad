@@ -2,39 +2,48 @@ import Qt 4.7
 import UnityApplications 1.0
 
 Item {
-    width: 58
-    height: 1024
+    id: launcher
 
     Image {
         id: background
 
         anchors.fill: parent
         fillMode: Image.TileVertically
-        source: "/usr/share/unity/themes/launcher_background_middle.png"
+        source: "artwork/background.png"
     }
 
     ListView {
         id: list
+        spacing: 5
+        anchors.topMargin: 5
+        anchors.fill: parent
+        focus: true
 
         /* Keep a reference to the currently visible contextual menu */
         property variant visibleMenu
-
-        anchors.fill: parent
-        focus: true
 
         model: ListAggregatorModel {
             id: items
         }
 
         delegate: LauncherItem {
-            id: wrapper
+            id: launcherItem
 
-            width: 58; height: 54
-            icon: "image://icons/"+item.icon
+            width: launcher.width
+            height: tileSize
+
+            icon: "image://icons/" + item.icon
             running: item.running
             active: item.active
             urgent: item.urgent
             launching: item.launching
+            pips: Math.min(item.windowCount, 3)
+            tileSize: 54
+
+            /* Best way I could find to check if the item is an application or the
+               workspaces switcher. There may be something cleaner and better. */
+            backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0 ||
+                                item.toString().indexOf("Workspaces") == 0
 
             Binding { target: item.menu; property: "title"; value: item.name }
 
@@ -44,11 +53,7 @@ Item {
                     list.visibleMenu.hide()
                 }
                 list.visibleMenu = item.menu
-
-                /* The menu needs to never overlap with the MouseArea of
-                   item otherwise flickering happens when the mouse is on
-                   an overlapping pixel (hence the -4). */
-                item.menu.show(width-4, y+height/2-list.contentY+panel.y)
+                item.menu.show(width, y + height / 2 - list.contentY + panel.y)
             }
 
             onClicked: {
@@ -75,6 +80,7 @@ Item {
                 else
                     item.menu.hide()
             }
+
             Connections {
                 target: list
                 onMovementStarted: item.menu.hide()
@@ -87,16 +93,17 @@ Item {
             }
 
             ListView.onAdd: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "scale"; value: 0 }
-                NumberAnimation { target: wrapper; property: "height"; from: 0; to: 54; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+                PropertyAction { target: launcherItem; property: "scale"; value: 0 }
+                NumberAnimation { target: launcherItem; property: "height";
+                                  from: 0; to: launcherItem.tileSize; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: launcherItem; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
             }
 
             ListView.onRemove: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
-                NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
+                PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: true }
+                NumberAnimation { target: launcherItem; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: launcherItem; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: false }
             }
 
             onRunningChanged: setIconGeometry()
