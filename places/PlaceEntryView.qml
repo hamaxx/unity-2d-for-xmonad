@@ -7,6 +7,9 @@ Item {
     /* An instance of PlaceEntryModel */
     property variant model
 
+    /* See dash.qml "collapsed" and "expanded" states */
+    property bool expanded: true
+
     ListViewWithScrollbar {
         id: results
 

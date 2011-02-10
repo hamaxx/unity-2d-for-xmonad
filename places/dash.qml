@@ -7,6 +7,32 @@ Item {
 
     property variant currentPage
 
+    states: [
+        State {
+            name: "collapsed"
+            when: !currentPage.expanded
+            StateChangeScript {
+                script: updateDashState()
+            }
+        },
+        State {
+            name: "expanded"
+            when: currentPage.expanded
+            StateChangeScript {
+                script: updateDashState()
+            }
+        }
+    ]
+
+    function updateDashState() {
+        if (dashView.dashState == DashDeclarativeView.FullScreenDash) {
+            return;
+        }
+        dashView.dashState = currentPage.expanded
+            ? DashDeclarativeView.ExpandedDesktopDash
+            : DashDeclarativeView.CollapsedDesktopDash
+    }
+
     function activatePage(page) {
         if (page == currentPage) {
             return

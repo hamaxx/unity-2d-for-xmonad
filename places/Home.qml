@@ -11,11 +11,11 @@ Item {
             for (var i = 0; i < dash.places.rowCount(); i++) {
                 dash.places.get(i).globalSearchQuery = entrySearchQuery
             }
-            if (dashView.dashState == DashDeclarativeView.CollapsedDesktopDash) {
-                dashView.dashState = DashDeclarativeView.ExpandedDesktopDash
-            }
         }
     }
+
+    /* See dash.qml "collapsed" and "expanded" states */
+    property bool expanded: globalSearchActive
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.entrySearchQuery != ""
