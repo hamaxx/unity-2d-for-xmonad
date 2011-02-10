@@ -89,7 +89,5 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
     painter.fillRect(image.rect(), color);
     painter.end();
 
-    image.save("/tmp/tests/" + QString(id).replace("/", "_") + ".png");
-
     return image;
 }
