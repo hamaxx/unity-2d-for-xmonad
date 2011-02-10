@@ -9,6 +9,42 @@ Build-Depends: cdbs, debhelper (>= 7),
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
                libx11-dev, libindicator-dev, libgtk2.0-dev
 Standards-Version: 3.9.1
+Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/maverick
+
+Package: unity-2d
+Architecture: all
+Depends: ${misc:Depends},
+ unity-2d-launcher, unity-2d-panel, unity-2d-places, unity-2d-spread,
+ metacity ( >= 2.30.2-0ubuntu1upicek4 ), gnome-session-bin
+Recommends: indicator-application, indicator-appmenu, indicator-datetime, 
+ indicator-me, indicator-messages, indicator-session, indicator-sound, 
+ gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
+ gtk2-engines-pixbuf
+Provides: unity-2d-default-settings, unity-qt-default-settings
+Breaks: unity-2d-default-settings (<= 0.1.33), unity-qt-default-settings (<= 0.1.28)
+Replaces:  unity-2d-default-settings (<= 0.1.33), unity-qt-default-settings (<= 0.1.28)
+Description: Unity interface for non-accelerated graphics cards
+ The Unity 2D interface installs a fully usable 2D session and provides the 
+ common configuration files and defaults. Installing this package will 
+ offer a session called Unity 2D in your login manager.
+ .
+ Unity 2D is designed to run smoothly without any graphics acceleration.
+
+Package: unity-2d-default-settings
+Architecture: all
+Depends: unity-2d
+Description: Transitional package for upgrades to the new unity-2d package
+ This transitional package helps users transition to the
+ unity-2d package. Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: unity-qt-default-settings
+Architecture: all
+Depends: unity-2d
+Description: dummy transitional package for unity-2d
+ This transitional package helps users transition to the
+ unity-2d package. Once this package and its dependencies
+ are installed you can safely remove it.
 
 Package: libunity-2d0
 Section: libs
@@ -47,7 +83,7 @@ Conflicts: unity-qt-panel (<= 0.2)
 Replaces: unity-qt-panel (<= 0.2)
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
- various indicators. It part of Unity 2D and can not run  as a standalone
+ various indicators. It is part of Unity 2D and can not run  as a standalone
  application outside of the Unity 2D environment.
 
 Package: unity-2d-places
@@ -58,7 +94,7 @@ Conflicts: unity-qt-places (<= 0.2)
 Replaces: unity-qt-places (<= 0.2)
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
- various categories of applications. It part of Unity 2D and can not run
+ various categories of applications. It is part of Unity 2D and can not run
  as a standalone application outside of the Unity 2D environment.
 
 Package: unity-2d-spread
@@ -71,7 +107,7 @@ Replaces: unity-qt-spread (<= 0.2)
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
  windows so you can quickly and effectively choose which one you want to 
- switch to. It part of Unity 2D and can not run  as a standalone application
+ switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
 Package: unity-qt-launcher
