@@ -84,6 +84,8 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
         *size = image.size();
     }
 
+    /* We use SourceAtop as the composition mode since we want any area that is fully transparent
+       in the source image to be fully transparent also in the result. */
     QPainter painter(&image);
     painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
     painter.fillRect(image.rect(), color);

@@ -34,8 +34,6 @@
 #include "launchercontrol.h"
 #include "unity2dpanel.h"
 
-#include <QDebug>
-
 int main(int argc, char *argv[])
 {
     /* UnityApplications plugin uses GTK APIs to retrieve theme icons
