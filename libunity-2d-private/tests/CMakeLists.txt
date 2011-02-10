@@ -7,7 +7,7 @@ include_directories(
 
 enable_testing()
 
-set(LIBUNITY_2D_TEST_DIR ${libunity-2d_BINARY_DIR}/tests)
+set(LIBUNITY_2D_TEST_DIR ${libunity-2d-private_BINARY_DIR}/tests)
 
 # Unit-tests
 macro(libunity_2d_tests)
@@ -38,7 +38,7 @@ add_executable(gnomesessionclienttesthelper
     gnomesessionclienttesthelper.cpp
     )
 target_link_libraries(gnomesessionclienttesthelper
-    unity-2d
+    unity-2d-private
     )
 
 configure_file(gnomesessionclienttesthelper.desktop.in
@@ -49,4 +49,4 @@ configure_file(gnomesessionclienttest.sh.in
 add_test(NAME gnomesessionclient_check
     COMMAND /bin/sh gnomesessionclienttest.sh
     )
-add_dependencies(libunity-2d_check gnomesessionclient_check)
+add_dependencies(libunity-2d-private_check gnomesessionclient_check)
