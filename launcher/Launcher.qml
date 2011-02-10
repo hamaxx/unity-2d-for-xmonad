@@ -33,7 +33,7 @@ Item {
             width: launcher.width
             height: launcher.itemHeight
 
-            icon: "image://icons/"+item.icon
+            icon: "image://icons/" + item.icon
             running: item.running
             active: item.active
             urgent: item.urgent
@@ -51,8 +51,6 @@ Item {
                     list.visibleMenu.hide()
                 }
                 list.visibleMenu = item.menu
-
-
                 item.menu.show(width, y + height / 2 - list.contentY + panel.y)
             }
 
