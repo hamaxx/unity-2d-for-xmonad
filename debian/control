@@ -65,7 +65,7 @@ Description: Unity 2D shared library - development files
 
 Package: unity-2d-launcher
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool, libqt4-svg, libunity-2d0
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool, libqt4-svg, libunity-2d-private0
 Recommends: unity-place-files, unity-place-applications
 Provides: unity-qt-launcher
 Conflicts: unity-qt-launcher (<= 0.2)
@@ -78,7 +78,7 @@ Description: Unity 2D Launcher
  
 Package: unity-2d-panel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0
+Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0
 Provides: unity-qt-panel
 Conflicts: unity-qt-panel (<= 0.2)
 Replaces: unity-qt-panel (<= 0.2)
