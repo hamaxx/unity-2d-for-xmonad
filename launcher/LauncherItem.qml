@@ -1,6 +1,27 @@
 import Qt 4.7
 import Unity2d 1.0
 
+/* This component represents a single "tile" in the launcher and the surrounding
+   indicator icons.
+
+   The tile is composed by a colored background layer, an icon (with 'icon' as source),
+   and a shine layer on top.
+   There's also an additional layer which contains only the outline of the tile
+   that is only appearing during the launching animation (when the 'launching' property is
+   true). During this animation the background fades out and the outline fades in,
+   giving a "pulsing" appearance to the tile.
+
+   Around the tile we may have on the left a number of "pips" between zero and three.
+   Pips are small icons used to indicate how many windows we have open for the current tile
+   (based on the 'windowCount' property).
+   The rule is: if there's only one window, we just display an arrow. If there are
+   two we display 2 pips, if there are 3 or more display 3 pips.
+
+   On the right of the tile there's an arrow that appears if the tile is currently 'active'.
+
+   Additionally, when the tile is marked as 'urgent' it will start an animation where the
+   rotation is changed so that it appears to be "shaking".
+*/
 Item {
     id: item
     anchors.horizontalCenter: parent.horizontalCenter
@@ -13,9 +34,6 @@ Item {
     property bool launching: false
     property bool backgroundFromIcon
 
-    /* Pips are small icons used to indicate how many windows we have open for
-       the current tile. If there's only one, we just display an arrow, if there are
-       two we display 2 pips, if there are 3 or more we display 3 pips */
     property int pips: 0
     property string pipSource: engineBaseUrl + "artwork/launcher_" +
                                ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
