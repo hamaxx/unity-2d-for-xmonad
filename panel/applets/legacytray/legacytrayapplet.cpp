@@ -26,7 +26,7 @@
 #include "fdoselectionmanager.h"
 #include "fdotask.h"
 
-// libunity-2d
+// libunity-2d-private
 #include <debug_p.h>
 
 // Qt

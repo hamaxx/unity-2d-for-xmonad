@@ -39,17 +39,17 @@ Description: Transitional package for upgrades to the new unity-2d package
  pre-release installations of unity-2d and also for handling upgrades of 
  maverick installs from the unity-2d team PPA.
 
-Package: libunity-2d0
+Package: libunity-2d-private0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
 
-Package: libunity-2d-dev
+Package: libunity-2d-private-dev
 Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0 (= ${binary:Version})
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  .
@@ -75,7 +75,7 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0, libqt4-svg
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-private0, libqt4-svg
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It is part of Unity 2D and can not run
@@ -83,7 +83,7 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0,
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-private0,
          libqt4-svg
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
@@ -93,17 +93,17 @@ Description: Unity 2D Spread
 
 Package: libuqpanel0
 Architecture: any
-Depends: ${misc:Depends}, libunity-2d0
+Depends: ${misc:Depends}, libunity-2d-private0
 Description: dummy transitional package for libuqpanel0
  This transitional package helps users transition to the
- libunity-2d0 package.  Once this package and its dependencies
+ libunity-2d-private0 package.  Once this package and its dependencies
  are installed you can safely remove it.
 
 Package: libuqpanel-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libunity-2d-dev
+Depends: ${misc:Depends}, libunity-2d-private-dev
 Description: dummy transitional package for libuqpanel-dev
  This transitional package helps users transition to the
- libunity-2d-dev package.  Once this package and its dependencies
+ libunity-2d-private-dev package.  Once this package and its dependencies
  are installed you can safely remove it.

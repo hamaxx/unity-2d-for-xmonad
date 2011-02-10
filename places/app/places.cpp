@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
            component… */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Place.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }
 
     /* Load the QML UI, focus and show the window */

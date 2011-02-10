@@ -32,6 +32,7 @@
 #include "bamf-application.h"
 
 class DBusMenuImporter;
+class QFileSystemWatcher;
 
 class LauncherApplication : public LauncherItem
 {
@@ -62,8 +63,8 @@ public:
     bool has_visible_window() const;
 
     /* setters */
+    void setDesktopFile(const QString& desktop_file);
     void setSticky(bool sticky);
-    void setDesktopFile(QString desktop_file);
     void setBamfApplication(BamfApplication *application);
 
     /* methods */
@@ -106,8 +107,12 @@ private slots:
     void slotChildRemoved(BamfView*);
     void onIndicatorMenuUpdated();
 
+    void onDesktopFileChanged(const QString&);
+    void checkDesktopFileReallyRemoved();
+
 private:
     BamfApplication *m_application;
+    QFileSystemWatcher *m_desktopFileWatcher;
     GDesktopAppInfo *m_appInfo;
     bool m_sticky;
     int m_priority;
@@ -117,6 +122,7 @@ private:
     int m_indicatorMenusReady;
 
     void updateBamfApplicationDependentProperties();
+    void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();

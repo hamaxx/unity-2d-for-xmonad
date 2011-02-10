@@ -1,4 +1,4 @@
-libunity-2d.so.0 libunity-2d0 #MINVER#
+libunity-2d-private.so.0 libunity-2d-private0 #MINVER#
  _Z21qMetaTypeDeleteHelperI13QDBusArgumentEvPT_@Base 0.4
  _Z21qMetaTypeDeleteHelperI15QDBusObjectPathEvPT_@Base 0.4
  _Z17qRegisterMetaTypeI13QDBusArgumentEiPKcPT_@Base 0.4

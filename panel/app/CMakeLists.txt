@@ -11,14 +11,14 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${uqapplets_SOURCE_DIR}
     ${uqapplets_SOURCE_DIR}/common
-    ${libunity-2d_SOURCE_DIR}/src
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-panel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     uqapplets
-    unity-2d
+    unity-2d-private
     )
 
 install(TARGETS unity-2d-panel
