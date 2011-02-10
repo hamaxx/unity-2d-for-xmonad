@@ -3,7 +3,6 @@ import UnityApplications 1.0
 
 Item {
     id: launcher
-    property int itemHeight: 54
 
     Image {
         id: background
@@ -28,10 +27,10 @@ Item {
         }
 
         delegate: LauncherItem {
-            id: wrapper
+            id: launcherItem
 
             width: launcher.width
-            height: launcher.itemHeight
+            height: tileSize
 
             icon: "image://icons/" + item.icon
             running: item.running
@@ -39,6 +38,7 @@ Item {
             urgent: item.urgent
             launching: item.launching
             pips: Math.min(item.windowCount, 3)
+            tileSize: 54
 
             /* Best way I could find to check if the item is an application or not */
             backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0
@@ -53,38 +53,6 @@ Item {
                 list.visibleMenu = item.menu
                 item.menu.show(width, y + height / 2 - list.contentY + panel.y)
             }
-
-            Connections {
-                target: list
-                onMovementStarted: item.menu.hide()
-            }
-
-            function setIconGeometry() {
-                if (running) {
-                    item.setIconGeometry(x + panel.x, y + panel.y, width, height)
-                }
-            }
-
-            ListView.onAdd: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "scale"; value: 0 }
-                NumberAnimation { target: wrapper; property: "height"; from: 0; to: launcher.itemHeight; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
-            }
-
-            ListView.onRemove: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
-                NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
-            }
-
-            onRunningChanged: setIconGeometry()
-            /* Note: this doesn’t work as expected for the first favorite
-               application in the list if it is already running when the
-               launcher is started, because its y property doesn’t change.
-               This isn’t too bad though, as the launcher is supposed to be
-               started before any other regular application. */
-            onYChanged: setIconGeometry()
 
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
@@ -110,6 +78,39 @@ Item {
                 else
                     item.menu.hide()
             }
+
+            Connections {
+                target: list
+                onMovementStarted: item.menu.hide()
+            }
+
+            function setIconGeometry() {
+                if (running) {
+                    item.setIconGeometry(x + panel.x, y + panel.y, width, height)
+                }
+            }
+
+            ListView.onAdd: SequentialAnimation {
+                PropertyAction { target: launcherItem; property: "scale"; value: 0 }
+                NumberAnimation { target: launcherItem; property: "height";
+                                  from: 0; to: launcherItem.tileSize; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: launcherItem; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            ListView.onRemove: SequentialAnimation {
+                PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: true }
+                NumberAnimation { target: launcherItem; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: launcherItem; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: false }
+            }
+
+            onRunningChanged: setIconGeometry()
+            /* Note: this doesn’t work as expected for the first favorite
+               application in the list if it is already running when the
+               launcher is started, because its y property doesn’t change.
+               This isn’t too bad though, as the launcher is supposed to be
+               started before any other regular application. */
+            onYChanged: setIconGeometry()
 
             Connections {
                 target: item

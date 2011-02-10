@@ -2,9 +2,10 @@ import Qt 4.7
 import Unity2d 1.0
 
 Item {
-    id: launcherItem
+    id: item
     anchors.horizontalCenter: parent.horizontalCenter
 
+    property int tileSize
     property alias icon: icon.source
     property bool running: false
     property bool active: false
@@ -58,7 +59,7 @@ Item {
        As a workaround I center all of them, then shift up or down
        depending on the index. */
     Repeater {
-        model: launcherItem.pips
+        model: item.pips
         delegate: Image {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -73,7 +74,7 @@ Item {
     Item {
         id: tile
         anchors.centerIn: parent
-        width: 54
+        width: item.tileSize
         height: parent.height
 
         /* This is the image providing the background image. The
@@ -84,8 +85,8 @@ Item {
             id: tileBackground
             anchors.fill: parent
 
-            sourceSize.width: 54
-            sourceSize.height: 54
+            sourceSize.width: item.tileSize
+            sourceSize.height: item.tileSize
 
             SequentialAnimation on opacity {
                 NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -103,8 +104,8 @@ Item {
             id: tileOutline
             anchors.fill: parent
 
-            sourceSize.width: 54
-            sourceSize.height: 54
+            sourceSize.width: item.tileSize
+            sourceSize.height: item.tileSize
             source: "artwork/round_outline_54x54.png"
 
             opacity: 0
@@ -133,7 +134,7 @@ Item {
 
             function updateColors() {
                 var colors
-                if (!launcherItem.backgroundFromIcon) colors = ["#333333", "#333333"]
+                if (!item.backgroundFromIcon) colors = ["#333333", "#333333"]
                 else colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
 
                 if (colors && colors.length > 0) {
@@ -151,8 +152,8 @@ Item {
             anchors.fill: parent
 
             source: "artwork/round_shine_54x54.png"
-            sourceSize.width: 54
-            sourceSize.height: 54
+            sourceSize.width: item.tileSize
+            sourceSize.height: item.tileSize
         }
 
         /* The entire tile will "shake" when the window is marked as "urgent", to attract
@@ -176,8 +177,8 @@ Item {
 
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: launcherItem.clicked(mouse)
-        onEntered: launcherItem.entered()
-        onExited: launcherItem.exited()
+        onClicked: item.clicked(mouse)
+        onEntered: item.entered()
+        onExited: item.exited()
     }
 }
