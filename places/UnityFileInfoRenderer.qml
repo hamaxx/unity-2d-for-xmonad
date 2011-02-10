@@ -18,7 +18,7 @@ RendererGrid {
             property string parentDirectory
             parentDirectory: {
                 var slashIndex, path, directoryName
-                var path = uri.toString()
+                var path = decodeURIComponent(uri.toString())
 
                 /* Remove the trailing file name */
                 slashIndex = path.lastIndexOf("/")
@@ -30,7 +30,7 @@ RendererGrid {
                 return directoryName
             }
 
-            onClicked: placeEntryModel.place.activate(uri.toString())
+            onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
 
             Image {
                 id: icon
