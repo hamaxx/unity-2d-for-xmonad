@@ -28,7 +28,6 @@ QSortFilterProxyModelQML::updateRoleNames()
     setRoleNames(((QAbstractItemModel*)sourceModel())->roleNames());
 }
 
-
 QObject*
 QSortFilterProxyModelQML::sourceModelQObject() const
 {
@@ -54,5 +53,6 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 
     setSourceModel(itemModel);
     updateRoleNames();
-    QObject::connect(itemModel, SIGNAL(modelReset()), this, SLOT(updateRoleNames()));
+
+    connect(this, SIGNAL(modelReset()), SLOT(updateRoleNames()));
 }

@@ -6,9 +6,11 @@ import Unity2d 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
+    clip: true
 
-    /* Avoid redraw at rendering */
-    effect: CacheEffect {}
+// FIXME: disabled since it doesn't work properly with a size animation
+//    /* Avoid redraw at rendering */
+//    effect: CacheEffect {}
 
     GConfItem {
         id: primary_color
@@ -59,12 +61,12 @@ Item {
             else
                 return filename
         }
-        width: screenGeometry.width
-        height: screenGeometry.height
+        width: screen.geometry.width
+        height: screen.geometry.height
 
         smooth: true
-        x: -availableGeometry.x
-        y: -availableGeometry.y
+        x: - screen.availableGeometry.x
+        y: - screen.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"

@@ -27,9 +27,11 @@
 #include <QMetaType>
 #include <QString>
 #include <QTimer>
+#include <QHash>
 
 #include "bamf-application.h"
 
+class DBusMenuImporter;
 class QFileSystemWatcher;
 
 class LauncherApplication : public LauncherItem
@@ -101,6 +103,10 @@ private slots:
 
     void onWindowAdded(BamfWindow*);
 
+    void slotChildAdded(BamfView*);
+    void slotChildRemoved(BamfView*);
+    void onIndicatorMenuUpdated();
+
     void onDesktopFileChanged(const QString&);
     void checkDesktopFileReallyRemoved();
 
@@ -112,10 +118,14 @@ private:
     int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
+    QHash<QString, DBusMenuImporter*> m_indicatorMenus;
+    int m_indicatorMenusReady;
 
     void updateBamfApplicationDependentProperties();
-
     void monitorDesktopFile(const QString&);
+    void fetchIndicatorMenus();
+    void createStaticMenuActions();
+    int windowCountOnCurrentWorkspace();
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

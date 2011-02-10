@@ -15,6 +15,9 @@
  */
 
 #include <QDebug>
+#include <QRegExp>
+#include <QApplication>
+#include <QWidget>
 
 #include "windowslist.h"
 #include "windowinfo.h"
@@ -22,14 +25,20 @@
 #include "bamf-matcher.h"
 #include "bamf-window.h"
 #include "bamf-application.h"
+#include "bamf-view.h"
 
 WindowsList::WindowsList(QObject *parent) :
-    QAbstractListModel(parent), m_applicationId(0),
-    m_loaded(false), m_lastActiveWindow(NULL)
+    QAbstractListModel(parent)
 {
     QHash<int, QByteArray> roles;
-    roles[0] = "window";
+    roles[WindowInfo::RoleWindowInfo] = "window";
+    roles[WindowInfo::RoleDesktopFile] = "desktopFile";
+    roles[WindowInfo::RoleWorkspace] = "workspace";
     setRoleNames(roles);
+
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(addWindow(BamfView*)));
+    connect(&matcher, SIGNAL(ViewClosed(BamfView*)), SLOT(removeWindow(BamfView*)));
 }
 
 WindowsList::~WindowsList()
@@ -46,41 +55,43 @@ int WindowsList::rowCount(const QModelIndex &parent) const
 
 QVariant WindowsList::data(const QModelIndex &index, int role) const
 {
-    Q_UNUSED(role);
-
     if (!index.isValid())
         return QVariant();
 
     WindowInfo *info = m_windows.at(index.row());
-    return QVariant::fromValue(info);
+    switch (role) {
+    case WindowInfo::RoleWindowInfo:
+        return QVariant::fromValue(info);
+    case WindowInfo::RoleDesktopFile:
+        return QVariant::fromValue(info->desktopFile());
+    case WindowInfo::RoleWorkspace:
+        return QVariant::fromValue(info->workspace());
+    default:
+        qDebug() << "Requested invalid role (index" << role << ")";
+        return QVariant();
+    }
 }
 
-void WindowsList::load(unsigned long applicationId)
+void WindowsList::load()
 {
-    if (m_loaded && m_applicationId == applicationId) {
-        return;
+    if (m_windows.count() > 0) {
+        beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
+        qDeleteAll(m_windows);
+        m_windows.clear();
+        endRemoveRows();
     }
 
     BamfMatcher &matcher = BamfMatcher::get_default();
     QList<BamfApplication*> applications;
 
-    if (applicationId == 0) {
-        /* List the windows of all the applications */
-        BamfApplicationList *allapplications = matcher.applications();
-        for (int i = 0; i < allapplications->size(); i++) {
-             applications.append(allapplications->at(i));
-        }
-    } else {
-        /* List the windows of the application that has for group leader the window
-           with XID applicationId */
-        applications.append(matcher.application_for_xid(applicationId));
+    /* List the windows of all the applications */
+    BamfApplicationList *allapplications = matcher.applications();
+    for (int i = 0; i < allapplications->size(); i++) {
+         applications.append(allapplications->at(i));
     }
 
-    BamfWindow* activeWindow = matcher.active_window();
-
-    /* Build a list of windowInfos for windows that are 'user_visible' according to BAMF */
-    QList<WindowInfo*> newWindows;
-
+    /* Add to the list only WindowInfo for windows that are
+      'user_visible' according to BAMF */
     Q_FOREACH (BamfApplication* application, applications) {
         if (!application->user_visible()) {
             continue;
@@ -94,34 +105,19 @@ void WindowsList::load(unsigned long applicationId)
             }
 
             WindowInfo *info = new WindowInfo(window->xid());
-            newWindows.append(info);
+            connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
 
-            if (activeWindow != NULL && window->xid() == activeWindow->xid()) {
-                m_lastActiveWindow = info;
-            }
+            /* It may seem less efficient to add items one by one instead of adding them
+               to a list and appending the entire list at the end and notify only one
+               size change.
+               However doing it that way for some reason prevents the GridView connected
+               to this model from emitting *any* onAdd signal, and the logic in Spread
+               relies on these signals being reliably emitted. */
+            beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
+            m_windows.append(info);
+            endInsertRows();
         }
     }
-
-    qDebug() << "Matched" << newWindows.count() << "Windows in" << applications.count() << "Applications";
-
-    if (m_windows.count() > 0) {
-        beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
-        qDeleteAll(m_windows);
-        m_windows.clear();
-        endRemoveRows();
-    }
-
-    if (newWindows.count() > 0) {
-        beginInsertRows(QModelIndex(), 0, newWindows.count() - 1);
-        m_windows.append(newWindows);
-        endInsertRows();
-    }
-
-    m_applicationId = applicationId;
-    m_loaded = true;
-
-    Q_EMIT countChanged(m_windows.count());
-    Q_EMIT lastActiveWindowChanged(m_lastActiveWindow);
 }
 
 void WindowsList::unload()
@@ -130,12 +126,84 @@ void WindowsList::unload()
     qDeleteAll(m_windows);
     m_windows.clear();
     endRemoveRows();
-
-    m_loaded = false;
-
-    Q_EMIT countChanged(m_windows.count());
 }
 
-WindowInfo* WindowsList::lastActiveWindow() const {
-    return m_lastActiveWindow;
+void WindowsList::addWindow(BamfView *view)
+{
+    BamfWindow *window = qobject_cast<BamfWindow*>(view);
+    if (window == NULL) {
+        /* It is common for this to be null since Bamf sends
+           us also one ViewOpened with BamfApplication* for the
+           first window opened of each application. */
+        return;
+    }
+
+    if (window->xid() == 0) {
+        qWarning() << "Received ViewOpened but window's xid is zero";
+        return;
+    }
+
+    /* Prevent adding ourselves to the windows in the model */
+    QWidget *ownWindow = QApplication::activeWindow();
+    if (ownWindow != NULL && ownWindow->winId() == window->xid()) {
+        return;
+    }
+
+    /* Prevent adding windows that the user sholdn't be able to
+       manipulate in the switcher (i.e. the dash) */
+    if (!window->user_visible()) {
+        return;
+    }
+
+    WindowInfo *info = new WindowInfo(window->xid());
+    connect(info, SIGNAL(workspaceChanged(int)), SLOT(updateWorkspaceRole(int)));
+
+    beginInsertRows(QModelIndex(), m_windows.count(), m_windows.count());
+    m_windows.append(info);
+    endInsertRows();
+}
+
+void WindowsList::removeWindow(BamfView *view)
+{
+    BamfWindow *window = qobject_cast<BamfWindow*>(view);
+    if (window == NULL) {
+        /* It is common for this to be null since Bamf sends
+           us also one ViewOpened with BamfApplication* for the
+           last window closed of each application. */
+        return;
+    }
+
+    /* The BamfMatcher::ViewClosed signal is emitted after the
+       window is already gone. This means that it's not possible to
+       retrieve the XID from the BamfWindow to find the window itself
+       in the list.
+       To workaround this, we compare directly the BamfWindow pointer
+       to the one in the WindowInfo.
+    */
+    for (int i = 0; i < m_windows.length(); i++) {
+        if (m_windows.at(i)->isSameBamfWindow(window)) {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_windows.removeAt(i);
+            endRemoveRows();
+            return;
+        }
+    }
+}
+
+/* When the window is moved to another workspace, we need to have the list
+   notify that something changed in the item corresponding to the window.
+   If we don't do this, the proxy models will not refresh and the window
+   won't be moved to the other workspace */
+void WindowsList::updateWorkspaceRole(int workspace)
+{
+    Q_UNUSED(workspace);
+
+    WindowInfo *window = qobject_cast<WindowInfo*>(sender());
+    if (window != NULL) {
+        int row = m_windows.indexOf(window);
+        if (row != -1) {
+            QModelIndex changedItem = index(row);
+            Q_EMIT dataChanged(changedItem, changedItem);
+        }
+    }
 }

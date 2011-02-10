@@ -26,7 +26,8 @@
 static const char* DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* DBUS_OBJECT_PATH = "/Spread";
 
-SpreadControl::SpreadControl(QObject *parent) : QObject(parent)
+SpreadControl::SpreadControl(QObject *parent) :
+    QObject(parent), m_isShown(false)
 {
 }
 
@@ -47,20 +48,22 @@ bool SpreadControl::connectToBus()
     return true;
 }
 
-void SpreadControl::SpreadAllWindows()
+void SpreadControl::ShowAllWorkspaces(QString applicationDesktopFile)
 {
-    qDebug() << "DBUS: Received request to spread all windows";
-    Q_EMIT activateSpread(0);
+    Q_EMIT showAllWorkspaces(applicationDesktopFile);
 }
 
-void SpreadControl::SpreadApplicationWindows(unsigned int applicationId)
+void SpreadControl::ShowCurrentWorkspace(QString applicationDesktopFile)
 {
-    qDebug() << "DBUS: Received request to spread application windows of" << applicationId;
-    Q_EMIT activateSpread(applicationId);
+    Q_EMIT showCurrentWorkspace(applicationDesktopFile);
 }
 
-void SpreadControl::CancelSpread()
+void SpreadControl::FilterByApplication(QString applicationDesktopFile)
 {
-    qDebug() << "DBUS: Received request to cancel the spread";
-    Q_EMIT cancelSpread();
+    Q_EMIT filterByApplication(applicationDesktopFile);
+}
+
+void SpreadControl::Hide()
+{
+    Q_EMIT hide();
 }
