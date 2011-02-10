@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "launcherview.h"
+#include "launchercontrol.h"
 #include "unity2dpanel.h"
 
 #include <QDebug>
@@ -77,16 +78,20 @@ int main(int argc, char *argv[])
     launcherView->setFocus();
 
     launcherView->engine()->addImportPath(unity2dImportPath());
-    launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
+    launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
-    qDebug() << launcherView->engine()->baseUrl().toLocalFile();
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
+
+    LauncherControl control;
+    launcherView->rootContext()->setContextProperty("launcherControl", &control);
+    control.connectToBus();
+
     launcherView->setSource(QUrl("./Launcher.qml"));
 
     /* Composing the QML declarative view inside the panel */

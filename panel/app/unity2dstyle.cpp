@@ -24,7 +24,7 @@
 
 // Local
 
-// libunity-2d
+// libunity-2d-private
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 

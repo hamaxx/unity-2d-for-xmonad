@@ -21,6 +21,7 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
+#include <QUrl>
 #include <QDragEnterEvent>
 #include <QList>
 
@@ -34,8 +35,11 @@ public:
 
 signals:
     void desktopFileDropped(QString path);
+    void webpageUrlDropped(const QUrl& url);
 
 private:
+    QList<QUrl> getEventUrls(QDropEvent*);
+
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);

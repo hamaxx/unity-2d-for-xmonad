@@ -16,6 +16,7 @@
 
 #include "blendedimageprovider.h"
 #include <QPainter>
+#include <QDebug>
 
 BlendedImageProvider::BlendedImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
@@ -25,7 +26,6 @@ BlendedImageProvider::~BlendedImageProvider()
 {
 }
 
-#include <QDebug>
 QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     /* id is of the form [FILENAME]color=[COLORNAME]alpha=[FLOAT] */

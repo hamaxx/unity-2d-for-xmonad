@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.canonical.Unity2d.Launcher
+Exec=@CMAKE_INSTALL_PREFIX@/bin/unity-2d-launcher
