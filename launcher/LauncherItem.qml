@@ -18,6 +18,7 @@ Item {
     property bool active: false
     property bool urgent: false
     property bool launching: false
+    property bool backgroundFromIcon
 
     /* Pips are small icons used to indicate how many windows we have open for
        the current tile. If there's only one, we just display an arrow, if there are
@@ -100,8 +101,11 @@ Item {
             onSourceChanged: updateColors()
 
             function updateColors() {
-                var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
-                if (colors) {
+                var colors
+                if (!launcherItem.backgroundFromIcon) colors = ["#333333", "#333333"]
+                else colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+
+                if (colors && colors.length > 0) {
                     tileBackground.source = "image://blended/%1color=%2alpha=%3"
                                             .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
                                             .arg(colors[0].toString().replace("#", ""))

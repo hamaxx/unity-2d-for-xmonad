@@ -40,6 +40,9 @@ Item {
             launching: item.launching
             pips: Math.min(item.windowCount, 3)
 
+            /* Best way I could find to check if the item is an application or not */
+            backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0
+
             Binding { target: item.menu; property: "title"; value: item.name }
 
             function showMenu() {
@@ -48,6 +51,8 @@ Item {
                     list.visibleMenu.hide()
                 }
                 list.visibleMenu = item.menu
+
+
                 item.menu.show(width, y + height / 2 - list.contentY + panel.y)
             }
 
