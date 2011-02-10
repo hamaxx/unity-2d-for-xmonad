@@ -36,6 +36,7 @@ Item {
             active: item.active
             urgent: item.urgent
             launching: item.launching
+            pips: Math.min(item.windowCount, 3)
 
             anchors.horizontalCenter: parent.horizontalCenter
 
@@ -85,6 +86,31 @@ Item {
                This isn’t too bad though, as the launcher is supposed to be
                started before any other regular application. */
             onYChanged: setIconGeometry()
+
+            onClicked: {
+                if (mouse.button == Qt.LeftButton) {
+                    item.menu.hide()
+                    item.activate()
+                }
+                else if (mouse.button == Qt.RightButton) {
+                    item.menu.folded = false
+                    showMenu()
+                }
+            }
+
+            /* Display the tooltip when hovering the item only when the list
+               is not moving */
+            onEntered: if (!list.moving) showMenu()
+            onExited: {
+                /* When unfolded, leave enough time for the user to reach the
+                   menu. Necessary because there is some void between the item
+                   and the menu. Also it fixes the case when the user
+                   overshoots. */
+                if (!item.menu.folded)
+                    item.menu.hideWithDelay(400)
+                else
+                    item.menu.hide()
+            }
 
             Connections {
                 target: item

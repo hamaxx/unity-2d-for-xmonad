@@ -28,16 +28,20 @@ Item {
     property bool urgent: false
     property bool launching: false
 
-    property int pips: 3
-    function getPipShift(index) {
+    property int pips: 0
+    property string pipSource: engineBaseUrl + "artwork/launcher_" +
+                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
+    function getPipOffset(index) {
         /* This works and is less convoluted than the generic formula.
            and we're never dealing with more than 3 pips anyway. */
         if (pips == 1) return 0;
         if (pips == 2) return (index == 0) ? -2 : +2
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
-    property string pipSource: engineBaseUrl + "artwork/launcher_" +
-                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
+
+    signal clicked(variant mouse)
+    signal entered
+    signal exited
 
     Item {
         height: 54
@@ -54,11 +58,13 @@ Item {
 
             /* This extra shift is necessary (as is for the pips below)
                since we are vertically centering in a parent with even height, so
-               there's an arbitrary shift of 1 pixel.
+               there's one arbitrary pixel that need to be assigned arbitrarily.
                Unity chose to add it, QML to subtract it. So we adjust for that. */
             transform: Translate {
                 y: 1
             }
+
+            visible: active
         }
 
         /* I'd rather use a Column here, but the pip images have an halo
@@ -74,9 +80,20 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
 
                 transform: Translate {
-                    y: getPipShift(index) + 1
+                    y: getPipOffset(index) + 1
                 }
             }
+        }
+
+        MouseArea {
+            id: mouse
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            hoverEnabled: true
+            anchors.fill: parent
+            onClicked: launcherItem.clicked(mouse)
+            onEntered: launcherItem.entered()
+            onExited: launcherItem.exited()
         }
     }
 

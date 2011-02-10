@@ -53,6 +53,12 @@ Trash::running() const
     return false;
 }
 
+int
+Trash::windowCount() const
+{
+    return 0;
+}
+
 bool
 Trash::urgent() const
 {
