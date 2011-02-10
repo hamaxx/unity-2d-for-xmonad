@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include "launcherview.h"
+#include "launchercontrol.h"
 #include "unity2dpanel.h"
 
 int main(int argc, char *argv[])
@@ -81,6 +82,11 @@ int main(int argc, char *argv[])
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+
+    LauncherControl control;
+    launcherView->rootContext()->setContextProperty("launcherControl", &control);
+    control.connectToBus();
+
     launcherView->setSource(QUrl("./Launcher.qml"));
 
     /* Composing the QML declarative view inside the panel */

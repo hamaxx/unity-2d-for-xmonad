@@ -39,9 +39,15 @@ extern "C" {
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QFile>
+#include <QFileSystemWatcher>
 
-LauncherApplication::LauncherApplication() :
-    m_application(NULL), m_appInfo(NULL), m_sticky(false), m_has_visible_window(false)
+LauncherApplication::LauncherApplication()
+    : m_application(NULL)
+    , m_desktopFileWatcher(NULL)
+    , m_appInfo(NULL)
+    , m_sticky(false)
+    , m_has_visible_window(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
@@ -174,7 +180,7 @@ LauncherApplication::setSticky(bool sticky)
 }
 
 void
-LauncherApplication::setDesktopFile(QString desktop_file)
+LauncherApplication::setDesktopFile(const QString& desktop_file)
 {
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
@@ -199,6 +205,73 @@ LauncherApplication::setDesktopFile(QString desktop_file)
         emit desktopFileChanged(desktop_file);
         emit nameChanged(name());
         emit iconChanged(icon());
+    }
+
+    monitorDesktopFile(this->desktop_file());
+}
+
+void
+LauncherApplication::monitorDesktopFile(const QString& path)
+{
+    /* Monitor the desktop file for live changes */
+    if (m_desktopFileWatcher == NULL) {
+        m_desktopFileWatcher = new QFileSystemWatcher(this);
+        connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
+                SLOT(onDesktopFileChanged(const QString&)));
+    }
+
+    /* If the file is already being monitored, we shouldn’t need to do anything.
+       However it seems that in some cases, a change to the file will stop
+       emiting further fileChanged signals, despite the file still being in the
+       list of monitored files. This is the case when the desktop file is being
+       edited in gedit for example. This may be a bug in QT itself.
+       To work around this issue, remove the path and add it again. */
+    if (m_desktopFileWatcher->files().contains(path)) {
+        m_desktopFileWatcher->removePath(path);
+    }
+    m_desktopFileWatcher->addPath(path);
+}
+
+void
+LauncherApplication::onDesktopFileChanged(const QString& path)
+{
+    if (m_desktopFileWatcher->files().contains(path) || QFile::exists(path)) {
+        /* The contents of the file have changed. */
+        setDesktopFile(path);
+    }
+    else {
+        /* The desktop file has been deleted.
+           This can happen in a number of cases:
+            - the package it belongs to has been uninstalled
+            - the package it belongs to has been upgraded, in which case it is
+              likely that the desktop file has been removed and a new version of
+              it has been installed in place of the old version
+            - the file has been written to using an editor that first saves to a
+              temporary file and then moves this temporary file to the
+              destination file, which effectively results in the file being
+              temporarily deleted (vi for example does that, whereas gedit
+              doesn’t)
+           In the first case, we want to remove the application from the
+           launcher. In the last two cases, we need to consider that the desktop
+           file’s contents have changed. At this point there is no way to be
+           sure that the file has been permanently removed, so we want to give
+           the application a grace period before checking for real deletion. */
+        QTimer::singleShot(1000, this, SLOT(checkDesktopFileReallyRemoved()));
+    }
+}
+
+void
+LauncherApplication::checkDesktopFileReallyRemoved()
+{
+    QString path = desktop_file();
+    if (QFile::exists(path)) {
+        /* The desktop file hasn’t really been removed, it was only temporarily
+           deleted. */
+        setDesktopFile(path);
+    }
+    else {
+        /* The desktop file has really been removed. */
+        setSticky(false);
     }
 }
 
@@ -610,7 +683,7 @@ LauncherApplication::createStaticMenuActions()
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
-    if (!desktop_file().isEmpty()) {
+    if (QFile::exists(desktop_file())) {
         QAction* keep = new QAction(m_menu);
         keep->setCheckable(is_running);
         keep->setChecked(sticky());

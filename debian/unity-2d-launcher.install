@@ -1,4 +1,5 @@
 usr/bin/unity-2d-launcher
+usr/share/dbus-1/services/unity-2d-launcher.service
 usr/share/applications/unity-2d-launcher.desktop
 usr/share/unity-2d/launcher/*.qml
 usr/share/unity-2d/launcher/launchermenu.css

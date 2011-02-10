@@ -16,6 +16,7 @@
 
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
+#include "webfavorite.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -126,6 +127,22 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     } else {
         insertApplication(application);
     }
+}
+
+void
+LauncherApplicationsList::insertWebFavorite(const QUrl& url)
+{
+    if (!url.isValid() || url.isRelative()) {
+        qWarning() << "Invalid URL:" << url;
+        return;
+    }
+
+    LauncherApplication* application = new LauncherApplication;
+    WebFavorite* webfav = new WebFavorite(url, application);
+
+    application->setDesktopFile(webfav->desktopFile());
+    insertApplication(application);
+    application->setSticky(true);
 }
 
 void

@@ -5,19 +5,28 @@ pkg_check_modules(X11 REQUIRED x11)
 # Sources
 set(launcher_SRCS
     launcherview.cpp
+    launchercontrol.cpp
     )
 
 set(launcher_MOC_HDRS
     launcherview.h
+    launchercontrol.h
     )
 
 qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
+
+configure_file(unity-2d-launcher.service.in unity-2d-launcher.service)
+
+qt4_add_dbus_adaptor(launcher_SRCS launcher.xml
+    launchercontrol.h LauncherControl
+    )
 
 # Build
 add_library(uqlauncher ${launcher_SRCS} ${launcher_MOC_SRCS})
 add_executable(unity-2d-launcher launcher.cpp)
 
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
@@ -27,6 +36,7 @@ include_directories(
 target_link_libraries(uqlauncher
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
+    ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     ${X11_LDFLAGS}
@@ -44,3 +54,8 @@ install(TARGETS unity-2d-launcher
 install(FILES unity-2d-launcher.desktop
     DESTINATION share/applications
     )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
+    DESTINATION share/dbus-1/services
+    )
+
