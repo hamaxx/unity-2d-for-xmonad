@@ -7,24 +7,24 @@
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
+ * it under the terms of the GNU General Public License as published
  * by the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // Self
 #include "unity2dpanel.h"
+#include <debug_p.h>
 
 // Qt
 #include <QApplication>
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QHBoxLayout>
@@ -46,6 +46,8 @@ struct Unity2dPanelPrivate
         const QRect screen = desktop->screenGeometry(q);
         const QRect available = desktop->availableGeometry(q);
         QRect rect;
+
+        UQ_DEBUG << "Available workspace:" << available;
 
         Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
 
@@ -70,6 +72,8 @@ struct Unity2dPanelPrivate
         }
 
         q->setGeometry(rect);
+
+        UQ_DEBUG << "Panel is now at:" << q->geometry();
 
         XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
                         XA_CARDINAL, 32, PropModeReplace,

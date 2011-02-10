@@ -34,9 +34,6 @@ public:
 signals:
     void desktopFileDropped(QString path);
 
-public slots:
-    void workAreaResized(int screen);
-
 private:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);

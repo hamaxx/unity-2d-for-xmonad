@@ -1,5 +1,6 @@
 # Sources
 set(libunity-2d-private_SRCS
+    gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
@@ -22,6 +23,7 @@ set_target_properties(unity-2d-private PROPERTIES
 target_link_libraries(unity-2d-private
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
+    ${QT_QTDBUS_LIBRARIES}
     ${X11_LIBRARIES}
     )
 

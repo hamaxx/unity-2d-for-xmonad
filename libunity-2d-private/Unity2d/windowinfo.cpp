@@ -25,7 +25,6 @@
 #include "bamf-window.h"
 
 #include "windowinfo.h"
-
 #include <X11/Xlib.h>
 #include <QX11Info>
 
@@ -34,6 +33,11 @@ WindowInfo::WindowInfo(unsigned int contentXid, QObject *parent) :
     m_contentXid(0), m_decoratedXid(0)
 {
     setContentXid(contentXid);
+}
+
+WindowInfo::~WindowInfo()
+{
+    g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
 }
 
 unsigned int WindowInfo::contentXid() const
@@ -126,6 +130,11 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     */
     unsigned int decoratedXid = findTopmostAncestor(contentXid);
 
+    /* Disconnect previously connected signals */
+    if (m_wnckWindow != NULL) {
+        g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    }
+
     /* Set member variables and emit changed signals */
     m_bamfApplication = bamfApplication;
     m_bamfWindow = bamfWindow;
@@ -133,14 +142,25 @@ void WindowInfo::setContentXid(unsigned int contentXid)
     m_contentXid = contentXid;
     m_decoratedXid = decoratedXid;
 
-    emit contentXidChanged(m_contentXid);
-    emit decoratedXidChanged(m_decoratedXid);
+    g_signal_connect(G_OBJECT(m_wnckWindow), "workspace-changed",
+                     G_CALLBACK(WindowInfo::onWorkspaceChanged), this);
+
+    Q_EMIT contentXidChanged(m_contentXid);
+    Q_EMIT decoratedXidChanged(m_decoratedXid);
 
     updateGeometry();
 
-    emit zChanged(z());
-    emit titleChanged(title());
-    emit iconChanged(icon());
+    Q_EMIT zChanged(z());
+    Q_EMIT titleChanged(title());
+    Q_EMIT iconChanged(icon());
+    Q_EMIT desktopFileChanged(desktopFile());
+    Q_EMIT workspaceChanged(workspace());
+}
+
+void WindowInfo::setWorkspace(int workspaceNumber)
+{
+    WnckWorkspace* workspace = wnck_screen_get_workspace(wnck_screen_get_default(), workspaceNumber);
+    wnck_window_move_to_workspace(m_wnckWindow, workspace);
 }
 
 unsigned int WindowInfo::decoratedXid() const
@@ -191,6 +211,36 @@ QString WindowInfo::icon() const
 
 }
 
+QString WindowInfo::desktopFile() const
+{
+    if (m_bamfApplication == NULL) {
+        return QString();
+    }
+    return m_bamfApplication->desktop_file();
+}
+
+/* This returns the number of the workspace where the window is.
+   It return -1 if the window is not on any workspace (not sure if this can happen,
+   but better be safe rather than sorry).
+   And as a special case it does return -2 for a window that is on all workspaces
+   (also called a "pinned" window).
+*/
+int WindowInfo::workspace() const
+{
+    if (m_wnckWindow != NULL) {
+        WnckWorkspace *workspace = wnck_window_get_workspace(m_wnckWindow);
+        if (workspace != NULL) {
+            return wnck_workspace_get_number(workspace);
+        } else {
+            if (wnck_window_is_pinned(m_wnckWindow)) {
+                return -2;
+            }
+        }
+    }
+
+    return -1;
+}
+
 void WindowInfo::activate()
 {
     showWindow(m_wnckWindow);
@@ -207,57 +257,31 @@ void WindowInfo::updateGeometry()
     m_size.setWidth(w);
     m_size.setHeight(h);
 
-    emit positionChanged(m_position);
-    emit sizeChanged(m_size);
+    Q_EMIT positionChanged(m_position);
+    Q_EMIT sizeChanged(m_size);
 }
 
-/* FIXME: copied from UnityApplications/launcherapplication.cpp */
 void WindowInfo::showWindow(WnckWindow* window)
 {
-    WnckWorkspace* workspace = wnck_window_get_workspace(window);
-
-    /* Using X.h's CurrentTime (= 0) */
-    wnck_workspace_activate(workspace, CurrentTime);
-
-    /* If the workspace contains a viewport then move the viewport so
-       that the window is visible.
-       Compiz for example uses only one workspace with a desktop larger
-       than the screen size which means that a viewport is used to
-       determine what part of the desktop is visible.
-
-       Reference:
-       http://standards.freedesktop.org/wm-spec/wm-spec-latest.html#largedesks
-    */
-    if (wnck_workspace_is_virtual(workspace)) {
-        moveViewportToWindow(window);
-    }
-
-    /* Using X.h's CurrentTime (= 0) */
     wnck_window_activate(window, CurrentTime);
 }
 
-/* FIXME: copied from UnityApplications/launcherapplication.cpp */
-void WindowInfo::moveViewportToWindow(WnckWindow* window)
+bool WindowInfo::isSameBamfWindow(BamfWindow *other)
 {
-    WnckWorkspace* workspace = wnck_window_get_workspace(window);
-    WnckScreen* screen = wnck_window_get_screen(window);
+    return (m_bamfWindow == other);
+}
 
-    int screen_width = wnck_screen_get_width(screen);
-    int screen_height = wnck_screen_get_height(screen);
-    int viewport_x = wnck_workspace_get_viewport_x(workspace);
-    int viewport_y = wnck_workspace_get_viewport_y(workspace);
+void WindowInfo::onWorkspaceChanged(WnckWindow *window, gpointer user_data)
+{
+    Q_UNUSED(window);
 
-    int window_x, window_y, window_width, window_height;
-    wnck_window_get_geometry(window, &window_x, &window_y,
-                                     &window_width, &window_height);
+    WindowInfo *instance = static_cast<WindowInfo*>(user_data);
+    if (instance != NULL) {
+        instance->updateWorkspace();
+    }
+}
 
-    /* Compute the row and column of the "virtual workspace" that contains
-       the window. A "virtual workspace" is a portion of the desktop of the
-       size of the screen.
-    */
-    int viewport_column = (viewport_x + window_x) / screen_width;
-    int viewport_row = (viewport_y + window_y) / screen_height;
-
-    wnck_screen_move_viewport(screen, viewport_column * screen_width,
-                                      viewport_row * screen_height);
+void WindowInfo::updateWorkspace()
+{
+    Q_EMIT workspaceChanged(workspace());
 }

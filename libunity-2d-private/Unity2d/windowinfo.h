@@ -20,7 +20,6 @@
 #include <QObject>
 #include <QPoint>
 #include <QSize>
-#include <QVariant>
 #include <QtDeclarative/qdeclarative.h>
 
 class BamfWindow;
@@ -43,12 +42,15 @@ typedef struct _WnckWindow WnckWindow;
 
 class BamfWindow;
 class BamfApplication;
+class BamfView;
 typedef struct _WnckWindow WnckWindow;
+typedef void* gpointer;
 
 /* FIXME: position, size, z, title and icon values are not updated real time */
 class WindowInfo : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(RoleNames)
 
     Q_PROPERTY(QPoint position READ position NOTIFY positionChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
@@ -58,9 +60,12 @@ class WindowInfo : public QObject
     Q_PROPERTY(unsigned int contentXid READ contentXid WRITE setContentXid
                                                        NOTIFY contentXidChanged)
     Q_PROPERTY(unsigned int decoratedXid READ decoratedXid NOTIFY decoratedXidChanged)
+    Q_PROPERTY(QString desktopFile READ desktopFile NOTIFY desktopFileChanged)
+    Q_PROPERTY(int workspace READ workspace WRITE setWorkspace NOTIFY workspaceChanged)
 
 public:
     explicit WindowInfo(unsigned int contentXid = 0, QObject *parent = 0);
+    ~WindowInfo();
 
     /* getters */
     unsigned int decoratedXid() const;
@@ -70,15 +75,22 @@ public:
     unsigned int z() const;
     QString title() const;
     QString icon() const;
+    QString desktopFile() const;
+    int workspace() const;
 
     /* setters */
     void setContentXid(unsigned int contentXid);
+    void setWorkspace(int workspaceNumber);
 
     Q_INVOKABLE void activate();
 
-    /* FIXME: copied from UnityApplications/launcherapplication.h */
     static void showWindow(WnckWindow* window);
-    static void moveViewportToWindow(WnckWindow* window);
+
+    enum RoleNames {
+        RoleWindowInfo,
+        RoleDesktopFile,
+        RoleWorkspace
+    };
 
 Q_SIGNALS:
     void contentXidChanged(unsigned int contentXid);
@@ -88,13 +100,19 @@ Q_SIGNALS:
     void zChanged(unsigned int z);
     void titleChanged(QString title);
     void iconChanged(QString icon);
+    void desktopFileChanged(QString desktopFile);
+    void workspaceChanged(int workspace);
 
 private:
     void updateGeometry();
+    void updateWorkspace();
     BamfWindow* getBamfWindowForApplication(BamfApplication *application, unsigned int xid);
     WnckWindow* getWnckWindowForXid(unsigned int xid);
     unsigned int findTopmostAncestor(unsigned int xid);
+    bool isSameBamfWindow(BamfWindow *other);
+    static void onWorkspaceChanged(WnckWindow *window, gpointer user_data);
 
+private:
     BamfApplication *m_bamfApplication;
     BamfWindow *m_bamfWindow;
     WnckWindow *m_wnckWindow;
@@ -102,6 +120,10 @@ private:
     unsigned int m_decoratedXid;
     QPoint m_position;
     QSize m_size;
+
+/* This is needed so that WindowsList can access isSameBamfWindow.
+   Check WindowInfo::removeWindow for an explanation of why. */
+friend class WindowsList;
 };
 
 QML_DECLARE_TYPE(WindowInfo)

@@ -1,3 +1,15 @@
+# Common settings
+include_directories(
+    ${libunity-2d-private_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${QT_QTTEST_INCLUDE_DIR}
+    )
+
+enable_testing()
+
+set(LIBUNITY_2D_TEST_DIR ${libunity-2d_BINARY_DIR}/tests)
+
+# Unit-tests
 macro(libunity_2d_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
@@ -16,15 +28,25 @@ macro(libunity_2d_tests)
     add_dependencies(check libunity-2d-private_check)
 endmacro(libunity_2d_tests)
 
-include_directories(
-    ${libunity-2d-private_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${QT_QTTEST_INCLUDE_DIR}
-    )
-
-enable_testing()
-
 libunity_2d_tests(
     keyboardmodifiersmonitortest
     paneltest
     )
+
+# gnomesessionclienttest
+add_executable(gnomesessionclienttesthelper
+    gnomesessionclienttesthelper.cpp
+    )
+target_link_libraries(gnomesessionclienttesthelper
+    unity-2d
+    )
+
+configure_file(gnomesessionclienttesthelper.desktop.in
+    gnomesessionclienttesthelper.desktop @ONLY)
+configure_file(gnomesessionclienttest.sh.in
+    gnomesessionclienttest.sh @ONLY)
+
+add_test(NAME gnomesessionclient_check
+    COMMAND /bin/sh gnomesessionclienttest.sh
+    )
+add_dependencies(libunity-2d_check gnomesessionclient_check)

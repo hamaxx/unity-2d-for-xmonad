@@ -1,6 +1,7 @@
 # Dependencies
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
+pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
 # Sources
 set(unity-2d-private-qml_SRCS
@@ -10,7 +11,10 @@ set(unity-2d-private-qml_SRCS
     windowimageprovider.cpp
     windowinfo.cpp
     windowslist.cpp
+    screeninfo.cpp
     cacheeffect.cpp
+    workspacesinfo.cpp
+    signalwaiter.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
@@ -18,6 +22,10 @@ set(unity-2d-private-qml_MOC_HDRS
     qsortfilterproxymodelqml.h
     windowinfo.h
     windowslist.h
+    screeninfo.h
+    cacheeffect.h
+    workspacesinfo.h
+    signalwaiter.h
     )
 
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})
@@ -30,6 +38,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${WNCK_INCLUDE_DIRS}
     ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
     )
 
 target_link_libraries(unity-2d-private-qml
@@ -38,6 +47,7 @@ target_link_libraries(unity-2d-private-qml
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${WNCK_LDFLAGS}
     ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
     )
 
 # Install

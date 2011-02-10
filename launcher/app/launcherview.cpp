@@ -71,48 +71,6 @@ void LauncherView::dropEvent(QDropEvent *event)
     if (accepted) event->accept();
 }
 
-void
-LauncherView::workAreaResized(int screen)
-{
-    if (m_resizing)
-    {
-        qDebug("Second call to LauncherView::workAreaResized. Ignoring.");
-
-        /* FIXME: this is a hack to avoid infinite recursion: reserving space
-           at the left of the screen triggers the emission of the
-           workAreaResized signal… */
-        m_resizing = false;
-        return;
-    }
-
-    QDesktopWidget* desktop = QApplication::desktop();
-    if (screen == desktop->screenNumber(this))
-    {
-        const QRect screen = desktop->screenGeometry(this);
-        const QRect available = desktop->availableGeometry(this);
-        this->resize(this->size().width(), available.height());
-        uint left = available.x();
-        /* This assumes that we are the only panel on the left of the screen */
-        if (m_reserved) left -= this->size().width();
-        this->move(left, available.y());
-
-        qDebug("LauncherView::workAreaResized: resize to (%d, %d) and move to (%d, %d)",
-               this->size().width(), this->size().height(), this->x(), this->y());
-
-        m_resizing = true;
-
-        /* Reserve space at the left edge of the screen (the launcher is a panel) */
-        Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
-        ulong struts[12] = {left + this->size().width(), 0, 0, 0,
-                           available.y(), available.y() + available.height(), 0, 0,
-                           0, 0, 0, 0};
-        XChangeProperty(QX11Info::display(), this->effectiveWinId(), atom,
-                        XA_CARDINAL, 32, PropModeReplace,
-                        (unsigned char *) &struts, 12);
-        m_reserved = true;
-    }
-}
-
 QColor
 LauncherView::iconAverageColor(QUrl source, QSize size)
 {

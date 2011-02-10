@@ -1,4 +1,5 @@
 import Qt 4.7
+import "utils.js" as Utils
 
 /*
 Each SpreadWindow represents a real window on the desktop (we are
@@ -22,40 +23,19 @@ Item {
     id: window
 
     property variant windowInfo
-    property int transitionDuration
-
-    /* Position and size of our cell inside the spread */
-    property int column
-    property int row
-    property real cellWidth
-    property real cellHeight
-
-    /* Values applied when in 'spread' mode */
-    property int minMargin: 20
-    property int availableWidth: cellWidth - minMargin
-    property int availableHeight: cellHeight - minMargin
-    /* Scale down to fit availableWidth/availableHeight while preserving the aspect
-       ratio of the window. Never scale up the window. */
-    property double availableAspectRatio: availableWidth / availableHeight
-    property double windowAspectRatio: windowInfo.size.width / windowInfo.size.height
-    property bool isHorizontal: windowAspectRatio >= availableAspectRatio
-    property int maxWidth: Math.min(windowInfo.size.width, availableWidth)
-    property int maxHeight: Math.min(windowInfo.size.height, availableHeight)
-    property int spreadWidth: isHorizontal ? maxWidth : maxHeight * windowAspectRatio
-    property int spreadHeight: !isHorizontal ? maxHeight : maxWidth / windowAspectRatio
-    /* Center window within its cell */
-    property int spreadX: column * cellWidth + (cellWidth - spreadWidth) / 2
-    property int spreadY: row * cellHeight + (cellHeight - spreadHeight) / 2
+    property bool animating
 
     /* Maintain the selection status of this item to adjust visual appearence,
        but never change it from inside the component. Since all selection logic
        need to be managed outside of the component due to interaction with keyboard,
        we just forward mouse signals. */
-    property bool isSelected: false
+    property bool isSelected
 
     signal clicked
     signal entered
     signal exited
+
+    property bool enableBehaviors: false
 
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
@@ -77,11 +57,12 @@ Item {
            hack which essentially appends the current time to the source URL of the
            Image, tricking the cache into doing a request to the image provider.
         */
-        source: "image://window/" + windowInfo.decoratedXid + "@" + control.currentTime()
+        source: "image://window/" + windowInfo.decoratedXid + "|"
+                                  + windowInfo.contentXid + "@"
+                                  + screen.currentTime()
 
-        /* This will be disabled during intro/outro animations for performance reasons,
-           but it's good to have in spread mode when the window is */
-        smooth: true
+        /* Disabled during animations for performance reasons */
+        smooth: !animating
 
         visible: (status != Image.Error)
     }
@@ -119,22 +100,6 @@ Item {
         id: overlay
 
         anchors.fill: parent
-
-        /* Shown only in spread state, see transitions */
-        visible: false
-
-        /* A darkening rectangle that covers every window in spread state,
-           except the currently selected window. See overlay.states */
-        Rectangle {
-            id: darken
-
-            anchors.fill:  parent
-
-            color: "black"
-            opacity: 0.1
-
-            visible: !window.isSelected
-        }
 
         /* A label with the window title centered over the shot.
            It will appear only for the currently selected window. See overlay.states */
@@ -182,6 +147,11 @@ Item {
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
 
+                property real originalFontSize
+                Component.onCompleted: {
+                    originalFontSize = font.pointSize
+                }
+
                 color: "white"
             }
         }
@@ -199,41 +169,4 @@ Item {
         onEntered: window.entered()
         onExited: window.exited()
     }
-
-    states: [
-        /* This state is what we want to have at the end of the intro.
-           In other words, it puts the window in its right place and size when in spread mode. */
-        State {
-            name: "spread"
-            PropertyChanges {
-                target: window
-
-                width: spreadWidth
-                height: spreadHeight
-                x: spreadX
-                y: spreadY
-            }
-        }
-    ]
-
-    transitions: [
-        /* This is the animation that is exectuted when moving between any of the two states.
-           It will be executed in the same sequence for both the intro and outro. */
-        Transition {
-            SequentialAnimation {
-               PropertyAction { target: shot; property: "smooth"; value: false }
-                PropertyAction { target: mouseArea; property: "enabled"; value: false }
-                PropertyAction { target: overlay; property: "visible"; value: false }
-                NumberAnimation {
-                    target: window
-                    properties: "x,y,width,height"
-                    duration: window.transitionDuration
-                    easing.type: Easing.InOutSine
-                }
-                PropertyAction { target: shot; property: "smooth"; value: true }
-                PropertyAction { target: mouseArea; property: "enabled"; value: (window.state == "spread") }
-                PropertyAction { target: overlay; property: "visible"; value: true }
-            }
-        }
-    ]
 }
