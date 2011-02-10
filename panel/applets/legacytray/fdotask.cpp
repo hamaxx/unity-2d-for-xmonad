@@ -26,7 +26,7 @@
 #include "x11embedcontainer.h"
 #include "x11embeddelegate.h"
 
-// libunity-2d
+// libunity-2d-private
 #include <debug_p.h>
 
 // Qt
