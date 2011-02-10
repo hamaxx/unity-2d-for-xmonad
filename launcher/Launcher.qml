@@ -40,8 +40,10 @@ Item {
             pips: Math.min(item.windowCount, 3)
             tileSize: 54
 
-            /* Best way I could find to check if the item is an application or not */
-            backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0
+            /* Best way I could find to check if the item is an application or the
+               workspaces switcher. There may be something cleaner and better. */
+            backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0 ||
+                                item.toString().indexOf("Workspaces") == 0
 
             Binding { target: item.menu; property: "title"; value: item.name }
 

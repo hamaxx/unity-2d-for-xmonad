@@ -4,8 +4,13 @@ import Unity2d 1.0
 /* This component represents a single "tile" in the launcher and the surrounding
    indicator icons.
 
-   The tile is composed by a colored background layer, an icon (with 'icon' as source),
+   The tile is square in size, with a side determined by the 'tileSize'
+   property, and rounded borders.
+   It is tile composed by a colored background layer, an icon (with 'icon' as source),
    and a shine layer on top.
+   The main color of the background layer may be calculated based on the icon color or may
+   be fixed (depending on the 'backgroundFromIcon' property).
+
    There's also an additional layer which contains only the outline of the tile
    that is only appearing during the launching animation (when the 'launching' property is
    true). During this animation the background fades out and the outline fades in,
@@ -33,6 +38,7 @@ Item {
     property bool urgent: false
     property bool launching: false
     property bool backgroundFromIcon
+    property color defaultBackgroundColor: "#333333"
 
     property int pips: 0
     property string pipSource: engineBaseUrl + "artwork/launcher_" +
@@ -101,10 +107,8 @@ Item {
            While the application is launching, this will fade out and in. */
         Image {
             id: tileBackground
+            property color color: defaultBackgroundColor
             anchors.fill: parent
-
-            sourceSize.width: item.tileSize
-            sourceSize.height: item.tileSize
 
             SequentialAnimation on opacity {
                 NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -114,6 +118,13 @@ Item {
                 alwaysRunToEnd: true
                 running: launching
             }
+
+            sourceSize.width: item.tileSize
+            sourceSize.height: item.tileSize
+            source: "image://blended/%1color=%2alpha=%3"
+                    .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
+                    .arg(color.toString().replace("#", ""))
+                    .arg(1.0)
         }
 
         /* This image appears only while launching, and pulses in and out in counterpoint
@@ -146,21 +157,17 @@ Item {
             sourceSize.width: 48
             sourceSize.height: 48
 
+            /* Whenever one of the parameters used in calculating the background color of
+               the icon changes, recalculate its value */
             onWidthChanged: updateColors()
             onHeightChanged: updateColors()
             onSourceChanged: updateColors()
 
             function updateColors() {
-                var colors
-                if (!item.backgroundFromIcon) colors = ["#333333", "#333333"]
-                else colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                if (!item.backgroundFromIcon) return;
 
-                if (colors && colors.length > 0) {
-                    tileBackground.source = "image://blended/%1color=%2alpha=%3"
-                                            .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
-                                            .arg(colors[0].toString().replace("#", ""))
-                                            .arg(1.0)
-                }
+                var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                if (colors && colors.length > 0) tileBackground.color = colors[0]
             }
         }
 
