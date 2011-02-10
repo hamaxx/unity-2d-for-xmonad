@@ -18,6 +18,11 @@
  */
 
 #include <gtk/gtk.h>
+
+// unity-2d
+#include <gnomesessionclient.h>
+
+// Qt
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
@@ -26,6 +31,7 @@
 
 #include "config.h"
 #include "launcherview.h"
+#include "unity2dpanel.h"
 
 int main(int argc, char *argv[])
 {
@@ -47,30 +53,39 @@ int main(int argc, char *argv[])
     QApplication::setColorSpec(QApplication::ManyColor);
     QApplication application(argc, argv);
 
+    GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
+    client.connectToSessionManager();
+
     /* Configure "artwork:" prefix so that any access to a file whose name starts
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
-    LauncherView view;
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock);
-    /* FIXME: possible optimisations */
-//    view.setAttribute(Qt::WA_OpaquePaintEvent);
-//    view.setAttribute(Qt::WA_NoSystemBackground);
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.setFocus();
+    /* Panel containing the QML declarative view */
+    Unity2dPanel panel;
+    panel.setEdge(Unity2dPanel::LeftEdge);
+    panel.setFixedWidth(58);
 
-    view.engine()->addImportPath(unity2dImportPath());
+    /* QML declarative view */
+    LauncherView *launcherView = new LauncherView;
+
+    /* FIXME: possible optimisations */
+//    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);
+//    launcherView->setAttribute(Qt::WA_NoSystemBackground);
+    launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    launcherView->setFocus();
+
+    launcherView->engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
+    launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
 
-    view.rootContext()->setContextProperty("launcherView", &view);
-    view.setSource(QUrl("./Launcher.qml"));
+    launcherView->rootContext()->setContextProperty("launcherView", launcherView);
+    launcherView->rootContext()->setContextProperty("panel", &panel);
+    launcherView->setSource(QUrl("./Launcher.qml"));
 
-    view.show();
-    QDesktopWidget* desktop = QApplication::desktop();
-    view.workAreaResized(desktop->screenNumber(&view));
-    QObject::connect(desktop, SIGNAL(workAreaResized(int)), &view, SLOT(workAreaResized(int)));
+    /* Composing the QML declarative view inside the panel */
+    panel.addWidget(launcherView);
+    panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.

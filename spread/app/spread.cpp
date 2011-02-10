@@ -68,9 +68,8 @@ int main(int argc, char *argv[])
         /* Spread.qml imports UnityApplications, which is part of the launcher
            component */
         view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
-        /* Spread.qml imports UnityPlaces, which is part of the places
-           component */
-        view.engine()->addImportPath(unity2dDirectory() + "/places/");
+        /* Spread.qml imports Unity2d */
+        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d/");
     }
 
     /* This is needed by GnomeBackground.qml (see explanation in there)
@@ -85,12 +84,13 @@ int main(int argc, char *argv[])
               instantiated on the QML side */
     SpreadControl control;
     control.connectToBus();
+    control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(setIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("spreadView", &view);
-    view.setSource(QUrl("./Spread.qml"));
+    view.setSource(QUrl("./Workspaces.qml"));
 
     /* Always match the size of the desktop */
     int current_screen = QApplication::desktop()->screenNumber(&view);

@@ -1,5 +1,5 @@
 import Qt 4.7
-import UnityPlaces 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
 
 Item {
     id: placeEntryView

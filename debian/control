@@ -39,9 +39,25 @@ Description: Transitional package for upgrades to the new unity-2d package
  pre-release installations of unity-2d and also for handling upgrades of 
  maverick installs from the unity-2d team PPA.
 
+Package: libunity-2d0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Unity 2D shared library
+ This library is used to host common code used by several Unity 2D components
+
+Package: libunity-2d-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0 (= ${binary:Version})
+Description: Unity 2D shared library - development files
+ This library is used to host common code used by several Unity 2D components
+ .
+ This package contains the development header files.
+
 Package: unity-2d-launcher
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool, libqt4-svg, libunity-2d0
 Recommends: unity-place-files, unity-place-applications
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
@@ -51,35 +67,15 @@ Description: Unity 2D Launcher
  
 Package: unity-2d-panel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d0
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
  various indicators. It is part of Unity 2D and can not run  as a standalone
  application outside of the Unity 2D environment.
 
-Package: libuqpanel0
-Section: libs
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Unity 2D Panel - shared library
- This library is used to create panel applets for the Unity 2D panel and
- provides various support functions for Unity 2D. It is only needed as
- part of a Unity 2D installation
-
-Package: libuqpanel-dev
-Section: libdevel
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libuqpanel0 (= ${binary:Version})
-Description: Unity 2D Panel - development files
- This library is used to create panel applets for the Unity 2D panel and
- provides various support functions for Unity 2D. It is only needed as part
- of a Unity 2D installation.
- .
- This package contains the development header files.
-
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0, libqt4-svg
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It is part of Unity 2D and can not run
@@ -87,10 +83,27 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, unity-2d-places
+Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d0,
+         libqt4-svg
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
  windows so you can quickly and effectively choose which one you want to 
  switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
+Package: libuqpanel0
+Architecture: any
+Depends: ${misc:Depends}, libunity-2d0
+Description: dummy transitional package for libuqpanel0
+ This transitional package helps users transition to the
+ libunity-2d0 package.  Once this package and its dependencies
+ are installed you can safely remove it.
+
+Package: libuqpanel-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libunity-2d-dev
+Description: dummy transitional package for libuqpanel-dev
+ This transitional package helps users transition to the
+ libunity-2d-dev package.  Once this package and its dependencies
+ are installed you can safely remove it.

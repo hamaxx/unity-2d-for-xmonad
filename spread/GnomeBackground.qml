@@ -1,14 +1,16 @@
 import Qt 4.7
 import gconf 1.0
 /* Necessary to access the blended image provider and CacheEffect */
-import UnityPlaces 1.0
+import Unity2d 1.0
 
 Item {
     property string overlay_color
     property real overlay_alpha
+    clip: true
 
-    /* Avoid redraw at rendering */
-    effect: CacheEffect {}
+// FIXME: disabled since it doesn't work properly with a size animation
+//    /* Avoid redraw at rendering */
+//    effect: CacheEffect {}
 
     GConfItem {
         id: primary_color
@@ -34,7 +36,6 @@ Item {
 
         anchors.fill: parent
         color: primary_color.value
-        visible: !picture.visible
     }
 
     Image {
@@ -60,11 +61,12 @@ Item {
             else
                 return filename
         }
-        width: screenGeometry.width
-        height: screenGeometry.height
-        sourceSize.width: width
-        x: -availableGeometry.x
-        y: -availableGeometry.y
+        width: screen.geometry.width
+        height: screen.geometry.height
+
+        smooth: true
+        x: - screen.availableGeometry.x
+        y: - screen.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"
@@ -83,7 +85,7 @@ Item {
                 return Image.Stretch
             else if(picture_options.value == "zoom")
                 return Image.PreserveAspectCrop
-            else return Image.Tile
+            else return Image.PreserveAspectFit
         }
     }
 }

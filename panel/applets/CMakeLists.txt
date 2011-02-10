@@ -19,6 +19,7 @@ set(uqapplets_SRCS
     appname/menubarwidget.cpp
     appname/registrar.cpp
     appname/windowhelper.cpp
+    common/applet.cpp
     homebutton/homebuttonapplet.cpp
     indicator/abstractindicator.cpp
     indicator/datetimeindicator.cpp
@@ -43,6 +44,7 @@ qt4_automoc(${uqapplets_SRCS})
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
     ${CMAKE_CURRENT_SOURCE_DIR}/appname
+    ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${QTBAMF_INCLUDE_DIRS}
@@ -69,5 +71,4 @@ target_link_libraries(uqapplets
     ${X11_Xcomposite_LIB}
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
-    uqpanel
     )
