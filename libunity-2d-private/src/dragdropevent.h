@@ -34,6 +34,7 @@ class DeclarativeDragDropEvent : public QObject
     Q_OBJECT
 
     Q_PROPERTY(DeclarativeMimeData* mimeData READ mimeData)
+    Q_PROPERTY(bool accepted READ accepted WRITE setAccepted)
     Q_PROPERTY(Qt::DropAction dropAction READ dropAction WRITE setDropAction)
 
 public:
@@ -41,12 +42,12 @@ public:
 
     /* getters */
     DeclarativeMimeData* mimeData() { return &m_mimeData; }
+    bool accepted() const;
     Qt::DropAction dropAction() const;
 
     /* setters */
+    void setAccepted(bool accepted);
     void setDropAction(Qt::DropAction action);
-
-    Q_INVOKABLE void accept();
 
 private:
     QGraphicsSceneDragDropEvent* m_event;

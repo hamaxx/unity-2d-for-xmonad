@@ -32,6 +32,18 @@ DeclarativeDragDropEvent::DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* 
     m_event->setAccepted(false);
 }
 
+bool
+DeclarativeDragDropEvent::accepted() const
+{
+    return m_event->isAccepted();
+}
+
+void
+DeclarativeDragDropEvent::setAccepted(bool accepted)
+{
+    m_event->setAccepted(accepted);
+}
+
 Qt::DropAction
 DeclarativeDragDropEvent::dropAction() const
 {
@@ -42,12 +54,6 @@ void
 DeclarativeDragDropEvent::setDropAction(Qt::DropAction action)
 {
     m_event->setDropAction(action);
-}
-
-void
-DeclarativeDragDropEvent::accept()
-{
-    m_event->accept();
 }
 
 #include "dragdropevent.moc"
