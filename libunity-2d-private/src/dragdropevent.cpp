@@ -28,18 +28,26 @@ DeclarativeDragDropEvent::DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* 
     , m_event(event)
     , m_mimeData(event->mimeData())
 {
+    /* By default the event is not accepted, let the receiver decide. */
+    m_event->setAccepted(false);
+}
+
+Qt::DropAction
+DeclarativeDragDropEvent::dropAction() const
+{
+    return m_event->dropAction();
+}
+
+void
+DeclarativeDragDropEvent::setDropAction(Qt::DropAction action)
+{
+    m_event->setDropAction(action);
 }
 
 void
 DeclarativeDragDropEvent::accept()
 {
     m_event->accept();
-}
-
-void
-DeclarativeDragDropEvent::acceptProposedAction()
-{
-    m_event->acceptProposedAction();
 }
 
 #include "dragdropevent.moc"

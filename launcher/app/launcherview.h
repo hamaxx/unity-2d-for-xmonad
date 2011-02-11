@@ -39,9 +39,9 @@ signals:
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
 
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
+//    void dragEnterEvent(QDragEnterEvent *event);
+//    void dropEvent(QDropEvent *event);
+//    void dragMoveEvent(QDragMoveEvent *event);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;

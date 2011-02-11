@@ -1,4 +1,5 @@
 import Qt 4.7
+import Unity2d 1.0
 
 /* Item displaying a launcher item.
 
@@ -17,7 +18,7 @@ import Qt 4.7
 
    The 'clicked' signal is emitted upon clicking on the item.
 */
-Item {
+DropArea {
     id: launcherItem
 
     property alias icon: icon.source

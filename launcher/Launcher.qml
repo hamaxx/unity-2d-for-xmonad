@@ -62,6 +62,11 @@ Item {
                 }
             }
 
+            /* Delegate drag’n’drop handling to the item. */
+            onDragEnter: item.onDragEnter(event)
+            onDragLeave: item.onDragLeave(event)
+            onDrop: item.onDrop(event)
+
             /* Display the tooltip when hovering the item only when the list
                is not moving */
             onEntered: if (!list.moving) showMenu()

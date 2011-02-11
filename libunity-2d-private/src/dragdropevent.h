@@ -27,21 +27,26 @@
 #include "mimedata.h"
 
 #include <QtGui/QGraphicsSceneDragDropEvent>
+#include <QtCore/Qt>
 
 class DeclarativeDragDropEvent : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(DeclarativeMimeData* mimeData READ mimeData)
+    Q_PROPERTY(Qt::DropAction dropAction READ dropAction WRITE setDropAction)
 
 public:
     DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* event, QObject* parent=0);
 
     /* getters */
     DeclarativeMimeData* mimeData() { return &m_mimeData; }
+    Qt::DropAction dropAction() const;
+
+    /* setters */
+    void setDropAction(Qt::DropAction action);
 
     Q_INVOKABLE void accept();
-    Q_INVOKABLE void acceptProposedAction();
 
 private:
     QGraphicsSceneDragDropEvent* m_event;

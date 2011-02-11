@@ -19,6 +19,7 @@
 
 #include "launcheritem.h"
 #include "launchermenu.h"
+#include "dragdropevent.h"
 
 LauncherItem::LauncherItem(QObject* parent): QObject(parent)
 {
@@ -36,3 +37,25 @@ LauncherItem::menu() const
 {
     return m_menu;
 }
+
+void
+LauncherItem::onDragEnter(QObject* event)
+{
+    Q_UNUSED(event)
+    /* Default to doing nothing, i.e. refusing the event. */
+}
+
+void
+LauncherItem::onDragLeave(QObject* event)
+{
+    Q_UNUSED(event)
+    /* Default to doing nothing. */
+}
+
+void
+LauncherItem::onDrop(QObject* event)
+{
+    Q_UNUSED(event)
+    /* Default to doing nothing. */
+}
+

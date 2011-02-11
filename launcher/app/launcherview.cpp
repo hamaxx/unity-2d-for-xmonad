@@ -67,48 +67,48 @@ LauncherView::getEventUrls(QDropEvent* event)
     return QList<QUrl>();
 }
 
-void LauncherView::dragEnterEvent(QDragEnterEvent *event)
-{
-    // Check that data has a list of URLs and that at least one is either
-    // a desktop file or a web page.
-    QList<QUrl> urls = getEventUrls(event);
+//void LauncherView::dragEnterEvent(QDragEnterEvent *event)
+//{
+//    // Check that data has a list of URLs and that at least one is either
+//    // a desktop file or a web page.
+//    QList<QUrl> urls = getEventUrls(event);
 
-    if (urls.isEmpty()) {
-        return;
-    }
+//    if (urls.isEmpty()) {
+//        return;
+//    }
 
-    foreach (QUrl url, urls) {
-        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme().startsWith("http")) {
-            event->acceptProposedAction();
-            break;
-        }
-    }
-}
+//    foreach (QUrl url, urls) {
+//        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+//            url.scheme().startsWith("http")) {
+//            event->acceptProposedAction();
+//            break;
+//        }
+//    }
+//}
 
-void LauncherView::dragMoveEvent(QDragMoveEvent *event)
-{
-    event->acceptProposedAction();
-}
+//void LauncherView::dragMoveEvent(QDragMoveEvent *event)
+//{
+//    event->acceptProposedAction();
+//}
 
-void LauncherView::dropEvent(QDropEvent *event)
-{
-    bool accepted = false;
+//void LauncherView::dropEvent(QDropEvent *event)
+//{
+//    bool accepted = false;
 
-    QList<QUrl> urls = getEventUrls(event);
-    foreach (QUrl url, urls) {
-        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            emit desktopFileDropped(url.path());
-            accepted = true;
-        }
-        else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url);
-            accepted = true;
-        }
-    }
+//    QList<QUrl> urls = getEventUrls(event);
+//    foreach (QUrl url, urls) {
+//        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+//            emit desktopFileDropped(url.path());
+//            accepted = true;
+//        }
+//        else if (url.scheme().startsWith("http")) {
+//            emit webpageUrlDropped(url);
+//            accepted = true;
+//        }
+//    }
 
-    if (accepted) event->accept();
-}
+//    if (accepted) event->accept();
+//}
 
 QColor
 LauncherView::iconAverageColor(QUrl source, QSize size)
