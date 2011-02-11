@@ -4,6 +4,8 @@ set(libunity-2d-private_SRCS
     keyboardmodifiersmonitor.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
+    mimedata.cpp
+    dragdropevent.cpp
     )
 
 # Build

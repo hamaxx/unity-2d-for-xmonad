@@ -15,8 +15,6 @@ set(unity-2d-private-qml_SRCS
     cacheeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp
-    mimedata.cpp
-    dragdropevent.cpp
     droparea.cpp
     )
 
@@ -29,8 +27,6 @@ set(unity-2d-private-qml_MOC_HDRS
     cacheeffect.h
     workspacesinfo.h
     signalwaiter.h
-    mimedata.h
-    dragdropevent.h
     droparea.h
     )
 
@@ -45,6 +41,7 @@ include_directories(
     ${WNCK_INCLUDE_DIRS}
     ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-private-qml
@@ -54,6 +51,7 @@ target_link_libraries(unity-2d-private-qml
     ${WNCK_LDFLAGS}
     ${QTBAMF_LDFLAGS}
     ${QTGCONF_LDFLAGS}
+    unity-2d-private
     )
 
 # Install

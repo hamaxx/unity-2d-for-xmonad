@@ -21,24 +21,31 @@
    (https://bitbucket.org/gregschlom/qml-drag-drop/).
    FIXME: what is the license of the original source code? */
 
-#include "dragdropevent.h"
+#include "mimedata.h"
 
-DeclarativeDragDropEvent::DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* event, QObject* parent)
-    : QObject(parent)
-    , m_event(event)
-    , m_mimeData(event->mimeData())
+#include <QtCore/QUrl>
+
+DeclarativeMimeData::DeclarativeMimeData(const QMimeData* data)
+    : QMimeData()
 {
+    Q_FOREACH(QString format, data->formats()) {
+        setData(format, data->data(format));
+    }
 }
 
-void
-DeclarativeDragDropEvent::accept()
+QStringList
+DeclarativeMimeData::urls() const
 {
-    m_event->accept();
+    /* QUrl objects cannot be manipulated in QML,
+       so we just return a list of strings… */
+    QStringList result;
+    if (hasUrls()) {
+        Q_FOREACH(QUrl url, QMimeData::urls()) {
+            result.append(url.toEncoded());
+        }
+    }
+    return result;
 }
 
-void
-DeclarativeDragDropEvent::acceptProposedAction()
-{
-    m_event->acceptProposedAction();
-}
+#include "mimedata.moc"
 
