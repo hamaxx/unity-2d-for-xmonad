@@ -19,7 +19,6 @@
 
 #include "launcheritem.h"
 #include "launchermenu.h"
-#include "dragdropevent.h"
 
 LauncherItem::LauncherItem(QObject* parent): QObject(parent)
 {

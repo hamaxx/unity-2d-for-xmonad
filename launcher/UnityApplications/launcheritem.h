@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+#include "dragdropevent.h"
+
 class LauncherContextualMenu;
 
 class LauncherItem : public QObject
