@@ -122,7 +122,7 @@ Item {
             id: shortcutsButton
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.rightMargin: 44
+            anchors.rightMargin: 50
             width: 80
             height: 47
 
@@ -140,12 +140,20 @@ Item {
             }
         }
 
-        MouseArea {
+        Button {
             id: fullScreenButton
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            width: 40
-            height: 40
+            anchors.rightMargin: 15
+            anchors.bottomMargin: 15
+            width: fullScreenButtonImage.sourceSize.width
+            height: fullScreenButtonImage.sourceSize.height
+            visible: dashView.dashState != DashDeclarativeView.FullScreenDash
+
+            Image {
+                id: fullScreenButtonImage
+                source: "artwork/fullscreen_button.png"
+            }
 
             onClicked: {
                 dashView.dashState = DashDeclarativeView.FullScreenDash

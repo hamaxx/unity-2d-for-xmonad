@@ -117,8 +117,8 @@ int main(int argc, char *argv[])
     view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
 
     /* Performance tricks */
-    view.setAttribute(Qt::WA_OpaquePaintEvent);
-    view.setAttribute(Qt::WA_NoSystemBackground);
+    view.setAttribute(Qt::WA_TranslucentBackground);
+    view.viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
