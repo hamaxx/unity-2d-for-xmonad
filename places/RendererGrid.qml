@@ -41,22 +41,19 @@ Renderer {
 
         visible: results.count > 0
         availableCount: results.count - results.cellsPerLine
-        folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 28
+        height: 32
         icon: parent.iconHint
         label: parent.displayName
-
-        onClicked: parent.folded = !parent.folded
     }
 
     Item {
         id: results_layout
 
         anchors.top: header.bottom
-        anchors.topMargin: 14
+        anchors.topMargin: 22
         anchors.left: parent.left
         anchors.leftMargin: 2
         anchors.right: parent.right
@@ -108,7 +105,7 @@ Renderer {
 
             property int cellsPerLine: Math.floor(width/results.cellWidth)
             /* Only display one line of items when folded */
-            property int displayedCount: folded ? cellsPerLine : count
+            property int displayedCount: header.folded ? cellsPerLine : count
             property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerLine)
 
             cellWidth: renderer.cellWidth+renderer.horizontalSpacing
