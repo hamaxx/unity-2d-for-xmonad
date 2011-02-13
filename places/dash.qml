@@ -21,7 +21,7 @@ Item {
            It could be due to Qt bug QTBUG-13380:
            "Listview gets focus when it becomes visible"
         */
-        search_bar.focus = true
+        search_entry.focus = true
     }
 
     function activatePlaceEntry(fileName, groupName, section) {
@@ -70,32 +70,34 @@ Item {
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
-        Keys.forwardTo: [search_bar]
+        Keys.forwardTo: [search_entry]
 
-        SearchBar {
-            id: search_bar
+
+        SearchEntry {
+            id: search_entry
 
             focus: true
 
             anchors.top: parent.top
+            anchors.topMargin: 10
             anchors.left: parent.left
-            anchors.leftMargin: 3
+            anchors.leftMargin: 16
             anchors.right: parent.right
-            anchors.rightMargin: 4
-            height: 47
+            anchors.rightMargin: 15
+
+            height: 53
         }
 
         Loader {
             id: pageLoader
 
-            anchors.top: search_bar.bottom
-            anchors.topMargin: 12
+            anchors.top: search_entry.bottom
+            anchors.topMargin: 2
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 12
             anchors.left: parent.left
-            anchors.leftMargin: 7
+            anchors.leftMargin: 20
             anchors.right: parent.right
-            anchors.rightMargin: 8
         }
     }
 }
