@@ -25,8 +25,7 @@ Item {
         list.model: dash.places
 
         list.delegate: UnityDefaultRenderer {
-            /* -2 is here because no rightMargin is set in ListViewWithScrollbar.list yet */
-            width: ListView.view.width-2
+            width: ListView.view.width
 
             parentListView: list
             placeEntryModel: modelData

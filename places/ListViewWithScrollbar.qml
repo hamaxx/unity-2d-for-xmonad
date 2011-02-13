@@ -10,8 +10,8 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        /* Take all available horizontal space if the scrollbar is invisible */
-        anchors.right: scrollbar.opacity > 0 ? scrollbar.left : parent.right
+        anchors.right: scrollbar.left
+        anchors.rightMargin: 15
 
         clip: true
         /* FIXME: proper spacing cannot be set because of the hack in Group.qml
@@ -44,6 +44,7 @@ Item {
         id: scrollbar
 
         anchors.top: parent.top
+        anchors.topMargin: 15
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
