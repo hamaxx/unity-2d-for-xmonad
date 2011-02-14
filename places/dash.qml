@@ -82,10 +82,26 @@ Item {
             anchors.topMargin: 10
             anchors.left: parent.left
             anchors.leftMargin: 16
-            anchors.right: parent.right
-            anchors.rightMargin: 15
+            anchors.right: refine_search.left
+            anchors.rightMargin: 10
 
             height: 53
+        }
+
+        SearchRefine {
+            id: refine_search
+
+            /* SearchRefine is only to be displayed for places, not in the home page */
+            visible: dashView.activePlaceEntry != ""
+            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+
+            anchors.top: search_entry.anchors.top
+            anchors.topMargin: search_entry.anchors.topMargin
+            height: parent.height
+            headerHeight: search_entry.height
+            width: 295
+            anchors.right: parent.right
+            anchors.rightMargin: 19
         }
 
         Loader {
@@ -97,7 +113,8 @@ Item {
             anchors.bottomMargin: 12
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.right: parent.right
+            anchors.right: refine_search.folded ? parent.right : refine_search.left
+            anchors.rightMargin: refine_search.folded ? 0 : 15
         }
     }
 }
