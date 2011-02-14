@@ -29,13 +29,113 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
 
+#include <debug_p.h>
+
+// libwnck
+#undef signals
+extern "C" {
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE
+#include <libwnck/libwnck.h>
+}
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-LauncherView::LauncherView() :
-    QDeclarativeView(), m_resizing(false), m_reserved(false)
+static void
+updateActiveWindowConnectionsCB(GObject* screen, void* dummy, LauncherView* view)
+{
+    QMetaObject::invokeMethod(view, "updateActiveWindowConnections");
+}
+
+static void
+updateVisibilityCB(GObject* screen, LauncherView* view)
+{
+    QMetaObject::invokeMethod(view, "updateVisibility");
+}
+
+static void
+stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, LauncherView* view)
+{
+    QMetaObject::invokeMethod(view, "updateVisibility");
+}
+
+LauncherView::LauncherView()
+: QDeclarativeView()
+, m_resizing(false)
+, m_reserved(false)
+, m_activeWindow(0)
 {
     setAcceptDrops(true);
+
+    WnckScreen* screen = wnck_screen_get_default();
+
+    g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
+    g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(updateVisibilityCB), this);
+
+    updateActiveWindowConnections();
+}
+
+void
+LauncherView::updateActiveWindowConnections()
+{
+    WnckScreen* screen = wnck_screen_get_default();
+
+    if (m_activeWindow) {
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(updateVisibilityCB), this);
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(stateChangedCB), this);
+        m_activeWindow = 0;
+    }
+
+    WnckWindow* window = wnck_screen_get_active_window(screen);
+    if (window) {
+        m_activeWindow = window;
+        g_signal_connect(G_OBJECT(window), "state-changed", G_CALLBACK(stateChangedCB), this);
+        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(updateVisibilityCB), this);
+        g_signal_connect(G_OBJECT(window), "workspace-changed", G_CALLBACK(updateVisibilityCB), this);
+    }
+}
+
+void
+LauncherView::updateVisibility()
+{
+    int launcherPid = getpid();
+
+    // Compute launcherRect, adjust "left" to the position where the launcher
+    // is fully visible.
+    QRect launcherRect = window()->geometry();
+    launcherRect.moveLeft(0);
+
+    WnckScreen* screen = wnck_screen_get_default();
+    WnckWorkspace* workspace = wnck_screen_get_active_workspace(screen);
+
+    // Check whether a window is crossing our launcher rect
+    bool crossWindow = false;
+    GList* list = wnck_screen_get_windows(screen);
+    for (; list; list = g_list_next(list)) {
+        WnckWindow* window = WNCK_WINDOW(list->data);
+        if (wnck_window_is_on_workspace(window, workspace) && wnck_window_get_pid(window) != launcherPid) {
+            // Maximized window should always be considered as crossing the
+            // window
+            WnckWindowState state = wnck_window_get_state(window);
+            if (state & WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY) {
+                crossWindow = true;
+                break;
+            }
+
+            // Not maximized => really check the window rect
+            int x, y, width, height;
+            wnck_window_get_geometry(window, &x, &y, &width, &height);
+            QRect rect(x, y, width, height);
+            if (rect.intersects(launcherRect)) {
+                crossWindow = true;
+                break;
+            }
+        }
+    }
+
+    QPoint pos = window()->pos();
+    pos.setX(crossWindow ? -width() : 0);
+    window()->move(pos);
 }
 
 QList<QUrl>

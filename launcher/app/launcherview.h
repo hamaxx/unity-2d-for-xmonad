@@ -24,6 +24,8 @@
 #include <QUrl>
 #include <QDragEnterEvent>
 
+struct _WnckWindow;
+
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
@@ -35,6 +37,10 @@ public:
 signals:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
+
+private Q_SLOTS:
+    void updateVisibility();
+    void updateActiveWindowConnections();
 
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
@@ -48,6 +54,8 @@ private:
 
     /* Whether space at the left of the screen has already been reserved */
     bool m_reserved;
+
+    struct _WnckWindow* m_activeWindow;
 };
 
 #endif // LAUNCHERVIEW
