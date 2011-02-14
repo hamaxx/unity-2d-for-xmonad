@@ -64,6 +64,7 @@ ListView {
     Connections {
         target: scrollZoneTop
         onEntered: updateItemBelow(scrollZoneTop)
+        onExited: { if (itemBelow) itemBelow.exited(); itemBelow = null }
         onPositionChanged: updateItemBelow(scrollZoneTop)
         onClicked: forwardClick(scrollZoneTop, mouse)
     }
@@ -71,6 +72,7 @@ ListView {
     Connections {
         target: scrollZoneBottom
         onEntered: updateItemBelow(scrollZoneBottom)
+        onExited: { if (itemBelow) itemBelow.exited(); itemBelow = null }
         onPositionChanged: updateItemBelow(scrollZoneBottom)
         onClicked: forwardClick(scrollZoneBottom, mouse)
     }
