@@ -16,7 +16,10 @@ Item {
         id: list
         spacing: 5
         anchors.topMargin: 5
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: shelf.top
+        width: parent.width
+
         focus: true
         property int itemHeight: 54
         autoScrollSize: itemHeight / 3
@@ -29,7 +32,26 @@ Item {
             id: items
         }
 
-        delegate: LauncherItem {
+        delegate: tileDelegate
+    }
+
+    ListView {
+        id: shelf
+        anchors.bottom: parent.bottom
+        height: contentHeight
+        width: parent.width
+
+        model: ListAggregatorModel {
+            id: shelfItems
+        }
+
+        delegate: tileDelegate
+    }
+
+    Component {
+        id: tileDelegate
+
+        LauncherItem {
             id: launcherItem
 
             width: launcher.width
@@ -139,20 +161,19 @@ Item {
         id: devices
     }
 
-    Trashes {
-        id: trashes
-    }
-
     WorkspacesList {
         id: workspaces
     }
+    Trashes {
+                id: trashes
+            }
 
     Component.onCompleted: {
         items.appendModel(applications);
         items.appendModel(workspaces);
         items.appendModel(places);
         items.appendModel(devices);
-        items.appendModel(trashes);
+        shelfItems.appendModel(trashes);
     }
 
     Connections {
