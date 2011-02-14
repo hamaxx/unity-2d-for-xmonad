@@ -46,14 +46,6 @@ LauncherItem::onDragEnter(QObject* event)
 }
 
 bool
-LauncherItem::onDragLeave(QObject* event)
-{
-    Q_UNUSED(event)
-    /* Default to doing nothing. */
-    return false;
-}
-
-bool
 LauncherItem::onDrop(QObject* event)
 {
     Q_UNUSED(event)

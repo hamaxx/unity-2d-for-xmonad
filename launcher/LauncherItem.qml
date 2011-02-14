@@ -18,8 +18,9 @@ import Unity2d 1.0
 
    The 'clicked' signal is emitted upon clicking on the item.
 */
-DropArea {
+Item {
     id: launcherItem
+    objectName: "launcherItem"
 
     property alias icon: icon.source
     property alias label: label.text

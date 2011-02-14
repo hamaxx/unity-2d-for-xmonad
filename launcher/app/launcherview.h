@@ -25,6 +25,8 @@
 
 #include "dragdropevent.h"
 
+class QGraphicsObject;
+
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
@@ -37,22 +39,30 @@ signals:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
 
-public Q_SLOTS:
-    /* The 'event' parameters should be DeclarativeDragDropEvent*, but because
-       of http://bugreports.qt.nokia.com/browse/QTBUG-13047 they need to be
-       passed around from QML to C++ as QObject*. This is fixed in Qt 4.7.1. */
-    bool onDragEnter(QObject* event);
-    bool onDragLeave(QObject* event);
-    bool onDrop(QObject* event);
-
 private:
-    QList<QUrl> getEventUrls(DeclarativeDragDropEvent*);
+    QList<QUrl> getEventUrls(QDropEvent*);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;
 
     /* Whether space at the left of the screen has already been reserved */
     bool m_reserved;
+
+    /* Custom drag’n’drop handling */
+    void dragEnterEvent(QDragEnterEvent*);
+    void dragMoveEvent(QDragMoveEvent*);
+    void dropEvent(QDropEvent*);
+
+    QGraphicsObject* launcherItemAt(const QPoint&) const;
+    bool delegateDragEventHandlingToItem(QDropEvent*, QGraphicsObject*);
+    bool acceptDragEvent(QDropEvent*);
+
+    /* The launcher item currently under the mouse cursor during a dnd event */
+    QGraphicsObject* m_dndCurrentLauncherItem;
+    /* Whether it accepted the event */
+    bool m_dndCurrentLauncherItemAccepted;
+    /* Whether the launcher itself handles the current dnd event */
+    bool m_dndAccepted;
 };
 
 #endif // LAUNCHERVIEW

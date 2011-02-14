@@ -38,6 +38,14 @@ Item {
 
             Binding { target: item.menu; property: "title"; value: item.name }
 
+            /* Drag’n’drop handling */
+            function dragEnterEvent(event) {
+                return item.onDragEnter(event)
+            }
+            function dropEvent(event) {
+                return item.onDrop(event)
+            }
+
             function showMenu() {
                 /* Prevent the simultaneous display of multiple menus */
                 if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
@@ -59,24 +67,6 @@ Item {
                 else if (mouse.button == Qt.RightButton) {
                     item.menu.folded = false
                     showMenu()
-                }
-            }
-
-            /* Delegate drag’n’drop handling to the item,
-               then to the view if the item refused the event. */
-            onDragEnter: {
-                if (!item.onDragEnter(event)) {
-                    launcherView.onDragEnter(event)
-                }
-            }
-            onDragLeave: {
-                if (!item.onDragLeave(event)) {
-                    launcherView.onDragLeave(event)
-                }
-            }
-            onDrop: {
-                if (!item.onDrop(event)) {
-                    launcherView.onDrop(event)
                 }
             }
 

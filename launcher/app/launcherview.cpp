@@ -28,27 +28,70 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
+#include <QGraphicsObject>
+#include <QMetaObject>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include "dragdropevent.h"
+
 LauncherView::LauncherView() :
-    QDeclarativeView(), m_resizing(false), m_reserved(false)
+    QDeclarativeView(), m_resizing(false), m_reserved(false),
+    m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
+    m_dndAccepted(false)
 {
     setAcceptDrops(true);
 }
 
-QList<QUrl>
-LauncherView::getEventUrls(DeclarativeDragDropEvent* event)
+QGraphicsObject*
+LauncherView::launcherItemAt(const QPoint& pos) const
 {
-    const DeclarativeMimeData* mimeData = event->mimeData();
-    QList<QUrl> result;
-    QStringList urls = mimeData->urls();
-    if (!urls.isEmpty()) {
-        Q_FOREACH(QString url, urls) {
-            result.append(QUrl::fromEncoded(url.toUtf8()));
+    QGraphicsItem* item = itemAt(pos);
+    while(item != NULL) {
+        QGraphicsObject* object = qgraphicsitem_cast<QGraphicsObject*>(item);
+        if (object->objectName() == "launcherItem") {
+            return object;
         }
-    } else {
+        item = item->parentItem();
+    }
+    return NULL;
+}
+
+bool
+LauncherView::delegateDragEventHandlingToItem(QDropEvent* event, QGraphicsObject* item)
+{
+    if (item == NULL) {
+        return false;
+    }
+    DeclarativeDragDropEvent dde(event, this);
+    QVariant handled = false;
+    QMetaObject::invokeMethod(item, "dragEnterEvent",
+                              Q_RETURN_ARG(QVariant, handled),
+                              Q_ARG(QVariant, QVariant::fromValue(&dde)));
+    return handled.toBool();
+}
+
+bool
+LauncherView::acceptDragEvent(QDropEvent* event)
+{
+    Q_FOREACH(QUrl url, getEventUrls(event)) {
+        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+            url.scheme().startsWith("http")) {
+            return true;
+        }
+    }
+    return false;
+}
+
+QList<QUrl>
+LauncherView::getEventUrls(QDropEvent* event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    if (mimeData->hasUrls()) {
+        return mimeData->urls();
+    }
+    else if (mimeData->hasText()) {
         /* When dragging an URL from firefox’s address bar, it is properly
            recognized as such by the event. However, the same doesn’t work
            for chromium: the URL is recognized as plain text.
@@ -61,69 +104,77 @@ LauncherView::getEventUrls(DeclarativeDragDropEvent* event)
             url = QUrl("http://" + text);
         }
         if (url.isValid()) {
-            result.append(url);
+            QList<QUrl> urls;
+            urls.append(url);
+            return urls;
         }
     }
-    return result;
+    return QList<QUrl>();
 }
 
-bool
-LauncherView::onDragEnter(QObject* event)
+void
+LauncherView::dragEnterEvent(QDragEnterEvent* event)
 {
-    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    /* Check that data has a list of URLs and that at least one is either a
-       desktop file or a web page. */
-    QList<QUrl> urls = getEventUrls(dde);
-
-    if (urls.isEmpty()) {
-        return false;
-    }
-
-    Q_FOREACH(QUrl url, urls) {
-        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme().startsWith("http")) {
-            dde->setDropAction(Qt::LinkAction);
-            dde->setAccepted(true);
-            return true;
-        }
-    }
-
-    return false;
+    m_dndCurrentLauncherItem = NULL;
+    m_dndCurrentLauncherItemAccepted = false;
+    /* Compute whether the launcher itself accepts the event only once for this
+       given event. */
+    m_dndAccepted = acceptDragEvent(event);
+    /* Always accept the enter event so that subsequent move events are
+       received. */
+    event->setAccepted(true);
 }
 
-bool
-LauncherView::onDragLeave(QObject* event)
+void
+LauncherView::dragMoveEvent(QDragMoveEvent* event)
 {
-    Q_UNUSED(event)
-    return false;
+    QGraphicsObject* launcherItem = launcherItemAt(event->pos());
+    if (launcherItem == m_dndCurrentLauncherItem) {
+        if (m_dndCurrentLauncherItemAccepted || m_dndAccepted) {
+            event->setAccepted(true);
+        }
+    }
+    else {
+        m_dndCurrentLauncherItem = launcherItem;
+        m_dndCurrentLauncherItemAccepted = false;
+
+        if (m_dndCurrentLauncherItem != NULL) {
+            if (delegateDragEventHandlingToItem(event, m_dndCurrentLauncherItem)) {
+                m_dndCurrentLauncherItemAccepted = true;
+            }
+        }
+        else {
+            if (m_dndAccepted) {
+                event->setAccepted(true);
+            }
+        }
+    }
 }
 
-bool
-LauncherView::onDrop(QObject* event)
+void
+LauncherView::dropEvent(QDropEvent* event)
 {
-    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    bool accepted = false;
-    bool handled = false;
-
-    QList<QUrl> urls = getEventUrls(dde);
-    Q_FOREACH(QUrl url, urls) {
-        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            emit desktopFileDropped(url.path());
-            accepted = true;
-            handled = true;
+    if (m_dndCurrentLauncherItemAccepted) {
+        DeclarativeDragDropEvent dde(event, this);
+        QMetaObject::invokeMethod(m_dndCurrentLauncherItem, "dropEvent",
+                                  Q_ARG(QVariant, QVariant::fromValue(&dde)));
+        event->setAccepted(true);
+    } else if (m_dndAccepted) {
+        bool accepted = false;
+        Q_FOREACH(QUrl url, getEventUrls(event)) {
+            if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+                emit desktopFileDropped(url.path());
+                accepted = true;
+            }
+            else if (url.scheme().startsWith("http")) {
+                emit webpageUrlDropped(url);
+                accepted = true;
+            }
         }
-        else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url);
-            accepted = true;
-            handled = true;
+        if (accepted) {
+            event->setAccepted(true);
         }
     }
-
-    if (accepted) {
-        dde->setAccepted(true);
-    }
-
-    return handled;
 }
 
 QColor

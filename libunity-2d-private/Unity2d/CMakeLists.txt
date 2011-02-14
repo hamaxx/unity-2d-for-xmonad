@@ -15,7 +15,6 @@ set(unity-2d-private-qml_SRCS
     cacheeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp
-    droparea.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
@@ -27,7 +26,6 @@ set(unity-2d-private-qml_MOC_HDRS
     cacheeffect.h
     workspacesinfo.h
     signalwaiter.h
-    droparea.h
     )
 
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})

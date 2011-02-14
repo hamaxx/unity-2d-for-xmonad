@@ -79,7 +79,6 @@ public Q_SLOTS:
        of http://bugreports.qt.nokia.com/browse/QTBUG-13047 they need to be
        passed around from QML to C++ as QObject*. This is fixed in Qt 4.7.1. */
     virtual bool onDragEnter(QObject* event);
-    virtual bool onDragLeave(QObject* event);
     virtual bool onDrop(QObject* event);
 };
 
