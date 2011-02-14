@@ -32,6 +32,7 @@
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
+#include "intellihidecontroller.h"
 #include "unity2dpanel.h"
 
 int main(int argc, char *argv[])
@@ -91,6 +92,7 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
+    IntellihideController controller(&panel);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched

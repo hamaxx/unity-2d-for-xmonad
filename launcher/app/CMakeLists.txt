@@ -5,11 +5,13 @@ pkg_check_modules(WNCK REQUIRED libwnck)
 
 # Sources
 set(launcher_SRCS
+    intellihidecontroller.cpp
     launcherview.cpp
     launchercontrol.cpp
     )
 
 set(launcher_MOC_HDRS
+    intellihidecontroller.h
     launcherview.h
     launchercontrol.h
     )
