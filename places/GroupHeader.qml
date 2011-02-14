@@ -24,13 +24,15 @@ AbstractButton {
 
         source: icon
 
-        width: sourceSize.width
-        height: sourceSize.height
+        width: 22
+        height: 22
         anchors.bottom: underline.top
         anchors.bottomMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 8
         fillMode: Image.PreserveAspectFit
+        sourceSize.width: width
+        sourceSize.height: height
     }
 
     TextCustom {
