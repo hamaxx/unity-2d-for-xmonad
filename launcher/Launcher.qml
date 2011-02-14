@@ -72,7 +72,7 @@ Item {
 
             /* Display the tooltip when hovering the item only when the list
                is not moving */
-            onEntered: if (!list.moving) showMenu()
+            onEntered: if (!list.moving && !list.autoScrolling) showMenu()
             onExited: {
                 /* When unfolded, leave enough time for the user to reach the
                    menu. Necessary because there is some void between the item
@@ -87,6 +87,7 @@ Item {
             Connections {
                 target: list
                 onMovementStarted: item.menu.hide()
+                onAutoScrollingChanged: if (list.autoScrolling) item.menu.hide()
             }
 
             function setIconGeometry() {
