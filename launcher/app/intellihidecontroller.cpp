@@ -77,6 +77,8 @@ void IntellihideController::updateActiveWindowConnections()
         g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(updateVisibilityCB), this);
         g_signal_connect(G_OBJECT(window), "workspace-changed", G_CALLBACK(updateVisibilityCB), this);
     }
+
+    updateVisibility();
 }
 
 void IntellihideController::updateVisibility()
