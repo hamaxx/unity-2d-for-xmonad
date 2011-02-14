@@ -82,6 +82,7 @@ LauncherView::onDragEnter(QObject* event)
     Q_FOREACH(QUrl url, urls) {
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
             url.scheme().startsWith("http")) {
+            dde->setDropAction(Qt::LinkAction);
             dde->setAccepted(true);
             return true;
         }

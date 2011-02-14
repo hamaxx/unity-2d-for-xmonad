@@ -214,6 +214,7 @@ Trash::onDragEnter(QObject* event)
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
     Q_FOREACH(QString url, dde->mimeData()->urls()) {
         if (url.startsWith("file://")) {
+            dde->setDropAction(Qt::MoveAction);
             dde->setAccepted(true);
             return true;
         }
