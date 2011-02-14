@@ -12,12 +12,15 @@ Item {
         source: "artwork/background.png"
     }
 
-    ListView {
+    AutoScrollingListView {
         id: list
         spacing: 5
         anchors.topMargin: 5
         anchors.fill: parent
         focus: true
+        property int itemHeight: 54
+        autoScrollSize: itemHeight / 3
+        autoScrollVelocity: 200
 
         /* Keep a reference to the currently visible contextual menu */
         property variant visibleMenu
@@ -38,7 +41,7 @@ Item {
             urgent: item.urgent
             launching: item.launching
             pips: Math.min(item.windowCount, 3)
-            tileSize: 54
+            tileSize: list.itemHeight
 
             /* Best way I could find to check if the item is an application or the
                workspaces switcher. There may be something cleaner and better. */
