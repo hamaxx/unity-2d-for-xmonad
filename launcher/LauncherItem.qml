@@ -30,6 +30,7 @@ import Unity2d 1.0
 Item {
     id: item
     anchors.horizontalCenter: parent.horizontalCenter
+    height: tileSize
 
     property int tileSize
     property alias icon: icon.source
@@ -99,7 +100,7 @@ Item {
         id: tile
         anchors.centerIn: parent
         width: item.tileSize
-        height: parent.height
+        height: item.height
 
         /* This is the image providing the background image. The
            color blended with this image is obtained from the color of the icon when it's
