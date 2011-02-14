@@ -22,7 +22,8 @@
 
 #include <QDeclarativeView>
 #include <QUrl>
-#include <QDragEnterEvent>
+
+#include "dragdropevent.h"
 
 class LauncherView : public QDeclarativeView
 {
@@ -36,12 +37,16 @@ signals:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
 
-private:
-    QList<QUrl> getEventUrls(QDropEvent*);
+public Q_SLOTS:
+    /* The 'event' parameters should be DeclarativeDragDropEvent*, but because
+       of http://bugreports.qt.nokia.com/browse/QTBUG-13047 they need to be
+       passed around from QML to C++ as QObject*. This is fixed in Qt 4.7.1. */
+    bool onDragEnter(QObject* event);
+    bool onDragLeave(QObject* event);
+    bool onDrop(QObject* event);
 
-//    void dragEnterEvent(QDragEnterEvent *event);
-//    void dropEvent(QDropEvent *event);
-//    void dragMoveEvent(QDragMoveEvent *event);
+private:
+    QList<QUrl> getEventUrls(DeclarativeDragDropEvent*);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;

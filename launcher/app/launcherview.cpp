@@ -39,13 +39,16 @@ LauncherView::LauncherView() :
 }
 
 QList<QUrl>
-LauncherView::getEventUrls(QDropEvent* event)
+LauncherView::getEventUrls(DeclarativeDragDropEvent* event)
 {
-    const QMimeData* mimeData = event->mimeData();
-    if (mimeData->hasUrls()) {
-        return mimeData->urls();
-    }
-    else if (mimeData->hasText()) {
+    const DeclarativeMimeData* mimeData = event->mimeData();
+    QList<QUrl> result;
+    QStringList urls = mimeData->urls();
+    if (!urls.isEmpty()) {
+        Q_FOREACH(QString url, urls) {
+            result.append(QUrl::fromEncoded(url.toUtf8()));
+        }
+    } else {
         /* When dragging an URL from firefox’s address bar, it is properly
            recognized as such by the event. However, the same doesn’t work
            for chromium: the URL is recognized as plain text.
@@ -58,57 +61,69 @@ LauncherView::getEventUrls(QDropEvent* event)
             url = QUrl("http://" + text);
         }
         if (url.isValid()) {
-            QList<QUrl> urls;
-            urls.append(url);
-            return urls;
+            result.append(url);
+        }
+    }
+    return result;
+}
+
+bool
+LauncherView::onDragEnter(QObject* event)
+{
+    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
+    /* Check that data has a list of URLs and that at least one is either a
+       desktop file or a web page. */
+    QList<QUrl> urls = getEventUrls(dde);
+
+    if (urls.isEmpty()) {
+        return false;
+    }
+
+    Q_FOREACH(QUrl url, urls) {
+        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+            url.scheme().startsWith("http")) {
+            dde->setAccepted(true);
+            return true;
         }
     }
 
-    return QList<QUrl>();
+    return false;
 }
 
-//void LauncherView::dragEnterEvent(QDragEnterEvent *event)
-//{
-//    // Check that data has a list of URLs and that at least one is either
-//    // a desktop file or a web page.
-//    QList<QUrl> urls = getEventUrls(event);
+bool
+LauncherView::onDragLeave(QObject* event)
+{
+    Q_UNUSED(event)
+    return false;
+}
 
-//    if (urls.isEmpty()) {
-//        return;
-//    }
+bool
+LauncherView::onDrop(QObject* event)
+{
+    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
+    bool accepted = false;
+    bool handled = false;
 
-//    foreach (QUrl url, urls) {
-//        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-//            url.scheme().startsWith("http")) {
-//            event->acceptProposedAction();
-//            break;
-//        }
-//    }
-//}
+    QList<QUrl> urls = getEventUrls(dde);
+    Q_FOREACH(QUrl url, urls) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            emit desktopFileDropped(url.path());
+            accepted = true;
+            handled = true;
+        }
+        else if (url.scheme().startsWith("http")) {
+            emit webpageUrlDropped(url);
+            accepted = true;
+            handled = true;
+        }
+    }
 
-//void LauncherView::dragMoveEvent(QDragMoveEvent *event)
-//{
-//    event->acceptProposedAction();
-//}
+    if (accepted) {
+        dde->setAccepted(true);
+    }
 
-//void LauncherView::dropEvent(QDropEvent *event)
-//{
-//    bool accepted = false;
-
-//    QList<QUrl> urls = getEventUrls(event);
-//    foreach (QUrl url, urls) {
-//        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-//            emit desktopFileDropped(url.path());
-//            accepted = true;
-//        }
-//        else if (url.scheme().startsWith("http")) {
-//            emit webpageUrlDropped(url);
-//            accepted = true;
-//        }
-//    }
-
-//    if (accepted) event->accept();
-//}
+    return handled;
+}
 
 QColor
 LauncherView::iconAverageColor(QUrl source, QSize size)

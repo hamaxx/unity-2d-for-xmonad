@@ -208,25 +208,28 @@ Trash::onEmptyTriggered()
     empty();
 }
 
-void
+bool
 Trash::onDragEnter(QObject* event)
 {
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
     Q_FOREACH(QString url, dde->mimeData()->urls()) {
         if (url.startsWith("file://")) {
             dde->setAccepted(true);
-            break;
+            return true;
         }
     }
+    return false;
 }
 
-void
+bool
 Trash::onDrop(QObject* event)
 {
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
     bool accepted = false;
+    bool handled = false;
     Q_FOREACH(QString url, dde->mimeData()->urls()) {
         if (url.startsWith("file://")) {
+            handled = true;
             GFile* file = g_file_new_for_uri(url.toUtf8().constData());
             if (g_file_trash(file, NULL, NULL)) {
                 accepted = true;
@@ -239,6 +242,7 @@ Trash::onDrop(QObject* event)
     if (accepted) {
         dde->setAccepted(true);
     }
+    return handled;
 }
 
 

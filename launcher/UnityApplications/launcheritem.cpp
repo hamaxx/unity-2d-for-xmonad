@@ -37,24 +37,27 @@ LauncherItem::menu() const
     return m_menu;
 }
 
-void
+bool
 LauncherItem::onDragEnter(QObject* event)
 {
     Q_UNUSED(event)
     /* Default to doing nothing, i.e. refusing the event. */
+    return false;
 }
 
-void
+bool
 LauncherItem::onDragLeave(QObject* event)
 {
     Q_UNUSED(event)
     /* Default to doing nothing. */
+    return false;
 }
 
-void
+bool
 LauncherItem::onDrop(QObject* event)
 {
     Q_UNUSED(event)
     /* Default to doing nothing. */
+    return false;
 }
 

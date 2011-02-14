@@ -62,10 +62,23 @@ Item {
                 }
             }
 
-            /* Delegate drag’n’drop handling to the item. */
-            onDragEnter: item.onDragEnter(event)
-            onDragLeave: item.onDragLeave(event)
-            onDrop: item.onDrop(event)
+            /* Delegate drag’n’drop handling to the item,
+               then to the view if the item refused the event. */
+            onDragEnter: {
+                if (!item.onDragEnter(event)) {
+                    launcherView.onDragEnter(event)
+                }
+            }
+            onDragLeave: {
+                if (!item.onDragLeave(event)) {
+                    launcherView.onDragLeave(event)
+                }
+            }
+            onDrop: {
+                if (!item.onDrop(event)) {
+                    launcherView.onDrop(event)
+                }
+            }
 
             /* Display the tooltip when hovering the item only when the list
                is not moving */
