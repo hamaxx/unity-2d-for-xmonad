@@ -53,7 +53,9 @@ Item {
                     list.visibleMenu.hide()
                 }
                 list.visibleMenu = item.menu
-                item.menu.show(width, y + height / 2 - list.contentY + panel.y)
+                // The extra 4 pixels are needed to center exactly with the arrow
+                // that indicated the active tile.
+                item.menu.show(width, y + height / 2 - list.contentY + panel.y + 4)
             }
 
             onClicked: {
