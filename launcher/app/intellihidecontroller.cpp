@@ -119,7 +119,6 @@ void IntellihideController::updateVisibility()
         }
     }
 
-    m_panel->setVisible(!crossWindow);
     QPoint pos = m_panel->pos();
     pos.setX(crossWindow ? -m_panel->width() : 0);
     m_panel->move(pos);
