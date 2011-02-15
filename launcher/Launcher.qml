@@ -15,13 +15,9 @@ Item {
     AutoScrollingListView {
         id: list
 
-        property int spacingSize: 5
-        /* This blank header is actually a replacement for anchors.topMargin.
-           We are doing it this way because the margins are outside of the item,
-           and thus would not be covered by the top MouseArea inside of the
-           ScrollingListView. The header is inside instead, so it is covered. */
-        header: Item { height: list.spacingSize }
-        spacing: spacingSize
+        spacing: 5
+        paddingTop: 5
+        paddingBottom: 5
 
         anchors.fill: parent
         focus: true
@@ -66,7 +62,8 @@ Item {
                 // The extra 4 pixels are needed to center exactly with the arrow
                 // that indicated the active tile.
                 item.menu.show(width,
-                               y + height / 2 - list.contentY + panel.y - list.spacingSize + 4)
+                               y + height / 2 - list.contentY +
+                               panel.y - list.paddingTop + 4)
             }
 
             onClicked: {

@@ -6,16 +6,36 @@ import Qt 4.7
    While the cursors is in these areas the list automatically scrolls in the direction where the area
    is until the cursor exits the area or the scrolling reaches the edge.
 
+   In addition to this, it is possible to add padding at the top and/or bottom of the list that
+   takes part in the scrolling (contrary to what would happen by adding this extra
+   space using margins)
+
    The property 'autoScrollSize' controls how tall are the two sensitive areas.
    The speed of the scrolling is controlled by 'autoScrollVelocity'.
    You can check if we are currently autoscrolling using the 'autoScrolling' property.
-
+   The properties 'paddingTop' and 'paddingBottom' control the size of the padding.
 */
 ListView {
     id: list
     property int autoScrollSize
     property real autoScrollVelocity
     property bool autoScrolling: scrollUp.running || scrollDown.running
+    property int paddingTop: 0
+    property int paddingBottom: 0
+
+    /* We implement the padding by adding an empty footer and header
+       of the requested size. The header and footer are inside the ListView
+       (contrary to the use of anchors.margins, which adds space outside).
+       However they are not included in contentHeight, therefore we need to
+       adjust the rest of the autoscrolling code to take them into account.
+    */
+    header: Item { height: list.paddingTop }
+    footer: Item { height: list.paddingBottom }
+
+    /* This is necessary to initially scroll to a position where the header
+       is visible. Otherwise the edge of the first item would be at the top
+       of the list */
+    contentY: 0 - paddingTop
 
     MouseArea {
         id: scrollZoneTop
@@ -37,7 +57,7 @@ ListView {
         id: scrollUp
         target: list
         property: "contentY"
-        to: 0
+        to: 0 - paddingTop
         velocity: autoScrollVelocity
         running: scrollZoneTop.containsMouse
     }
@@ -46,7 +66,7 @@ ListView {
         id: scrollDown
         target: list
         property: "contentY"
-        to: contentHeight - height
+        to: contentHeight + paddingBottom - height
         velocity: autoScrollVelocity
         running: scrollZoneBottom.containsMouse
     }
@@ -82,8 +102,8 @@ ListView {
         if (zone == null) return
         var point = zone.mapToItem(list.contentItem, zone.mouseX, zone.mouseY)
         var item = list.contentItem.childAt(point.x, point.y)
-        /* Ignore the header (or any other item that doesn't have the signals
-           we need to forward) */
+        /* Ignore header, footer and any item that doesn't have the signals
+           we need to forward */
         if (item && (typeof(item.entered) != "function" ||
                      typeof(item.exited) != "function")) item = null;
 
