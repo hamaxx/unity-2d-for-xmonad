@@ -85,8 +85,13 @@ Item {
     Repeater {
         model: item.pips
         delegate: Image {
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
+            /* FIXME: It seems that when the image is created (or re-used) by the Repeater
+               for a moment it doesn't have any parent, and therefore warnings are
+               printed for the following two anchor assignements. This fixes the
+               problem, but I'm not sure if it should happen in the first place. */
+            anchors.left: (parent) ? parent.left : undefined
+            anchors.verticalCenter: (parent) ? parent.verticalCenter : undefined
+
             source: "image://blended/%1color=%2alpha=%3"
                     .arg(pipSource).arg("lightgrey").arg(1.0)
 
