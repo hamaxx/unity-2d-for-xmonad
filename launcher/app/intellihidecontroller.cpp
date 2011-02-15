@@ -18,6 +18,7 @@
 #include <debug_p.h>
 
 // Qt
+#include <QEvent>
 
 // libwnck
 #undef signals
@@ -46,9 +47,18 @@ stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideC
 
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
+, m_forceVisiblePanel(new Unity2dPanel)
 , m_activeWindow(0)
+, m_visibility(VisiblePanel)
 {
+    m_forceVisiblePanel->setUseStrut(false);
+    m_forceVisiblePanel->setFixedWidth(1);
+    m_forceVisiblePanel->setEdge(Unity2dPanel::LeftEdge);
+    m_forceVisiblePanel->installEventFilter(this);
+    m_forceVisiblePanel->show();
+
     m_panel->setUseStrut(false);
+    m_panel->installEventFilter(this);
     WnckScreen* screen = wnck_screen_get_default();
 
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
@@ -59,6 +69,7 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 
 IntellihideController::~IntellihideController()
 {
+    delete m_forceVisiblePanel;
 }
 
 void IntellihideController::updateActiveWindowConnections()
@@ -84,6 +95,9 @@ void IntellihideController::updateActiveWindowConnections()
 
 void IntellihideController::updateVisibility()
 {
+    if (m_visibility == ForceVisiblePanel) {
+        return;
+    }
     int launcherPid = getpid();
 
     // Compute launcherRect, adjust "left" to the position where the launcher
@@ -119,7 +133,29 @@ void IntellihideController::updateVisibility()
         }
     }
 
+    m_visibility = crossWindow ? HiddenPanel : VisiblePanel;
+    slidePanel();
+}
+
+bool IntellihideController::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_forceVisiblePanel) {
+        if (event->type() == QEvent::Enter && m_visibility == HiddenPanel) {
+            m_visibility = ForceVisiblePanel;
+            slidePanel();
+        }
+    } else { // m_panel
+        if (event->type() == QEvent::Leave && m_visibility == ForceVisiblePanel) {
+            m_visibility = VisiblePanel;
+            updateVisibility();
+        }
+    }
+    return false;
+}
+
+void IntellihideController::slidePanel()
+{
     QPoint pos = m_panel->pos();
-    pos.setX(crossWindow ? -m_panel->width() : 0);
+    pos.setX(m_visibility == HiddenPanel ? -m_panel->width() : 0);
     m_panel->move(pos);
 }
