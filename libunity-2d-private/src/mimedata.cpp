@@ -17,10 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This code is loosely based on Grégory Schlomoff’s qml-drag-drop project
-   (https://bitbucket.org/gregschlom/qml-drag-drop/).
-   FIXME: what is the license of the original source code? */
-
 #include "mimedata.h"
 
 DeclarativeMimeData::DeclarativeMimeData(const QMimeData* data)

@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This code is loosely based on Grégory Schlomoff’s qml-drag-drop project
-   (https://bitbucket.org/gregschlom/qml-drag-drop/).
-   FIXME: what is the license of the original source code? */
+/* Original ideas for drag’n’drop implementation by Grégory Schlomoff
+   (https://bitbucket.org/gregschlom/qml-drag-drop/). */
 
 #ifndef DeclarativeDragDropEvent_H
 #define DeclarativeDragDropEvent_H
