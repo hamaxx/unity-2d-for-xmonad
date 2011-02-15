@@ -39,22 +39,25 @@ struct Unity2dPanelPrivate
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
     QHBoxLayout* m_layout;
+    bool m_useStrut;
 
-    void updateStrut()
+    void setStrut(ulong* struts)
+    {
+        static Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
+        XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
+                        XA_CARDINAL, 32, PropModeReplace,
+                        (unsigned char *) struts, 12);
+    }
+
+    void reserveStrut()
     {
         QDesktopWidget* desktop = QApplication::desktop();
         const QRect screen = desktop->screenGeometry(q);
         const QRect available = desktop->availableGeometry(q);
-        QRect rect;
-
-        UQ_DEBUG << "Available workspace:" << available;
-
-        Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
 
         ulong struts[12];
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            rect = QRect(screen.left(), available.top(), q->width(), available.height());
             struts = {
                 q->width(), 0, 0, 0,
                 available.top(), available.bottom(), 0, 0,
@@ -62,7 +65,6 @@ struct Unity2dPanelPrivate
                 };
             break;
         case Unity2dPanel::TopEdge:
-            rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
             struts = {
                 0, 0, q->height(), 0,
                 0, 0, 0, 0,
@@ -71,13 +73,33 @@ struct Unity2dPanelPrivate
             break;
         }
 
+        setStrut(struts);
+    }
+
+    void releaseStrut()
+    {
+        ulong struts[12];
+        memset(struts, 0, sizeof struts);
+        setStrut(struts);
+    }
+
+    void updateGeometry()
+    {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const QRect screen = desktop->screenGeometry(q);
+        const QRect available = desktop->availableGeometry(q);
+
+        QRect rect;
+        switch (m_edge) {
+        case Unity2dPanel::LeftEdge:
+            rect = QRect(screen.left(), available.top(), q->width(), available.height());
+            break;
+        case Unity2dPanel::TopEdge:
+            rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
+            break;
+        }
+
         q->setGeometry(rect);
-
-        UQ_DEBUG << "Panel is now at:" << q->geometry();
-
-        XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
-                        XA_CARDINAL, 32, PropModeReplace,
-                        (unsigned char *) &struts, 12);
     }
 
     void updateLayoutDirection()
@@ -96,7 +118,10 @@ struct Unity2dPanelPrivate
 
     void updateEdge()
     {
-        updateStrut();
+        if (m_useStrut) {
+            reserveStrut();
+        }
+        updateGeometry();
         updateLayoutDirection();
     }
 };
@@ -107,6 +132,7 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
 {
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
+    d->m_useStrut = true;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
@@ -118,6 +144,9 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
 
 Unity2dPanel::~Unity2dPanel()
 {
+    if (d->m_useStrut) {
+        d->releaseStrut();
+    }
     delete d;
 }
 
@@ -163,6 +192,23 @@ void Unity2dPanel::addWidget(QWidget* widget)
 void Unity2dPanel::addSpacer()
 {
     d->m_layout->addStretch();
+}
+
+bool Unity2dPanel::useStrut() const
+{
+    return d->m_useStrut;
+}
+
+void Unity2dPanel::setUseStrut(bool value)
+{
+    if (d->m_useStrut != value) {
+        if (value) {
+            d->reserveStrut();
+        } else {
+            d->releaseStrut();
+        }
+        d->m_useStrut = value;
+    }
 }
 
 #include "unity2dpanel.moc"

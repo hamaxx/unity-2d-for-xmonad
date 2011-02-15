@@ -47,6 +47,13 @@ public:
 
     void addSpacer();
 
+    /**
+     * Whether the panel should reserve space on the edge, preventing maximized
+     * windows to overlap it.
+     */
+    bool useStrut() const;
+    void setUseStrut(bool);
+
 protected:
     virtual void showEvent(QShowEvent*);
     virtual void paintEvent(QPaintEvent*);
