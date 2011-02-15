@@ -82,6 +82,10 @@ ListView {
         if (zone == null) return
         var point = zone.mapToItem(list.contentItem, zone.mouseX, zone.mouseY)
         var item = list.contentItem.childAt(point.x, point.y)
+        /* Ignore the header (or any other item that doesn't have the signals
+           we need to forward) */
+        if (item && (typeof(item.entered) != "function" ||
+                     typeof(item.exited) != "function")) item = null;
 
         if (item == null) {
             if (itemBelow != null) {
@@ -101,7 +105,8 @@ ListView {
        It should be ok for now since we don't use them for now.
     */
     function forwardClick(zone, mouse) {
-        var item = list.contentItem.childAt(zone.mapToItem(list.contentItem, zone.mouseX, zone.mouseY))
-        if (item) item.clicked(mouse)
+        var point = zone.mapToItem(list.contentItem, zone.mouseX, zone.mouseY)
+        var item = list.contentItem.childAt(point.x, point.y)
+        if (item && typeof(item.clicked) == "function") item.clicked(mouse)
     }
 }
