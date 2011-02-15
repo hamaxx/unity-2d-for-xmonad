@@ -19,6 +19,8 @@ import Qt 4.7
 */
 Item {
     id: launcherItem
+    /* The object name is used by the launcher view to find the current
+       launcher item under the mouse cursor during a drag’n’drop event. */
     objectName: "launcherItem"
 
     property alias icon: icon.source
