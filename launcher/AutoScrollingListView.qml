@@ -2,13 +2,13 @@ import Qt 4.7
 
 /* AutoScrollingListView
 
-   Implements a ListView that has two mouse sensitive areas, one at the top and one at the bottom.
-   While the cursors is in these areas the list automatically scrolls in the direction where the area
-   is until the cursor exits the area or the scrolling reaches the edge.
+   ListView that has two mouse sensitive areas, one at the top and one at the bottom.
+   While the cursors is in these areas the list automatically scrolls in the direction
+   where the area is until the cursor exits the area or the scrolling reaches the edge.
 
-   In addition to this, it is possible to add padding at the top and/or bottom of the list that
-   takes part in the scrolling (contrary to what would happen by adding this extra
-   space using margins)
+   In addition to this, it is possible to add padding at the top and/or bottom of the
+   list that takes part in the scrolling (contrary to what would happen by adding this
+   extra space using margins).
 
    The property 'autoScrollSize' controls how tall are the two sensitive areas.
    The speed of the scrolling is controlled by 'autoScrollVelocity'.
