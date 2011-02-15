@@ -1,5 +1,4 @@
 import Qt 4.7
-import Unity2d 1.0
 
 /* Item displaying a launcher item.
 
