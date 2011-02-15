@@ -55,7 +55,7 @@ private:
 
     QGraphicsObject* launcherItemAt(const QPoint&) const;
     void delegateDragEventHandlingToItem(QDropEvent*, QGraphicsObject*);
-    bool acceptDragEvent(QDropEvent*);
+    bool acceptDndEvent(QDragEnterEvent*);
 
     /* The launcher item currently under the mouse cursor during a dnd event */
     QGraphicsObject* m_dndCurrentLauncherItem;

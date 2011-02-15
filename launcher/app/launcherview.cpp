@@ -70,7 +70,7 @@ LauncherView::delegateDragEventHandlingToItem(QDropEvent* event, QGraphicsObject
 }
 
 bool
-LauncherView::acceptDragEvent(QDropEvent* event)
+LauncherView::acceptDndEvent(QDragEnterEvent* event)
 {
     Q_FOREACH(QUrl url, getEventUrls(event)) {
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
@@ -116,7 +116,7 @@ LauncherView::dragEnterEvent(QDragEnterEvent* event)
     m_dndCurrentLauncherItemAccepted = false;
     /* Compute whether the launcher itself accepts the event only once for this
        given event. */
-    m_dndAccepted = acceptDragEvent(event);
+    m_dndAccepted = acceptDndEvent(event);
     /* Always accept the event so that subsequent move events are received. */
     event->setAccepted(true);
 }
