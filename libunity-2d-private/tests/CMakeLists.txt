@@ -50,3 +50,11 @@ add_test(NAME gnomesessionclient_check
     COMMAND /bin/sh gnomesessionclienttest.sh
     )
 add_dependencies(libunity-2d-private_check gnomesessionclient_check)
+
+# mouseareademo
+add_executable(mouseareademo
+    mouseareademo.cpp
+    )
+target_link_libraries(mouseareademo
+    unity-2d-private
+    )

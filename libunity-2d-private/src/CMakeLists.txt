@@ -2,6 +2,7 @@
 set(libunity-2d-private_SRCS
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
+    mousearea.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
     )
