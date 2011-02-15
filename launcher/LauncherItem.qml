@@ -4,12 +4,12 @@ import Unity2d 1.0
 /* This component represents a single "tile" in the launcher and the surrounding
    indicator icons.
 
-   The tile is square in size, with a side determined by the 'tileSize'
-   property, and rounded borders.
-   It is tile composed by a colored background layer, an icon (with 'icon' as source),
-   and a shine layer on top.
-   The main color of the background layer may be calculated based on the icon color or may
-   be fixed (depending on the 'backgroundFromIcon' property).
+   The tile is square in size, with a side determined by the 'tileSize' property,
+   and rounded borders.
+   It is composed by a colored background layer, an icon (with 'icon' as source),
+   and a layer on top that provides a "shine" effect.
+   The main color of the background layer may be calculated based on the icon color
+   or may be fixed (depending on the 'backgroundFromIcon' property).
 
    There's also an additional layer which contains only the outline of the tile
    that is only appearing during the launching animation (when the 'launching' property is
