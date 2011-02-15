@@ -110,65 +110,53 @@ void LauncherView::dropEvent(QDropEvent *event)
     if (accepted) event->accept();
 }
 
-QColor
-LauncherView::iconAverageColor(QUrl source, QSize size)
+/* Calculates both the background color and the glow color of a launcher tile
+   based on the colors in the specified icon (using the same algorithm as Unity).
+   The values are returned as list where the first item is the background color
+   and the second one is the glow color.
+*/
+QList<QVariant>
+LauncherView::getColorsFromIcon(QUrl source, QSize size) const
 {
-    /* FIXME: we are loading again an icon that was already loaded */
-    QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
+    QList<QVariant> colors;
 
-    if (icon.width() == 0 || icon.height() == 0)
-    {
-        qWarning() << "Unable to load icon at" << source;
-        return QColor();
+    // FIXME: we should find a way to avoid reloading the icon
+    QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
+    if (icon.width() == 0 || icon.height() == 0) {
+        qWarning() << "Unable to load icon in getColorsFromIcon from" << source;
+        return colors;
     }
 
-    int total_r = 0, total_g = 0, total_b = 0;
-    int select_r = 0, select_g = 0, select_b = 0;
-    int selected_pixels = 0;
+    long int rtotal = 0, gtotal = 0, btotal = 0;
+    float total = 0.0f;
 
-    for (int y=0; y<icon.height(); ++y)
-    {
-        for (int x=0; x<icon.width(); ++x)
-        {
+    for (int y = 0; y < icon.height(); ++y) {
+        for (int x = 0; x < icon.width(); ++x) {
             QColor color = QColor::fromRgba(icon.pixel(x, y));
 
-            if (color.alphaF() < 0.5)
-                continue;
+            float saturation = (qMax (color.red(), qMax (color.green(), color.blue())) -
+                                qMin (color.red(), qMin (color.green(), color.blue()))) / 255.0f;
+            float relevance = .1 + .9 * (color.alpha() / 255.0f) * saturation;
 
-            total_r += color.red();
-            total_g += color.green();
-            total_b += color.blue();
+            rtotal += (unsigned char) (color.red() * relevance);
+            gtotal += (unsigned char) (color.green() * relevance);
+            btotal += (unsigned char) (color.blue() * relevance);
 
-            if (color.saturationF() <= 0.33)
-                continue;
-
-            select_r += color.red();
-            select_g += color.green();
-            select_b += color.blue();
-
-            selected_pixels++;
+            total += relevance * 255;
         }
     }
 
-    QColor color;
+    QColor hsv = QColor::fromRgbF(rtotal / total, gtotal / total, btotal / total).toHsv();
 
-    if (selected_pixels <= 20)
-    {
-        int total_pixels = icon.width()*icon.height();
-        color = QColor::fromRgb(total_r/total_pixels,
-                                total_g/total_pixels,
-                                total_b/total_pixels);
-        color.setHsv(color.hue(), 0, color.value());
-    }
-    else
-    {
-        color = QColor::fromRgb(select_r/selected_pixels,
-                                select_g/selected_pixels,
-                                select_b/selected_pixels);
-        float saturation = qMin(color.saturationF()*0.7, 1.0);
-        float value = qMin(color.valueF()*1.4, 1.0);
-        color.setHsvF(color.hueF(), saturation, value);
-    }
+    /* Background color is the base color with 0.90f HSV value */
+    hsv.setHsvF(hsv.hueF(),
+                (hsv.saturationF() > .15f) ? 0.65f : hsv.saturationF(),
+                0.90f);
+    colors.append(QVariant::fromValue(hsv.toRgb()));
 
-    return color;
+    /* Glow color is the base color with 1.0f HSV value */
+    hsv.setHsvF(hsv.hueF(), hsv.saturationF(), 1.0f);
+    colors.append(QVariant::fromValue(hsv.toRgb()));
+
+    return colors;
 }

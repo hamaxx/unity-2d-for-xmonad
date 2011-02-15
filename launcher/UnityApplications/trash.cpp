@@ -53,6 +53,12 @@ Trash::running() const
     return false;
 }
 
+int
+Trash::windowCount() const
+{
+    return 0;
+}
+
 bool
 Trash::urgent() const
 {
@@ -68,7 +74,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return QString(unity2dDirectory() + "/launcher/artwork/trash.png");
+    return "user-trash";
 }
 
 bool
