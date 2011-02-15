@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <QFile>
+#include <QDebug>
 
 
 static const char* UNITY_RES_PATH = "/usr/share/unity/";
@@ -36,7 +37,6 @@ IconImageProvider::~IconImageProvider()
         g_object_unref((GtkIconTheme*)theme);
 }
 
-#include <QDebug>
 QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
     /* Special case handling for image resources that belong to the unity

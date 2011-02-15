@@ -76,13 +76,17 @@ int main(int argc, char *argv[])
     launcherView->setFocus();
 
     launcherView->engine()->addImportPath(unity2dImportPath());
-    launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
+    if (!isRunningInstalled()) {
+        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
+    }
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+
+    /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 

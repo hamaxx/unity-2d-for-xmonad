@@ -94,6 +94,7 @@ private slots:
     void onBamfApplicationClosed(bool running);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
+    void updateWindowCount();
 
     bool launch();
     void show();
