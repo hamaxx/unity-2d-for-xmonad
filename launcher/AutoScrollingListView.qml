@@ -68,7 +68,7 @@ ListView {
         property: "contentY"
         to: contentHeight + paddingBottom - height
         velocity: autoScrollVelocity
-        running: scrollZoneBottom.containsMouse
+        running: scrollZoneBottom.containsMouse && contentHeight + paddingBottom > height
     }
 
     /* The code below this comment is only needed as a workaround for a strange behavior
