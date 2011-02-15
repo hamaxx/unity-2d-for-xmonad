@@ -4,6 +4,7 @@ import UnityApplications 1.0
 AutoScrollingListView {
     id: list
     spacing: 5
+    property int tileSize: 54
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -12,7 +13,7 @@ AutoScrollingListView {
         id: launcherItem
 
         width: list.width
-        tileSize: 54
+        tileSize: list.tileSize
 
         icon: "image://icons/" + item.icon
         running: item.running
@@ -34,7 +35,12 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            item.menu.show(width, panel.y + list.mapToItem(null, 0, y).y - contentY + height / 2)
+            // The extra 4 pixels are needed to center exactly with the arrow
+            // indicating the active tile.
+            item.menu.show(width, panel.y + list.y +
+                                  y + height / 2 - list.contentY
+                                  - list.paddingTop + 4)
+
         }
 
         onClicked: {

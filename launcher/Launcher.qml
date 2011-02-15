@@ -14,13 +14,13 @@ Item {
 
     LauncherList {
         id: main
-        anchors {
-            top: parent.top; bottom: shelf.top
-            topMargin: 5; bottomMargin: 5
-        }
+        anchors.top: parent.top
+        anchors.bottom: shelf.top
         width: parent.width
 
-        autoScrollSize: 18
+        paddingTop: 5
+        paddingBottom: 5
+        autoScrollSize: tileSize / 2
         autoScrollVelocity: 200
 
         model: ListAggregatorModel {
@@ -30,14 +30,9 @@ Item {
 
     LauncherList {
         id: shelf
-        anchors {
-            bottom: parent.bottom;
-            topMargin: 5; bottomMargin: 5
-        }
-        height: childrenRect.height
+        anchors.bottom: parent.bottom;
+        height: tileSize * count + spacing * Math.max(0, count - 1)
         width: parent.width
-
-        autoScrollSize: 0
 
         model: ListAggregatorModel {
             id: shelfItems

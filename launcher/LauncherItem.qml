@@ -4,12 +4,12 @@ import Unity2d 1.0
 /* This component represents a single "tile" in the launcher and the surrounding
    indicator icons.
 
-   The tile is square in size, with a side determined by the 'tileSize'
-   property, and rounded borders.
-   It is tile composed by a colored background layer, an icon (with 'icon' as source),
-   and a shine layer on top.
-   The main color of the background layer may be calculated based on the icon color or may
-   be fixed (depending on the 'backgroundFromIcon' property).
+   The tile is square in size, with a side determined by the 'tileSize' property,
+   and rounded borders.
+   It is composed by a colored background layer, an icon (with 'icon' as source),
+   and a layer on top that provides a "shine" effect.
+   The main color of the background layer may be calculated based on the icon color
+   or may be fixed (depending on the 'backgroundFromIcon' property).
 
    There's also an additional layer which contains only the outline of the tile
    that is only appearing during the launching animation (when the 'launching' property is
@@ -86,8 +86,13 @@ Item {
     Repeater {
         model: item.pips
         delegate: Image {
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
+            /* FIXME: It seems that when the image is created (or re-used) by the Repeater
+               for a moment it doesn't have any parent, and therefore warnings are
+               printed for the following two anchor assignements. This fixes the
+               problem, but I'm not sure if it should happen in the first place. */
+            anchors.left: (parent) ? parent.left : undefined
+            anchors.verticalCenter: (parent) ? parent.verticalCenter : undefined
+
             source: "image://blended/%1color=%2alpha=%3"
                     .arg(pipSource).arg("lightgrey").arg(1.0)
 

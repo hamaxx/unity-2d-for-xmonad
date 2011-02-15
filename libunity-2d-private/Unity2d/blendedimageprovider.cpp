@@ -31,7 +31,7 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
     /* id is of the form [FILENAME]color=[COLORNAME]alpha=[FLOAT] */
     QRegExp rx("^(.+)color=(.+)alpha=(\\d+(?:\\.\\d+)?)$");
     if (rx.indexIn(id)) {
-        qWarning() << "BlendedImageProvider: faile to match id:" << id;
+        qWarning() << "BlendedImageProvider: failed to match id:" << id;
         return QImage();
     }
     QStringList list = rx.capturedTexts();
@@ -47,8 +47,9 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
         /* Passing a named color of the form #RRGGBB is impossible
            due to the fact that QML Image considers the source an URL and strips any anchor
            from the string it passes to this method (i.e. everything after the #).
-           As a workaround we allow passing the color as RRGGBB and when a sting isn't an
-           SVG color name we try interpreting it as an RRGGBB color by adding back the #.
+           As a workaround we allow passing the color as RRGGBB and when a sting is not an
+           SVG color name (e.g. "blue", "yellow" etc.) we try interpreting it as an RRGGBB
+           color by adding back the #.
         */
         colorName.prepend("#");
         if (!QColor::isValidColor(colorName)) {
