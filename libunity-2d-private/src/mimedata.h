@@ -24,8 +24,11 @@
 #ifndef DeclarativeMimeData_H
 #define DeclarativeMimeData_H
 
-#include <QtCore/QStringList>
 #include <QtCore/QMimeData>
+#include <QtCore/QStringList>
+#include <QtCore/QString>
+#include <QtCore/QList>
+#include <QtCore/QUrl>
 
 class DeclarativeMimeData : public QMimeData
 {
@@ -34,13 +37,10 @@ class DeclarativeMimeData : public QMimeData
     Q_PROPERTY(QStringList formats READ formats)
     Q_PROPERTY(QString text READ text)
     Q_PROPERTY(QString html READ html)
-    Q_PROPERTY(QStringList urls READ urls)
+    Q_PROPERTY(QList<QUrl> urls READ urls)
 
 public:
     DeclarativeMimeData(const QMimeData* data);
-
-    /* getters */
-    QStringList urls() const;
 };
 
 Q_DECLARE_METATYPE(DeclarativeMimeData*)

@@ -212,8 +212,8 @@ void
 Trash::onDragEnter(QObject* event)
 {
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    Q_FOREACH(QString url, dde->mimeData()->urls()) {
-        if (url.startsWith("file://")) {
+    Q_FOREACH(QUrl url, dde->mimeData()->urls()) {
+        if (url.scheme() == "file") {
             dde->setDropAction(Qt::MoveAction);
             dde->setAccepted(true);
             return;
@@ -226,9 +226,9 @@ Trash::onDrop(QObject* event)
 {
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
     bool accepted = false;
-    Q_FOREACH(QString url, dde->mimeData()->urls()) {
-        if (url.startsWith("file://")) {
-            GFile* file = g_file_new_for_uri(url.toUtf8().constData());
+    Q_FOREACH(QUrl url, dde->mimeData()->urls()) {
+        if (url.scheme() == "file") {
+            GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
             if (g_file_trash(file, NULL, NULL)) {
                 accepted = true;
             } else {

@@ -23,28 +23,12 @@
 
 #include "mimedata.h"
 
-#include <QtCore/QUrl>
-
 DeclarativeMimeData::DeclarativeMimeData(const QMimeData* data)
     : QMimeData()
 {
     Q_FOREACH(QString format, data->formats()) {
         setData(format, data->data(format));
     }
-}
-
-QStringList
-DeclarativeMimeData::urls() const
-{
-    /* QUrl objects cannot be manipulated in QML,
-       so we just return a list of strings… */
-    QStringList result;
-    if (hasUrls()) {
-        Q_FOREACH(QUrl url, QMimeData::urls()) {
-            result.append(url.toEncoded());
-        }
-    }
-    return result;
 }
 
 #include "mimedata.moc"
