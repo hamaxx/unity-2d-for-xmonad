@@ -23,8 +23,6 @@
 #include <QDeclarativeView>
 #include <QUrl>
 
-#include "dragdropevent.h"
-
 class QGraphicsObject;
 
 class LauncherView : public QDeclarativeView
