@@ -14,8 +14,9 @@
 // Local
 
 // libunity-2d
-#include <unity2dpanel.h>
 #include <debug_p.h>
+#include <mousearea.h>
+#include <unity2dpanel.h>
 
 // Qt
 #include <QEvent>
@@ -47,15 +48,11 @@ stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideC
 
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
-, m_forceVisiblePanel(new Unity2dPanel)
+, m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
 {
-    m_forceVisiblePanel->setUseStrut(false);
-    m_forceVisiblePanel->setFixedWidth(1);
-    m_forceVisiblePanel->setEdge(Unity2dPanel::LeftEdge);
-    m_forceVisiblePanel->installEventFilter(this);
-    m_forceVisiblePanel->show();
+    connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
 
     m_panel->setUseStrut(false);
     m_panel->installEventFilter(this);
@@ -69,7 +66,6 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 
 IntellihideController::~IntellihideController()
 {
-    delete m_forceVisiblePanel;
 }
 
 void IntellihideController::updateActiveWindowConnections()
@@ -139,16 +135,13 @@ void IntellihideController::updateVisibility()
 
 bool IntellihideController::eventFilter(QObject* object, QEvent* event)
 {
-    if (object == m_forceVisiblePanel) {
-        if (event->type() == QEvent::Enter && m_visibility == HiddenPanel) {
-            m_visibility = ForceVisiblePanel;
-            slidePanel();
-        }
-    } else { // m_panel
-        if (event->type() == QEvent::Leave && m_visibility == ForceVisiblePanel) {
-            m_visibility = VisiblePanel;
-            updateVisibility();
-        }
+    if (event->type() == QEvent::Leave && !m_mouseArea->containsMouse() && m_visibility == ForceVisiblePanel) {
+        m_visibility = VisiblePanel;
+        updateVisibility();
+    } else if (event->type() == QEvent::Resize) {
+        QRect rect = m_panel->geometry();
+        rect.setWidth(1);
+        m_mouseArea->setGeometry(rect);
     }
     return false;
 }
@@ -158,4 +151,12 @@ void IntellihideController::slidePanel()
     QPoint pos = m_panel->pos();
     pos.setX(m_visibility == HiddenPanel ? -m_panel->width() : 0);
     m_panel->move(pos);
+}
+
+void IntellihideController::forceVisiblePanel()
+{
+    if (m_visibility != ForceVisiblePanel) {
+        m_visibility = ForceVisiblePanel;
+        slidePanel();
+    }
 }

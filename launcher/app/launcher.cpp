@@ -21,6 +21,7 @@
 
 // unity-2d
 #include <gnomesessionclient.h>
+#include <unity2dapplication.h>
 
 // Qt
 #include <QApplication>
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication application(argc, argv);
+    Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
