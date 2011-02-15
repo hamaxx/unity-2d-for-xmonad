@@ -58,18 +58,15 @@ LauncherView::launcherItemAt(const QPoint& pos) const
     return NULL;
 }
 
-bool
+void
 LauncherView::delegateDragEventHandlingToItem(QDropEvent* event, QGraphicsObject* item)
 {
     if (item == NULL) {
-        return false;
+        return;
     }
     DeclarativeDragDropEvent dde(event, this);
-    QVariant handled = false;
     QMetaObject::invokeMethod(item, "dragEnterEvent",
-                              Q_RETURN_ARG(QVariant, handled),
                               Q_ARG(QVariant, QVariant::fromValue(&dde)));
-    return handled.toBool();
 }
 
 bool
@@ -120,8 +117,7 @@ LauncherView::dragEnterEvent(QDragEnterEvent* event)
     /* Compute whether the launcher itself accepts the event only once for this
        given event. */
     m_dndAccepted = acceptDragEvent(event);
-    /* Always accept the enter event so that subsequent move events are
-       received. */
+    /* Always accept the event so that subsequent move events are received. */
     event->setAccepted(true);
 }
 
@@ -139,7 +135,8 @@ LauncherView::dragMoveEvent(QDragMoveEvent* event)
         m_dndCurrentLauncherItemAccepted = false;
 
         if (m_dndCurrentLauncherItem != NULL) {
-            if (delegateDragEventHandlingToItem(event, m_dndCurrentLauncherItem)) {
+            delegateDragEventHandlingToItem(event, m_dndCurrentLauncherItem);
+            if (event->isAccepted()) {
                 m_dndCurrentLauncherItemAccepted = true;
             }
         }
@@ -158,7 +155,6 @@ LauncherView::dropEvent(QDropEvent* event)
         DeclarativeDragDropEvent dde(event, this);
         QMetaObject::invokeMethod(m_dndCurrentLauncherItem, "dropEvent",
                                   Q_ARG(QVariant, QVariant::fromValue(&dde)));
-        event->setAccepted(true);
     } else if (m_dndAccepted) {
         bool accepted = false;
         Q_FOREACH(QUrl url, getEventUrls(event)) {
