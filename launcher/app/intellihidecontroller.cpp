@@ -48,6 +48,7 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
 , m_activeWindow(0)
 {
+    m_panel->setUseStrut(false);
     WnckScreen* screen = wnck_screen_get_default();
 
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
@@ -118,6 +119,7 @@ void IntellihideController::updateVisibility()
         }
     }
 
+    m_panel->setVisible(!crossWindow);
     QPoint pos = m_panel->pos();
     pos.setX(crossWindow ? -m_panel->width() : 0);
     m_panel->move(pos);
