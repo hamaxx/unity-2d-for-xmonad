@@ -19,7 +19,7 @@ Item {
         anchors.fill: parent
         focus: true
         property int itemHeight: 54
-        autoScrollSize: itemHeight / 3
+        autoScrollSize: itemHeight / 2
         autoScrollVelocity: 200
 
         /* Keep a reference to the currently visible contextual menu */
