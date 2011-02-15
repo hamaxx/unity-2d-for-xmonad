@@ -32,9 +32,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#define MAX(a,b) ((a >= b) ? a : b)
-#define MIN(a,b) ((a <= b) ? a : b)
-
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false)
 {
@@ -137,8 +134,8 @@ LauncherView::getColorsFromIcon(QUrl source, QSize size) const
         for (int x = 0; x < icon.width(); ++x) {
             QColor color = QColor::fromRgba(icon.pixel(x, y));
 
-            float saturation = (MAX (color.red(), MAX (color.green(), color.blue())) -
-                                MIN (color.red(), MIN (color.green(), color.blue()))) / 255.0f;
+            float saturation = (qMax (color.red(), qMax (color.green(), color.blue())) -
+                                qMin (color.red(), qMin (color.green(), color.blue()))) / 255.0f;
             float relevance = .1 + .9 * (color.alpha() / 255.0f) * saturation;
 
             rtotal += (unsigned char) (color.red() * relevance);
