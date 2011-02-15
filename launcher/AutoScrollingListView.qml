@@ -99,7 +99,7 @@ ListView {
         }
     }
 
-    /* HACK: We forward the click but the coordinates will be wrong since they are expressed in the
+    /* FIXME: We forward the click but the coordinates will be wrong since they are expressed in the
        coordinate system of the MouseArea where it happened. However they are readonly properties in
        the MouseEvent so we can't update them with the translated values.
        It should be ok for now since we don't use them for now.
