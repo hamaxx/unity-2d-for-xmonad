@@ -13,12 +13,18 @@ Item {
         source: "artwork/background.png"
     }
 
-    ListView {
+    AutoScrollingListView {
         id: list
+
         spacing: 5
-        anchors.topMargin: 5
+        paddingTop: 5
+        paddingBottom: 5
+
         anchors.fill: parent
         focus: true
+        property int itemHeight: 54
+        autoScrollSize: itemHeight / 2
+        autoScrollVelocity: 200
 
         /* Keep a reference to the currently visible contextual menu */
         property variant visibleMenu
@@ -39,7 +45,7 @@ Item {
             urgent: item.urgent
             launching: item.launching
             pips: Math.min(item.windowCount, 3)
-            tileSize: 54
+            tileSize: list.itemHeight
 
             /* Best way I could find to check if the item is an application or the
                workspaces switcher. There may be something cleaner and better. */
@@ -60,7 +66,9 @@ Item {
                 list.visibleMenu = item.menu
                 // The extra 4 pixels are needed to center exactly with the arrow
                 // that indicated the active tile.
-                item.menu.show(width, y + height / 2 - list.contentY + panel.y + 4)
+                item.menu.show(width,
+                               y + height / 2 - list.contentY +
+                               panel.y - list.paddingTop + 4)
             }
 
             onClicked: {
@@ -76,7 +84,7 @@ Item {
 
             /* Display the tooltip when hovering the item only when the list
                is not moving */
-            onEntered: if (!list.moving) showMenu()
+            onEntered: if (!list.moving && !list.autoScrolling) showMenu()
             onExited: {
                 /* When unfolded, leave enough time for the user to reach the
                    menu. Necessary because there is some void between the item
@@ -91,6 +99,7 @@ Item {
             Connections {
                 target: list
                 onMovementStarted: item.menu.hide()
+                onAutoScrollingChanged: if (list.autoScrolling) item.menu.hide()
             }
 
             function setIconGeometry() {
