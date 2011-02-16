@@ -33,6 +33,7 @@
 #include "launcherview.h"
 #include "launchercontrol.h"
 #include "unity2dpanel.h"
+#include "gesturehandler.h"
 
 int main(int argc, char *argv[])
 {
@@ -100,6 +101,9 @@ int main(int argc, char *argv[])
        running installed).
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
     g_unsetenv("DESKTOP_AUTOSTART_ID");
+
+    /* DOCME */
+    GestureHandler *gestureHandler = new GestureHandler;
 
     return application.exec();
 }
