@@ -16,6 +16,8 @@
 // Qt
 #include <QObject>
 
+class QPropertyAnimation;
+
 struct _WnckWindow;
 
 class MouseArea;
@@ -53,6 +55,8 @@ private:
     // A 1px invisible area used to force the panel to be visible if the user
     // hits the edge of the screen with the mouse cursor
     MouseArea* m_mouseArea;
+
+    QPropertyAnimation* m_slideAnimation;
 
     struct _WnckWindow* m_activeWindow;
     PanelVisibility m_visibility;
