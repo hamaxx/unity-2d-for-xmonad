@@ -30,7 +30,12 @@
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
+    /**
+     * The amount of pixels the panel is moved from its edge. Useful for
+     * animations.
+     */
+    Q_PROPERTY(int delta READ delta WRITE setDelta)
 public:
     enum Edge {
         LeftEdge,
@@ -53,6 +58,9 @@ public:
      */
     bool useStrut() const;
     void setUseStrut(bool);
+
+    int delta() const;
+    void setDelta(int);
 
 protected:
     virtual void showEvent(QShowEvent*);

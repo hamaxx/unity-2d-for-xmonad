@@ -40,6 +40,7 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     QHBoxLayout* m_layout;
     bool m_useStrut;
+    int m_delta;
 
     void setStrut(ulong* struts)
     {
@@ -93,9 +94,11 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             rect = QRect(screen.left(), available.top(), q->width(), available.height());
+            rect.moveLeft(m_delta);
             break;
         case Unity2dPanel::TopEdge:
             rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
+            rect.moveTop(m_delta);
             break;
         }
 
@@ -133,6 +136,7 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
     d->m_useStrut = true;
+    d->m_delta = 0;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
@@ -209,6 +213,17 @@ void Unity2dPanel::setUseStrut(bool value)
         }
         d->m_useStrut = value;
     }
+}
+
+int Unity2dPanel::delta() const
+{
+    return d->m_delta;
+}
+
+void Unity2dPanel::setDelta(int delta)
+{
+    d->m_delta = delta;
+    d->updateGeometry();
 }
 
 #include "unity2dpanel.moc"
