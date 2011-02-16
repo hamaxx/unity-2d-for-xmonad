@@ -129,8 +129,7 @@ LauncherView::dragMoveEvent(QDragMoveEvent* event)
         if (m_dndCurrentLauncherItemAccepted || m_dndAccepted) {
             event->setAccepted(true);
         }
-    }
-    else {
+    } else {
         m_dndCurrentLauncherItem = launcherItem;
         m_dndCurrentLauncherItemAccepted = false;
 
@@ -139,8 +138,7 @@ LauncherView::dragMoveEvent(QDragMoveEvent* event)
             if (event->isAccepted()) {
                 m_dndCurrentLauncherItemAccepted = true;
             }
-        }
-        else {
+        } else {
             if (m_dndAccepted) {
                 event->setAccepted(true);
             }
@@ -161,8 +159,7 @@ LauncherView::dropEvent(QDropEvent* event)
             if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
                 emit desktopFileDropped(url.path());
                 accepted = true;
-            }
-            else if (url.scheme().startsWith("http")) {
+            } else if (url.scheme().startsWith("http")) {
                 emit webpageUrlDropped(url);
                 accepted = true;
             }
