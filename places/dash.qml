@@ -10,14 +10,14 @@ Item {
     states: [
         State {
             name: "collapsed"
-            when: !currentPage.expanded
+            when: currentPage.id == "home"
             StateChangeScript {
                 script: updateDashState()
             }
         },
         State {
             name: "expanded"
-            when: currentPage.expanded
+            when: currentPage.id != "home"
             StateChangeScript {
                 script: updateDashState()
             }

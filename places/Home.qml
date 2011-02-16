@@ -5,6 +5,7 @@ import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 import gconf 1.0
 
 Item {
+    id: home
     property variant model: PageModel {
         /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
         onEntrySearchQueryChanged: {
@@ -13,9 +14,6 @@ Item {
             }
         }
     }
-
-    /* See dash.qml "collapsed" and "expanded" states */
-    property bool expanded: globalSearchActive
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.entrySearchQuery != ""
