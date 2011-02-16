@@ -94,7 +94,7 @@ Item {
     BorderImage {
         anchors.fill: parent
         visible: dashView.dashState == DashDeclarativeView.CollapsedDesktopDash || dashView.dashState == DashDeclarativeView.ExpandedDesktopDash
-        source: "artwork/desktop_dash.sci"
+        source: "artwork/desktop_dash_background.sci"
     }
 
     Item {
