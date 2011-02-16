@@ -125,16 +125,20 @@ void IntellihideController::updateVisibility()
     for (; list; list = g_list_next(list)) {
         WnckWindow* window = WNCK_WINDOW(list->data);
         if (wnck_window_is_on_workspace(window, workspace) && wnck_window_get_pid(window) != launcherPid) {
+            WnckWindowState state = wnck_window_get_state(window);
+
+            // Skip hidden (==minimized and other states) windows
+            // Note: check this *before* checking if window is maximized
+            // because a window can be both minimized and maximized
+            if (state & WNCK_WINDOW_STATE_HIDDEN) {
+                continue;
+            }
+
             // Maximized window should always be considered as crossing the
             // window
-            WnckWindowState state = wnck_window_get_state(window);
             if (state & WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY) {
                 crossWindow = true;
                 break;
-            }
-            // Skip hidden (==minimized and other states) windows
-            if (state & WNCK_WINDOW_STATE_HIDDEN) {
-                continue;
             }
 
             // Not maximized => really check the window rect
