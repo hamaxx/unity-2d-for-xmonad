@@ -33,6 +33,7 @@ class LauncherItem : public QObject
 
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
+    Q_PROPERTY(int windowCount READ windowCount NOTIFY windowCountChanged)
     Q_PROPERTY(bool urgent READ urgent NOTIFY urgentChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
@@ -47,6 +48,7 @@ public:
     /* getters */
     virtual bool active() const = 0;
     virtual bool running() const = 0;
+    virtual int windowCount() const = 0;
     virtual bool urgent() const = 0;
     virtual QString name() const = 0;
     virtual QString icon() const = 0;
@@ -63,6 +65,7 @@ protected:
 signals:
     void activeChanged(bool);
     void runningChanged(bool);
+    void windowCountChanged(int);
     void urgentChanged(bool);
     void nameChanged(QString);
     void iconChanged(QString);

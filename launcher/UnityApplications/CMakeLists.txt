@@ -71,6 +71,7 @@ include_directories(
 target_link_libraries(UnityApplications
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTGUI_LIBRARIES}
+    ${QT_QTNETWORK_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QTBAMF_LDFLAGS}
     ${QTGCONF_LDFLAGS}

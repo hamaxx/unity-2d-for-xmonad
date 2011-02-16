@@ -48,6 +48,12 @@ Workspaces::running() const
     return false;
 }
 
+int
+Workspaces::windowCount() const
+{
+    return 0;
+}
+
 bool
 Workspaces::urgent() const
 {
