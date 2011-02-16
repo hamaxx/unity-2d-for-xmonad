@@ -39,6 +39,7 @@ Item {
             width: launcher.width
             height: tileSize
 
+            desktopFile: item.desktop_file ? item.desktop_file : ""
             icon: "image://icons/" + item.icon
             running: item.running
             active: item.active
@@ -135,6 +136,25 @@ Item {
                 onWindowAdded: item.setIconGeometry(x + panel.x, y + panel.y, width, height, xid)
                 /* Not all items are applications. */
                 ignoreUnknownSignals: true
+            }
+        }
+
+        interactive: false
+        MouseArea {
+            id: loc
+            property string currentId: ""
+            property int newIndex
+            property int index: list.indexAt(mouseX, mouseY) // Item underneath cursor
+            anchors.fill: parent
+            onPressAndHold: currentId = items.get(newIndex = index).desktop_file
+            onReleased: currentId = ""
+            onMousePositionChanged: {
+                if (loc.currentId != "" && index != -1 && index != newIndex) {
+                    items.move(newIndex, newIndex = index, 1)
+                    /* FIXME: a bug in QML shifts the item one index too far
+                       down the list.
+                       Ref: http://bugreports.qt.nokia.com/browse/QTBUG-15841 */
+                }
             }
         }
     }

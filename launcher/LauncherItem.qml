@@ -36,6 +36,7 @@ Item {
     anchors.horizontalCenter: parent.horizontalCenter
 
     property int tileSize
+    property string desktopFile: ""
     property alias icon: icon.source
     property bool running: false
     property bool active: false
@@ -202,6 +203,16 @@ Item {
                 NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
             }
             NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
+        }
+
+        states: State {
+            name: "active"
+            when: (loc.currentId != "") && (loc.currentId == item.desktopFile)
+            PropertyChanges {
+                target: tile
+                x: loc.mouseX - tile.width / 2
+                y: loc.mouseY - tile.height / 2
+            }
         }
     }
 

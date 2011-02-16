@@ -321,3 +321,16 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
     return QVariant::fromValue(m_applications.at(index.row()));
 }
 
+
+void
+LauncherApplicationsList::move(int from, int to)
+{
+    QModelIndex parent;
+    /* When moving an item down, the destination index needs to be incremented
+       by one, as explained in the documentation:
+       http://doc.qt.nokia.com/qabstractitemmodel.html#beginMoveRows */
+    beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
+    m_applications.move(from, to);
+    endMoveRows();
+}
+
