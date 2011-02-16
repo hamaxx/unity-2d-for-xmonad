@@ -61,8 +61,23 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
 void
 LauncherApplicationsList::insertApplication(LauncherApplication* application)
 {
-    beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
-    m_applications.append(application);
+    int index = 0;
+    int priority = application->priority();
+    if (priority == -1) {
+        /* Undefined priority, insert at the end of the list. */
+        index = m_applications.size();
+    } else {
+        /* Compute where to insert based on other applications’ priorities. */
+        Q_FOREACH(LauncherApplication* app, m_applications) {
+            if ((app->priority() == -1) || (app->priority() > priority)) {
+                break;
+            }
+            ++index;
+        }
+    }
+
+    beginInsertRows(QModelIndex(), index, index);
+    m_applications.insert(index, application);
 
     if (!application->desktop_file().isEmpty()) {
         m_applicationForDesktopFile.insert(application->desktop_file(), application);
@@ -118,6 +133,17 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     application->setDesktopFile(desktop_file);
     application->setSticky(true);
 
+    /* Does the application have a priority defined? */
+    /* Note: when migrating to GSettings for the storage of favorites,
+       priorities will go away. Favorite applications will simply be sorted in
+       the order they are found in the list in GSettings. */
+    GConfItemQmlWrapper priority;
+    priority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(desktop_file) + "/priority");
+    QVariant value = priority.getValue();
+    if (value.isValid()) {
+        application->setPriority(value.toInt());
+    }
+
     /* If the desktop_file property is empty after setting it, it
        means glib couldn't load the desktop file (probably corrupted) */
     if (application->desktop_file().isEmpty()) {
@@ -148,9 +174,8 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 void
 LauncherApplicationsList::load()
 {
-    /* FIXME: applications should be sorted depending on their priority */
-
     /* Insert favorites */
+    /* FIXME: migrate to GSettings, like unity. */
     QString desktop_file;
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
@@ -244,11 +269,14 @@ LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* applica
     gconf_type.setKey(FAVORITES_KEY + favorite_id + "/type");
     gconf_type.setValue(QVariant(application->application_type()));
 
-    GConfItemQmlWrapper gconf_priority;
-    gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-    /* FIXME: unity expects floats and not ints; it crashes at startup
-              otherwise */
-    gconf_priority.setValue(QVariant(double(application->priority())));
+    int priority = application->priority();
+    if (priority != -1) {
+        GConfItemQmlWrapper gconf_priority;
+        gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+        /* FIXME: unity expects floats and not ints; it crashes at startup
+                  otherwise */
+        gconf_priority.setValue(QVariant(double(priority)));
+    }
 }
 
 void

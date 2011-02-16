@@ -47,6 +47,7 @@ LauncherApplication::LauncherApplication()
     , m_desktopFileWatcher(NULL)
     , m_appInfo(NULL)
     , m_sticky(false)
+    , m_priority(-1) /* special value, really means undefined priority */
     , m_has_visible_window(false)
 {
     /* Make sure wnck_set_client_type is called only once */
@@ -387,6 +388,15 @@ int
 LauncherApplication::priority() const
 {
     return m_priority;
+}
+
+void
+LauncherApplication::setPriority(int priority)
+{
+    if (priority != m_priority) {
+        m_priority = priority;
+        Q_EMIT priorityChanged(m_priority);
+    }
 }
 
 bool
