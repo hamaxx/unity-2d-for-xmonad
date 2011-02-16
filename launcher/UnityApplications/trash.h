@@ -51,8 +51,8 @@ public:
 public Q_SLOTS:
     /* Custom implementation of drag’n’drop handling. Dropping files on the
        trash will… move them to the trash! */
-    void onDragEnter(QObject* event);
-    void onDrop(QObject* event);
+    void onDragEnter(DeclarativeDragDropEvent*);
+    void onDrop(DeclarativeDragDropEvent*);
 
 private slots:
     void onEmptyTriggered();

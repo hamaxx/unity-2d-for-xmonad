@@ -72,11 +72,8 @@ signals:
 public Q_SLOTS:
     /* Default implementation of drag’n’drop handling, should be overridden in
        subclasses to implement custom behaviours. */
-    /* The 'event' parameters should be DeclarativeDragDropEvent*, but because
-       of http://bugreports.qt.nokia.com/browse/QTBUG-13047 they need to be
-       passed around from QML to C++ as QObject*. This is fixed in Qt 4.7.1. */
-    virtual void onDragEnter(QObject* event);
-    virtual void onDrop(QObject* event);
+    virtual void onDragEnter(DeclarativeDragDropEvent*);
+    virtual void onDrop(DeclarativeDragDropEvent*);
 };
 
 #endif // LAUNCHERITEM_H

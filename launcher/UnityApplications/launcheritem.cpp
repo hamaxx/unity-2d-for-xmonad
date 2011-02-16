@@ -38,14 +38,14 @@ LauncherItem::menu() const
 }
 
 void
-LauncherItem::onDragEnter(QObject* event)
+LauncherItem::onDragEnter(DeclarativeDragDropEvent* event)
 {
     Q_UNUSED(event)
     /* Default to doing nothing, i.e. refusing the event. */
 }
 
 void
-LauncherItem::onDrop(QObject* event)
+LauncherItem::onDrop(DeclarativeDragDropEvent* event)
 {
     Q_UNUSED(event)
     /* Default to doing nothing. */

@@ -209,23 +209,21 @@ Trash::onEmptyTriggered()
 }
 
 void
-Trash::onDragEnter(QObject* event)
+Trash::onDragEnter(DeclarativeDragDropEvent* event)
 {
-    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    Q_FOREACH(QUrl url, dde->mimeData()->urls()) {
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file") {
-            dde->setDropAction(Qt::MoveAction);
-            dde->setAccepted(true);
+            event->setDropAction(Qt::MoveAction);
+            event->setAccepted(true);
             return;
         }
     }
 }
 
 void
-Trash::onDrop(QObject* event)
+Trash::onDrop(DeclarativeDragDropEvent* event)
 {
-    DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    Q_FOREACH(QUrl url, dde->mimeData()->urls()) {
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
         if (url.scheme() == "file") {
             GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
             if (!g_file_trash(file, NULL, NULL)) {
