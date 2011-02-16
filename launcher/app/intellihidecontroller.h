@@ -20,6 +20,7 @@ class QPropertyAnimation;
 
 struct _WnckWindow;
 
+class GConfItemQmlWrapper;
 class MouseArea;
 class Unity2dPanel;
 
@@ -40,6 +41,7 @@ private Q_SLOTS:
     void updateVisibility();
     void updateActiveWindowConnections();
     void forceVisiblePanel();
+    void updateFromGConf();
 
 private:
     Q_DISABLE_COPY(IntellihideController);
@@ -58,10 +60,14 @@ private:
 
     QPropertyAnimation* m_slideAnimation;
 
+    GConfItemQmlWrapper* m_autoHideKey;
+
     struct _WnckWindow* m_activeWindow;
     PanelVisibility m_visibility;
+    bool m_autoHide;
 
     void slidePanel();
+    void updateFromPanelGeometry();
 };
 
 #endif /* INTELLIHIDECONTROLLER_H */

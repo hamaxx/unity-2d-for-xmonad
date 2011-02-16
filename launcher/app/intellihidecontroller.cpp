@@ -18,6 +18,9 @@
 #include <mousearea.h>
 #include <unity2dpanel.h>
 
+// libqtgconf
+#include <gconfitem-qml-wrapper.h>
+
 // Qt
 #include <QEvent>
 #include <QPropertyAnimation>
@@ -30,6 +33,8 @@ extern "C" {
 }
 
 static const int SLIDE_DURATION = 500;
+
+static const char* GCONF_LAUNCHER_AUTOHIDE_KEY = "/desktop/unity-2d/launcher/auto_hide";
 
 static void
 updateActiveWindowConnectionsCB(GObject* screen, void* dummy, IntellihideController* controller)
@@ -51,15 +56,15 @@ stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideC
 
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
-, m_mouseArea(new MouseArea(this))
+, m_mouseArea(0)
 , m_slideAnimation(new QPropertyAnimation(this))
+, m_autoHideKey(new GConfItemQmlWrapper(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
+, m_autoHide(false)
 {
-    connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
-
-    m_panel->setUseStrut(false);
-    m_panel->installEventFilter(this);
+    m_autoHideKey->setKey(GCONF_LAUNCHER_AUTOHIDE_KEY);
+    connect(m_autoHideKey, SIGNAL(valueChanged()), SLOT(updateFromGConf()));
 
     m_slideAnimation->setTargetObject(m_panel);
     m_slideAnimation->setPropertyName("delta");
@@ -71,6 +76,7 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(updateVisibilityCB), this);
 
     updateActiveWindowConnections();
+    updateFromGConf();
 }
 
 IntellihideController::~IntellihideController()
@@ -100,7 +106,7 @@ void IntellihideController::updateActiveWindowConnections()
 
 void IntellihideController::updateVisibility()
 {
-    if (m_visibility == ForceVisiblePanel) {
+    if (!m_autoHide || m_visibility == ForceVisiblePanel) {
         return;
     }
     int launcherPid = getpid();
@@ -148,35 +154,64 @@ bool IntellihideController::eventFilter(QObject* object, QEvent* event)
         m_visibility = VisiblePanel;
         updateVisibility();
     } else if (event->type() == QEvent::Resize) {
-        QRect rect = m_panel->geometry();
-        rect.setWidth(1);
-        m_mouseArea->setGeometry(rect);
-
-        m_slideAnimation->setStartValue(-m_panel->width());
-        m_slideAnimation->setEndValue(0);
+        updateFromPanelGeometry();
+        updateVisibility();
     }
     return false;
 }
 
 void IntellihideController::slidePanel()
 {
-    bool visible = m_visibility != HiddenPanel;
-    if (visible && m_panel->delta() == 0) {
-        return;
-    }
-    if (!visible && m_panel->delta() == -m_panel->width()) {
-        return;
-    }
+    bool visible = !m_autoHide || m_visibility != HiddenPanel;
     m_slideAnimation->setDirection(visible ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
+
     if (m_slideAnimation->state() == QAbstractAnimation::Stopped) {
+        // Only start animation if it is not running and the panel is not
+        // already at its final position
+        if (visible && m_panel->delta() == 0) {
+            return;
+        }
+        if (!visible && m_panel->delta() == -m_panel->width()) {
+            return;
+        }
         m_slideAnimation->start();
     }
+}
+
+void IntellihideController::updateFromPanelGeometry()
+{
+    QRect rect = m_panel->geometry();
+    rect.setWidth(1);
+    m_mouseArea->setGeometry(rect);
+
+    m_slideAnimation->setStartValue(-m_panel->width());
+    m_slideAnimation->setEndValue(0);
 }
 
 void IntellihideController::forceVisiblePanel()
 {
     if (m_visibility != ForceVisiblePanel) {
         m_visibility = ForceVisiblePanel;
+        slidePanel();
+    }
+}
+
+void IntellihideController::updateFromGConf()
+{
+    m_autoHide = m_autoHideKey->getValue().toBool();
+    m_panel->setUseStrut(!m_autoHide);
+    if (m_autoHide) {
+        Q_ASSERT(!m_mouseArea);
+        m_mouseArea = new MouseArea(this);
+        connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
+
+        m_panel->installEventFilter(this);
+        updateFromPanelGeometry();
+        updateVisibility();
+    } else {
+        delete m_mouseArea;
+        m_mouseArea = 0;
+        m_panel->removeEventFilter(this);
         slidePanel();
     }
 }
