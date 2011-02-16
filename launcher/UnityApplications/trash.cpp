@@ -214,6 +214,32 @@ Trash::onEmptyTriggered()
     empty();
 }
 
+void
+Trash::onDragEnter(DeclarativeDragDropEvent* event)
+{
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file") {
+            event->setDropAction(Qt::MoveAction);
+            event->setAccepted(true);
+            return;
+        }
+    }
+}
+
+void
+Trash::onDrop(DeclarativeDragDropEvent* event)
+{
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file") {
+            GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
+            if (!g_file_trash(file, NULL, NULL)) {
+                qWarning() << "Unable to send" << url << "to the trash";
+            }
+            g_object_unref(file);
+        }
+    }
+}
+
 
 Trashes::Trashes(QObject* parent) :
     QAbstractListModel(parent)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical, Ltd.
+ * Copyright (C) 2011 Canonical, Ltd.
  *
  * Authors:
  *  Olivier Tilloy <olivier.tilloy@canonical.com>
@@ -17,37 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launcheritem.h"
-#include "launchermenu.h"
+#include "mimedata.h"
 
-LauncherItem::LauncherItem(QObject* parent): QObject(parent)
+DeclarativeMimeData::DeclarativeMimeData(const QMimeData* data)
+    : QMimeData()
 {
-    m_menu = new LauncherContextualMenu;
-    m_menu->setLauncherItem(this);
+    Q_FOREACH(QString format, data->formats()) {
+        setData(format, data->data(format));
+    }
 }
 
-LauncherItem::~LauncherItem()
-{
-    delete m_menu;
-}
-
-QObject*
-LauncherItem::menu() const
-{
-    return m_menu;
-}
-
-void
-LauncherItem::onDragEnter(DeclarativeDragDropEvent* event)
-{
-    Q_UNUSED(event)
-    /* Default to doing nothing, i.e. refusing the event. */
-}
-
-void
-LauncherItem::onDrop(DeclarativeDragDropEvent* event)
-{
-    Q_UNUSED(event)
-    /* Default to doing nothing. */
-}
+#include "mimedata.moc"
 

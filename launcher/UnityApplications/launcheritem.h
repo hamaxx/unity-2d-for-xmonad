@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+#include "dragdropevent.h"
+
 class LauncherContextualMenu;
 
 class LauncherItem : public QObject
@@ -69,6 +71,12 @@ signals:
     void iconChanged(QString);
     void launchingChanged(bool);
     void menuChanged(QObject*);
+
+public Q_SLOTS:
+    /* Default implementation of drag’n’drop handling, should be overridden in
+       subclasses to implement custom behaviours. */
+    virtual void onDragEnter(DeclarativeDragDropEvent*);
+    virtual void onDrop(DeclarativeDragDropEvent*);
 };
 
 #endif // LAUNCHERITEM_H
