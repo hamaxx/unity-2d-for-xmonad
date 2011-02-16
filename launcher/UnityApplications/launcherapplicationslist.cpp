@@ -134,6 +134,9 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     application->setSticky(true);
 
     /* Does the application have a priority defined? */
+    /* Note: when migrating to GSettings for the storage of favorites,
+       priorities will go away. Favorite applications will simply be sorted in
+       the order they are found in the list in GSettings. */
     GConfItemQmlWrapper priority;
     priority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(desktop_file) + "/priority");
     QVariant value = priority.getValue();
@@ -172,6 +175,7 @@ void
 LauncherApplicationsList::load()
 {
     /* Insert favorites */
+    /* FIXME: migrate to GSettings, like unity. */
     QString desktop_file;
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
