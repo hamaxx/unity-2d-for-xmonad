@@ -225,20 +225,14 @@ void
 Trash::onDrop(QObject* event)
 {
     DeclarativeDragDropEvent* dde = qobject_cast<DeclarativeDragDropEvent*>(event);
-    bool accepted = false;
     Q_FOREACH(QUrl url, dde->mimeData()->urls()) {
         if (url.scheme() == "file") {
             GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
-            if (g_file_trash(file, NULL, NULL)) {
-                accepted = true;
-            } else {
+            if (!g_file_trash(file, NULL, NULL)) {
                 qWarning() << "Unable to send" << url << "to the trash";
             }
             g_object_unref(file);
         }
-    }
-    if (accepted) {
-        dde->setAccepted(true);
     }
 }
 

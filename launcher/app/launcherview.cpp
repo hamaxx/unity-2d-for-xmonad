@@ -154,18 +154,12 @@ LauncherView::dropEvent(QDropEvent* event)
         QMetaObject::invokeMethod(m_dndCurrentLauncherItem, "dropEvent",
                                   Q_ARG(QVariant, QVariant::fromValue(&dde)));
     } else if (m_dndAccepted) {
-        bool accepted = false;
         Q_FOREACH(QUrl url, getEventUrls(event)) {
             if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
                 emit desktopFileDropped(url.path());
-                accepted = true;
             } else if (url.scheme().startsWith("http")) {
                 emit webpageUrlDropped(url);
-                accepted = true;
             }
-        }
-        if (accepted) {
-            event->setAccepted(true);
         }
     }
 }
