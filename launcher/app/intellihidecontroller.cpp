@@ -29,7 +29,7 @@ extern "C" {
 #include <libwnck/libwnck.h>
 }
 
-static const int SLIDE_DURATION = 200;
+static const int SLIDE_DURATION = 500;
 
 static void
 updateActiveWindowConnectionsCB(GObject* screen, void* dummy, IntellihideController* controller)
@@ -64,6 +64,7 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
     m_slideAnimation->setTargetObject(m_panel);
     m_slideAnimation->setPropertyName("delta");
     m_slideAnimation->setDuration(SLIDE_DURATION);
+    m_slideAnimation->setEasingCurve(QEasingCurve::InOutCubic);
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
