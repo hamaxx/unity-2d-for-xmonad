@@ -131,7 +131,6 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     /* Create a new LauncherApplication */
     LauncherApplication* application = new LauncherApplication;
     application->setDesktopFile(desktop_file);
-    application->setSticky(true);
 
     /* Does the application have a priority defined? */
     /* Note: when migrating to GSettings for the storage of favorites,
@@ -152,6 +151,7 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
         delete application;
     } else {
         insertApplication(application);
+        application->setSticky(true);
     }
 }
 
