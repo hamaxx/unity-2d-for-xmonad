@@ -49,7 +49,7 @@ HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterfac
     connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
 
     m_button->setStyleSheet(
-            "QToolButton { border: none; margin: 0; padding: 0; width: 54 }"
+            "QToolButton { border: none; margin: 0; padding: 0; width: 61 }"
             "QToolButton:checked, QToolButton:pressed {"
             // Use border-image here, not background-image, because bfb_bg_active.png is 56px wide
             "     border-image: url(theme:/bfb_bg_active.png);"

@@ -40,6 +40,7 @@ public:
     /* getters */
     virtual bool active() const;
     virtual bool running() const;
+    virtual int windowCount() const;
     virtual bool urgent() const;
     virtual QString name() const;
     virtual QString icon() const;
