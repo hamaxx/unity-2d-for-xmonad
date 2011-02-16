@@ -30,6 +30,9 @@
 
 #include <X11/Xlib.h>
 
+#undef signals
+#include <gtk/gtk.h>
+
 #include "dashdeclarativeview.h"
 #include "superkeymonitor.h"
 
@@ -91,6 +94,7 @@ static bool eventFilter(void* message)
 
 int main(int argc, char *argv[])
 {
+    gtk_init(&argc, &argv);
     QApplication::setApplicationName("Unity 2D Dash");
     qInstallMsgHandler(globalMessageHandler);
 

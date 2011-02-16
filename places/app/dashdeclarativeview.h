@@ -56,7 +56,7 @@ public:
     Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
     Q_INVOKABLE void activateHome();
 
-signals:
+Q_SIGNALS:
     void activeChanged(bool);
     void dashStateChanged(DashState);
     void activePlaceEntryChanged(const QString&);
