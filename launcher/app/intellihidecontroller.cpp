@@ -132,6 +132,10 @@ void IntellihideController::updateVisibility()
                 crossWindow = true;
                 break;
             }
+            // Skip hidden (==minimized and other states) windows
+            if (state & WNCK_WINDOW_STATE_HIDDEN) {
+                continue;
+            }
 
             // Not maximized => really check the window rect
             int x, y, width, height;
