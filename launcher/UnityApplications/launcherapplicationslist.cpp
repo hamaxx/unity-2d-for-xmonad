@@ -265,11 +265,14 @@ LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* applica
     gconf_type.setKey(FAVORITES_KEY + favorite_id + "/type");
     gconf_type.setValue(QVariant(application->application_type()));
 
-    GConfItemQmlWrapper gconf_priority;
-    gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-    /* FIXME: unity expects floats and not ints; it crashes at startup
-              otherwise */
-    gconf_priority.setValue(QVariant(double(application->priority())));
+    int priority = application->priority();
+    if (priority != -1) {
+        GConfItemQmlWrapper gconf_priority;
+        gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+        /* FIXME: unity expects floats and not ints; it crashes at startup
+                  otherwise */
+        gconf_priority.setValue(QVariant(double(priority)));
+    }
 }
 
 void
