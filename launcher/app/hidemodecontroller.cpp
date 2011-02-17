@@ -42,6 +42,7 @@ HideModeController::HideModeController(Unity2dPanel* panel)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
     connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(updateFromGConf()));
+    updateFromGConf();
 }
 
 HideModeController::~HideModeController()
