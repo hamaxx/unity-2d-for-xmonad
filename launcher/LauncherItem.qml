@@ -27,7 +27,7 @@ import Unity2d 1.0
    Additionally, when the tile is marked as 'urgent' it will start an animation where the
    rotation is changed so that it appears to be "shaking".
 */
-Item {
+DropItem {
     id: item
     /* The object name is used by the launcher view to find the current
        launcher item under the mouse cursor during a drag’n’drop event. */

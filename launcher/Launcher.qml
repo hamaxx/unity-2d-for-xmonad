@@ -2,7 +2,7 @@ import Qt 4.7
 import UnityApplications 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
-Item {
+DropItem {
     id: launcher
 
     Image {
@@ -12,6 +12,9 @@ Item {
         fillMode: Image.TileVertically
         source: "artwork/background.png"
     }
+
+    onDragEnter: launcherView.onDragEnter(event)
+    onDrop: launcherView.onDrop(event)
 
     AutoScrollingListView {
         id: list
@@ -55,8 +58,8 @@ Item {
             Binding { target: item.menu; property: "title"; value: item.name }
 
             /* Drag’n’drop handling */
-            function dragEnterEvent(event) { item.onDragEnter(event) }
-            function dropEvent(event) { item.onDrop(event) }
+            onDragEnter: item.onDragEnter(event)
+            onDrop: item.onDrop(event)
 
             function showMenu() {
                 /* Prevent the simultaneous display of multiple menus */

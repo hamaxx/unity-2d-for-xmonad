@@ -28,8 +28,6 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
-#include <QGraphicsObject>
-#include <QMetaObject>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -37,52 +35,12 @@
 #include "dragdropevent.h"
 
 LauncherView::LauncherView() :
-    QDeclarativeView(), m_resizing(false), m_reserved(false),
-    m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
-    m_dndAccepted(false)
+    QDeclarativeView(), m_resizing(false), m_reserved(false)
 {
-    setAcceptDrops(true);
-}
-
-QGraphicsObject*
-LauncherView::launcherItemAt(const QPoint& pos) const
-{
-    QGraphicsItem* item = itemAt(pos);
-    while(item != NULL) {
-        QGraphicsObject* object = qgraphicsitem_cast<QGraphicsObject*>(item);
-        if (object->objectName() == "launcherItem") {
-            return object;
-        }
-        item = item->parentItem();
-    }
-    return NULL;
-}
-
-void
-LauncherView::delegateDragEventHandlingToItem(QDropEvent* event, QGraphicsObject* item)
-{
-    if (item == NULL) {
-        return;
-    }
-    DeclarativeDragDropEvent dde(event, this);
-    QMetaObject::invokeMethod(item, "dragEnterEvent",
-                              Q_ARG(QVariant, QVariant::fromValue(&dde)));
-}
-
-bool
-LauncherView::acceptDndEvent(QDragEnterEvent* event)
-{
-    Q_FOREACH(QUrl url, getEventUrls(event)) {
-        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme().startsWith("http")) {
-            return true;
-        }
-    }
-    return false;
 }
 
 QList<QUrl>
-LauncherView::getEventUrls(QDropEvent* event)
+LauncherView::getEventUrls(DeclarativeDragDropEvent* event)
 {
     const QMimeData* mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
@@ -109,59 +67,35 @@ LauncherView::getEventUrls(QDropEvent* event)
     return QList<QUrl>();
 }
 
-void
-LauncherView::dragEnterEvent(QDragEnterEvent* event)
+void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
 {
-    m_dndCurrentLauncherItem = NULL;
-    m_dndCurrentLauncherItemAccepted = false;
-    /* Compute whether the launcher itself accepts the event only once for this
-       given event. */
-    m_dndAccepted = acceptDndEvent(event);
-    /* Always accept the event so that subsequent move events are received. */
-    event->setAccepted(true);
-}
-
-void
-LauncherView::dragMoveEvent(QDragMoveEvent* event)
-{
-    QGraphicsObject* launcherItem = launcherItemAt(event->pos());
-    if (launcherItem == m_dndCurrentLauncherItem) {
-        if (m_dndCurrentLauncherItemAccepted || m_dndAccepted) {
+    Q_FOREACH(QUrl url, getEventUrls(event)) {
+        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+            url.scheme().startsWith("http")) {
             event->setAccepted(true);
-        }
-    } else {
-        m_dndCurrentLauncherItem = launcherItem;
-        m_dndCurrentLauncherItemAccepted = false;
-
-        if (m_dndCurrentLauncherItem != NULL) {
-            delegateDragEventHandlingToItem(event, m_dndCurrentLauncherItem);
-            if (event->isAccepted()) {
-                m_dndCurrentLauncherItemAccepted = true;
-            }
-        } else {
-            if (m_dndAccepted) {
-                event->setAccepted(true);
-            }
+            return;
         }
     }
+    event->setAccepted(false);
 }
 
-void
-LauncherView::dropEvent(QDropEvent* event)
+void LauncherView::onDrop(DeclarativeDragDropEvent* event)
 {
-    if (m_dndCurrentLauncherItemAccepted) {
-        DeclarativeDragDropEvent dde(event, this);
-        QMetaObject::invokeMethod(m_dndCurrentLauncherItem, "dropEvent",
-                                  Q_ARG(QVariant, QVariant::fromValue(&dde)));
-    } else if (m_dndAccepted) {
-        Q_FOREACH(QUrl url, getEventUrls(event)) {
-            if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-                emit desktopFileDropped(url.path());
-            } else if (url.scheme().startsWith("http")) {
-                emit webpageUrlDropped(url);
-            }
+    bool accepted = false;
+
+    QList<QUrl> urls = getEventUrls(event);
+    foreach (QUrl url, urls) {
+        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+            emit desktopFileDropped(url.path());
+            accepted = true;
+        }
+        else if (url.scheme().startsWith("http")) {
+            emit webpageUrlDropped(url);
+            accepted = true;
         }
     }
+
+    if (accepted) event->setAccepted(true);
 }
 
 /* Calculates both the background color and the glow color of a launcher tile

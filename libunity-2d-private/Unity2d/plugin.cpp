@@ -34,6 +34,7 @@
 
 #include "mimedata.h"
 #include "dragdropevent.h"
+#include "dropitem.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -71,6 +72,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
 
     /* Custom drag’n’drop implementation in QML */
+    qmlRegisterType<DeclarativeDropItem>(uri, 0, 1, "DropItem");
     qmlRegisterType<DeclarativeMimeData>();
     qmlRegisterType<DeclarativeDragDropEvent>();
 }

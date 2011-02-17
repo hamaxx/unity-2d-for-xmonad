@@ -19,7 +19,7 @@
 
 #include "dragdropevent.h"
 
-DeclarativeDragDropEvent::DeclarativeDragDropEvent(QDropEvent* event, QObject* parent)
+DeclarativeDragDropEvent::DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* event, QObject* parent)
     : QObject(parent)
     , m_event(event)
     , m_mimeData(event->mimeData())

@@ -22,10 +22,9 @@
 
 #include <QDeclarativeView>
 #include <QUrl>
-#include <QList>
 #include <QDragEnterEvent>
 
-class QGraphicsObject;
+#include "dragdropevent.h"
 
 class LauncherView : public QDeclarativeView
 {
@@ -34,35 +33,21 @@ class LauncherView : public QDeclarativeView
 public:
     explicit LauncherView();
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
+    Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
+    Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
 signals:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
 
 private:
-    QList<QUrl> getEventUrls(QDropEvent*);
+    QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;
 
     /* Whether space at the left of the screen has already been reserved */
     bool m_reserved;
-
-    /* Custom drag’n’drop handling */
-    void dragEnterEvent(QDragEnterEvent*);
-    void dragMoveEvent(QDragMoveEvent*);
-    void dropEvent(QDropEvent*);
-
-    QGraphicsObject* launcherItemAt(const QPoint&) const;
-    void delegateDragEventHandlingToItem(QDropEvent*, QGraphicsObject*);
-    bool acceptDndEvent(QDragEnterEvent*);
-
-    /* The launcher item currently under the mouse cursor during a dnd event */
-    QGraphicsObject* m_dndCurrentLauncherItem;
-    /* Whether it accepted the event */
-    bool m_dndCurrentLauncherItemAccepted;
-    /* Whether the launcher itself handles the current dnd event */
-    bool m_dndAccepted;
 };
 
 #endif // LAUNCHERVIEW
