@@ -68,6 +68,9 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 IntellihideController::~IntellihideController()
 {
     disconnectFromGSignals();
+    WnckScreen* screen = wnck_screen_get_default();
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(updateActiveWindowConnectionsCB), this);
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(updateVisibilityCB), this);
 }
 
 void IntellihideController::disconnectFromGSignals()
