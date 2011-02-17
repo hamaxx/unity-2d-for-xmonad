@@ -1,6 +1,7 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 import gconf 1.0
 
 Item {
@@ -12,7 +13,8 @@ Item {
             }
         }
     }
-    
+
+    /* Set to true if shortcut buttons are visible */
     property bool shortcutsVisible: false
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
@@ -37,7 +39,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
         }
 
-        opacity: shortcutsVisible ? 0 : 1
+        opacity: (!expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
 
         onClicked: {
             shortcutsVisible = true
@@ -92,7 +94,7 @@ Item {
     Flow {
         id: buttons
 
-        opacity: globalSearchActive || !shortcutsVisible ? 0 : 1
+        opacity: (!globalSearchActive && (shortcutsVisible || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
