@@ -50,8 +50,11 @@ DashDeclarativeView::DashDeclarativeView()
         setAttribute(Qt::WA_TranslucentBackground);
         viewport()->setAttribute(Qt::WA_TranslucentBackground);
     } else {
-        setAttribute(Qt::WA_OpaquePaintEvent);
-        setAttribute(Qt::WA_NoSystemBackground);
+        QPalette pal = palette();
+        // .51 is the alpha of the normal background, turned into the value to
+        // be opaque
+        pal.setColor(backgroundRole(), QColor::fromHsvF(0, 0, .51));
+        setPalette(pal);
     }
 
     QDesktopWidget* desktop = QApplication::desktop();
