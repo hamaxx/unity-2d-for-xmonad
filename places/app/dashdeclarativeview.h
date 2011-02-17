@@ -22,27 +22,27 @@
 class DashDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
-    Q_ENUMS(DashState)
+    Q_ENUMS(DashMode)
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity2d.Dash")
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
-    Q_PROPERTY(DashState dashState READ dashState WRITE setDashState NOTIFY dashStateChanged)
+    Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
 
 public:
-    enum DashState {
-        HiddenDash,
-        DesktopDash,
-        FullScreenDash
+    enum DashMode {
+        HiddenMode,
+        DesktopMode,
+        FullScreenMode
     };
     explicit DashDeclarativeView();
 
     /* getters */
     bool active() const;
-    DashState dashState() const;
+    DashMode dashMode() const;
     const QString& activePlaceEntry() const;
     const QRect screenGeometry() const;
     const QRect availableGeometry() const;
@@ -50,7 +50,7 @@ public:
 
     /* setters */
     Q_SLOT void setActive(bool active);
-    Q_INVOKABLE void setDashState(DashState);
+    Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActivePlaceEntry(const QString& activePlaceEntry);
     Q_INVOKABLE void setExpanded(bool);
 
@@ -60,7 +60,7 @@ public:
 
 Q_SIGNALS:
     void activeChanged(bool);
-    void dashStateChanged(DashState);
+    void dashModeChanged(DashMode);
     void expandedChanged(bool);
     void activePlaceEntryChanged(const QString&);
 
@@ -72,12 +72,12 @@ private Q_SLOTS:
 
 private:
     void fitToAvailableSpace();
-    void resizeToDesktopDashSize();
+    void resizeToDesktopModeSize();
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
 
-    DashState m_state;
+    DashMode m_mode;
     bool m_expanded;
     QString m_activePlaceEntry; /* D-Bus object path of the place entry */
 };

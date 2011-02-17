@@ -36,7 +36,7 @@ static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
-, m_state(HiddenDash)
+, m_mode(HiddenMode)
 , m_expanded(false)
 {
     QDesktopWidget* desktop = QApplication::desktop();
@@ -51,7 +51,7 @@ DashDeclarativeView::onWorkAreaResized(int screen)
         return;
     }
 
-    if (m_state == FullScreenDash) {
+    if (m_mode == FullScreenMode) {
         fitToAvailableSpace();
     }
 
@@ -65,7 +65,7 @@ DashDeclarativeView::fitToAvailableSpace()
 }
 
 void
-DashDeclarativeView::resizeToDesktopDashSize()
+DashDeclarativeView::resizeToDesktopModeSize()
 {
     QRect rect = QApplication::desktop()->availableGeometry(this);
 
@@ -98,12 +98,12 @@ DashDeclarativeView::setActive(bool value)
             static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
             static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
             if (rect.width() <= minWidth && rect.height() <= minHeight) {
-                setDashState(FullScreenDash);
+                setDashMode(FullScreenMode);
             } else {
-                setDashState(DesktopDash);
+                setDashMode(DesktopMode);
             }
         } else {
-            setDashState(HiddenDash);
+            setDashMode(HiddenMode);
         }
     }
 }
@@ -111,18 +111,18 @@ DashDeclarativeView::setActive(bool value)
 bool
 DashDeclarativeView::active() const
 {
-    return m_state != HiddenDash;
+    return m_mode != HiddenMode;
 }
 
 void
-DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
+DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
 {
-    if (m_state == state) {
+    if (m_mode == mode) {
         return;
     }
 
-    m_state = state;
-    if (state == HiddenDash) {
+    m_mode = mode;
+    if (m_mode == HiddenMode) {
         hide();
         activeChanged(false);
     } else {
@@ -130,20 +130,20 @@ DashDeclarativeView::setDashState(DashDeclarativeView::DashState state)
         raise();
         activateWindow();
         forceActivateWindow();
-        if (state == FullScreenDash) {
+        if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
-            resizeToDesktopDashSize();
+            resizeToDesktopModeSize();
         }
         activeChanged(true);
     }
-    dashStateChanged(m_state);
+    dashModeChanged(m_mode);
 }
 
-DashDeclarativeView::DashState
-DashDeclarativeView::dashState() const
+DashDeclarativeView::DashMode
+DashDeclarativeView::dashMode() const
 {
-    return m_state;
+    return m_mode;
 }
 
 void
@@ -154,8 +154,8 @@ DashDeclarativeView::setExpanded(bool value)
     }
     
     m_expanded = value;
-    if (m_state == DesktopDash) {
-        resizeToDesktopDashSize();
+    if (m_mode == DesktopMode) {
+        resizeToDesktopModeSize();
     }
     expandedChanged(m_expanded);
 }

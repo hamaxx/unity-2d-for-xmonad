@@ -69,12 +69,12 @@ Item {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
-        visible: dashView.dashState == DashDeclarativeView.FullScreenDash
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode
     }
 
     BorderImage {
         anchors.fill: parent
-        visible: dashView.dashState == DashDeclarativeView.DesktopDash
+        visible: dashView.dashMode == DashDeclarativeView.DesktopMode
         source: "artwork/desktop_dash_background.sci"
     }
 
@@ -107,7 +107,7 @@ Item {
             anchors.bottomMargin: 15
             width: fullScreenButtonImage.sourceSize.width
             height: fullScreenButtonImage.sourceSize.height
-            visible: dashView.dashState != DashDeclarativeView.FullScreenDash
+            visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
 
             Image {
                 id: fullScreenButtonImage
@@ -115,7 +115,7 @@ Item {
             }
 
             onClicked: {
-                dashView.dashState = DashDeclarativeView.FullScreenDash
+                dashView.dashMode = DashDeclarativeView.FullScreenMode
             }
         }
 
