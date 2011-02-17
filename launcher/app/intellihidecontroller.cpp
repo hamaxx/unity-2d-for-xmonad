@@ -18,9 +18,6 @@
 #include <mousearea.h>
 #include <unity2dpanel.h>
 
-// libqtgconf
-#include <gconfitem-qml-wrapper.h>
-
 // Qt
 #include <QEvent>
 
@@ -30,8 +27,6 @@ extern "C" {
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
 }
-
-static const char* GCONF_LAUNCHER_AUTOHIDE_KEY = "/desktop/unity-2d/launcher/auto_hide";
 
 static void
 updateActiveWindowConnectionsCB(GObject* screen, void* dummy, IntellihideController* controller)
@@ -53,36 +48,42 @@ stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideC
 
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
-, m_mouseArea(0)
-, m_autoHideKey(new GConfItemQmlWrapper(this))
+, m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
-, m_autoHide(false)
 {
-    m_autoHideKey->setKey(GCONF_LAUNCHER_AUTOHIDE_KEY);
-    connect(m_autoHideKey, SIGNAL(valueChanged()), SLOT(updateFromGConf()));
+    m_panel->setUseStrut(false);
+    m_panel->installEventFilter(this);
+
+    connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(updateVisibilityCB), this);
 
+    updateFromPanelGeometry();
     updateActiveWindowConnections();
-    updateFromGConf();
 }
 
 IntellihideController::~IntellihideController()
 {
+    disconnectFromGSignals();
+}
+
+void IntellihideController::disconnectFromGSignals()
+{
+    if (m_activeWindow) {
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(updateVisibilityCB), this);
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(stateChangedCB), this);
+    }
 }
 
 void IntellihideController::updateActiveWindowConnections()
 {
     WnckScreen* screen = wnck_screen_get_default();
 
-    if (m_activeWindow) {
-        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(updateVisibilityCB), this);
-        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(stateChangedCB), this);
-        m_activeWindow = 0;
-    }
+    disconnectFromGSignals();
+    m_activeWindow = 0;
 
     WnckWindow* window = wnck_screen_get_active_window(screen);
     if (window) {
@@ -97,7 +98,7 @@ void IntellihideController::updateActiveWindowConnections()
 
 void IntellihideController::updateVisibility()
 {
-    if (!m_autoHide || m_visibility == ForceVisiblePanel) {
+    if (m_visibility == ForceVisiblePanel) {
         return;
     }
     int launcherPid = getpid();
@@ -161,7 +162,7 @@ bool IntellihideController::eventFilter(QObject* object, QEvent* event)
 
 void IntellihideController::slidePanel()
 {
-    if (!m_autoHide || m_visibility != HiddenPanel) {
+    if (m_visibility != HiddenPanel) {
         m_panel->slideIn();
     } else {
         m_panel->slideOut();
@@ -179,26 +180,6 @@ void IntellihideController::forceVisiblePanel()
 {
     if (m_visibility != ForceVisiblePanel) {
         m_visibility = ForceVisiblePanel;
-        slidePanel();
-    }
-}
-
-void IntellihideController::updateFromGConf()
-{
-    m_autoHide = m_autoHideKey->getValue().toBool();
-    m_panel->setUseStrut(!m_autoHide);
-    if (m_autoHide) {
-        Q_ASSERT(!m_mouseArea);
-        m_mouseArea = new MouseArea(this);
-        connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
-
-        m_panel->installEventFilter(this);
-        updateFromPanelGeometry();
-        updateVisibility();
-    } else {
-        delete m_mouseArea;
-        m_mouseArea = 0;
-        m_panel->removeEventFilter(this);
         slidePanel();
     }
 }

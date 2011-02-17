@@ -18,7 +18,6 @@
 
 struct _WnckWindow;
 
-class GConfItemQmlWrapper;
 class MouseArea;
 class Unity2dPanel;
 
@@ -39,7 +38,6 @@ private Q_SLOTS:
     void updateVisibility();
     void updateActiveWindowConnections();
     void forceVisiblePanel();
-    void updateFromGConf();
 
 private:
     Q_DISABLE_COPY(IntellihideController);
@@ -56,14 +54,12 @@ private:
     // hits the edge of the screen with the mouse cursor
     MouseArea* m_mouseArea;
 
-    GConfItemQmlWrapper* m_autoHideKey;
-
     struct _WnckWindow* m_activeWindow;
     PanelVisibility m_visibility;
-    bool m_autoHide;
 
     void slidePanel();
     void updateFromPanelGeometry();
+    void disconnectFromGSignals();
 };
 
 #endif /* INTELLIHIDECONTROLLER_H */
