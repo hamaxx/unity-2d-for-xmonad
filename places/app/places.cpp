@@ -117,14 +117,6 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    /* The dash window is borderless and not moveable by the user, yet not
-       fullscreen */
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-
-    /* Performance tricks */
-    view.setAttribute(Qt::WA_TranslucentBackground);
-    view.viewport()->setAttribute(Qt::WA_TranslucentBackground);
-
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */

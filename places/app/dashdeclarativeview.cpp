@@ -17,6 +17,7 @@
 #include "dashdeclarativeview.h"
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QBitmap>
 #include <QCloseEvent>
 #include <QDeclarativeContext>
 #include <QX11Info>
@@ -26,6 +27,8 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
+#include <config.h>
 
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
@@ -39,6 +42,18 @@ DashDeclarativeView::DashDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
+    /* The dash window is borderless and not moveable by the user, yet not
+       fullscreen */
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+
+    if (QX11Info::isCompositingManagerRunning()) {
+        setAttribute(Qt::WA_TranslucentBackground);
+        viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    } else {
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(Qt::WA_NoSystemBackground);
+    }
+
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
@@ -254,4 +269,42 @@ DashDeclarativeView::keyPressEvent(QKeyEvent* event)
             QDeclarativeView::keyPressEvent(event);
             break;
     }
+}
+
+void
+DashDeclarativeView::resizeEvent(QResizeEvent* event)
+{
+    if (!QX11Info::isCompositingManagerRunning()) {
+        updateMask();
+    }
+    QDeclarativeView::resizeEvent(event);
+}
+
+void
+DashDeclarativeView::updateMask()
+{
+    if (m_mode == FullScreenMode) {
+        clearMask();
+        return;
+    }
+    QBitmap bmp(size());
+    {
+        static QBitmap corner(unity2dDirectory() + "/places/artwork/desktop_dash_background_mask.png");
+        static QBitmap top = corner.copy(0, 0, corner.width(), 1);
+        static QBitmap left = corner.copy(0, 0, 1, corner.height());
+
+        const int cornerX = bmp.width() - corner.width();
+        const int cornerY = bmp.height() - corner.height();
+
+        QPainter painter(&bmp);
+        painter.fillRect(bmp.rect(), Qt::color1);
+        painter.setBackgroundMode(Qt::OpaqueMode);
+        painter.setBackground(Qt::color1);
+        painter.setPen(Qt::color0);
+        painter.drawPixmap(cornerX, cornerY, corner);
+
+        painter.drawTiledPixmap(cornerX, 0, top.width(), cornerY, top);
+        painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
+    }
+    setMask(bmp);
 }

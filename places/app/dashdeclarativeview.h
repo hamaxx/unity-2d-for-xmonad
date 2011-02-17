@@ -67,6 +67,9 @@ Q_SIGNALS:
     void screenGeometryChanged();
     void availableGeometryChanged();
 
+protected:
+    void resizeEvent(QResizeEvent*);
+
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
 
@@ -76,6 +79,7 @@ private:
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
+    void updateMask();
 
     DashMode m_mode;
     bool m_expanded;
