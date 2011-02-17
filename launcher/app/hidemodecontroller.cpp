@@ -53,6 +53,7 @@ void HideModeController::updateFromGConf()
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
     delete m_controller;
+    m_controller = 0;
 
     switch (mode) {
     case NeverHide:
