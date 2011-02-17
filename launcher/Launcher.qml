@@ -49,6 +49,8 @@ Item {
 
             counter: item.counter
             counterVisible: item.counterVisible
+            progress: item.progress
+            progressBarVisible: item.progressBarVisible
 
             /* Best way I could find to check if the item is an application or the
                workspaces switcher. There may be something cleaner and better. */

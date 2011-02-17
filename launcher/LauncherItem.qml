@@ -44,6 +44,8 @@ Item {
 
     property int counter: 0
     property bool counterVisible: false
+    property real progress: 0.0
+    property bool progressBarVisible: false
 
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
@@ -217,6 +219,47 @@ Item {
                 text: launcherItem.counter
             }
         }
+
+        Image {
+            id: progressBar
+            source: "artwork/progress_bar_trough.png"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            width: tile.width
+            state: launcherItem.progressBarVisible ? "" : "hidden"
+
+            Image {
+                id: progressFill
+                source: "artwork/progress_bar_fill.png"
+                anchors.verticalCenter: parent.verticalCenter
+                x: 6
+                width: sourceSize.width * launcherItem.progress
+
+                Behavior on width {
+                   NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+                }
+            }
+
+            Behavior on width {
+                NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+            }
+
+            states: State {
+                name: "hidden"
+                PropertyChanges {
+                    target: progressBar
+                    width: 0
+                }
+                // This, combined with anchors.left: parent.left in the default state
+                // makes the bar seem to come in from the left and go away at the right
+                AnchorChanges {
+                    target: progressBar
+                    anchors.left: undefined
+                    anchors.right: tile.right
+                }
+            }
+        }
+
 
         /* The entire tile will "shake" when the window is marked as "urgent", to attract
            the user's attention */
