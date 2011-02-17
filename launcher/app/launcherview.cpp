@@ -34,8 +34,6 @@
 
 LauncherView::LauncherView()
 : QDeclarativeView()
-, m_resizing(false)
-, m_reserved(false)
 {
     setAcceptDrops(true);
 }
