@@ -37,6 +37,7 @@ static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
 , m_state(HiddenDash)
+, m_expanded(false)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
@@ -69,7 +70,7 @@ DashDeclarativeView::resizeToDesktopDashSize()
     QRect rect = QApplication::desktop()->availableGeometry(this);
 
     rect.setWidth(DASH_DESKTOP_WIDTH);
-    rect.setHeight(m_state == CollapsedDesktopDash ? DASH_DESKTOP_COLLAPSED_HEIGHT : DASH_DESKTOP_EXPANDED_HEIGHT);
+    rect.setHeight(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT);
     setGeometry(rect);
 }
 
@@ -99,7 +100,7 @@ DashDeclarativeView::setActive(bool value)
             if (rect.width() <= minWidth && rect.height() <= minHeight) {
                 setDashState(FullScreenDash);
             } else {
-                setDashState(CollapsedDesktopDash);
+                setDashState(DesktopDash);
             }
         } else {
             setDashState(HiddenDash);
@@ -143,6 +144,26 @@ DashDeclarativeView::DashState
 DashDeclarativeView::dashState() const
 {
     return m_state;
+}
+
+void
+DashDeclarativeView::setExpanded(bool value)
+{
+    if (m_expanded == value) {
+        return;
+    }
+    
+    m_expanded = value;
+    if (m_state == DesktopDash) {
+        resizeToDesktopDashSize();
+    }
+    expandedChanged(m_expanded);
+}
+
+bool
+DashDeclarativeView::expanded() const
+{
+    return m_expanded;
 }
 
 void

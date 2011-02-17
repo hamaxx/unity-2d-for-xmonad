@@ -26,6 +26,7 @@ class DashDeclarativeView : public QDeclarativeView
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity2d.Dash")
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashState dashState READ dashState WRITE setDashState NOTIFY dashStateChanged)
     Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
@@ -34,8 +35,7 @@ class DashDeclarativeView : public QDeclarativeView
 public:
     enum DashState {
         HiddenDash,
-        CollapsedDesktopDash, /// Only search line-edit and "Shortcuts" button
-        ExpandedDesktopDash,  /// CollapsedDesktopDash + search results
+        DesktopDash,
         FullScreenDash
     };
     explicit DashDeclarativeView();
@@ -46,11 +46,13 @@ public:
     const QString& activePlaceEntry() const;
     const QRect screenGeometry() const;
     const QRect availableGeometry() const;
+    bool expanded() const;
 
     /* setters */
     Q_SLOT void setActive(bool active);
     Q_INVOKABLE void setDashState(DashState);
     Q_INVOKABLE void setActivePlaceEntry(const QString& activePlaceEntry);
+    Q_INVOKABLE void setExpanded(bool);
 
     /* methods */
     Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
@@ -59,6 +61,7 @@ public:
 Q_SIGNALS:
     void activeChanged(bool);
     void dashStateChanged(DashState);
+    void expandedChanged(bool);
     void activePlaceEntryChanged(const QString&);
 
     void screenGeometryChanged();
@@ -75,6 +78,7 @@ private:
     void keyPressEvent(QKeyEvent* event);
 
     DashState m_state;
+    bool m_expanded;
     QString m_activePlaceEntry; /* D-Bus object path of the place entry */
 };
 

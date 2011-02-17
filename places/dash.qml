@@ -7,30 +7,10 @@ Item {
 
     property variant currentPage
 
-    states: [
-        State {
-            name: "collapsed"
-            when: !currentPage.expanded
-            StateChangeScript {
-                script: updateDashState()
-            }
-        },
-        State {
-            name: "expanded"
-            when: currentPage.expanded
-            StateChangeScript {
-                script: updateDashState()
-            }
-        }
-    ]
-
-    function updateDashState() {
-        if (dashView.dashState == DashDeclarativeView.FullScreenDash) {
-            return;
-        }
-        dashView.dashState = currentPage.expanded
-            ? DashDeclarativeView.ExpandedDesktopDash
-            : DashDeclarativeView.CollapsedDesktopDash
+    Binding {
+        target: dashView
+        property: "expanded"
+        value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
     function activatePage(page) {
@@ -77,6 +57,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
+        pageLoader.item.shortcutsVisible = false
         dashView.activePlaceEntry = ""
     }
 
@@ -93,7 +74,7 @@ Item {
 
     BorderImage {
         anchors.fill: parent
-        visible: dashView.dashState == DashDeclarativeView.CollapsedDesktopDash || dashView.dashState == DashDeclarativeView.ExpandedDesktopDash
+        visible: dashView.dashState == DashDeclarativeView.DesktopDash
         source: "artwork/desktop_dash_background.sci"
     }
 
@@ -116,28 +97,6 @@ Item {
             anchors.leftMargin: 3
             width: 616
             height: 47
-        }
-
-        Button {
-            id: shortcutsButton
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 50
-            width: 80
-            height: 47
-
-            TextCustom {
-                text: "Shortcuts"
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            opacity: dashView.dashState == DashDeclarativeView.CollapsedDesktopDash ? 1 : 0
-
-            onClicked: {
-                dashView.dashState = DashDeclarativeView.ExpandedDesktopDash
-            }
         }
 
         Button {
