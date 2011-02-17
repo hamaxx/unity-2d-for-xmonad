@@ -47,6 +47,9 @@ Item {
             pips: Math.min(item.windowCount, 3)
             tileSize: list.itemHeight
 
+            counter: item.counter
+            counterVisible: item.counterVisible
+
             /* Best way I could find to check if the item is an application or the
                workspaces switcher. There may be something cleaner and better. */
             backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0 ||

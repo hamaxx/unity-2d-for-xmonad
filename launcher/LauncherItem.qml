@@ -41,6 +41,10 @@ Item {
     property bool active: false
     property bool urgent: false
     property bool launching: false
+
+    property int counter: 0
+    property bool counterVisible: false
+
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
 
@@ -188,6 +192,30 @@ Item {
             source: "artwork/round_shine_54x54.png"
             sourceSize.width: item.tileSize
             sourceSize.height: item.tileSize
+        }
+
+        Rectangle {
+            id: counter
+            height: 16 - border.width
+            width: 32
+            // Using anchors the item will be 1 pixel off with respect to Unity
+            y: 1
+            x: 1
+            radius: height / 2 - 1
+            border.width: 2
+            border.color: "white"
+            color: "#595959"
+            visible: launcherItem.counterVisible
+
+            Text {
+                anchors.centerIn: parent
+                font.pixelSize: parent.height - 3
+                width: parent.width - 5
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
+                color: "white"
+                text: launcherItem.counter
+            }
         }
 
         /* The entire tile will "shake" when the window is marked as "urgent", to attract
