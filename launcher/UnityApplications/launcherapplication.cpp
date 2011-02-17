@@ -49,6 +49,8 @@ LauncherApplication::LauncherApplication()
     , m_sticky(false)
     , m_priority(-1) /* special value, really means undefined priority */
     , m_has_visible_window(false)
+    , m_progress(0), m_progressBarVisible(false)
+    , m_counter(0), m_counterVisible(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;

@@ -56,18 +56,18 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 }
 
 void
-LauncherApplicationsList::onEntryUpdated(QString app_uri, QMap<QString, QVariant> parameters)
+LauncherApplicationsList::onEntryUpdated(QString app_uri, QMap<QString, QVariant> properties)
 {
-    QString desktopFile = app_uri;
+    QString desktopFile;
     if (app_uri.indexOf("application://") == 0) {
-        app_uri = app_uri.mid(14);
+        desktopFile = app_uri.mid(14);
     } else {
         qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << app_uri;
         return;
     }
     Q_FOREACH(LauncherApplication *app, m_applications) {
         if (QFileInfo(app->desktop_file()).fileName() == desktopFile) {
-            //app->updateIconOverlays(parameters);
+            app->updateOverlaysState(properties);
             return;
         }
     }

@@ -87,6 +87,7 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
+    void updateOverlaysState(QMap<QString, QVariant> properties);
 
 signals:
     void stickyChanged(bool);
@@ -135,9 +136,9 @@ private:
     bool m_has_visible_window;
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;
     int m_indicatorMenusReady;
-    int m_counter;
     float m_progress;
     bool m_progressBarVisible;
+    int m_counter;
     bool m_counterVisible;
 
     void updateBamfApplicationDependentProperties();
@@ -145,7 +146,6 @@ private:
     void fetchIndicatorMenus();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
-    void updateOverlaysState(QMap<QString, QVariant> properties);
     template<typename T>
     bool updateOverlayState(QMap<QString, QVariant> properties,
                             QString propertyName, T* member);
