@@ -22,6 +22,7 @@
 #include "hidemodecontroller.h"
 
 // Local
+#include <autohidecontroller.h>
 #include <intellihidecontroller.h>
 
 // unity-2d
@@ -62,6 +63,7 @@ void HideModeController::updateFromGConf()
         m_panel->slideIn();
         break;
     case AutoHide:
+        m_controller = new AutohideController(m_panel);
         break;
     case IntelliHide:
         m_controller = new IntellihideController(m_panel);

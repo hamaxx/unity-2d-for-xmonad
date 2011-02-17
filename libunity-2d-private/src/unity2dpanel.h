@@ -62,6 +62,7 @@ public:
     int delta() const;
     void setDelta(int);
 
+public Q_SLOTS:
     void slideIn();
     void slideOut();
 
