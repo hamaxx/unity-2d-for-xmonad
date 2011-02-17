@@ -121,49 +121,72 @@ static void spreadZoomOut()
     spreadInterface.call(QDBus::Block, "ShowAllWorkspaces", "");
 }
 
-static void gestureFromAttributes(GeisSize attr_count, GeisGestureAttr *attrs, QString& gestureName, int& touches)
+
+static QHash<QString, GeisGestureAttr> parseGestureAttributes(GeisSize attr_count, GeisGestureAttr *attrs)
 {
-    /* Look for number of touches and name of gesture in attrs */
-    for (int i = 0; i < attr_count; ++i) {
-        if (strcmp(attrs[i].name, GEIS_GESTURE_ATTRIBUTE_TOUCHES) == 0) {
-            touches = attrs[i].integer_val;
-        } else if (strcmp(attrs[i].name, GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME) == 0) {
-            gestureName = attrs[i].string_val;
-        }
+    QHash<QString, GeisGestureAttr> parsedAttributes;
+    GeisGestureAttr attribute;
+    QString attributeName;
+
+    for (unsigned int i = 0; i < attr_count; ++i) {
+        attribute = attrs[i];
+        attributeName = attribute.name;
+        parsedAttributes[attributeName] = attribute;
     }
+
+    return parsedAttributes;
 }
 
-static void gestureStart(void *cookie, GeisGestureType type, GeisGestureId id,
-                         GeisSize attr_count, GeisGestureAttr *attrs)
-{
-    int touches = 0;
-    QString gestureName;
 
-    gestureFromAttributes(attr_count, attrs, gestureName, touches);
+static void staticGestureStart(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                               GeisSize attr_count, GeisGestureAttr *attrs)
+{
+    QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
+    ((GestureHandler*)gestureHandler)->gestureStart(type, id, attributes);
+}
+
+static void staticGestureUpdate(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                GeisSize attr_count, GeisGestureAttr *attrs)
+{
+    QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
+    ((GestureHandler*)gestureHandler)->gestureUpdate(type, id, attributes);
+}
+
+static void staticGestureFinish(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                GeisSize attr_count, GeisGestureAttr *attrs)
+{
+    QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
+    ((GestureHandler*)gestureHandler)->gestureFinish(type, id, attributes);
+}
+
+
+void GestureHandler::gestureStart(GeisGestureType type, GeisGestureId id,
+                                  QHash<QString, GeisGestureAttr> attributes)
+{
+    QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
+    int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
     /* FIXME: finish me */
-    if (gestureName == "Pinch" && touches == 3) {
+    if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
         spreadZoomOut();
     }
 }
 
-static void gestureUpdate(void *cookie, GeisGestureType type, GeisGestureId id,
-                          GeisSize attr_count, GeisGestureAttr *attrs)
+void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
+                                   QHash<QString, GeisGestureAttr> attributes)
 {
-    int touches = 0;
-    QString gestureName;
+    QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
+    int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
-    gestureFromAttributes(attr_count, attrs, gestureName, touches);
-
-    if (gestureName == "Tap" && touches == 4) {
+    if (gestureName == GEIS_GESTURE_TAP && touches == 4) {
         toggleDash();
-    } else if (gestureName == "Pinch" && touches == 3) {
+    } else if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
         /* FIXME: finish me */
     }
 }
 
-static void gestureFinish(void *cookie, GeisGestureType type, GeisGestureId id,
-                          GeisSize attr_count, GeisGestureAttr *attrs)
+void GestureHandler::gestureFinish(GeisGestureType type, GeisGestureId id,
+                                   QHash<QString, GeisGestureAttr> attributes)
 {
 
 }
@@ -177,10 +200,10 @@ GeisStatus GestureHandler::geisSubscribeGestures()
 
     m_gestureFuncs.added = NULL;
     m_gestureFuncs.removed = NULL;
-    m_gestureFuncs.start = gestureStart;
-    m_gestureFuncs.update = gestureUpdate;
-    m_gestureFuncs.finish = gestureFinish;
+    m_gestureFuncs.start = staticGestureStart;
+    m_gestureFuncs.update = staticGestureUpdate;
+    m_gestureFuncs.finish = staticGestureFinish;
 
     return geis_subscribe(m_geisInstance, GEIS_ALL_INPUT_DEVICES, gestures,
-                          &m_gestureFuncs, NULL);
+                          &m_gestureFuncs, this);
 }

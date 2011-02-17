@@ -21,6 +21,7 @@
 #define GESTUREHANDLER_H
 
 #include <QObject>
+#include <QHash>
 
 extern "C" {
   #include <geis/geis.h>
@@ -32,6 +33,10 @@ class GestureHandler : public QObject
 public:
     explicit GestureHandler(QObject *parent = 0);
     ~GestureHandler();
+
+    void gestureStart(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
+    void gestureUpdate(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
+    void gestureFinish(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
 
 private Q_SLOTS:
     void geisEventDispatch();
