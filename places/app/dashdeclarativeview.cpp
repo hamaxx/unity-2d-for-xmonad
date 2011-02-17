@@ -232,19 +232,19 @@ void
 DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
 {
     QGraphicsObject* dash = rootObject();
-    setActive(true);
     QMetaObject::invokeMethod(dash, "activatePlaceEntry", Qt::AutoConnection,
                               Q_ARG(QVariant, QVariant::fromValue(file)),
                               Q_ARG(QVariant, QVariant::fromValue(entry)),
                               Q_ARG(QVariant, QVariant::fromValue(section)));
+    setActive(true);
 }
 
 void
 DashDeclarativeView::activateHome()
 {
     QGraphicsObject* dash = rootObject();
-    setActive(true);
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
+    setActive(true);
 }
 
 const QRect
