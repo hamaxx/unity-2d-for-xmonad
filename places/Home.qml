@@ -15,13 +15,13 @@ Item {
     }
 
     /* Set to true if shortcut buttons are visible */
-    property bool shortcutsVisible: false
+    property bool shortcutsActive: false
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.entrySearchQuery != ""
     
     /* Used by dash.qml to bind to dashView "expanded" property */
-    property bool expanded: globalSearchActive || shortcutsVisible
+    property bool expanded: globalSearchActive || shortcutsActive
 
     Button {
         id: shortcutsButton
@@ -42,7 +42,7 @@ Item {
         opacity: (!expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
 
         onClicked: {
-            shortcutsVisible = true
+            shortcutsActive = true
         }
     }
 
@@ -94,7 +94,7 @@ Item {
     Flow {
         id: buttons
 
-        opacity: (!globalSearchActive && (shortcutsVisible || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
+        opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 

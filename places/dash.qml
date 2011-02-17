@@ -57,7 +57,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        pageLoader.item.shortcutsVisible = false
+        pageLoader.item.shortcutsActive = false
         dashView.activePlaceEntry = ""
     }
 
