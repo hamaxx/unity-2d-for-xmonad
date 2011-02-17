@@ -16,8 +16,6 @@
 // Qt
 #include <QObject>
 
-class QPropertyAnimation;
-
 struct _WnckWindow;
 
 class GConfItemQmlWrapper;
@@ -57,8 +55,6 @@ private:
     // A 1px invisible area used to force the panel to be visible if the user
     // hits the edge of the screen with the mouse cursor
     MouseArea* m_mouseArea;
-
-    QPropertyAnimation* m_slideAnimation;
 
     GConfItemQmlWrapper* m_autoHideKey;
 

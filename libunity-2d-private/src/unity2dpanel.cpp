@@ -27,6 +27,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPainter>
+#include <QPropertyAnimation>
 #include <QHBoxLayout>
 #include <QX11Info>
 
@@ -34,11 +35,14 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+static const int SLIDE_DURATION = 500;
+
 struct Unity2dPanelPrivate
 {
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
     QHBoxLayout* m_layout;
+    QPropertyAnimation* m_slideAnimation;
     bool m_useStrut;
     int m_delta;
 
@@ -127,6 +131,14 @@ struct Unity2dPanelPrivate
         updateGeometry();
         updateLayoutDirection();
     }
+
+    void updateAnimation()
+    {
+        m_slideAnimation->setStartValue(
+            m_edge == Unity2dPanel::TopEdge
+            ? -q->height()
+            : -q->width());
+    }
 };
 
 Unity2dPanel::Unity2dPanel(QWidget* parent)
@@ -140,6 +152,15 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
+
+    d->m_slideAnimation = new QPropertyAnimation(this);
+    d->m_slideAnimation->setTargetObject(this);
+    d->m_slideAnimation->setPropertyName("delta");
+    d->m_slideAnimation->setDuration(SLIDE_DURATION);
+    d->m_slideAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    d->m_slideAnimation->setEndValue(0);
+    d->updateAnimation();
+
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
     setAutoFillBackground(true);
@@ -171,6 +192,13 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
+    d->updateAnimation();
+}
+
+void Unity2dPanel::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    d->updateAnimation();
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
@@ -224,6 +252,24 @@ void Unity2dPanel::setDelta(int delta)
 {
     d->m_delta = delta;
     d->updateGeometry();
+}
+
+void Unity2dPanel::slideIn()
+{
+    d->m_slideAnimation->setDirection(QAbstractAnimation::Forward);
+    if (d->m_slideAnimation->state() == QAbstractAnimation::Stopped
+        && d->m_delta == d->m_slideAnimation->startValue())
+    {
+        d->m_slideAnimation->start();
+    }
+}
+
+void Unity2dPanel::slideOut()
+{
+    d->m_slideAnimation->setDirection(QAbstractAnimation::Backward);
+    if (d->m_slideAnimation->state() == QAbstractAnimation::Stopped && d->m_delta == 0) {
+        d->m_slideAnimation->start();
+    }
 }
 
 #include "unity2dpanel.moc"

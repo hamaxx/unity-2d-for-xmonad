@@ -23,7 +23,6 @@
 
 // Qt
 #include <QEvent>
-#include <QPropertyAnimation>
 
 // libwnck
 #undef signals
@@ -31,8 +30,6 @@ extern "C" {
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
 }
-
-static const int SLIDE_DURATION = 500;
 
 static const char* GCONF_LAUNCHER_AUTOHIDE_KEY = "/desktop/unity-2d/launcher/auto_hide";
 
@@ -57,7 +54,6 @@ stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideC
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
 , m_mouseArea(0)
-, m_slideAnimation(new QPropertyAnimation(this))
 , m_autoHideKey(new GConfItemQmlWrapper(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
@@ -65,11 +61,6 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 {
     m_autoHideKey->setKey(GCONF_LAUNCHER_AUTOHIDE_KEY);
     connect(m_autoHideKey, SIGNAL(valueChanged()), SLOT(updateFromGConf()));
-
-    m_slideAnimation->setTargetObject(m_panel);
-    m_slideAnimation->setPropertyName("delta");
-    m_slideAnimation->setDuration(SLIDE_DURATION);
-    m_slideAnimation->setEasingCurve(QEasingCurve::InOutCubic);
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
@@ -170,19 +161,10 @@ bool IntellihideController::eventFilter(QObject* object, QEvent* event)
 
 void IntellihideController::slidePanel()
 {
-    bool visible = !m_autoHide || m_visibility != HiddenPanel;
-    m_slideAnimation->setDirection(visible ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
-
-    if (m_slideAnimation->state() == QAbstractAnimation::Stopped) {
-        // Only start animation if it is not running and the panel is not
-        // already at its final position
-        if (visible && m_panel->delta() == 0) {
-            return;
-        }
-        if (!visible && m_panel->delta() == -m_panel->width()) {
-            return;
-        }
-        m_slideAnimation->start();
+    if (!m_autoHide || m_visibility != HiddenPanel) {
+        m_panel->slideIn();
+    } else {
+        m_panel->slideOut();
     }
 }
 
@@ -191,9 +173,6 @@ void IntellihideController::updateFromPanelGeometry()
     QRect rect = m_panel->geometry();
     rect.setWidth(1);
     m_mouseArea->setGeometry(rect);
-
-    m_slideAnimation->setStartValue(-m_panel->width());
-    m_slideAnimation->setEndValue(0);
 }
 
 void IntellihideController::forceVisiblePanel()
