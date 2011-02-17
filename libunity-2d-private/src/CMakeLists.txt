@@ -5,6 +5,8 @@ set(libunity-2d-private_SRCS
     mousearea.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
+    mimedata.cpp
+    dragdropevent.cpp
     )
 
 # Build

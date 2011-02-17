@@ -32,6 +32,9 @@
 #include "plugin.h"
 #include "cacheeffect.h"
 
+#include "mimedata.h"
+#include "dragdropevent.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -66,6 +69,10 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
+
+    /* Custom drag’n’drop implementation in QML */
+    qmlRegisterType<DeclarativeMimeData>();
+    qmlRegisterType<DeclarativeDragDropEvent>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

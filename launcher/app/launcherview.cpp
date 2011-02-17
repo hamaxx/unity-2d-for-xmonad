@@ -28,14 +28,57 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
+#include <QGraphicsObject>
+#include <QMetaObject>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-LauncherView::LauncherView()
-: QDeclarativeView()
+#include "dragdropevent.h"
+
+LauncherView::LauncherView() :
+    QDeclarativeView(), m_resizing(false), m_reserved(false),
+    m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
+    m_dndAccepted(false)
 {
     setAcceptDrops(true);
+}
+
+QGraphicsObject*
+LauncherView::launcherItemAt(const QPoint& pos) const
+{
+    QGraphicsItem* item = itemAt(pos);
+    while(item != NULL) {
+        QGraphicsObject* object = qgraphicsitem_cast<QGraphicsObject*>(item);
+        if (object->objectName() == "launcherItem") {
+            return object;
+        }
+        item = item->parentItem();
+    }
+    return NULL;
+}
+
+void
+LauncherView::delegateDragEventHandlingToItem(QDropEvent* event, QGraphicsObject* item)
+{
+    if (item == NULL) {
+        return;
+    }
+    DeclarativeDragDropEvent dde(event, this);
+    QMetaObject::invokeMethod(item, "dragEnterEvent",
+                              Q_ARG(QVariant, QVariant::fromValue(&dde)));
+}
+
+bool
+LauncherView::acceptDndEvent(QDragEnterEvent* event)
+{
+    Q_FOREACH(QUrl url, getEventUrls(event)) {
+        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
+            url.scheme().startsWith("http")) {
+            return true;
+        }
+    }
+    return false;
 }
 
 QList<QUrl>
@@ -63,112 +106,111 @@ LauncherView::getEventUrls(QDropEvent* event)
             return urls;
         }
     }
-
     return QList<QUrl>();
 }
 
-void LauncherView::dragEnterEvent(QDragEnterEvent *event)
+void
+LauncherView::dragEnterEvent(QDragEnterEvent* event)
 {
-    // Check that data has a list of URLs and that at least one is either
-    // a desktop file or a web page.
-    QList<QUrl> urls = getEventUrls(event);
+    m_dndCurrentLauncherItem = NULL;
+    m_dndCurrentLauncherItemAccepted = false;
+    /* Compute whether the launcher itself accepts the event only once for this
+       given event. */
+    m_dndAccepted = acceptDndEvent(event);
+    /* Always accept the event so that subsequent move events are received. */
+    event->setAccepted(true);
+}
 
-    if (urls.isEmpty()) {
-        return;
-    }
+void
+LauncherView::dragMoveEvent(QDragMoveEvent* event)
+{
+    QGraphicsObject* launcherItem = launcherItemAt(event->pos());
+    if (launcherItem == m_dndCurrentLauncherItem) {
+        if (m_dndCurrentLauncherItemAccepted || m_dndAccepted) {
+            event->setAccepted(true);
+        }
+    } else {
+        m_dndCurrentLauncherItem = launcherItem;
+        m_dndCurrentLauncherItemAccepted = false;
 
-    foreach (QUrl url, urls) {
-        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme().startsWith("http")) {
-            event->acceptProposedAction();
-            break;
+        if (m_dndCurrentLauncherItem != NULL) {
+            delegateDragEventHandlingToItem(event, m_dndCurrentLauncherItem);
+            if (event->isAccepted()) {
+                m_dndCurrentLauncherItemAccepted = true;
+            }
+        } else {
+            if (m_dndAccepted) {
+                event->setAccepted(true);
+            }
         }
     }
 }
 
-void LauncherView::dragMoveEvent(QDragMoveEvent *event)
+void
+LauncherView::dropEvent(QDropEvent* event)
 {
-    event->acceptProposedAction();
-}
-
-void LauncherView::dropEvent(QDropEvent *event)
-{
-    bool accepted = false;
-
-    QList<QUrl> urls = getEventUrls(event);
-    foreach (QUrl url, urls) {
-        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            emit desktopFileDropped(url.path());
-            accepted = true;
-        }
-        else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url);
-            accepted = true;
+    if (m_dndCurrentLauncherItemAccepted) {
+        DeclarativeDragDropEvent dde(event, this);
+        QMetaObject::invokeMethod(m_dndCurrentLauncherItem, "dropEvent",
+                                  Q_ARG(QVariant, QVariant::fromValue(&dde)));
+    } else if (m_dndAccepted) {
+        Q_FOREACH(QUrl url, getEventUrls(event)) {
+            if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
+                emit desktopFileDropped(url.path());
+            } else if (url.scheme().startsWith("http")) {
+                emit webpageUrlDropped(url);
+            }
         }
     }
-
-    if (accepted) event->accept();
 }
 
-QColor
-LauncherView::iconAverageColor(QUrl source, QSize size)
+/* Calculates both the background color and the glow color of a launcher tile
+   based on the colors in the specified icon (using the same algorithm as Unity).
+   The values are returned as list where the first item is the background color
+   and the second one is the glow color.
+*/
+QList<QVariant>
+LauncherView::getColorsFromIcon(QUrl source, QSize size) const
 {
-    /* FIXME: we are loading again an icon that was already loaded */
+    QList<QVariant> colors;
+
+    // FIXME: we should find a way to avoid reloading the icon
     QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
-
-    if (icon.width() == 0 || icon.height() == 0)
-    {
-        qWarning() << "Unable to load icon at" << source;
-        return QColor();
+    if (icon.width() == 0 || icon.height() == 0) {
+        qWarning() << "Unable to load icon in getColorsFromIcon from" << source;
+        return colors;
     }
 
-    int total_r = 0, total_g = 0, total_b = 0;
-    int select_r = 0, select_g = 0, select_b = 0;
-    int selected_pixels = 0;
+    long int rtotal = 0, gtotal = 0, btotal = 0;
+    float total = 0.0f;
 
-    for (int y=0; y<icon.height(); ++y)
-    {
-        for (int x=0; x<icon.width(); ++x)
-        {
+    for (int y = 0; y < icon.height(); ++y) {
+        for (int x = 0; x < icon.width(); ++x) {
             QColor color = QColor::fromRgba(icon.pixel(x, y));
 
-            if (color.alphaF() < 0.5)
-                continue;
+            float saturation = (qMax (color.red(), qMax (color.green(), color.blue())) -
+                                qMin (color.red(), qMin (color.green(), color.blue()))) / 255.0f;
+            float relevance = .1 + .9 * (color.alpha() / 255.0f) * saturation;
 
-            total_r += color.red();
-            total_g += color.green();
-            total_b += color.blue();
+            rtotal += (unsigned char) (color.red() * relevance);
+            gtotal += (unsigned char) (color.green() * relevance);
+            btotal += (unsigned char) (color.blue() * relevance);
 
-            if (color.saturationF() <= 0.33)
-                continue;
-
-            select_r += color.red();
-            select_g += color.green();
-            select_b += color.blue();
-
-            selected_pixels++;
+            total += relevance * 255;
         }
     }
 
-    QColor color;
+    QColor hsv = QColor::fromRgbF(rtotal / total, gtotal / total, btotal / total).toHsv();
 
-    if (selected_pixels <= 20)
-    {
-        int total_pixels = icon.width()*icon.height();
-        color = QColor::fromRgb(total_r/total_pixels,
-                                total_g/total_pixels,
-                                total_b/total_pixels);
-        color.setHsv(color.hue(), 0, color.value());
-    }
-    else
-    {
-        color = QColor::fromRgb(select_r/selected_pixels,
-                                select_g/selected_pixels,
-                                select_b/selected_pixels);
-        float saturation = qMin(color.saturationF()*0.7, 1.0);
-        float value = qMin(color.valueF()*1.4, 1.0);
-        color.setHsvF(color.hueF(), saturation, value);
-    }
+    /* Background color is the base color with 0.90f HSV value */
+    hsv.setHsvF(hsv.hueF(),
+                (hsv.saturationF() > .15f) ? 0.65f : hsv.saturationF(),
+                0.90f);
+    colors.append(QVariant::fromValue(hsv.toRgb()));
 
-    return color;
+    /* Glow color is the base color with 1.0f HSV value */
+    hsv.setHsvF(hsv.hueF(), hsv.saturationF(), 1.0f);
+    colors.append(QVariant::fromValue(hsv.toRgb()));
+
+    return colors;
 }
