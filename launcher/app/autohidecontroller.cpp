@@ -31,7 +31,7 @@
 #include <QCursor>
 #include <QTimer>
 
-static const int AUTOHIDE_TIMEOUT = 2000;
+static const int AUTOHIDE_TIMEOUT = 1000;
 
 AutohideController::AutohideController(Unity2dPanel* panel)
 : QObject(panel)
