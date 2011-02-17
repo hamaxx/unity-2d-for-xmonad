@@ -431,6 +431,30 @@ LauncherApplication::has_visible_window() const
     return m_has_visible_window;
 }
 
+float
+LauncherApplication::progress() const
+{
+    return m_progress;
+}
+
+int
+LauncherApplication::counter() const
+{
+    return m_counter;
+}
+
+bool
+LauncherApplication::progressBarVisible() const
+{
+    return m_progressBarVisible;
+}
+
+bool
+LauncherApplication::counterVisible() const
+{
+    return m_counterVisible;
+}
+
 /* Returns the number of window for this application that reside on the
    current workspace */
 int
@@ -790,5 +814,36 @@ LauncherApplication::onQuitTriggered()
 {
     m_menu->hide();
     close();
+}
+
+template<typename T>
+bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
+                                             QString propertyName, T* member)
+{
+    if (properties.contains(propertyName)) {
+        T value = properties.value(propertyName).value<T>();
+        if (value != *member) {
+            *member = value;
+            return true;
+        }
+    }
+    return false;
+}
+
+void
+LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
+{
+    if (updateOverlayState(properties, "progress", &m_progress)) {
+        Q_EMIT progressChanged(m_progress);
+    }
+    if (updateOverlayState(properties, "progress-visible", &m_progressBarVisible)) {
+        Q_EMIT progressBarVisibleChanged(m_progressBarVisible);
+    }
+    if (updateOverlayState(properties, "count", &m_counter)) {
+        Q_EMIT counterChanged(m_counter);
+    }
+    if (updateOverlayState(properties, "count-visible", &m_counterVisible)) {
+        Q_EMIT counterVisibleChanged(m_counterVisible);
+    }
 }
 

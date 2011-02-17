@@ -43,6 +43,10 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
+    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
+    Q_PROPERTY(int counter READ counter NOTIFY counterChanged)
+    Q_PROPERTY(bool counterVisible READ counterVisible NOTIFY counterVisibleChanged)
 
 public:
     LauncherApplication();
@@ -62,6 +66,10 @@ public:
     int priority() const;
     virtual bool launching() const;
     bool has_visible_window() const;
+    float progress() const;
+    int counter() const;
+    bool counterVisible() const;
+    bool progressBarVisible() const;
 
     /* setters */
     void setDesktopFile(const QString& desktop_file);
@@ -86,6 +94,10 @@ signals:
     void desktopFileChanged(QString);
     void priorityChanged(int);
     void hasVisibleWindowChanged(bool);
+    void progressBarVisibleChanged(bool);
+    void counterVisibleChanged(bool);
+    void progressChanged(float);
+    void counterChanged(int);
 
     void closed();
 
@@ -123,12 +135,20 @@ private:
     bool m_has_visible_window;
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;
     int m_indicatorMenusReady;
+    int m_counter;
+    float m_progress;
+    bool m_progressBarVisible;
+    bool m_counterVisible;
 
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
+    void updateOverlaysState(QMap<QString, QVariant> properties);
+    template<typename T>
+    bool updateOverlayState(QMap<QString, QVariant> properties,
+                            QString propertyName, T* member);
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

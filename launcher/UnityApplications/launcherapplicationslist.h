@@ -24,6 +24,7 @@
 #include <QUrl>
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
+#include <QMap>
 
 class LauncherApplication;
 class BamfApplication;
@@ -71,6 +72,7 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
+    void onEntryUpdated(QString app_uri, QMap<QString, QVariant> parameters);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)

@@ -25,8 +25,12 @@
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
+#include <QDBusConnection>
+#include <QFileInfo>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
+#define DBUS_SERVICE_UNITY "com.canonical.Unity"
+#define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -34,7 +38,40 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     m_favorites_list = new GConfItemQmlWrapper();
     m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
 
+    /* FIXME: libunity will send out the Update signal for LauncherEntries
+       only if it finds com.canonical.Unity on the bus, so let's just quickly
+       register ourselves as Unity here. Should be moved somewhere else more proper */
+    if (!QDBusConnection::sessionBus().registerService(DBUS_SERVICE_UNITY)) {
+        qWarning() << "The name com.canonical.Unity is already taken on the bus";
+    } else {
+        /* Set ourselves up to receive any Update signal coming from any
+           LauncherEntry */
+        QDBusConnection session = QDBusConnection::sessionBus();
+        session.connect(QString(), QString(),
+                        DBUS_SERVICE_LAUNCHER_ENTRY, "Update",
+                        this, SLOT(onEntryUpdated(QString,QMap<QString,QVariant>)));
+    }
+
     load();
+}
+
+void
+LauncherApplicationsList::onEntryUpdated(QString app_uri, QMap<QString, QVariant> parameters)
+{
+    QString desktopFile = app_uri;
+    if (app_uri.indexOf("application://") == 0) {
+        app_uri = app_uri.mid(14);
+    } else {
+        qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << app_uri;
+        return;
+    }
+    Q_FOREACH(LauncherApplication *app, m_applications) {
+        if (QFileInfo(app->desktop_file()).fileName() == desktopFile) {
+            //app->updateIconOverlays(parameters);
+            return;
+        }
+    }
+    qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << app_uri;
 }
 
 LauncherApplicationsList::~LauncherApplicationsList()
