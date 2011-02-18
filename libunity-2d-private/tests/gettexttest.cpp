@@ -34,6 +34,7 @@ class GettextTest : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
+        setenv("LC_MESSAGES", "fr_FR.utf8", 1 /* overwrite */);
         GettextTranslator* translator = new GettextTranslator(QCoreApplication::instance());
         QVERIFY(translator->init("gettexttest", TEST_LOCALE_DIR));
         QCoreApplication::installTranslator(translator);
