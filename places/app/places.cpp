@@ -29,6 +29,9 @@
 
 #include <X11/Xlib.h>
 
+// unity-2d
+#include <gettexttranslator.h>
+
 #include "dashdeclarativeview.h"
 #include "superkeymonitor.h"
 
@@ -109,6 +112,11 @@ int main(int argc, char *argv[])
     if (!registerDBusService(&view)) {
         return -1;
     }
+
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     /* The dash window is borderless and not moveable by the user, yet not
        fullscreen */
