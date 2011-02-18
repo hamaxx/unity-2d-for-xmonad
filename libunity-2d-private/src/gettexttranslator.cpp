@@ -60,21 +60,24 @@ QString GettextTranslator::translate(const char* context, const char* sourceText
     return QString::fromUtf8(text);
 }
 
-bool GettextTranslator::init(const QString& name, const QString& directory)
+bool GettextTranslator::init(const QString& domain_, const QString& directory)
 {
+    const char* domain = domain_.toLocal8Bit().constData();
     char* out;
     setlocale(LC_ALL, "");
-    out = bindtextdomain(name.toLocal8Bit().constData(), directory.toLocal8Bit().constData());
+    out = bindtextdomain(domain, directory.toLocal8Bit().constData());
     if (!out) {
         qWarning("bindtextdomain() failed: %s", strerror(errno));
         return false;
     }
 
-    out = textdomain(name.toLocal8Bit().constData());
+    out = textdomain(domain);
     if (!out) {
         qWarning("textdomain() failed: %s", strerror(errno));
         return false;
     }
+
+    bind_textdomain_codeset(domain, "UTF-8");
 
     return true;
 }
