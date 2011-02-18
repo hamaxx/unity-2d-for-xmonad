@@ -28,7 +28,7 @@
 
 struct GettextTranslatorPrivate;
 /**
- * A QTranslator which use gettext
+ * A QTranslator which uses gettext
  */
 class GettextTranslator : public QTranslator
 {
@@ -37,8 +37,16 @@ public:
     GettextTranslator(QObject* parent = 0);
     ~GettextTranslator();
 
+    /**
+     * Reimplemented. Note that context is ignored.
+     */
     QString translate(const char* context, const char* sourceText, const char* disambiguation=0) const;
 
+    /**
+     * Initialize the translator.
+     * Translations are then loaded from:
+     * $directory/$lang/locale/LC_MESSAGES/$domainName.mo
+     */
     bool init(const QString& domainName, const QString& directory);
 
 private:
