@@ -46,6 +46,8 @@ Item {
     property bool counterVisible: false
     property real progress: 0.0
     property bool progressBarVisible: false
+    property alias emblem: emblemIcon.source
+    property bool emblemVisible: false
 
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
@@ -258,6 +260,13 @@ Item {
                     anchors.right: tile.right
                 }
             }
+        }
+
+        Image {
+            id: emblemIcon
+            anchors.left: parent.left
+            anchors.top: parent.top
+            visible: launcherItem.emblemVisible && !counter.visible
         }
 
 

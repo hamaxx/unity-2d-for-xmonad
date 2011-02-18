@@ -51,6 +51,7 @@ LauncherApplication::LauncherApplication()
     , m_has_visible_window(false)
     , m_progress(0), m_progressBarVisible(false)
     , m_counter(0), m_counterVisible(false)
+    , m_emblem(QString()), m_emblemVisible(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
@@ -445,6 +446,12 @@ LauncherApplication::counter() const
     return m_counter;
 }
 
+QString
+LauncherApplication::emblem() const
+{
+    return m_emblem;
+}
+
 bool
 LauncherApplication::progressBarVisible() const
 {
@@ -455,6 +462,12 @@ bool
 LauncherApplication::counterVisible() const
 {
     return m_counterVisible;
+}
+
+bool
+LauncherApplication::emblemVisible() const
+{
+    return m_emblemVisible;
 }
 
 /* Returns the number of window for this application that reside on the
@@ -846,6 +859,12 @@ LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
     }
     if (updateOverlayState(properties, "count-visible", &m_counterVisible)) {
         Q_EMIT counterVisibleChanged(m_counterVisible);
+    }
+    if (updateOverlayState(properties, "emblem", &m_emblem)) {
+        Q_EMIT emblemChanged(m_emblem);
+    }
+    if (updateOverlayState(properties, "emblem-visible", &m_emblemVisible)) {
+        Q_EMIT emblemVisibleChanged(m_emblemVisible);
     }
 }
 

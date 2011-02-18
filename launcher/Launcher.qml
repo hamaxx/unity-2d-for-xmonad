@@ -51,6 +51,8 @@ Item {
             counterVisible: item.counterVisible
             progress: item.progress
             progressBarVisible: item.progressBarVisible
+            emblem: (item.emblem) ? "image://icons/" + item.emblem : ""
+            emblemVisible: item.emblemVisible
 
             /* Best way I could find to check if the item is an application or the
                workspaces switcher. There may be something cleaner and better. */
