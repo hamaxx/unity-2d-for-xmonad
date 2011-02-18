@@ -102,8 +102,9 @@ int main(int argc, char *argv[])
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
     g_unsetenv("DESKTOP_AUTOSTART_ID");
 
-    /* DOCME */
-    GestureHandler *gestureHandler = new GestureHandler;
+    /* Gesture handler instance in charge of listening to gesture events and
+       trigger appropriate actions in response. */
+    GestureHandler *gestureHandler = new GestureHandler(&application);
 
     return application.exec();
 }
