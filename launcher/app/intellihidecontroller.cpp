@@ -174,8 +174,7 @@ void IntellihideController::slidePanel()
 
 void IntellihideController::updateFromPanelGeometry()
 {
-    QRect rect = m_panel->geometry();
-    rect.setWidth(1);
+    QRect rect(0, m_panel->y(), 1, m_panel->height());
     m_mouseArea->setGeometry(rect);
 }
 
