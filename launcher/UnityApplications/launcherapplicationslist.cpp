@@ -49,14 +49,14 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         QDBusConnection session = QDBusConnection::sessionBus();
         session.connect(QString(), QString(),
                         DBUS_SERVICE_LAUNCHER_ENTRY, "Update",
-                        this, SLOT(onEntryUpdated(QString,QMap<QString,QVariant>)));
+                        this, SLOT(onRemoteEntryUpdated(QString,QMap<QString,QVariant>)));
     }
 
     load();
 }
 
 void
-LauncherApplicationsList::onEntryUpdated(QString app_uri, QMap<QString, QVariant> properties)
+LauncherApplicationsList::onRemoteEntryUpdated(QString app_uri, QMap<QString, QVariant> properties)
 {
     QString desktopFile;
     if (app_uri.indexOf("application://") == 0) {
@@ -93,7 +93,6 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
 {
     return QString("app-") + QDir(desktop_file).dirName();
 }
-
 
 void
 LauncherApplicationsList::insertApplication(LauncherApplication* application)
@@ -137,7 +136,6 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 
     delete application;
 }
-
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {

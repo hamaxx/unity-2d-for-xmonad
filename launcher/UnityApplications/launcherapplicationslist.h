@@ -72,7 +72,7 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
-    void onEntryUpdated(QString app_uri, QMap<QString, QVariant> properties);
+    void onRemoteEntryUpdated(QString app_uri, QMap<QString, QVariant> properties);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)
