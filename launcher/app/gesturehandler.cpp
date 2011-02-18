@@ -23,7 +23,6 @@
 #include <QSocketNotifier>
 #include <QDBusInterface>
 
-
 GestureHandler::GestureHandler(QObject *parent) : QObject(parent)
 {
     if (geisInitialize() != GEIS_STATUS_SUCCESS) {
@@ -83,9 +82,31 @@ GeisStatus GestureHandler::geisStartEventDispatching()
     return status;
 }
 
+
 void GestureHandler::geisEventDispatch()
 {
     geis_event_dispatch(m_geisInstance);
+}
+
+GeisStatus GestureHandler::geisSubscribeGestures()
+{
+    /* Subscribe to gestures we are interested in */
+    const char* gestures[] = {GEIS_GESTURE_TYPE_TAP4,
+                              GEIS_GESTURE_TYPE_PINCH3,
+                              NULL};
+
+    /* Listening to added/removed gesture is unhelpful with GEIS 1.0 as the
+       GeisGestureType received there are different from the ones received
+       in start/update/finish
+    */
+    m_gestureFuncs.added = NULL;
+    m_gestureFuncs.removed = NULL;
+    m_gestureFuncs.start = GestureHandler::staticGestureStart;
+    m_gestureFuncs.update = GestureHandler::staticGestureUpdate;
+    m_gestureFuncs.finish = GestureHandler::staticGestureFinish;
+
+    return geis_subscribe(m_geisInstance, GEIS_ALL_INPUT_DEVICES, gestures,
+                          &m_gestureFuncs, this);
 }
 
 
@@ -105,24 +126,29 @@ static void toggleDash()
     }
 }
 
+/* FIXME: zooming in/out in the spread should have 3 levels:
+    1) showing all windows of the focused application in the current workspace
+    2) showing all windows in the current workspace
+    3) showing all windows in all workspaces
+
+    This will require changes to the workspace switcher (spread) to advertise its current state over D-Bus.
+*/
 static void spreadZoomIn()
 {
-    /* DOCME */
-    /* FIXME: finish me */
     QDBusInterface spreadInterface("com.canonical.Unity2d.Spread", "/Spread", "com.canonical.Unity2d.Spread");
     spreadInterface.call(QDBus::Block, "Hide");
 }
 
 static void spreadZoomOut()
 {
-    /* DOCME */
-    /* FIXME: finish me */
     QDBusInterface spreadInterface("com.canonical.Unity2d.Spread", "/Spread", "com.canonical.Unity2d.Spread");
     spreadInterface.call(QDBus::Block, "ShowAllWorkspaces", "");
 }
 
 
-static QHash<QString, GeisGestureAttr> parseGestureAttributes(GeisSize attr_count, GeisGestureAttr *attrs)
+
+/* Return a dictionary of attribute name -> attribute value */
+QHash<QString, GeisGestureAttr> GestureHandler::parseGestureAttributes(GeisSize attr_count, GeisGestureAttr *attrs)
 {
     QHash<QString, GeisGestureAttr> parsedAttributes;
     GeisGestureAttr attribute;
@@ -137,38 +163,50 @@ static QHash<QString, GeisGestureAttr> parseGestureAttributes(GeisSize attr_coun
     return parsedAttributes;
 }
 
-
-static void staticGestureStart(void *gestureHandler, GeisGestureType type, GeisGestureId id,
-                               GeisSize attr_count, GeisGestureAttr *attrs)
+/* Static methods used as callbacks for GEIS and that only forward the call to
+   non static methods of the GestureHandler instance passed as first parameter */
+void GestureHandler::staticGestureStart(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                        GeisSize attr_count, GeisGestureAttr *attrs)
 {
     QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
     ((GestureHandler*)gestureHandler)->gestureStart(type, id, attributes);
 }
 
-static void staticGestureUpdate(void *gestureHandler, GeisGestureType type, GeisGestureId id,
-                                GeisSize attr_count, GeisGestureAttr *attrs)
+void GestureHandler::staticGestureUpdate(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                         GeisSize attr_count, GeisGestureAttr *attrs)
 {
     QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
     ((GestureHandler*)gestureHandler)->gestureUpdate(type, id, attributes);
 }
 
-static void staticGestureFinish(void *gestureHandler, GeisGestureType type, GeisGestureId id,
-                                GeisSize attr_count, GeisGestureAttr *attrs)
+void GestureHandler::staticGestureFinish(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                         GeisSize attr_count, GeisGestureAttr *attrs)
 {
     QHash<QString, GeisGestureAttr> attributes = parseGestureAttributes(attr_count, attrs);
     ((GestureHandler*)gestureHandler)->gestureFinish(type, id, attributes);
 }
 
 
+/* Gesture event handlers */
 void GestureHandler::gestureStart(GeisGestureType type, GeisGestureId id,
                                   QHash<QString, GeisGestureAttr> attributes)
 {
     QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
     int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
-    /* FIXME: finish me */
     if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
-        spreadZoomOut();
+        /* 3 fingers pinch inwards shows the workspace switcher (zoom out showing all workspaces)
+           3 fingers pinch outwards (also called 'spread' by designers) hides the workspace switcher (zoom in a workspace)
+         */
+        float radiusDelta = attributes[GEIS_GESTURE_ATTRIBUTE_RADIUS_DELTA].float_val;
+        if (radiusDelta < 0) {
+            spreadZoomOut();
+        } else if (radiusDelta > 0) {
+            spreadZoomIn();
+        }
+
+        m_pinchPreviousRadius = attributes[GEIS_GESTURE_ATTRIBUTE_RADIUS].float_val;
+        m_pinchPreviousTimestamp = attributes[GEIS_GESTURE_ATTRIBUTE_TIMESTAMP].integer_val;
     }
 }
 
@@ -179,31 +217,42 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
     int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
     if (gestureName == GEIS_GESTURE_TAP && touches == 4) {
+        /* 4 fingers tap toggles the dash on and off */
         toggleDash();
     } else if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
-        /* FIXME: finish me */
+        /* Continuing a 3 fingers pinch inwards/outwards shows/hides the workspace switcher. */
+        int timestamp = attributes[GEIS_GESTURE_ATTRIBUTE_TIMESTAMP].integer_val;
+        float radius = attributes[GEIS_GESTURE_ATTRIBUTE_RADIUS].float_val;
+
+        /* Ignore pinch events that are too close in time from the previous
+           pinching event that triggered an action as they are likely to be a
+           continuation part of the previous pinch event.
+        */
+        if (timestamp - m_pinchPreviousTimestamp < 500) {
+            m_pinchPreviousRadius = radius;
+            m_pinchPreviousTimestamp = timestamp;
+            return;
+        }
+
+        /* For the pinch event to trigger an action the difference in radius between
+           the current pinch event and the last pinch event that triggered an action
+           has to be enough as to not be over sensitive and to not trigger actions for
+           any small movement of the user's fingers.
+        */
+        if (radius - m_pinchPreviousRadius > 30) {
+            spreadZoomIn();
+            m_pinchPreviousRadius = radius;
+            m_pinchPreviousTimestamp = timestamp;
+        } else if (radius - m_pinchPreviousRadius < -30) {
+            spreadZoomOut();
+            m_pinchPreviousRadius = radius;
+            m_pinchPreviousTimestamp = timestamp;
+        }
     }
 }
 
 void GestureHandler::gestureFinish(GeisGestureType type, GeisGestureId id,
                                    QHash<QString, GeisGestureAttr> attributes)
 {
-
 }
 
-GeisStatus GestureHandler::geisSubscribeGestures()
-{
-    /* Subscribe to gestures we are interested in */
-    const char* gestures[] = {GEIS_GESTURE_TYPE_TAP4,
-                              GEIS_GESTURE_TYPE_PINCH3,
-                              NULL};
-
-    m_gestureFuncs.added = NULL;
-    m_gestureFuncs.removed = NULL;
-    m_gestureFuncs.start = staticGestureStart;
-    m_gestureFuncs.update = staticGestureUpdate;
-    m_gestureFuncs.finish = staticGestureFinish;
-
-    return geis_subscribe(m_geisInstance, GEIS_ALL_INPUT_DEVICES, gestures,
-                          &m_gestureFuncs, this);
-}

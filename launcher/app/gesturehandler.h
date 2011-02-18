@@ -34,10 +34,6 @@ public:
     explicit GestureHandler(QObject *parent = 0);
     ~GestureHandler();
 
-    void gestureStart(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
-    void gestureUpdate(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
-    void gestureFinish(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
-
 private Q_SLOTS:
     void geisEventDispatch();
 
@@ -46,8 +42,21 @@ private:
     GeisStatus geisStartEventDispatching();
     GeisStatus geisSubscribeGestures();
 
+    static QHash<QString, GeisGestureAttr> parseGestureAttributes(GeisSize attr_count, GeisGestureAttr *attrs);
+    static void staticGestureStart(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                   GeisSize attr_count, GeisGestureAttr *attrs);
+    static void staticGestureUpdate(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                    GeisSize attr_count, GeisGestureAttr *attrs);
+    static void staticGestureFinish(void *gestureHandler, GeisGestureType type, GeisGestureId id,
+                                    GeisSize attr_count, GeisGestureAttr *attrs);
+    void gestureStart(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
+    void gestureUpdate(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
+    void gestureFinish(GeisGestureType type, GeisGestureId id, QHash<QString, GeisGestureAttr> attributes);
+
     GeisInstance m_geisInstance;
     GeisGestureFuncs m_gestureFuncs;
+    float m_pinchPreviousRadius;
+    int m_pinchPreviousTimestamp;
 };
 
 #endif // GESTUREHANDLER_H
