@@ -39,6 +39,7 @@ include_directories(
     ${WNCK_INCLUDE_DIRS}
     ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-private-qml
@@ -48,6 +49,7 @@ target_link_libraries(unity-2d-private-qml
     ${WNCK_LDFLAGS}
     ${QTBAMF_LDFLAGS}
     ${QTGCONF_LDFLAGS}
+    unity-2d-private
     )
 
 # Install

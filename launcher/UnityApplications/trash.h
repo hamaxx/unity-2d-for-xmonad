@@ -49,6 +49,12 @@ public:
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE virtual void createMenuActions();
 
+public Q_SLOTS:
+    /* Custom implementation of drag’n’drop handling. Dropping files on the
+       trash will… move them to the trash! */
+    void onDragEnter(DeclarativeDragDropEvent*);
+    void onDrop(DeclarativeDragDropEvent*);
+
 private slots:
     void onEmptyTriggered();
 

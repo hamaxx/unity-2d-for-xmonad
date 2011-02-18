@@ -1,5 +1,9 @@
 project(unity-2d-launcher)
 
+include_directories(
+    ${libunity-2d-private_SOURCE_DIR}/src
+    )
+
 # Source
 add_subdirectory(UnityApplications)
 add_subdirectory(app)

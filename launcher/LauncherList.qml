@@ -1,5 +1,6 @@
 import Qt 4.7
 import UnityApplications 1.0
+import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
@@ -28,6 +29,10 @@ AutoScrollingListView {
                             item.toString().indexOf("Workspaces") == 0
 
         Binding { target: item.menu; property: "title"; value: item.name }
+
+        /* Drag’n’drop handling */
+        function dragEnterEvent(event) { item.onDragEnter(event) }
+        function dropEvent(event) { item.onDrop(event) }
 
         function showMenu() {
             /* Prevent the simultaneous display of multiple menus */
