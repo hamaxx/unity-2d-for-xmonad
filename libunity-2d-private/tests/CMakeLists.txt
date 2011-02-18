@@ -1,4 +1,8 @@
 # Common settings
+find_package(Gettext)
+
+configure_file(config-test.h.in config-test.h)
+
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -29,9 +33,18 @@ macro(libunity_2d_tests)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
+    gettexttest
     keyboardmodifiersmonitortest
     paneltest
     )
+
+add_custom_target(gettexttest_po COMMAND
+    mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/
+    && ${GETTEXT_MSGFMT_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/fr.po
+        -o ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/gettexttest.mo
+    )
+
+add_dependencies(gettexttest gettexttest_po)
 
 # gnomesessionclienttest
 add_executable(gnomesessionclienttesthelper
