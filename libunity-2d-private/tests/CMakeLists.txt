@@ -1,6 +1,4 @@
 # Common settings
-find_package(Gettext)
-
 configure_file(config-test.h.in config-test.h)
 
 include_directories(

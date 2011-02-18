@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-18 17:39+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:719
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:447
+msgid "Keep In Launcher"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:719
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:447
+msgid "Remove From Launcher"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:727
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:455
+msgid "Quit"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherdevice.cpp:222
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherdevice.cpp:216
+msgid "Eject"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/workspaces.cpp:66
+msgid "Workspaces"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:71
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:65
+msgid "Trash"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:198
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:192
+#, c-format, qt-plural-format
+msgid "%n item(s) in trash"
+msgstr ""
+
+#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:205
+#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:199
+msgid "Empty Trash"
+msgstr ""
