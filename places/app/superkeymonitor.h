@@ -22,34 +22,34 @@
 
 #include <QObject>
 
-class KeyMonitor;
-class GConfItemQmlWrapper;
+//class KeyMonitor;
+//class GConfItemQmlWrapper;
 
-class SuperKeyMonitor : public QObject
-{
-    Q_OBJECT
+//class SuperKeyMonitor : public QObject
+//{
+//    Q_OBJECT
 
-public:
-    SuperKeyMonitor();
-    ~SuperKeyMonitor();
+//public:
+//    SuperKeyMonitor();
+//    ~SuperKeyMonitor();
 
-    static const uint SUPER_L = 133;
-    static const uint SUPER_R = 134;
+//    static const uint SUPER_L = 133;
+//    static const uint SUPER_R = 134;
 
-private:
-    KeyMonitor* m_left;
-    KeyMonitor* m_right;
+//private:
+//    KeyMonitor* m_left;
+//    KeyMonitor* m_right;
 
-    GConfItemQmlWrapper* m_enable_setting;
+//    GConfItemQmlWrapper* m_enable_setting;
 
-    bool getEnableSettingValue() const;
+//    bool getEnableSettingValue() const;
 
-    void startMonitoring();
-    void stopMonitoring();
+//    void startMonitoring();
+//    void stopMonitoring();
 
-private Q_SLOTS:
-    void slotEnableSettingChanged();
-};
+//private Q_SLOTS:
+//    void slotEnableSettingChanged();
+//};
 
 #endif // SuperKeyMonitor_H
 

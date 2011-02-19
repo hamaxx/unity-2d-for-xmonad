@@ -30,7 +30,7 @@
 #include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
-#include "superkeymonitor.h"
+#include "keymonitor.h"
 
 #include "config.h"
 
@@ -65,27 +65,6 @@ static DashDeclarativeView* getView()
 {
     QVariant viewProperty = QApplication::instance()->property("view");
     return viewProperty.value<DashDeclarativeView*>();
-}
-
-static bool eventFilter(void* message)
-{
-    XEvent* event = static_cast<XEvent*>(message);
-    if (event->type == KeyRelease)
-    {
-        XKeyEvent* key = (XKeyEvent*) event;
-        uint code = key->keycode;
-        if (code == SuperKeyMonitor::SUPER_L || code == SuperKeyMonitor::SUPER_R) {
-            /* Super (aka the "windows" key) shows/hides the dash. */
-            DashDeclarativeView* view = getView();
-            if (view->active()) {
-                view->setActive(false);
-            }
-            else {
-                view->activateHome();
-            }
-        }
-    }
-    return false;
 }
 
 int main(int argc, char *argv[])
@@ -143,8 +122,9 @@ int main(int argc, char *argv[])
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     /* Grab the "super" keys */
-    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
-    QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
+//    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
+    Hotkey *hotkey = HotkeyMonitor::instance().hotkey(49, Qt::ShiftModifier);
+    QObject::connect(hotkey, SIGNAL(activated()), &view, SLOT(hotkeyTriggered()));
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();

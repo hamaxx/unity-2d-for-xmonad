@@ -171,3 +171,9 @@ DashDeclarativeView::keyPressEvent(QKeyEvent* event)
             break;
     }
 }
+
+void
+DashDeclarativeView::hotkeyTriggered()
+{
+    qDebug() << "HOTKEY WAS PRESSED !!!!!";
+}

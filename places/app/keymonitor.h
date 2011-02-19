@@ -21,22 +21,66 @@
 #define KeyMonitor_H
 
 #include <QObject>
+#include <QList>
+#include <QPair>
 
-class KeyMonitor : public QObject
+class HotkeyMonitor;
+
+class Hotkey : public QObject
+{
+    friend class HotkeyMonitor;
+
+    Q_OBJECT
+    Q_PROPERTY(uint keycode READ keycode)
+    Q_PROPERTY(Qt::KeyboardModifiers modifiers READ modifiers)
+
+public:
+    ~Hotkey();
+    uint keycode() const { return m_keycode; }
+    Qt::KeyboardModifiers modifiers() const { return m_modifiers; }
+
+    static uint QtToX11Modifiers(Qt::KeyboardModifiers modifiers);
+    static Qt::KeyboardModifiers X11ToQtModifiers(uint modifiers);
+
+Q_SIGNALS:
+    void activated();
+
+protected:
+    virtual void connectNotify(const char * signal);
+    virtual void disconnectNotify(const char * signal);
+
+private:
+    Hotkey(QObject *parent = 0, uint keycode = 0,
+           Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+
+    uint m_keycode;
+    Qt::KeyboardModifiers m_modifiers;
+    uint m_connections;
+    static bool x11error;
+};
+
+
+class HotkeyMonitor : public QObject
 {
     Q_OBJECT
 
 public:
-    KeyMonitor(int keycode, QObject* parent=0);
-    ~KeyMonitor();
+    static HotkeyMonitor& instance();
+    ~HotkeyMonitor();
 
-    void grabKey();
-    void ungrabKey();
+    Hotkey* hotkey(uint keycode, Qt::KeyboardModifiers modifiers);
 
 private:
-    int m_keycode;
-    bool m_grabbed;
+    HotkeyMonitor(QObject* parent=0);
+
+    static bool keyEventFilter(void* message);
+    void processKeyEvent(uint keycode, uint modifiers);
+    uint translateModifiers(Qt::KeyboardModifiers modifiers);
+    Hotkey* findHotkey(uint keycode, Qt::KeyboardModifiers modifiers);
+
+    QList<Hotkey*> m_hotkeys;
 };
+
 
 #endif // KeyMonitor_H
 
