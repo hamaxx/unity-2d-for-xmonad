@@ -46,6 +46,7 @@ struct Unity2dPanelPrivate
     QPropertyAnimation* m_slideOutAnimation;
     bool m_useStrut;
     int m_delta;
+    bool m_manualSliding;
 
     void setStrut(ulong* struts)
     {
@@ -142,6 +143,7 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
     d->m_edge = Unity2dPanel::TopEdge;
     d->m_useStrut = true;
     d->m_delta = 0;
+    d->m_manualSliding = false;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
@@ -239,6 +241,7 @@ void Unity2dPanel::setUseStrut(bool value)
             d->releaseStrut();
         }
         d->m_useStrut = value;
+        Q_EMIT useStrutChanged(value);
     }
 }
 
@@ -277,6 +280,23 @@ void Unity2dPanel::slideOut()
     if (d->m_slideOutAnimation->state() != QAbstractAnimation::Running) {
         d->m_slideOutAnimation->setStartValue(d->m_delta);
         d->m_slideOutAnimation->start();
+    }
+}
+
+bool Unity2dPanel::manualSliding() const
+{
+    return d->m_manualSliding;
+}
+
+void Unity2dPanel::setManualSliding(bool manualSliding)
+{
+    if (d->m_manualSliding != manualSliding) {
+        d->m_manualSliding = manualSliding;
+        if (manualSliding) {
+            d->m_slideInAnimation->stop();
+            d->m_slideOutAnimation->stop();
+        }
+        Q_EMIT manualSlidingChanged(d->m_manualSliding);
     }
 }
 
