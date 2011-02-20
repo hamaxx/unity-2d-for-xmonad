@@ -249,7 +249,11 @@ int Unity2dPanel::delta() const
 
 void Unity2dPanel::setDelta(int delta)
 {
-    d->m_delta = delta;
+    /* Clamp delta to be between 0 and minus its size */
+    int minDelta = -panelSize();
+    int maxDelta = 0;
+
+    d->m_delta = qMax(qMin(delta, maxDelta), minDelta);
     d->updateGeometry();
 }
 
