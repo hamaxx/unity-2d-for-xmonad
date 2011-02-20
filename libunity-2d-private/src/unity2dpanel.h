@@ -30,7 +30,12 @@
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
+    /**
+     * The amount of pixels the panel is moved from its edge. Useful for
+     * animations.
+     */
+    Q_PROPERTY(int delta READ delta WRITE setDelta)
 public:
     enum Edge {
         LeftEdge,
@@ -47,8 +52,25 @@ public:
 
     void addSpacer();
 
+    /**
+     * Whether the panel should reserve space on the edge, preventing maximized
+     * windows to overlap it.
+     */
+    bool useStrut() const;
+    void setUseStrut(bool);
+
+    int delta() const;
+    void setDelta(int);
+
+    int panelSize() const;
+
+public Q_SLOTS:
+    void slideIn();
+    void slideOut();
+
 protected:
     virtual void showEvent(QShowEvent*);
+    virtual void resizeEvent(QResizeEvent*);
     virtual void paintEvent(QPaintEvent*);
 
 private Q_SLOTS:
