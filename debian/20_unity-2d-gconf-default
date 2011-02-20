@@ -22,6 +22,7 @@
 /desktop/unity/launcher/favorites/app-nautilus.desktop/type application
 /desktop/unity/launcher/favorites/app-nautilus.desktop/desktop_file /usr/share/applications/nautilus.desktop
 /desktop/unity/launcher/favorites/app-nautilus.desktop/priority 8.0
+/desktop/unity-2d/launcher/hide_mode 2
 /desktop/gnome/applications/window_manager/default /usr/bin/metacity
 /desktop/gnome/applications/window_manager/current /usr/bin/metacity
 /apps/metacity/general/show_maximized_titlebars false
