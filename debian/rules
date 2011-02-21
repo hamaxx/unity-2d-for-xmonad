@@ -7,4 +7,4 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/cmake.mk
 
 common-build-indep::
-	./po/update-unity-2d-pot $(DEB_BUILDDIR)/po
+	$(MAKE) -C $(DEB_BUILDDIR) update-po
