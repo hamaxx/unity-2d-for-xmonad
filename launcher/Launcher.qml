@@ -150,10 +150,25 @@ Item {
             onReleased: currentId = ""
             onMousePositionChanged: {
                 if (loc.currentId != "" && index != -1 && index != newIndex) {
-                    items.move(newIndex, newIndex = index, 1)
-                    /* FIXME: a bug in QML shifts the item one index too far
-                       down the list.
-                       Ref: http://bugreports.qt.nokia.com/browse/QTBUG-15841 */
+                    /* Workaround a bug in QML whereby moving an item down in
+                       the list results in its visual representation being
+                       shifted too far down by one index
+                       (http://bugreports.qt.nokia.com/browse/QTBUG-15841).
+                       Since the bug happens only when moving an item *down*,
+                       and since moving an item one index down is strictly
+                       equivalent to moving the item below one index up, we
+                       achieve the same result by tricking the list model into
+                       thinking that the mirror operation was performed.
+                       Note: this bug will be fixed in Qt 4.7.2, at which point
+                       this workaround can go away. */
+                    if (index > newIndex) {
+                        items.move(index, newIndex, 1)
+                    } else {
+                        /* This should be the only code path here, if it wasn’t
+                           for the bug explained and worked around above. */
+                        items.move(newIndex, index, 1)
+                    }
+                    newIndex = index
                 }
             }
         }
