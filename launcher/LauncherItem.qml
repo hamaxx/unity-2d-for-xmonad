@@ -34,6 +34,7 @@ Item {
     objectName: "launcherItem"
 
     anchors.horizontalCenter: parent.horizontalCenter
+    height: tileSize
 
     property int tileSize
     property alias icon: icon.source
@@ -41,6 +42,14 @@ Item {
     property bool active: false
     property bool urgent: false
     property bool launching: false
+
+    property int counter: 0
+    property bool counterVisible: false
+    property real progress: 0.0
+    property bool progressBarVisible: false
+    property alias emblem: emblemIcon.source
+    property bool emblemVisible: false
+
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
 
@@ -108,7 +117,7 @@ Item {
         id: tile
         anchors.centerIn: parent
         width: item.tileSize
-        height: parent.height
+        height: item.height
 
         /* This is the image providing the background image. The
            color blended with this image is obtained from the color of the icon when it's
@@ -189,6 +198,78 @@ Item {
             sourceSize.width: item.tileSize
             sourceSize.height: item.tileSize
         }
+
+        Rectangle {
+            id: counter
+            height: 16 - border.width
+            width: 32
+            // Using anchors the item will be 1 pixel off with respect to Unity
+            y: 1
+            x: 1
+            radius: height / 2 - 1
+            border.width: 2
+            border.color: "white"
+            color: "#595959"
+            visible: launcherItem.counterVisible
+
+            Text {
+                anchors.centerIn: parent
+                font.pixelSize: parent.height - 3
+                width: parent.width - 5
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignHCenter
+                color: "white"
+                text: launcherItem.counter
+            }
+        }
+
+        Image {
+            id: progressBar
+            source: "artwork/progress_bar_trough.png"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            width: tile.width
+            state: launcherItem.progressBarVisible ? "" : "hidden"
+
+            Image {
+                id: progressFill
+                source: "artwork/progress_bar_fill.png"
+                anchors.verticalCenter: parent.verticalCenter
+                x: 6
+                width: sourceSize.width * launcherItem.progress
+
+                Behavior on width {
+                   NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+                }
+            }
+
+            Behavior on width {
+                NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+            }
+
+            states: State {
+                name: "hidden"
+                PropertyChanges {
+                    target: progressBar
+                    width: 0
+                }
+                // This, combined with anchors.left: parent.left in the default state
+                // makes the bar seem to come in from the left and go away at the right
+                AnchorChanges {
+                    target: progressBar
+                    anchors.left: undefined
+                    anchors.right: tile.right
+                }
+            }
+        }
+
+        Image {
+            id: emblemIcon
+            anchors.left: parent.left
+            anchors.top: parent.top
+            visible: launcherItem.emblemVisible && !counter.visible
+        }
+
 
         /* The entire tile will "shake" when the window is marked as "urgent", to attract
            the user's attention */
