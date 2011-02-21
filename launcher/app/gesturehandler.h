@@ -27,11 +27,13 @@ extern "C" {
   #include <geis/geis.h>
 }
 
+#include "unity2dpanel.h"
+
 class GestureHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit GestureHandler(QObject *parent = 0);
+    explicit GestureHandler(Unity2dPanel* launcher, QObject *parent = 0);
     ~GestureHandler();
 
 private Q_SLOTS:
@@ -57,6 +59,8 @@ private:
     GeisGestureFuncs m_gestureFuncs;
     float m_pinchPreviousRadius;
     int m_pinchPreviousTimestamp;
+    float m_dragDelta;
+    Unity2dPanel* m_launcher;
 };
 
 #endif // GESTUREHANDLER_H
