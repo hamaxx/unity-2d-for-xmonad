@@ -107,9 +107,13 @@ Item {
     /* This is the for centering the actual tile in the launcher */
     Item {
         id: tile
-        anchors.centerIn: parent
         width: item.tileSize
         height: parent.height
+        /* Manually specify the position instead of using anchors to center in
+           the parent so that the position can be animated when dragging
+           launcher items to re-order them. */
+        x: (item.width - width) / 2
+        y: (item.height - height) / 2
 
         /* This is the image providing the background image. The
            color blended with this image is obtained from the color of the icon when it's
