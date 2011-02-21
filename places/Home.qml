@@ -67,75 +67,54 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
-        width: 692
-        height: 348
-        spacing: 62
+        width: 868
+        height: 420
+        spacing: 65
 
+        /* FIXME: dummy icons need to be replaced by design's */
         HomeButton {
-            icon: "image://icons/unity-icon-theme/web"
-            label: qsTr("Web")
-
-            GConfItem {
-                id: desktop_file_path
-                key: "/desktop/gnome/applications/browser/exec"
-            }
-
-            onClicked: {
-                dashView.active = false
-                console.log("FIXME: should launch", desktop_file_path.value)
-                Qt.openUrlExternally("http://")
-            }
-        }
-
-        HomeButton {
-            icon: "image://icons/unity-icon-theme/music"
-            label: qsTr("Music")
+            label: qsTr("Find Media Apps")
+            icon: "image://icons/applications-multimedia"
             onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
-            icon: "image://icons/unity-icon-theme/photos"
-            label: qsTr("Photos & Videos")
-            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
-        }
-
-        HomeButton {
-            icon: "image://icons/unity-icon-theme/games"
-            label: qsTr("Games")
-            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 2)
-        }
-
-        HomeButton {
-            icon: "image://icons/unity-icon-theme/email_and_chat"
-            label: qsTr("Email & Chat")
+            label: qsTr("Find Internet Apps")
+            icon: "image://icons/applications-internet"
             onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 3)
         }
 
         HomeButton {
-            icon: "image://icons/unity-icon-theme/work"
-            label: qsTr("Office")
-            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 5)
+            label: qsTr("Find More Apps")
+            icon: "image://icons/find"
+            onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
         }
 
         HomeButton {
-            icon: "image://icons/unity-icon-theme/filesandfolders"
-            label: qsTr("Files & Folders")
+            label: qsTr("Find Files")
+            icon: "image://icons/folder-saved-search"
             onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
         }
 
-        HomeButton {
-            icon: "image://icons/unity-icon-theme/softwarecentre"
-            label: qsTr("Get New Apps")
+        /* FIXME: use user's preferred applications instead of hardcoding them */
+        HomeButtonApplication {
+            label: qsTr("Browse the Web")
+            desktopFile: "firefox.desktop"
+        }
 
-            LauncherApplication {
-                id: software_center
-                desktop_file: "/usr/share/applications/ubuntu-software-center.desktop"
-            }
+        HomeButtonApplication {
+            label: qsTr("View Photos")
+            desktopFile: "shotwell.desktop"
+        }
 
-            onClicked: {
-                dashView.active = false
-                software_center.activate()
-            }
+        HomeButtonApplication {
+            label: qsTr("Check Email")
+            desktopFile: "evolution.desktop"
+        }
+
+        HomeButtonApplication {
+            label: qsTr("Listen to Music")
+            desktopFile: "banshee-1.desktop"
         }
     }
 }

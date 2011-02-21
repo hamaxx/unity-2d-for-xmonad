@@ -4,16 +4,14 @@ Button {
     property alias icon: icon.source
     property alias label: label.text
 
-    width: 126
-    height: 148
+    width: 160
+    height: 172
 
     Image {
         id: icon
 
         anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.leftMargin: -1
-        anchors.topMargin: -1
+        anchors.horizontalCenter: parent.horizontalCenter
         width: 128
         height: 128
         fillMode: Image.PreserveAspectFit
@@ -38,5 +36,7 @@ Button {
         anchors.rightMargin: 5
         anchors.leftMargin: 7
         font.underline: parent.activeFocus
+        font.bold: true
+        font.pixelSize: 16
     }
 }
