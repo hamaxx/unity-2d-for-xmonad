@@ -56,22 +56,22 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 }
 
 void
-LauncherApplicationsList::onRemoteEntryUpdated(QString app_uri, QMap<QString, QVariant> properties)
+LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
 {
     QString desktopFile;
-    if (app_uri.indexOf("application://") == 0) {
-        desktopFile = app_uri.mid(14);
+    if (applicationURI.indexOf("application://") == 0) {
+        desktopFile = applicationURI.mid(14);
     } else {
-        qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << app_uri;
+        qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
         return;
     }
-    Q_FOREACH(LauncherApplication *app, m_applications) {
-        if (QFileInfo(app->desktop_file()).fileName() == desktopFile) {
-            app->updateOverlaysState(properties);
+    Q_FOREACH(LauncherApplication *application, m_applications) {
+        if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
+            application->updateOverlaysState(properties);
             return;
         }
     }
-    qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << app_uri;
+    qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
 }
 
 LauncherApplicationsList::~LauncherApplicationsList()
