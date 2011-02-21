@@ -24,7 +24,8 @@ Item {
     property bool expanded: globalSearchActive || shortcutsActive
 
     Button {
-        id: shortcutsButton
+        id: openShortcutsButton
+
         anchors.bottom: parent.top
         anchors.right: parent.right
         anchors.rightMargin: 50
@@ -40,10 +41,35 @@ Item {
         }
 
         opacity: (!expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+        Behavior on opacity {NumberAnimation {duration: 100}}
 
         onClicked: {
             shortcutsActive = true
         }
+    }
+
+    Button {
+        id: closeShortcutsButton
+
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+        width: childrenRect.width
+        height: childrenRect.height
+
+        Image {
+            id: search_icon
+
+            width: sourceSize.width
+            height: sourceSize.height
+
+            source: "artwork/cross.png"
+        }
+
+        opacity: (expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+        Behavior on opacity {NumberAnimation {duration: 100}}
+
+        onClicked: shortcutsActive = false
     }
 
     ListViewWithScrollbar {
