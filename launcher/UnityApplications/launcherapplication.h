@@ -43,6 +43,12 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
+    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
+    Q_PROPERTY(int counter READ counter NOTIFY counterChanged)
+    Q_PROPERTY(QString emblem READ emblem NOTIFY emblemChanged)
+    Q_PROPERTY(bool counterVisible READ counterVisible NOTIFY counterVisibleChanged)
+    Q_PROPERTY(bool emblemVisible READ emblemVisible NOTIFY emblemVisibleChanged)
 
 public:
     LauncherApplication();
@@ -62,6 +68,12 @@ public:
     int priority() const;
     virtual bool launching() const;
     bool has_visible_window() const;
+    float progress() const;
+    int counter() const;
+    QString emblem() const;
+    bool counterVisible() const;
+    bool progressBarVisible() const;
+    bool emblemVisible() const;
 
     /* setters */
     void setDesktopFile(const QString& desktop_file);
@@ -79,6 +91,7 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
+    void updateOverlaysState(QMap<QString, QVariant> properties);
 
 signals:
     void stickyChanged(bool);
@@ -86,6 +99,12 @@ signals:
     void desktopFileChanged(QString);
     void priorityChanged(int);
     void hasVisibleWindowChanged(bool);
+    void progressBarVisibleChanged(bool);
+    void counterVisibleChanged(bool);
+    void emblemVisibleChanged(bool);
+    void progressChanged(float);
+    void counterChanged(int);
+    void emblemChanged(QString);
 
     void closed();
 
@@ -123,12 +142,21 @@ private:
     bool m_has_visible_window;
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;
     int m_indicatorMenusReady;
+    float m_progress;
+    bool m_progressBarVisible;
+    int m_counter;
+    bool m_counterVisible;
+    QString m_emblem;
+    bool m_emblemVisible;
 
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
+    template<typename T>
+    bool updateOverlayState(QMap<QString, QVariant> properties,
+                            QString propertyName, T* member);
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)
