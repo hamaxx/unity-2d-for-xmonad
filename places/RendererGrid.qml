@@ -41,12 +41,15 @@ Renderer {
 
         visible: results.count > 0
         availableCount: results.count - results.cellsPerRow
+        folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: 32
         icon: parent.iconHint
         label: parent.displayName
+
+        onClicked: parent.folded = !parent.folded
     }
 
     Item {
@@ -104,7 +107,7 @@ Renderer {
             height: Math.min(totalHeight, flickable.height)
 
             /* Only display one line of items when folded */
-            property int displayedCount: header.folded ? cellsPerRow : count
+            property int displayedCount: folded ? cellsPerRow : count
             property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerRow)
 
             minHorizontalSpacing: renderer.horizontalSpacing

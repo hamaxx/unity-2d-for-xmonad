@@ -9,8 +9,6 @@ AbstractButton {
     property bool folded: true
     property int availableCount
 
-    onClicked: folded = !folded
-
     effect: DropShadow {
                 blurRadius: 6
                 offset.x: 0
