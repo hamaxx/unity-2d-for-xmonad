@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+cd $(dirname $0)
+PO_DIR=$PWD
+
+# Create a list of files to scan
+UPDATE_POT_DIR=$(mktemp --tmpdir -d unity-2d-update-pot.XXXXX)
+trap 'rm -rf "$UPDATE_POT_DIR"' EXIT
+bzr export $UPDATE_POT_DIR
+cd $UPDATE_POT_DIR
+find -name '*.cpp' > lst
+find -name '*.qml' >> lst
+
+# Generate pot from our list
+xgettext \
+    --output $PO_DIR/unity-2d.pot \
+    --files-from lst \
+    --qt --c++ \
+    --keyword=tr --keyword=qsTr \
+    --package-name unity-2d \
+    --copyright-holder "Canonical Ltd" \
+    --msgid-bugs-address "https://bugs.launchpad.net/unity-2d/+filebug"
