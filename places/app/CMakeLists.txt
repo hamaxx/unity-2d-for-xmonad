@@ -1,6 +1,7 @@
 # Dependencies
 find_package(X11 REQUIRED)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+pkg_check_modules(GTK REQUIRED gtk+-2.0)
 
 # Sources
 set(places_SRCS
@@ -26,6 +27,7 @@ add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTGCONF_INCLUDE_DIRS}
+    ${GTK_INCLUDE_DIRS}
     )
 
 target_link_libraries(unity-2d-places
@@ -34,6 +36,7 @@ target_link_libraries(unity-2d-places
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QTGCONF_LDFLAGS}
+    ${GTK_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}
     )

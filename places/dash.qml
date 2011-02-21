@@ -1,10 +1,17 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 
 Item {
     id: dash
 
     property variant currentPage
+
+    Binding {
+        target: dashView
+        property: "expanded"
+        value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
+    }
 
     function activatePage(page) {
         if (page == currentPage) {
@@ -50,6 +57,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
+        pageLoader.item.shortcutsActive = false
         dashView.activePlaceEntry = ""
     }
 
@@ -61,6 +69,13 @@ Item {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode
+    }
+
+    BorderImage {
+        anchors.fill: parent
+        visible: dashView.dashMode == DashDeclarativeView.DesktopMode
+        source: "artwork/desktop_dash_background.sci"
     }
 
     Item {
@@ -102,6 +117,26 @@ Item {
             width: 295
             anchors.right: parent.right
             anchors.rightMargin: 19
+        }
+
+        Button {
+            id: fullScreenButton
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 15
+            anchors.bottomMargin: 15
+            width: fullScreenButtonImage.sourceSize.width
+            height: fullScreenButtonImage.sourceSize.height
+            visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
+
+            Image {
+                id: fullScreenButtonImage
+                source: "artwork/fullscreen_button.png"
+            }
+
+            onClicked: {
+                dashView.dashMode = DashDeclarativeView.FullScreenMode
+            }
         }
 
         Loader {
