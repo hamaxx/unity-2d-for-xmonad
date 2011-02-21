@@ -215,7 +215,7 @@ Item {
             PropertyChanges {
                 target: tile
                 x: loc.mouseX - tile.width / 2
-                y: loc.mouseY - tile.height / 2
+                y: loc.mouseY - tile.height / 2 - item.y
             }
         }
     }
