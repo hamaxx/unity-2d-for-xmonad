@@ -2,6 +2,8 @@
 set(libunity-2d-private_SRCS
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
+    hotkeymonitor.cpp
+    hotkey.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
     mimedata.cpp

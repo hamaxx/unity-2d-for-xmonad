@@ -2,7 +2,7 @@
  * Copyright (C) 2011 Canonical, Ltd.
  *
  * Authors:
- *  Olivier Tilloy <olivier.tilloy@canonical.com>
+ *  Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,39 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SuperKeyMonitor_H
-#define SuperKeyMonitor_H
+#ifndef HotkeyMonitor_H
+#define HotkeyMonitor_H
 
 #include <QObject>
+#include <QList>
 
-//class KeyMonitor;
-//class GConfItemQmlWrapper;
+class Hotkey;
 
-//class SuperKeyMonitor : public QObject
-//{
-//    Q_OBJECT
+class HotkeyMonitor : public QObject
+{
+    Q_OBJECT
 
-//public:
-//    SuperKeyMonitor();
-//    ~SuperKeyMonitor();
+public:
+    static HotkeyMonitor& instance();
+    ~HotkeyMonitor();
 
-//    static const uint SUPER_L = 133;
-//    static const uint SUPER_R = 134;
+    Hotkey* hotkey(uint keycode, uint modifiers);
 
-//private:
-//    KeyMonitor* m_left;
-//    KeyMonitor* m_right;
+private:
+    HotkeyMonitor(QObject* parent=0);
 
-//    GConfItemQmlWrapper* m_enable_setting;
+    static bool keyEventFilter(void* message);
+    void processKeyEvent(uint keycode, uint modifiers);
+    Hotkey* findHotkey(uint keycode, uint modifiers);
 
-//    bool getEnableSettingValue() const;
+    QList<Hotkey*> m_hotkeys;
+};
 
-//    void startMonitoring();
-//    void stopMonitoring();
 
-//private Q_SLOTS:
-//    void slotEnableSettingChanged();
-//};
-
-#endif // SuperKeyMonitor_H
+#endif // HotkeyMonitor_H
 

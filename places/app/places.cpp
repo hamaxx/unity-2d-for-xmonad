@@ -30,7 +30,8 @@
 #include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
-#include "keymonitor.h"
+#include <hotkeymonitor.h>
+#include <hotkey.h>
 
 #include "config.h"
 
@@ -43,7 +44,7 @@ static bool registerDBusService(DashDeclarativeView* view)
         return false;
     }
     /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */
+       properties and methods. */\
     if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
         qCritical() << "Failed to register /Dash, this should not happen!";
         return false;
@@ -121,9 +122,7 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
-    /* Grab the "super" keys */
-//    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
-    Hotkey *hotkey = HotkeyMonitor::instance().hotkey(49, Qt::ShiftModifier);
+    Hotkey *hotkey = HotkeyMonitor::instance().hotkey(49, ShiftMask);
     QObject::connect(hotkey, SIGNAL(activated()), &view, SLOT(hotkeyTriggered()));
 
     application.setProperty("view", QVariant::fromValue(&view));
