@@ -1,6 +1,28 @@
 #!/bin/sh
 set -e
-cd $(dirname $0)
+PROGNAME=$(basename $0)
+
+die() {
+    echo "$PROGNAME: ERROR: $*"
+    exit 1
+}
+
+usage() {
+    echo "Usage: $PROGNAME <path/to/po/dir>"
+    exit 1
+}
+
+if [ $# -ne 1 ] ; then
+    usage
+fi
+
+PO_DIR=$1
+
+if [ ! -d "$PO_DIR" ] ; then
+    die "$PO_DIR does not exist or is not a directory"
+fi
+
+cd $PO_DIR
 PO_DIR=$PWD
 
 # Create a list of files to scan
@@ -20,3 +42,5 @@ xgettext \
     --package-name unity-2d \
     --copyright-holder "Canonical Ltd" \
     --msgid-bugs-address "https://bugs.launchpad.net/unity-2d/+filebug"
+
+echo "$PROGNAME: $PO_DIR/unity-2d.pot updated"
