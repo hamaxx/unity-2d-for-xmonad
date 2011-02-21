@@ -217,6 +217,11 @@ Item {
                 x: loc.mouseX - tile.width / 2
                 y: loc.mouseY - tile.height / 2 - item.y
             }
+            PropertyChanges {
+                /* When dragging an item, stack it on top of all its siblings */
+                target: item
+                z: 2
+            }
         }
     }
 
