@@ -42,9 +42,7 @@ DashDeclarativeView::DashDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
-    /* The dash window is borderless and not moveable by the user, yet not
-       fullscreen */
-    setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     if (QX11Info::isCompositingManagerRunning()) {
         setAttribute(Qt::WA_TranslucentBackground);
