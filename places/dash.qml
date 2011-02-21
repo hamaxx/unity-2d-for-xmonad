@@ -75,7 +75,7 @@ Item {
     BorderImage {
         anchors.fill: parent
         visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-        source: "artwork/desktop_dash_background.sci"
+        source: dashView.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
     }
 
     Item {

@@ -48,11 +48,8 @@ DashDeclarativeView::DashDeclarativeView()
         setAttribute(Qt::WA_TranslucentBackground);
         viewport()->setAttribute(Qt::WA_TranslucentBackground);
     } else {
-        QPalette pal = palette();
-        // .51 is the alpha of the normal background, turned into the value to
-        // be opaque
-        pal.setColor(backgroundRole(), QColor::fromHsvF(0, 0, .51));
-        setPalette(pal);
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(Qt::WA_NoSystemBackground);
     }
 
     QDesktopWidget* desktop = QApplication::desktop();
@@ -281,6 +278,13 @@ DashDeclarativeView::resizeEvent(QResizeEvent* event)
     QDeclarativeView::resizeEvent(event);
 }
 
+static QBitmap
+createCornerMask()
+{
+    QPixmap pix(unity2dDirectory() + "/places/artwork/desktop_dash_background_no_transparency.png");
+    return pix.createMaskFromColor(Qt::red, Qt::MaskOutColor);
+}
+
 void
 DashDeclarativeView::updateMask()
 {
@@ -290,7 +294,7 @@ DashDeclarativeView::updateMask()
     }
     QBitmap bmp(size());
     {
-        static QBitmap corner(unity2dDirectory() + "/places/artwork/desktop_dash_background_mask.png");
+        static QBitmap corner = createCornerMask();
         static QBitmap top = corner.copy(0, 0, corner.width(), 1);
         static QBitmap left = corner.copy(0, 0, 1, corner.height());
 
@@ -308,4 +312,10 @@ DashDeclarativeView::updateMask()
         painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
     }
     setMask(bmp);
+}
+
+bool
+DashDeclarativeView::isCompositingManagerRunning() const
+{
+    return QX11Info::isCompositingManagerRunning();
 }
