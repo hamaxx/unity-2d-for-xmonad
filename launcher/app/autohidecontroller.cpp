@@ -46,7 +46,6 @@ AutohideController::AutohideController(Unity2dPanel* panel)
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_autohideTimer, SIGNAL(timeout()), m_panel, SLOT(slideOut()));
 
-    m_panel->setUseStrut(false);
     m_panel->installEventFilter(this);
     updateFromPanelGeometry();
     if (!m_panel->geometry().contains(QCursor::pos())) {

@@ -52,7 +52,6 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
 {
-    m_panel->setUseStrut(false);
     m_panel->installEventFilter(this);
 
     connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
