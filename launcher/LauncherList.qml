@@ -23,12 +23,13 @@ AutoScrollingListView {
         launching: item.launching
         pips: Math.min(item.windowCount, 3)
 
-        counter: item.counter
-        counterVisible: item.counterVisible
-        progress: item.progress
-        progressBarVisible: item.progressBarVisible
-        emblem: (item.emblem) ? "image://icons/" + item.emblem : ""
-        emblemVisible: item.emblemVisible
+        property bool noOverlays: item.counter == undefined
+        counter: (noOverlays) ? 0 : item.counter
+        counterVisible: (noOverlays) ? false : item.counterVisible
+        progress: (noOverlays) ? 0.0 : item.progress
+        progressBarVisible: (noOverlays) ? false : item.progressBarVisible
+        emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
+        emblemVisible: (noOverlays) ? false : item.emblemVisible
 
         /* Best way I could find to check if the item is an application or the
            workspaces switcher. There may be something cleaner and better. */
