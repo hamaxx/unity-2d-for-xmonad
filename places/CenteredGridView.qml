@@ -16,8 +16,8 @@ GridView {
         - the spacing between items is kept as small as possible but always
           greater than minHorizontalSpacing and minVerticalSpacing
     */
-    property real cellsPerRow: flow == GridView.LeftToRight ? Math.floor(width/(minHorizontalSpacing+delegateWidth)) : 0
-    property real cellsPerColumn: flow == GridView.LeftToRight ? 0 : Math.floor(height/(minVerticalSpacing+delegateHeight))
+    property int cellsPerRow: flow == GridView.LeftToRight ? Math.floor(width/(minHorizontalSpacing+delegateWidth)) : 0
+    property int cellsPerColumn: flow == GridView.LeftToRight ? 0 : Math.floor(height/(minVerticalSpacing+delegateHeight))
     property int horizontalSpacing: flow == GridView.LeftToRight ? Math.floor(width/cellsPerRow-delegateWidth) : minHorizontalSpacing
     property int verticalSpacing: flow == GridView.LeftToRight ? minVerticalSpacing : Math.floor(height/cellsPerColumn-delegateHeight)
 
