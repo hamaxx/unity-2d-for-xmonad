@@ -1,7 +1,7 @@
 import Qt 4.7
 
 RendererGrid {
-    cellWidth: 150
+    cellWidth: 136
     cellHeight: 108
     horizontalSpacing: 10
     verticalSpacing: 10
