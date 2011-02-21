@@ -47,6 +47,7 @@ LauncherApplication::LauncherApplication()
     , m_desktopFileWatcher(NULL)
     , m_appInfo(NULL)
     , m_sticky(false)
+    , m_priority(-1) /* special value, really means undefined priority */
     , m_has_visible_window(false)
 {
     /* Make sure wnck_set_client_type is called only once */
@@ -107,6 +108,16 @@ LauncherApplication::running() const
         return m_application->running();
 
     return false;
+}
+
+int
+LauncherApplication::windowCount() const
+{
+    if (m_application == NULL) {
+        return 0;
+    }
+
+    return m_application->windows()->size();
 }
 
 bool
@@ -297,6 +308,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
+    QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateWindowCount()));
+    QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateWindowCount()));
     connect(application, SIGNAL(ChildAdded(BamfView*)), SLOT(slotChildAdded(BamfView*)));
     connect(application, SIGNAL(ChildRemoved(BamfView*)), SLOT(slotChildRemoved(BamfView*)));
 
@@ -318,6 +331,7 @@ LauncherApplication::updateBamfApplicationDependentProperties()
     m_launching_timer.stop();
     emit launchingChanged(launching());
     updateHasVisibleWindow();
+    updateWindowCount();
     fetchIndicatorMenus();
 }
 
@@ -376,6 +390,15 @@ LauncherApplication::priority() const
     return m_priority;
 }
 
+void
+LauncherApplication::setPriority(int priority)
+{
+    if (priority != m_priority) {
+        m_priority = priority;
+        Q_EMIT priorityChanged(m_priority);
+    }
+}
+
 bool
 LauncherApplication::launching() const
 {
@@ -394,6 +417,12 @@ LauncherApplication::updateHasVisibleWindow()
     }
     if (m_has_visible_window != prev)
         emit hasVisibleWindowChanged(m_has_visible_window);
+}
+
+void
+LauncherApplication::updateWindowCount()
+{
+    Q_EMIT windowCountChanged(windowCount());
 }
 
 bool

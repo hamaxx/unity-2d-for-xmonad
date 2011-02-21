@@ -34,8 +34,8 @@
 #include <QDBusReply>
 #include <QDBusInterface>
 
-static const char* INDICATOR_SERVICE_INTERFACE = "org.ayatana.indicator.service";
-static const char* INDICATOR_SERVICE_OBJECT    = "/org/ayatana/indicator/service";
+static const char* INDICATOR_SERVICE_INTERFACE = "com.canonical.indicator.service";
+static const char* INDICATOR_SERVICE_OBJECT    = "/com.canonical/indicator/service";
 static const uint  INDICATOR_SERVICE_VERSION   = 1;
 
 IndicatorServiceManager::IndicatorServiceManager(const char* name, uint version, QObject* parent)

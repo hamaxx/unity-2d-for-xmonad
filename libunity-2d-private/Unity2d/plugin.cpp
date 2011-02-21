@@ -32,6 +32,9 @@
 #include "plugin.h"
 #include "cacheeffect.h"
 
+#include "mimedata.h"
+#include "dragdropevent.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -70,6 +73,10 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QGraphicsBlurEffect>("Effects", 1, 0, "Blur");
     qmlRegisterType<QGraphicsColorizeEffect>("Effects", 1, 0, "Colorize");
     qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");
+
+    /* Custom drag’n’drop implementation in QML */
+    qmlRegisterType<DeclarativeMimeData>();
+    qmlRegisterType<DeclarativeDragDropEvent>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

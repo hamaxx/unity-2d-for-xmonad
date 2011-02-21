@@ -33,6 +33,7 @@
 #include "launcherview.h"
 #include "launchercontrol.h"
 #include "unity2dpanel.h"
+#include "gesturehandler.h"
 
 int main(int argc, char *argv[])
 {
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setFixedWidth(58);
+    panel.setFixedWidth(66);
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
@@ -79,9 +80,16 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
+    if (!isRunningInstalled()) {
+        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
+    }
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+
+    /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
+    launcherView->rootContext()->setContextProperty("engineBaseUrl",
+                                                    launcherView->engine()->baseUrl().toLocalFile());
 
     LauncherControl control;
     launcherView->rootContext()->setContextProperty("launcherControl", &control);
@@ -100,6 +108,10 @@ int main(int argc, char *argv[])
        running installed).
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
     g_unsetenv("DESKTOP_AUTOSTART_ID");
+
+    /* Gesture handler instance in charge of listening to gesture events and
+       trigger appropriate actions in response. */
+    GestureHandler *gestureHandler = new GestureHandler(&application);
 
     return application.exec();
 }

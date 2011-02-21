@@ -41,7 +41,7 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
-    Q_PROPERTY(int priority READ priority NOTIFY priorityChanged)
+    Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
 
 public:
@@ -52,6 +52,7 @@ public:
     /* getters */
     virtual bool active() const;
     virtual bool running() const;
+    virtual int windowCount() const;
     virtual bool urgent() const;
     bool sticky() const;
     virtual QString name() const;
@@ -64,6 +65,7 @@ public:
 
     /* setters */
     void setDesktopFile(const QString& desktop_file);
+    void setPriority(int priority);
     void setSticky(bool sticky);
     void setBamfApplication(BamfApplication *application);
 
@@ -93,6 +95,7 @@ private slots:
     void onBamfApplicationClosed(bool running);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
+    void updateWindowCount();
 
     bool launch();
     void show();

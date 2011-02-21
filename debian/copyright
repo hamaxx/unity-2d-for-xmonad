@@ -1,6 +1,6 @@
 Format: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=166
 Upstream-Name: Unity 2D
-Source: https://code.launchpad.net/~unity-2d-team/unity-2d/maverick
+Source: https://code.launchpad.net/~unity-2d-team/unity-2d/trunk
 License: GPL-3
 
 Files: *

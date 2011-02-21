@@ -16,9 +16,6 @@ case "$1" in
         mkdir -p /var/lib/gconf/unity-2d.mandatory
         mkdir -p /var/lib/gconf/unity-2d.default
     fi
-    # Remove files named unity-qt*
-    rm -rf /var/lib/gconf/unity-qt.mandatory
-    rm -rf /var/lib/gconf/unity-qt.default
   ;;
   triggered)
     for trigger in $2; do

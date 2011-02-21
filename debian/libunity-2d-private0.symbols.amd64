@@ -1,10 +1,14 @@
 libunity-2d-private.so.0 libunity-2d-private0 #MINVER#
- _Z10qdbus_castI15QDBusObjectPathET_RK8QVariantPS1_@Base 0.4
  _Z21qMetaTypeDeleteHelperI13QDBusArgumentEvPT_@Base 0.4
  _Z21qMetaTypeDeleteHelperI15QDBusObjectPathEvPT_@Base 0.4
+ _Z17qRegisterMetaTypeI13QDBusArgumentEiPKcPT_@Base 0.4
+ _Z17qRegisterMetaTypeI15QDBusObjectPathEiPKcPT_@Base 0.4
  _Z24qMetaTypeConstructHelperI13QDBusArgumentEPvPKT_@Base 0.4
  _Z24qMetaTypeConstructHelperI15QDBusObjectPathEPvPKT_@Base 0.4
+ _ZN10QByteArrayD1Ev@Base 0.4
+ _ZN10QByteArrayD2Ev@Base 0.4
  _ZN10QDBusErrorD1Ev@Base 0.4
+ _ZN10QDBusErrorD2Ev@Base 0.4
  _ZN12Unity2dPanel10paintEventEP11QPaintEvent@Base 0.4
  _ZN12Unity2dPanel11qt_metacallEN11QMetaObject4CallEiPPv@Base 0.4
  _ZN12Unity2dPanel11qt_metacastEPKc@Base 0.4
@@ -43,6 +47,8 @@ libunity-2d-private.so.0 libunity-2d-private0 #MINVER#
  _ZN18Unity2dApplicationC2ERiPPc@Base 0.4
  _ZN18Unity2dApplicationD0Ev@Base 0.4
  _ZN18Unity2dApplicationD1Ev@Base 0.4
+ _ZN18Unity2dApplicationD2Ev@Base 0.4
+ _ZN19Unity2dPanelPrivate11updateStrutEv@Base 0.4
  _ZN22AbstractX11EventFilterD0Ev@Base 0.4
  _ZN22AbstractX11EventFilterD1Ev@Base 0.4
  _ZN22AbstractX11EventFilterD2Ev@Base 0.4
@@ -58,10 +64,15 @@ libunity-2d-private.so.0 libunity-2d-private0 #MINVER#
  _ZN24KeyboardModifiersMonitorD1Ev@Base 0.4
  _ZN24KeyboardModifiersMonitorD2Ev@Base 0.4
  _ZN5QListIP22AbstractX11EventFilterE13detach_helperEi@Base 0.4
+ _ZN5QListIP22AbstractX11EventFilterE13detach_helperEv@Base 0.4
+ _ZN5QListIP22AbstractX11EventFilterE18detach_helper_growEii@Base 0.4
  _ZN5QListIP22AbstractX11EventFilterE6appendERKS1_@Base 0.4
+ _ZN5QListIP22AbstractX11EventFilterE9removeAllERKS1_@Base 0.4
  _ZN5QListIP22AbstractX11EventFilterED1Ev@Base 0.4
+ _ZN5QListIP22AbstractX11EventFilterED2Ev@Base 0.4
  _ZN6QDebugD1Ev@Base 0.4
  _ZN7QStringD1Ev@Base 0.4
+ _ZN6QDebugD2Ev@Base 0.4
  _ZNK12Unity2dPanel10metaObjectEv@Base 0.4
  _ZNK12Unity2dPanel4edgeEv@Base 0.4
  _ZNK18GnomeSessionClient10metaObjectEv@Base 0.4
