@@ -1,28 +1,6 @@
 #!/bin/sh
 set -e
-PROGNAME=$(basename $0)
-
-die() {
-    echo "$PROGNAME: ERROR: $*"
-    exit 1
-}
-
-usage() {
-    echo "Usage: $PROGNAME <path/to/po/dir>"
-    exit 1
-}
-
-if [ $# -ne 1 ] ; then
-    usage
-fi
-
-PO_DIR=$1
-
-if [ ! -d "$PO_DIR" ] ; then
-    die "$PO_DIR does not exist or is not a directory"
-fi
-
-cd $PO_DIR
+cd $(dirname $0)
 PO_DIR=$PWD
 
 # Create a list of files to scan
