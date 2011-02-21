@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-18 17:39+0100\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
+"POT-Creation-Date: 2011-02-21 11:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:198
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:192
+#: launcher/UnityApplications/trash.cpp:198
 #, c-format, qt-plural-format
 msgid "%n item(s) in trash"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherdevice.cpp:222
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherdevice.cpp:216
+#: launcher/UnityApplications/launcherdevice.cpp:222
 msgid "Eject"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:205
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:199
+#: places/Home.qml:111
+msgid "Email & Chat"
+msgstr ""
+
+#: launcher/UnityApplications/trash.cpp:205
 msgid "Empty Trash"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:719
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:447
+#: places/Home.qml:123
+msgid "Files & Folders"
+msgstr ""
+
+#: places/Home.qml:105
+msgid "Games"
+msgstr ""
+
+#: places/Home.qml:129
+msgid "Get New Apps"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:719
 msgid "Keep In Launcher"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:727
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:455
+#: places/Home.qml:93
+msgid "Music"
+msgstr ""
+
+#: places/Home.qml:117
+msgid "Office"
+msgstr ""
+
+#: places/Home.qml:99
+msgid "Photos & Videos"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:727
 msgid "Quit"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/launcherapplication.cpp:719
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/launcherapplication.cpp:447
+#: launcher/UnityApplications/launcherapplication.cpp:719
 msgid "Remove From Launcher"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/trash.cpp:71
-#: /home/aurelien/dx/unity-2d/unity-2d/.bzr/branches/build-area/unity-qt-0.2~bzr289/launcher/UnityApplications/trash.cpp:65
+#: places/SearchEntry.qml:114
+msgid "Search"
+msgstr ""
+
+#: places/SearchEntry.qml:112
+#, qt-format
+msgid "Search %1"
+msgstr ""
+
+#: launcher/UnityApplications/trash.cpp:71
 msgid "Trash"
 msgstr ""
 
-#: /home/aurelien/dx/unity-2d/unity-2d/launcher/UnityApplications/workspaces.cpp:66
+#: places/Home.qml:77
+msgid "Web"
+msgstr ""
+
+#: launcher/UnityApplications/workspaces.cpp:66
 msgid "Workspaces"
 msgstr ""
