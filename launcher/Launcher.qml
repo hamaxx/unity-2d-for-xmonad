@@ -171,6 +171,15 @@ Item {
                     newIndex = index
                 }
             }
+            onClicked: {
+                /* Forward the click to the launcher item below. */
+                var point = loc.mapToItem(list.contentItem, mouse.x, mouse.y)
+                var item = list.contentItem.childAt(point.x, point.y)
+                /* FIXME: the coordinates of the mouse event forwarded are
+                   incorrect. Luckily, it’s acceptable as they are not used in
+                   the handler anyway. */
+                if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+            }
         }
     }
 
