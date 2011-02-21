@@ -115,7 +115,7 @@ DashDeclarativeView::setActive(bool value)
             QRect rect = QApplication::desktop()->screenGeometry(this);
             static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
             static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-            if (rect.width() <= minWidth && rect.height() <= minHeight) {
+            if (rect.width() < minWidth && rect.height() < minHeight) {
                 setDashMode(FullScreenMode);
             } else {
                 setDashMode(DesktopMode);
