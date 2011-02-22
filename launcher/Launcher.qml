@@ -43,7 +43,10 @@ Item {
             /* list index of the application underneath the cursor */
             property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
 
-            onPressAndHold: currentId = items.get(currentIndex = index).desktop_file
+            onPressAndHold: {
+                var id = items.get(currentIndex = index).desktop_file
+                if (id != undefined) currentId = id
+            }
             onReleased: currentId = ""
             onMousePositionChanged: {
                 if (currentId != "" && index != -1 && index != currentIndex) {
