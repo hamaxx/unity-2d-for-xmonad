@@ -45,10 +45,32 @@ LauncherView::LauncherView() :
     m_dndAccepted(false), m_superKeyPressed(false)
 {
     setAcceptDrops(true);
+
+    m_enableSuperKey.setKey("/desktop/unity/launcher/super_key_enable");
+    QObject::connect(&m_enableSuperKey, SIGNAL(valueChanged()),
+                     this, SLOT(updateSuperKeyMonitoring()));
+    updateSuperKeyMonitoring();
+}
+
+void
+LauncherView::updateSuperKeyMonitoring()
+{
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
-    QObject::connect(modifiersMonitor,SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
-                     this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
-    setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
+
+    QVariant value = m_enableSuperKey.getValue();
+    if (!value.isValid() || value.toBool() == true) {
+        QObject::connect(modifiersMonitor,
+                         SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+                         this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
+    } else {
+        QObject::disconnect(modifiersMonitor,
+                            SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+                            this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        m_superKeyPressed = false;
+        Q_EMIT superKeyPressedChanged(false);
+        changeKeyboardShortcutsState(false);
+    }
 }
 
 void
@@ -58,7 +80,17 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
        m_superKeyPressed is the previous state of the key at the last modifiers change. */
     bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
 
-    /* We are going to connect 10 hotkeys, but to make things simpler on the QML
+    if (m_superKeyPressed != superKeyPressed) {
+        m_superKeyPressed = superKeyPressed;
+        Q_EMIT superKeyPressedChanged(m_superKeyPressed);
+        changeKeyboardShortcutsState(m_superKeyPressed);
+    }
+}
+
+void
+LauncherView::changeKeyboardShortcutsState(bool enabled)
+{
+    /* We are going to connect 10 Hotkeys, but to make things simpler on the QML
        side we want to have only one signal with the number of the item that needs to
        be activated in response to the hotkey press.
        So we connect all of them to a single slot where we emit a single signal with
@@ -67,17 +99,12 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
     while (key <= Qt::Key_9) {
         Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
 
-        if (superKeyPressed && !m_superKeyPressed) {
+        if (enabled) {
             QObject::connect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        } else if (!superKeyPressed && m_superKeyPressed) {
+        } else {
             QObject::disconnect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
         }
         key = (Qt::Key) (key + 1);
-    }
-
-    if (m_superKeyPressed != superKeyPressed) {
-        m_superKeyPressed = superKeyPressed;
-        Q_EMIT superKeyPressedChanged(m_superKeyPressed);
     }
 }
 

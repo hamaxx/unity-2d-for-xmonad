@@ -24,6 +24,7 @@
 #include <QUrl>
 #include <QList>
 #include <QDragEnterEvent>
+#include "gconfitem-qml-wrapper.h"
 
 class QGraphicsObject;
 
@@ -48,9 +49,11 @@ Q_SIGNALS:
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardHotkey();
+    void updateSuperKeyMonitoring();
 
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
+    void changeKeyboardShortcutsState(bool enabled);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;
@@ -74,6 +77,7 @@ private:
     /* Whether the launcher itself handles the current dnd event */
     bool m_dndAccepted;
 
+    GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
 };
 
