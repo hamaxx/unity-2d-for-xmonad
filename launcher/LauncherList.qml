@@ -88,6 +88,12 @@ AutoScrollingListView {
             onAutoScrollingChanged: if (list.autoScrolling) item.menu.hide()
         }
 
+        Connections {
+            target: dnd
+            /* Hide the tooltip/menu when dragging an application. */
+            onCurrentIdChanged: if (dnd.currentId != "") item.menu.hide()
+        }
+
         function setIconGeometry() {
             if (running) {
                 item.setIconGeometry(x + panel.x, y + panel.y, width, height)
