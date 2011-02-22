@@ -35,9 +35,14 @@ public:
     explicit LauncherView();
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
-signals:
+Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
+    void keyboardShortcutPressed(int itemNumber);
+
+private Q_SLOTS:
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void forwardHotkey();
 
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
@@ -63,6 +68,8 @@ private:
     bool m_dndCurrentLauncherItemAccepted;
     /* Whether the launcher itself handles the current dnd event */
     bool m_dndAccepted;
+
+    bool m_keyboardShortcutsActive;
 };
 
 #endif // LAUNCHERVIEW

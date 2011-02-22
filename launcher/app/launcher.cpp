@@ -29,6 +29,8 @@
 #include <QDeclarativeContext>
 #include <QDir>
 
+#include <unity2dapplication.h>
+
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
@@ -53,7 +55,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication application(argc, argv);
+    Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();

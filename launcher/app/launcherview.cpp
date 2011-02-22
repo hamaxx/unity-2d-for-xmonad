@@ -35,13 +35,56 @@
 #include <X11/Xatom.h>
 
 #include "dragdropevent.h"
+#include <keyboardmodifiersmonitor.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false),
     m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
-    m_dndAccepted(false)
+    m_dndAccepted(false), m_keyboardShortcutsActive(false)
 {
     setAcceptDrops(true);
+    KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
+    QObject::connect(modifiersMonitor,SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+                     this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+    setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
+}
+
+void
+LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
+{
+    /* We are going to connect 10 hotkeys, but to make things simpler on the QML
+       side we want to have only one signal with the number of the item that needs to
+       be activated in response to the hotkey press.
+       So we connect all of them to a single slot where we emit a single signal with
+       an index based on which Hotkey was the sender. */
+
+    Qt::Key key = Qt::Key_0;
+    while (key <= Qt::Key_9) {
+        Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
+
+        if (modifiers.testFlag(Qt::MetaModifier) && !m_keyboardShortcutsActive) {
+            QObject::connect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
+        } else if (!modifiers.testFlag(Qt::MetaModifier) && m_keyboardShortcutsActive) {
+            QObject::disconnect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
+        }
+        key = (Qt::Key) (key + 1);
+    }
+
+    m_keyboardShortcutsActive = modifiers.testFlag(Qt::MetaModifier);
+}
+
+void
+LauncherView::forwardHotkey()
+{
+    Hotkey *hotkey = qobject_cast<Hotkey*>(sender());
+    if (hotkey != NULL) {
+        int itemNumber = hotkey->key() - Qt::Key_0;
+        if (itemNumber >= 0 && itemNumber <= 9) {
+            Q_EMIT keyboardShortcutPressed(itemNumber);
+        }
+    }
 }
 
 QGraphicsObject*

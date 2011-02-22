@@ -22,7 +22,6 @@ add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTGCONF_INCLUDE_DIRS}
-    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-places
@@ -33,7 +32,6 @@ target_link_libraries(unity-2d-places
     ${QTGCONF_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}
-    unity-2d-private
     )
 
 # Install

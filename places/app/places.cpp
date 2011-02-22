@@ -30,9 +30,6 @@
 #include <X11/Xlib.h>
 
 #include "dashdeclarativeview.h"
-#include <hotkeymonitor.h>
-#include <hotkey.h>
-
 #include "config.h"
 
 /* Register a D-Bus service for activation and deactivation of the dash */
@@ -60,12 +57,6 @@ static bool registerDBusService(DashDeclarativeView* view)
        ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
     */
     return true;
-}
-
-static DashDeclarativeView* getView()
-{
-    QVariant viewProperty = QApplication::instance()->property("view");
-    return viewProperty.value<DashDeclarativeView*>();
 }
 
 int main(int argc, char *argv[])
@@ -121,9 +112,6 @@ int main(int argc, char *argv[])
     int current_screen = QApplication::desktop()->screenNumber(&view);
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
-
-    Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-    QObject::connect(hotkey, SIGNAL(released()), &view, SLOT(hotkeyTriggered()));
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();

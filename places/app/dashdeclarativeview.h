@@ -55,7 +55,6 @@ signals:
 
 public slots:
     void fitToAvailableSpace(int screen);
-    void hotkeyTriggered();
 
 private:
     void forceActivateWindow();
