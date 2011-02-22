@@ -122,8 +122,8 @@ int main(int argc, char *argv[])
     view.fitToAvailableSpace(current_screen);
     QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
-    Hotkey *hotkey = HotkeyMonitor::instance().hotkey(49, ShiftMask);
-    QObject::connect(hotkey, SIGNAL(activated()), &view, SLOT(hotkeyTriggered()));
+    Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+    QObject::connect(hotkey, SIGNAL(released()), &view, SLOT(hotkeyTriggered()));
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();

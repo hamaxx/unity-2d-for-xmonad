@@ -33,14 +33,14 @@ public:
     static HotkeyMonitor& instance();
     ~HotkeyMonitor();
 
-    Hotkey* hotkey(uint keycode, uint modifiers);
+    Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers);
 
 private:
     HotkeyMonitor(QObject* parent=0);
 
     static bool keyEventFilter(void* message);
-    void processKeyEvent(uint keycode, uint modifiers);
-    Hotkey* findHotkey(uint keycode, uint modifiers);
+    void processKeyEvent(uint x11Keycode, uint x11Modifiers,
+                         bool isPressEvent);
 
     QList<Hotkey*> m_hotkeys;
 };

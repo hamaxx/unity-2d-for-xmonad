@@ -60,25 +60,19 @@ HotkeyMonitor::~HotkeyMonitor()
     qDeleteAll(m_hotkeys);
 }
 
-Hotkey* HotkeyMonitor::findHotkey(uint keycode, uint modifiers)
-{
-    Q_FOREACH(Hotkey* hotkey, m_hotkeys) {
-        if (hotkey->keycode() == keycode && hotkey->modifiers() == modifiers) {
-            return hotkey;
-        }
-    }
-    return NULL;
-}
 
 Hotkey*
-HotkeyMonitor::hotkey(uint keycode, uint modifiers)
+HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
-    Hotkey *hotkey = findHotkey(keycode, modifiers);
-    if (hotkey == NULL) {
-        hotkey = new Hotkey(this, keycode, modifiers);
-        m_hotkeys.append(hotkey);
+    Q_FOREACH(Hotkey* currentHotkey, m_hotkeys) {
+        if (currentHotkey->key() == key &&
+            currentHotkey->modifiers() == modifiers) {
+            return currentHotkey;
+        }
     }
 
+    Hotkey *hotkey = new Hotkey(key, modifiers, this);
+    m_hotkeys.append(hotkey);
     return hotkey;
 }
 
@@ -86,18 +80,26 @@ bool
 HotkeyMonitor::keyEventFilter(void* message)
 {
     XEvent* event = static_cast<XEvent*>(message);
-    if (event->type == KeyRelease)
+    if (event->type == KeyRelease || event->type == KeyPress)
     {
         XKeyEvent* key = (XKeyEvent*) event;
-        HotkeyMonitor::instance().processKeyEvent(key->keycode, key->state);
+        HotkeyMonitor::instance().processKeyEvent(key->keycode, key->state,
+                                                  event->type == KeyPress);
     }
     return false;
 }
 
 void
-HotkeyMonitor::processKeyEvent(uint keycode, uint modifiers)
+HotkeyMonitor::processKeyEvent(uint x11Keycode, uint x11Modifiers,
+                               bool isPressEvent)
 {
-    qDebug() << keycode << modifiers;
+    Q_FOREACH(Hotkey* hotkey, m_hotkeys) {
+        if (hotkey->processNativeEvent(x11Keycode, x11Modifiers, isPressEvent)) {
+            return;
+        }
+    }
+    qWarning() << "Received x11 key event that wasn't processed by any hotkey:"
+               << x11Keycode << x11Modifiers << ((isPressEvent) ? "Press" : "Release");
 }
 
 #include "hotkeymonitor.moc"
