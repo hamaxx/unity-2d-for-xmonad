@@ -49,7 +49,9 @@ SearchRefineOption {
         delegate: TickBox {
             height: filters.cellHeight
             width: filters.cellWidth-10
-            text: column_0
+            /* Not checking for placeEntryModel != undefined leads to a segfault
+               when switching places */
+            text: placeEntryModel != undefined ? column_0 : ""
             ticked: dash.currentPage.model.activeSection == model.index
 
             onClicked: placeEntryModel.activeSection = model.index
