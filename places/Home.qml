@@ -30,12 +30,24 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 50
         anchors.bottomMargin: 10
-        width: 80
-        height: 47
+        width: childrenRect.width
+        height: childrenRect.height
+
+        Image {
+            id: icon
+            source: "artwork/open_shortcuts.png"
+            width: sourceSize.width
+            height: sourceSize.height
+            anchors.left: parent.left
+        }
 
         TextCustom {
             text: "Shortcuts"
-            anchors.fill: parent
+            anchors.left: icon.right
+            anchors.leftMargin: 3
+            width: paintedWidth
+            height: icon.height
+            font.pixelSize: 16
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
