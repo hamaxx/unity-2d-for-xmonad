@@ -16,6 +16,7 @@ AutoScrollingListView {
         width: list.width
         tileSize: list.tileSize
 
+        desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: "image://icons/" + item.icon
         running: item.running
         active: item.active
