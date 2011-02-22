@@ -42,7 +42,7 @@
 LauncherView::LauncherView() :
     QDeclarativeView(), m_resizing(false), m_reserved(false),
     m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
-    m_dndAccepted(false), m_keyboardShortcutsActive(false)
+    m_dndAccepted(false), m_superKeyPressed(false)
 {
     setAcceptDrops(true);
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
@@ -54,25 +54,31 @@ LauncherView::LauncherView() :
 void
 LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
 {
+    /* This is the new new state of the Super key (AKA Meta key), while
+       m_superKeyPressed is the previous state of the key at the last modifiers change. */
+    bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
+
     /* We are going to connect 10 hotkeys, but to make things simpler on the QML
        side we want to have only one signal with the number of the item that needs to
        be activated in response to the hotkey press.
        So we connect all of them to a single slot where we emit a single signal with
        an index based on which Hotkey was the sender. */
-
     Qt::Key key = Qt::Key_0;
     while (key <= Qt::Key_9) {
         Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
 
-        if (modifiers.testFlag(Qt::MetaModifier) && !m_keyboardShortcutsActive) {
+        if (superKeyPressed && !m_superKeyPressed) {
             QObject::connect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        } else if (!modifiers.testFlag(Qt::MetaModifier) && m_keyboardShortcutsActive) {
+        } else if (!superKeyPressed && m_superKeyPressed) {
             QObject::disconnect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
         }
         key = (Qt::Key) (key + 1);
     }
 
-    m_keyboardShortcutsActive = modifiers.testFlag(Qt::MetaModifier);
+    if (m_superKeyPressed != superKeyPressed) {
+        m_superKeyPressed = superKeyPressed;
+        Q_EMIT superKeyPressedChanged(m_superKeyPressed);
+    }
 }
 
 void
@@ -80,9 +86,15 @@ LauncherView::forwardHotkey()
 {
     Hotkey *hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey != NULL) {
-        int itemNumber = hotkey->key() - Qt::Key_0;
-        if (itemNumber >= 0 && itemNumber <= 9) {
-            Q_EMIT keyboardShortcutPressed(itemNumber);
+        /* Shortcuts from 1 to 9 should activate the items with index
+           from 0 to 8. Shortcut for 0 should activate item with index 10.
+           In other words, the indexes are activated in the same order as
+           the keys appear on a standard keyboard. */
+        int itemIndex = hotkey->key() - Qt::Key_0;
+        itemIndex = (itemIndex == 0) ? 9 : itemIndex - 1;
+
+        if (itemIndex >= 0 && itemIndex <= 10) {
+            Q_EMIT keyboardShortcutPressed(itemIndex);
         }
     }
 }

@@ -30,15 +30,20 @@ class QGraphicsObject;
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
+    Q_PROPERTY(bool superKeyPressed READ superKeyPressed
+                                    NOTIFY superKeyPressedChanged)
 
 public:
     explicit LauncherView();
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
+    bool superKeyPressed() const { return m_superKeyPressed; }
+
 Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
-    void keyboardShortcutPressed(int itemNumber);
+    void keyboardShortcutPressed(int itemIndex);
+    void superKeyPressedChanged(bool superKeyPressed);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -69,7 +74,7 @@ private:
     /* Whether the launcher itself handles the current dnd event */
     bool m_dndAccepted;
 
-    bool m_keyboardShortcutsActive;
+    bool m_superKeyPressed;
 };
 
 #endif // LAUNCHERVIEW
