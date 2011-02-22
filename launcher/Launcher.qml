@@ -144,7 +144,8 @@ Item {
             id: loc
             property string currentId: ""
             property int newIndex
-            property int index: list.indexAt(mouseX, mouseY) // Item underneath cursor
+            property variant listCoordinates: loc.mapToItem(list.contentItem, mouseX, mouseY)
+            property int index: list.indexAt(listCoordinates.x, listCoordinates.y) // Item underneath cursor
             anchors.fill: parent
             onPressAndHold: currentId = items.get(newIndex = index).desktop_file
             onReleased: currentId = ""
