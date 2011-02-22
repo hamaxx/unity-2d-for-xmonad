@@ -143,15 +143,21 @@ Item {
         MouseArea {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
-            property string currentId: ""
-            property int newIndex
-            property variant listCoordinates: dnd.mapToItem(list.contentItem, mouseX, mouseY)
-            property int index: list.indexAt(listCoordinates.x, listCoordinates.y) // Item underneath cursor
             anchors.fill: parent
-            onPressAndHold: currentId = items.get(newIndex = index).desktop_file
+
+            /* id (desktop file path) of the application being dragged */
+            property string currentId: ""
+            /* list index of the application being dragged */
+            property int currentIndex
+            /* absolute mouse coordinates in the list */
+            property variant listCoordinates: mapToItem(list.contentItem, mouseX, mouseY)
+            /* list index of the application underneath the cursor */
+            property int index: list.indexAt(listCoordinates.x, listCoordinates.y)
+
+            onPressAndHold: currentId = items.get(currentIndex = index).desktop_file
             onReleased: currentId = ""
             onMousePositionChanged: {
-                if (dnd.currentId != "" && index != -1 && index != newIndex) {
+                if (currentId != "" && index != -1 && index != currentIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
                        the list results in its visual representation being
                        shifted too far down by one index
@@ -163,19 +169,19 @@ Item {
                        thinking that the mirror operation was performed.
                        Note: this bug will be fixed in Qt 4.7.2, at which point
                        this workaround can go away. */
-                    if (index > newIndex) {
-                        items.move(index, newIndex, 1)
+                    if (index > currentIndex) {
+                        items.move(index, currentIndex, 1)
                     } else {
                         /* This should be the only code path here, if it wasn’t
                            for the bug explained and worked around above. */
-                        items.move(newIndex, index, 1)
+                        items.move(currentIndex, index, 1)
                     }
-                    newIndex = index
+                    currentIndex = index
                 }
             }
             onClicked: {
                 /* Forward the click to the launcher item below. */
-                var point = dnd.mapToItem(list.contentItem, mouse.x, mouse.y)
+                var point = mapToItem(list.contentItem, mouse.x, mouse.y)
                 var item = list.contentItem.childAt(point.x, point.y)
                 /* FIXME: the coordinates of the mouse event forwarded are
                    incorrect. Luckily, it’s acceptable as they are not used in
