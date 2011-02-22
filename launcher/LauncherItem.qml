@@ -78,7 +78,7 @@ Item {
            Unity chose to add it, QML to subtract it. So we adjust for that. */
         transform: Translate { y: 1 }
 
-        visible: active && (tile.state != "active")
+        visible: active && (tile.state != "beingDragged")
     }
 
     /* This is the area on the left of the tile where the pips/arrow end up.
@@ -102,7 +102,7 @@ Item {
 
             transform: Translate { y: getPipOffset(index) + 1 }
 
-            visible: tile.state != "active"
+            visible: tile.state != "beingDragged"
         }
     }
 
@@ -212,7 +212,7 @@ Item {
         }
 
         states: State {
-            name: "active"
+            name: "beingDragged"
             when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
             PropertyChanges {
                 target: tile
