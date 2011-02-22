@@ -18,4 +18,6 @@ HomeButton {
     }
 
     icon: "image://icons/" + application.icon
+    iconSourceSize.width: 128
+    iconSourceSize.height: 128
 }

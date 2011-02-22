@@ -130,25 +130,25 @@ Item {
         /* FIXME: dummy icons need to be replaced by design's */
         HomeButton {
             label: qsTr("Find Media Apps")
-            icon: "image://icons/applications-multimedia"
+            icon: "artwork/find_media_apps.png"
             onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
         }
 
         HomeButton {
             label: qsTr("Find Internet Apps")
-            icon: "image://icons/applications-internet"
+            icon: "artwork/find_internet_apps.png"
             onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 3)
         }
 
         HomeButton {
             label: qsTr("Find More Apps")
-            icon: "image://icons/find"
+            icon: "artwork/find_more_apps.png"
             onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
         }
 
         HomeButton {
             label: qsTr("Find Files")
-            icon: "image://icons/folder-saved-search"
+            icon: "artwork/find_files.png"
             onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
         }
 
