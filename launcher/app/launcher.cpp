@@ -112,6 +112,8 @@ int main(int argc, char *argv[])
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */
     GestureHandler *gestureHandler = new GestureHandler(&application);
+    /* Instantiation is enough for the GestureHandler to work */
+    Q_UNUSED(gestureHandler) 
 
     return application.exec();
 }
