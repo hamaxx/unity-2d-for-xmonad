@@ -213,11 +213,11 @@ Item {
 
         states: State {
             name: "active"
-            when: (loc.currentId != "") && (loc.currentId == item.desktopFile)
+            when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
             PropertyChanges {
                 target: tile
-                x: loc.listCoordinates.x - tile.width / 2
-                y: loc.listCoordinates.y - tile.height / 2 - item.y
+                x: dnd.listCoordinates.x - tile.width / 2
+                y: dnd.listCoordinates.y - tile.height / 2 - item.y
             }
             PropertyChanges {
                 /* When dragging an item, stack it on top of all its siblings */

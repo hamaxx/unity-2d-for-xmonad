@@ -141,16 +141,17 @@ Item {
 
         interactive: false
         MouseArea {
-            id: loc
+            /* Handle drag’n’drop to re-order applications. */
+            id: dnd
             property string currentId: ""
             property int newIndex
-            property variant listCoordinates: loc.mapToItem(list.contentItem, mouseX, mouseY)
+            property variant listCoordinates: dnd.mapToItem(list.contentItem, mouseX, mouseY)
             property int index: list.indexAt(listCoordinates.x, listCoordinates.y) // Item underneath cursor
             anchors.fill: parent
             onPressAndHold: currentId = items.get(newIndex = index).desktop_file
             onReleased: currentId = ""
             onMousePositionChanged: {
-                if (loc.currentId != "" && index != -1 && index != newIndex) {
+                if (dnd.currentId != "" && index != -1 && index != newIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
                        the list results in its visual representation being
                        shifted too far down by one index
@@ -174,7 +175,7 @@ Item {
             }
             onClicked: {
                 /* Forward the click to the launcher item below. */
-                var point = loc.mapToItem(list.contentItem, mouse.x, mouse.y)
+                var point = dnd.mapToItem(list.contentItem, mouse.x, mouse.y)
                 var item = list.contentItem.childAt(point.x, point.y)
                 /* FIXME: the coordinates of the mouse event forwarded are
                    incorrect. Luckily, it’s acceptable as they are not used in
