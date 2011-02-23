@@ -18,6 +18,7 @@ Item {
         anchors.top: parent.top
         anchors.bottom: shelf.top
         width: parent.width
+        z: 1 /* for dnd to remain on top of looseItems */
 
         paddingTop: 5
         paddingBottom: 5

@@ -75,6 +75,16 @@ Item {
     signal entered
     signal exited
 
+    Item {
+        /* The actual item, reparented so its y coordinate can be animated. */
+        id: looseItem
+        parent: launcher
+        width: item.width
+        height: item.height
+        x: item.x
+        /* item.parent is the delegate, and its parent is the LauncherList */
+        y: item.parent.parent.y - item.parent.parent.contentY + item.y
+
     /* This is the arrow shown at the right of the tile when the application is
        the active one */
     Image {
@@ -91,7 +101,7 @@ Item {
            Unity chose to add it, QML to subtract it. So we adjust for that. */
         transform: Translate { y: 1 }
 
-        visible: active && (tile.state != "beingDragged")
+        visible: active && (looseItem.state != "beingDragged")
     }
 
     /* This is the area on the left of the tile where the pips/arrow end up.
@@ -115,7 +125,7 @@ Item {
 
             transform: Translate { y: getPipOffset(index) + 1 }
 
-            visible: tile.state != "beingDragged"
+            visible: looseItem.state != "beingDragged"
         }
     }
 
@@ -124,11 +134,7 @@ Item {
         id: tile
         width: item.tileSize
         height: item.tileSize
-        /* Manually specify the position instead of using anchors to center in
-           the parent so that the position can be animated when dragging
-           launcher items to re-order them. */
-        x: (item.width - width) / 2
-        y: (item.height - height) / 2
+        anchors.centerIn: parent
 
         /* This is the image providing the background image. The
            color blended with this image is obtained from the color of the icon when it's
@@ -296,20 +302,6 @@ Item {
             NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
         }
 
-        states: State {
-            name: "beingDragged"
-            when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
-            PropertyChanges {
-                target: tile
-                y: dnd.listCoordinates.y - tile.height / 2 - item.y
-            }
-            PropertyChanges {
-                /* When dragging an item, stack it on top of all its siblings */
-                target: item
-                z: 2
-            }
-        }
-
         MouseArea {
             id: mouse
             anchors.fill: parent
@@ -320,5 +312,26 @@ Item {
             onEntered: item.entered()
             onExited: item.exited()
         }
+    }
+
+    states: State {
+        name: "beingDragged"
+        when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
+        PropertyChanges {
+            target: looseItem
+            /* item.parent is the delegate, and its parent is the LauncherList */
+            y: dnd.listCoordinates.y - item.parent.parent.contentY - tile.height / 2
+            /* When dragging an item, stack it on top of all its siblings */
+            z: 1
+        }
+    }
+    Behavior on y {
+        enabled: (looseItem.state != "beingDragged") && !item.parent.parent.autoScrolling
+        NumberAnimation {
+            duration: 400
+            easing.type: Easing.OutBack
+        }
+    }
+
     }
 }
