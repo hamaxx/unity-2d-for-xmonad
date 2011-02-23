@@ -101,6 +101,8 @@ Item {
         anchors.bottom: parent.bottom;
         height: tileSize * count + spacing * Math.max(0, count - 1)
         width: parent.width
+        /* Ensure the tiles in the shelf are always above those in 'main'. */
+        itemZ: 1
 
         model: ListAggregatorModel {
             id: shelfItems

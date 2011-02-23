@@ -84,6 +84,7 @@ Item {
         x: item.x
         /* item.parent is the delegate, and its parent is the LauncherList */
         y: item.parent.parent.y - item.parent.parent.contentY + item.y
+        z: item.parent.parent.itemZ
 
         /* This is the arrow shown at the right of the tile when the application is
            the active one */

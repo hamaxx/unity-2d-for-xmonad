@@ -15,6 +15,9 @@ AutoScrollingListView {
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
 
+    /* A hint for items to determine the value of their 'z' property */
+    property real itemZ: 0
+
     delegate: LauncherItem {
         id: launcherItem
 
