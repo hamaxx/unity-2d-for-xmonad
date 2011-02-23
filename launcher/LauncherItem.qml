@@ -269,10 +269,10 @@ Item {
         Rectangle {
             id: shortcut
             anchors.centerIn: parent
-            color: "#AA000000"
-            radius: 5
-            width: 25
-            height: 25
+            color: "#B3000000" // 0.7 opacity on black
+            radius: 2
+            width: 22
+            height: 22
 
             Text {
                 id: shortcutText
