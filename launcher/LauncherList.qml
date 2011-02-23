@@ -4,7 +4,12 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
-    spacing: 5
+
+    /* The spacing is explicitly set to 0 and compensated for
+       by adding some padding to the tiles because of
+       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
+    spacing: 0
+
     property int tileSize: 54
 
     /* Keep a reference to the currently visible contextual menu */

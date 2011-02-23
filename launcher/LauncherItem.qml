@@ -34,7 +34,11 @@ Item {
     objectName: "launcherItem"
 
     anchors.horizontalCenter: parent.horizontalCenter
-    height: tileSize
+    /* Manually add some padding to compensate for the spacing
+       of the ListView being set to 0 to work around
+       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
+    property int padding: 5
+    height: tileSize + padding
 
     property int tileSize
     property string desktopFile: ""
@@ -119,7 +123,7 @@ Item {
     Item {
         id: tile
         width: item.tileSize
-        height: parent.height
+        height: item.tileSize
         /* Manually specify the position instead of using anchors to center in
            the parent so that the position can be animated when dragging
            launcher items to re-order them. */
@@ -305,16 +309,16 @@ Item {
                 z: 2
             }
         }
-    }
 
-    MouseArea {
-        id: mouse
-        anchors.fill: parent
+        MouseArea {
+            id: mouse
+            anchors.fill: parent
 
-        hoverEnabled: true
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: item.clicked(mouse)
-        onEntered: item.entered()
-        onExited: item.exited()
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: item.clicked(mouse)
+            onEntered: item.entered()
+            onExited: item.exited()
+        }
     }
 }
