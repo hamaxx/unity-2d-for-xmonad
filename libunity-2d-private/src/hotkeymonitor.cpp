@@ -34,14 +34,14 @@ HotkeyMonitor::HotkeyMonitor(QObject* parent)
     : QObject(parent)
 {
     int opcode, baseError, baseEvent;
-    if (XkbQueryExtension(QX11Info::display(), &opcode, &baseEvent,  &baseError, NULL, NULL) == False) {
-        qWarning() << "Failed to initialize the Xkb extension. Some hotkeys may not work.";
+    if (XkbQueryExtension(QX11Info::display(), &opcode, &baseEvent,
+                          &baseError, NULL, NULL) == False) {
+        qWarning() << "Failed to initialize Xkb extension. CapsLock and NumLock"
+                      "active will prevent shortcuts from working.";
     } else {
-        /* By calling this function we ask the xkb extension to make key grabs ignore the effect
-           of any of the listed modifiers. This is useful to avoid modifiers as caps or num lock to
-           affect more normal hotkey shortcuts like CTRL+F1 or similar. */
+        /* With this call we ignore CapsLock and NumLock when grabbing keys. */
         XkbSetIgnoreLockMods(QX11Info::display(), XkbUseCoreKbd,
-                             Mod2Mask | LockMask, Mod2Mask | LockMask, // NUMLOCK and CAPSLOCK
+                             Mod2Mask | LockMask, Mod2Mask | LockMask,
                              0, 0);
     }
 

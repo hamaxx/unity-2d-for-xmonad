@@ -31,21 +31,29 @@ class Hotkey : public QObject
     Q_PROPERTY(Qt::KeyboardModifiers modifiers READ modifiers NOTIFY modifiersChanged)
 
 public:
-    ~Hotkey();
     Qt::Key key() const { return m_key; }
     Qt::KeyboardModifiers modifiers() const { return m_modifiers; }
 
 Q_SIGNALS:
     void keyChanged(Qt::Key key);
     void modifiersChanged(Qt::KeyboardModifiers modifiers);
+    void pressed();
+    void released();
+
+protected:
+    virtual void connectNotify(const char * signal);
+    virtual void disconnectNotify(const char * signal);
 
 private:
     Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent);
     bool processNativeEvent(uint x11Keycode, uint x11Modifiers, bool isPressEvent);
 
 private:
+    uint m_connections;
     Qt::Key m_key;
     Qt::KeyboardModifiers m_modifiers;
+    uint m_x11key;
+    uint m_x11modifiers;
 };
 
 #endif // Hotkey_H
