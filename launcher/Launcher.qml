@@ -33,6 +33,7 @@ Item {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
             anchors.fill: parent
+            hoverEnabled: true
 
             /* id (desktop file path) of the application being dragged */
             property string currentId: ""
@@ -43,8 +44,13 @@ Item {
             /* list index of the application underneath the cursor */
             property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
 
+            onPressed: currentIndex = index
             onPressAndHold: {
-                var id = items.get(currentIndex = index).desktop_file
+                if (index != currentIndex) {
+                    /* The item under the cursor changed since the press. */
+                    return
+                }
+                var id = items.get(currentIndex).desktop_file
                 if (id != undefined) currentId = id
             }
             onReleased: currentId = ""
