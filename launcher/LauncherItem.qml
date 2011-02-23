@@ -327,7 +327,7 @@ Item {
             }
         }
         Behavior on y {
-            enabled: (looseItem.state != "beingDragged") && !item.parent.parent.autoScrolling
+            enabled: (looseItem.state != "beingDragged") && !item.parent.parent.moving && !item.parent.parent.autoScrolling
             NumberAnimation {
                 duration: 400
                 easing.type: Easing.OutBack

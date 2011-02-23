@@ -29,7 +29,9 @@ Item {
             id: items
         }
 
-        interactive: false
+        // FIXME: dragging the list to flick it exhibits unpleasant visual
+        // artifacts, and its contentY sometimes remains blocked at a position
+        // too far off the boundaries of the list.
         MouseArea {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
@@ -56,11 +58,16 @@ Item {
                     /* The item under the cursor changed since the press. */
                     return
                 }
+                parent.interactive = false
                 var id = items.get(currentIndex).desktop_file
                 if (id != undefined) currentId = id
             }
-            onReleased: currentId = ""
-            onExited: currentId = ""
+            function drop() {
+                currentId = ""
+                parent.interactive = true
+            }
+            onReleased: drop()
+            onExited: drop()
             onMousePositionChanged: {
                 if (currentId != "" && index != -1 && index != currentIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
