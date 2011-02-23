@@ -297,7 +297,6 @@ Item {
             when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
             PropertyChanges {
                 target: tile
-                x: dnd.listCoordinates.x - tile.width / 2
                 y: dnd.listCoordinates.y - tile.height / 2 - item.y
             }
             PropertyChanges {
