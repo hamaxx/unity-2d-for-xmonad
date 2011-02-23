@@ -54,6 +54,7 @@ Item {
                 if (id != undefined) currentId = id
             }
             onReleased: currentId = ""
+            onExited: currentId = ""
             onMousePositionChanged: {
                 if (currentId != "" && index != -1 && index != currentIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
