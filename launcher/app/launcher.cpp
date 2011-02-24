@@ -35,6 +35,8 @@
 #include <QDeclarativeContext>
 #include <QDir>
 
+#include <unity2dapplication.h>
+
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"

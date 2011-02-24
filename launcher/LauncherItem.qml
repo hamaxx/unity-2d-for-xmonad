@@ -58,6 +58,9 @@ Item {
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
 
+    property alias shortcutVisible: shortcut.visible
+    property alias shortcutText: shortcutText.text
+
     property int pips: 0
     property string pipSource: engineBaseUrl + "artwork/launcher_" +
                                ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
@@ -278,6 +281,21 @@ Item {
                         anchors.left: undefined
                         anchors.right: tile.right
                     }
+                }
+            }
+
+            Rectangle {
+                id: shortcut
+                anchors.centerIn: parent
+                color: "#B3000000" // 0.7 opacity on black
+                radius: 2
+                width: 22
+                height: 22
+
+                Text {
+                    id: shortcutText
+                    anchors.centerIn: parent
+                    color: "white"
                 }
             }
 

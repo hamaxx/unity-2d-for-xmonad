@@ -24,23 +24,36 @@
 #include <QUrl>
 #include <QList>
 #include <QDragEnterEvent>
+#include "gconfitem-qml-wrapper.h"
 
 class QGraphicsObject;
 
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
+    Q_PROPERTY(bool superKeyPressed READ superKeyPressed
+                                    NOTIFY superKeyPressedChanged)
 
 public:
     explicit LauncherView();
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
-signals:
+    bool superKeyPressed() const { return m_superKeyPressed; }
+
+Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
+    void keyboardShortcutPressed(int itemIndex);
+    void superKeyPressedChanged(bool superKeyPressed);
+
+private Q_SLOTS:
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void forwardHotkey();
+    void updateSuperKeyMonitoring();
 
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
+    void changeKeyboardShortcutsState(bool enabled);
 
     /* Whether the launcher is already being resized */
     bool m_resizing;
@@ -63,6 +76,9 @@ private:
     bool m_dndCurrentLauncherItemAccepted;
     /* Whether the launcher itself handles the current dnd event */
     bool m_dndAccepted;
+
+    GConfItemQmlWrapper m_enableSuperKey;
+    bool m_superKeyPressed;
 };
 
 #endif // LAUNCHERVIEW

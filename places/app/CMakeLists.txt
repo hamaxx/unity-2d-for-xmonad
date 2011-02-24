@@ -5,15 +5,11 @@ pkg_check_modules(GTK REQUIRED gtk+-2.0)
 
 # Sources
 set(places_SRCS
-    keymonitor.cpp
-    superkeymonitor.cpp
     places.cpp
     dashdeclarativeview.cpp
     )
 
 set(places_MOC_HDRS
-    keymonitor.h
-    superkeymonitor.h
     dashdeclarativeview.h
     )
 

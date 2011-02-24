@@ -37,8 +37,6 @@
 #include <gettexttranslator.h>
 
 #include "dashdeclarativeview.h"
-#include "superkeymonitor.h"
-
 #include "config.h"
 
 /* Register a D-Bus service for activation and deactivation of the dash */
@@ -50,7 +48,7 @@ static bool registerDBusService(DashDeclarativeView* view)
         return false;
     }
     /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */
+       properties and methods. */\
     if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
         qCritical() << "Failed to register /Dash, this should not happen!";
         return false;
@@ -66,33 +64,6 @@ static bool registerDBusService(DashDeclarativeView* view)
        ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
     */
     return true;
-}
-
-static DashDeclarativeView* getView()
-{
-    QVariant viewProperty = QApplication::instance()->property("view");
-    return viewProperty.value<DashDeclarativeView*>();
-}
-
-static bool eventFilter(void* message)
-{
-    XEvent* event = static_cast<XEvent*>(message);
-    if (event->type == KeyRelease)
-    {
-        XKeyEvent* key = (XKeyEvent*) event;
-        uint code = key->keycode;
-        if (code == SuperKeyMonitor::SUPER_L || code == SuperKeyMonitor::SUPER_R) {
-            /* Super (aka the "windows" key) shows/hides the dash. */
-            DashDeclarativeView* view = getView();
-            if (view->active()) {
-                view->setActive(false);
-            }
-            else {
-                view->activateHome();
-            }
-        }
-    }
-    return false;
 }
 
 int main(int argc, char *argv[])
@@ -143,10 +114,6 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("dashView", &view);
     view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
-
-    /* Grab the "super" keys */
-    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
-    QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
