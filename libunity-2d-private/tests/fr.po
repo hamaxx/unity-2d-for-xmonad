@@ -1,0 +1,10 @@
+msgid "Hello"
+msgstr "Bonjour"
+
+msgctxt "Closing a door"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "Not far"
+msgid "Close"
+msgstr "Près"

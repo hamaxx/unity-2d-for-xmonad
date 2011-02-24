@@ -14,6 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")
 include(FindPkgConfig)
 find_package(Qt4 REQUIRED)
 find_package(X11 REQUIRED)
+find_package(Gettext REQUIRED)
 
 include_directories(
     ${CMAKE_BINARY_DIR}
@@ -35,3 +36,4 @@ add_subdirectory(launcher)
 add_subdirectory(panel)
 add_subdirectory(places)
 add_subdirectory(spread)
+add_subdirectory(po)
