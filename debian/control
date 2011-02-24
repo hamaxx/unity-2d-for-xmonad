@@ -47,6 +47,8 @@ Breaks: libuqpanel0 ( <= 3.2.2-0ubuntu1 )
 Replaces: libuqpanel0
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
+ It is only used internally, there is no use case for it outside of the unity-2d
+ project.
 
 Package: libunity-2d-private-dev
 Section: libdevel
