@@ -65,11 +65,19 @@ Item {
         Component.onCompleted: startAllPlaceServices()
     }
 
+    /* Backgrounds */
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !dashView.isCompositingManagerRunning
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.69
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && dashView.isCompositingManagerRunning
     }
 
     BorderImage {
@@ -77,9 +85,13 @@ Item {
         visible: dashView.dashMode == DashDeclarativeView.DesktopMode
         source: dashView.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
     }
+    /* /Backgrounds */
 
     Item {
         anchors.fill: parent
+        anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 38 : 0
+        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 40 : 0
+
         visible: dashView.active
 
         /* Unhandled keys will always be forwarded to the search bar. That way
@@ -119,26 +131,6 @@ Item {
             anchors.rightMargin: 19
         }
 
-        Button {
-            id: fullScreenButton
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 15
-            anchors.bottomMargin: 15
-            width: fullScreenButtonImage.sourceSize.width
-            height: fullScreenButtonImage.sourceSize.height
-            visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
-
-            Image {
-                id: fullScreenButtonImage
-                source: "artwork/fullscreen_button.png"
-            }
-
-            onClicked: {
-                dashView.dashMode = DashDeclarativeView.FullScreenMode
-            }
-        }
-
         Loader {
             id: pageLoader
 
@@ -150,6 +142,26 @@ Item {
             anchors.leftMargin: 20
             anchors.right: refine_search.folded ? parent.right : refine_search.left
             anchors.rightMargin: refine_search.folded ? 0 : 15
+        }
+    }
+
+    Button {
+        id: fullScreenButton
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.rightMargin: 15
+        anchors.bottomMargin: 15
+        width: fullScreenButtonImage.sourceSize.width
+        height: fullScreenButtonImage.sourceSize.height
+        visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
+
+        Image {
+            id: fullScreenButtonImage
+            source: "artwork/fullscreen_button.png"
+        }
+
+        onClicked: {
+            dashView.dashMode = DashDeclarativeView.FullScreenMode
         }
     }
 }
