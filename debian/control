@@ -43,6 +43,8 @@ Package: libunity-2d-private0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: libuqpanel0 ( <= 3.2.2-0ubuntu1 )
+Replaces: libuqpanel0
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
 
@@ -50,6 +52,8 @@ Package: libunity-2d-private-dev
 Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0 (= ${binary:Version})
+Breaks: libuqpanel-dev ( <= 3.2.2-0ubuntu1 )
+Replaces: libuqpanel-dev
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  .
