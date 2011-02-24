@@ -1,9 +1,9 @@
 # Dependencies
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
 pkg_check_modules(X11 REQUIRED x11)
+pkg_check_modules(GEIS REQUIRED libutouch-geis)
 pkg_check_modules(WNCK REQUIRED libwnck)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
-pkg_check_modules(GEIS REQUIRED libutouch-geis)
 
 # Sources
 set(launcher_SRCS
@@ -41,9 +41,9 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
+    ${GEIS_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
-    ${GEIS_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -54,9 +54,9 @@ target_link_libraries(uqlauncher
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${GTK_LDFLAGS}
     ${X11_LDFLAGS}
+    ${GEIS_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${QTGCONF_LDFLAGS}
-    ${GEIS_LDFLAGS}
     unity-2d-private
     )
 

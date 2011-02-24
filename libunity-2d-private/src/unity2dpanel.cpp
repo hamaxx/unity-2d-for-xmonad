@@ -42,7 +42,8 @@ struct Unity2dPanelPrivate
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
     QHBoxLayout* m_layout;
-    QPropertyAnimation* m_slideAnimation;
+    QPropertyAnimation* m_slideInAnimation;
+    QPropertyAnimation* m_slideOutAnimation;
     bool m_useStrut;
     int m_delta;
 
@@ -131,14 +132,6 @@ struct Unity2dPanelPrivate
         updateGeometry();
         updateLayoutDirection();
     }
-
-    void updateAnimation()
-    {
-        m_slideAnimation->setStartValue(
-            m_edge == Unity2dPanel::TopEdge
-            ? -q->height()
-            : -q->width());
-    }
 };
 
 Unity2dPanel::Unity2dPanel(QWidget* parent)
@@ -153,13 +146,19 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
 
-    d->m_slideAnimation = new QPropertyAnimation(this);
-    d->m_slideAnimation->setTargetObject(this);
-    d->m_slideAnimation->setPropertyName("delta");
-    d->m_slideAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideAnimation->setEasingCurve(QEasingCurve::InOutCubic);
-    d->m_slideAnimation->setEndValue(0);
-    d->updateAnimation();
+    d->m_slideInAnimation = new QPropertyAnimation(this);
+    d->m_slideInAnimation->setTargetObject(this);
+    d->m_slideInAnimation->setPropertyName("delta");
+    d->m_slideInAnimation->setDuration(SLIDE_DURATION);
+    d->m_slideInAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    d->m_slideInAnimation->setEndValue(0);
+
+    d->m_slideOutAnimation = new QPropertyAnimation(this);
+    d->m_slideOutAnimation->setTargetObject(this);
+    d->m_slideOutAnimation->setPropertyName("delta");
+    d->m_slideOutAnimation->setDuration(SLIDE_DURATION);
+    d->m_slideOutAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
@@ -192,13 +191,13 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
-    d->updateAnimation();
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 void Unity2dPanel::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
-    d->updateAnimation();
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
@@ -250,25 +249,34 @@ int Unity2dPanel::delta() const
 
 void Unity2dPanel::setDelta(int delta)
 {
-    d->m_delta = delta;
+    /* Clamp delta to be between 0 and minus its size */
+    int minDelta = -panelSize();
+    int maxDelta = 0;
+
+    d->m_delta = qMax(qMin(delta, maxDelta), minDelta);
     d->updateGeometry();
+}
+
+int Unity2dPanel::panelSize() const
+{
+    return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
 }
 
 void Unity2dPanel::slideIn()
 {
-    d->m_slideAnimation->setDirection(QAbstractAnimation::Forward);
-    if (d->m_slideAnimation->state() == QAbstractAnimation::Stopped
-        && d->m_delta == d->m_slideAnimation->startValue())
-    {
-        d->m_slideAnimation->start();
+    d->m_slideOutAnimation->stop();
+    if (d->m_slideInAnimation->state() != QAbstractAnimation::Running) {
+        d->m_slideInAnimation->setStartValue(d->m_delta);
+        d->m_slideInAnimation->start();
     }
 }
 
 void Unity2dPanel::slideOut()
 {
-    d->m_slideAnimation->setDirection(QAbstractAnimation::Backward);
-    if (d->m_slideAnimation->state() == QAbstractAnimation::Stopped && d->m_delta == 0) {
-        d->m_slideAnimation->start();
+    d->m_slideInAnimation->stop();
+    if (d->m_slideOutAnimation->state() != QAbstractAnimation::Running) {
+        d->m_slideOutAnimation->setStartValue(d->m_delta);
+        d->m_slideOutAnimation->start();
     }
 }
 
