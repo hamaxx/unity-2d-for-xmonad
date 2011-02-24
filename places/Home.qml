@@ -1,6 +1,7 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 import gconf 1.0
 
 Item {
@@ -13,8 +14,37 @@ Item {
         }
     }
 
+    /* Set to true if shortcut buttons are visible */
+    property bool shortcutsActive: false
+
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.entrySearchQuery != ""
+    
+    /* Used by dash.qml to bind to dashView "expanded" property */
+    property bool expanded: globalSearchActive || shortcutsActive
+
+    Button {
+        id: shortcutsButton
+        anchors.bottom: parent.top
+        anchors.right: parent.right
+        anchors.rightMargin: 50
+        anchors.bottomMargin: 10
+        width: 80
+        height: 47
+
+        TextCustom {
+            text: "Shortcuts"
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        opacity: (!expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+
+        onClicked: {
+            shortcutsActive = true
+        }
+    }
 
     ListViewWithScrollbar {
         id: globalSearch
@@ -64,7 +94,7 @@ Item {
     Flow {
         id: buttons
 
-        opacity: globalSearchActive ? 0 : 1
+        opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
