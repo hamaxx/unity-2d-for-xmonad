@@ -34,7 +34,7 @@ static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 static const int DASH_DESKTOP_WIDTH = 989;
-static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 78;
+static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 
 DashDeclarativeView::DashDeclarativeView()
