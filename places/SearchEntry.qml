@@ -1,4 +1,5 @@
 import Qt 4.7
+import Effects 1.0
 
 FocusScope {
     property string searchQuery
@@ -12,8 +13,10 @@ FocusScope {
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
 
-    BorderGlow {
+    BorderImage {
         anchors.fill: parent
+        source: "artwork/search_background.sci"
+        smooth: false
     }
 
     Item {
@@ -21,35 +24,54 @@ FocusScope {
         anchors.topMargin: 6
         anchors.bottomMargin: 6
         anchors.leftMargin: 6
-        anchors.rightMargin: 6
+        anchors.rightMargin: 16
 
         Image {
             id: search_icon
 
             anchors.left: parent.left
-            anchors.leftMargin: 3
+            anchors.leftMargin: -5
             anchors.top: parent.top
-            anchors.topMargin: 1
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 1
-            smooth: true
-            width: 18
+            width: sourceSize.width
 
-            source: "artwork/search_icon.png"
-            fillMode: Image.PreserveAspectCrop
+            smooth: true
+
+            source: search_input.text ? "artwork/cross.png" : "artwork/search_icon.png"
+            fillMode: Image.PreserveAspectFit
+        }
+
+        MouseArea {
+            id: clear_button
+
+            anchors.fill: search_icon
+
+            onClicked: {
+                search_input.forceActiveFocus()
+                search_input.text = ""
+            }
         }
 
         TextInput {
             id: search_input
 
+            effect: DropShadow {
+                    id: glow
+
+                    blurRadius: 4
+                    offset.x: 0
+                    offset.y: 0
+                    color: "white"
+                    enabled: search_input.text != ""
+                }
+
             anchors.left: search_icon.right
-            anchors.leftMargin: 2
-            anchors.right: clear_button.left
-            anchors.rightMargin: 5
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.leftMargin: -5
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
 
             color: "#ffffff"
+            font.pixelSize: 28
             focus: true
             selectByMouse: true
             cursorDelegate: cursor
@@ -100,38 +122,21 @@ FocusScope {
             Text {
                 id: search_instructions
 
-                anchors.fill: parent
-                anchors.leftMargin: 4
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
 
+                color: "white"
+                opacity: 0.5
+                font.pixelSize: 20
                 font.italic: true
-                color: "#eeeeee"
                 text: {
                     if(search_input.text)
                         return ""
                     else if(dash.currentPage != undefined && dash.currentPage.model.name)
-                        return qsTr("Search %1").arg(dash.currentPage.model.name)
+                        return qsTr("Search for %1").arg(dash.currentPage.model.name)
                     else
                         return qsTr("Search")
-                }
-            }
-        }
-
-        Image {
-            id: clear_button
-
-            anchors.right: parent.right
-            anchors.rightMargin: 4
-            anchors.verticalCenter: parent.verticalCenter
-            width: 10
-
-            source: "artwork/cross.png"
-            fillMode: Image.PreserveAspectFit
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    search_input.forceActiveFocus()
-                    search_input.text = ""
                 }
             }
         }

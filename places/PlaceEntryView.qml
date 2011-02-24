@@ -34,8 +34,7 @@ Item {
                     console.log("Failed to load renderer", groupRenderer)
             }
 
-            /* -2 is here to prevent clipping of the group; it looks like a bug */
-            width: ListView.view.width-2
+            width: ListView.view.width
 
             /* Model that will be used by the group's delegate */
             QSortFilterProxyModelQML {
