@@ -19,6 +19,8 @@
 
 #include "listaggregatormodel.h"
 
+#include <QDebug>
+
 ListAggregatorModel::ListAggregatorModel(QObject* parent) :
     QAbstractListModel(parent)
 {
@@ -60,6 +62,8 @@ ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
             SLOT(onRowsInserted(const QModelIndex&, int, int)));
     connect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
             SLOT(onRowsRemoved(const QModelIndex&, int, int)));
+    connect(model, SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+            SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
 }
 
 void
@@ -77,10 +81,27 @@ ListAggregatorModel::removeListModel(QAbstractListModel* model)
     {
         endRemoveRows();
     }
-    QObject::disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-                        this, SLOT(onRowsInserted(const QModelIndex&, int, int)));
-    QObject::disconnect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
-                        this, SLOT(onRowsRemoved(const QModelIndex&, int, int)));
+    disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+               this, SLOT(onRowsInserted(const QModelIndex&, int, int)));
+    disconnect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+               this, SLOT(onRowsRemoved(const QModelIndex&, int, int)));
+    disconnect(model, SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+               this, SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+}
+
+void
+ListAggregatorModel::move(int from, int to)
+{
+    QAbstractListModel* model = modelAtIndex(from);
+    if (modelAtIndex(to) != model) {
+        qWarning() << "cannot move an item from one model to another";
+        return;
+    }
+    int offset = computeOffset(model);
+    // "move" is not a member of QAbstractListModel, cannot be invoked directly
+    QMetaObject::invokeMethod(model, "move",
+                              Q_ARG(int, from - offset),
+                              Q_ARG(int, to - offset));
 }
 
 int
@@ -93,6 +114,20 @@ ListAggregatorModel::computeOffset(QAbstractListModel* model) const
         offset += (*iter)->rowCount();
     }
     return offset;
+}
+
+QAbstractListModel*
+ListAggregatorModel::modelAtIndex(int index) const
+{
+    int offset = index;
+    Q_FOREACH(QAbstractListModel* model, m_models) {
+        int size = model->rowCount();
+        if (offset < size) {
+            return model;
+        }
+        offset -= size;
+    }
+    return NULL;
 }
 
 void
@@ -111,6 +146,17 @@ ListAggregatorModel::onRowsRemoved(const QModelIndex& parent, int first, int las
     int offset = computeOffset(model);
     beginRemoveRows(parent, first + offset, last + offset);
     endRemoveRows();
+}
+
+void
+ListAggregatorModel::onRowsMoved(const QModelIndex& sourceParent, int sourceStart, int sourceEnd,
+                                 const QModelIndex& destinationParent, int destinationRow)
+{
+    QAbstractListModel* model = static_cast<QAbstractListModel*>(sender());
+    int offset = computeOffset(model);
+    beginMoveRows(sourceParent, sourceStart + offset, sourceEnd + offset,
+                  destinationParent, destinationRow + offset);
+    endMoveRows();
 }
 
 int

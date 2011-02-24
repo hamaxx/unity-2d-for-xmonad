@@ -41,6 +41,10 @@ public:
        to a QAbstractListModel */
     Q_INVOKABLE void appendModel(const QVariant& model);
 
+    /* Move one item from one position to another position.
+       The item must remain in the same model. */
+    Q_INVOKABLE void move(int from, int to);
+
 protected:
     QList<QAbstractListModel*> m_models;
 
@@ -50,9 +54,11 @@ protected:
 private slots:
     void onRowsInserted(const QModelIndex& parent, int first, int last);
     void onRowsRemoved(const QModelIndex& parent, int first, int last);
+    void onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int);
 
 private:
     int computeOffset(QAbstractListModel* model) const;
+    QAbstractListModel* modelAtIndex(int index) const;
 };
 
 #endif // LISTAGGREGATORMODEL_H
