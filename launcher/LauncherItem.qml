@@ -1,201 +1,337 @@
 import Qt 4.7
+import Unity2d 1.0
 
-/* Item displaying a launcher item.
+/* This component represents a single "tile" in the launcher and the surrounding
+   indicator icons.
 
-   It contains:
-    - a generic bordered background image
-    - an icon representing the item
-    - a text describing the item
+   The tile is square in size, with a side determined by the 'tileSize' property,
+   and rounded borders.
+   It is composed by a colored background layer, an icon (with 'icon' as source),
+   and a layer on top that provides a "shine" effect.
+   The main color of the background layer may be calculated based on the icon color
+   or may be fixed (depending on the 'backgroundFromIcon' property).
 
-   When an application is launched, the border changes appearance.
-   It supports mouse hover by changing the appearance of the background image.
+   There's also an additional layer which contains only the outline of the tile
+   that is only appearing during the launching animation (when the 'launching' property is
+   true). During this animation the background fades out and the outline fades in,
+   giving a "pulsing" appearance to the tile.
 
-   The 'icon' property holds the source of the image to load as an icon.
-   The 'label' property holds the text to display.
-   The 'running' property is a boolean indicating whether or not the
-   application is launched.
+   Around the tile we may have on the left a number of "pips" between zero and three.
+   Pips are small icons used to indicate how many windows we have open for the current tile
+   (based on the 'windowCount' property).
+   The rule is: if there's only one window, we just display an arrow. If there are
+   two we display 2 pips, if there are 3 or more display 3 pips.
 
-   The 'clicked' signal is emitted upon clicking on the item.
+   On the right of the tile there's an arrow that appears if the tile is currently 'active'.
+
+   Additionally, when the tile is marked as 'urgent' it will start an animation where the
+   rotation is changed so that it appears to be "shaking".
 */
 Item {
-    id: launcherItem
+    id: item
+    /* The object name is used by the launcher view to find the current
+       launcher item under the mouse cursor during a drag’n’drop event. */
+    objectName: "launcherItem"
 
+    anchors.horizontalCenter: parent.horizontalCenter
+    /* Manually add some padding to compensate for the spacing
+       of the ListView being set to 0 to work around
+       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
+    property int padding: 5
+    height: tileSize + padding
+
+    property int tileSize
+    property string desktopFile: ""
     property alias icon: icon.source
-    property alias label: label.text
     property bool running: false
     property bool active: false
     property bool urgent: false
     property bool launching: false
 
+    property int counter: 0
+    property bool counterVisible: false
+    property real progress: 0.0
+    property bool progressBarVisible: false
+    property alias emblem: emblemIcon.source
+    property bool emblemVisible: false
+
+    property bool backgroundFromIcon
+    property color defaultBackgroundColor: "#333333"
+
+    property int pips: 0
+    property string pipSource: engineBaseUrl + "artwork/launcher_" +
+                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
+    function getPipOffset(index) {
+        /* Pips need to always be centered, regardless if they are an even or odd
+           number. The following simple conditional code works and is less
+           convoluted than a generic formula. It's ok since we always work with at
+           most three pips anyway. */
+        if (pips == 1) return 0;
+        if (pips == 2) return (index == 0) ? -2 : +2
+        else return (index == 0) ? 0 : (index == 1) ? -4 : +4
+    }
+
     signal clicked(variant mouse)
     signal entered
     signal exited
 
-    Keys.onPressed: {
-        if (event.key == Qt.Key_Return) {
-            clicked()
-            event.accepted = true;
-        }
-    }
-
-    Image {
-        id: shadow
-
-        source: "artwork/shadow.png"
-        asynchronous: true
-    }
-
-    Image {
-        id: glow
-
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-
-        source: "artwork/glow.png"
-        asynchronous: true
-        opacity: 0.0
-
-        SequentialAnimation on opacity {
-            loops: Animation.Infinite
-            alwaysRunToEnd: true
-            running: launching
-            NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
-            NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
-        }
-    }
-
     Item {
-        id: container
+        /* The actual item, reparented so its y coordinate can be animated. */
+        id: looseItem
+        parent: launcher
+        width: item.width
+        height: item.height
+        x: item.x
+        /* item.parent is the delegate, and its parent is the LauncherList */
+        y: item.parent.parent.y - item.parent.parent.contentY + item.y
+        z: item.parent.parent.itemZ
 
-        width: 50
-        height: 50
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-
-        MouseArea {
-            id: mouse
-
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            hoverEnabled: true
-            anchors.fill: parent
-            onClicked: launcherItem.clicked(mouse)
-            onEntered: launcherItem.entered()
-            onExited: launcherItem.exited()
-        }
-
-        Rectangle {
-            id: background
-
-            opacity: mouse.containsMouse ? 1.0 : 0.9
-            anchors.fill: parent
-            anchors.margins: 1
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            smooth: true
-            color: if(icon.source != "")
-                       return launcherView.iconAverageColor(icon.source,
-                                                            Qt.size(icon.width, icon.height))
-            radius: 5
-        }
-
+        /* This is the arrow shown at the right of the tile when the application is
+           the active one */
         Image {
-            id: icon
-
-            width: 32
-            height: 32
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            fillMode: Image.PreserveAspectFit
-            sourceSize.width: width
-            sourceSize.height: height
-            smooth: true
+            source: "image://blended/%1color=%2alpha=%3"
+                  .arg(engineBaseUrl + "artwork/launcher_arrow_rtl.png")
+                  .arg("lightgrey")
+                  .arg(1.0)
 
-            asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+            /* This extra shift is necessary (as is for the pips below)
+               since we are vertically centering in a parent with even height, so
+               there's one pixel offset that need to be assigned arbitrarily.
+               Unity chose to add it, QML to subtract it. So we adjust for that. */
+            transform: Translate { y: 1 }
+
+            visible: active && (looseItem.state != "beingDragged")
         }
 
-        Image {
-            id: foreground
+        /* This is the area on the left of the tile where the pips/arrow end up.
 
-            anchors.fill: parent
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            fillMode: Image.PreserveAspectFit
-            sourceSize.width: width
-            sourceSize.height: height
-            smooth: true
+           I'd rather use a Column here, but the pip images have an halo
+           around them, so they are pretty tall and would mess up the column.
+           As a workaround I center all of them, then shift up or down
+           depending on the index. */
+        Repeater {
+            model: item.pips
+            delegate: Image {
+                /* FIXME: It seems that when the image is created (or re-used) by the Repeater
+                   for a moment it doesn't have any parent, and therefore warnings are
+                   printed for the following two anchor assignements. This fixes the
+                   problem, but I'm not sure if it should happen in the first place. */
+                anchors.left: (parent) ? parent.left : undefined
+                anchors.verticalCenter: (parent) ? parent.verticalCenter : undefined
 
-            source: "/usr/share/unity/themes/prism_icon_foreground.png"
+                source: "image://blended/%1color=%2alpha=%3"
+                        .arg(pipSource).arg("lightgrey").arg(1.0)
 
-            asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-        }
+                transform: Translate { y: getPipOffset(index) + 1 }
 
-        SequentialAnimation {
-            id: nudging
-            running: urgent
-            SequentialAnimation {
-                loops: 30
-                NumberAnimation { target: container; property: "rotation"; to: 15; duration: 150 }
-                NumberAnimation { target: container; property: "rotation"; to: -15; duration: 150 }
+                visible: looseItem.state != "beingDragged"
             }
-            NumberAnimation { target: container; property: "rotation"; to: 0; duration: 75 }
         }
 
-        NumberAnimation {
-            id: end_nudging
-            running: !urgent
-            target: container
-            property: "rotation"
-            to: 0
-            duration: 75
+        /* This is the for centering the actual tile in the launcher */
+        Item {
+            id: tile
+            width: item.tileSize
+            height: item.tileSize
+            anchors.centerIn: parent
+
+            /* This is the image providing the background image. The
+               color blended with this image is obtained from the color of the icon when it's
+               loaded.
+               While the application is launching, this will fade out and in. */
+            Image {
+                id: tileBackground
+                property color color: defaultBackgroundColor
+                anchors.fill: parent
+
+                SequentialAnimation on opacity {
+                    NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
+                    NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
+
+                    loops: Animation.Infinite
+                    alwaysRunToEnd: true
+                    running: launching
+                }
+
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
+                source: "image://blended/%1color=%2alpha=%3"
+                        .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
+                        .arg(color.toString().replace("#", ""))
+                        .arg(1.0)
+            }
+
+            /* This image appears only while launching, and pulses in and out in counterpoint
+               to the background, so that the outline of the tile is always visible. */
+            Image {
+                id: tileOutline
+                anchors.fill: parent
+
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
+                source: "artwork/round_outline_54x54.png"
+
+                opacity: 0
+
+                SequentialAnimation on opacity {
+                    NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
+                    NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
+
+                    loops: Animation.Infinite
+                    alwaysRunToEnd: true
+                    running: launching
+                }
+            }
+
+            /* This is just the main icon of the tile */
+            Image {
+                id: icon
+                anchors.centerIn: parent
+
+                sourceSize.width: 48
+                sourceSize.height: 48
+
+                /* Whenever one of the parameters used in calculating the background color of
+                   the icon changes, recalculate its value */
+                onWidthChanged: updateColors()
+                onHeightChanged: updateColors()
+                onSourceChanged: updateColors()
+
+                function updateColors() {
+                    if (!item.backgroundFromIcon) return;
+
+                    var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                    if (colors && colors.length > 0) tileBackground.color = colors[0]
+                }
+            }
+
+            /* This just adds some shiny effect to the tile */
+            Image {
+                id: tileShine
+                anchors.fill: parent
+
+                source: "artwork/round_shine_54x54.png"
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
+            }
+
+            Rectangle {
+                id: counter
+                height: 16 - border.width
+                width: 32
+                // Using anchors the item will be 1 pixel off with respect to Unity
+                y: 1
+                x: 1
+                radius: height / 2 - 1
+                border.width: 2
+                border.color: "white"
+                color: "#595959"
+                visible: launcherItem.counterVisible
+
+                Text {
+                    anchors.centerIn: parent
+                    font.pixelSize: parent.height - 3
+                    width: parent.width - 5
+                    elide: Text.ElideRight
+                    horizontalAlignment: Text.AlignHCenter
+                    color: "white"
+                    text: launcherItem.counter
+                }
+            }
+
+            Image {
+                id: progressBar
+                source: "artwork/progress_bar_trough.png"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                width: tile.width
+                state: launcherItem.progressBarVisible ? "" : "hidden"
+
+                Image {
+                    id: progressFill
+                    source: "artwork/progress_bar_fill.png"
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: 6
+                    width: sourceSize.width * launcherItem.progress
+
+                    Behavior on width {
+                       NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+                    }
+                }
+
+                Behavior on width {
+                    NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
+                }
+
+                states: State {
+                    name: "hidden"
+                    PropertyChanges {
+                        target: progressBar
+                        width: 0
+                    }
+                    // This, combined with anchors.left: parent.left in the default state
+                    // makes the bar seem to come in from the left and go away at the right
+                    AnchorChanges {
+                        target: progressBar
+                        anchors.left: undefined
+                        anchors.right: tile.right
+                    }
+                }
+            }
+
+            Image {
+                id: emblemIcon
+                anchors.left: parent.left
+                anchors.top: parent.top
+                visible: launcherItem.emblemVisible && !counter.visible
+            }
+
+
+            /* The entire tile will "shake" when the window is marked as "urgent", to attract
+               the user's attention */
+            SequentialAnimation {
+                running: urgent
+                alwaysRunToEnd: true
+
+                SequentialAnimation {
+                    loops: 30
+                    NumberAnimation { target: tile; property: "rotation"; to: 15; duration: 150 }
+                    NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
+                }
+                NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
+            }
+
+            MouseArea {
+                id: mouse
+                anchors.fill: parent
+
+                hoverEnabled: true
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: item.clicked(mouse)
+                onEntered: item.entered()
+                onExited: item.exited()
+            }
         }
 
-    }
-
-    Image {
-        id: running_arrow
-
-        z: -1
-        width: sourceSize.width
-        height: sourceSize.height
-        anchors.rightMargin: -2
-        anchors.right: container.left
-        anchors.verticalCenter: container.verticalCenter
-        opacity: running ? 1.0 : 0.0
-        source: urgent ? "/usr/share/unity/themes/application-running-notify.png" : "/usr/share/unity/themes/application-running.png"
-
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-    }
-
-    Image {
-        id: active_arrow
-
-        z: -1
-        width: sourceSize.width
-        height: sourceSize.height
-        anchors.leftMargin: -2
-        anchors.left: container.right
-        anchors.verticalCenter: container.verticalCenter
-        opacity: active ? 1.0 : 0.0
-        source: "/usr/share/unity/themes/application-selected.png"
-
-        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-    }
-
-    Text {
-        id: label
-
-        font.pointSize: 10
-        wrapMode: Text.WordWrap
-        horizontalAlignment: Text.AlignHCenter
-        anchors.top: parent.bottom
-        anchors.topMargin: 7
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        font.underline: parent.focus
+        states: State {
+            name: "beingDragged"
+            when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
+            PropertyChanges {
+                target: looseItem
+                /* item.parent is the delegate, and its parent is the LauncherList */
+                y: dnd.listCoordinates.y - item.parent.parent.contentY - tile.height / 2
+                /* When dragging an item, stack it on top of all its siblings */
+                z: 1
+            }
+        }
+        Behavior on y {
+            enabled: (looseItem.state != "beingDragged") && !item.parent.parent.moving && !item.parent.parent.autoScrolling
+            NumberAnimation {
+                duration: 400
+                easing.type: Easing.OutBack
+            }
+        }
     }
 }

@@ -39,6 +39,7 @@ public:
     /* getters */
     virtual bool active() const;
     virtual bool running() const;
+    virtual int windowCount() const;
     virtual bool urgent() const;
     virtual QString name() const;
     virtual QString icon() const;
@@ -47,6 +48,12 @@ public:
     /* methods */
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE virtual void createMenuActions();
+
+public Q_SLOTS:
+    /* Custom implementation of drag’n’drop handling. Dropping files on the
+       trash will… move them to the trash! */
+    void onDragEnter(DeclarativeDragDropEvent*);
+    void onDrop(DeclarativeDragDropEvent*);
 
 private slots:
     void onEmptyTriggered();

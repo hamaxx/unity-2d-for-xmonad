@@ -47,7 +47,11 @@ LauncherApplication::LauncherApplication()
     , m_desktopFileWatcher(NULL)
     , m_appInfo(NULL)
     , m_sticky(false)
+    , m_priority(-1) /* special value, really means undefined priority */
     , m_has_visible_window(false)
+    , m_progress(0), m_progressBarVisible(false)
+    , m_counter(0), m_counterVisible(false)
+    , m_emblem(QString()), m_emblemVisible(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
@@ -107,6 +111,16 @@ LauncherApplication::running() const
         return m_application->running();
 
     return false;
+}
+
+int
+LauncherApplication::windowCount() const
+{
+    if (m_application == NULL) {
+        return 0;
+    }
+
+    return m_application->windows()->size();
 }
 
 bool
@@ -297,6 +311,8 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(UrgentChanged(bool)), this, SIGNAL(urgentChanged(bool)));
     QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
     QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateHasVisibleWindow()));
+    QObject::connect(application, SIGNAL(WindowAdded(BamfWindow*)), this, SLOT(updateWindowCount()));
+    QObject::connect(application, SIGNAL(WindowRemoved(BamfWindow*)), this, SLOT(updateWindowCount()));
     connect(application, SIGNAL(ChildAdded(BamfView*)), SLOT(slotChildAdded(BamfView*)));
     connect(application, SIGNAL(ChildRemoved(BamfView*)), SLOT(slotChildRemoved(BamfView*)));
 
@@ -318,6 +334,7 @@ LauncherApplication::updateBamfApplicationDependentProperties()
     m_launching_timer.stop();
     emit launchingChanged(launching());
     updateHasVisibleWindow();
+    updateWindowCount();
     fetchIndicatorMenus();
 }
 
@@ -376,6 +393,15 @@ LauncherApplication::priority() const
     return m_priority;
 }
 
+void
+LauncherApplication::setPriority(int priority)
+{
+    if (priority != m_priority) {
+        m_priority = priority;
+        Q_EMIT priorityChanged(m_priority);
+    }
+}
+
 bool
 LauncherApplication::launching() const
 {
@@ -396,10 +422,52 @@ LauncherApplication::updateHasVisibleWindow()
         emit hasVisibleWindowChanged(m_has_visible_window);
 }
 
+void
+LauncherApplication::updateWindowCount()
+{
+    Q_EMIT windowCountChanged(windowCount());
+}
+
 bool
 LauncherApplication::has_visible_window() const
 {
     return m_has_visible_window;
+}
+
+float
+LauncherApplication::progress() const
+{
+    return m_progress;
+}
+
+int
+LauncherApplication::counter() const
+{
+    return m_counter;
+}
+
+QString
+LauncherApplication::emblem() const
+{
+    return m_emblem;
+}
+
+bool
+LauncherApplication::progressBarVisible() const
+{
+    return m_progressBarVisible;
+}
+
+bool
+LauncherApplication::counterVisible() const
+{
+    return m_counterVisible;
+}
+
+bool
+LauncherApplication::emblemVisible() const
+{
+    return m_emblemVisible;
 }
 
 /* Returns the number of window for this application that reside on the
@@ -761,5 +829,42 @@ LauncherApplication::onQuitTriggered()
 {
     m_menu->hide();
     close();
+}
+
+template<typename T>
+bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
+                                             QString propertyName, T* member)
+{
+    if (properties.contains(propertyName)) {
+        T value = properties.value(propertyName).value<T>();
+        if (value != *member) {
+            *member = value;
+            return true;
+        }
+    }
+    return false;
+}
+
+void
+LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
+{
+    if (updateOverlayState(properties, "progress", &m_progress)) {
+        Q_EMIT progressChanged(m_progress);
+    }
+    if (updateOverlayState(properties, "progress-visible", &m_progressBarVisible)) {
+        Q_EMIT progressBarVisibleChanged(m_progressBarVisible);
+    }
+    if (updateOverlayState(properties, "count", &m_counter)) {
+        Q_EMIT counterChanged(m_counter);
+    }
+    if (updateOverlayState(properties, "count-visible", &m_counterVisible)) {
+        Q_EMIT counterVisibleChanged(m_counterVisible);
+    }
+    if (updateOverlayState(properties, "emblem", &m_emblem)) {
+        Q_EMIT emblemChanged(m_emblem);
+    }
+    if (updateOverlayState(properties, "emblem-visible", &m_emblemVisible)) {
+        Q_EMIT emblemVisibleChanged(m_emblemVisible);
+    }
 }
 

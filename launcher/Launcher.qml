@@ -1,118 +1,118 @@
 import Qt 4.7
 import UnityApplications 1.0
+import Unity2d 1.0 /* required for drag’n’drop handling */
 
 Item {
-    width: 58
-    height: 1024
+    id: launcher
 
     Image {
         id: background
 
         anchors.fill: parent
         fillMode: Image.TileVertically
-        source: "/usr/share/unity/themes/launcher_background_middle.png"
+        source: "artwork/background.png"
     }
 
-    ListView {
-        id: list
+    LauncherList {
+        id: main
+        anchors.top: parent.top
+        anchors.bottom: shelf.top
+        width: parent.width
+        z: 1 /* for dnd to remain on top of looseItems */
 
-        /* Keep a reference to the currently visible contextual menu */
-        property variant visibleMenu
-
-        anchors.fill: parent
-        focus: true
+        paddingTop: 5
+        paddingBottom: 5
+        autoScrollSize: tileSize / 2
+        autoScrollVelocity: 200
 
         model: ListAggregatorModel {
             id: items
         }
 
-        delegate: LauncherItem {
-            id: wrapper
+        // FIXME: dragging the list to flick it exhibits unpleasant visual
+        // artifacts, and its contentY sometimes remains blocked at a position
+        // too far off the boundaries of the list.
+        MouseArea {
+            /* Handle drag’n’drop to re-order applications. */
+            id: dnd
+            anchors.fill: parent
 
-            width: 58; height: 54
-            icon: "image://icons/"+item.icon
-            running: item.running
-            active: item.active
-            urgent: item.urgent
-            launching: item.launching
+            /* id (desktop file path) of the application being dragged */
+            property string currentId: ""
+            /* list index of the application being dragged */
+            property int currentIndex
+            /* absolute mouse coordinates in the list */
+            property variant listCoordinates: mapToItem(main.contentItem, mouseX, mouseY)
+            /* list index of the application underneath the cursor */
+            property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
 
-            Binding { target: item.menu; property: "title"; value: item.name }
-
-            function showMenu() {
-                /* Prevent the simultaneous display of multiple menus */
-                if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
-                    list.visibleMenu.hide()
-                }
-                list.visibleMenu = item.menu
-
-                /* The menu needs to never overlap with the MouseArea of
-                   item otherwise flickering happens when the mouse is on
-                   an overlapping pixel (hence the -4). */
-                item.menu.show(width-4, y+height/2-list.contentY+panel.y)
+            onPressed: {
+                /* index is not valid yet because the mouse area is not
+                   sensitive to hovering (if it were, it would eat hover events
+                   for other mouse areas below, which is not desired). */
+                var coord = mapToItem(main.contentItem, mouse.x, mouse.y)
+                currentIndex = main.indexAt(coord.x, coord.y)
             }
-
+            onPressAndHold: {
+                if (index != currentIndex) {
+                    /* The item under the cursor changed since the press. */
+                    return
+                }
+                parent.interactive = false
+                var id = items.get(currentIndex).desktop_file
+                if (id != undefined) currentId = id
+            }
+            function drop() {
+                currentId = ""
+                parent.interactive = true
+            }
+            onReleased: drop()
+            onExited: drop()
+            onMousePositionChanged: {
+                if (currentId != "" && index != -1 && index != currentIndex) {
+                    /* Workaround a bug in QML whereby moving an item down in
+                       the list results in its visual representation being
+                       shifted too far down by one index
+                       (http://bugreports.qt.nokia.com/browse/QTBUG-15841).
+                       Since the bug happens only when moving an item *down*,
+                       and since moving an item one index down is strictly
+                       equivalent to moving the item below one index up, we
+                       achieve the same result by tricking the list model into
+                       thinking that the mirror operation was performed.
+                       Note: this bug will be fixed in Qt 4.7.2, at which point
+                       this workaround can go away. */
+                    if (index > currentIndex) {
+                        items.move(index, currentIndex, 1)
+                    } else {
+                        /* This should be the only code path here, if it wasn’t
+                           for the bug explained and worked around above. */
+                        items.move(currentIndex, index, 1)
+                    }
+                    currentIndex = index
+                }
+            }
             onClicked: {
-                if (mouse.button == Qt.LeftButton) {
-                    item.menu.hide()
-                    item.activate()
-                }
-                else if (mouse.button == Qt.RightButton) {
-                    item.menu.folded = false
-                    showMenu()
-                }
+                /* Forward the click to the launcher item below. */
+                var point = mapToItem(main.contentItem, mouse.x, mouse.y)
+                var item = main.contentItem.childAt(point.x, point.y)
+                /* FIXME: the coordinates of the mouse event forwarded are
+                   incorrect. Luckily, it’s acceptable as they are not used in
+                   the handler anyway. */
+                if (item && typeof(item.clicked) == "function") item.clicked(mouse)
             }
+        }
+    }
 
-            /* Display the tooltip when hovering the item only when the list
-               is not moving */
-            onEntered: if (!list.moving) showMenu()
-            onExited: {
-                /* When unfolded, leave enough time for the user to reach the
-                   menu. Necessary because there is some void between the item
-                   and the menu. Also it fixes the case when the user
-                   overshoots. */
-                if (!item.menu.folded)
-                    item.menu.hideWithDelay(400)
-                else
-                    item.menu.hide()
-            }
-            Connections {
-                target: list
-                onMovementStarted: item.menu.hide()
-            }
+    LauncherList {
+        id: shelf
+        anchors.bottom: parent.bottom;
+        height: tileSize * count + spacing * Math.max(0, count - 1)
+        width: parent.width
+        /* Ensure the tiles in the shelf are always above those in 'main'. */
+        itemZ: 1
 
-            function setIconGeometry() {
-                if (running) {
-                    item.setIconGeometry(x + panel.x, y + panel.y, width, height)
-                }
-            }
-
-            ListView.onAdd: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "scale"; value: 0 }
-                NumberAnimation { target: wrapper; property: "height"; from: 0; to: 54; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
-            }
-
-            ListView.onRemove: SequentialAnimation {
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: true }
-                NumberAnimation { target: wrapper; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                NumberAnimation { target: wrapper; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-                PropertyAction { target: wrapper; property: "ListView.delayRemove"; value: false }
-            }
-
-            onRunningChanged: setIconGeometry()
-            /* Note: this doesn’t work as expected for the first favorite
-               application in the list if it is already running when the
-               launcher is started, because its y property doesn’t change.
-               This isn’t too bad though, as the launcher is supposed to be
-               started before any other regular application. */
-            onYChanged: setIconGeometry()
-
-            Connections {
-                target: item
-                onWindowAdded: item.setIconGeometry(x + panel.x, y + panel.y, width, height, xid)
-                /* Not all items are applications. */
-                ignoreUnknownSignals: true
-            }
+        model: ListAggregatorModel {
+            id: shelfItems
         }
     }
 
@@ -128,12 +128,12 @@ Item {
         id: devices
     }
 
-    Trashes {
-        id: trashes
-    }
-
     WorkspacesList {
         id: workspaces
+    }
+
+    Trashes {
+        id: trashes
     }
 
     Component.onCompleted: {
@@ -141,7 +141,7 @@ Item {
         items.appendModel(workspaces);
         items.appendModel(places);
         items.appendModel(devices);
-        items.appendModel(trashes);
+        shelfItems.appendModel(trashes);
     }
 
     Connections {

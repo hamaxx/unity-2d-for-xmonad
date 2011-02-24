@@ -24,6 +24,7 @@
 #include <QUrl>
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
+#include <QMap>
 
 class LauncherApplication;
 class BamfApplication;
@@ -39,6 +40,8 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
+
+    Q_INVOKABLE void move(int from, int to);
 
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
     Q_INVOKABLE void insertWebFavorite(const QUrl& url);
@@ -71,6 +74,8 @@ private slots:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
+    void onRemoteEntryUpdated(QString applicationURI,
+                              QMap<QString, QVariant> properties);
 };
 
 QML_DECLARE_TYPE(LauncherApplicationsList)

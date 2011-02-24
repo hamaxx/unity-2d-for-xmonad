@@ -20,7 +20,9 @@
 #include <gtk/gtk.h>
 
 // unity-2d
+#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
+#include <unity2dapplication.h>
 
 // Qt
 #include <QApplication>
@@ -32,7 +34,9 @@
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
+#include "hidemodecontroller.h"
 #include "unity2dpanel.h"
+#include "gesturehandler.h"
 
 int main(int argc, char *argv[])
 {
@@ -52,7 +56,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication application(argc, argv);
+    Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
@@ -61,10 +65,15 @@ int main(int argc, char *argv[])
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
+
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setFixedWidth(58);
+    panel.setFixedWidth(66);
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
@@ -79,9 +88,16 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
+    if (!isRunningInstalled()) {
+        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
+    }
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+
+    /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
+    launcherView->rootContext()->setContextProperty("engineBaseUrl",
+                                                    launcherView->engine()->baseUrl().toLocalFile());
 
     LauncherControl control;
     launcherView->rootContext()->setContextProperty("launcherControl", &control);
@@ -91,6 +107,7 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
+    new HideModeController(&panel);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
@@ -100,6 +117,10 @@ int main(int argc, char *argv[])
        running installed).
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
     g_unsetenv("DESKTOP_AUTOSTART_ID");
+
+    /* Gesture handler instance in charge of listening to gesture events and
+       trigger appropriate actions in response. */
+    GestureHandler gestureHandler;
 
     return application.exec();
 }

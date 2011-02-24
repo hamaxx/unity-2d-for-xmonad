@@ -33,6 +33,9 @@
 #undef signals
 #include <gtk/gtk.h>
 
+// unity-2d
+#include <gettexttranslator.h>
+
 #include "dashdeclarativeview.h"
 #include "superkeymonitor.h"
 
@@ -116,6 +119,11 @@ int main(int argc, char *argv[])
     if (!registerDBusService(&view)) {
         return -1;
     }
+
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,

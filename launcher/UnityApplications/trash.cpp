@@ -53,6 +53,12 @@ Trash::running() const
     return false;
 }
 
+int
+Trash::windowCount() const
+{
+    return 0;
+}
+
 bool
 Trash::urgent() const
 {
@@ -68,7 +74,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return QString(unity2dDirectory() + "/launcher/artwork/trash.png");
+    return "user-trash";
 }
 
 bool
@@ -206,6 +212,32 @@ Trash::onEmptyTriggered()
 {
     m_menu->hide();
     empty();
+}
+
+void
+Trash::onDragEnter(DeclarativeDragDropEvent* event)
+{
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file") {
+            event->setDropAction(Qt::MoveAction);
+            event->setAccepted(true);
+            return;
+        }
+    }
+}
+
+void
+Trash::onDrop(DeclarativeDragDropEvent* event)
+{
+    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+        if (url.scheme() == "file") {
+            GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
+            if (!g_file_trash(file, NULL, NULL)) {
+                qWarning() << "Unable to send" << url << "to the trash";
+            }
+            g_object_unref(file);
+        }
+    }
 }
 
 

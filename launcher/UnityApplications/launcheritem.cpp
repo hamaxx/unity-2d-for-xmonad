@@ -36,3 +36,18 @@ LauncherItem::menu() const
 {
     return m_menu;
 }
+
+void
+LauncherItem::onDragEnter(DeclarativeDragDropEvent* event)
+{
+    Q_UNUSED(event)
+    /* Default to doing nothing, i.e. refusing the event. */
+}
+
+void
+LauncherItem::onDrop(DeclarativeDragDropEvent* event)
+{
+    Q_UNUSED(event)
+    /* Default to doing nothing. */
+}
+

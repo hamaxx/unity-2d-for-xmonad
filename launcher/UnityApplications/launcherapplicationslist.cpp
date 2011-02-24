@@ -25,8 +25,12 @@
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
+#include <QDBusConnection>
+#include <QFileInfo>
 
 #define FAVORITES_KEY QString("/desktop/unity/launcher/favorites/")
+#define DBUS_SERVICE_UNITY "com.canonical.Unity"
+#define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -34,7 +38,40 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     m_favorites_list = new GConfItemQmlWrapper();
     m_favorites_list->setKey(FAVORITES_KEY + "favorites_list");
 
+    /* FIXME: libunity will send out the Update signal for LauncherEntries
+       only if it finds com.canonical.Unity on the bus, so let's just quickly
+       register ourselves as Unity here. Should be moved somewhere else more proper */
+    if (!QDBusConnection::sessionBus().registerService(DBUS_SERVICE_UNITY)) {
+        qWarning() << "The name com.canonical.Unity is already taken on the bus";
+    } else {
+        /* Set ourselves up to receive any Update signal coming from any
+           LauncherEntry */
+        QDBusConnection session = QDBusConnection::sessionBus();
+        session.connect(QString(), QString(),
+                        DBUS_SERVICE_LAUNCHER_ENTRY, "Update",
+                        this, SLOT(onRemoteEntryUpdated(QString,QMap<QString,QVariant>)));
+    }
+
     load();
+}
+
+void
+LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
+{
+    QString desktopFile;
+    if (applicationURI.indexOf("application://") == 0) {
+        desktopFile = applicationURI.mid(14);
+    } else {
+        qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
+        return;
+    }
+    Q_FOREACH(LauncherApplication *application, m_applications) {
+        if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
+            application->updateOverlaysState(properties);
+            return;
+        }
+    }
+    qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
 }
 
 LauncherApplicationsList::~LauncherApplicationsList()
@@ -57,12 +94,26 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
     return QString("app-") + QDir(desktop_file).dirName();
 }
 
-
 void
 LauncherApplicationsList::insertApplication(LauncherApplication* application)
 {
-    beginInsertRows(QModelIndex(), m_applications.size(), m_applications.size());
-    m_applications.append(application);
+    int index = 0;
+    int priority = application->priority();
+    if (priority == -1) {
+        /* Undefined priority, insert at the end of the list. */
+        index = m_applications.size();
+    } else {
+        /* Compute where to insert based on other applications’ priorities. */
+        Q_FOREACH(LauncherApplication* app, m_applications) {
+            if ((app->priority() == -1) || (app->priority() > priority)) {
+                break;
+            }
+            ++index;
+        }
+    }
+
+    beginInsertRows(QModelIndex(), index, index);
+    m_applications.insert(index, application);
 
     if (!application->desktop_file().isEmpty()) {
         m_applicationForDesktopFile.insert(application->desktop_file(), application);
@@ -85,7 +136,6 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 
     delete application;
 }
-
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
@@ -116,7 +166,17 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     /* Create a new LauncherApplication */
     LauncherApplication* application = new LauncherApplication;
     application->setDesktopFile(desktop_file);
-    application->setSticky(true);
+
+    /* Does the application have a priority defined? */
+    /* Note: when migrating to GSettings for the storage of favorites,
+       priorities will go away. Favorite applications will simply be sorted in
+       the order they are found in the list in GSettings. */
+    GConfItemQmlWrapper priority;
+    priority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(desktop_file) + "/priority");
+    QVariant value = priority.getValue();
+    if (value.isValid()) {
+        application->setPriority(value.toInt());
+    }
 
     /* If the desktop_file property is empty after setting it, it
        means glib couldn't load the desktop file (probably corrupted) */
@@ -126,6 +186,7 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
         delete application;
     } else {
         insertApplication(application);
+        application->setSticky(true);
     }
 }
 
@@ -148,9 +209,8 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 void
 LauncherApplicationsList::load()
 {
-    /* FIXME: applications should be sorted depending on their priority */
-
     /* Insert favorites */
+    /* FIXME: migrate to GSettings, like unity. */
     QString desktop_file;
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
@@ -244,11 +304,14 @@ LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* applica
     gconf_type.setKey(FAVORITES_KEY + favorite_id + "/type");
     gconf_type.setValue(QVariant(application->application_type()));
 
-    GConfItemQmlWrapper gconf_priority;
-    gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
-    /* FIXME: unity expects floats and not ints; it crashes at startup
-              otherwise */
-    gconf_priority.setValue(QVariant(double(application->priority())));
+    int priority = application->priority();
+    if (priority != -1) {
+        GConfItemQmlWrapper gconf_priority;
+        gconf_priority.setKey(FAVORITES_KEY + favorite_id + "/priority");
+        /* FIXME: unity expects floats and not ints; it crashes at startup
+                  otherwise */
+        gconf_priority.setValue(QVariant(double(priority)));
+    }
 }
 
 void
@@ -291,5 +354,40 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
         return QVariant();
 
     return QVariant::fromValue(m_applications.at(index.row()));
+}
+
+
+void
+LauncherApplicationsList::move(int from, int to)
+{
+    LauncherApplication* firstApplication = m_applications[qMin(from, to)];
+    LauncherApplication* secondApplication = m_applications[qMax(from, to)];
+
+    QModelIndex parent;
+    /* When moving an item down, the destination index needs to be incremented
+       by one, as explained in the documentation:
+       http://doc.qt.nokia.com/qabstractitemmodel.html#beginMoveRows */
+    beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
+    m_applications.move(from, to);
+    endMoveRows();
+
+    if (firstApplication->sticky() && secondApplication->sticky()) {
+        /* Update priorities only if both applications are favorites. */
+        int firstPriority = firstApplication->priority();
+        int secondPriority = secondApplication->priority();
+        /* Since we are guaranteed that this sort of move only happens between
+           two consecutive applications, all we need to do is swap their
+           priorities. */
+        firstApplication->setPriority(secondPriority);
+        secondApplication->setPriority(firstPriority);
+
+        GConfItemQmlWrapper firstGconfPriority;
+        firstGconfPriority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(firstApplication->desktop_file()) + "/priority");
+        firstGconfPriority.setValue(QVariant(double(firstApplication->priority())));
+
+        GConfItemQmlWrapper secondGconfPriority;
+        secondGconfPriority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(secondApplication->desktop_file()) + "/priority");
+        secondGconfPriority.setValue(QVariant(double(secondApplication->priority())));
+    }
 }
 
