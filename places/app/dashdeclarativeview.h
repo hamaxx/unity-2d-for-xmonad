@@ -22,46 +22,69 @@
 class DashDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
+    Q_ENUMS(DashMode)
 
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity2d.Dash")
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
+    Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
+    Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning)
 
 public:
+    enum DashMode {
+        HiddenMode,
+        DesktopMode,
+        FullScreenMode
+    };
     explicit DashDeclarativeView();
 
     /* getters */
     bool active() const;
+    DashMode dashMode() const;
     const QString& activePlaceEntry() const;
     const QRect screenGeometry() const;
     const QRect availableGeometry() const;
+    bool expanded() const;
+    bool isCompositingManagerRunning() const;
 
     /* setters */
     Q_SLOT void setActive(bool active);
+    Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActivePlaceEntry(const QString& activePlaceEntry);
+    Q_INVOKABLE void setExpanded(bool);
 
     /* methods */
     Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
     Q_INVOKABLE void activateHome();
 
-signals:
+Q_SIGNALS:
     void activeChanged(bool);
+    void dashModeChanged(DashMode);
+    void expandedChanged(bool);
     void activePlaceEntryChanged(const QString&);
 
     void screenGeometryChanged();
     void availableGeometryChanged();
 
-public slots:
-    void fitToAvailableSpace(int screen);
+protected:
+    void resizeEvent(QResizeEvent*);
+
+private Q_SLOTS:
+    void onWorkAreaResized(int screen);
 
 private:
+    void fitToAvailableSpace();
+    void resizeToDesktopModeSize();
     void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
+    void updateMask();
 
-    bool m_active;
+    DashMode m_mode;
+    bool m_expanded;
     QString m_activePlaceEntry; /* D-Bus object path of the place entry */
 };
 

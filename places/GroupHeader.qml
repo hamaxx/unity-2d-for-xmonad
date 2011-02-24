@@ -1,66 +1,94 @@
 import Qt 4.7
+import Effects 1.0
 
-Button {
-    property alias icon: icon.source
-    property alias label: label.text
+AbstractButton {
+    id: groupHeader
+
+    property string icon
+    property alias label: title.text
     property bool folded: true
     property int availableCount
 
+    effect: DropShadow {
+                blurRadius: 6
+                offset.x: 0
+                offset.y: 0
+                color: "white"
+                enabled: groupHeader.state == "pressed"
+            }
 
     Image {
-        id: icon
+        id: iconImage
+
+        source: icon
 
         width: 22
         height: 22
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: underline.top
+        anchors.bottomMargin: 5
         anchors.left: parent.left
-        anchors.leftMargin: 7
+        anchors.leftMargin: 8
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
     }
 
     TextCustom {
-        id: label
+        id: title
 
-        color: parent.state == "pressed" ? "#444444" : "#ffffff"
         font.pixelSize: 16
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
-        anchors.left: icon.right
-        anchors.leftMargin: 5
-        width: paintedWidth
+        anchors.baseline: underline.top
+        anchors.baselineOffset: -10
+        anchors.left: iconImage.right
+        anchors.leftMargin: 8
     }
 
-    Image {
-        id: arrow
+    Item {
+        id: moreResults
 
         visible: availableCount > 0
-        rotation: folded ? 0 : 90
-        source: "artwork/arrow.png"
-        width: 7
-        height: 7
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: label.right
-        anchors.leftMargin: 6
-        fillMode: Image.PreserveAspectFit
-        sourceSize.width: width
-        sourceSize.height: height
+        anchors.left: title.right
+        anchors.leftMargin: 11
+        anchors.baseline: title.baseline
+
+        opacity: groupHeader.state == "selected" || groupHeader.state == "pressed" ? 1.0 : 0.5
+        Behavior on opacity {NumberAnimation { duration: 100 }}
+
+        effect: DropShadow {
+                    blurRadius: 4
+                    offset.x: 0
+                    offset.y: 0
+                    color: "white"
+                    enabled: moreResults.opacity == 1.0
+                }
+
+        TextCustom {
+            id: label
+
+            text: groupHeader.folded ? qsTr("See %1 more results").arg(availableCount) : qsTr("See fewer results")
+            anchors.left: parent.left
+            anchors.baseline: parent.baseline
+        }
+
+        FoldingArrow {
+            id: arrow
+
+            folded: groupHeader.folded
+            anchors.left: label.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: label.verticalCenter
+        }
     }
 
     Rectangle {
         id: underline
 
-        opacity: parent.state == "selected" ? 0.0 : 1.0
-        Behavior on opacity {NumberAnimation {duration: 100}}
+        color: "white"
+        opacity: groupHeader.state == "pressed" ? 0.45 : 0.3
 
         height: 1
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.leftMargin: 5
         anchors.right: parent.right
-        anchors.rightMargin: 1
-
-        color: "#4cffffff"
     }
 }

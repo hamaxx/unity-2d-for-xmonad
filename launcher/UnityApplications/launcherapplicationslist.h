@@ -41,6 +41,8 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
+    Q_INVOKABLE void move(int from, int to);
+
     Q_INVOKABLE void insertFavoriteApplication(QString desktop_file);
     Q_INVOKABLE void insertWebFavorite(const QUrl& url);
 

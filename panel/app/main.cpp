@@ -30,6 +30,7 @@
 #include <legacytray/legacytrayapplet.h>
 
 // Unity
+#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
 #include <unity2dpanel.h>
 #include <unity2dapplication.h>
@@ -104,6 +105,11 @@ int main(int argc, char** argv)
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");
     client.connectToSessionManager();
+
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     Unity2dPanel panel;
     panel.setEdge(Unity2dPanel::TopEdge);

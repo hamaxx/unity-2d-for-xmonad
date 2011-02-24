@@ -356,3 +356,38 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
     return QVariant::fromValue(m_applications.at(index.row()));
 }
 
+
+void
+LauncherApplicationsList::move(int from, int to)
+{
+    LauncherApplication* firstApplication = m_applications[qMin(from, to)];
+    LauncherApplication* secondApplication = m_applications[qMax(from, to)];
+
+    QModelIndex parent;
+    /* When moving an item down, the destination index needs to be incremented
+       by one, as explained in the documentation:
+       http://doc.qt.nokia.com/qabstractitemmodel.html#beginMoveRows */
+    beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
+    m_applications.move(from, to);
+    endMoveRows();
+
+    if (firstApplication->sticky() && secondApplication->sticky()) {
+        /* Update priorities only if both applications are favorites. */
+        int firstPriority = firstApplication->priority();
+        int secondPriority = secondApplication->priority();
+        /* Since we are guaranteed that this sort of move only happens between
+           two consecutive applications, all we need to do is swap their
+           priorities. */
+        firstApplication->setPriority(secondPriority);
+        secondApplication->setPriority(firstPriority);
+
+        GConfItemQmlWrapper firstGconfPriority;
+        firstGconfPriority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(firstApplication->desktop_file()) + "/priority");
+        firstGconfPriority.setValue(QVariant(double(firstApplication->priority())));
+
+        GConfItemQmlWrapper secondGconfPriority;
+        secondGconfPriority.setKey(FAVORITES_KEY + favoriteFromDesktopFilePath(secondApplication->desktop_file()) + "/priority");
+        secondGconfPriority.setValue(QVariant(double(secondApplication->priority())));
+    }
+}
+

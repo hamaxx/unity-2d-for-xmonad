@@ -38,6 +38,7 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QGraphicsEffect>
 
 #undef signals
 extern "C" {
@@ -69,6 +70,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
+    qmlRegisterType<QGraphicsBlurEffect>("Effects", 1, 0, "Blur");
+    qmlRegisterType<QGraphicsColorizeEffect>("Effects", 1, 0, "Colorize");
+    qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");
 
     /* Custom drag’n’drop implementation in QML */
     qmlRegisterType<DeclarativeMimeData>();

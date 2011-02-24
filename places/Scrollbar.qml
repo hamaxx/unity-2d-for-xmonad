@@ -1,8 +1,7 @@
 import Qt 4.7
 
 /* Scrollbar composed of:
-   - a background track; clicking on it triggers page scrolling
-   - a draggable slider on top
+   - a draggable slider
 
    Usage:
 
@@ -19,39 +18,31 @@ Item {
 
     property variant targetFlickable
 
-    width: 10
+    width: 3
 
-    BorderImage {
-        id: background
+    MouseArea {
+        id: scrollMouseArea
 
         anchors.fill: parent
-        source: "artwork/scrollbar/background.sci"
-        smooth: false
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
 
-        MouseArea {
-            id: scrollMouseArea
+        onPressed: {
+            /* Scroll one page without overshooting */
+            var scrollAmount = mouseY > slider.y ? targetFlickable.height : -targetFlickable.height
+            var destination = targetFlickable.contentY + scrollAmount
+            var clampedDestination = Math.max(0, Math.min(targetFlickable.contentHeight - targetFlickable.height,
+                                                          destination))
+            scrollAnimation.to = clampedDestination
+            scrollAnimation.restart()
+        }
 
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+        NumberAnimation {
+            id: scrollAnimation
 
-            onPressed: {
-                /* Scroll one page without overshooting */
-                var scrollAmount = mouseY > slider.y ? targetFlickable.height : -targetFlickable.height
-                var destination = targetFlickable.contentY + scrollAmount
-                var clampedDestination = Math.max(0, Math.min(targetFlickable.contentHeight - targetFlickable.height,
-                                                              destination))
-                scrollAnimation.to = clampedDestination
-                scrollAnimation.restart()
-            }
-
-            NumberAnimation {
-                id: scrollAnimation
-
-                duration: 200
-                easing.type: Easing.InOutQuad
-                target: targetFlickable
-                property: "contentY"
-            }
+            duration: 200
+            easing.type: Easing.InOutQuad
+            target: targetFlickable
+            property: "contentY"
         }
     }
 
@@ -74,35 +65,16 @@ Item {
 
         BorderImage {
             anchors.fill: parent
-            /* The glow around the slider is 5 pixels wide */
-            anchors.margins: -5
+            /* The glow around the slider is 5 pixels wide on the left and right sides
+               and 10 pixels tall on the top and bottom sides. */
+            anchors.rightMargin: -5
+            anchors.leftMargin: -5
+            anchors.topMargin: -10
+            anchors.bottomMargin: -10
 
             smooth: false
 
-            source: {
-                if(dragMouseArea.pressed)
-                    return "artwork/scrollbar/slider_pressed.sci"
-                else if(dragMouseArea.containsMouse)
-                    return "artwork/scrollbar/slider_hovered.sci"
-                else
-                    return "artwork/scrollbar/slider_default.sci"
-            }
-
-            Image {
-                id: handle
-
-                anchors.centerIn: parent
-                source: {
-                    if(dragMouseArea.pressed)
-                        return "artwork/scrollbar/handle_pressed.png"
-                    else
-                        return "artwork/scrollbar/handle_default.png"
-                }
-                width: sourceSize.width
-                height: sourceSize.height
-                fillMode: Image.Tile
-                smooth: false
-            }
+            source: "artwork/scrollbar.sci"
         }
 
         MouseArea {

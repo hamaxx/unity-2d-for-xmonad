@@ -45,7 +45,7 @@ Renderer {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 28
+        height: 32
         icon: parent.iconHint
         label: parent.displayName
 
@@ -56,7 +56,7 @@ Renderer {
         id: results_layout
 
         anchors.top: header.bottom
-        anchors.topMargin: 14
+        anchors.topMargin: 22
         anchors.left: parent.left
         anchors.leftMargin: 2
         anchors.right: parent.right
