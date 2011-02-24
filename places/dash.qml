@@ -154,11 +154,11 @@ Item {
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 12
+            anchors.bottomMargin: 12 + (dashView.dashMode == DashDeclarativeView.DesktopMode ? 38 : 0)
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.right: refine_search.folded ? parent.right : refine_search.left
-            anchors.rightMargin: refine_search.folded ? 0 : 15
+            anchors.rightMargin: (refine_search.folded ? 0 : 15) + (dashView.dashMode == DashDeclarativeView.DesktopMode ? 40 : 0)
         }
     }
 }
