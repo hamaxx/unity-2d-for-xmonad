@@ -20,6 +20,7 @@
 #include <gtk/gtk.h>
 
 // unity-2d
+#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
 #include <propertybinder.h>
@@ -67,6 +68,11 @@ int main(int argc, char *argv[])
     /* Configure "artwork:" prefix so that any access to a file whose name starts
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
+
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
@@ -125,7 +131,7 @@ int main(int argc, char *argv[])
 
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */
-    GestureHandler *gestureHandler = new GestureHandler(&panel, &application);
+    GestureHandler gestureHandler(&panel);
 
     return application.exec();
 }

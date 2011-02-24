@@ -17,6 +17,7 @@
 #include "dashdeclarativeview.h"
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QBitmap>
 #include <QCloseEvent>
 #include <QDeclarativeContext>
 #include <QX11Info>
@@ -27,26 +28,63 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-DashDeclarativeView::DashDeclarativeView() :
-    QDeclarativeView(), m_active(false), m_activePlaceEntry()
+#include <config.h>
+
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
+static const int DASH_DESKTOP_WIDTH = 989;
+static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 78;
+static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
+
+DashDeclarativeView::DashDeclarativeView()
+: QDeclarativeView()
+, m_mode(HiddenMode)
+, m_expanded(false)
 {
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+    if (QX11Info::isCompositingManagerRunning()) {
+        setAttribute(Qt::WA_TranslucentBackground);
+        viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    } else {
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(Qt::WA_NoSystemBackground);
+    }
+
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(workAreaResized(int)), SIGNAL(availableGeometryChanged()));
+    connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 }
 
 void
-DashDeclarativeView::fitToAvailableSpace(int screen)
+DashDeclarativeView::onWorkAreaResized(int screen)
 {
-    QDesktopWidget *desktop = QApplication::desktop();    
-    int current_screen = desktop->screenNumber(this);
-
-    if(screen == current_screen)
-    {
-        QRect geometry = desktop->availableGeometry(this);
-        setGeometry(geometry);
-        setFixedSize(geometry.size());
+    if (QApplication::desktop()->screenNumber(this) != screen) {
+        return;
     }
+
+    if (m_mode == FullScreenMode) {
+        fitToAvailableSpace();
+    }
+
+    availableGeometryChanged();
+}
+
+void
+DashDeclarativeView::fitToAvailableSpace()
+{
+    setGeometry(QApplication::desktop()->availableGeometry(this));
+}
+
+void
+DashDeclarativeView::resizeToDesktopModeSize()
+{
+    QRect rect = QApplication::desktop()->availableGeometry(this);
+
+    rect.setWidth(DASH_DESKTOP_WIDTH);
+    rect.setHeight(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT);
+    setGeometry(rect);
 }
 
 void
@@ -56,24 +94,89 @@ DashDeclarativeView::focusOutEvent(QFocusEvent* event)
     setActive(false);
 }
 
-void
-DashDeclarativeView::setActive(bool active)
+static int getenvInt(const char* name, int defaultValue)
 {
-    m_active = active;
+    QByteArray stringValue = qgetenv(name);
+    bool ok;
+    int value = stringValue.toInt(&ok);
+    return ok ? value : defaultValue;
+}
 
-    if(active)
-    {
-        emit activeChanged(active);
+void
+DashDeclarativeView::setActive(bool value)
+{
+    if (value != active()) {
+        if (value) {
+            QRect rect = QApplication::desktop()->screenGeometry(this);
+            static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
+            static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
+            if (rect.width() < minWidth && rect.height() < minHeight) {
+                setDashMode(FullScreenMode);
+            } else {
+                setDashMode(DesktopMode);
+            }
+        } else {
+            setDashMode(HiddenMode);
+        }
+    }
+}
+
+bool
+DashDeclarativeView::active() const
+{
+    return m_mode != HiddenMode;
+}
+
+void
+DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
+{
+    if (m_mode == mode) {
+        return;
+    }
+
+    m_mode = mode;
+    if (m_mode == HiddenMode) {
+        hide();
+        activeChanged(false);
+    } else {
         show();
         raise();
         activateWindow();
         forceActivateWindow();
+        if (m_mode == FullScreenMode) {
+            fitToAvailableSpace();
+        } else {
+            resizeToDesktopModeSize();
+        }
+        activeChanged(true);
     }
-    else
-    {
-        hide();
-        emit activeChanged(active);
+    dashModeChanged(m_mode);
+}
+
+DashDeclarativeView::DashMode
+DashDeclarativeView::dashMode() const
+{
+    return m_mode;
+}
+
+void
+DashDeclarativeView::setExpanded(bool value)
+{
+    if (m_expanded == value) {
+        return;
     }
+    
+    m_expanded = value;
+    if (m_mode == DesktopMode) {
+        resizeToDesktopModeSize();
+    }
+    expandedChanged(m_expanded);
+}
+
+bool
+DashDeclarativeView::expanded() const
+{
+    return m_expanded;
 }
 
 void
@@ -83,12 +186,6 @@ DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
         m_activePlaceEntry = activePlaceEntry;
         Q_EMIT activePlaceEntryChanged(activePlaceEntry);
     }
-}
-
-bool
-DashDeclarativeView::active() const
-{
-    return m_active;
 }
 
 const QString&
@@ -130,19 +227,19 @@ void
 DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
 {
     QGraphicsObject* dash = rootObject();
-    setActive(true);
     QMetaObject::invokeMethod(dash, "activatePlaceEntry", Qt::AutoConnection,
                               Q_ARG(QVariant, QVariant::fromValue(file)),
                               Q_ARG(QVariant, QVariant::fromValue(entry)),
                               Q_ARG(QVariant, QVariant::fromValue(section)));
+    setActive(true);
 }
 
 void
 DashDeclarativeView::activateHome()
 {
     QGraphicsObject* dash = rootObject();
-    setActive(true);
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
+    setActive(true);
 }
 
 const QRect
@@ -170,4 +267,55 @@ DashDeclarativeView::keyPressEvent(QKeyEvent* event)
             QDeclarativeView::keyPressEvent(event);
             break;
     }
+}
+
+void
+DashDeclarativeView::resizeEvent(QResizeEvent* event)
+{
+    if (!QX11Info::isCompositingManagerRunning()) {
+        updateMask();
+    }
+    QDeclarativeView::resizeEvent(event);
+}
+
+static QBitmap
+createCornerMask()
+{
+    QPixmap pix(unity2dDirectory() + "/places/artwork/desktop_dash_background_no_transparency.png");
+    return pix.createMaskFromColor(Qt::red, Qt::MaskOutColor);
+}
+
+void
+DashDeclarativeView::updateMask()
+{
+    if (m_mode == FullScreenMode) {
+        clearMask();
+        return;
+    }
+    QBitmap bmp(size());
+    {
+        static QBitmap corner = createCornerMask();
+        static QBitmap top = corner.copy(0, 0, corner.width(), 1);
+        static QBitmap left = corner.copy(0, 0, 1, corner.height());
+
+        const int cornerX = bmp.width() - corner.width();
+        const int cornerY = bmp.height() - corner.height();
+
+        QPainter painter(&bmp);
+        painter.fillRect(bmp.rect(), Qt::color1);
+        painter.setBackgroundMode(Qt::OpaqueMode);
+        painter.setBackground(Qt::color1);
+        painter.setPen(Qt::color0);
+        painter.drawPixmap(cornerX, cornerY, corner);
+
+        painter.drawTiledPixmap(cornerX, 0, top.width(), cornerY, top);
+        painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
+    }
+    setMask(bmp);
+}
+
+bool
+DashDeclarativeView::isCompositingManagerRunning() const
+{
+    return QX11Info::isCompositingManagerRunning();
 }

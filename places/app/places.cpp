@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QtDeclarative>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
 #include <QDesktopWidget>
@@ -28,6 +29,12 @@
 #include <QAbstractEventDispatcher>
 
 #include <X11/Xlib.h>
+
+#undef signals
+#include <gtk/gtk.h>
+
+// unity-2d
+#include <gettexttranslator.h>
 
 #include "dashdeclarativeview.h"
 #include "superkeymonitor.h"
@@ -90,6 +97,8 @@ static bool eventFilter(void* message)
 
 int main(int argc, char *argv[])
 {
+    /* gtk needs to be inited, otherwise we get an assert failure in gdk */
+    gtk_init(&argc, &argv);
     QApplication::setApplicationName("Unity 2D Dash");
     qInstallMsgHandler(globalMessageHandler);
 
@@ -104,19 +113,17 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
+    qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
 
     if (!registerDBusService(&view)) {
         return -1;
     }
 
-    /* The dash window is borderless and not moveable by the user, yet not
-       fullscreen */
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-
-    /* Performance tricks */
-    view.setAttribute(Qt::WA_OpaquePaintEvent);
-    view.setAttribute(Qt::WA_NoSystemBackground);
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
@@ -136,11 +143,6 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("dashView", &view);
     view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
-
-    /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     /* Grab the "super" keys */
     SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */

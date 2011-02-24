@@ -29,23 +29,37 @@ extern "C" {
 #include <libwnck/libwnck.h>
 }
 
-static void
-updateActiveWindowConnectionsCB(GObject* screen, void* dummy, IntellihideController* controller)
-{
-    QMetaObject::invokeMethod(controller, "updateActiveWindowConnections");
+// Handy macros to declare GObject callbacks. The 'n' in CALLBACKn refers to
+// the number of dummy arguments the callback returns
+#define GOBJECT_CALLBACK0(callbackName, slot) \
+static void \
+callbackName(GObject* src, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
 }
 
-static void
-updateVisibilityCB(GObject* screen, IntellihideController* controller)
-{
-    QMetaObject::invokeMethod(controller, "updateVisibility");
+#define GOBJECT_CALLBACK1(callbackName, slot) \
+static void \
+callbackName(GObject* src, void* dummy1, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
 }
 
-static void
-stateChangedCB(GObject* screen, WnckWindowState*, WnckWindowState*, IntellihideController* controller)
-{
-    QMetaObject::invokeMethod(controller, "updateVisibility");
+#define GOBJECT_CALLBACK2(callbackName, slot) \
+static void \
+callbackName(GObject* src, void* dummy1, void* dummy2, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
 }
+
+// Screen callbacks
+GOBJECT_CALLBACK1(activeWindowChangedCB, "updateActiveWindowConnections");
+GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "updateVisibility");
+
+// Window callbacks
+GOBJECT_CALLBACK2(stateChangedCB, "updateVisibility");
+GOBJECT_CALLBACK0(geometryChangedCB, "updateVisibility");
+GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
 IntellihideController::IntellihideController(Unity2dPanel* panel)
 : m_panel(panel)
@@ -58,8 +72,8 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
     connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
 
     WnckScreen* screen = wnck_screen_get_default();
-    g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(updateActiveWindowConnectionsCB), this);
-    g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(updateVisibilityCB), this);
+    g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
+    g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
     updateFromPanelGeometry();
     /* Delay monitoring the active window giving time to the user to reach
@@ -71,15 +85,16 @@ IntellihideController::~IntellihideController()
 {
     disconnectFromGSignals();
     WnckScreen* screen = wnck_screen_get_default();
-    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(updateActiveWindowConnectionsCB), this);
-    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(updateVisibilityCB), this);
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWindowChangedCB), this);
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWorkspaceChangedCB), this);
 }
 
 void IntellihideController::disconnectFromGSignals()
 {
     if (m_activeWindow) {
-        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(updateVisibilityCB), this);
         g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(stateChangedCB), this);
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(geometryChangedCB), this);
+        g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(workspaceChangedCB), this);
     }
 }
 
@@ -94,8 +109,8 @@ void IntellihideController::updateActiveWindowConnections()
     if (window) {
         m_activeWindow = window;
         g_signal_connect(G_OBJECT(window), "state-changed", G_CALLBACK(stateChangedCB), this);
-        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(updateVisibilityCB), this);
-        g_signal_connect(G_OBJECT(window), "workspace-changed", G_CALLBACK(updateVisibilityCB), this);
+        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        g_signal_connect(G_OBJECT(window), "workspace-changed", G_CALLBACK(workspaceChangedCB), this);
     }
 
     updateVisibility();

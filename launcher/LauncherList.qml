@@ -4,11 +4,19 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
-    spacing: 5
+
+    /* The spacing is explicitly set to 0 and compensated for
+       by adding some padding to the tiles because of
+       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
+    spacing: 0
+
     property int tileSize: 54
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
+
+    /* A hint for items to determine the value of their 'z' property */
+    property real itemZ: 0
 
     delegate: LauncherItem {
         id: launcherItem
@@ -16,12 +24,21 @@ AutoScrollingListView {
         width: list.width
         tileSize: list.tileSize
 
+        desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: "image://icons/" + item.icon
         running: item.running
         active: item.active
         urgent: item.urgent
         launching: item.launching
         pips: Math.min(item.windowCount, 3)
+
+        property bool noOverlays: item.counter == undefined
+        counter: (noOverlays) ? 0 : item.counter
+        counterVisible: (noOverlays) ? false : item.counterVisible
+        progress: (noOverlays) ? 0.0 : item.progress
+        progressBarVisible: (noOverlays) ? false : item.progressBarVisible
+        emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
+        emblemVisible: (noOverlays) ? false : item.emblemVisible
 
         /* Best way I could find to check if the item is an application or the
            workspaces switcher. There may be something cleaner and better. */
@@ -77,6 +94,12 @@ AutoScrollingListView {
             target: list
             onMovementStarted: item.menu.hide()
             onAutoScrollingChanged: if (list.autoScrolling) item.menu.hide()
+        }
+
+        Connections {
+            target: dnd
+            /* Hide the tooltip/menu when dragging an application. */
+            onCurrentIdChanged: if (dnd.currentId != "") item.menu.hide()
         }
 
         function setIconGeometry() {

@@ -1,5 +1,6 @@
 # Sources
 set(libunity-2d-private_SRCS
+    gettexttranslator.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     mousearea.cpp
