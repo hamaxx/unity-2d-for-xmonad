@@ -5,11 +5,11 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: cdbs, debhelper (>= 7),
                cmake, bzr, libqt4-dev,
-               libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
+               libglib2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
                libx11-dev, libindicator-dev, libgtk2.0-dev, libutouch-geis-dev
 Standards-Version: 3.9.1
-Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/natty-release
+Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
 
 Package: unity-2d
 Architecture: all
@@ -23,7 +23,7 @@ Recommends: indicator-application, indicator-datetime,
  gtk2-engines-pixbuf
 Provides: unity-2d-default-settings
 Breaks: unity-2d-default-settings (<= 0.4)
-Replaces:  unity-2d-default-settings (<= 0.4)
+Replaces: unity-2d-default-settings (<= 0.4)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -33,7 +33,7 @@ Description: Unity interface for non-accelerated graphics cards
 
 Package: unity-2d-default-settings
 Architecture: all
-Depends: unity-2d
+Depends: ${misc:Depends}, unity-2d
 Description: Transitional package for upgrades to the new unity-2d package
  This is a transitional package to properly handle upgrading from natty
  pre-release installations of unity-2d and also for handling upgrades of 
