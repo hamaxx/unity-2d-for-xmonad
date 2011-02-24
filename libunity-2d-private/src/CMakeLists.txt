@@ -3,6 +3,7 @@ set(libunity-2d-private_SRCS
     gettexttranslator.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
+    mousearea.cpp
     unity2dapplication.cpp
     unity2dpanel.cpp
     mimedata.cpp

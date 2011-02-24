@@ -22,6 +22,7 @@
 // unity-2d
 #include <gettexttranslator.h>
 #include <gnomesessionclient.h>
+#include <unity2dapplication.h>
 
 // Qt
 #include <QApplication>
@@ -33,6 +34,7 @@
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
+#include "hidemodecontroller.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
@@ -54,7 +56,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication application(argc, argv);
+    Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
@@ -105,6 +107,7 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
+    new HideModeController(&panel);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
