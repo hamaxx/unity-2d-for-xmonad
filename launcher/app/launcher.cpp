@@ -23,6 +23,10 @@
 #include <gettexttranslator.h>
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
+#include <propertybinder.h>
+
+// libqtgconf
+#include <gconfitem-qml-wrapper.h>
 
 // Qt
 #include <QApplication>
@@ -105,6 +109,13 @@ int main(int argc, char *argv[])
 
     launcherView->setSource(QUrl("./Launcher.qml"));
 
+    /* Synchronise panel's "useStrut" property with its corresponding GConf key */
+    GConfItemQmlWrapper useStrutGconf;
+    useStrutGconf.setKey("/desktop/unity-2d/launcher/use_strut");
+    panel.setUseStrut(useStrutGconf.getValue().toBool());
+    PropertyBinder useStrutBinder;
+    useStrutBinder.bind(&useStrutGconf, "value", &panel, "useStrut");
+
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
     new HideModeController(&panel);
@@ -120,7 +131,7 @@ int main(int argc, char *argv[])
 
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */
-    GestureHandler gestureHandler;
+    GestureHandler gestureHandler(&panel);
 
     return application.exec();
 }

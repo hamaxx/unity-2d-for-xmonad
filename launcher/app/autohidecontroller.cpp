@@ -46,11 +46,16 @@ AutohideController::AutohideController(Unity2dPanel* panel)
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_autohideTimer, SIGNAL(timeout()), m_panel, SLOT(slideOut()));
 
-    m_panel->setUseStrut(false);
     m_panel->installEventFilter(this);
     updateFromPanelGeometry();
     if (!m_panel->geometry().contains(QCursor::pos())) {
-        m_autohideTimer->start();
+        if (m_panel->delta() == 0) {
+            /* Launcher is fully visible */
+            m_autohideTimer->start();
+        } else {
+            /* Launcher is partially hidden */
+            m_panel->slideOut();
+        }
     }
 }
 

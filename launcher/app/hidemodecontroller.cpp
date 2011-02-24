@@ -42,31 +42,37 @@ HideModeController::HideModeController(Unity2dPanel* panel)
 , m_controller(0)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
-    connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(updateFromGConf()));
-    updateFromGConf();
+    connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
+    connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
+    connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
+    update();
 }
 
 HideModeController::~HideModeController()
 {
 }
 
-void HideModeController::updateFromGConf()
+void HideModeController::update()
 {
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
     delete m_controller;
     m_controller = 0;
 
-    switch (mode) {
-    case NeverHide:
-        m_panel->setUseStrut(true);
-        m_panel->slideIn();
-        break;
-    case AutoHide:
-        m_controller = new AutohideController(m_panel);
-        break;
-    case IntelliHide:
-        m_controller = new IntellihideController(m_panel);
-        break;
+    /* Do not use any hiding controller if the panel is either:
+        - being slid manually
+        - locked in place (using struts)
+    */
+    if (!m_panel->manualSliding() && !m_panel->useStrut()) {
+        switch (mode) {
+        case ManualHide:
+            break;
+        case AutoHide:
+            m_controller = new AutohideController(m_panel);
+            break;
+        case IntelliHide:
+            m_controller = new IntellihideController(m_panel);
+            break;
+        }
     }
 }

@@ -42,11 +42,11 @@ public:
     ~HideModeController();
 
 private Q_SLOTS:
-    void updateFromGConf();
+    void update();
 
 private:
     enum AutoHideMode {
-        NeverHide,
+        ManualHide,
         AutoHide,
         IntelliHide
     };

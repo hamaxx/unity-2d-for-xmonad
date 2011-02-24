@@ -20,6 +20,7 @@
 
 // Qt
 #include <QEvent>
+#include <QTimer>
 
 // libwnck
 #undef signals
@@ -66,7 +67,6 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
 {
-    m_panel->setUseStrut(false);
     m_panel->installEventFilter(this);
 
     connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
@@ -76,7 +76,9 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
     updateFromPanelGeometry();
-    updateActiveWindowConnections();
+    /* Delay monitoring the active window giving time to the user to reach
+       for the panel before it disappears */
+    QTimer::singleShot(1000, this, SLOT(updateActiveWindowConnections()));
 }
 
 IntellihideController::~IntellihideController()

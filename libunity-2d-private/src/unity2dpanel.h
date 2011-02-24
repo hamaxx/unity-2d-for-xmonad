@@ -36,6 +36,14 @@ class Unity2dPanel : public QWidget
      * animations.
      */
     Q_PROPERTY(int delta READ delta WRITE setDelta)
+    /**
+     * Whether the delta property is being set by an external client. Setting
+     * this property to true stops any animation of the delta property triggered
+       by slideIn() or slideOut().
+     */
+    Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
+    Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
+
 public:
     enum Edge {
         LeftEdge,
@@ -64,9 +72,16 @@ public:
 
     int panelSize() const;
 
+    bool manualSliding() const;
+    void setManualSliding(bool);
+
 public Q_SLOTS:
     void slideIn();
     void slideOut();
+
+Q_SIGNALS:
+    void manualSlidingChanged(bool);
+    void useStrutChanged(bool);
 
 protected:
     virtual void showEvent(QShowEvent*);
