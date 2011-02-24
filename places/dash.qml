@@ -65,11 +65,19 @@ Item {
         Component.onCompleted: startAllPlaceServices()
     }
 
+    /* Backgrounds */
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !dashView.isCompositingManagerRunning
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.69
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && dashView.isCompositingManagerRunning
     }
 
     BorderImage {
@@ -77,6 +85,7 @@ Item {
         visible: dashView.dashMode == DashDeclarativeView.DesktopMode
         source: dashView.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
     }
+    /* /Backgrounds */
 
     Item {
         anchors.fill: parent
