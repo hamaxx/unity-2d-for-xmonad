@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: cdbs, debhelper (>= 7),
-               cmake, bzr, libqt4-dev,
+               cmake, libqt4-dev,
                libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
                libx11-dev, libindicator-dev, libgtk2.0-dev, libutouch-geis-dev
