@@ -3,18 +3,20 @@ set -e
 cd $(dirname $0)
 PO_DIR=$PWD
 
+PROGNAME=$(basename $0)
+
 # Create a list of files to scan
-UPDATE_POT_DIR=$(mktemp --tmpdir -d unity-2d-update-pot.XXXXX)
-trap 'rm -rf "$UPDATE_POT_DIR"' EXIT
-bzr export $UPDATE_POT_DIR
-cd $UPDATE_POT_DIR
-find -name '*.cpp' > lst
-find -name '*.qml' >> lst
+GETTEXT_FILES=$(mktemp --tmpdir unity-2d.lst.XXXXX)
+trap 'rm -f "$GETTEXT_FILES"' EXIT
+cd ..
+find \( -name '*.cpp' -o -name '*.qml' \) \
+    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*' \) \
+> $GETTEXT_FILES
 
 # Generate pot from our list
 xgettext \
     --output $PO_DIR/unity-2d.pot \
-    --files-from lst \
+    --files-from $GETTEXT_FILES \
     --qt --c++ \
     --keyword=tr --keyword=qsTr \
     --package-name unity-2d \

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-02-21 14:42+0100\n"
+"POT-Creation-Date: 2011-02-24 14:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,82 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: launcher/UnityApplications/workspaces.cpp:66
-msgid "Workspaces"
+#: places/Home.qml:158
+msgid "Find Media Apps"
+msgstr ""
+
+#: places/Home.qml:164
+msgid "Find Internet Apps"
+msgstr ""
+
+#: places/Home.qml:170
+msgid "Find More Apps"
+msgstr ""
+
+#: places/Home.qml:176
+msgid "Find Files"
+msgstr ""
+
+#: places/Home.qml:183
+msgid "Browse the Web"
+msgstr ""
+
+#: places/Home.qml:188
+msgid "View Photos"
+msgstr ""
+
+#: places/Home.qml:193
+msgid "Check Email"
+msgstr ""
+
+#: places/Home.qml:198
+msgid "Listen to Music"
+msgstr ""
+
+#: places/SearchRefine.qml:43
+msgid "Refine search"
+msgstr ""
+
+#: places/SearchRefine.qml:66
+msgid "Type"
+msgstr ""
+
+#: places/SearchEntry.qml:137
+#, qt-format
+msgid "Search for %1"
+msgstr ""
+
+#: places/SearchEntry.qml:139
+msgid "Search"
+msgstr ""
+
+#: places/GroupHeader.qml:68
+#, qt-format
+msgid "See %1 more results"
+msgstr ""
+
+#: places/GroupHeader.qml:68
+msgid "See fewer results"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:758
+msgid "Keep In Launcher"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:758
+msgid "Remove From Launcher"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:766
+msgid "Quit"
 msgstr ""
 
 #: launcher/UnityApplications/launcherdevice.cpp:222
 msgid "Eject"
+msgstr ""
+
+#: launcher/UnityApplications/workspaces.cpp:66
+msgid "Workspaces"
 msgstr ""
 
 #: launcher/UnityApplications/trash.cpp:71
@@ -36,57 +106,4 @@ msgstr ""
 
 #: launcher/UnityApplications/trash.cpp:205
 msgid "Empty Trash"
-msgstr ""
-
-#: launcher/UnityApplications/launcherapplication.cpp:719
-msgid "Keep In Launcher"
-msgstr ""
-
-#: launcher/UnityApplications/launcherapplication.cpp:719
-msgid "Remove From Launcher"
-msgstr ""
-
-#: launcher/UnityApplications/launcherapplication.cpp:727
-msgid "Quit"
-msgstr ""
-
-#: places/SearchEntry.qml:112
-#, qt-format
-msgid "Search %1"
-msgstr ""
-
-#: places/SearchEntry.qml:114
-msgid "Search"
-msgstr ""
-
-#: places/Home.qml:77
-msgid "Web"
-msgstr ""
-
-#: places/Home.qml:93
-msgid "Music"
-msgstr ""
-
-#: places/Home.qml:99
-msgid "Photos & Videos"
-msgstr ""
-
-#: places/Home.qml:105
-msgid "Games"
-msgstr ""
-
-#: places/Home.qml:111
-msgid "Email & Chat"
-msgstr ""
-
-#: places/Home.qml:117
-msgid "Office"
-msgstr ""
-
-#: places/Home.qml:123
-msgid "Files & Folders"
-msgstr ""
-
-#: places/Home.qml:129
-msgid "Get New Apps"
 msgstr ""
