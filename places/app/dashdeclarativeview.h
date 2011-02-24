@@ -31,7 +31,7 @@ class DashDeclarativeView : public QDeclarativeView
     Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
-    Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning)
+    Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning NOTIFY isCompositingManagerRunningChanged)
 
 public:
     enum DashMode {
@@ -68,6 +68,7 @@ Q_SIGNALS:
 
     void screenGeometryChanged();
     void availableGeometryChanged();
+    void isCompositingManagerRunningChanged(bool);
 
 protected:
     void resizeEvent(QResizeEvent*);
