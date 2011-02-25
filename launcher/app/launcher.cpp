@@ -20,7 +20,13 @@
 #include <gtk/gtk.h>
 
 // unity-2d
+#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
+#include <unity2dapplication.h>
+#include <propertybinder.h>
+
+// libqtgconf
+#include <gconfitem-qml-wrapper.h>
 
 // Qt
 #include <QApplication>
@@ -29,9 +35,12 @@
 #include <QDeclarativeContext>
 #include <QDir>
 
+#include <unity2dapplication.h>
+
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
+#include "hidemodecontroller.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
@@ -53,7 +62,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication::setColorSpec(QApplication::ManyColor);
-    QApplication application(argc, argv);
+    Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
@@ -61,6 +70,11 @@ int main(int argc, char *argv[])
     /* Configure "artwork:" prefix so that any access to a file whose name starts
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
+
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
@@ -97,8 +111,16 @@ int main(int argc, char *argv[])
 
     launcherView->setSource(QUrl("./Launcher.qml"));
 
+    /* Synchronise panel's "useStrut" property with its corresponding GConf key */
+    GConfItemQmlWrapper useStrutGconf;
+    useStrutGconf.setKey("/desktop/unity-2d/launcher/use_strut");
+    panel.setUseStrut(useStrutGconf.getValue().toBool());
+    PropertyBinder useStrutBinder;
+    useStrutBinder.bind(&useStrutGconf, "value", &panel, "useStrut");
+
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
+    new HideModeController(&panel);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
@@ -111,7 +133,7 @@ int main(int argc, char *argv[])
 
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */
-    GestureHandler *gestureHandler = new GestureHandler(&application);
+    GestureHandler gestureHandler(&panel);
 
     return application.exec();
 }

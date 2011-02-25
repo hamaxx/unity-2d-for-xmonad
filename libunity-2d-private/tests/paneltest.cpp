@@ -36,15 +36,45 @@ private Q_SLOTS:
         QRect screen = QApplication::desktop()->screenGeometry();
         QRect available = QApplication::desktop()->availableGeometry();
 
+        {
+            Unity2dPanel panel;
+            panel.setFixedHeight(16);
+            panel.setEdge(Unity2dPanel::TopEdge);
+            panel.show();
+            QTest::qWait(500);
+
+            QRect expectedGeometry = QRect(screen.left(), screen.top(), screen.width(), 16);
+            QCOMPARE(panel.geometry(), expectedGeometry);
+            QCOMPARE(QApplication::desktop()->availableGeometry(), available.adjusted(0, 16, 0, 0));
+        }
+
+        // Strut should be released when panel is deleted
+        QTest::qWait(500);
+        QCOMPARE(QApplication::desktop()->availableGeometry(), available);
+    }
+
+    void testSetUseStrut()
+    {
+        QRect screen = QApplication::desktop()->screenGeometry();
+        QRect available = QApplication::desktop()->availableGeometry();
+
         Unity2dPanel panel;
         panel.setFixedHeight(16);
+        panel.setUseStrut(false);
         panel.setEdge(Unity2dPanel::TopEdge);
         panel.show();
         QTest::qWait(500);
 
-        QRect expectedGeometry = QRect(screen.left(), screen.top(), screen.width(), 16);
-        QCOMPARE(panel.geometry(), expectedGeometry);
+        QCOMPARE(QApplication::desktop()->availableGeometry(), available);
+
+        panel.setUseStrut(true);
+        QTest::qWait(500);
+
         QCOMPARE(QApplication::desktop()->availableGeometry(), available.adjusted(0, 16, 0, 0));
+
+        panel.setUseStrut(false);
+        QTest::qWait(500);
+        QCOMPARE(QApplication::desktop()->availableGeometry(), available);
     }
 
     void testAddQWidget()

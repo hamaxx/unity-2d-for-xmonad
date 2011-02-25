@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
+"POT-Creation-Date: 2011-02-24 14:57+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: launcher/UnityApplications/trash.cpp:198
+#, c-format, qt-plural-format
+msgid "%n item(s) in trash"
+msgstr ""
+
+#: places/Home.qml:183
+msgid "Browse the Web"
+msgstr ""
+
+#: places/Home.qml:193
+msgid "Check Email"
+msgstr ""
+
+#: launcher/UnityApplications/launcherdevice.cpp:222
+msgid "Eject"
+msgstr ""
+
+#: launcher/UnityApplications/trash.cpp:205
+msgid "Empty Trash"
+msgstr ""
+
+#: places/Home.qml:176
+msgid "Find Files"
+msgstr ""
+
+#: places/Home.qml:164
+msgid "Find Internet Apps"
+msgstr ""
+
+#: places/Home.qml:158
+msgid "Find Media Apps"
+msgstr ""
+
+#: places/Home.qml:170
+msgid "Find More Apps"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:758
+msgid "Keep In Launcher"
+msgstr ""
+
+#: places/Home.qml:198
+msgid "Listen to Music"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:766
+msgid "Quit"
+msgstr ""
+
+#: places/SearchRefine.qml:43
+msgid "Refine search"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:758
+msgid "Remove From Launcher"
+msgstr ""
+
+#: places/SearchEntry.qml:139
+msgid "Search"
+msgstr ""
+
+#: places/SearchEntry.qml:137
+#, qt-format
+msgid "Search for %1"
+msgstr ""
+
+#: places/GroupHeader.qml:68
+#, qt-format
+msgid "See %1 more results"
+msgstr ""
+
+#: places/GroupHeader.qml:68
+msgid "See fewer results"
+msgstr ""
+
+#: launcher/UnityApplications/trash.cpp:71
+msgid "Trash"
+msgstr ""
+
+#: places/SearchRefine.qml:66
+msgid "Type"
+msgstr ""
+
+#: places/Home.qml:188
+msgid "View Photos"
+msgstr ""
+
+#: launcher/UnityApplications/workspaces.cpp:66
+msgid "Workspaces"
+msgstr ""

@@ -22,6 +22,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../UnityApplications
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
+    ${QTGCONF_INCLUDE_DIRS}
     )
 
 enable_testing()

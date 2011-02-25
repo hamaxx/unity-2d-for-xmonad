@@ -40,6 +40,10 @@ AutoScrollingListView {
         emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
         emblemVisible: (noOverlays) ? false : item.emblemVisible
 
+        shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
+                         index <= 9 && launcherView.superKeyPressed
+        shortcutText: index + 1
+
         /* Best way I could find to check if the item is an application or the
            workspaces switcher. There may be something cleaner and better. */
         backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0 ||
@@ -135,6 +139,17 @@ AutoScrollingListView {
             onWindowAdded: item.setIconGeometry(x + panel.x, y + panel.y, width, height, xid)
             /* Not all items are applications. */
             ignoreUnknownSignals: true
+        }
+
+        Connections {
+            target: launcherView
+            onKeyboardShortcutPressed: {
+                /* Only applications can be launched by keyboard shortcuts */
+                if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
+                    item.menu.hide()
+                    item.activate()
+                }
+            }
         }
     }
 }
