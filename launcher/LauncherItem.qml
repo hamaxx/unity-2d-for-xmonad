@@ -89,6 +89,9 @@ Item {
         y: item.parent.parent.y - item.parent.parent.contentY + item.y
         z: item.parent.parent.itemZ
 
+        /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
+        scale: item.scale
+
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
