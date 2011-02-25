@@ -348,9 +348,15 @@ Item {
             }
         }
         Behavior on y {
-            enabled: (looseItem.state != "beingDragged") && !item.parent.parent.moving && !item.parent.parent.autoScrolling
+            enabled: /* do not animate while dragging to re-order applications */
+                     (looseItem.state != "beingDragged")
+                     /* do not animate during insertion/removal */
+                     && (looseItem.scale == 1)
+                     /* do not animate while flicking the list */
+                     && !item.parent.parent.moving
+                     && !item.parent.parent.autoScrolling
             NumberAnimation {
-                duration: 400
+                duration: 250
                 easing.type: Easing.OutBack
             }
         }
