@@ -51,8 +51,8 @@ struct KeyboardModifiersMonitorPrivate
     int m_modifiers;
 };
 
-KeyboardModifiersMonitor::KeyboardModifiersMonitor()
-: QObject(NULL)
+KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject *parent)
+: QObject(parent)
 , d(new KeyboardModifiersMonitorPrivate)
 {
     if (sXkbBaseEventType == 0) {

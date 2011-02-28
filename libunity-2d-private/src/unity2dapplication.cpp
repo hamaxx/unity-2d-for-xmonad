@@ -34,6 +34,11 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 {
 }
 
+Unity2dApplication::~Unity2dApplication()
+{
+    qDeleteAll(m_x11EventFilters);
+}
+
 Unity2dApplication* Unity2dApplication::instance()
 {
     return qobject_cast<Unity2dApplication*>(QCoreApplication::instance());
