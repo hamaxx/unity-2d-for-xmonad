@@ -92,6 +92,13 @@ Item {
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
 
+        /* The y coordinate is initially not animated, as it would result in an
+           unwanted effect of every single item popping out from the top of the
+           launcher (even when they are supposed to be coming from the bottom).
+           This property is later set to true once the item has taken its
+           initial position. */
+        property bool animateY: false
+
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
@@ -348,8 +355,10 @@ Item {
             }
         }
         Behavior on y {
-            enabled: /* do not animate while dragging to re-order applications */
-                     (looseItem.state != "beingDragged")
+            enabled: /* do not animate during initial positioning */
+                     looseItem.animateY
+                     /* do not animate while dragging to re-order applications */
+                     && (looseItem.state != "beingDragged")
                      /* do not animate during insertion/removal */
                      && (looseItem.scale == 1)
                      /* do not animate while flicking the list */
@@ -360,5 +369,16 @@ Item {
                 easing.type: Easing.OutBack
             }
         }
+
+        /* Delay the animation on y to when the item has been initially positioned. */
+        Timer {
+            id: canAnimateY
+            triggeredOnStart: true
+            onTriggered: {
+                stop()
+                looseItem.animateY = true
+            }
+        }
+        Component.onCompleted: canAnimateY.start()
     }
 }
