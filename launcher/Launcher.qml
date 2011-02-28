@@ -86,7 +86,7 @@ Item {
                 }
             }
             onExited: drop()
-            onMousePositionChanged: {
+            onPositionChanged: {
                 if (currentId != "" && index != -1 && index != currentIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
                        the list results in its visual representation being
