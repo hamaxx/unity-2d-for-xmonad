@@ -42,7 +42,7 @@ class KeyboardModifiersMonitor : public QObject, protected AbstractX11EventFilte
 {
 Q_OBJECT
 public:
-    KeyboardModifiersMonitor();
+    KeyboardModifiersMonitor(QObject *parent = 0);
     ~KeyboardModifiersMonitor();
 
     Qt::KeyboardModifiers keyboardModifiers() const;
