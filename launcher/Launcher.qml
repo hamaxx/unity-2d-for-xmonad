@@ -46,27 +46,45 @@ Item {
             /* list index of the application underneath the cursor */
             property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
 
+            Timer {
+                id: longPressDelay
+                /* The standard threshold for long presses is hard-coded to 800ms
+                   (http://doc.qt.nokia.com/qml-mousearea.html#onPressAndHold-signal).
+                   This value is too high for our use case. */
+                interval: 500 /* in milliseconds */
+                onTriggered: {
+                    if (main.moving) return
+                    dnd.parent.interactive = false
+                    var id = items.get(dnd.currentIndex).desktop_file
+                    if (id != undefined) dnd.currentId = id
+                }
+            }
             onPressed: {
                 /* index is not valid yet because the mouse area is not
                    sensitive to hovering (if it were, it would eat hover events
                    for other mouse areas below, which is not desired). */
                 var coord = mapToItem(main.contentItem, mouse.x, mouse.y)
                 currentIndex = main.indexAt(coord.x, coord.y)
-            }
-            onPressAndHold: {
-                if (index != currentIndex) {
-                    /* The item under the cursor changed since the press. */
-                    return
-                }
-                parent.interactive = false
-                var id = items.get(currentIndex).desktop_file
-                if (id != undefined) currentId = id
+                longPressDelay.start()
             }
             function drop() {
+                longPressDelay.stop()
                 currentId = ""
                 parent.interactive = true
             }
-            onReleased: drop()
+            onReleased: {
+                if (currentId != "") {
+                    drop()
+                } else {
+                    /* Forward the click to the launcher item below. */
+                    var point = mapToItem(main.contentItem, mouse.x, mouse.y)
+                    var item = main.contentItem.childAt(point.x, point.y)
+                    /* FIXME: the coordinates of the mouse event forwarded are
+                       incorrect. Luckily, it’s acceptable as they are not used in
+                       the handler anyway. */
+                    if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+                }
+            }
             onExited: drop()
             onMousePositionChanged: {
                 if (currentId != "" && index != -1 && index != currentIndex) {
@@ -90,15 +108,6 @@ Item {
                     }
                     currentIndex = index
                 }
-            }
-            onClicked: {
-                /* Forward the click to the launcher item below. */
-                var point = mapToItem(main.contentItem, mouse.x, mouse.y)
-                var item = main.contentItem.childAt(point.x, point.y)
-                /* FIXME: the coordinates of the mouse event forwarded are
-                   incorrect. Luckily, it’s acceptable as they are not used in
-                   the handler anyway. */
-                if (item && typeof(item.clicked) == "function") item.clicked(mouse)
             }
         }
     }
