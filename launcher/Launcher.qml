@@ -33,6 +33,7 @@ Item {
         // the y coordinate of the looseItems is correct, however they are not
         // re-drawn at the correct position until the mouse cursor is moved
         // further. This may be a bug in QML.
+        // Ref: https://bugs.launchpad.net/unity-2d/+bug/727082.
         MouseArea {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
