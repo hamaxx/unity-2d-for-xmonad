@@ -18,6 +18,19 @@ AutoScrollingListView {
     /* A hint for items to determine the value of their 'z' property */
     property real itemZ: 0
 
+    /* Can we reorder the items in this list by means of drag and drop ? */
+    property alias reorderable: reorder.enabled
+
+    ListViewDragAndDrop {
+        id: reorder
+        list: list
+        enabled: false
+    }
+
+    /* FIXME: We need this only to workaround a problem in QT's MouseArea
+       event handling. See AutoScrollingListView for details. */
+    dragAndDrop: (reorder.enabled) ? reorder : null
+
     delegate: LauncherItem {
         id: launcherItem
 
@@ -43,6 +56,9 @@ AutoScrollingListView {
         shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
                          index <= 9 && launcherView.superKeyPressed
         shortcutText: index + 1
+
+        isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
+        dragPosition: reorder.listCoordinates.y - list.contentY
 
         /* Best way I could find to check if the item is an application or the
            workspaces switcher. There may be something cleaner and better. */
@@ -101,9 +117,9 @@ AutoScrollingListView {
         }
 
         Connections {
-            target: dnd
+            target: reorder
             /* Hide the tooltip/menu when dragging an application. */
-            onDraggedTileIdChanged: if (dnd.draggedTileId != "") item.menu.hide()
+            onDraggedTileIdChanged: if (reorder.draggedTileId != "") item.menu.hide()
         }
 
         function setIconGeometry() {

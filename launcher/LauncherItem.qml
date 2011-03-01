@@ -61,6 +61,9 @@ Item {
     property alias shortcutVisible: shortcut.visible
     property alias shortcutText: shortcutText.text
 
+    property bool isBeingDragged: false
+    property int dragPosition
+
     property int pips: 0
     property string pipSource: engineBaseUrl + "artwork/launcher_" +
                                ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
@@ -345,11 +348,10 @@ Item {
 
         states: State {
             name: "beingDragged"
-            when: (dnd.draggedTileId != "") && (dnd.draggedTileId == item.desktopFile)
+            when: item.isBeingDragged
             PropertyChanges {
                 target: looseItem
-                /* item.parent is the delegate, and its parent is the LauncherList */
-                y: dnd.listCoordinates.y - item.parent.parent.contentY - tile.height / 2
+                y: item.dragPosition - tile.height / 2
                 /* When dragging an item, stack it on top of all its siblings */
                 z: 1
             }
