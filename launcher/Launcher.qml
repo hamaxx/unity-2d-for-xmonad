@@ -29,47 +29,66 @@ Item {
             id: items
         }
 
-        // FIXME: dragging the list to flick it exhibits unpleasant visual
-        // artifacts, and its contentY sometimes remains blocked at a position
-        // too far off the boundaries of the list.
+        // FIXME: flicking the list fast exhibits unpleasant visual artifacts:
+        // the y coordinate of the looseItems is correct, however they are not
+        // re-drawn at the correct position until the mouse cursor is moved
+        // further. This may be a bug in QML.
         MouseArea {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
             anchors.fill: parent
 
-            /* id (desktop file path) of the application being dragged */
-            property string currentId: ""
-            /* list index of the application being dragged */
-            property int currentIndex
+            /* list index of the tile being dragged */
+            property int draggedTileIndex
+            /* id (desktop file path) of the tile being dragged */
+            property string draggedTileId: ""
             /* absolute mouse coordinates in the list */
             property variant listCoordinates: mapToItem(main.contentItem, mouseX, mouseY)
-            /* list index of the application underneath the cursor */
-            property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
+            /* list index of the tile underneath the cursor */
+            property int tileAtCursorIndex: main.indexAt(listCoordinates.x, listCoordinates.y)
 
-            onPressed: {
-                /* index is not valid yet because the mouse area is not
-                   sensitive to hovering (if it were, it would eat hover events
-                   for other mouse areas below, which is not desired). */
-                var coord = mapToItem(main.contentItem, mouse.x, mouse.y)
-                currentIndex = main.indexAt(coord.x, coord.y)
-            }
-            onPressAndHold: {
-                if (index != currentIndex) {
-                    /* The item under the cursor changed since the press. */
-                    return
+            Timer {
+                id: longPressDelay
+                /* The standard threshold for long presses is hard-coded to 800ms
+                   (http://doc.qt.nokia.com/qml-mousearea.html#onPressAndHold-signal).
+                   This value is too high for our use case. */
+                interval: 500 /* in milliseconds */
+                onTriggered: {
+                    if (main.moving) return
+                    dnd.parent.interactive = false
+                    var id = items.get(dnd.draggedTileIndex).desktop_file
+                    if (id != undefined) dnd.draggedTileId = id
                 }
-                parent.interactive = false
-                var id = items.get(currentIndex).desktop_file
-                if (id != undefined) currentId = id
+            }
+            onPressed: {
+                /* tileAtCursorIndex is not valid yet because the mouse area is
+                   not sensitive to hovering (if it were, it would eat hover
+                   events for other mouse areas below, which is not desired). */
+                var coord = mapToItem(main.contentItem, mouse.x, mouse.y)
+                draggedTileIndex = main.indexAt(coord.x, coord.y)
+                longPressDelay.start()
             }
             function drop() {
-                currentId = ""
+                longPressDelay.stop()
+                draggedTileId = ""
                 parent.interactive = true
             }
-            onReleased: drop()
+            onReleased: {
+                if (draggedTileId != "") {
+                    drop()
+                } else {
+                    /* Forward the click to the launcher item below. */
+                    var point = mapToItem(main.contentItem, mouse.x, mouse.y)
+                    var item = main.contentItem.childAt(point.x, point.y)
+                    /* FIXME: the coordinates of the mouse event forwarded are
+                       incorrect. Luckily, it’s acceptable as they are not used in
+                       the handler anyway. */
+                    if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+                }
+            }
             onExited: drop()
-            onMousePositionChanged: {
-                if (currentId != "" && index != -1 && index != currentIndex) {
+            onPositionChanged: {
+                if (draggedTileId != "" && tileAtCursorIndex != -1 && tileAtCursorIndex != draggedTileIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
                        the list results in its visual representation being
                        shifted too far down by one index
@@ -81,24 +100,15 @@ Item {
                        thinking that the mirror operation was performed.
                        Note: this bug will be fixed in Qt 4.7.2, at which point
                        this workaround can go away. */
-                    if (index > currentIndex) {
-                        items.move(index, currentIndex, 1)
+                    if (tileAtCursorIndex > draggedTileIndex) {
+                        items.move(tileAtCursorIndex, draggedTileIndex, 1)
                     } else {
                         /* This should be the only code path here, if it wasn’t
                            for the bug explained and worked around above. */
-                        items.move(currentIndex, index, 1)
+                        items.move(draggedTileIndex, tileAtCursorIndex, 1)
                     }
-                    currentIndex = index
+                    draggedTileIndex = tileAtCursorIndex
                 }
-            }
-            onClicked: {
-                /* Forward the click to the launcher item below. */
-                var point = mapToItem(main.contentItem, mouse.x, mouse.y)
-                var item = main.contentItem.childAt(point.x, point.y)
-                /* FIXME: the coordinates of the mouse event forwarded are
-                   incorrect. Luckily, it’s acceptable as they are not used in
-                   the handler anyway. */
-                if (item && typeof(item.clicked) == "function") item.clicked(mouse)
             }
         }
     }

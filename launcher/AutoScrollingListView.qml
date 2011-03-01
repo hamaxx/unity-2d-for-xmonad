@@ -60,6 +60,8 @@ ListView {
         to: 0 - paddingTop
         velocity: autoScrollVelocity
         running: scrollZoneTop.containsMouse
+                 /* When a drag is in progress to re-order applications, scrollZoneTop doesn’t receive mouse events. */
+                 || (dnd.draggedTileId != "" && dnd.mouseY >= scrollZoneTop.y && dnd.mouseY <= scrollZoneTop.y + autoScrollSize)
     }
 
     SmoothedAnimation {
@@ -68,7 +70,9 @@ ListView {
         property: "contentY"
         to: contentHeight + paddingBottom - height
         velocity: autoScrollVelocity
-        running: scrollZoneBottom.containsMouse && contentHeight + paddingBottom > height
+        running: (scrollZoneBottom.containsMouse && contentHeight + paddingBottom > height)
+                 /* When a drag is in progress to re-order applications, scrollZoneBottom doesn’t receive mouse events. */
+                 || (dnd.draggedTileId != "" && dnd.mouseY >= scrollZoneBottom.y && dnd.mouseY <= scrollZoneBottom.y + autoScrollSize)
     }
 
     /* The code below this comment is only needed as a workaround for a strange behavior

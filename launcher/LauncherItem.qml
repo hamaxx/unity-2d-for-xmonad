@@ -89,6 +89,16 @@ Item {
         y: item.parent.parent.y - item.parent.parent.contentY + item.y
         z: item.parent.parent.itemZ
 
+        /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
+        scale: item.scale
+
+        /* The y coordinate is initially not animated, as it would result in an
+           unwanted effect of every single item popping out from the top of the
+           launcher (even when they are supposed to be coming from the bottom).
+           This property is later set to true once the item has taken its
+           initial position. */
+        property bool animateY: false
+
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
@@ -335,7 +345,7 @@ Item {
 
         states: State {
             name: "beingDragged"
-            when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
+            when: (dnd.draggedTileId != "") && (dnd.draggedTileId == item.desktopFile)
             PropertyChanges {
                 target: looseItem
                 /* item.parent is the delegate, and its parent is the LauncherList */
@@ -345,11 +355,30 @@ Item {
             }
         }
         Behavior on y {
-            enabled: (looseItem.state != "beingDragged") && !item.parent.parent.moving && !item.parent.parent.autoScrolling
+            enabled: /* do not animate during initial positioning */
+                     looseItem.animateY
+                     /* do not animate while dragging to re-order applications */
+                     && (looseItem.state != "beingDragged")
+                     /* do not animate during insertion/removal */
+                     && (looseItem.scale == 1)
+                     /* do not animate while flicking the list */
+                     && !item.parent.parent.moving
+                     && !item.parent.parent.autoScrolling
             NumberAnimation {
-                duration: 400
+                duration: 250
                 easing.type: Easing.OutBack
             }
         }
+
+        /* Delay the animation on y to when the item has been initially positioned. */
+        Timer {
+            id: canAnimateY
+            triggeredOnStart: true
+            onTriggered: {
+                stop()
+                looseItem.animateY = true
+            }
+        }
+        Component.onCompleted: canAnimateY.start()
     }
 }

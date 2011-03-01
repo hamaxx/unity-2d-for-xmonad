@@ -103,7 +103,7 @@ AutoScrollingListView {
         Connections {
             target: dnd
             /* Hide the tooltip/menu when dragging an application. */
-            onCurrentIdChanged: if (dnd.currentId != "") item.menu.hide()
+            onDraggedTileIdChanged: if (dnd.draggedTileId != "") item.menu.hide()
         }
 
         function setIconGeometry() {
