@@ -43,6 +43,7 @@ class Unity2dApplication : public QApplication
 Q_OBJECT
 public:
     Unity2dApplication(int& argc, char** argv);
+    ~Unity2dApplication();
 
     void installX11EventFilter(AbstractX11EventFilter*);
     void removeX11EventFilter(AbstractX11EventFilter*);
