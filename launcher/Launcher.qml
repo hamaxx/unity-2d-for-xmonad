@@ -76,7 +76,7 @@ Item {
             onReleased: {
                 if (draggedTileId != "") {
                     drop()
-                } else {
+                } else if (draggedTileIndex == tileAtCursorIndex) {
                     /* Forward the click to the launcher item below. */
                     var point = mapToItem(main.contentItem, mouse.x, mouse.y)
                     var item = main.contentItem.childAt(point.x, point.y)
