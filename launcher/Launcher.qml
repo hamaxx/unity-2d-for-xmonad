@@ -38,14 +38,14 @@ Item {
             id: dnd
             anchors.fill: parent
 
-            /* id (desktop file path) of the application being dragged */
-            property string currentId: ""
-            /* list index of the application being dragged */
-            property int currentIndex
+            /* list index of the tile being dragged */
+            property int draggedTileIndex
+            /* id (desktop file path) of the tile being dragged */
+            property string draggedTileId: ""
             /* absolute mouse coordinates in the list */
             property variant listCoordinates: mapToItem(main.contentItem, mouseX, mouseY)
-            /* list index of the application underneath the cursor */
-            property int index: main.indexAt(listCoordinates.x, listCoordinates.y)
+            /* list index of the tile underneath the cursor */
+            property int tileAtCursorIndex: main.indexAt(listCoordinates.x, listCoordinates.y)
 
             Timer {
                 id: longPressDelay
@@ -56,25 +56,25 @@ Item {
                 onTriggered: {
                     if (main.moving) return
                     dnd.parent.interactive = false
-                    var id = items.get(dnd.currentIndex).desktop_file
-                    if (id != undefined) dnd.currentId = id
+                    var id = items.get(dnd.draggedTileIndex).desktop_file
+                    if (id != undefined) dnd.draggedTileId = id
                 }
             }
             onPressed: {
-                /* index is not valid yet because the mouse area is not
-                   sensitive to hovering (if it were, it would eat hover events
-                   for other mouse areas below, which is not desired). */
+                /* tileAtCursorIndex is not valid yet because the mouse area is
+                   not sensitive to hovering (if it were, it would eat hover
+                   events for other mouse areas below, which is not desired). */
                 var coord = mapToItem(main.contentItem, mouse.x, mouse.y)
-                currentIndex = main.indexAt(coord.x, coord.y)
+                draggedTileIndex = main.indexAt(coord.x, coord.y)
                 longPressDelay.start()
             }
             function drop() {
                 longPressDelay.stop()
-                currentId = ""
+                draggedTileId = ""
                 parent.interactive = true
             }
             onReleased: {
-                if (currentId != "") {
+                if (draggedTileId != "") {
                     drop()
                 } else {
                     /* Forward the click to the launcher item below. */
@@ -88,7 +88,7 @@ Item {
             }
             onExited: drop()
             onPositionChanged: {
-                if (currentId != "" && index != -1 && index != currentIndex) {
+                if (draggedTileId != "" && tileAtCursorIndex != -1 && tileAtCursorIndex != draggedTileIndex) {
                     /* Workaround a bug in QML whereby moving an item down in
                        the list results in its visual representation being
                        shifted too far down by one index
@@ -100,14 +100,14 @@ Item {
                        thinking that the mirror operation was performed.
                        Note: this bug will be fixed in Qt 4.7.2, at which point
                        this workaround can go away. */
-                    if (index > currentIndex) {
-                        items.move(index, currentIndex, 1)
+                    if (tileAtCursorIndex > draggedTileIndex) {
+                        items.move(tileAtCursorIndex, draggedTileIndex, 1)
                     } else {
                         /* This should be the only code path here, if it wasn’t
                            for the bug explained and worked around above. */
-                        items.move(currentIndex, index, 1)
+                        items.move(draggedTileIndex, tileAtCursorIndex, 1)
                     }
-                    currentIndex = index
+                    draggedTileIndex = tileAtCursorIndex
                 }
             }
         }

@@ -345,7 +345,7 @@ Item {
 
         states: State {
             name: "beingDragged"
-            when: (dnd.currentId != "") && (dnd.currentId == item.desktopFile)
+            when: (dnd.draggedTileId != "") && (dnd.draggedTileId == item.desktopFile)
             PropertyChanges {
                 target: looseItem
                 /* item.parent is the delegate, and its parent is the LauncherList */
