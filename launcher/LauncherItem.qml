@@ -85,9 +85,8 @@ Item {
         width: item.width
         height: item.height
         x: item.x
-        /* item.parent is the delegate, and its parent is the LauncherList */
-        y: item.parent.parent.y - item.parent.parent.contentY + item.y
-        z: item.parent.parent.itemZ
+        y: ListView.view.y - ListView.view.contentY + item.y
+        z: ListView.view.itemZ
 
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
@@ -348,8 +347,7 @@ Item {
             when: (dnd.draggedTileId != "") && (dnd.draggedTileId == item.desktopFile)
             PropertyChanges {
                 target: looseItem
-                /* item.parent is the delegate, and its parent is the LauncherList */
-                y: dnd.listCoordinates.y - item.parent.parent.contentY - tile.height / 2
+                y: dnd.listCoordinates.y - ListView.view.contentY - tile.height / 2
                 /* When dragging an item, stack it on top of all its siblings */
                 z: 1
             }
@@ -362,8 +360,8 @@ Item {
                      /* do not animate during insertion/removal */
                      && (looseItem.scale == 1)
                      /* do not animate while flicking the list */
-                     && !item.parent.parent.moving
-                     && !item.parent.parent.autoScrolling
+                     && !ListView.view.moving
+                     && !ListView.view.autoScrolling
             NumberAnimation {
                 duration: 250
                 easing.type: Easing.OutBack
