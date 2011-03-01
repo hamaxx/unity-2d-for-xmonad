@@ -392,7 +392,6 @@ indicator_new ()
   g_object_set (gtk_settings_get_default(), "gtk-icon-theme-name", "ubuntu-mono-dark", NULL);
   gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
                                   INDICATOR_ICONS_DIR);
-  /* g_debug("Icons directory: %s", INDICATOR_ICONS_DIR); */
   gtk_rc_parse_string (
     "widget \"indicator-applet*\" style \"panel\"\n"
     "style \"indicator-applet-style\"\n"
