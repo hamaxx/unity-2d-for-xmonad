@@ -29,9 +29,10 @@ Item {
             id: items
         }
 
-        // FIXME: dragging the list to flick it exhibits unpleasant visual
-        // artifacts, and its contentY sometimes remains blocked at a position
-        // too far off the boundaries of the list.
+        // FIXME: flicking the list fast exhibits unpleasant visual artifacts:
+        // the y coordinate of the looseItems is correct, however they are not
+        // re-drawn at the correct position until the mouse cursor is moved
+        // further. This may be a bug in QML.
         MouseArea {
             /* Handle drag’n’drop to re-order applications. */
             id: dnd
