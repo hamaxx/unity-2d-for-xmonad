@@ -41,9 +41,10 @@ public:
        to a QAbstractListModel */
     Q_INVOKABLE void appendModel(const QVariant& model);
 
+public Q_SLOTS:
     /* Move one item from one position to another position.
        The item must remain in the same model. */
-    Q_INVOKABLE void move(int from, int to);
+    void move(int from, int to);
 
 protected:
     QList<QAbstractListModel*> m_models;
