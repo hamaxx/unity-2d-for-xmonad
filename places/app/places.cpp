@@ -19,6 +19,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QtDeclarative>
 #include <QDeclarativeEngine>
 #include <QDeclarativeView>
 #include <QDesktopWidget>
@@ -29,9 +30,13 @@
 
 #include <X11/Xlib.h>
 
-#include "dashdeclarativeview.h"
-#include "superkeymonitor.h"
+#undef signals
+#include <gtk/gtk.h>
 
+// unity-2d
+#include <gettexttranslator.h>
+
+#include "dashdeclarativeview.h"
 #include "config.h"
 
 /* Register a D-Bus service for activation and deactivation of the dash */
@@ -43,7 +48,7 @@ static bool registerDBusService(DashDeclarativeView* view)
         return false;
     }
     /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */
+       properties and methods. */\
     if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
         qCritical() << "Failed to register /Dash, this should not happen!";
         return false;
@@ -61,35 +66,10 @@ static bool registerDBusService(DashDeclarativeView* view)
     return true;
 }
 
-static DashDeclarativeView* getView()
-{
-    QVariant viewProperty = QApplication::instance()->property("view");
-    return viewProperty.value<DashDeclarativeView*>();
-}
-
-static bool eventFilter(void* message)
-{
-    XEvent* event = static_cast<XEvent*>(message);
-    if (event->type == KeyRelease)
-    {
-        XKeyEvent* key = (XKeyEvent*) event;
-        uint code = key->keycode;
-        if (code == SuperKeyMonitor::SUPER_L || code == SuperKeyMonitor::SUPER_R) {
-            /* Super (aka the "windows" key) shows/hides the dash. */
-            DashDeclarativeView* view = getView();
-            if (view->active()) {
-                view->setActive(false);
-            }
-            else {
-                view->activateHome();
-            }
-        }
-    }
-    return false;
-}
-
 int main(int argc, char *argv[])
 {
+    /* gtk needs to be inited, otherwise we get an assert failure in gdk */
+    gtk_init(&argc, &argv);
     QApplication::setApplicationName("Unity 2D Dash");
     qInstallMsgHandler(globalMessageHandler);
 
@@ -104,19 +84,17 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
 
+    qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
 
     if (!registerDBusService(&view)) {
         return -1;
     }
 
-    /* The dash window is borderless and not moveable by the user, yet not
-       fullscreen */
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-
-    /* Performance tricks */
-    view.setAttribute(Qt::WA_OpaquePaintEvent);
-    view.setAttribute(Qt::WA_NoSystemBackground);
+    /* Configure translations */
+    GettextTranslator translator;
+    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
+    QApplication::installTranslator(&translator);
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
@@ -136,15 +114,6 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("dashView", &view);
     view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
-
-    /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
-
-    /* Grab the "super" keys */
-    SuperKeyMonitor superKeys; /* Just needs to be instantiated to work. */
-    QAbstractEventDispatcher::instance()->setEventFilter(eventFilter);
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();

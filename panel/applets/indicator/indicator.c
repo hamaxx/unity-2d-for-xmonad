@@ -22,12 +22,12 @@
 
 #include "indicator.h"
 
+#include "indicator-config.h"
+
 /* default settings */
 #define DEFAULT_SETTING1 NULL
 #define DEFAULT_SETTING2 1
 #define DEFAULT_SETTING3 FALSE
-#define ICONS_DIR "/usr/share/libindicator/icons/"
-#define INDICATOR_DIR "/usr/lib/indicators/4/"
 
 typedef enum {
     PANEL_APPLET_ORIENT_LEFT,
@@ -391,8 +391,7 @@ indicator_new ()
   g_object_set (gtk_settings_get_default(), "gtk-theme-name", "Ambiance", NULL);
   g_object_set (gtk_settings_get_default(), "gtk-icon-theme-name", "ubuntu-mono-dark", NULL);
   gtk_icon_theme_append_search_path(gtk_icon_theme_get_default(),
-                                  ICONS_DIR);
-  /* g_debug("Icons directory: %s", ICONS_DIR); */
+                                  INDICATOR_ICONS_DIR);
   gtk_rc_parse_string (
     "widget \"indicator-applet*\" style \"panel\"\n"
     "style \"indicator-applet-style\"\n"

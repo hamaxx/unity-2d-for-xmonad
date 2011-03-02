@@ -1,6 +1,6 @@
 import Qt 4.7
 
-Item {
+FocusScope {
     property bool enabled: true
 
     signal clicked
@@ -24,37 +24,17 @@ Item {
         onDoubleClicked: {
             double_clicked = true
         }
-
-        onPressed: {
-            parent.state = "pressed"
-        }
-
-        onReleased: {
-            if(containsMouse)
-                parent.state = "selected";
-            else if(parent.activeFocus)
-                parent.state = "selected"
-            else
-                parent.state = "default"
-        }
-
-        onEntered: {
-            parent.state = "selected"
-        }
-
-        onExited: {
-            if(parent.activeFocus)
-                parent.state = "selected"
-            else
-                parent.state = "default"
-        }
     }
 
-    onActiveFocusChanged: {
-        if(activeFocus)
-            state = "selected"
+    state: {
+        if(mouse_area.pressed)
+            return "pressed"
+        else if(mouse_area.containsMouse)
+            return "selected"
+        else if(activeFocus)
+            return "selected"
         else
-            state = "default"
+            return "default"
     }
 
     Keys.onPressed: {

@@ -51,7 +51,7 @@ struct KeyboardModifiersMonitorPrivate
     int m_modifiers;
 };
 
-KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject* parent)
+KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject *parent)
 : QObject(parent)
 , d(new KeyboardModifiersMonitorPrivate)
 {
@@ -59,9 +59,14 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject* parent)
         setupXkb();
     }
 
-    Unity2dApplication* app = Unity2dApplication::instance();
-    Q_ASSERT(app);
-    Unity2dApplication::instance()->installX11EventFilter(this);
+    Unity2dApplication* application;
+    application = qobject_cast<Unity2dApplication*>(QApplication::instance());
+    if (application == NULL) {
+        qWarning() << "The application is not an Unity2dApplication."
+                      "Modifiers will not be monitored.";
+    } else {
+        Unity2dApplication::instance()->installX11EventFilter(this);
+    }
 }
 
 KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
@@ -71,7 +76,7 @@ KeyboardModifiersMonitor::~KeyboardModifiersMonitor()
 
 KeyboardModifiersMonitor* KeyboardModifiersMonitor::instance()
 {
-    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor(Unity2dApplication::instance());
+    static KeyboardModifiersMonitor* monitor = new KeyboardModifiersMonitor();
     return monitor;
 }
 

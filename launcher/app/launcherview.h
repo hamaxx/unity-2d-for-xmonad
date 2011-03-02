@@ -21,14 +21,18 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
+#include <QList>
 #include <QUrl>
-#include <QDragEnterEvent>
+
+#include "gconfitem-qml-wrapper.h"
 
 #include "dragdropevent.h"
 
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
+    Q_PROPERTY(bool superKeyPressed READ superKeyPressed
+                                    NOTIFY superKeyPressedChanged)
 
 public:
     explicit LauncherView();
@@ -36,18 +40,25 @@ public:
     Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
     Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
-signals:
+    bool superKeyPressed() const { return m_superKeyPressed; }
+
+Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
+    void keyboardShortcutPressed(int itemIndex);
+    void superKeyPressedChanged(bool superKeyPressed);
+
+private Q_SLOTS:
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void forwardHotkey();
+    void updateSuperKeyMonitoring();
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
+    void changeKeyboardShortcutsState(bool enabled);
 
-    /* Whether the launcher is already being resized */
-    bool m_resizing;
-
-    /* Whether space at the left of the screen has already been reserved */
-    bool m_reserved;
+    GConfItemQmlWrapper m_enableSuperKey;
+    bool m_superKeyPressed;
 };
 
 #endif // LAUNCHERVIEW

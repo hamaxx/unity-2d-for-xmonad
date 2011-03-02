@@ -1,10 +1,17 @@
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
+import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 
 Item {
     id: dash
 
     property variant currentPage
+
+    Binding {
+        target: dashView
+        property: "expanded"
+        value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
+    }
 
     function activatePage(page) {
         if (page == currentPage) {
@@ -21,7 +28,7 @@ Item {
            It could be due to Qt bug QTBUG-13380:
            "Listview gets focus when it becomes visible"
         */
-        search_bar.focus = true
+        search_entry.focus = true
     }
 
     function activatePlaceEntry(fileName, groupName, section) {
@@ -50,6 +57,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
+        pageLoader.item.shortcutsActive = false
         dashView.activePlaceEntry = ""
     }
 
@@ -57,45 +65,103 @@ Item {
         Component.onCompleted: startAllPlaceServices()
     }
 
+    /* Backgrounds */
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.71
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !dashView.isCompositingManagerRunning
     }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.69
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && dashView.isCompositingManagerRunning
+    }
+
+    BorderImage {
+        anchors.fill: parent
+        visible: dashView.dashMode == DashDeclarativeView.DesktopMode
+        source: dashView.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+    }
+    /* /Backgrounds */
 
     Item {
         anchors.fill: parent
+        anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 38 : 0
+        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 40 : 0
+
         visible: dashView.active
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
-        Keys.forwardTo: [search_bar]
+        Keys.forwardTo: [search_entry]
 
-        SearchBar {
-            id: search_bar
+
+        SearchEntry {
+            id: search_entry
 
             focus: true
 
             anchors.top: parent.top
+            anchors.topMargin: 10
             anchors.left: parent.left
-            anchors.leftMargin: 3
+            anchors.leftMargin: 16
+            anchors.right: refine_search.left
+            anchors.rightMargin: 10
+
+            height: 53
+        }
+
+        SearchRefine {
+            id: refine_search
+
+            /* SearchRefine is only to be displayed for places, not in the home page */
+            visible: dashView.activePlaceEntry != ""
+            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+
+            anchors.top: search_entry.anchors.top
+            anchors.topMargin: search_entry.anchors.topMargin
+            height: parent.height
+            headerHeight: search_entry.height
+            width: 295
             anchors.right: parent.right
-            anchors.rightMargin: 4
-            height: 47
+            anchors.rightMargin: 19
         }
 
         Loader {
             id: pageLoader
 
-            anchors.top: search_bar.bottom
-            anchors.topMargin: 12
+            anchors.top: search_entry.bottom
+            anchors.topMargin: 2
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 12
             anchors.left: parent.left
-            anchors.leftMargin: 7
-            anchors.right: parent.right
-            anchors.rightMargin: 8
+            anchors.leftMargin: 20
+            anchors.right: refine_search.folded ? parent.right : refine_search.left
+            anchors.rightMargin: refine_search.folded ? 0 : 15
+        }
+    }
+
+    Button {
+        id: fullScreenButton
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.rightMargin: 15
+        anchors.bottomMargin: 15
+        width: fullScreenButtonImage.sourceSize.width
+        height: fullScreenButtonImage.sourceSize.height
+        visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
+
+        Image {
+            id: fullScreenButtonImage
+            source: "artwork/fullscreen_button.png"
+        }
+
+        onClicked: {
+            dashView.dashMode = DashDeclarativeView.FullScreenMode
         }
     }
 }

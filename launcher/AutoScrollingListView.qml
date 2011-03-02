@@ -59,7 +59,7 @@ ListView {
         property: "contentY"
         to: 0 - paddingTop
         velocity: autoScrollVelocity
-        running: scrollZoneTop.containsMouse
+        running: scrollZoneTop.containsMouse || draggingOnScrollZoneTop
     }
 
     SmoothedAnimation {
@@ -68,7 +68,8 @@ ListView {
         property: "contentY"
         to: contentHeight + paddingBottom - height
         velocity: autoScrollVelocity
-        running: scrollZoneBottom.containsMouse && contentHeight + paddingBottom > height
+        running: (scrollZoneBottom.containsMouse && contentHeight + paddingBottom > height)
+                 || draggingOnScrollZoneBottom
     }
 
     /* The code below this comment is only needed as a workaround for a strange behavior
@@ -84,6 +85,7 @@ ListView {
     Connections {
         target: scrollZoneTop
         onEntered: updateItemBelow(scrollZoneTop)
+        onExited: { if (itemBelow) itemBelow.exited(); itemBelow = null }
         onPositionChanged: updateItemBelow(scrollZoneTop)
         onClicked: forwardClick(scrollZoneTop, mouse)
     }
@@ -91,6 +93,7 @@ ListView {
     Connections {
         target: scrollZoneBottom
         onEntered: updateItemBelow(scrollZoneBottom)
+        onExited: { if (itemBelow) itemBelow.exited(); itemBelow = null }
         onPositionChanged: updateItemBelow(scrollZoneBottom)
         onClicked: forwardClick(scrollZoneBottom, mouse)
     }
@@ -129,4 +132,17 @@ ListView {
         var item = list.contentItem.childAt(point.x, point.y)
         if (item && typeof(item.clicked) == "function") item.clicked(mouse)
     }
+
+    /* If drag and drop reordering is enabled for this list, this will not
+       be null. Normally we could keep autoscrolling and drag and drop reordering
+       entirely separated, but due to the QT issue explained above we can't let
+       the mouse events "bubble down" from the d'n'd MouseArea to the autoscroll
+       MouseAreas, so we need a workaround like this one. */
+    property variant dragAndDrop: null
+    property bool draggingOnScrollZoneTop: dragAndDrop != null && dragAndDrop.draggedTileId != "" &&
+                                           dragAndDrop.mouseY >= scrollZoneTop.y &&
+                                           dragAndDrop.mouseY <= scrollZoneTop.y + autoScrollSize
+    property bool draggingOnScrollZoneBottom: dragAndDrop != null && dragAndDrop.draggedTileId != "" &&
+                                              dragAndDrop.mouseY >= scrollZoneBottom.y &&
+                                              dragAndDrop.mouseY <= scrollZoneBottom.y + autoScrollSize
 }

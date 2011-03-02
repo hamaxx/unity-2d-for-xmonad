@@ -40,12 +40,12 @@ Renderer {
         id: header
 
         visible: results.count > 0
-        availableCount: results.count - results.cellsPerLine
+        availableCount: results.count - results.cellsPerRow
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 28
+        height: 32
         icon: parent.iconHint
         label: parent.displayName
 
@@ -56,13 +56,13 @@ Renderer {
         id: results_layout
 
         anchors.top: header.bottom
-        anchors.topMargin: 14
+        anchors.topMargin: 22
         anchors.left: parent.left
         anchors.leftMargin: 2
         anchors.right: parent.right
         anchors.bottom: parent.bottom
 
-        GridView {
+        CenteredGridView {
             id: results
 
             /* FIXME: this is a gross hack compensating for the lack of sections
@@ -106,35 +106,43 @@ Renderer {
             width: flickable.width
             height: Math.min(totalHeight, flickable.height)
 
-            property int cellsPerLine: Math.floor(width/results.cellWidth)
             /* Only display one line of items when folded */
-            property int displayedCount: folded ? cellsPerLine : count
-            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerLine)
+            property int displayedCount: folded ? cellsPerRow : count
+            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerRow)
 
-            cellWidth: renderer.cellWidth+renderer.horizontalSpacing
-            cellHeight: renderer.cellHeight+renderer.verticalSpacing
+            minHorizontalSpacing: renderer.horizontalSpacing
+            minVerticalSpacing: renderer.verticalSpacing
+            delegateWidth: renderer.cellWidth
+            delegateHeight: renderer.cellHeight
 
             interactive: false
             clip: true
 
-            delegate: Loader {
-                property url uri: column_0
-                property string iconHint: column_1
-                property string groupId: column_2
-                property string mimetype: column_3
-                property string displayName: column_4
-                property string comment: column_5
+            delegate: Item {
 
-                width: renderer.cellWidth
-                height: renderer.cellHeight
+                width: results.cellWidth
+                height: results.cellHeight
 
-                sourceComponent: cellRenderer
-                onLoaded: {
-                    item.uri = uri
-                    item.iconHint = iconHint
-                    item.mimetype = mimetype
-                    item.displayName = displayName
-                    item.comment = comment
+                Loader {
+                    property url uri: column_0
+                    property string iconHint: column_1
+                    property string groupId: column_2
+                    property string mimetype: column_3
+                    property string displayName: column_4
+                    property string comment: column_5
+
+                    width: results.delegateWidth
+                    height: results.delegateHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    sourceComponent: cellRenderer
+                    onLoaded: {
+                        item.uri = uri
+                        item.iconHint = iconHint
+                        item.mimetype = mimetype
+                        item.displayName = displayName
+                        item.comment = comment
+                    }
                 }
             }
 

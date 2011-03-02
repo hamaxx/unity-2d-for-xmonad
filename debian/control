@@ -4,12 +4,12 @@ Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: cdbs, debhelper (>= 7),
-               cmake, libqt4-dev,
-               libglib2.0-dev, libgtk2.0-dev, libwnck-dev,
+               cmake, bzr, libqt4-dev,
+               libglib2.0-dev, libwnck-dev,
                libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
-               libx11-dev, libindicator-dev, libgtk2.0-dev
+               libx11-dev, libindicator-dev, libgtk2.0-dev, libutouch-geis-dev
 Standards-Version: 3.9.1
-Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/natty-release
+Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
 
 Package: unity-2d
 Architecture: all
@@ -23,7 +23,7 @@ Recommends: indicator-application, indicator-datetime,
  gtk2-engines-pixbuf
 Provides: unity-2d-default-settings
 Breaks: unity-2d-default-settings (<= 0.4)
-Replaces:  unity-2d-default-settings (<= 0.4)
+Replaces: unity-2d-default-settings (<= 0.4)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -33,7 +33,7 @@ Description: Unity interface for non-accelerated graphics cards
 
 Package: unity-2d-default-settings
 Architecture: all
-Depends: unity-2d
+Depends: ${misc:Depends}, unity-2d
 Description: Transitional package for upgrades to the new unity-2d package
  This is a transitional package to properly handle upgrading from natty
  pre-release installations of unity-2d and also for handling upgrades of 
@@ -43,13 +43,19 @@ Package: libunity-2d-private0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: libuqpanel0 ( <= 3.2.2-0ubuntu1 )
+Replaces: libuqpanel0
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
+ It is only used internally, there is no use case for it outside of the unity-2d
+ project.
 
 Package: libunity-2d-private-dev
 Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0 (= ${binary:Version})
+Breaks: libuqpanel-dev ( <= 3.2.2-0ubuntu1 )
+Replaces: libuqpanel-dev
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  .
