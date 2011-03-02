@@ -81,21 +81,15 @@ void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
 
 void LauncherView::onDrop(DeclarativeDragDropEvent* event)
 {
-    bool accepted = false;
-
     QList<QUrl> urls = getEventUrls(event);
     foreach (QUrl url, urls) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
-            accepted = true;
         }
         else if (url.scheme().startsWith("http")) {
             emit webpageUrlDropped(url);
-            accepted = true;
         }
     }
-
-    if (accepted) event->setAccepted(true);
 }
 
 /* Calculates both the background color and the glow color of a launcher tile
