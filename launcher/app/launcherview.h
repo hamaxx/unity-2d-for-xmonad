@@ -55,12 +55,6 @@ private:
     QList<QUrl> getEventUrls(QDropEvent*);
     void changeKeyboardShortcutsState(bool enabled);
 
-    /* Whether the launcher is already being resized */
-    bool m_resizing;
-
-    /* Whether space at the left of the screen has already been reserved */
-    bool m_reserved;
-
     /* Custom drag’n’drop handling */
     void dragEnterEvent(QDragEnterEvent*);
     void dragMoveEvent(QDragMoveEvent*);

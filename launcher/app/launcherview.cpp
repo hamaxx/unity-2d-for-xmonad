@@ -40,7 +40,7 @@
 #include <hotkeymonitor.h>
 
 LauncherView::LauncherView() :
-    QDeclarativeView(), m_resizing(false), m_reserved(false),
+    QDeclarativeView(),
     m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
     m_dndAccepted(false), m_superKeyPressed(false)
 {
