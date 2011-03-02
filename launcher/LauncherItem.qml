@@ -374,6 +374,9 @@ Item {
         /* Delay the animation on y to when the item has been initially positioned. */
         Timer {
             id: canAnimateY
+            /* This ensures that the trigger will be executed in the next
+               iteration of the event loop, at which point the item will have
+               taken its initial position. */
             triggeredOnStart: true
             onTriggered: {
                 stop()
