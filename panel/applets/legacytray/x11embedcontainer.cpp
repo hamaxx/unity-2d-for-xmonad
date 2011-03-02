@@ -210,17 +210,36 @@ void X11EmbedContainer::paintEvent(QPaintEvent *event)
         // XXX We really should keep a cached copy of the image client side, and only
         //     update it in response to a damage event.
         Pixmap pixmap = XCompositeNameWindowPixmap(dpy, clientWinId());
+
+        // Extract XImage from pixmap, trying to cope with different behaviors.
+        // There are two possible sizes: 
+        // #1: width() x height(), which is 24 x 24 in our situation
+        // #2: d->attr.width x d->attr.height
+        //
+        // - Mumble 1.2.3 returns a correct image when asked for an image of
+        // size #1 , but returns a 22 x 22 cropped icon when asked for an image
+        // of size #2.
+        //
+        // - Pidgin 2.7.9 returns a NULL image when asked for an image of size
+        // #1 but returns a correct 16 x 16 image when asked for an image of
+        // size #2.
         XImage *ximage = XGetImage(dpy, pixmap, 0, 0, width(), height(), AllPlanes, ZPixmap);
+        if (!ximage) {
+            int ximageWidth = qMin(d->attr.width, width());
+            int ximageHeight = qMin(d->attr.height, height());
+            ximage = XGetImage(dpy, pixmap, 0, 0, ximageWidth, ximageHeight, AllPlanes, ZPixmap);
+        }
         XFreePixmap(dpy, pixmap);
-        // We actually check if we get the image from X11 since clientWinId can be any arbiter window (with crazy XWindowAttribute and the pixmap associated is bad)
-        if (!ximage)
+        if (!ximage) {
+            UQ_WARNING << "Failed to get an XImage from X11 window with XID=" << clientWinId();
             return;
+        }
         // This is safe to do since we only composite ARGB32 windows, and PictStandardARGB32
         // matches QImage::Format_ARGB32_Premultiplied.
         QImage image((const uchar*)ximage->data, ximage->width, ximage->height, ximage->bytes_per_line,
                      QImage::Format_ARGB32_Premultiplied);
 
-        p.drawImage(0, 0, image);
+        p.drawImage((width() - image.width()) / 2, (height() - image.height()) / 2, image);
 
         XDestroyImage(ximage);
     } else {
