@@ -19,6 +19,8 @@
 
 #include "dragdropevent.h"
 
+#include <QGraphicsSceneDragDropEvent>
+
 DeclarativeDragDropEvent::DeclarativeDragDropEvent(QGraphicsSceneDragDropEvent* event, QObject* parent)
     : QObject(parent)
     , m_event(event)

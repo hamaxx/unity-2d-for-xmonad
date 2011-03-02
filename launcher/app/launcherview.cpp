@@ -35,6 +35,7 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
+#include <dragdropevent.h>
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_superKeyPressed(false)

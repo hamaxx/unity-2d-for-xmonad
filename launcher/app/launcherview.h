@@ -26,7 +26,7 @@
 
 #include "gconfitem-qml-wrapper.h"
 
-#include "dragdropevent.h"
+class DeclarativeDragDropEvent;
 
 class LauncherView : public QDeclarativeView
 {

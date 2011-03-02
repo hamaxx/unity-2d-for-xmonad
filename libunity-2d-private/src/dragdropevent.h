@@ -25,8 +25,9 @@
 
 #include "mimedata.h"
 
-#include <QGraphicsSceneDragDropEvent>
 #include <QtCore/Qt>
+
+class QGraphicsSceneDragDropEvent;
 
 class DeclarativeDragDropEvent : public QObject
 {

@@ -19,6 +19,10 @@
 
 #include "dropitem.h"
 
+#include <QGraphicsSceneDragDropEvent>
+
+#include "dragdropevent.h"
+
 DeclarativeDropItem::DeclarativeDropItem(QDeclarativeItem *parent) : QDeclarativeItem(parent)
 {
     setAcceptDrops(true);

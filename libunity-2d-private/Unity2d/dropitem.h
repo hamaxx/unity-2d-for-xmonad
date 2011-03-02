@@ -21,9 +21,9 @@
 #define DROPITEM_H
 
 #include <QDeclarativeItem>
-#include <QGraphicsSceneDragDropEvent>
 
-#include "dragdropevent.h"
+class QGraphicsSceneDragDropEvent;
+class DeclarativeDragDropEvent;
 
 class DeclarativeDropItem : public QDeclarativeItem
 {
