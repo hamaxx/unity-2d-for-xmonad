@@ -160,8 +160,7 @@ void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
 
 void LauncherView::onDrop(DeclarativeDragDropEvent* event)
 {
-    QList<QUrl> urls = getEventUrls(event);
-    foreach (QUrl url, urls) {
+    foreach (QUrl url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
         }
