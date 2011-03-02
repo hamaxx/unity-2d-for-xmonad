@@ -243,7 +243,9 @@ LauncherApplication::monitorDesktopFile(const QString& path)
     if (m_desktopFileWatcher->files().contains(path)) {
         m_desktopFileWatcher->removePath(path);
     }
-    m_desktopFileWatcher->addPath(path);
+    if (!path.isEmpty()) {
+        m_desktopFileWatcher->addPath(path);
+    }
 }
 
 void
