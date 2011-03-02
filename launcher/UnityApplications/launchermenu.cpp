@@ -27,6 +27,7 @@
 #include <QResizeEvent>
 #include <QBitmap>
 #include <QX11Info>
+#include <QDesktopWidget>
 
 LauncherContextualMenu::LauncherContextualMenu():
     QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
@@ -183,6 +184,13 @@ LauncherContextualMenu::setFolded(int folded)
     } else {
         addSeparator();
         m_launcherItem->createMenuActions();
+
+        int menuHeight = height();
+        int screenHeight = QApplication::desktop()->screenGeometry(this).height();
+        if (y() + menuHeight > screenHeight) {
+            /* The menu is offscreen, shift it upwards. */
+            move(x(), screenHeight - menuHeight);
+        }
     }
 
     m_folded = folded;
