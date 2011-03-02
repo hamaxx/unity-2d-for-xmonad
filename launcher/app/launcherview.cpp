@@ -76,7 +76,6 @@ void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
             return;
         }
     }
-    event->setAccepted(false);
 }
 
 void LauncherView::onDrop(DeclarativeDragDropEvent* event)
