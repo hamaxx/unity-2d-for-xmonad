@@ -26,11 +26,11 @@ QMenu {
 }
 
 QMenu[transparencyAvailable=true] {
-    border-image: url(artwork:tooltip/background.png) 24px 5px 4px 15px Repeat Repeat;
+    border-image: url(artwork:tooltip/background.png) 5px 5px 4px 15px Repeat Repeat;
 }
 
 QMenu[transparencyAvailable=false] {
-    border-image: url(artwork:tooltip/background_no_transparency.png) 24px 5px 4px 15px Repeat Repeat;
+    border-image: url(artwork:tooltip/background_no_transparency.png) 5px 5px 4px 15px Repeat Repeat;
 }
 
 

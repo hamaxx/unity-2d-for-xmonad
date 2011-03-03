@@ -28,9 +28,11 @@
 #include <QBitmap>
 #include <QX11Info>
 #include <QDesktopWidget>
+#include <QPainter>
 
 LauncherContextualMenu::LauncherContextualMenu():
-    QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
+    QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL),
+    m_maskNeedsUpdate(false)
 {
     /* Timer used for to hide the menu after a given delay (hideWithDelay()) */
     m_hidingDelayTimer.setSingleShot(true);
@@ -55,6 +57,16 @@ LauncherContextualMenu::LauncherContextualMenu():
     /* Custom appearance. */
     loadCSS();
 
+    /* Load the pixmap for the arrow. It is drawn separately as its position
+       may vary depending on the position of the menu on the screen. */
+    QString arrowFilename;
+    if (transparencyAvailable()) {
+        arrowFilename = "artwork:tooltip/arrow.png";
+    } else {
+        arrowFilename = "artwork:tooltip/arrow_no_transparency.png";
+    }
+    m_arrow = new QPixmap(arrowFilename);
+
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
     m_titleAction->setEnabled(false);
@@ -63,6 +75,7 @@ LauncherContextualMenu::LauncherContextualMenu():
 
 LauncherContextualMenu::~LauncherContextualMenu()
 {
+    delete m_arrow;
 }
 
 void
@@ -96,17 +109,22 @@ LauncherContextualMenu::setTitle(const QString& title)
 }
 
 void
+LauncherContextualMenu::updateMask()
+{
+    QPixmap pixmap(size());
+    render(&pixmap, QPoint(), QRegion(),
+           QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask);
+    setMask(pixmap.createMaskFromColor("red"));
+}
+
+void
 LauncherContextualMenu::resizeEvent(QResizeEvent* event)
 {
+    QMenu::resizeEvent(event);
     /* If transparent windows are not available use the XShape extension */
     if (!transparencyAvailable()) {
-        QPixmap pixmap(event->size());
-        render(&pixmap, QPoint(), QRegion(),
-               QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask);
-        setMask(pixmap.createMaskFromColor("red"));
+        updateMask();
     }
-
-    QMenu::resizeEvent(event);
 }
 
 bool
@@ -139,6 +157,7 @@ LauncherContextualMenu::show(int x, int y)
     if (isVisible())
         return;
 
+    m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
 }
@@ -188,9 +207,12 @@ LauncherContextualMenu::setFolded(int folded)
         QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
         if (height() <= screenGeometry.height()) {
             /* Adjust the position of the menu only if it fits entirely on the screen. */
+            int menuBottomEdge = y() + height();
             int screenBottomEdge = screenGeometry.y() + screenGeometry.height();
-            if ((y() + height()) > screenBottomEdge) {
+            if (menuBottomEdge > screenBottomEdge) {
                 /* The menu goes offscreen, shift it upwards. */
+                m_arrowY += menuBottomEdge - screenBottomEdge;
+                m_maskNeedsUpdate = true;
                 move(x(), screenBottomEdge - height());
             }
         }
@@ -199,6 +221,24 @@ LauncherContextualMenu::setFolded(int folded)
     m_folded = folded;
 
     emit foldedChanged(m_folded);
+}
+
+void
+LauncherContextualMenu::paintEvent(QPaintEvent* event)
+{
+    QMenu::paintEvent(event);
+
+    /* Draw the arrow. */
+    QPainter painter(this);
+    painter.drawPixmap(0, m_arrowY, *m_arrow);
+
+    if (m_maskNeedsUpdate && !transparencyAvailable()) {
+        /* The menu has moved in order not to go offscreen, so the arrow has
+           moved too, need to update the mask. */
+        m_maskNeedsUpdate = false;
+        /* Delay the call to updateMask to avoid recursive repaint warnings. */
+        QTimer::singleShot(0, this, SLOT(updateMask()));
+    }
 }
 
 LauncherItem*
