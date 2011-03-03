@@ -15,6 +15,8 @@
  */
 
 #include "dashdeclarativeview.h"
+#include "dashadaptor.h"
+
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
@@ -22,6 +24,7 @@
 #include <QDeclarativeContext>
 #include <QX11Info>
 #include <QGraphicsObject>
+#include <QtDBus/QDBusConnection>
 
 #include <QDebug>
 
@@ -36,6 +39,9 @@ static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
+
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
+static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
@@ -318,4 +324,15 @@ bool
 DashDeclarativeView::isCompositingManagerRunning() const
 {
     return QX11Info::isCompositingManagerRunning();
+}
+
+bool
+DashDeclarativeView::connectToBus()
+{
+    bool ok = QDBusConnection::sessionBus().registerService(DASH_DBUS_SERVICE);
+    if (!ok) {
+        return false;
+    }
+    new DashAdaptor(this);
+    return QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, this);
 }
