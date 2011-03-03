@@ -59,13 +59,11 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* Load the pixmap for the arrow. It is drawn separately as its position
        may vary depending on the position of the menu on the screen. */
-    QString arrowFilename;
     if (transparencyAvailable()) {
-        arrowFilename = "artwork:tooltip/arrow.png";
+        m_arrow.load("artwork:tooltip/arrow.png");
     } else {
-        arrowFilename = "artwork:tooltip/arrow_no_transparency.png";
+        m_arrow.load("artwork:tooltip/arrow_no_transparency.png");
     }
-    m_arrow = new QPixmap(arrowFilename);
 
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
@@ -75,7 +73,6 @@ LauncherContextualMenu::LauncherContextualMenu():
 
 LauncherContextualMenu::~LauncherContextualMenu()
 {
-    delete m_arrow;
 }
 
 void
@@ -231,7 +228,7 @@ LauncherContextualMenu::paintEvent(QPaintEvent* event)
     /* Draw the arrow. */
     QPainter painter(this);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.drawPixmap(0, m_arrowY, *m_arrow);
+    painter.drawPixmap(0, m_arrowY, m_arrow);
 
     if (m_maskNeedsUpdate && !transparencyAvailable()) {
         /* The menu has moved in order not to go offscreen, so the arrow has

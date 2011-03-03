@@ -22,6 +22,7 @@
 
 #include <QMenu>
 #include <QTimer>
+#include <QPixmap>
 
 class LauncherItem;
 
@@ -70,7 +71,7 @@ private:
     QString m_title;
     QAction* m_titleAction;
 
-    QPixmap* m_arrow;
+    QPixmap m_arrow;
     int m_arrowY;
     bool m_maskNeedsUpdate;
 
