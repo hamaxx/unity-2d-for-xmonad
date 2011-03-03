@@ -73,7 +73,6 @@ private:
 
     QPixmap m_arrow;
     int m_arrowY;
-    bool m_maskNeedsUpdate;
 
 private Q_SLOTS:
     void updateMask();

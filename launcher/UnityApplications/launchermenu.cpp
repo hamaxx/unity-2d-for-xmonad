@@ -31,8 +31,7 @@
 #include <QPainter>
 
 LauncherContextualMenu::LauncherContextualMenu():
-    QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL),
-    m_maskNeedsUpdate(false)
+    QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
 {
     /* Timer used for to hide the menu after a given delay (hideWithDelay()) */
     m_hidingDelayTimer.setSingleShot(true);
@@ -209,8 +208,11 @@ LauncherContextualMenu::setFolded(int folded)
             if (menuBottomEdge > screenBottomEdge) {
                 /* The menu goes offscreen, shift it upwards. */
                 m_arrowY += menuBottomEdge - screenBottomEdge;
-                m_maskNeedsUpdate = true;
                 move(x(), screenBottomEdge - height());
+                if (!transparencyAvailable()) {
+                    /* The arrow has moved relatively to the menu. */
+                    updateMask();
+                }
             }
         }
     }
@@ -229,14 +231,6 @@ LauncherContextualMenu::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.drawPixmap(0, m_arrowY, m_arrow);
-
-    if (m_maskNeedsUpdate && !transparencyAvailable()) {
-        /* The menu has moved in order not to go offscreen, so the arrow has
-           moved too, need to update the mask. */
-        m_maskNeedsUpdate = false;
-        /* Delay the call to updateMask to avoid recursive repaint warnings. */
-        QTimer::singleShot(0, this, SLOT(updateMask()));
-    }
 }
 
 LauncherItem*
