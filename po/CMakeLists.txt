@@ -28,7 +28,7 @@ macro(create_translation_targets _potFile)
             COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_absFile}
             DEPENDS ${_absFile}
             )
-        set(_gmoFiles ${_gmoFileList} ${_gmoFile})
+        set(_gmoFiles ${_gmoFiles} ${_gmoFile})
 
         # Extend the msgmerge target to merge the current .po
         add_custom_target(msgmerge-${_lang}
