@@ -185,11 +185,14 @@ LauncherContextualMenu::setFolded(int folded)
         addSeparator();
         m_launcherItem->createMenuActions();
 
-        int menuHeight = height();
-        int screenHeight = QApplication::desktop()->screenGeometry(this).height();
-        if (y() + menuHeight > screenHeight) {
-            /* The menu is offscreen, shift it upwards. */
-            move(x(), screenHeight - menuHeight);
+        QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
+        if (height() <= screenGeometry.height()) {
+            /* Adjust the position of the menu only if it fits entirely on the screen. */
+            int screenBottomEdge = screenGeometry.y() + screenGeometry.height();
+            if ((y() + height()) > screenBottomEdge) {
+                /* The menu goes offscreen, shift it upwards. */
+                move(x(), screenBottomEdge - height());
+            }
         }
     }
 
