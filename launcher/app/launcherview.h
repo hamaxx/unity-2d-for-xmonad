@@ -24,36 +24,41 @@
 #include <QUrl>
 #include <QList>
 #include <QDragEnterEvent>
+#include <QTimer>
 #include "gconfitem-qml-wrapper.h"
 
 class QGraphicsObject;
+class Unity2dPanel;
 
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
-    Q_PROPERTY(bool superKeyPressed READ superKeyPressed
-                                    NOTIFY superKeyPressedChanged)
+    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
-    explicit LauncherView();
+    explicit LauncherView(Unity2dPanel* parentPanel = NULL);
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
-    bool superKeyPressed() const { return m_superKeyPressed; }
+    bool superKeyHeld() const { return m_superKeyHeld; }
 
 Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
     void keyboardShortcutPressed(int itemIndex);
-    void superKeyPressedChanged(bool superKeyPressed);
+    void superKeyHeldChanged(bool superKeyHeld);
+    void superKeyTapped();
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardHotkey();
     void updateSuperKeyMonitoring();
+    void updateSuperKeyHoldState();
+    void toggleDash();
+    void togglePanel(bool visible);
+    void changeKeyboardShortcutsState(bool enabled);
 
 private:
     QList<QUrl> getEventUrls(QDropEvent*);
-    void changeKeyboardShortcutsState(bool enabled);
 
     /* Custom drag’n’drop handling */
     void dragEnterEvent(QDragEnterEvent*);
@@ -73,6 +78,10 @@ private:
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
+    bool m_superKeyHeld;
+    QTimer m_superKeyHoldTimer;
+
+    Unity2dPanel *m_parentPanel;
 };
 
 #endif // LAUNCHERVIEW

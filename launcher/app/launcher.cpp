@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     panel.setFixedWidth(66);
 
     /* QML declarative view */
-    LauncherView *launcherView = new LauncherView;
+    LauncherView *launcherView = new LauncherView(&panel);
 
     /* FIXME: possible optimisations */
 //    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);

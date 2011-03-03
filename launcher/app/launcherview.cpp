@@ -30,6 +30,8 @@
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
 #include <QMetaObject>
+#include <QTimer>
+#include <QtDBus/QDBusInterface>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -38,17 +40,34 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
+#include "unity2dpanel.h"
 
-LauncherView::LauncherView() :
+static const int KEY_HOLD_THRESHOLD = 250;
+
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d";
+static const char* DASH_DBUS_PATH = "/Dash";
+static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
+
+LauncherView::LauncherView(Unity2dPanel* parentPanel) :
     QDeclarativeView(),
     m_dndCurrentLauncherItem(NULL), m_dndCurrentLauncherItemAccepted(false),
-    m_dndAccepted(false), m_superKeyPressed(false)
+    m_dndAccepted(false), m_superKeyPressed(false), m_superKeyHeld(false),
+    m_parentPanel(parentPanel)
 {
     setAcceptDrops(true);
 
+    if (m_parentPanel != NULL) {
+        connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(togglePanel(bool)));
+    }
+
+    m_superKeyHoldTimer.setSingleShot(true);
+    m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
+    connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
+    connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
+    connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(changeKeyboardShortcutsState(bool)));
+
     m_enableSuperKey.setKey("/desktop/unity/launcher/super_key_enable");
-    QObject::connect(&m_enableSuperKey, SIGNAL(valueChanged()),
-                     this, SLOT(updateSuperKeyMonitoring()));
+    connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 }
 
@@ -67,9 +86,10 @@ LauncherView::updateSuperKeyMonitoring()
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
-        Q_EMIT superKeyPressedChanged(false);
-        changeKeyboardShortcutsState(false);
+        m_superKeyHeld = false;
+        Q_EMIT superKeyHeldChanged(false);
     }
 }
 
@@ -82,8 +102,46 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
 
     if (m_superKeyPressed != superKeyPressed) {
         m_superKeyPressed = superKeyPressed;
-        Q_EMIT superKeyPressedChanged(m_superKeyPressed);
-        changeKeyboardShortcutsState(m_superKeyPressed);
+        if (superKeyPressed) {
+            /* If the key is pressed, start up a timer to monitor if it's being held short
+               enough to qualify as just a "tap" or as a proper hold */
+            m_superKeyHoldTimer.start();
+        } else {
+            m_superKeyHoldTimer.stop();
+
+            /* If the key is released, and was not being held, it means that the user just
+               performed a "tap". Toggle the Dash in that case. */
+            if (!m_superKeyHeld) {
+                Q_EMIT superKeyTapped();
+            }
+
+            m_superKeyHeld = false;
+            Q_EMIT superKeyHeldChanged(m_superKeyHeld);
+        }
+    }
+}
+
+void
+LauncherView::updateSuperKeyHoldState()
+{
+    /* If the key was released in the meantime, just do nothing, otherwise
+       consider the key being held and update the shortcuts */
+    if (m_superKeyPressed) {
+        m_superKeyHeld = true;
+        Q_EMIT superKeyHeldChanged(m_superKeyHeld);
+    }
+}
+
+void
+LauncherView::togglePanel(bool visible)
+{
+    if (visible) {
+        m_parentPanel->setManualSliding(true);
+        m_parentPanel->slideIn();
+    } else {
+        /* There's no need to slideOut explicitly, it will be done
+           automatically, if needed, once the sliding is not manual anymore */
+        m_parentPanel->setManualSliding(false);
     }
 }
 
@@ -117,6 +175,11 @@ LauncherView::forwardHotkey()
            from 0 to 8. Shortcut for 0 should activate item with index 10.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
+        if (hotkey->key() < Qt::Key_0 || hotkey->key() > Qt::Key_9) {
+            qWarning() << "Received hotkey that we didn't grab:"
+                       << QKeySequence(hotkey->key() | hotkey->modifiers()).toString();
+            return;
+        }
         int itemIndex = hotkey->key() - Qt::Key_0;
         itemIndex = (itemIndex == 0) ? 9 : itemIndex - 1;
 
@@ -124,6 +187,14 @@ LauncherView::forwardHotkey()
             Q_EMIT keyboardShortcutPressed(itemIndex);
         }
     }
+}
+
+void
+LauncherView::toggleDash()
+{
+    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+    bool dashActive = dashInterface.property("active").toBool();
+    dashInterface.setProperty("active", !dashActive);
 }
 
 QGraphicsObject*
