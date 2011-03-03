@@ -11,10 +11,10 @@
 #
 # Arguments: .pot file, then all .po files
 macro(create_translation_targets _potFile)
+    set(_gmoFiles)
     get_filename_component(_potBasename ${_potFile} NAME_WE)
     get_filename_component(_absPotFile ${_potFile} ABSOLUTE)
 
-    add_custom_target(msgfmt ALL)
     add_custom_target(msgmerge)
 
     foreach(_currentPoFile ${ARGN})
@@ -22,15 +22,15 @@ macro(create_translation_targets _potFile)
         get_filename_component(_lang ${_absFile} NAME_WE)
         set(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_lang}.gmo)
 
-        # msgfmt target
+        # Build a .gmo file from the current .po
         add_custom_command(
             OUTPUT ${_gmoFile}
             COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_absFile}
             DEPENDS ${_absFile}
             )
-        add_dependencies(msgfmt ${_gmoFile})
+        set(_gmoFiles ${_gmoFileList} ${_gmoFile})
 
-        # msgmerge target
+        # Extend the msgmerge target to merge the current .po
         add_custom_target(msgmerge-${_lang}
             COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --quiet --update --backup=none -s ${_absFile} ${_absPotFile}
             DEPENDS ${_absPotFile} ${_absFile}
@@ -40,6 +40,9 @@ macro(create_translation_targets _potFile)
         # Install .gmo
         install(FILES ${_gmoFile} DESTINATION share/locale/${_lang}/LC_MESSAGES RENAME ${_potBasename}.mo)
     endforeach(_currentPoFile)
+
+    # Create the msgfmt target, building all .gmo files
+    add_custom_target(msgfmt ALL DEPENDS ${_gmoFiles})
 endmacro(create_translation_targets)
 
 file(GLOB PO_FILES *.po)
