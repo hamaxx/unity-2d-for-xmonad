@@ -230,6 +230,7 @@ LauncherContextualMenu::paintEvent(QPaintEvent* event)
 
     /* Draw the arrow. */
     QPainter painter(this);
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
     painter.drawPixmap(0, m_arrowY, *m_arrow);
 
     if (m_maskNeedsUpdate && !transparencyAvailable()) {
