@@ -106,8 +106,8 @@ libunity-2d-private.so.0 libunity-2d-private0 #MINVER#
  _ZN24DeclarativeDragDropEvent11setAcceptedEb@Base 3.6.0
  _ZN24DeclarativeDragDropEvent13setDropActionEN2Qt10DropActionE@Base 3.6.0
  _ZN24DeclarativeDragDropEvent16staticMetaObjectE@Base 3.6.0
- _ZN24DeclarativeDragDropEventC1EP10QDropEventP7QObject@Base 3.6.0
- _ZN24DeclarativeDragDropEventC2EP10QDropEventP7QObject@Base 3.6.0
+ _ZN24DeclarativeDragDropEventC1EP27QGraphicsSceneDragDropEventP7QObject@Base 3.6.1
+ _ZN24DeclarativeDragDropEventC2EP27QGraphicsSceneDragDropEventP7QObject@Base 3.6.1
  _ZN24DeclarativeDragDropEventD0Ev@Base 3.6.0
  _ZN24DeclarativeDragDropEventD1Ev@Base 3.6.0
  _ZN24DeclarativeDragDropEventD2Ev@Base 3.6.0

@@ -21,14 +21,13 @@
 #define LAUNCHERVIEW
 
 #include <QDeclarativeView>
-#include <QUrl>
 #include <QList>
-#include <QDragEnterEvent>
+#include <QUrl>
 #include <QTimer>
 #include "gconfitem-qml-wrapper.h"
 
-class QGraphicsObject;
 class Unity2dPanel;
+class DeclarativeDragDropEvent;
 
 class LauncherView : public QDeclarativeView
 {
@@ -38,6 +37,8 @@ class LauncherView : public QDeclarativeView
 public:
     explicit LauncherView(Unity2dPanel* parentPanel = NULL);
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
+    Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
+    Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 
@@ -58,23 +59,7 @@ private Q_SLOTS:
     void changeKeyboardShortcutsState(bool enabled);
 
 private:
-    QList<QUrl> getEventUrls(QDropEvent*);
-
-    /* Custom drag’n’drop handling */
-    void dragEnterEvent(QDragEnterEvent*);
-    void dragMoveEvent(QDragMoveEvent*);
-    void dropEvent(QDropEvent*);
-
-    QGraphicsObject* launcherItemAt(const QPoint&) const;
-    void delegateDragEventHandlingToItem(QDropEvent*, QGraphicsObject*);
-    bool acceptDndEvent(QDragEnterEvent*);
-
-    /* The launcher item currently under the mouse cursor during a dnd event */
-    QGraphicsObject* m_dndCurrentLauncherItem;
-    /* Whether it accepted the event */
-    bool m_dndCurrentLauncherItemAccepted;
-    /* Whether the launcher itself handles the current dnd event */
-    bool m_dndAccepted;
+    QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;

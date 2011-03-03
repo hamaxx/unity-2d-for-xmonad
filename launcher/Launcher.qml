@@ -2,7 +2,7 @@ import Qt 4.7
 import UnityApplications 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
-Item {
+DropItem {
     id: launcher
 
     Image {
@@ -12,6 +12,9 @@ Item {
         fillMode: Image.TileVertically
         source: "artwork/background.png"
     }
+
+    onDragEnter: launcherView.onDragEnter(event)
+    onDrop: launcherView.onDrop(event)
 
     LauncherList {
         id: main
