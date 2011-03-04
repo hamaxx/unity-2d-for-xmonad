@@ -12,6 +12,18 @@
         <method name="activateHome">
             <dox:d>Activates the Dash and shows the Home section</dox:d>
         </method>
+        <method name="activatePlaceEntry">
+            <dox:d>Activates the Dash and shows the specified Place</dox:d>
+            <arg name="file" type="s" direction="in">
+                    <dox:d>The file that should be activated</dox:d>
+            </arg>
+            <arg name="entry" type="s" direction="in">
+                    <dox:d>The place entry that should be activated</dox:d>
+            </arg>
+            <arg name="section" type="i" direction="in">
+                    <dox:d>The section that should be activated</dox:d>
+            </arg>
+        </method>
         <property name="active" type="b" access="readwrite">
             <dox:d>True if the Dash is active</dox:d>
         </property>

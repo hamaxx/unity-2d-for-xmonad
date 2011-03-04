@@ -143,7 +143,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
 static const char* SECTION_PROPERTY = "section";
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d";
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
