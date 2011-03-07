@@ -1,3 +1,6 @@
+# Dependencies
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+
 # Sources
 set(libunity-2d-private_SRCS
     gettexttranslator.cpp
@@ -7,6 +10,7 @@ set(libunity-2d-private_SRCS
     hotkey.cpp
     mousearea.cpp
     unity2dapplication.cpp
+    unity2ddebug.cpp
     unity2dpanel.cpp
     mimedata.cpp
     dragdropevent.cpp
@@ -19,6 +23,7 @@ qt4_automoc(${libunity-2d-private_SRCS})
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${GLIB_INCLUDE_DIRS}
     )
 
 add_library(unity-2d-private SHARED ${libunity-2d-private_SRCS})
@@ -32,6 +37,7 @@ target_link_libraries(unity-2d-private
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${X11_LIBRARIES}
+    ${GLIB_LDFLAGS}
     )
 
 # Install
