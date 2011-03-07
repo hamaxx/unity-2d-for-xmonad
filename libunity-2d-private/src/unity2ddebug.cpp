@@ -25,6 +25,7 @@
 
 // Qt
 #include <QCoreApplication>
+#include <QTime>
 
 // Glib
 #include <glib.h>
@@ -36,9 +37,19 @@
 namespace Unity2dDebug
 {
 
+static bool getenvBool(const char* name, bool defaultValue)
+{
+    return getenv(name) ? true : defaultValue;
+}
+
 static void unity2dQtHandler(QtMsgType type, const char *message)
 {
     static QByteArray name = QCoreApplication::applicationFilePath().section("/", -1).toLocal8Bit();
+    static bool useTimeStamp = getenvBool("UNITY2D_DEBUG_TIMESTAMP", false);
+    if (useTimeStamp) {
+        QTime time = QTime::currentTime();
+        fprintf(stderr, "%02d:%02d:%02d.%03d: ", time.hour(), time.minute(), time.second(), time.msec());
+    }
     switch (type) {
     case QtDebugMsg:
         fprintf(stderr, "%s: [DEBUG] %s\n", name.constData(), message);
