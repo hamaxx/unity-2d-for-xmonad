@@ -41,6 +41,7 @@
 #include "launcherview.h"
 #include "launchercontrol.h"
 #include "hidemodecontroller.h"
+#include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
@@ -50,8 +51,7 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
-    QApplication::setApplicationName("Unity 2D Launcher");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.

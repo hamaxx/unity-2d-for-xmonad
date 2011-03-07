@@ -24,12 +24,36 @@
 // Local
 
 // Qt
+#include <QCoreApplication>
 
 // Glib
 #include <glib.h>
 
+// libc
+#include <cstdio>
+#include <cstdlib>
+
 namespace Unity2dDebug
 {
+
+static void unity2dQtHandler(QtMsgType type, const char *message)
+{
+    static QByteArray name = QCoreApplication::applicationFilePath().section("/", -1).toLocal8Bit();
+    switch (type) {
+    case QtDebugMsg:
+        fprintf(stderr, "%s: [DEBUG] %s\n", name.constData(), message);
+        break;
+    case QtWarningMsg:
+        fprintf(stderr, "%s: [WARNING] %s\n", name.constData(), message);
+        break;
+    case QtCriticalMsg:
+        fprintf(stderr, "%s: [CRITICAL] %s\n", name.constData(), message);
+        break;
+    case QtFatalMsg:
+        fprintf(stderr, "%s: [FATAL] %s\n", name.constData(), message);
+        abort();
+    }
+}
 
 static void unity2dGlibHandler(const gchar* domain, GLogLevelFlags level, const gchar* message, gpointer /* user_data */)
 {
@@ -59,9 +83,10 @@ static void unity2dGlibHandler(const gchar* domain, GLogLevelFlags level, const 
     }
 }
 
-void installGlibHandler()
+void installHandlers()
 {
     g_log_set_default_handler(unity2dGlibHandler, 0);
+    qInstallMsgHandler(unity2dQtHandler);
 }
 
 } // namespace

@@ -89,9 +89,7 @@ int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
 
-    QApplication::setApplicationName("Unity 2D Panel");
-    qInstallMsgHandler(globalMessageHandler);
-    Unity2dDebug::installGlibHandler();
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.

@@ -32,7 +32,7 @@
 namespace Unity2dDebug
 {
 
-void installGlibHandler();
+void installHandlers();
 
 }
 
