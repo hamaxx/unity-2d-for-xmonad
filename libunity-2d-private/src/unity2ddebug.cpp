@@ -37,31 +37,52 @@
 namespace Unity2dDebug
 {
 
+static const char* COLOR_BLUE = "\033[34m";
+static const char* COLOR_RED = "\033[31m";
+
 static bool getenvBool(const char* name, bool defaultValue)
 {
-    return getenv(name) ? true : defaultValue;
+    QByteArray value = qgetenv(name);
+    if (value.isEmpty()) {
+        return defaultValue;
+    }
+    return value != "0";
+}
+
+static void unity2dQtHandlerPrint(const char* color, const char* level, const char* message)
+{
+    static bool useColor = isatty(fileno(stderr)) && getenvBool("UNITY2D_DEBUG_COLOR", true);
+    if (useColor) {
+        fprintf(stderr, "%s[%s]\033[0m %s\n", color, level, message);
+    } else {
+        fprintf(stderr, "[%s] %s\n", level, message);
+    }
 }
 
 static void unity2dQtHandler(QtMsgType type, const char *message)
 {
     static QByteArray name = QCoreApplication::applicationFilePath().section("/", -1).toLocal8Bit();
     static bool useTimeStamp = getenvBool("UNITY2D_DEBUG_TIMESTAMP", false);
+
     if (useTimeStamp) {
         QTime time = QTime::currentTime();
         fprintf(stderr, "%02d:%02d:%02d.%03d: ", time.hour(), time.minute(), time.second(), time.msec());
     }
+
+    fprintf(stderr, "%s: ", name.constData());
+
     switch (type) {
     case QtDebugMsg:
-        fprintf(stderr, "%s: [DEBUG] %s\n", name.constData(), message);
+        unity2dQtHandlerPrint(COLOR_BLUE, "DEBUG", message);
         break;
     case QtWarningMsg:
-        fprintf(stderr, "%s: [WARNING] %s\n", name.constData(), message);
+        unity2dQtHandlerPrint(COLOR_RED, "WARNING", message);
         break;
     case QtCriticalMsg:
-        fprintf(stderr, "%s: [CRITICAL] %s\n", name.constData(), message);
+        unity2dQtHandlerPrint(COLOR_RED, "CRITICAL", message);
         break;
     case QtFatalMsg:
-        fprintf(stderr, "%s: [FATAL] %s\n", name.constData(), message);
+        unity2dQtHandlerPrint(COLOR_RED, "FATAL", message);
         abort();
     }
 }
