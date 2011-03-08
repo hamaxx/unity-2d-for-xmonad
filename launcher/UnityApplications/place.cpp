@@ -241,17 +241,17 @@ Place::onPlaceServiceUnregistered()
 
     stopMonitoringEntries();
 
-    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
-    while (!m_entries.isEmpty()) {
-        PlaceEntry* entry = m_entries.takeFirst();
+    for (int i = rowCount() - 1; i >= 0; --i) {
+        PlaceEntry* entry = m_entries.at(i);
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_entries.removeAt(i);
+            endRemoveRows();
             delete entry;
-        }
-        else {
+        } else {
             entry->setSensitive(false);
         }
     }
-    endRemoveRows();
 }
 
 void
