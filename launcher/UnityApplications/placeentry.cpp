@@ -503,6 +503,19 @@ PlaceEntry::setSensitive(bool sensitive)
 {
     if (sensitive != m_sensitive) {
         m_sensitive = sensitive;
+        if (!m_sensitive) {
+            /* Dee list models are shared, release all references to them so
+               that the master copy (owned by the place daemon) can be freed. */
+            setSections(NULL);
+            setEntryGroupsModel(NULL);
+            setEntryResultsModel(NULL);
+            setGlobalGroupsModel(NULL);
+            setGlobalResultsModel(NULL);
+            /* FIXME: there is still an issue here (maybe in dee itself or in
+               the Qt binding): when the place daemon crashes, a shared
+               SectionsModel, owned by the process (unity-2d-launcher or
+               unity-2d-places), still lives on the bus. */
+        }
         emit sensitiveChanged(sensitive);
     }
 }
@@ -510,9 +523,6 @@ PlaceEntry::setSensitive(bool sensitive)
 void
 PlaceEntry::setSections(DeeListModel* sections)
 {
-    if (sections == NULL) {
-        return;
-    }
     if (m_sections != NULL) {
         delete m_sections;
     }
@@ -596,9 +606,6 @@ PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
 void
 PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
 {
-    if (entryGroupsModel == NULL) {
-        return;
-    }
     if (m_entryGroupsModel != NULL) {
         delete m_entryGroupsModel;
     }
@@ -621,9 +628,6 @@ PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
 void
 PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
 {
-    if (entryResultsModel == NULL) {
-        return;
-    }
     if (m_entryResultsModel != NULL) {
         delete m_entryResultsModel;
     }
@@ -675,9 +679,6 @@ PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
 void
 PlaceEntry::setGlobalGroupsModel(DeeListModel* globalGroupsModel)
 {
-    if (globalGroupsModel == NULL) {
-        return;
-    }
     if (m_globalGroupsModel != NULL) {
         delete m_globalGroupsModel;
     }
@@ -700,9 +701,6 @@ PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
 void
 PlaceEntry::setGlobalResultsModel(DeeListModel* globalResultsModel)
 {
-    if (globalResultsModel == NULL) {
-        return;
-    }
     if (m_globalResultsModel != NULL) {
         delete m_globalResultsModel;
     }
