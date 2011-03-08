@@ -26,25 +26,29 @@
 #include <intellihidecontroller.h>
 
 // unity-2d
+#include <debug_p.h>
 #include <unity2dpanel.h>
 
 // libqtgconf
 #include <gconfitem-qml-wrapper.h>
 
 // Qt
+#include <QDeclarativeProperty>
 
 static const char* GCONF_LAUNCHER_HIDEMODE_KEY = "/desktop/unity-2d/launcher/hide_mode";
 
-HideModeController::HideModeController(Unity2dPanel* panel)
+HideModeController::HideModeController(Unity2dPanel* panel, QDeclarativeProperty* property)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
 , m_controller(0)
+, m_requestAttentionProperty(property)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
     connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
     connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
+    m_requestAttentionProperty->connectNotifySignal(this, SLOT(update()));
     update();
 }
 
@@ -54,6 +58,7 @@ HideModeController::~HideModeController()
 
 void HideModeController::update()
 {
+    UQ_VAR(m_requestAttentionProperty->read());
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
     delete m_controller;

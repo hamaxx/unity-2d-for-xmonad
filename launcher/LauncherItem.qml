@@ -40,6 +40,7 @@ DropItem {
     property int tileSize
     property string desktopFile: ""
     property alias icon: icon.source
+    property alias urgentAnimation: urgentAnimation
     property bool running: false
     property bool active: false
     property bool urgent: false
@@ -319,6 +320,7 @@ DropItem {
             /* The entire tile will "shake" when the window is marked as "urgent", to attract
                the user's attention */
             SequentialAnimation {
+                id: urgentAnimation
                 running: urgent
                 alwaysRunToEnd: true
 

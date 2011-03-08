@@ -16,6 +16,8 @@ DropItem {
     onDragEnter: launcherView.onDragEnter(event)
     onDrop: launcherView.onDrop(event)
 
+    property alias requestAttention: main.requestAttention
+
     LauncherList {
         id: main
         anchors.top: parent.top

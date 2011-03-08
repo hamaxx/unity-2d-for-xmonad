@@ -33,7 +33,9 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QDeclarativeProperty>
 #include <QDir>
+#include <QGraphicsObject>
 
 #include <unity2dapplication.h>
 
@@ -120,7 +122,8 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
-    new HideModeController(&panel);
+    QDeclarativeProperty property(launcherView->rootObject(), "requestAttention");
+    new HideModeController(&panel, &property);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched

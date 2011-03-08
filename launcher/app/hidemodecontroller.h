@@ -26,6 +26,8 @@
 // Qt
 #include <QObject>
 
+class QDeclarativeProperty;
+
 class GConfItemQmlWrapper;
 
 class Unity2dPanel;
@@ -38,7 +40,7 @@ class HideModeController : public QObject
 {
 Q_OBJECT
 public:
-    HideModeController(Unity2dPanel* panel);
+    HideModeController(Unity2dPanel* panel, QDeclarativeProperty* requestAttentionProperty);
     ~HideModeController();
 
 private Q_SLOTS:
@@ -54,6 +56,7 @@ private:
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
     QObject* m_controller;
+    QDeclarativeProperty* m_requestAttentionProperty;
 };
 
 #endif /* HIDEMODECONTROLLER_H */
