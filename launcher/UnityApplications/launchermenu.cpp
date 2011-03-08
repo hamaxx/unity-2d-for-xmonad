@@ -27,6 +27,8 @@
 #include <QResizeEvent>
 #include <QBitmap>
 #include <QX11Info>
+#include <QDesktopWidget>
+#include <QPainter>
 
 LauncherContextualMenu::LauncherContextualMenu():
     QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
@@ -53,6 +55,14 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* Custom appearance. */
     loadCSS();
+
+    /* Load the pixmap for the arrow. It is drawn separately as its position
+       may vary depending on the position of the menu on the screen. */
+    if (transparencyAvailable()) {
+        m_arrow.load("artwork:tooltip/arrow.png");
+    } else {
+        m_arrow.load("artwork:tooltip/arrow_no_transparency.png");
+    }
 
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
@@ -95,17 +105,22 @@ LauncherContextualMenu::setTitle(const QString& title)
 }
 
 void
+LauncherContextualMenu::updateMask()
+{
+    QPixmap pixmap(size());
+    render(&pixmap, QPoint(), QRegion(),
+           QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask);
+    setMask(pixmap.createMaskFromColor("red"));
+}
+
+void
 LauncherContextualMenu::resizeEvent(QResizeEvent* event)
 {
+    QMenu::resizeEvent(event);
     /* If transparent windows are not available use the XShape extension */
     if (!transparencyAvailable()) {
-        QPixmap pixmap(event->size());
-        render(&pixmap, QPoint(), QRegion(),
-               QWidget::DrawWindowBackground | QWidget::DrawChildren | QWidget::IgnoreMask);
-        setMask(pixmap.createMaskFromColor("red"));
+        updateMask();
     }
-
-    QMenu::resizeEvent(event);
 }
 
 bool
@@ -138,6 +153,7 @@ LauncherContextualMenu::show(int x, int y)
     if (isVisible())
         return;
 
+    m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
 }
@@ -183,11 +199,38 @@ LauncherContextualMenu::setFolded(int folded)
     } else {
         addSeparator();
         m_launcherItem->createMenuActions();
+
+        QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
+        if (height() <= screenGeometry.height()) {
+            /* Adjust the position of the menu only if it fits entirely on the screen. */
+            int menuBottomEdge = y() + height();
+            int screenBottomEdge = screenGeometry.y() + screenGeometry.height();
+            if (menuBottomEdge > screenBottomEdge) {
+                /* The menu goes offscreen, shift it upwards. */
+                m_arrowY += menuBottomEdge - screenBottomEdge;
+                move(x(), screenBottomEdge - height());
+                if (!transparencyAvailable()) {
+                    /* The arrow has moved relatively to the menu. */
+                    updateMask();
+                }
+            }
+        }
     }
 
     m_folded = folded;
 
     emit foldedChanged(m_folded);
+}
+
+void
+LauncherContextualMenu::paintEvent(QPaintEvent* event)
+{
+    QMenu::paintEvent(event);
+
+    /* Draw the arrow. */
+    QPainter painter(this);
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.drawPixmap(0, m_arrowY, m_arrow);
 }
 
 LauncherItem*

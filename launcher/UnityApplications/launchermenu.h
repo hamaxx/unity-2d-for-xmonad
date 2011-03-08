@@ -22,6 +22,7 @@
 
 #include <QMenu>
 #include <QTimer>
+#include <QPixmap>
 
 class LauncherItem;
 
@@ -59,6 +60,9 @@ Q_SIGNALS:
     void foldedChanged(bool);
     void titleChanged(QString);
 
+protected:
+    void paintEvent(QPaintEvent* event);
+
 private:
     void loadCSS();
     QTimer m_hidingDelayTimer;
@@ -66,6 +70,12 @@ private:
     LauncherItem* m_launcherItem;
     QString m_title;
     QAction* m_titleAction;
+
+    QPixmap m_arrow;
+    int m_arrowY;
+
+private Q_SLOTS:
+    void updateMask();
 };
 
 #endif // LAUNCHERMENU_H

@@ -68,8 +68,8 @@ AutoScrollingListView {
         Binding { target: item.menu; property: "title"; value: item.name }
 
         /* Drag’n’drop handling */
-        function dragEnterEvent(event) { item.onDragEnter(event) }
-        function dropEvent(event) { item.onDrop(event) }
+        onDragEnter: item.onDragEnter(event)
+        onDrop: item.onDrop(event)
 
         function showMenu() {
             /* Prevent the simultaneous display of multiple menus */

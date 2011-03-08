@@ -25,7 +25,7 @@
 #include <QX11Info>
 #include <QGraphicsObject>
 #include <QtDBus/QDBusConnection>
-
+#include <QTimer>
 #include <QDebug>
 
 #include <X11/Xlib.h>
@@ -48,7 +48,7 @@ DashDeclarativeView::DashDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
 
     if (QX11Info::isCompositingManagerRunning()) {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -147,8 +147,8 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     } else {
         show();
         raise();
-        activateWindow();
-        forceActivateWindow();
+        // We need a delay, otherwise the window may not be visible when we try to activate it
+        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
