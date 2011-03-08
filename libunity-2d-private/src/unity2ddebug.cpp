@@ -64,12 +64,15 @@ static void unity2dQtHandler(QtMsgType type, const char *message)
     static QByteArray name = QCoreApplication::applicationFilePath().section("/", -1).toLocal8Bit();
     static bool useTimeStamp = getenvBool("UNITY2D_DEBUG_TIMESTAMP", false);
 
+    // We use fputs here because we don't want stderr to be flushed before the
+    // end of the line
     if (useTimeStamp) {
-        QTime time = QTime::currentTime();
-        fprintf(stderr, "%02d:%02d:%02d.%03d: ", time.hour(), time.minute(), time.second(), time.msec());
+        QString timeStr = QTime::currentTime().toString("HH:mm:ss.zzz: ");
+        fputs(qPrintable(timeStr), stderr);
     }
 
-    fprintf(stderr, "%s: ", name.constData());
+    fputs(name.constData(), stderr);
+    fputs(": ", stderr);
 
     switch (type) {
     case QtDebugMsg:
