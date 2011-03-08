@@ -31,10 +31,8 @@ DropItem {
     id: item
 
     anchors.horizontalCenter: parent.horizontalCenter
-    /* Manually add some padding to compensate for the spacing
-       of the ListView being set to 0 to work around
-       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
-    property int padding: 5
+
+    property int padding
     height: tileSize + padding
 
     property int tileSize
@@ -147,7 +145,8 @@ DropItem {
             id: tile
             width: item.tileSize
             height: item.tileSize
-            anchors.centerIn: parent
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
 
             /* This is the image providing the background image. The
                color blended with this image is obtained from the color of the icon when it's
