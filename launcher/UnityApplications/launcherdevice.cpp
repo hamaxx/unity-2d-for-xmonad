@@ -25,6 +25,12 @@
 #include <QDebug>
 #include <QAction>
 
+#undef signals
+extern "C" {
+    #include <gtk/gtk.h>
+}
+
+
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
 {
@@ -177,9 +183,12 @@ LauncherDevice::eject()
     if (m_volume == NULL)
         return;
 
+    GMountOperation *mount_op;
+    mount_op = gtk_mount_operation_new(NULL);
+
     if (g_volume_can_eject(m_volume))
     {
-        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL,
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mount_op,
             NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
     }
     else
@@ -191,7 +200,7 @@ LauncherDevice::eject()
 
         if (g_mount_can_unmount(mount))
         {
-            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, NULL,
+            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mount_op,
                 NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
                 NULL);
         }
@@ -200,6 +209,8 @@ LauncherDevice::eject()
             g_object_unref(mount);
         }
     }
+
+    g_object_unref(mount_op);
 }
 
 void
