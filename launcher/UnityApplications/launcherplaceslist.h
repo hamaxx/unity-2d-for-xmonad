@@ -46,7 +46,7 @@ private:
     Place* addPlace(const QString& file);
     Place* removePlace(const QString& file);
 
-private slots:
+private Q_SLOTS:
     void onDirectoryChanged(const QString&);
 
     void slotPlaceOnlineChanged(bool);

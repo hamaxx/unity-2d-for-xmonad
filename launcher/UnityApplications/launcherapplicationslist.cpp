@@ -65,12 +65,14 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
         qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
         return;
     }
+
     Q_FOREACH(LauncherApplication *application, m_applications) {
         if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
             application->updateOverlaysState(properties);
             return;
         }
     }
+
     qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
 }
 
@@ -139,8 +141,9 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
-    if (!bamf_application->user_visible())
+    if (!bamf_application->user_visible()) {
         return;
+    }
 
     LauncherApplication* application;
 
@@ -160,8 +163,9 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 void
 LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
 {
-    if (m_applicationForDesktopFile.contains(desktop_file))
+    if (m_applicationForDesktopFile.contains(desktop_file)) {
         return;
+    }
 
     /* Create a new LauncherApplication */
     LauncherApplication* application = new LauncherApplication;
@@ -214,8 +218,7 @@ LauncherApplicationsList::load()
     QString desktop_file;
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
-    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++)
-    {
+    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++) {
         desktop_file = desktopFilePathFromFavorite(*iter);
         insertFavoriteApplication(desktop_file);
     }
@@ -225,8 +228,7 @@ LauncherApplicationsList::load()
     QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
     BamfApplication* bamf_application;
 
-    for(int i=0; i<running_applications->size(); i++)
-    {
+    for(int i=0; i<running_applications->size(); i++) {
         bamf_application = running_applications->at(i);
         insertBamfApplication(bamf_application);
     }
@@ -241,8 +243,9 @@ LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
     BamfApplication* bamf_application;
     bamf_application = dynamic_cast<BamfApplication*>(bamf_view);
 
-    if(bamf_application == NULL)
+    if (bamf_application == NULL) {
         return;
+    }
 
     insertBamfApplication(bamf_application);
 }
@@ -251,8 +254,9 @@ void LauncherApplicationsList::onApplicationClosed()
 {
     LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
-    if (!application->sticky() && !application->running())
+    if (!application->sticky() && !application->running()) {
         removeApplication(application);
+    }
 }
 
 void
@@ -260,15 +264,13 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 {
     LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
-    if (sticky)
-    {
+    if (sticky) {
         addApplicationToFavorites(application);
-    }
-    else
-    {
+    } else {
         removeApplicationFromFavorites(application);
-        if (!application->running())
+        if (!application->running()) {
             removeApplication(application);
+        }
     }
 }
 
@@ -280,8 +282,10 @@ LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* applica
 
     /* Add the favorite id to the GConf list of favorites */
     QStringList favorites = m_favorites_list->getValue().toStringList();
-    if (favorites.contains(favorite_id))
+    if (favorites.contains(favorite_id)) {
         return;
+    }
+
     favorites << favorite_id;
     m_favorites_list->blockSignals(true);
     m_favorites_list->setValue(QVariant(favorites));
@@ -320,11 +324,9 @@ LauncherApplicationsList::removeApplicationFromFavorites(LauncherApplication* ap
     QString desktop_file = application->desktop_file();
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
-    for (QStringList::iterator i = favorites.begin(); i != favorites.end(); i++ )
-    {
+    for (QStringList::iterator i = favorites.begin(); i != favorites.end(); i++) {
         QString current_desktop_file = desktopFilePathFromFavorite(*i);
-        if (current_desktop_file == desktop_file)
-        {
+        if (current_desktop_file == desktop_file) {
             favorites.erase(i);
             m_favorites_list->blockSignals(true);
             m_favorites_list->setValue(QVariant(favorites));
@@ -335,7 +337,6 @@ LauncherApplicationsList::removeApplicationFromFavorites(LauncherApplication* ap
         }
     }
 }
-
 
 int
 LauncherApplicationsList::rowCount(const QModelIndex &parent) const
@@ -350,12 +351,12 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role);
 
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     return QVariant::fromValue(m_applications.at(index.row()));
 }
-
 
 void
 LauncherApplicationsList::move(int from, int to)
@@ -390,4 +391,3 @@ LauncherApplicationsList::move(int from, int to)
         secondGconfPriority.setValue(QVariant(double(secondApplication->priority())));
     }
 }
-
