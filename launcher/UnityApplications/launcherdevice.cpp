@@ -32,14 +32,16 @@ LauncherDevice::LauncherDevice() :
 
 LauncherDevice::LauncherDevice(const LauncherDevice& other)
 {
-    if (other.m_volume != NULL)
+    if (other.m_volume != NULL) {
         setVolume(other.m_volume);
+    }
 }
 
 LauncherDevice::~LauncherDevice()
 {
-    if (m_volume != NULL)
+    if (m_volume != NULL) {
         g_object_unref(m_volume);
+    }
 }
 
 bool
@@ -69,8 +71,7 @@ LauncherDevice::urgent() const
 QString
 LauncherDevice::name() const
 {
-    if (m_volume != NULL)
-    {
+    if (m_volume != NULL) {
         char* name = g_volume_get_name(m_volume);
         QString s = QString::fromLocal8Bit(name);
         g_free(name);
@@ -116,28 +117,26 @@ LauncherDevice::setVolume(GVolume* volume)
 void
 LauncherDevice::open()
 {
-    if (m_volume == NULL)
+    if (m_volume == NULL) {
         return;
+    }
 
     GMount* mount = g_volume_get_mount(m_volume);
-    if (mount != NULL)
-    {
+    if (mount != NULL) {
         GFile* root = g_mount_get_root(mount);
         char* uri = g_file_get_uri(root);
+
         GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
-        if (error != NULL)
-        {
+        if (error != NULL) {
             qWarning() << error->message;
         }
+
         g_free(uri);
         g_object_unref(root);
         g_object_unref(mount);
-    }
-    else
-    {
-        if (!g_volume_can_mount(m_volume))
-        {
+    } else {
+        if (!g_volume_can_mount(m_volume)) {
             qWarning() << "Volume cannot be mounted";
             return;
         }
@@ -151,22 +150,20 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 {
     g_volume_mount_finish(volume, res, NULL);
     GMount* mount = g_volume_get_mount(volume);
-    if (mount != NULL)
-    {
+    if (mount != NULL) {
         GFile* root = g_mount_get_root(mount);
         char* uri = g_file_get_uri(root);
+
         GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
-        if (error != NULL)
-        {
+        if (error != NULL) {
             qWarning() << error->message;
         }
+
         g_free(uri);
         g_object_unref(root);
         g_object_unref(mount);
-    }
-    else
-    {
+    } else {
         qWarning() << "Unable to mount volume";
     }
 }
@@ -174,29 +171,25 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 void
 LauncherDevice::eject()
 {
-    if (m_volume == NULL)
+    if (m_volume == NULL) {
         return;
+    }
 
-    if (g_volume_can_eject(m_volume))
-    {
+    if (g_volume_can_eject(m_volume)) {
         g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, NULL,
             NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
-    }
-    else
-    {
+    } else {
         GMount* mount = g_volume_get_mount(m_volume);
 
-        if (mount == NULL)
+        if (mount == NULL) {
             return;
+        }
 
-        if (g_mount_can_unmount(mount))
-        {
+        if (g_mount_can_unmount(mount)) {
             g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, NULL,
                 NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
                 NULL);
-        }
-        else
-        {
+        } else {
             g_object_unref(mount);
         }
     }

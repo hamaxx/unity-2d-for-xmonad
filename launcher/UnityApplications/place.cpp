@@ -50,8 +50,9 @@ Place::Place(QObject* parent) :
 
 Place::Place(const Place &other)
 {
-    if (other.m_file != NULL)
+    if (other.m_file != NULL) {
         setFileName(other.m_file->fileName());
+    }
 }
 
 Place::~Place()
@@ -74,20 +75,20 @@ Place::setFileName(const QString &file)
     if (!m_dbusName.isNull()) {
         m_serviceWatcher->removeWatchedService(m_dbusName);
     }
+
     if (m_dbusIface != NULL) {
         delete m_dbusIface;
     }
 
     m_file = new QSettings(file, QSettings::IniFormat);
-    if (m_file->childGroups().contains("Place"))
-    {
+    if (m_file->childGroups().contains("Place")) {
         m_dbusName = m_file->value("Place/DBusName").toString();
         m_dbusObjectPath = m_file->value("Place/dbusObjectPath").toString();
+
         QStringList entries = m_file->childGroups().filter("Entry:");
         QStringList::const_iterator iter;
         uint i = 0;
-        for(iter = entries.begin(); iter != entries.end(); ++iter)
-        {
+        for(iter = entries.begin(); iter != entries.end(); ++iter) {
             PlaceEntry* entry = new PlaceEntry(this);
             entry->setFileName(file);
             entry->setGroupName(iter->mid(6));
@@ -117,9 +118,7 @@ Place::setFileName(const QString &file)
         } else {
             QTimer::singleShot(10000, this, SLOT(connectToRemotePlace()));
         }
-    }
-    else
-    {
+    } else {
         delete m_file;
         m_file = NULL;
         qWarning() << "Invalid place file, missing [Place] group";
@@ -149,8 +148,9 @@ Place::data(const QModelIndex& index, int role) const
 {
     Q_UNUSED(role);
 
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     return QVariant::fromValue(m_entries.at(index.row()));
 }
@@ -246,8 +246,7 @@ Place::onPlaceServiceUnregistered()
         PlaceEntry* entry = m_entries.takeFirst();
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
-        }
-        else {
+        } else {
             entry->setSensitive(false);
         }
     }
@@ -260,12 +259,12 @@ Place::onEntryAdded(const PlaceEntryInfoStruct& p)
     PlaceEntry* entry = NULL;
     if (m_static_entries.contains(p.dbus_path)) {
         entry = m_static_entries.value(p.dbus_path);
-    }
-    else {
+    } else {
         entry = new PlaceEntry(this);
         entry->setDbusName(m_dbusName);
         entry->setDbusObjectPath(p.dbus_path);
     }
+
     entry->updateInfo(p);
     connect(entry, SIGNAL(positionChanged(uint)),
             SLOT(onEntryPositionChanged(uint)), Qt::UniqueConnection);
@@ -275,7 +274,7 @@ Place::onEntryAdded(const PlaceEntryInfoStruct& p)
     m_entries.append(entry);
     endInsertRows();
     entry->connectToRemotePlaceEntry();
-    emit entryAdded(entry);
+    Q_EMIT entryAdded(entry);
 }
 
 void
@@ -289,16 +288,17 @@ Place::onEntryRemoved(const QString& dbusObjectPath)
             break;
         }
     }
+
     if (entry != NULL) {
-        emit entryRemoved(entry);
+        Q_EMIT entryRemoved(entry);
         int index = m_entries.indexOf(entry);
         beginRemoveRows(QModelIndex(), index, index);
         m_entries.removeOne(entry);
         endRemoveRows();
+
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
             delete entry;
-        }
-        else {
+        } else {
             entry->setSensitive(false);
         }
     }
@@ -334,16 +334,14 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
                 entry->updateInfo(*i);
                 if (m_entries.contains(entry)) {
                     entry->setSensitive(true);
-                }
-                else {
+                } else {
                     int index = m_entries.size();
                     beginInsertRows(QModelIndex(), index, index);
                     m_entries.append(entry);
                     endInsertRows();
                 }
                 entry->connectToRemotePlaceEntry();
-            }
-            else {
+            } else {
                 onEntryAdded(*i);
             }
         }

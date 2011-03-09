@@ -93,7 +93,7 @@ public:
     static void moveViewportToWindow(WnckWindow* window);
     void updateOverlaysState(QMap<QString, QVariant> properties);
 
-signals:
+Q_SIGNALS:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
@@ -110,7 +110,7 @@ signals:
 
     void windowAdded(uint xid);
 
-private slots:
+private Q_SLOTS:
     void onBamfApplicationClosed(bool running);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();

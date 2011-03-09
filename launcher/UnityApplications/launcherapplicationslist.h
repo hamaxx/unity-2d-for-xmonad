@@ -34,6 +34,7 @@ class GConfItemQmlWrapper;
 class LauncherApplicationsList : public QAbstractListModel
 {
     Q_OBJECT
+
 public:
     LauncherApplicationsList(QObject *parent = 0);
     ~LauncherApplicationsList();
@@ -71,7 +72,7 @@ private:
 
     GConfItemQmlWrapper* m_favorites_list;
 
-private slots:
+private Q_SLOTS:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
