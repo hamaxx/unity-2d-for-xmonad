@@ -24,6 +24,10 @@ AutoScrollingListView {
     /* Is there at least one item in this list which is requesting attention? */
     property bool requestAttention: runningAnimations.length > 0
 
+    /* HACK: for some reason we can't keep a list of LauncherItems: the items
+     * get replaced with default-constructed items on the next call. Keeping a
+     * list of animations work, though.
+     */
     property variant runningAnimations: []
 
     function removeItemFromRequestingAttentionList(item) {
