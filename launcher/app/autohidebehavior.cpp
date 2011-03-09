@@ -35,8 +35,7 @@
 static const int AUTOHIDE_TIMEOUT = 1000;
 
 AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
-: QObject(panel)
-, m_panel(panel)
+: AbstractHideBehavior(panel)
 , m_mouseArea(new MouseArea(this))
 , m_autohideTimer(new QTimer(this))
 {
@@ -89,3 +88,6 @@ void AutoHideBehavior::updateFromPanelGeometry()
     m_mouseArea->setGeometry(rect);
 }
 
+void AutoHideBehavior::setRequestAttention(bool)
+{
+}

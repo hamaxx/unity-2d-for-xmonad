@@ -12,6 +12,7 @@
 #define INTELLIHIDEBEHAVIOR_H
 
 // Local
+#include <abstracthidebehavior.h>
 
 // Qt
 #include <QObject>
@@ -24,12 +25,14 @@ class Unity2dPanel;
 /**
  * This class implements the Intellihide behavior of the launcher
  */
-class IntelliHideBehavior : public QObject
+class IntelliHideBehavior : public AbstractHideBehavior
 {
 Q_OBJECT
 public:
     IntelliHideBehavior(Unity2dPanel* panel);
     ~IntelliHideBehavior();
+
+    void setRequestAttention(bool);
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -47,8 +50,6 @@ private:
         HiddenPanel,
         ForceVisiblePanel
     };
-
-    Unity2dPanel* m_panel;
 
     // A 1px invisible area used to force the panel to be visible if the user
     // hits the edge of the screen with the mouse cursor

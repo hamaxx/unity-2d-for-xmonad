@@ -18,39 +18,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef AUTOHIDEBEHAVIOR_H
-#define AUTOHIDEBEHAVIOR_H
+// Self
+#include "abstracthidebehavior.h"
 
 // Local
-#include <abstracthidebehavior.h>
+
+// libunity-2d
+#include <unity2dpanel.h>
 
 // Qt
-#include <QObject>
 
-class QTimer;
-class MouseArea;
-class Unity2dPanel;
-
-/**
- * This class implements the classic autohide-on-timeout behavior
- */
-class AutoHideBehavior : public AbstractHideBehavior
+AbstractHideBehavior::AbstractHideBehavior(Unity2dPanel* panel)
+: QObject(panel)
+, m_panel(panel)
 {
-Q_OBJECT
-public:
-    AutoHideBehavior(Unity2dPanel* panel);
-    ~AutoHideBehavior();
+}
 
-    void setRequestAttention(bool);
-
-protected:
-    bool eventFilter(QObject*, QEvent*);
-
-private:
-    MouseArea* m_mouseArea;
-    QTimer* m_autohideTimer;
-
-    void updateFromPanelGeometry();
-};
-
-#endif /* AUTOHIDEBEHAVIOR_H */
+AbstractHideBehavior::~AbstractHideBehavior()
+{
+}
