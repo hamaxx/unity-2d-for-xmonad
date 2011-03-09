@@ -49,6 +49,7 @@ protected:
 private:
     MouseArea* m_mouseArea;
     QTimer* m_autohideTimer;
+    bool m_requestAttention;
 
     void updateFromPanelGeometry();
 };

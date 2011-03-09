@@ -38,6 +38,7 @@ AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
 : AbstractHideBehavior(panel)
 , m_mouseArea(new MouseArea(this))
 , m_autohideTimer(new QTimer(this))
+, m_requestAttention(false)
 {
     connect(m_mouseArea, SIGNAL(entered()), m_panel, SLOT(slideIn()));
 
@@ -69,7 +70,7 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         m_autohideTimer->stop();
         break;
     case QEvent::Leave:
-        if (!m_mouseArea->containsMouse()) {
+        if (!m_requestAttention && !m_mouseArea->containsMouse()) {
             m_autohideTimer->start();
         }
         break;
@@ -88,6 +89,18 @@ void AutoHideBehavior::updateFromPanelGeometry()
     m_mouseArea->setGeometry(rect);
 }
 
-void AutoHideBehavior::setRequestAttention(bool)
+void AutoHideBehavior::setRequestAttention(bool value)
 {
+    if (m_requestAttention == value) {
+        return;
+    }
+    m_requestAttention = value;
+    if (m_requestAttention) {
+        m_autohideTimer->stop();
+        m_panel->slideIn();
+    } else {
+        if (!m_panel->underMouse() && !m_mouseArea->containsMouse()) {
+            m_panel->slideOut();
+        }
+    }
 }
