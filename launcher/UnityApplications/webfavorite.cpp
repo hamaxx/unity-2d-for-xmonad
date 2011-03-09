@@ -127,8 +127,7 @@ WebFavorite::slotFetchPageFinished(QNetworkReply* reply)
                 m_url = redirect.toUrl();
                 fetchPage();
             }
-        }
-        else {
+        } else {
             QString data = QString::fromUtf8(reply->readAll());
 
             /* lookup title */
@@ -193,14 +192,12 @@ WebFavorite::slotFetchFaviconFinished(QNetworkReply* reply)
             m_redirects++;
             if (m_redirects < MAX_REDIRECTS) {
                 *m_current_favicon = redirect.toUrl().toEncoded();
-            }
-            else {
+            } else {
                 m_current_favicon++;
                 m_redirects = 0;
             }
             tryNextFavicon();
-        }
-        else {
+        } else {
             /* Check that the data is actually an image. This will cope with
                badly configured web servers that don’t return error codes on
                non-existing files. */
@@ -214,15 +211,13 @@ WebFavorite::slotFetchFaviconFinished(QNetworkReply* reply)
                 QString filename = filepath + extension;
                 pixmap.save(filename);
                 modifyDesktopFile("Icon", filename);
-            }
-            else {
+            } else {
                 m_current_favicon++;
                 m_redirects = 0;
                 tryNextFavicon();
             }
         }
-    }
-    else {
+    } else {
         m_current_favicon++;
         m_redirects = 0;
         tryNextFavicon();

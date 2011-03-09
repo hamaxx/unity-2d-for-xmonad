@@ -33,8 +33,9 @@ IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeI
 IconImageProvider::~IconImageProvider()
 {
     /* unreference cached themes */
-    foreach(void* theme, m_themes.values())
+    foreach(void* theme, m_themes.values()) {
         g_object_unref((GtkIconTheme*)theme);
+    }
 }
 
 QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
@@ -82,25 +83,19 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     GtkIconTheme *theme;
 
     QStringList split_id = id.split("/");
-    if(split_id.length()>1)
-    {
+    if(split_id.length() > 1) {
         /* use specified theme */
         QString theme_name = split_id[0];
         icon_name = split_id[1];
 
-        if(m_themes.contains(theme_name))
-        {
+        if(m_themes.contains(theme_name)) {
             theme = (GtkIconTheme*)m_themes[theme_name];
-        }
-        else
-        {
+        } else {
             theme = gtk_icon_theme_new();
             gtk_icon_theme_set_custom_theme(theme, theme_name.toUtf8().data());
             m_themes[theme_name] = theme;
         }
-    }
-    else
-    {
+    } else {
         /* use default theme */
         theme = gtk_icon_theme_get_default();
         icon_name = id;
@@ -115,8 +110,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     */
     if (icon_name.endsWith(".png") || icon_name.endsWith(".svg")
         || icon_name.endsWith(".xpm") || icon_name.endsWith(".gif")
-        || icon_name.endsWith(".jpg"))
-    {
+        || icon_name.endsWith(".jpg")) {
         icon_name.chop(4);
     }
 
@@ -134,7 +128,9 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
 
     /* FIXME: maybe an exception should be raised instead? */
-    if(pixbuf == NULL) return QImage();
+    if (pixbuf == NULL) {
+        return QImage();
+    }
 
     QImage image(gdk_pixbuf_get_pixels(pixbuf),
                    gdk_pixbuf_get_width(pixbuf),
@@ -144,8 +140,9 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     QImage swappedImage = image.rgbSwapped();
     g_object_unref(pixbuf);
 
-    if (size)
+    if (size) {
         *size = swappedImage.size();
+    }
 
     return swappedImage;
 }

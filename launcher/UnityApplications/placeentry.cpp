@@ -487,7 +487,7 @@ PlaceEntry::setPosition(uint position)
 {
     if (position != m_position) {
         m_position = position;
-        emit positionChanged(position);
+        Q_EMIT positionChanged(position);
     }
 }
 
@@ -495,7 +495,7 @@ void
 PlaceEntry::setMimetypes(QStringList mimetypes)
 {
     m_mimetypes = mimetypes;
-    emit mimetypesChanged();
+    Q_EMIT mimetypesChanged();
 }
 
 void
@@ -503,7 +503,7 @@ PlaceEntry::setSensitive(bool sensitive)
 {
     if (sensitive != m_sensitive) {
         m_sensitive = sensitive;
-        emit sensitiveChanged(sensitive);
+        Q_EMIT sensitiveChanged(sensitive);
     }
 }
 
@@ -517,14 +517,14 @@ PlaceEntry::setSections(DeeListModel* sections)
         delete m_sections;
     }
     m_sections = sections;
-    emit sectionsChanged();
+    Q_EMIT sectionsChanged();
 }
 
 void
 PlaceEntry::setHints(QMap<QString, QVariant> hints)
 {
     m_hints = hints;
-    emit hintsChanged();
+    Q_EMIT hintsChanged();
 }
 
 void
@@ -537,7 +537,7 @@ PlaceEntry::setActiveSection(int activeSection)
                interface expects that type */
             m_dbusIface->call("SetActiveSection", (uint)m_activeSection);
         }
-        emit activeSectionChanged();
+        Q_EMIT activeSectionChanged();
     }
 }
 
@@ -549,7 +549,7 @@ PlaceEntry::setActive(bool active)
         if (m_dbusIface != NULL) {
             m_dbusIface->call("SetActive", m_active);
         }
-        emit activeChanged();
+        Q_EMIT activeChanged();
 
         if (m_dbusIface && m_active) {
             /* SetActiveSection needs to be called after SetActive(true)
@@ -568,7 +568,7 @@ PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
             QHash<QString, QString> searchHints;
             m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
         }
-        emit entrySearchQueryChanged();
+        Q_EMIT entrySearchQueryChanged();
     }
 }
 
@@ -577,7 +577,7 @@ PlaceEntry::setEntryRendererName(QString entryRendererName)
 {
     if (entryRendererName != m_entryRendererName) {
         m_entryRendererName = entryRendererName;
-        emit entryRendererNameChanged();
+        Q_EMIT entryRendererNameChanged();
     }
 }
 
@@ -588,8 +588,8 @@ PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
         m_entryGroupsModelName = entryGroupsModelName;
         delete m_entryGroupsModel;
         m_entryGroupsModel = NULL;
-        emit entryGroupsModelNameChanged();
-        emit entryGroupsModelChanged();
+        Q_EMIT entryGroupsModelNameChanged();
+        Q_EMIT entryGroupsModelChanged();
     }
 }
 
@@ -603,7 +603,7 @@ PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
         delete m_entryGroupsModel;
     }
     m_entryGroupsModel = entryGroupsModel;
-    emit entryGroupsModelChanged();
+    Q_EMIT entryGroupsModelChanged();
 }
 
 void
@@ -613,8 +613,8 @@ PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
         m_entryResultsModelName = entryResultsModelName;
         delete m_entryResultsModel;
         m_entryResultsModel = NULL;
-        emit entryResultsModelNameChanged();
-        emit entryResultsModelChanged();
+        Q_EMIT entryResultsModelNameChanged();
+        Q_EMIT entryResultsModelChanged();
     }
 }
 
@@ -628,14 +628,14 @@ PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
         delete m_entryResultsModel;
     }
     m_entryResultsModel = entryResultsModel;
-    emit entryResultsModelChanged();
+    Q_EMIT entryResultsModelChanged();
 }
 
 void
 PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
 {
     m_entryRendererHints = entryRendererHints;
-    emit entryRendererHintsChanged();
+    Q_EMIT entryRendererHintsChanged();
 }
 
 void
@@ -647,7 +647,7 @@ PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
             QHash<QString, QString> searchHints;
             m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
         }
-        emit globalSearchQueryChanged();
+        Q_EMIT globalSearchQueryChanged();
     }
 }
 
@@ -656,7 +656,7 @@ PlaceEntry::setGlobalRendererName(QString globalRendererName)
 {
     if (globalRendererName != m_globalRendererName) {
         m_globalRendererName = globalRendererName;
-        emit globalRendererNameChanged();
+        Q_EMIT globalRendererNameChanged();
     }
 }
 
@@ -667,8 +667,8 @@ PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
         m_globalGroupsModelName = globalGroupsModelName;
         delete m_globalGroupsModel;
         m_globalGroupsModel = NULL;
-        emit globalGroupsModelNameChanged();
-        emit globalGroupsModelChanged();
+        Q_EMIT globalGroupsModelNameChanged();
+        Q_EMIT globalGroupsModelChanged();
     }
 }
 
@@ -682,7 +682,7 @@ PlaceEntry::setGlobalGroupsModel(DeeListModel* globalGroupsModel)
         delete m_globalGroupsModel;
     }
     m_globalGroupsModel = globalGroupsModel;
-    emit globalGroupsModelChanged();
+    Q_EMIT globalGroupsModelChanged();
 }
 
 void
@@ -692,8 +692,8 @@ PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
         m_globalResultsModelName = globalResultsModelName;
         delete m_globalResultsModel;
         m_globalResultsModel = NULL;
-        emit globalResultsModelNameChanged();
-        emit globalResultsModelChanged();
+        Q_EMIT globalResultsModelNameChanged();
+        Q_EMIT globalResultsModelChanged();
     }
 }
 
@@ -707,14 +707,14 @@ PlaceEntry::setGlobalResultsModel(DeeListModel* globalResultsModel)
         delete m_globalResultsModel;
     }
     m_globalResultsModel = globalResultsModel;
-    emit globalResultsModelChanged();
+    Q_EMIT globalResultsModelChanged();
 }
 
 void
 PlaceEntry::setGlobalRendererHints(QMap<QString, QVariant> globalRendererHints)
 {
     m_globalRendererHints = globalRendererHints;
-    emit globalRendererHintsChanged();
+    Q_EMIT globalRendererHintsChanged();
 }
 
 void
@@ -795,7 +795,7 @@ PlaceEntry::createMenuActions()
         return;
     }
 
-    for(int i = 0; i < m_sections->rowCount(); ++i) {
+    for (int i = 0; i < m_sections->rowCount(); ++i) {
         QAction* section = new QAction(m_menu);
         section->setText(m_sections->data(m_sections->index(i)).toString());
         section->setProperty(SECTION_PROPERTY, QVariant(i));
@@ -874,7 +874,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
 
     QMap<QString, QVariant> hints;
     QMap<QString, QString>::const_iterator i;
-    for(i = info.hints.constBegin(); i != info.hints.constEnd(); ++i) {
+    for (i = info.hints.constBegin(); i != info.hints.constEnd(); ++i) {
         hints[i.key()] = QVariant(i.value());
     }
     setHints(hints);
@@ -884,7 +884,7 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setEntryResultsModelName(info.entry_renderer_info.results_model);
 
     QMap<QString, QVariant> entryRendererHints;
-    for(i = info.entry_renderer_info.renderer_hints.constBegin();
+    for (i = info.entry_renderer_info.renderer_hints.constBegin();
         i != info.entry_renderer_info.renderer_hints.constEnd(); ++i) {
         entryRendererHints[i.key()] = QVariant(i.value());
     }
@@ -895,14 +895,14 @@ PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
     setGlobalResultsModelName(info.global_renderer_info.results_model);
 
     QMap<QString, QVariant> globalRendererHints;
-    for(i = info.global_renderer_info.renderer_hints.constBegin();
+    for (i = info.global_renderer_info.renderer_hints.constBegin();
         i != info.global_renderer_info.renderer_hints.constEnd(); ++i) {
         globalRendererHints[i.key()] = QVariant(i.value());
     }
     setGlobalRendererHints(globalRendererHints);
 
-    emit updated();
-    emit rendererInfoChanged();
+    Q_EMIT updated();
+    Q_EMIT rendererInfoChanged();
 }
 
 void
@@ -922,13 +922,13 @@ PlaceEntry::onRendererInfoChanged(const RendererInfoStruct& r)
 
     QMap<QString, QVariant> entryRendererHints;
     QMap<QString, QString>::const_iterator i;
-    for(i = r.renderer_hints.constBegin();
-        i != r.renderer_hints.constEnd(); ++i) {
+    for (i = r.renderer_hints.constBegin();
+         i != r.renderer_hints.constEnd(); ++i) {
         entryRendererHints[i.key()] = QVariant(i.value());
     }
     setEntryRendererHints(entryRendererHints);
 
-    emit updated();
-    emit rendererInfoChanged();
+    Q_EMIT updated();
+    Q_EMIT rendererInfoChanged();
 }
 
