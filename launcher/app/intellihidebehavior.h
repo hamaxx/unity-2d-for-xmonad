@@ -8,8 +8,8 @@
  *
  * License: GPL v3
  */
-#ifndef INTELLIHIDECONTROLLER_H
-#define INTELLIHIDECONTROLLER_H
+#ifndef INTELLIHIDEBEHAVIOR_H
+#define INTELLIHIDEBEHAVIOR_H
 
 // Local
 
@@ -24,12 +24,12 @@ class Unity2dPanel;
 /**
  * This class implements the Intellihide behavior of the launcher
  */
-class IntellihideController : public QObject
+class IntelliHideBehavior : public QObject
 {
 Q_OBJECT
 public:
-    IntellihideController(Unity2dPanel* panel);
-    ~IntellihideController();
+    IntelliHideBehavior(Unity2dPanel* panel);
+    ~IntelliHideBehavior();
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -40,7 +40,7 @@ private Q_SLOTS:
     void forceVisiblePanel();
 
 private:
-    Q_DISABLE_COPY(IntellihideController);
+    Q_DISABLE_COPY(IntelliHideBehavior);
 
     enum PanelVisibility {
         VisiblePanel,
@@ -62,4 +62,4 @@ private:
     void disconnectFromGSignals();
 };
 
-#endif /* INTELLIHIDECONTROLLER_H */
+#endif /* INTELLIHIDEBEHAVIOR_H */

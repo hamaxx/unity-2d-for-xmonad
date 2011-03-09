@@ -22,8 +22,8 @@
 #include "hidemodecontroller.h"
 
 // Local
-#include <autohidecontroller.h>
-#include <intellihidecontroller.h>
+#include <autohidebehavior.h>
+#include <intellihidebehavior.h>
 
 // unity-2d
 #include <debug_p.h>
@@ -41,7 +41,7 @@ HideModeController::HideModeController(Unity2dPanel* panel, QDeclarativeProperty
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
-, m_controller(0)
+, m_hideBehavior(0)
 , m_requestAttentionProperty(property)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
@@ -61,8 +61,8 @@ void HideModeController::update()
     UQ_VAR(m_requestAttentionProperty->read());
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
-    delete m_controller;
-    m_controller = 0;
+    delete m_hideBehavior;
+    m_hideBehavior = 0;
 
     /* Do not use any hiding controller if the panel is either:
         - being slid manually
@@ -73,10 +73,10 @@ void HideModeController::update()
         case ManualHide:
             break;
         case AutoHide:
-            m_controller = new AutohideController(m_panel);
+            m_hideBehavior = new AutoHideBehavior(m_panel);
             break;
         case IntelliHide:
-            m_controller = new IntellihideController(m_panel);
+            m_hideBehavior = new IntelliHideBehavior(m_panel);
             break;
         }
     }

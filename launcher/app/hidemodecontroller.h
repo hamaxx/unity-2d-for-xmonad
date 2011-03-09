@@ -55,7 +55,7 @@ private:
     Q_DISABLE_COPY(HideModeController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
-    QObject* m_controller;
+    QObject* m_hideBehavior;
     QDeclarativeProperty* m_requestAttentionProperty;
 };
 

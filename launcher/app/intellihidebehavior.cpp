@@ -9,7 +9,7 @@
  * License: GPL v3
  */
 // Self
-#include "intellihidecontroller.h"
+#include "intellihidebehavior.h"
 
 // Local
 
@@ -61,7 +61,7 @@ GOBJECT_CALLBACK2(stateChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(geometryChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
-IntellihideController::IntellihideController(Unity2dPanel* panel)
+IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 : m_panel(panel)
 , m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
@@ -81,7 +81,7 @@ IntellihideController::IntellihideController(Unity2dPanel* panel)
     QTimer::singleShot(1000, this, SLOT(updateActiveWindowConnections()));
 }
 
-IntellihideController::~IntellihideController()
+IntelliHideBehavior::~IntelliHideBehavior()
 {
     disconnectFromGSignals();
     WnckScreen* screen = wnck_screen_get_default();
@@ -89,7 +89,7 @@ IntellihideController::~IntellihideController()
     g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWorkspaceChangedCB), this);
 }
 
-void IntellihideController::disconnectFromGSignals()
+void IntelliHideBehavior::disconnectFromGSignals()
 {
     if (m_activeWindow) {
         g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(stateChangedCB), this);
@@ -98,7 +98,7 @@ void IntellihideController::disconnectFromGSignals()
     }
 }
 
-void IntellihideController::updateActiveWindowConnections()
+void IntelliHideBehavior::updateActiveWindowConnections()
 {
     WnckScreen* screen = wnck_screen_get_default();
 
@@ -116,7 +116,7 @@ void IntellihideController::updateActiveWindowConnections()
     updateVisibility();
 }
 
-void IntellihideController::updateVisibility()
+void IntelliHideBehavior::updateVisibility()
 {
     if (m_visibility == ForceVisiblePanel) {
         return;
@@ -168,7 +168,7 @@ void IntellihideController::updateVisibility()
     slidePanel();
 }
 
-bool IntellihideController::eventFilter(QObject* object, QEvent* event)
+bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
 {
     if (event->type() == QEvent::Leave && !m_mouseArea->containsMouse() && m_visibility == ForceVisiblePanel) {
         m_visibility = VisiblePanel;
@@ -180,7 +180,7 @@ bool IntellihideController::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
-void IntellihideController::slidePanel()
+void IntelliHideBehavior::slidePanel()
 {
     if (m_visibility != HiddenPanel) {
         m_panel->slideIn();
@@ -189,13 +189,13 @@ void IntellihideController::slidePanel()
     }
 }
 
-void IntellihideController::updateFromPanelGeometry()
+void IntelliHideBehavior::updateFromPanelGeometry()
 {
     QRect rect(0, m_panel->y(), 1, m_panel->height());
     m_mouseArea->setGeometry(rect);
 }
 
-void IntellihideController::forceVisiblePanel()
+void IntelliHideBehavior::forceVisiblePanel()
 {
     if (m_visibility != ForceVisiblePanel) {
         m_visibility = ForceVisiblePanel;

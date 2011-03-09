@@ -7,18 +7,18 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
 # Sources
 set(launcher_SRCS
-    autohidecontroller.cpp
+    autohidebehavior.cpp
     hidemodecontroller.cpp
-    intellihidecontroller.cpp
+    intellihidebehavior.cpp
     launcherview.cpp
     launchercontrol.cpp
     gesturehandler.cpp
     )
 
 set(launcher_MOC_HDRS
-    autohidecontroller.h
+    autohidebehavior.h
     hidemodecontroller.h
-    intellihidecontroller.h
+    intellihidebehavior.h
     launcherview.h
     launchercontrol.h
     gesturehandler.h

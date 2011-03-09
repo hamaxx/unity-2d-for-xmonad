@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef AUTOHIDECONTROLLER_H
-#define AUTOHIDECONTROLLER_H
+#ifndef AUTOHIDEBEHAVIOR_H
+#define AUTOHIDEBEHAVIOR_H
 
 // Local
 
@@ -33,12 +33,12 @@ class Unity2dPanel;
 /**
  * This class implements the classic autohide-on-timeout behavior
  */
-class AutohideController : public QObject
+class AutoHideBehavior : public QObject
 {
 Q_OBJECT
 public:
-    AutohideController(Unity2dPanel* panel);
-    ~AutohideController();
+    AutoHideBehavior(Unity2dPanel* panel);
+    ~AutoHideBehavior();
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -51,4 +51,4 @@ private:
     void updateFromPanelGeometry();
 };
 
-#endif /* AUTOHIDECONTROLLER_H */
+#endif /* AUTOHIDEBEHAVIOR_H */

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // Self
-#include "autohidecontroller.h"
+#include "autohidebehavior.h"
 
 // Local
 
@@ -34,7 +34,7 @@
 
 static const int AUTOHIDE_TIMEOUT = 1000;
 
-AutohideController::AutohideController(Unity2dPanel* panel)
+AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_mouseArea(new MouseArea(this))
@@ -59,11 +59,11 @@ AutohideController::AutohideController(Unity2dPanel* panel)
     }
 }
 
-AutohideController::~AutohideController()
+AutoHideBehavior::~AutoHideBehavior()
 {
 }
 
-bool AutohideController::eventFilter(QObject*, QEvent* event)
+bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
 {
     switch (event->type()) {
     case QEvent::Enter:
@@ -83,7 +83,7 @@ bool AutohideController::eventFilter(QObject*, QEvent* event)
     return false;
 }
 
-void AutohideController::updateFromPanelGeometry()
+void AutoHideBehavior::updateFromPanelGeometry()
 {
     QRect rect(0, m_panel->y(), 1, m_panel->height());
     m_mouseArea->setGeometry(rect);
