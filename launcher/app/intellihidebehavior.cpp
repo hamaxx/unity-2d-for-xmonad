@@ -66,6 +66,7 @@ IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 , m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)
+, m_requestAttention(false)
 {
     m_panel->installEventFilter(this);
 
@@ -170,7 +171,7 @@ void IntelliHideBehavior::updateVisibility()
 
 bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
 {
-    if (event->type() == QEvent::Leave && !m_mouseArea->containsMouse() && m_visibility == ForceVisiblePanel) {
+    if (event->type() == QEvent::Leave && !m_mouseArea->containsMouse() && !m_requestAttention && m_visibility == ForceVisiblePanel) {
         m_visibility = VisiblePanel;
         updateVisibility();
     } else if (event->type() == QEvent::Resize) {
@@ -203,6 +204,16 @@ void IntelliHideBehavior::forceVisiblePanel()
     }
 }
 
-void IntelliHideBehavior::setRequestAttention(bool)
+void IntelliHideBehavior::setRequestAttention(bool value)
 {
+    if (m_requestAttention == value) {
+        return;
+    }
+    m_requestAttention = value;
+    if (m_requestAttention) {
+        forceVisiblePanel();
+    } else {
+        m_visibility = VisiblePanel;
+        updateVisibility();
+    }
 }

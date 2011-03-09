@@ -48,7 +48,7 @@ HideModeController::HideModeController(Unity2dPanel* panel, QDeclarativeProperty
     connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
     connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
-    m_requestAttentionProperty->connectNotifySignal(this, SLOT(update()));
+    m_requestAttentionProperty->connectNotifySignal(this, SLOT(updateFromRequestAttentionProperty()));
     update();
 }
 
@@ -58,7 +58,6 @@ HideModeController::~HideModeController()
 
 void HideModeController::update()
 {
-    UQ_VAR(m_requestAttentionProperty->read());
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
     delete m_hideBehavior;
@@ -79,5 +78,15 @@ void HideModeController::update()
             m_hideBehavior = new IntelliHideBehavior(m_panel);
             break;
         }
+        updateFromRequestAttentionProperty();
+    }
+}
+
+void HideModeController::updateFromRequestAttentionProperty()
+{
+    bool requestAttention = m_requestAttentionProperty->read().toBool();
+
+    if (m_hideBehavior) {
+        m_hideBehavior->setRequestAttention(requestAttention);
     }
 }

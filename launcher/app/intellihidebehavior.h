@@ -58,6 +58,8 @@ private:
     struct _WnckWindow* m_activeWindow;
     PanelVisibility m_visibility;
 
+    bool m_requestAttention;
+
     void slidePanel();
     void updateFromPanelGeometry();
     void disconnectFromGSignals();

@@ -30,6 +30,7 @@ class QDeclarativeProperty;
 
 class GConfItemQmlWrapper;
 
+class AbstractHideBehavior;
 class Unity2dPanel;
 
 /**
@@ -45,6 +46,7 @@ public:
 
 private Q_SLOTS:
     void update();
+    void updateFromRequestAttentionProperty();
 
 private:
     enum AutoHideMode {
@@ -55,7 +57,7 @@ private:
     Q_DISABLE_COPY(HideModeController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
-    QObject* m_hideBehavior;
+    AbstractHideBehavior* m_hideBehavior;
     QDeclarativeProperty* m_requestAttentionProperty;
 };
 
