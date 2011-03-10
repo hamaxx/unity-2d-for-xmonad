@@ -140,8 +140,8 @@ Item {
             anchors.bottomMargin: 12
             anchors.left: parent.left
             anchors.leftMargin: 20
-            anchors.right: refine_search.folded ? parent.right : refine_search.left
-            anchors.rightMargin: refine_search.folded ? 0 : 15
+            anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
+            anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
         }
     }
 
