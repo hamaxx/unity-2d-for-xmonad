@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // Self
-#include "hidemodecontroller.h"
+#include "visibilitycontroller.h"
 
 // Local
 #include <autohidebehavior.h>
@@ -36,7 +36,7 @@
 
 static const char* GCONF_LAUNCHER_HIDEMODE_KEY = "/desktop/unity-2d/launcher/hide_mode";
 
-HideModeController::HideModeController(Unity2dPanel* panel)
+VisibilityController::VisibilityController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
@@ -50,11 +50,11 @@ HideModeController::HideModeController(Unity2dPanel* panel)
     update();
 }
 
-HideModeController::~HideModeController()
+VisibilityController::~VisibilityController()
 {
 }
 
-void HideModeController::update()
+void VisibilityController::update()
 {
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
@@ -82,7 +82,7 @@ void HideModeController::update()
     }
 }
 
-void HideModeController::beginForceVisible()
+void VisibilityController::beginForceVisible()
 {
     m_forceVisibleCount++;
     if (m_forceVisibleCount == 1 && m_hideBehavior) {
@@ -90,7 +90,7 @@ void HideModeController::beginForceVisible()
     }
 }
 
-void HideModeController::endForceVisible()
+void VisibilityController::endForceVisible()
 {
     UQ_RETURN_IF_FAIL(m_forceVisibleCount > 0);
     m_forceVisibleCount--;

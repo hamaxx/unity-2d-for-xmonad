@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HIDEMODECONTROLLER_H
-#define HIDEMODECONTROLLER_H
+#ifndef VISIBILITYCONTROLLER_H
+#define VISIBILITYCONTROLLER_H
 
 // Local
 
@@ -35,12 +35,12 @@ class Unity2dPanel;
  * This class monitors the hide_mode gconf key and set up an HideController
  * depending on its value
  */
-class HideModeController : public QObject
+class VisibilityController : public QObject
 {
 Q_OBJECT
 public:
-    HideModeController(Unity2dPanel* panel);
-    ~HideModeController();
+    VisibilityController(Unity2dPanel* panel);
+    ~VisibilityController();
 
     Q_INVOKABLE void beginForceVisible();
     Q_INVOKABLE void endForceVisible();
@@ -54,11 +54,11 @@ private:
         AutoHide,
         IntelliHide
     };
-    Q_DISABLE_COPY(HideModeController);
+    Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
     AbstractHideBehavior* m_hideBehavior;
     int m_forceVisibleCount;
 };
 
-#endif /* HIDEMODECONTROLLER_H */
+#endif /* VISIBILITYCONTROLLER_H */

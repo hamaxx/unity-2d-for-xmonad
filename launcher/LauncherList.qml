@@ -161,9 +161,9 @@ AutoScrollingListView {
             target: urgentAnimation
             onRunningChanged: {
                 if (urgentAnimation.running) {
-                    hideModeController.beginForceVisible();
+                    visibilityController.beginForceVisible();
                 } else {
-                    hideModeController.endForceVisible();
+                    visibilityController.endForceVisible();
                 }
             }
         }

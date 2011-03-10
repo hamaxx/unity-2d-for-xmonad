@@ -41,7 +41,7 @@
 #include "config.h"
 #include "launcherview.h"
 #include "launchercontrol.h"
-#include "hidemodecontroller.h"
+#include "visibilitycontroller.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(66);
 
-    HideModeController* hideModeController = new HideModeController(&panel);
+    VisibilityController* visibilityController = new VisibilityController(&panel);
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
-    launcherView->rootContext()->setContextProperty("hideModeController", hideModeController);
+    launcherView->rootContext()->setContextProperty("visibilityController", visibilityController);
 
     /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
     launcherView->rootContext()->setContextProperty("engineBaseUrl",

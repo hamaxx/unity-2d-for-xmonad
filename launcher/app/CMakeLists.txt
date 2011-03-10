@@ -9,7 +9,7 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 set(launcher_SRCS
     abstracthidebehavior.cpp
     autohidebehavior.cpp
-    hidemodecontroller.cpp
+    visibilitycontroller.cpp
     intellihidebehavior.cpp
     launcherview.cpp
     launchercontrol.cpp
@@ -19,7 +19,7 @@ set(launcher_SRCS
 set(launcher_MOC_HDRS
     abstracthidebehavior.h
     autohidebehavior.h
-    hidemodecontroller.h
+    visibilitycontroller.h
     intellihidebehavior.h
     launcherview.h
     launchercontrol.h
