@@ -22,7 +22,7 @@
 #define AUTOHIDEBEHAVIOR_H
 
 // Local
-#include <abstracthidebehavior.h>
+#include <abstractvisibilitybehavior.h>
 
 // Qt
 #include <QObject>
@@ -34,7 +34,7 @@ class Unity2dPanel;
 /**
  * This class implements the classic autohide-on-timeout behavior
  */
-class AutoHideBehavior : public AbstractHideBehavior
+class AutoHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:

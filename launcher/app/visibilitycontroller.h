@@ -28,7 +28,7 @@
 
 class GConfItemQmlWrapper;
 
-class AbstractHideBehavior;
+class AbstractVisibilityBehavior;
 class Unity2dPanel;
 
 /**
@@ -57,7 +57,7 @@ private:
     Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
-    AbstractHideBehavior* m_hideBehavior;
+    AbstractVisibilityBehavior* m_hideBehavior;
     int m_forceVisibleCount;
 };
 

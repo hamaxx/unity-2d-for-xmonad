@@ -18,22 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// Self
-#include "abstracthidebehavior.h"
+#ifndef ABSTRACTVISIBILITYBEHAVIOR_H
+#define ABSTRACTVISIBILITYBEHAVIOR_H
 
 // Local
 
-// libunity-2d
-#include <unity2dpanel.h>
-
 // Qt
+#include <QObject>
 
-AbstractHideBehavior::AbstractHideBehavior(Unity2dPanel* panel)
-: QObject(panel)
-, m_panel(panel)
-{
-}
+class Unity2dPanel;
 
-AbstractHideBehavior::~AbstractHideBehavior()
+/**
+ * Base class for autohide and intellihide behaviors.
+ *
+ * Provides common features such as showing the launcher when an item requests
+ * attention.
+ */
+class AbstractVisibilityBehavior : public QObject
 {
-}
+    Q_OBJECT
+public:
+    AbstractVisibilityBehavior(Unity2dPanel* panel);
+    ~AbstractVisibilityBehavior();
+
+    virtual void setRequestAttention(bool) = 0;
+
+protected:
+    Unity2dPanel* m_panel;
+};
+
+#endif /* ABSTRACTVISIBILITYBEHAVIOR_H */

@@ -62,7 +62,7 @@ GOBJECT_CALLBACK0(geometryChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
 IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
-: AbstractHideBehavior(panel)
+: AbstractVisibilityBehavior(panel)
 , m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
 , m_visibility(VisiblePanel)

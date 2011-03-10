@@ -12,7 +12,7 @@
 #define INTELLIHIDEBEHAVIOR_H
 
 // Local
-#include <abstracthidebehavior.h>
+#include <abstractvisibilitybehavior.h>
 
 // Qt
 #include <QObject>
@@ -25,7 +25,7 @@ class Unity2dPanel;
 /**
  * This class implements the Intellihide behavior of the launcher
  */
-class IntelliHideBehavior : public AbstractHideBehavior
+class IntelliHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:
