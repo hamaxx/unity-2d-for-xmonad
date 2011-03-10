@@ -41,8 +41,6 @@ public:
     AutoHideBehavior(Unity2dPanel* panel);
     ~AutoHideBehavior();
 
-    void setRequestAttention(bool);
-
 protected:
     bool eventFilter(QObject*, QEvent*);
 

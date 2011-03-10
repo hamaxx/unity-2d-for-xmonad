@@ -23,6 +23,7 @@
 
 // Local
 #include <autohidebehavior.h>
+#include <forcevisiblebehavior.h>
 #include <intellihidebehavior.h>
 
 // unity-2d
@@ -40,7 +41,6 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
-, m_visibilityBehavior(0)
 , m_forceVisibleCount(0)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
@@ -56,10 +56,12 @@ VisibilityController::~VisibilityController()
 
 void VisibilityController::update()
 {
+    if (m_forceVisibleCount > 0) {
+        return;
+    }
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
-    delete m_visibilityBehavior;
-    m_visibilityBehavior = 0;
+    setBehavior(0);
 
     /* Do not use any hiding controller if the panel is either:
         - being slid manually
@@ -70,14 +72,11 @@ void VisibilityController::update()
         case ManualHide:
             break;
         case AutoHide:
-            m_visibilityBehavior = new AutoHideBehavior(m_panel);
+            setBehavior(new AutoHideBehavior(m_panel));
             break;
         case IntelliHide:
-            m_visibilityBehavior = new IntelliHideBehavior(m_panel);
+            setBehavior(new IntelliHideBehavior(m_panel));
             break;
-        }
-        if (m_forceVisibleCount > 0 && m_visibilityBehavior) {
-            m_visibilityBehavior->setRequestAttention(true);
         }
     }
 }
@@ -85,16 +84,27 @@ void VisibilityController::update()
 void VisibilityController::beginForceVisible()
 {
     m_forceVisibleCount++;
-    if (m_forceVisibleCount == 1 && m_visibilityBehavior) {
-        m_visibilityBehavior->setRequestAttention(true);
+    if (m_forceVisibleCount == 1) {
+        setBehavior(new ForceVisibleBehavior(m_panel));
     }
 }
 
 void VisibilityController::endForceVisible()
 {
-    UQ_RETURN_IF_FAIL(m_forceVisibleCount > 0);
-    m_forceVisibleCount--;
-    if (m_forceVisibleCount == 0 && m_visibilityBehavior) {
-        m_visibilityBehavior->setRequestAttention(false);
+    if (m_forceVisibleCount > 0) {
+        m_forceVisibleCount--;
+    } else {
+        UQ_WARNING << "m_forceVisibleCount == 0, this should not happen";
     }
+    if (m_forceVisibleCount == 0) {
+        update();
+    }
+}
+
+void VisibilityController::setBehavior(AbstractVisibilityBehavior* behavior)
+{
+    // Keep this around: uncommenting it makes it easy to track behavior
+    // changes
+    //UQ_VAR(behavior);
+    m_behavior.reset(behavior);
 }

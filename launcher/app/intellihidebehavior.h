@@ -32,8 +32,6 @@ public:
     IntelliHideBehavior(Unity2dPanel* panel);
     ~IntelliHideBehavior();
 
-    void setRequestAttention(bool);
-
 protected:
     bool eventFilter(QObject*, QEvent*);
 
@@ -57,8 +55,6 @@ private:
 
     struct _WnckWindow* m_activeWindow;
     PanelVisibility m_visibility;
-
-    bool m_requestAttention;
 
     void slidePanel();
     void updateFromPanelGeometry();

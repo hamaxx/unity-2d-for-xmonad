@@ -18,31 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTVISIBILITYBEHAVIOR_H
-#define ABSTRACTVISIBILITYBEHAVIOR_H
+// Self
+#include "forcevisiblebehavior.h"
 
 // Local
 
+// libunity-2d
+#include <unity2dpanel.h>
+
 // Qt
-#include <QObject>
 
-class Unity2dPanel;
-
-/**
- * Base class for various visibility behaviors.
- *
- * Does not provide much for now, only a pointer to the panel the behavior
- * handles.
- */
-class AbstractVisibilityBehavior : public QObject
+ForceVisibleBehavior::ForceVisibleBehavior(Unity2dPanel* panel)
+: AbstractVisibilityBehavior(panel)
 {
-    Q_OBJECT
-public:
-    AbstractVisibilityBehavior(Unity2dPanel* panel);
-    ~AbstractVisibilityBehavior();
-
-protected:
-    Unity2dPanel* m_panel;
-};
-
-#endif /* ABSTRACTVISIBILITYBEHAVIOR_H */
+    m_panel->slideIn();
+}

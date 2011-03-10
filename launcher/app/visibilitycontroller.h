@@ -25,6 +25,7 @@
 
 // Qt
 #include <QObject>
+#include <QScopedPointer>
 
 class GConfItemQmlWrapper;
 
@@ -57,8 +58,10 @@ private:
     Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
-    AbstractVisibilityBehavior* m_visibilityBehavior;
+    QScopedPointer<AbstractVisibilityBehavior> m_behavior;
     int m_forceVisibleCount;
+
+    void setBehavior(AbstractVisibilityBehavior*);
 };
 
 #endif /* VISIBILITYCONTROLLER_H */
