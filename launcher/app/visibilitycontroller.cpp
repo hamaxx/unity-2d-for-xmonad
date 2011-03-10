@@ -40,7 +40,7 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
-, m_hideBehavior(0)
+, m_visibilityBehavior(0)
 , m_forceVisibleCount(0)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
@@ -58,8 +58,8 @@ void VisibilityController::update()
 {
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
 
-    delete m_hideBehavior;
-    m_hideBehavior = 0;
+    delete m_visibilityBehavior;
+    m_visibilityBehavior = 0;
 
     /* Do not use any hiding controller if the panel is either:
         - being slid manually
@@ -70,14 +70,14 @@ void VisibilityController::update()
         case ManualHide:
             break;
         case AutoHide:
-            m_hideBehavior = new AutoHideBehavior(m_panel);
+            m_visibilityBehavior = new AutoHideBehavior(m_panel);
             break;
         case IntelliHide:
-            m_hideBehavior = new IntelliHideBehavior(m_panel);
+            m_visibilityBehavior = new IntelliHideBehavior(m_panel);
             break;
         }
-        if (m_forceVisibleCount > 0 && m_hideBehavior) {
-            m_hideBehavior->setRequestAttention(true);
+        if (m_forceVisibleCount > 0 && m_visibilityBehavior) {
+            m_visibilityBehavior->setRequestAttention(true);
         }
     }
 }
@@ -85,8 +85,8 @@ void VisibilityController::update()
 void VisibilityController::beginForceVisible()
 {
     m_forceVisibleCount++;
-    if (m_forceVisibleCount == 1 && m_hideBehavior) {
-        m_hideBehavior->setRequestAttention(true);
+    if (m_forceVisibleCount == 1 && m_visibilityBehavior) {
+        m_visibilityBehavior->setRequestAttention(true);
     }
 }
 
@@ -94,7 +94,7 @@ void VisibilityController::endForceVisible()
 {
     UQ_RETURN_IF_FAIL(m_forceVisibleCount > 0);
     m_forceVisibleCount--;
-    if (m_forceVisibleCount == 0 && m_hideBehavior) {
-        m_hideBehavior->setRequestAttention(false);
+    if (m_forceVisibleCount == 0 && m_visibilityBehavior) {
+        m_visibilityBehavior->setRequestAttention(false);
     }
 }
