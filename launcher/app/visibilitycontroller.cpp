@@ -95,7 +95,9 @@ void VisibilityController::beginForceVisible(const QString& service)
         ++m_forceVisibleCountHash[service];
     } else {
         m_forceVisibleCountHash[service] = 1;
-        m_dbusWatcher->addWatchedService(service);
+        if (!service.isEmpty()) {
+            m_dbusWatcher->addWatchedService(service);
+        }
     }
     if (wasEmpty) {
         setBehavior(new ForceVisibleBehavior(m_panel));
