@@ -48,8 +48,6 @@ private:
 
 private Q_SLOTS:
     void onDirectoryChanged(const QString&);
-
-    void slotPlaceOnlineChanged(bool);
 };
 
 #endif // LAUNCHERPLACESLIST_H

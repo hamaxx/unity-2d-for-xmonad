@@ -63,8 +63,6 @@ LauncherPlacesList::addPlace(const QString& file)
 {
     Place* place = new Place(this);
     aggregateListModel(place);
-    connect(place, SIGNAL(onlineChanged(bool)),
-            SLOT(slotPlaceOnlineChanged(bool)));
     place->setFileName(file);
     return place;
 }
@@ -109,19 +107,6 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
     }
 
     m_placeFiles = newPlaceFiles;
-}
-
-void
-LauncherPlacesList::slotPlaceOnlineChanged(bool online)
-{
-    Place* place = static_cast<Place*>(sender());
-    if (online) {
-        if (!m_models.contains(place)) {
-            aggregateListModel(place);
-        }
-    } else {
-        removeListModel(place);
-    }
 }
 
 PlaceEntry*

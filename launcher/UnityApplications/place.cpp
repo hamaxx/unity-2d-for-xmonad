@@ -166,12 +166,15 @@ Place::rowCount(const QModelIndex& parent) const
 void
 Place::connectToRemotePlace()
 {
-    if (m_dbusIface != NULL) {
+    if ((m_dbusIface != NULL) && m_dbusIface->isValid()) {
         return;
     }
 
-    m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
-                                     UNITY_PLACE_INTERFACE);
+    if (m_dbusIface == NULL) {
+        m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
+                                         UNITY_PLACE_INTERFACE);
+    }
+
     QDBusConnection connection = m_dbusIface->connection();
     if (!connection.isConnected()) {
         qWarning() << "ERROR: unable to connect to bus:"
@@ -241,16 +244,17 @@ Place::onPlaceServiceUnregistered()
 
     stopMonitoringEntries();
 
-    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
-    while (!m_entries.isEmpty()) {
-        PlaceEntry* entry = m_entries.takeFirst();
+    for (int i = rowCount() - 1; i >= 0; --i) {
+        PlaceEntry* entry = m_entries.at(i);
         if (!m_static_entries.contains(entry->dbusObjectPath())) {
+            beginRemoveRows(QModelIndex(), i, i);
+            m_entries.removeAt(i);
+            endRemoveRows();
             delete entry;
         } else {
             entry->setSensitive(false);
         }
     }
-    endRemoveRows();
 }
 
 void
