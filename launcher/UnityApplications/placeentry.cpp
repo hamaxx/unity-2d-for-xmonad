@@ -511,10 +511,6 @@ PlaceEntry::setSensitive(bool sensitive)
             setEntryResultsModel(NULL);
             setGlobalGroupsModel(NULL);
             setGlobalResultsModel(NULL);
-            /* FIXME: there is still an issue here (maybe in dee itself or in
-               the Qt binding): when the place daemon crashes, a shared
-               SectionsModel, owned by the process (unity-2d-launcher or
-               unity-2d-places), still lives on the bus. */
         }
         Q_EMIT sensitiveChanged(sensitive);
     }
