@@ -20,12 +20,18 @@
 #include "launchercontrol.h"
 #include "launcheradaptor.h"
 
+// Local
+#include <visibilitycontroller.h>
+
+// Qt
 #include <QtDBus/QDBusConnection>
 
 static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 
-LauncherControl::LauncherControl(QObject* parent) : QObject(parent)
+LauncherControl::LauncherControl(VisibilityController* visibilityController, QObject* parent)
+: QObject(parent)
+, m_visibilityController(visibilityController)
 {
 }
 
@@ -53,3 +59,14 @@ LauncherControl::AddWebFavorite(const QString& url)
     Q_EMIT addWebFavorite(url);
 }
 
+void
+LauncherControl::BeginForceVisible()
+{
+    m_visibilityController->beginForceVisible();
+}
+
+void
+LauncherControl::EndForceVisible()
+{
+    m_visibilityController->endForceVisible();
+}

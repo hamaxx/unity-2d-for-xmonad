@@ -24,21 +24,28 @@
 #include <QtDBus/QDBusContext>
 #include <QtDeclarative/qdeclarative.h>
 
+class VisibilityController;
+
 class LauncherControl : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
 public:
-    explicit LauncherControl(QObject* parent=0);
+    explicit LauncherControl(VisibilityController* visibilityController, QObject* parent=0);
     ~LauncherControl();
 
     bool connectToBus();
 
 public Q_SLOTS:
+    Q_NOREPLY void BeginForceVisible();
+    Q_NOREPLY void EndForceVisible();
     Q_NOREPLY void AddWebFavorite(const QString& url);
 
 Q_SIGNALS:
     void addWebFavorite(const QString& url);
+
+private:
+    VisibilityController* m_visibilityController;
 };
 
 QML_DECLARE_TYPE(LauncherControl)

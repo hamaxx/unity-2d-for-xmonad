@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
-    LauncherControl control;
+    LauncherControl control(visibilityController);
     launcherView->rootContext()->setContextProperty("launcherControl", &control);
     control.connectToBus();
 

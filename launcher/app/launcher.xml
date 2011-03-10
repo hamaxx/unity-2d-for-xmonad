@@ -17,6 +17,17 @@
                 <dox:d>The URL to be favorited.</dox:d>
             </arg>
         </method>
+        <method name="BeginForceVisible">
+            <dox:d><![CDATA[
+               Ask the launcher to become visible. Must be ended with a call to
+               EndForceVisible()
+            ]]></dox:d>
+        </method>
+        <method name="EndForceVisible">
+            <dox:d><![CDATA[
+               End a request to force launcher visibility.
+            ]]></dox:d>
+        </method>
     </interface>
 </node>
 
