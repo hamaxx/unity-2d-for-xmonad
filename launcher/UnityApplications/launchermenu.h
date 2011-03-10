@@ -59,6 +59,8 @@ public:
 Q_SIGNALS:
     void foldedChanged(bool);
     void titleChanged(QString);
+    void shown();
+    void hidden();
 
 protected:
     void paintEvent(QPaintEvent* event);
