@@ -181,11 +181,11 @@ LauncherDevice::eject()
         return;
     }
 
-    GMountOperation *mount_op;
-    mount_op = gtk_mount_operation_new(NULL);
+    GMountOperation *mountOperation;
+    mountOperation = gtk_mount_operation_new(NULL);
 
     if (g_volume_can_eject(m_volume)) {
-        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mount_op,
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mountOperation,
             NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
     } else {
         GMount* mount = g_volume_get_mount(m_volume);
@@ -195,7 +195,7 @@ LauncherDevice::eject()
         }
 
         if (g_mount_can_unmount(mount)) {
-            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mount_op,
+            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mountOperation,
                 NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
                 NULL);
         } else {
@@ -203,7 +203,7 @@ LauncherDevice::eject()
         }
     }
 
-    g_object_unref(mount_op);
+    g_object_unref(mountOperation);
 }
 
 void
