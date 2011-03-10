@@ -831,6 +831,7 @@ PlaceEntry::onSectionTriggered()
 void
 PlaceEntry::connectToRemotePlaceEntry()
 {
+    delete m_dbusIface;
     m_dbusIface = new QDBusInterface(m_dbusName, m_dbusObjectPath,
                                      UNITY_PLACE_ENTRY_INTERFACE);
     QDBusConnection connection = m_dbusIface->connection();
