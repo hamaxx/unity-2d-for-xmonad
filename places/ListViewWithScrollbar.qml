@@ -46,6 +46,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 15
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
         anchors.right: parent.right
 
         targetFlickable: list

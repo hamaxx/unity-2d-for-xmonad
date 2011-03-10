@@ -42,6 +42,7 @@ DropItem {
     property bool active: false
     property bool urgent: false
     property bool launching: false
+    property alias interactive: mouse.enabled
 
     property int counter: 0
     property bool counterVisible: false

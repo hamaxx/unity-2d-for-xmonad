@@ -41,6 +41,7 @@ static gchar * indicator_order[] = {
 	"libappmenu.so",
 	"libapplication.so",
 	"libsoundmenu.so",
+	"libnetworkmenu.so",
 	"libmessaging.so",
 	"libdatetime.so",
 	"libme.so",
@@ -377,7 +378,6 @@ indicator_new ()
   IndicatorPlugin   *indicator;
   GtkOrientation  orientation;
   gint indicators_loaded = 0;
-  const gchar *indicator_names[] = { "application", "messaging", "soundmenu", "datetime", "me", "session", 0 };
 
   /* Hack! prevent the appmenu indicator from swallowing our own menubar */
   setenv("APPMENU_DISPLAY_BOTH", "1");
@@ -430,16 +430,19 @@ indicator_new ()
   gtk_container_set_border_width(GTK_CONTAINER(indicator->menu), 0);
 
   /* load 'em */
-  if (indicator_names) {
-    const gchar ** name = indicator_names;
-    for (; *name; ++name) {
-      gchar * libname = g_strdup_printf ("lib%s." G_MODULE_SUFFIX, *name);
-      if (load_module (libname, indicator->menu)) {
+  if (!g_file_test(INDICATOR_DIR, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+    g_warning ("%s does not exist, cannot read any indicators", INDICATOR_DIR);
+  } else {
+    GDir        *dir;
+    const gchar *name;
+
+    dir = g_dir_open(INDICATOR_DIR, 0, NULL);
+    while ((name = g_dir_read_name (dir)) != NULL) {
+      if ((g_strcmp0(name, "libappmenu.so") != 0) && load_module(name, indicator->menu)) {
         indicators_loaded++;
       }
-      g_free (libname);
     }
-    //g_strfreev (indicator_names);
+    g_dir_close(dir);
   }
 
   if (indicators_loaded == 0) {

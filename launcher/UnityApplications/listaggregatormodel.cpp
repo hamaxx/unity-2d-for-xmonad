@@ -44,20 +44,22 @@ ListAggregatorModel::appendModel(const QVariant& model)
 void
 ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 {
-    if (model == NULL) return;
+    if (model == NULL) {
+        return;
+    }
 
     int modelRowCount = model->rowCount();
-    if (modelRowCount > 0)
-    {
+    if (modelRowCount > 0) {
         int first = rowCount();
         int last = first + modelRowCount - 1;
         beginInsertRows(QModelIndex(), first, last);
     }
+
     m_models.append(model);
-    if (modelRowCount > 0)
-    {
+    if (modelRowCount > 0) {
         endInsertRows();
     }
+
     connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             SLOT(onRowsInserted(const QModelIndex&, int, int)));
     connect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
@@ -70,17 +72,17 @@ void
 ListAggregatorModel::removeListModel(QAbstractListModel* model)
 {
     int modelRowCount = model->rowCount();
-    if (modelRowCount > 0)
-    {
+    if (modelRowCount > 0) {
         int first = computeOffset(model);
         int last = first + modelRowCount - 1;
         beginRemoveRows(QModelIndex(), first, last);
     }
+
     m_models.removeOne(model);
-    if (modelRowCount > 0)
-    {
+    if (modelRowCount > 0) {
         endRemoveRows();
     }
+
     disconnect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
                this, SLOT(onRowsInserted(const QModelIndex&, int, int)));
     disconnect(model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
@@ -97,6 +99,7 @@ ListAggregatorModel::move(int from, int to)
         qWarning() << "cannot move an item from one model to another";
         return;
     }
+
     int offset = computeOffset(model);
     // "move" is not a member of QAbstractListModel, cannot be invoked directly
     QMetaObject::invokeMethod(model, "move",
@@ -109,8 +112,7 @@ ListAggregatorModel::computeOffset(QAbstractListModel* model) const
 {
     int offset = 0;
     QList<QAbstractListModel*>::const_iterator iter;
-    for (iter = m_models.begin(); (iter != m_models.end()) && (*iter != model); ++iter)
-    {
+    for (iter = m_models.begin(); (iter != m_models.end()) && (*iter != model); ++iter) {
         offset += (*iter)->rowCount();
     }
     return offset;
@@ -166,8 +168,7 @@ ListAggregatorModel::rowCount(const QModelIndex& parent) const
 
     int count = 0;
     QList<QAbstractListModel*>::const_iterator iter;
-    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
-    {
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         count += (*iter)->rowCount();
     }
     return count;
@@ -176,21 +177,18 @@ ListAggregatorModel::rowCount(const QModelIndex& parent) const
 QVariant
 ListAggregatorModel::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     int row = index.row();
     int offset = row;
     QList<QAbstractListModel*>::const_iterator iter;
-    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
-    {
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         int rowCount = (*iter)->rowCount();
-        if (offset >= rowCount)
-        {
+        if (offset >= rowCount) {
             offset -= rowCount;
-        }
-        else
-        {
+        } else {
             QModelIndex new_index = createIndex(offset, role);
             return (*iter)->data(new_index, role);
         }

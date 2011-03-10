@@ -137,6 +137,15 @@ AutoScrollingListView {
         }
 
         ListView.onRemove: SequentialAnimation {
+            /* Disable all mouse interactions on the delegate being removed. This prevents a bug where QT itself
+               crashes when trying to access some properties of the model item being removed while the item is being
+               "kept alive" by ListView.delayRemove.
+               In our case the property causing the bug is 'menu', but there may be others, so it's safer to just disable
+               all mouse interactions. These interactions should not happen anyway while the tile is animating away
+               since there's nothing that the user can do with it anyway: it's for all intents and purposes already gone.
+               See: https://bugs.launchpad.net/unity-2d/+bug/719507 */
+            PropertyAction { target: launcherItem; property: "interactive"; value: false }
+
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: true }
             NumberAnimation { target: launcherItem; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
             NumberAnimation { target: launcherItem; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }

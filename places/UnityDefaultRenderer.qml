@@ -14,7 +14,10 @@ RendererGrid {
             property string displayName
             property string comment
 
-            onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
+            onClicked: {
+                dashView.active = false
+                placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
+            }
 
             Image {
                 id: icon
