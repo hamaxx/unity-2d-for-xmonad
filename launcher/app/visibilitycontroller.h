@@ -35,8 +35,18 @@ class Unity2dPanel;
 class QDBusServiceWatcher;
 
 /**
- * This class monitors the hide_mode gconf key and set up an HideController
- * depending on its value
+ * This class monitors the hide_mode gconf key and set up an instance of
+ * AbstractVisibilityBehavior depending on its value
+ *
+ * It also tracks requests for forced visibility: the launcher or another
+ * application (through launcher DBus API) can request the launcher to stay
+ * visible for a while, for example because an application requests attention
+ * or because the dash is visible. This is handled by the beginForceVisible()
+ * and endForceVisible() methods.
+ *
+ * Internally it maintains a refcount-per-app of forced visibility requests so
+ * that it can restore the default mode if an application quits without calling
+ * endForceVisible().
  */
 class VisibilityController : public QObject
 {
