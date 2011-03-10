@@ -156,14 +156,19 @@ LauncherContextualMenu::show(int x, int y)
     m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
+    shown();
 }
 
 void
 LauncherContextualMenu::hide()
 {
+    bool wasVisible = isVisible();
     /* Fold the menu upon hiding */
     QMenu::hide();
     setFolded(true);
+    if (wasVisible) {
+        hidden();
+    }
 }
 
 void
