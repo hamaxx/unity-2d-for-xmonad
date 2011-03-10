@@ -24,6 +24,7 @@
 // Local
 
 // Qt
+#include <QHash>
 #include <QObject>
 #include <QScopedPointer>
 
@@ -31,6 +32,7 @@ class GConfItemQmlWrapper;
 
 class AbstractVisibilityBehavior;
 class Unity2dPanel;
+class QDBusServiceWatcher;
 
 /**
  * This class monitors the hide_mode gconf key and set up an HideController
@@ -43,11 +45,18 @@ public:
     VisibilityController(Unity2dPanel* panel);
     ~VisibilityController();
 
-    Q_INVOKABLE void beginForceVisible();
-    Q_INVOKABLE void endForceVisible();
+    /**
+     * Force visibility of the launcher.
+     * service is the dbus service (@see QDBusConnection::baseService()) of the
+     * application which requested forced visibility. It is set to an empty
+     * string for internal requests.
+     */
+    Q_INVOKABLE void beginForceVisible(const QString& service = QString());
+    Q_INVOKABLE void endForceVisible(const QString& service = QString());
 
 private Q_SLOTS:
     void update();
+    void slotServiceUnregistered(const QString&);
 
 private:
     enum AutoHideMode {
@@ -58,8 +67,11 @@ private:
     Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
+    QDBusServiceWatcher* m_dbusWatcher;
     QScopedPointer<AbstractVisibilityBehavior> m_behavior;
-    int m_forceVisibleCount;
+
+    typedef QHash<QString, int> ForceVisibleCountHash;
+    ForceVisibleCountHash m_forceVisibleCountHash;
 
     void setBehavior(AbstractVisibilityBehavior*);
 };

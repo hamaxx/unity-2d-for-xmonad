@@ -62,11 +62,11 @@ LauncherControl::AddWebFavorite(const QString& url)
 void
 LauncherControl::BeginForceVisible()
 {
-    m_visibilityController->beginForceVisible();
+    m_visibilityController->beginForceVisible(message().service());
 }
 
 void
 LauncherControl::EndForceVisible()
 {
-    m_visibilityController->endForceVisible();
+    m_visibilityController->endForceVisible(message().service());
 }

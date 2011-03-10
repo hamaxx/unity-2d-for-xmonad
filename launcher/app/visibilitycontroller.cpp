@@ -34,6 +34,8 @@
 #include <gconfitem-qml-wrapper.h>
 
 // Qt
+#include <QDBusConnection>
+#include <QDBusServiceWatcher>
 
 static const char* GCONF_LAUNCHER_HIDEMODE_KEY = "/desktop/unity-2d/launcher/hide_mode";
 
@@ -41,12 +43,17 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
-, m_forceVisibleCount(0)
+, m_dbusWatcher(new QDBusServiceWatcher(this))
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
+
+    m_dbusWatcher->setConnection(QDBusConnection::sessionBus());
+    m_dbusWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
+
     connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
     connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
+    connect(m_dbusWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
     update();
 }
 
@@ -56,7 +63,7 @@ VisibilityController::~VisibilityController()
 
 void VisibilityController::update()
 {
-    if (m_forceVisibleCount > 0) {
+    if (!m_forceVisibleCountHash.isEmpty()) {
         return;
     }
     AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
@@ -81,22 +88,33 @@ void VisibilityController::update()
     }
 }
 
-void VisibilityController::beginForceVisible()
+void VisibilityController::beginForceVisible(const QString& service)
 {
-    m_forceVisibleCount++;
-    if (m_forceVisibleCount == 1) {
+    bool wasEmpty = m_forceVisibleCountHash.isEmpty();
+    if (m_forceVisibleCountHash.contains(service)) {
+        ++m_forceVisibleCountHash[service];
+    } else {
+        m_forceVisibleCountHash[service] = 1;
+        m_dbusWatcher->addWatchedService(service);
+    }
+    if (wasEmpty) {
         setBehavior(new ForceVisibleBehavior(m_panel));
     }
 }
 
-void VisibilityController::endForceVisible()
+void VisibilityController::endForceVisible(const QString& service)
 {
-    if (m_forceVisibleCount > 0) {
-        m_forceVisibleCount--;
+    if (m_forceVisibleCountHash.contains(service)) {
+        if (m_forceVisibleCountHash[service] == 1) {
+            m_forceVisibleCountHash.remove(service);
+            m_dbusWatcher->removeWatchedService(service);
+        } else {
+            --m_forceVisibleCountHash[service];
+        }
     } else {
-        UQ_WARNING << "m_forceVisibleCount == 0, this should not happen";
+        UQ_WARNING << "Application" << service << "called endForceVisible() more than beginForceVisible().";
     }
-    if (m_forceVisibleCount == 0) {
+    if (m_forceVisibleCountHash.isEmpty()) {
         update();
     }
 }
@@ -107,4 +125,18 @@ void VisibilityController::setBehavior(AbstractVisibilityBehavior* behavior)
     // changes
     //UQ_VAR(behavior);
     m_behavior.reset(behavior);
+}
+
+void VisibilityController::slotServiceUnregistered(const QString& service)
+{
+    if (!m_forceVisibleCountHash.contains(service)) {
+        return;
+    }
+
+    UQ_WARNING << "Application" << service << "quit without calling endForceVisible().";
+    m_forceVisibleCountHash.remove(service);
+    m_dbusWatcher->removeWatchedService(service);
+    if (m_forceVisibleCountHash.isEmpty()) {
+        update();
+    }
 }
