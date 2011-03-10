@@ -510,6 +510,9 @@ PlaceEntry::setSensitive(bool sensitive)
 void
 PlaceEntry::setSections(DeeListModel* sections)
 {
+    if (sections == NULL) {
+        return;
+    }
     if (m_sections != NULL) {
         delete m_sections;
     }
@@ -593,6 +596,9 @@ PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
 void
 PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
 {
+    if (entryGroupsModel == NULL) {
+        return;
+    }
     if (m_entryGroupsModel != NULL) {
         delete m_entryGroupsModel;
     }
@@ -615,6 +621,9 @@ PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
 void
 PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
 {
+    if (entryResultsModel == NULL) {
+        return;
+    }
     if (m_entryResultsModel != NULL) {
         delete m_entryResultsModel;
     }
@@ -666,6 +675,9 @@ PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
 void
 PlaceEntry::setGlobalGroupsModel(DeeListModel* globalGroupsModel)
 {
+    if (globalGroupsModel == NULL) {
+        return;
+    }
     if (m_globalGroupsModel != NULL) {
         delete m_globalGroupsModel;
     }
@@ -688,6 +700,9 @@ PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
 void
 PlaceEntry::setGlobalResultsModel(DeeListModel* globalResultsModel)
 {
+    if (globalResultsModel == NULL) {
+        return;
+    }
     if (m_globalResultsModel != NULL) {
         delete m_globalResultsModel;
     }
