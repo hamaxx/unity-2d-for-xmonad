@@ -503,15 +503,6 @@ PlaceEntry::setSensitive(bool sensitive)
 {
     if (sensitive != m_sensitive) {
         m_sensitive = sensitive;
-        if (!m_sensitive) {
-            /* Dee list models are shared, release all references to them so
-               that the master copy (owned by the place daemon) can be freed. */
-            setSections(NULL);
-            setEntryGroupsModel(NULL);
-            setEntryResultsModel(NULL);
-            setGlobalGroupsModel(NULL);
-            setGlobalResultsModel(NULL);
-        }
         Q_EMIT sensitiveChanged(sensitive);
     }
 }
