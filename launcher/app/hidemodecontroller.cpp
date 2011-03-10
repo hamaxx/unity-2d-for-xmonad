@@ -33,22 +33,20 @@
 #include <gconfitem-qml-wrapper.h>
 
 // Qt
-#include <QDeclarativeProperty>
 
 static const char* GCONF_LAUNCHER_HIDEMODE_KEY = "/desktop/unity-2d/launcher/hide_mode";
 
-HideModeController::HideModeController(Unity2dPanel* panel, QDeclarativeProperty* property)
+HideModeController::HideModeController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
 , m_hideBehavior(0)
-, m_requestAttentionProperty(property)
+, m_forceVisibleCount(0)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
     connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
     connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
-    m_requestAttentionProperty->connectNotifySignal(this, SLOT(updateFromRequestAttentionProperty()));
     update();
 }
 
@@ -78,15 +76,25 @@ void HideModeController::update()
             m_hideBehavior = new IntelliHideBehavior(m_panel);
             break;
         }
-        updateFromRequestAttentionProperty();
+        if (m_forceVisibleCount > 0 && m_hideBehavior) {
+            m_hideBehavior->setRequestAttention(true);
+        }
     }
 }
 
-void HideModeController::updateFromRequestAttentionProperty()
+void HideModeController::beginForceVisible()
 {
-    bool requestAttention = m_requestAttentionProperty->read().toBool();
+    m_forceVisibleCount++;
+    if (m_forceVisibleCount == 1 && m_hideBehavior) {
+        m_hideBehavior->setRequestAttention(true);
+    }
+}
 
-    if (m_hideBehavior) {
-        m_hideBehavior->setRequestAttention(requestAttention);
+void HideModeController::endForceVisible()
+{
+    UQ_RETURN_IF_FAIL(m_forceVisibleCount > 0);
+    m_forceVisibleCount--;
+    if (m_forceVisibleCount == 0 && m_hideBehavior) {
+        m_hideBehavior->setRequestAttention(false);
     }
 }

@@ -21,38 +21,6 @@ AutoScrollingListView {
     /* Can we reorder the items in this list by means of drag and drop ? */
     property alias reorderable: reorder.enabled
 
-    /* Is there at least one item in this list which is requesting attention? */
-    property bool requestAttention: runningAnimations.length > 0
-
-    /* HACK: for some reason we can't keep a list of LauncherItems: the items
-     * get replaced with default-constructed items on the next call. Keeping a
-     * list of animations work, though.
-     */
-    property variant runningAnimations: []
-
-    function removeItemFromRequestingAttentionList(item) {
-        var lst = runningAnimations;
-        for (var idx=0; idx<lst.length; ++idx) {
-            if (lst[idx] == item.urgentAnimation) {
-                lst.splice(idx, 1);
-                break;
-            }
-        }
-        runningAnimations = lst;
-    }
-
-    function addItemToRequestingAttentionList(item) {
-        var lst = runningAnimations;
-        for (var idx=0; idx<lst.length; ++idx) {
-            if (lst[idx] == item) {
-                console.log("Item is already in runningAnimations!");
-                return;
-            }
-        }
-        lst.push(item.urgentAnimation);
-        runningAnimations = lst;
-    }
-
     ListViewDragAndDrop {
         id: reorder
         list: list
@@ -168,7 +136,6 @@ AutoScrollingListView {
         }
 
         ListView.onRemove: SequentialAnimation {
-            ScriptAction { script: ListView.view.removeItemFromRequestingAttentionList(item); }
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: true }
             NumberAnimation { target: launcherItem; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
             NumberAnimation { target: launcherItem; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
@@ -194,9 +161,9 @@ AutoScrollingListView {
             target: urgentAnimation
             onRunningChanged: {
                 if (urgentAnimation.running) {
-                    ListView.view.addItemToRequestingAttentionList(item);
+                    hideModeController.beginForceVisible();
                 } else {
-                    ListView.view.removeItemFromRequestingAttentionList(item);
+                    hideModeController.endForceVisible();
                 }
             }
         }

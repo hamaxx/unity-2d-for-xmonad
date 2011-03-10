@@ -33,7 +33,6 @@
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
-#include <QDeclarativeProperty>
 #include <QDir>
 #include <QGraphicsObject>
 
@@ -83,6 +82,8 @@ int main(int argc, char *argv[])
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(66);
 
+    HideModeController* hideModeController = new HideModeController(&panel);
+
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
 
@@ -102,6 +103,7 @@ int main(int argc, char *argv[])
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+    launcherView->rootContext()->setContextProperty("hideModeController", hideModeController);
 
     /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
@@ -122,8 +124,6 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
-    QDeclarativeProperty property(launcherView->rootObject(), "requestAttention");
-    new HideModeController(&panel, &property);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched

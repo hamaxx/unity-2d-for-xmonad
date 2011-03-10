@@ -26,8 +26,6 @@
 // Qt
 #include <QObject>
 
-class QDeclarativeProperty;
-
 class GConfItemQmlWrapper;
 
 class AbstractHideBehavior;
@@ -41,12 +39,14 @@ class HideModeController : public QObject
 {
 Q_OBJECT
 public:
-    HideModeController(Unity2dPanel* panel, QDeclarativeProperty* requestAttentionProperty);
+    HideModeController(Unity2dPanel* panel);
     ~HideModeController();
+
+    Q_INVOKABLE void beginForceVisible();
+    Q_INVOKABLE void endForceVisible();
 
 private Q_SLOTS:
     void update();
-    void updateFromRequestAttentionProperty();
 
 private:
     enum AutoHideMode {
@@ -58,7 +58,7 @@ private:
     Unity2dPanel* m_panel;
     GConfItemQmlWrapper* m_hideModeKey;
     AbstractHideBehavior* m_hideBehavior;
-    QDeclarativeProperty* m_requestAttentionProperty;
+    int m_forceVisibleCount;
 };
 
 #endif /* HIDEMODECONTROLLER_H */
