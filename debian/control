@@ -15,7 +15,7 @@ Package: unity-2d
 Architecture: all
 Depends: ${misc:Depends},
  unity-2d-launcher, unity-2d-panel, unity-2d-places, unity-2d-spread,
- metacity ( >= 2.30.3-0ubuntu3 ), gnome-session-bin
+ metacity ( >= 2.30.3-0ubuntu5 ), gnome-session-bin
 Recommends: indicator-application, indicator-datetime, 
  indicator-me, indicator-messages, indicator-session, indicator-sound, 
  gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 

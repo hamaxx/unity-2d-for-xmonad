@@ -15,6 +15,8 @@
  */
 
 #include "dashdeclarativeview.h"
+#include "dashadaptor.h"
+
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
@@ -22,7 +24,8 @@
 #include <QDeclarativeContext>
 #include <QX11Info>
 #include <QGraphicsObject>
-
+#include <QtDBus/QDBusConnection>
+#include <QTimer>
 #include <QDebug>
 
 #include <X11/Xlib.h>
@@ -37,12 +40,15 @@ static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
+static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
+
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
-    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
 
     if (QX11Info::isCompositingManagerRunning()) {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -141,8 +147,8 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     } else {
         show();
         raise();
-        activateWindow();
-        forceActivateWindow();
+        // We need a delay, otherwise the window may not be visible when we try to activate it
+        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
@@ -318,4 +324,15 @@ bool
 DashDeclarativeView::isCompositingManagerRunning() const
 {
     return QX11Info::isCompositingManagerRunning();
+}
+
+bool
+DashDeclarativeView::connectToBus()
+{
+    bool ok = QDBusConnection::sessionBus().registerService(DASH_DBUS_SERVICE);
+    if (!ok) {
+        return false;
+    }
+    new DashAdaptor(this);
+    return QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, this);
 }

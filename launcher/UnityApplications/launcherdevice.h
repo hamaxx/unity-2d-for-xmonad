@@ -55,7 +55,7 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
 
-private slots:
+private Q_SLOTS:
     void onEjectTriggered();
 
 private:

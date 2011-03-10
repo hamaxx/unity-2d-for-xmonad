@@ -24,7 +24,6 @@ class DashDeclarativeView : public QDeclarativeView
     Q_OBJECT
     Q_ENUMS(DashMode)
 
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity2d.Dash")
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
@@ -58,7 +57,8 @@ public:
 
     /* methods */
     Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
-    Q_INVOKABLE void activateHome();
+    Q_SLOT void activateHome();
+    bool connectToBus();
 
 Q_SIGNALS:
     void activeChanged(bool);
@@ -75,11 +75,11 @@ protected:
 
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
+    void forceActivateWindow();
 
 private:
     void fitToAvailableSpace();
     void resizeToDesktopModeSize();
-    void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void updateMask();

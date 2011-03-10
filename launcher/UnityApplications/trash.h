@@ -55,7 +55,7 @@ public Q_SLOTS:
     void onDragEnter(DeclarativeDragDropEvent*);
     void onDrop(DeclarativeDragDropEvent*);
 
-private slots:
+private Q_SLOTS:
     void onEmptyTriggered();
 
 private:

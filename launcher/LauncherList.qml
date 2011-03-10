@@ -131,7 +131,7 @@ AutoScrollingListView {
         ListView.onAdd: SequentialAnimation {
             PropertyAction { target: launcherItem; property: "scale"; value: 0 }
             NumberAnimation { target: launcherItem; property: "height";
-                              from: 0; to: launcherItem.tileSize; duration: 250; easing.type: Easing.InOutQuad }
+                              from: 0; duration: 250; easing.type: Easing.InOutQuad }
             NumberAnimation { target: launcherItem; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
         }
 

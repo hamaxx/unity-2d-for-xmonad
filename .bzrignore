@@ -11,6 +11,7 @@ launcher/tests/launcherviewtest
 places/UnityPlaces/libUnityPlaces.so*
 places/app/unity-2d-places
 places/app/unity-2d-places.service
+places/app/dashadaptor.*
 
 spread/app/unity-2d-spread
 spread/app/unity-2d-spread.service
