@@ -89,8 +89,11 @@ Item {
 
     Item {
         anchors.fill: parent
-        anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 38 : 0
-        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 40 : 0
+        /* Margins in DesktopMode set so that the content does not overlap with
+           the border defined by the background image.
+        */
+        anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 39 : 0
+        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 37 : 0
 
         visible: dashView.active
 
@@ -137,7 +140,6 @@ Item {
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 12
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
