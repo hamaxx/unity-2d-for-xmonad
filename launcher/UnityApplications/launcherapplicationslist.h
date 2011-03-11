@@ -55,9 +55,9 @@ private:
     void insertApplication(LauncherApplication* application);
     void removeApplication(LauncherApplication* application);
 
-    static QString desktopFilePathFromFavorite(QString favorite_id);
     static QString favoriteFromDesktopFilePath(QString desktop_file);
 
+    void writeFavoritesToGConf();
     void addApplicationToFavorites(LauncherApplication* application);
     void removeApplicationFromFavorites(LauncherApplication* application);
 
