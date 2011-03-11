@@ -232,13 +232,10 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 {
     LauncherApplication* application = static_cast<LauncherApplication*>(sender());
 
-    if (sticky) {
-        addApplicationToFavorites(application);
-    } else {
-        removeApplicationFromFavorites(application);
-        if (!application->running()) {
-            removeApplication(application);
-        }
+    writeFavoritesToGConf();
+
+    if (!sticky && !application->running()) {
+        removeApplication(application);
     }
 }
 
@@ -255,33 +252,6 @@ LauncherApplicationsList::writeFavoritesToGConf()
     m_favorites_list->blockSignals(true);
     m_favorites_list->setValue(QVariant(favorites));
     m_favorites_list->blockSignals(false);
-}
-
-void
-LauncherApplicationsList::addApplicationToFavorites(LauncherApplication* application)
-{
-    Q_UNUSED(application)
-    writeFavoritesToGConf();
-}
-
-void
-LauncherApplicationsList::removeApplicationFromFavorites(LauncherApplication* application)
-{
-    QString desktop_file = application->desktop_file();
-    QString favorite_id = favoriteFromDesktopFilePath(desktop_file);
-    QStringList favorites = m_favorites_list->getValue().toStringList();
-
-    for (QStringList::iterator i = favorites.begin(); i != favorites.end(); i++) {
-        if (*i == favorite_id) {
-            favorites.erase(i);
-            m_favorites_list->blockSignals(true);
-            m_favorites_list->setValue(QVariant(favorites));
-            m_favorites_list->blockSignals(false);
-            /* The iterator 'i' is invalid but since we break off the loop
-               nothing nasty happens. */
-            break;
-        }
-    }
 }
 
 int

@@ -58,8 +58,6 @@ private:
     static QString favoriteFromDesktopFilePath(QString desktop_file);
 
     void writeFavoritesToGConf();
-    void addApplicationToFavorites(LauncherApplication* application);
-    void removeApplicationFromFavorites(LauncherApplication* application);
 
     /* List of LauncherApplication displayed in the launcher. */
     QList<LauncherApplication*> m_applications;
