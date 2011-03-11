@@ -81,8 +81,8 @@ AutoScrollingListView {
             list.visibleMenu = item.menu
             // The extra 4 pixels are needed to center exactly with the arrow
             // indicating the active tile.
-            item.menu.show(width, panel.y + list.y +
-                                  y + height / 2 - list.contentY + 4)
+            item.menu.show(width, panel.y + list.y - list.contentY +
+                                  y + height - tileSize / 2)
 
         }
 
