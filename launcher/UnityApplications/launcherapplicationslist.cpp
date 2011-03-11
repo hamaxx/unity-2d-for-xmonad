@@ -189,7 +189,7 @@ LauncherApplicationsList::load()
 
     Q_FOREACH(QString favorite, favorites) {
        insertFavoriteApplication(favorite);
-     }
+    }
 
     /* Insert running applications from Bamf */
     BamfMatcher& matcher = BamfMatcher::get_default();
