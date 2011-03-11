@@ -395,7 +395,12 @@ Place::activate(QString uri)
 
     if (url.scheme() == "application") {
         LauncherApplication application;
-        application.setDesktopFile(url.host());
+        /* Cannot set the desktop file to url.host(), because the QUrl constructor
+           converts the host name to lower case to conform to the Nameprep
+           RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
+           Ref: http://bugs.launchpad.net/unity-2d/+bug/723604 */
+        QString desktopFile = uri.right(uri.size() - uri.indexOf("://") - 3);
+        application.setDesktopFile(desktopFile);
         application.activate();
         return;
     }
