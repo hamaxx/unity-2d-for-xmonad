@@ -797,7 +797,10 @@ PlaceEntry::createMenuActions()
 
     for (int i = 0; i < m_sections->rowCount(); ++i) {
         QAction* section = new QAction(m_menu);
-        section->setText(m_sections->data(m_sections->index(i)).toString());
+        QString sectionName = m_sections->data(m_sections->index(i)).toString();
+        /* Escape ampersands so that they are not considered as keyboard accelerators. */
+        sectionName.replace("&", "&&");
+        section->setText(sectionName);
         section->setProperty(SECTION_PROPERTY, QVariant(i));
         m_menu->addAction(section);
         QObject::connect(section, SIGNAL(triggered()), this, SLOT(onSectionTriggered()));
