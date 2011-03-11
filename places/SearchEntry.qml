@@ -7,7 +7,7 @@ FocusScope {
     /* Cancels current search when the dash becomes invisible */
     Connections {
         target: dashView
-        onActiveChanged: if(!dashView.active) search_input.text = ""
+        onActiveChanged: if (!dashView.active) search_input.text = ""
     }
 
     Binding {
