@@ -246,7 +246,9 @@ LauncherApplicationsList::writeFavoritesToGConf()
 
     Q_FOREACH(LauncherApplication *application, m_applications) {
         QString desktop_file = application->desktop_file();
-        if (application->sticky()) favorites.append(favoriteFromDesktopFilePath(desktop_file));
+        if (application->sticky()) {
+            favorites.append(favoriteFromDesktopFilePath(desktop_file));
+        }
     }
 
     m_favorites_list->blockSignals(true);
