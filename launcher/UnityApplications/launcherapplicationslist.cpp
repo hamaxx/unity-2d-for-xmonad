@@ -187,10 +187,9 @@ LauncherApplicationsList::load()
     QString desktop_file;
     QStringList favorites = m_favorites_list->getValue().toStringList();
 
-    for(QStringList::iterator iter=favorites.begin(); iter!=favorites.end(); iter++) {
-        desktop_file = *iter;
-        insertFavoriteApplication(desktop_file);
-    }
+    Q_FOREACH(QString favorite, favorites) {
+       insertFavoriteApplication(favorite);
+     }
 
     /* Insert running applications from Bamf */
     BamfMatcher& matcher = BamfMatcher::get_default();
