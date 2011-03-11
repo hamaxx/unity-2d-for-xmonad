@@ -116,7 +116,6 @@ LauncherContextualMenu::updateMask()
 void
 LauncherContextualMenu::resizeEvent(QResizeEvent* event)
 {
-    move(x(), m_arrowY - height() / 2);
     QMenu::resizeEvent(event);
     /* If transparent windows are not available use the XShape extension */
     if (!transparencyAvailable()) {
@@ -154,7 +153,7 @@ LauncherContextualMenu::show(int x, int y)
     if (isVisible())
         return;
 
-    m_arrowY = y;
+    m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
 }
@@ -209,6 +208,7 @@ LauncherContextualMenu::setFolded(int folded)
             int screenBottomEdge = screenGeometry.y() + screenGeometry.height();
             if (menuBottomEdge > screenBottomEdge) {
                 /* The menu goes offscreen, shift it upwards. */
+                m_arrowY += menuBottomEdge - screenBottomEdge;
                 move(x(), screenBottomEdge - height());
                 if (!transparencyAvailable()) {
                     /* The arrow has moved relatively to the menu. */
@@ -231,7 +231,7 @@ LauncherContextualMenu::paintEvent(QPaintEvent* event)
     /* Draw the arrow. */
     QPainter painter(this);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.drawPixmap(0, mapFromGlobal(QPoint(0, m_arrowY - m_arrow.height() / 2)).y(), m_arrow);
+    painter.drawPixmap(0, m_arrowY, m_arrow);
 }
 
 LauncherItem*
