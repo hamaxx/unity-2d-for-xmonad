@@ -307,9 +307,6 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
 void
 LauncherApplicationsList::move(int from, int to)
 {
-    LauncherApplication* firstApplication = m_applications[qMin(from, to)];
-    LauncherApplication* secondApplication = m_applications[qMax(from, to)];
-
     QModelIndex parent;
     /* When moving an item down, the destination index needs to be incremented
        by one, as explained in the documentation:
@@ -318,8 +315,8 @@ LauncherApplicationsList::move(int from, int to)
     m_applications.move(from, to);
     endMoveRows();
 
-    if (firstApplication->sticky() || secondApplication->sticky()) {
-        /* Update favorites only if one of the applications is a favorite */
+    if (m_applications[from]->sticky() || m_applications[to]->sticky()) {
+        /* Update favorites only if at least one of the applications is a favorite */
         writeFavoritesToGConf();
     }
 }
