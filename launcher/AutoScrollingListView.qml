@@ -16,8 +16,6 @@ ListView {
     property real autoScrollVelocity
     property bool autoScrolling: scrollUp.running || scrollDown.running
 
-    contentY: 0
-
     MouseArea {
         id: scrollZoneTop
         width: parent.width
