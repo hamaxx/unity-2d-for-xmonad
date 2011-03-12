@@ -157,13 +157,13 @@ Item {
             HomeButton {
                 label: qsTr("Find Media Apps")
                 icon: "artwork/find_media_apps.png"
-                onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 4)
+                onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 9)
             }
 
             HomeButton {
                 label: qsTr("Find Internet Apps")
                 icon: "artwork/find_internet_apps.png"
-                onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 3)
+                onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 8)
             }
 
             HomeButton {
