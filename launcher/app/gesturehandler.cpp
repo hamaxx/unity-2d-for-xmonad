@@ -193,9 +193,8 @@ void GestureHandler::gestureStart(GeisGestureType type, GeisGestureId id,
                                   QHash<QString, GeisGestureAttr> attributes)
 {
     QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
-    int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
-    if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
+    if (gestureName == GEIS_GESTURE_TYPE_PINCH3) {
         /* 3 fingers pinch inwards shows the workspace switcher (zoom out showing all workspaces)
            3 fingers pinch outwards (also called 'spread' by designers) hides the workspace switcher (zoom in a workspace)
          */
@@ -208,7 +207,7 @@ void GestureHandler::gestureStart(GeisGestureType type, GeisGestureId id,
 
         m_pinchPreviousRadius = attributes[GEIS_GESTURE_ATTRIBUTE_RADIUS].float_val;
         m_pinchPreviousTimestamp = attributes[GEIS_GESTURE_ATTRIBUTE_TIMESTAMP].integer_val;
-    } else if (gestureName == GEIS_GESTURE_DRAG && touches == 4) {
+    } else if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
         /* 4 fingers drag reveals the launcher progressively; if the drag goes far
            enough, the launcher is then locked in place and does not autohide anymore */
         /* FIXME: only supports the launcher positioned on the left edge of the screen */
@@ -222,12 +221,11 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
                                    QHash<QString, GeisGestureAttr> attributes)
 {
     QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
-    int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
-    if (gestureName == GEIS_GESTURE_TAP && touches == 4) {
+    if (gestureName == GEIS_GESTURE_TYPE_TAP4) {
         /* 4 fingers tap toggles the dash on and off */
         toggleDash();
-    } else if (gestureName == GEIS_GESTURE_PINCH && touches == 3) {
+    } else if (gestureName == GEIS_GESTURE_TYPE_PINCH3) {
         /* Continuing a 3 fingers pinch inwards/outwards shows/hides the workspace switcher. */
         int timestamp = attributes[GEIS_GESTURE_ATTRIBUTE_TIMESTAMP].integer_val;
         float radius = attributes[GEIS_GESTURE_ATTRIBUTE_RADIUS].float_val;
@@ -256,7 +254,7 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
             m_pinchPreviousRadius = radius;
             m_pinchPreviousTimestamp = timestamp;
         }
-    } else if (gestureName == GEIS_GESTURE_DRAG && touches == 4) {
+    } else if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
         /* FIXME: only supports the launcher positioned on the left edge of the screen */
         m_dragDelta += attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
         m_launcher->setDelta(m_dragDelta);
@@ -276,9 +274,8 @@ void GestureHandler::gestureFinish(GeisGestureType type, GeisGestureId id,
                                    QHash<QString, GeisGestureAttr> attributes)
 {
     QString gestureName = attributes[GEIS_GESTURE_ATTRIBUTE_GESTURE_NAME].string_val;
-    int touches = attributes[GEIS_GESTURE_ATTRIBUTE_TOUCHES].integer_val;
 
-    if (gestureName == GEIS_GESTURE_DRAG && touches == 4) {
+    if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
         m_dragDelta += attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
         m_launcher->setDelta(m_dragDelta);
         m_launcher->setManualSliding(false);
