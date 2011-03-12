@@ -35,6 +35,7 @@
 
 // unity-2d
 #include <gettexttranslator.h>
+#include <unity2ddebug.h>
 
 #include "dashdeclarativeview.h"
 #include "config.h"
@@ -43,8 +44,7 @@ int main(int argc, char *argv[])
 {
     /* gtk needs to be inited, otherwise we get an assert failure in gdk */
     gtk_init(&argc, &argv);
-    QApplication::setApplicationName("Unity 2D Dash");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.

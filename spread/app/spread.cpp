@@ -27,6 +27,8 @@
 #include "spreadview.h"
 #include "spreadcontrol.h"
 
+#include <unity2ddebug.h>
+
 #include "config.h"
 
 int main(int argc, char *argv[])
@@ -35,8 +37,7 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
-    QApplication::setApplicationName("Unity 2D Spread");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
