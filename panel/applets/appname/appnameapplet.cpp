@@ -144,6 +144,7 @@ struct AppNameAppletPrivate
     void setupWindowButtonWidget()
     {
         m_windowButtonWidget = new QWidget;
+        m_windowButtonWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
         layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
         layout->setSpacing(0);
