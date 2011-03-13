@@ -188,7 +188,7 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     d->setupWindowHelper();
     d->setupLabel();
