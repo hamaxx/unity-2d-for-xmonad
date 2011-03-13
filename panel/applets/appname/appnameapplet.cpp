@@ -199,7 +199,7 @@ AppNameApplet::AppNameApplet()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(d->m_windowButtonWidget);
+    layout->addWidget(d->m_windowButtonWidget, 0, Qt::AlignLeft);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
