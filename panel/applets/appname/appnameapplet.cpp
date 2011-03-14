@@ -217,7 +217,7 @@ void AppNameApplet::updateWidgets()
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp)
-        && (window()->underMouse()
+        && (window()->geometry().contains(QCursor::pos())
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
