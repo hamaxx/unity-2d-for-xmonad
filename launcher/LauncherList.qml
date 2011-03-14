@@ -124,8 +124,13 @@ AutoScrollingListView {
 
         Connections {
             target: item.menu
-            onShown: visibilityController.beginForceVisible()
-            onHidden: visibilityController.endForceVisible()
+            onVisibleChanged: {
+                if (item.menu.visible) {
+                    visibilityController.beginForceVisible();
+                } else {
+                    visibilityController.endForceVisible();
+                }
+            }
         }
 
         function setIconGeometry() {
