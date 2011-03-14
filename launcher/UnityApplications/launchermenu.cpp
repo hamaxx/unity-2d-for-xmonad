@@ -247,6 +247,20 @@ LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 }
 
 void
+LauncherContextualMenu::showEvent(QShowEvent* event)
+{
+    QMenu::showEvent(event);
+    visibleChanged(true);
+}
+
+void
+LauncherContextualMenu::hideEvent(QHideEvent* event)
+{
+    QMenu::hideEvent(event);
+    visibleChanged(false);
+}
+
+void
 LauncherContextualMenu::activateWindow()
 {
     /* FIXME: for some reason I don’t understand yet, invoking

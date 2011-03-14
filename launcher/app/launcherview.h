@@ -27,6 +27,7 @@
 #include "gconfitem-qml-wrapper.h"
 
 class DeclarativeDragDropEvent;
+class LauncherDBus;
 
 class LauncherView : public QDeclarativeView
 {
@@ -47,6 +48,7 @@ Q_SIGNALS:
     void webpageUrlDropped(const QUrl& url);
     void keyboardShortcutPressed(int itemIndex);
     void superKeyPressedChanged(bool superKeyPressed);
+    void addWebFavoriteRequested(const QUrl& url);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -64,6 +66,8 @@ private:
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
+
+    friend class LauncherDBus;
 };
 
 #endif // LAUNCHERVIEW

@@ -8,10 +8,11 @@
  *
  * License: GPL v3
  */
-#ifndef INTELLIHIDECONTROLLER_H
-#define INTELLIHIDECONTROLLER_H
+#ifndef INTELLIHIDEBEHAVIOR_H
+#define INTELLIHIDEBEHAVIOR_H
 
 // Local
+#include <abstractvisibilitybehavior.h>
 
 // Qt
 #include <QObject>
@@ -24,12 +25,12 @@ class Unity2dPanel;
 /**
  * This class implements the Intellihide behavior of the launcher
  */
-class IntellihideController : public QObject
+class IntelliHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:
-    IntellihideController(Unity2dPanel* panel);
-    ~IntellihideController();
+    IntelliHideBehavior(Unity2dPanel* panel);
+    ~IntelliHideBehavior();
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -40,15 +41,13 @@ private Q_SLOTS:
     void forceVisiblePanel();
 
 private:
-    Q_DISABLE_COPY(IntellihideController);
+    Q_DISABLE_COPY(IntelliHideBehavior);
 
     enum PanelVisibility {
         VisiblePanel,
         HiddenPanel,
         ForceVisiblePanel
     };
-
-    Unity2dPanel* m_panel;
 
     // A 1px invisible area used to force the panel to be visible if the user
     // hits the edge of the screen with the mouse cursor
@@ -62,4 +61,4 @@ private:
     void disconnectFromGSignals();
 };
 
-#endif /* INTELLIHIDECONTROLLER_H */
+#endif /* INTELLIHIDEBEHAVIOR_H */
