@@ -249,7 +249,10 @@ LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 void
 LauncherContextualMenu::activateWindow()
 {
-    QMenu::activateWindow();
+    /* FIXME: for some reason I don’t understand yet, invoking
+       QMenu::activateWindow() directly here doesn’t work, the active window
+       remains unchanged. */
+    QTimer::singleShot(1, this, SLOT(reallyActivateWindow()));
 
     /* Set the first enabled action active. */
     Q_FOREACH(QAction* action, actions()) {
@@ -258,6 +261,12 @@ LauncherContextualMenu::activateWindow()
             break;
         }
     }
+}
+
+void
+LauncherContextualMenu::reallyActivateWindow()
+{
+    QMenu::activateWindow();
 }
 
 void
