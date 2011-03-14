@@ -34,13 +34,14 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDir>
+#include <QGraphicsObject>
 
 #include <unity2dapplication.h>
 
 #include "config.h"
 #include "launcherview.h"
-#include "launchercontrol.h"
-#include "hidemodecontroller.h"
+#include "launcherdbus.h"
+#include "visibilitycontroller.h"
 #include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
@@ -81,6 +82,8 @@ int main(int argc, char *argv[])
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(66);
 
+    VisibilityController* visibilityController = new VisibilityController(&panel);
+
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView;
 
@@ -100,14 +103,14 @@ int main(int argc, char *argv[])
 
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
+    launcherView->rootContext()->setContextProperty("visibilityController", visibilityController);
 
     /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
-    LauncherControl control;
-    launcherView->rootContext()->setContextProperty("launcherControl", &control);
-    control.connectToBus();
+    LauncherDBus launcherDBus(visibilityController, launcherView);
+    launcherDBus.connectToBus();
 
     launcherView->setSource(QUrl("./Launcher.qml"));
 
@@ -120,7 +123,6 @@ int main(int argc, char *argv[])
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
-    new HideModeController(&panel);
     panel.show();
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched

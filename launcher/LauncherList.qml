@@ -168,6 +168,17 @@ AutoScrollingListView {
         }
 
         Connections {
+            target: urgentAnimation
+            onRunningChanged: {
+                if (urgentAnimation.running) {
+                    visibilityController.beginForceVisible();
+                } else {
+                    visibilityController.endForceVisible();
+                }
+            }
+        }
+
+        Connections {
             target: launcherView
             onKeyboardShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
