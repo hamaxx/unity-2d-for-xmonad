@@ -245,3 +245,35 @@ LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
 }
+
+void
+LauncherContextualMenu::activateWindow()
+{
+    QMenu::activateWindow();
+
+    /* Set the first enabled action active. */
+    Q_FOREACH(QAction* action, actions()) {
+        if (action->isEnabled() && !action->isSeparator()) {
+            setActiveAction(action);
+            break;
+        }
+    }
+}
+
+void
+LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
+{
+    int key = event->key();
+    if (key == Qt::Key_Left || key == Qt::Key_Escape) {
+        hide();
+        Q_EMIT dismissedByKeyEvent();
+        event->accept();
+        return;
+    }
+
+    QMenu::keyPressEvent(event);
+    if (event->isAccepted() && isHidden()) {
+        Q_EMIT dismissedByKeyEvent();
+    }
+}
+

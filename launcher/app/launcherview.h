@@ -54,6 +54,8 @@ private Q_SLOTS:
     void updateSuperKeyMonitoring();
 
     void onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers);
+
+public Q_SLOTS:
     void activateWindow();
 
 private:

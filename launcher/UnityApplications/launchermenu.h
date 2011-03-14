@@ -59,9 +59,14 @@ public:
 Q_SIGNALS:
     void foldedChanged(bool);
     void titleChanged(QString);
+    void dismissedByKeyEvent();
+
+public Q_SLOTS:
+    void activateWindow();
 
 protected:
     void paintEvent(QPaintEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
 private:
     void loadCSS();

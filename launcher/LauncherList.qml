@@ -120,6 +120,7 @@ AutoScrollingListView {
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 item.menu.folded = false
                 showMenu()
+                item.menu.activateWindow()
             }
             else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
                 item.menu.hide()
@@ -130,6 +131,13 @@ AutoScrollingListView {
             if (!activeFocus) {
                 item.menu.hide()
             }
+        }
+
+        Connections {
+            target: item.menu
+            /* The menu had the keyboard focus because the launcher had
+               activated it. Restore it. */
+            onDismissedByKeyEvent: launcherView.activateWindow()
         }
 
         Connections {
