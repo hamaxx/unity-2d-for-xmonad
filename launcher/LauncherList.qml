@@ -92,8 +92,8 @@ AutoScrollingListView {
                 item.activate()
             }
             else if (mouse.button == Qt.RightButton) {
-                item.menu.folded = false
                 showMenu()
+                item.menu.folded = false
             }
         }
 
@@ -118,8 +118,8 @@ AutoScrollingListView {
             }
             else if (event.key == Qt.Key_Right ||
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
-                item.menu.folded = false
                 showMenu()
+                item.menu.folded = false
                 item.menu.activateWindow()
             }
             else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
