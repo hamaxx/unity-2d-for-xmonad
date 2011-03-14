@@ -144,6 +144,7 @@ struct AppNameAppletPrivate
     void setupWindowButtonWidget()
     {
         m_windowButtonWidget = new QWidget;
+        m_windowButtonWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
         layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
         layout->setSpacing(0);
@@ -187,7 +188,7 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     d->setupWindowHelper();
     d->setupLabel();
@@ -198,7 +199,7 @@ AppNameApplet::AppNameApplet()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(d->m_windowButtonWidget);
+    layout->addWidget(d->m_windowButtonWidget, 0, Qt::AlignLeft);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
