@@ -75,11 +75,11 @@ protected:
 
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
+    void forceActivateWindow();
 
 private:
     void fitToAvailableSpace();
     void resizeToDesktopModeSize();
-    void forceActivateWindow();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void updateMask();

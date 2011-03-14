@@ -10,7 +10,19 @@
           An interface to control the dash in Unity-2d.
         </dox:d>
         <method name="activateHome">
-            <dox:d>Activates the Dash and shows the Home section</dox:d>
+            <dox:d>Activates the Dash and shows the home section</dox:d>
+        </method>
+        <method name="activatePlaceEntry">
+            <dox:d>Activates the Dash and shows the specified place entry</dox:d>
+            <arg name="file" type="s" direction="in">
+                    <dox:d>The .place file for the place containing the entry that should be activated</dox:d>
+            </arg>
+            <arg name="entry" type="s" direction="in">
+                    <dox:d>The place entry that should be activated</dox:d>
+            </arg>
+            <arg name="section" type="i" direction="in">
+                    <dox:d>The section of the place entry that should be activated</dox:d>
+            </arg>
         </method>
         <property name="active" type="b" access="readwrite">
             <dox:d>True if the Dash is active</dox:d>
@@ -25,7 +37,7 @@
                 </arg>
         </signal>
         <signal name="activePlaceEntryChanged">
-                <dox:d>Signals when the currently active place in the Dash changes</dox:d>
+                <dox:d>Signals when the currently active place entry in the Dash changes</dox:d>
                 <arg name="activePlaceEntry" type="s" direction="out">
                         <dox:d>The currently active place entry</dox:d>
                 </arg>

@@ -117,7 +117,7 @@ static void toggleDash()
         - show the home page of the dash if the dash is closed
         - close the dash, if the dash is opened
     */
-    QDBusInterface dashInterface("com.canonical.Unity2d", "/Dash", "com.canonical.Unity2d.Dash");
+    QDBusInterface dashInterface("com.canonical.Unity2d.Dash", "/Dash", "com.canonical.Unity2d.Dash");
     bool dashActive = dashInterface.property("active").toBool();
 
     if (dashActive) {

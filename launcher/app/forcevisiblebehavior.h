@@ -1,5 +1,10 @@
 /*
- * Copyright (C) 2010-2011 Canonical, Ltd.
+ * This file is part of unity-2d
+ *
+ * Copyright 2011 Canonical Ltd.
+ *
+ * Authors:
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,20 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef FORCEVISIBLEBEHAVIOR_H
+#define FORCEVISIBLEBEHAVIOR_H
 
-#ifndef UNITYAPPLICATIONSPLUGIN_H
-#define UNITYAPPLICATIONSPLUGIN_H
+// Local
+#include <abstractvisibilitybehavior.h>
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
+// Qt
+#include <QObject>
 
-class UnityApplicationsPlugin : public QDeclarativeExtensionPlugin
+/**
+ * Behavior used when someone requested the launcher to be visible even if it
+ * is supposed to be hidden
+ */
+class ForceVisibleBehavior : public AbstractVisibilityBehavior
 {
     Q_OBJECT
-
 public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri);
+    ForceVisibleBehavior(Unity2dPanel*);
 };
 
-
-#endif // UNITYAPPLICATIONSPLUGIN_H
+#endif /* FORCEVISIBLEBEHAVIOR_H */

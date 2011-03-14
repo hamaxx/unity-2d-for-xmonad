@@ -8,9 +8,3 @@ usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
 usr/lib/qt4/imports/UnityApplications/qmldir
 usr/lib/qt4/imports/UnityApplications/libUnityApplications.so
-
-# Install places artwork to work around bug #672447 in Unity.
-# See https://launchpad.net/bugs/672450.
-usr/share/unity-2d/applications.png
-usr/share/unity-2d/files.png
-

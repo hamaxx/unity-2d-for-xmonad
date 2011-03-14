@@ -18,42 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HIDEMODECONTROLLER_H
-#define HIDEMODECONTROLLER_H
+// Self
+#include "forcevisiblebehavior.h"
 
 // Local
 
+// libunity-2d
+#include <unity2dpanel.h>
+
 // Qt
-#include <QObject>
 
-class GConfItemQmlWrapper;
-
-class Unity2dPanel;
-
-/**
- * This class monitors the hide_mode gconf key and set up an HideController
- * depending on its value
- */
-class HideModeController : public QObject
+ForceVisibleBehavior::ForceVisibleBehavior(Unity2dPanel* panel)
+: AbstractVisibilityBehavior(panel)
 {
-Q_OBJECT
-public:
-    HideModeController(Unity2dPanel* panel);
-    ~HideModeController();
-
-private Q_SLOTS:
-    void update();
-
-private:
-    enum AutoHideMode {
-        ManualHide,
-        AutoHide,
-        IntelliHide
-    };
-    Q_DISABLE_COPY(HideModeController);
-    Unity2dPanel* m_panel;
-    GConfItemQmlWrapper* m_hideModeKey;
-    QObject* m_controller;
-};
-
-#endif /* HIDEMODECONTROLLER_H */
+    m_panel->slideIn();
+}

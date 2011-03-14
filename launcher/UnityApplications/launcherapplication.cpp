@@ -47,7 +47,6 @@ LauncherApplication::LauncherApplication()
     , m_desktopFileWatcher(NULL)
     , m_appInfo(NULL)
     , m_sticky(false)
-    , m_priority(-1) /* special value, really means undefined priority */
     , m_has_visible_window(false)
     , m_progress(0), m_progressBarVisible(false)
     , m_counter(0), m_counterVisible(false)
@@ -55,8 +54,7 @@ LauncherApplication::LauncherApplication()
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
-    if(!client_type_set)
-    {
+    if(!client_type_set) {
         /* Critically important to set the client type to pager because wnck
            will pass that type over to the window manager through XEvents.
            Window managers tend to respect orders from pagers to the letter by
@@ -78,19 +76,18 @@ LauncherApplication::LauncherApplication(const LauncherApplication& other) :
 {
     /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
-    if (other.m_application != NULL)
+    if (other.m_application != NULL) {
         setBamfApplication(other.m_application);
-    m_priority = other.m_priority;
+    }
 }
 
 LauncherApplication::~LauncherApplication()
 {
-    if(m_application != NULL)
-    {
+    if (m_application != NULL) {
         m_application = NULL;
     }
-    if(m_appInfo != NULL)
-    {
+
+    if (m_appInfo != NULL) {
         m_appInfo = NULL;
     }
 }
@@ -98,8 +95,9 @@ LauncherApplication::~LauncherApplication()
 bool
 LauncherApplication::active() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->active();
+    }
 
     return false;
 }
@@ -107,8 +105,9 @@ LauncherApplication::active() const
 bool
 LauncherApplication::running() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->running();
+    }
 
     return false;
 }
@@ -126,8 +125,9 @@ LauncherApplication::windowCount() const
 bool
 LauncherApplication::urgent() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->urgent();
+    }
 
     return false;
 }
@@ -141,11 +141,13 @@ LauncherApplication::sticky() const
 QString
 LauncherApplication::name() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->name();
+    }
 
-    if(m_appInfo != NULL)
+    if (m_appInfo != NULL) {
         return QString::fromUtf8(g_app_info_get_name((GAppInfo*)m_appInfo));
+    }
 
     return QString("");
 }
@@ -153,11 +155,13 @@ LauncherApplication::name() const
 QString
 LauncherApplication::icon() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->icon();
+    }
 
-    if(m_appInfo != NULL)
+    if (m_appInfo != NULL) {
         return QString::fromUtf8(g_icon_to_string(g_app_info_get_icon((GAppInfo*)m_appInfo)));
+    }
 
     return QString("");
 }
@@ -165,8 +169,9 @@ LauncherApplication::icon() const
 QString
 LauncherApplication::application_type() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->application_type();
+    }
 
     return QString("");
 }
@@ -174,11 +179,13 @@ LauncherApplication::application_type() const
 QString
 LauncherApplication::desktop_file() const
 {
-    if(m_application != NULL)
+    if (m_application != NULL) {
         return m_application->desktop_file();
+    }
 
-    if(m_appInfo != NULL)
+    if (m_appInfo != NULL) {
         return QString::fromUtf8(g_desktop_app_info_get_filename(m_appInfo));
+    }
 
     return QString("");
 }
@@ -186,8 +193,9 @@ LauncherApplication::desktop_file() const
 void
 LauncherApplication::setSticky(bool sticky)
 {
-    if (sticky == m_sticky)
+    if (sticky == m_sticky) {
         return;
+    }
 
     m_sticky = sticky;
     emit stickyChanged(sticky);
@@ -199,13 +207,10 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
-    if(desktop_file.startsWith("/"))
-    {
+    if(desktop_file.startsWith("/")) {
         /* It looks like a full path to a desktop file */
         m_appInfo = g_desktop_app_info_new_from_filename(file);
-    }
-    else
-    {
+    } else {
         /* It might just be a desktop file name; let GIO look for the actual
            desktop file for us */
         m_appInfo = g_desktop_app_info_new(file);
@@ -214,8 +219,7 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     /* Emit the Changed signal on all properties that can depend on m_appInfo
        m_application's properties take precedence over m_appInfo's
     */
-    if(m_application == NULL && m_appInfo != NULL)
-    {
+    if (m_application == NULL && m_appInfo != NULL) {
         emit desktopFileChanged(desktop_file);
         emit nameChanged(name());
         emit iconChanged(icon());
@@ -243,6 +247,7 @@ LauncherApplication::monitorDesktopFile(const QString& path)
     if (m_desktopFileWatcher->files().contains(path)) {
         m_desktopFileWatcher->removePath(path);
     }
+
     if (!path.isEmpty()) {
         m_desktopFileWatcher->addPath(path);
     }
@@ -254,8 +259,7 @@ LauncherApplication::onDesktopFileChanged(const QString& path)
     if (m_desktopFileWatcher->files().contains(path) || QFile::exists(path)) {
         /* The contents of the file have changed. */
         setDesktopFile(path);
-    }
-    else {
+    } else {
         /* The desktop file has been deleted.
            This can happen in a number of cases:
             - the package it belongs to has been uninstalled
@@ -284,8 +288,7 @@ LauncherApplication::checkDesktopFileReallyRemoved()
         /* The desktop file hasn’t really been removed, it was only temporarily
            deleted. */
         setDesktopFile(path);
-    }
-    else {
+    } else {
         /* The desktop file has really been removed. */
         setSticky(false);
     }
@@ -389,21 +392,6 @@ LauncherApplication::onWindowAdded(BamfWindow* window)
     }
 }
 
-int
-LauncherApplication::priority() const
-{
-    return m_priority;
-}
-
-void
-LauncherApplication::setPriority(int priority)
-{
-    if (priority != m_priority) {
-        m_priority = priority;
-        Q_EMIT priorityChanged(m_priority);
-    }
-}
-
 bool
 LauncherApplication::launching() const
 {
@@ -420,8 +408,10 @@ LauncherApplication::updateHasVisibleWindow()
     } else {
         m_has_visible_window = false;
     }
-    if (m_has_visible_window != prev)
+
+    if (m_has_visible_window != prev) {
         emit hasVisibleWindowChanged(m_has_visible_window);
+    }
 }
 
 void
@@ -509,18 +499,13 @@ LauncherApplication::windowCountOnCurrentWorkspace()
 void
 LauncherApplication::activate()
 {
-    if (active())
-    {
+    if (active()) {
         if (windowCountOnCurrentWorkspace() > 1) {
             spread();
         }
-    }
-    else if (running() && has_visible_window())
-    {
+    } else if (running() && has_visible_window()) {
         show();
-    }
-    else
-    {
+    } else {
         launch();
     }
 }
@@ -528,7 +513,9 @@ LauncherApplication::activate()
 bool
 LauncherApplication::launch()
 {
-    if(m_appInfo == NULL) return false;
+    if (m_appInfo == NULL) {
+        return false;
+    }
 
     GError* error = NULL;
     GdkAppLaunchContext *context;
@@ -543,8 +530,7 @@ LauncherApplication::launch()
     g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
     g_object_unref(context);
 
-    if (error != NULL)
-    {
+    if (error != NULL) {
         qWarning() << "Failed to launch application:" << error->message;
         g_error_free(error);
         return false;
@@ -568,13 +554,15 @@ LauncherApplication::onLaunchingTimeouted()
 void
 LauncherApplication::close()
 {
-    if (m_application == NULL)
+    if (m_application == NULL) {
         return;
+    }
 
     QScopedPointer<BamfUintList> xids(m_application->xids());
     int size = xids->size();
-    if (size < 1)
+    if (size < 1) {
         return;
+    }
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
@@ -588,7 +576,7 @@ LauncherApplication::close()
 void
 LauncherApplication::show()
 {
-    if(m_application == NULL) {
+    if (m_application == NULL) {
         return;
     }
 
@@ -607,8 +595,7 @@ LauncherApplication::show()
         BamfWindow* current = windows->at(i);
         if (current->urgent() && !important->urgent()) {
             important = current;
-        }
-        else if (current->urgent() || !important->urgent()) {
+        } else if (current->urgent() || !important->urgent()) {
             if (current->last_active() > important->last_active()) {
                 important = current;
             }
@@ -718,6 +705,7 @@ LauncherApplication::fetchIndicatorMenus()
     Q_FOREACH(QString path, m_indicatorMenus.keys()) {
         m_indicatorMenus.take(path)->deleteLater();
     }
+
     if (m_application != NULL) {
         QScopedPointer<BamfViewList> children(m_application->children());
         for (int i = 0; i < children->size(); ++i) {
@@ -762,8 +750,7 @@ LauncherApplication::createStaticMenuActions()
         QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
     }
 
-    if (is_running)
-    {
+    if (is_running) {
         QAction* quit = new QAction(m_menu);
         quit->setText(tr("Quit"));
         actions.append(quit);
@@ -785,6 +772,7 @@ LauncherApplication::createStaticMenuActions()
                 break;
             }
         }
+
         if (!duplicate) {
             m_menu->addAction(pending);
         } else {

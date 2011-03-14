@@ -31,7 +31,7 @@
 #include <QDBusServiceWatcher>
 #include <QDBusConnectionInterface>
 
-static const char* DBUS_SERVICE = "com.canonical.Unity2d";
+static const char* DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DBUS_PATH = "/Dash";
 static const char* DBUS_IFACE = "com.canonical.Unity2d.Dash";
 

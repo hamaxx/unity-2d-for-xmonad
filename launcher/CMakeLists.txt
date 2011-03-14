@@ -18,10 +18,4 @@ install(FILES ${launcher_QML} launchermenu.css
 
 install(DIRECTORY artwork
     DESTINATION ${UNITY_2D_DIR}/launcher
-    PATTERN "artwork/applications.png" EXCLUDE
-    PATTERN "artwork/files.png" EXCLUDE
-    )
-
-install(FILES artwork/applications.png artwork/files.png
-    DESTINATION ${UNITY_2D_DIR}
     )

@@ -25,6 +25,7 @@ qt4_add_dbus_adaptor(places_SRCS dash.xml
 add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTGCONF_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}

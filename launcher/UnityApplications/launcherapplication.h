@@ -41,7 +41,6 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
-    Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
     Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
@@ -65,7 +64,6 @@ public:
     virtual QString icon() const;
     QString application_type() const;
     QString desktop_file() const;
-    int priority() const;
     virtual bool launching() const;
     bool has_visible_window() const;
     float progress() const;
@@ -77,7 +75,6 @@ public:
 
     /* setters */
     void setDesktopFile(const QString& desktop_file);
-    void setPriority(int priority);
     void setSticky(bool sticky);
     void setBamfApplication(BamfApplication *application);
 
@@ -93,11 +90,10 @@ public:
     static void moveViewportToWindow(WnckWindow* window);
     void updateOverlaysState(QMap<QString, QVariant> properties);
 
-signals:
+Q_SIGNALS:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
-    void priorityChanged(int);
     void hasVisibleWindowChanged(bool);
     void progressBarVisibleChanged(bool);
     void counterVisibleChanged(bool);
@@ -110,7 +106,7 @@ signals:
 
     void windowAdded(uint xid);
 
-private slots:
+private Q_SLOTS:
     void onBamfApplicationClosed(bool running);
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
@@ -137,7 +133,6 @@ private:
     QFileSystemWatcher *m_desktopFileWatcher;
     GDesktopAppInfo *m_appInfo;
     bool m_sticky;
-    int m_priority;
     QTimer m_launching_timer;
     bool m_has_visible_window;
     QHash<QString, DBusMenuImporter*> m_indicatorMenus;

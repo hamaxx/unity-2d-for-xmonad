@@ -24,10 +24,12 @@
 #include <QList>
 #include <QUrl>
 #include <QTimer>
+
 #include "gconfitem-qml-wrapper.h"
 
 class Unity2dPanel;
 class DeclarativeDragDropEvent;
+class LauncherDBus;
 
 class LauncherView : public QDeclarativeView
 {
@@ -48,6 +50,7 @@ Q_SIGNALS:
     void keyboardShortcutPressed(int itemIndex);
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
+    void addWebFavoriteRequested(const QUrl& url);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -56,10 +59,10 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void togglePanel(bool visible);
-    void changeKeyboardShortcutsState(bool enabled);
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
+    void changeKeyboardShortcutsState(bool enabled);
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
@@ -67,6 +70,8 @@ private:
     QTimer m_superKeyHoldTimer;
 
     Unity2dPanel *m_parentPanel;
+
+    friend class LauncherDBus;
 };
 
 #endif // LAUNCHERVIEW

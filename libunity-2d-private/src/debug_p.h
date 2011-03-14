@@ -19,14 +19,11 @@
 
 #include <QDebug>
 
-#define _UQ_BLUE  "\033[34m"
-#define _UQ_RED   "\033[31m"
-#define _UQ_RESET "\033[0m"
-#define _UQ_TRACE(level, color) (level().nospace() << color << __PRETTY_FUNCTION__ << _UQ_RESET ":").space()
+#define _UQ_TRACE(level) (level().nospace() << __PRETTY_FUNCTION__ << ":").space()
 
 // Simple macros to get KDebug like support
-#define UQ_DEBUG   _UQ_TRACE(qDebug, _UQ_BLUE)
-#define UQ_WARNING _UQ_TRACE(qWarning, _UQ_RED)
+#define UQ_DEBUG   _UQ_TRACE(qDebug)
+#define UQ_WARNING _UQ_TRACE(qWarning)
 
 // Log a variable name and value
 #define UQ_VAR(var) UQ_DEBUG << #var ":" << var

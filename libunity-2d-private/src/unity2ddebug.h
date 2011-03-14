@@ -1,8 +1,10 @@
 /*
- * Copyright (C) 2011 Canonical, Ltd.
+ * This file is part of unity-2d
+ *
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- *  Olivier Tilloy <olivier.tilloy@canonical.com>
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,32 +18,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef UNITY2DDEBUG_H
+#define UNITY2DDEBUG_H
 
-#ifndef LauncherControl_H
-#define LauncherControl_H
+// Local
 
-#include <QtCore/QObject>
-#include <QtDBus/QDBusContext>
-#include <QtDeclarative/qdeclarative.h>
+// Qt
+#include <QObject>
 
-class LauncherControl : public QObject, protected QDBusContext
+/**
+ *
+ */
+namespace Unity2dDebug
 {
-    Q_OBJECT
 
-public:
-    explicit LauncherControl(QObject* parent=0);
-    ~LauncherControl();
+void installHandlers();
 
-    bool connectToBus();
+}
 
-public Q_SLOTS:
-    Q_NOREPLY void AddWebFavorite(const QString& url);
-
-Q_SIGNALS:
-    void addWebFavorite(const QString& url);
-};
-
-QML_DECLARE_TYPE(LauncherControl)
-
-#endif // LauncherControl_H
-
+#endif /* UNITY2DDEBUG_H */

@@ -157,7 +157,6 @@ public:
 FdoSelectionManager::FdoSelectionManager()
     : d(new FdoSelectionManagerPrivate(this))
 {
-    UQ_DEBUG;
     // Init the selection later just to ensure that no signals are sent
     // until after construction is done and the creating object has a
     // chance to connect.

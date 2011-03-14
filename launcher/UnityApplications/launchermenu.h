@@ -22,6 +22,7 @@
 
 #include <QMenu>
 #include <QTimer>
+#include <QPixmap>
 
 class LauncherItem;
 
@@ -32,6 +33,7 @@ class LauncherContextualMenu : public QMenu
     Q_PROPERTY(bool transparencyAvailable READ transparencyAvailable)
     Q_PROPERTY(bool folded READ folded WRITE setFolded NOTIFY foldedChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 
 public:
     LauncherContextualMenu();
@@ -51,13 +53,21 @@ public:
     Q_INVOKABLE void show(int x, int y);
     Q_INVOKABLE void hide();
     Q_INVOKABLE void hideWithDelay(int delay);
+
+protected:
     void resizeEvent(QResizeEvent* event);
     void leaveEvent(QEvent* event);
     void enterEvent(QEvent* event);
+    void showEvent(QShowEvent* event);
+    void hideEvent(QHideEvent* event);
 
 Q_SIGNALS:
     void foldedChanged(bool);
     void titleChanged(QString);
+    void visibleChanged(bool);
+
+protected:
+    void paintEvent(QPaintEvent* event);
 
 private:
     void loadCSS();
@@ -66,6 +76,12 @@ private:
     LauncherItem* m_launcherItem;
     QString m_title;
     QAction* m_titleAction;
+
+    QPixmap m_arrow;
+    int m_arrowY;
+
+private Q_SLOTS:
+    void updateMask();
 };
 
 #endif // LAUNCHERMENU_H

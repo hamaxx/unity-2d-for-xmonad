@@ -62,7 +62,7 @@ public:
 protected:
     LauncherContextualMenu* m_menu;
 
-signals:
+Q_SIGNALS:
     void activeChanged(bool);
     void runningChanged(bool);
     void windowCountChanged(int);

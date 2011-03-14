@@ -29,6 +29,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-spread
@@ -39,6 +40,7 @@ target_link_libraries(unity-2d-spread
     ${GTK_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}
+    unity-2d-private
     )
 
 # Install
