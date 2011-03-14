@@ -137,6 +137,17 @@ void IntellihideController::updateVisibility()
     for (; list; list = g_list_next(list)) {
         WnckWindow* window = WNCK_WINDOW(list->data);
         if (wnck_window_is_on_workspace(window, workspace) && wnck_window_get_pid(window) != launcherPid) {
+            WnckWindowType type = wnck_window_get_window_type(window);
+
+            // Only take into account typical application windows
+            if (type != WNCK_WINDOW_NORMAL  &&
+                type != WNCK_WINDOW_DIALOG  &&
+                type != WNCK_WINDOW_TOOLBAR &&
+                type != WNCK_WINDOW_MENU    &&
+                type != WNCK_WINDOW_UTILITY) {
+                continue;
+            }
+
             WnckWindowState state = wnck_window_get_state(window);
 
             // Skip hidden (==minimized and other states) windows
