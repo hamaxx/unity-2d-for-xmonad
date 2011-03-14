@@ -111,6 +111,13 @@ AutoScrollingListView {
                 item.menu.hide()
         }
 
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Space) {
+                item.menu.hide()
+                item.activate()
+            }
+        }
+
         Connections {
             target: list
             onMovementStarted: item.menu.hide()
