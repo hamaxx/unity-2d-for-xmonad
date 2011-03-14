@@ -44,6 +44,28 @@ LauncherView::LauncherView() :
     QObject::connect(&m_enableSuperKey, SIGNAL(valueChanged()),
                      this, SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
+
+    // Monitor Alt modifier for Alt+F1 shortcut to activate the launcher
+    connect(KeyboardModifiersMonitor::instance(),
+            SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+            SLOT(onKeyboardModifiersChanged(Qt::KeyboardModifiers)));
+}
+
+void
+LauncherView::onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
+    if (modifiers.testFlag(Qt::AltModifier)) {
+        connect(altF1, SIGNAL(pressed()), SLOT(activateWindow()));
+    } else {
+        disconnect(altF1, SIGNAL(pressed()), this, SLOT(activateWindow()));
+    }
+}
+
+void
+LauncherView::activateWindow()
+{
+    QDeclarativeView::activateWindow();
 }
 
 void

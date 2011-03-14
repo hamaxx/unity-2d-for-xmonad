@@ -53,6 +53,9 @@ private Q_SLOTS:
     void forwardHotkey();
     void updateSuperKeyMonitoring();
 
+    void onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers);
+    void activateWindow();
+
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
     void changeKeyboardShortcutsState(bool enabled);
