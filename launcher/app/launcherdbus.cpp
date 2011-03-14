@@ -77,3 +77,9 @@ LauncherDBus::EndForceVisible()
     UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->endForceVisible(message().service());
 }
+
+int
+LauncherDBus::maximumWidth() const
+{
+    return m_view->window()->width();
+}
