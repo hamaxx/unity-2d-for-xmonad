@@ -23,6 +23,9 @@
 // Local
 #include <visibilitycontroller.h>
 
+// unity-2d
+#include <debug_p.h>
+
 // Qt
 #include <QtDBus/QDBusConnection>
 
@@ -62,11 +65,13 @@ LauncherControl::AddWebFavorite(const QString& url)
 void
 LauncherControl::BeginForceVisible()
 {
+    UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->beginForceVisible(message().service());
 }
 
 void
 LauncherControl::EndForceVisible()
 {
+    UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->endForceVisible(message().service());
 }

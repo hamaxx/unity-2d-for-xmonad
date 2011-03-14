@@ -26,6 +26,14 @@
 
 class VisibilityController;
 
+/**
+ * DBus interface for the launcher.
+ *
+ * Note: BeginForceVisible() and EndForceVisible() should not be called from
+ * within the Launcher. Use VisibilityController::beginForceVisible() and
+ * VisibilityController::endForceVisible() instead.
+ *
+ */
 class LauncherControl : public QObject, protected QDBusContext
 {
     Q_OBJECT
