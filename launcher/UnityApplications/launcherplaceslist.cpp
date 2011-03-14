@@ -34,8 +34,7 @@ LauncherPlacesList::LauncherPlacesList(QObject* parent) :
     dir.setNameFilters(filters);
     m_placeFiles = dir.entryList();
     QStringList::const_iterator iter;
-    for (iter = m_placeFiles.begin(); iter != m_placeFiles.end(); ++iter)
-    {
+    for (iter = m_placeFiles.begin(); iter != m_placeFiles.end(); ++iter) {
         addPlace(dir.absoluteFilePath(*iter));
     }
 
@@ -51,8 +50,7 @@ LauncherPlacesList::~LauncherPlacesList()
     delete m_watch;
 
     QList<QAbstractListModel*>::iterator iter;
-    for(iter = m_models.begin(); iter != m_models.end(); )
-    {
+    for(iter = m_models.begin(); iter != m_models.end(); ) {
         Place* place = static_cast<Place*>(*iter);
         removeListModel(place);
         delete place;
@@ -65,8 +63,6 @@ LauncherPlacesList::addPlace(const QString& file)
 {
     Place* place = new Place(this);
     aggregateListModel(place);
-    connect(place, SIGNAL(onlineChanged(bool)),
-            SLOT(slotPlaceOnlineChanged(bool)));
     place->setFileName(file);
     return place;
 }
@@ -75,11 +71,9 @@ Place*
 LauncherPlacesList::removePlace(const QString& file)
 {
     QList<QAbstractListModel*>::iterator iter;
-    for (iter = m_models.begin(); iter != m_models.end(); ++iter)
-    {
+    for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         Place* place = static_cast<Place*>(*iter);
-        if (place->fileName() == file)
-        {
+        if (place->fileName() == file) {
             removeListModel(place);
             return place;
         }
@@ -98,39 +92,21 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
     QStringList::const_iterator iter;
 
     // Any places removed?
-    for (iter = m_placeFiles.begin(); iter != m_placeFiles.end(); ++iter)
-    {
-        if (!newPlaceFiles.contains(*iter))
-        {
+    for (iter = m_placeFiles.begin(); iter != m_placeFiles.end(); ++iter) {
+        if (!newPlaceFiles.contains(*iter)) {
             Place* place = removePlace(dir.absoluteFilePath(*iter));
             delete place;
         }
     }
 
     // Any new places?
-    for (iter = newPlaceFiles.begin(); iter != newPlaceFiles.end(); ++iter)
-    {
-        if (!m_placeFiles.contains(*iter))
-        {
+    for (iter = newPlaceFiles.begin(); iter != newPlaceFiles.end(); ++iter) {
+        if (!m_placeFiles.contains(*iter)) {
             addPlace(dir.absoluteFilePath(*iter));
         }
     }
 
     m_placeFiles = newPlaceFiles;
-}
-
-void
-LauncherPlacesList::slotPlaceOnlineChanged(bool online)
-{
-    Place* place = static_cast<Place*>(sender());
-    if (online) {
-        if (!m_models.contains(place)) {
-            aggregateListModel(place);
-        }
-    }
-    else {
-        removeListModel(place);
-    }
 }
 
 PlaceEntry*

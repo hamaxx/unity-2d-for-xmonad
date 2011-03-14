@@ -35,43 +35,16 @@
 
 // unity-2d
 #include <gettexttranslator.h>
+#include <unity2ddebug.h>
 
 #include "dashdeclarativeview.h"
 #include "config.h"
-
-/* Register a D-Bus service for activation and deactivation of the dash */
-static bool registerDBusService(DashDeclarativeView* view)
-{
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    if (!bus.registerService("com.canonical.Unity2d")) {
-        qCritical() << "Failed to register DBus service, is there another instance already running?";
-        return false;
-    }
-    /* FIXME: use an adaptor class in order not to expose all of the view's
-       properties and methods. */\
-    if (!bus.registerObject("/Dash", view, QDBusConnection::ExportAllContents)) {
-        qCritical() << "Failed to register /Dash, this should not happen!";
-        return false;
-    }
-    /* It would be nice to support the newly introduced (D-Bus 0.14 07/09/2010)
-       property change notification that Qt 4.7 does not implement.
-
-        org.freedesktop.DBus.Properties.PropertiesChanged (
-            STRING interface_name,
-            DICT<STRING,VARIANT> changed_properties,
-            ARRAY<STRING> invalidated_properties);
-
-       ref.: http://randomguy3.wordpress.com/2010/09/07/the-magic-of-qtdbus-and-the-propertychanged-signal/
-    */
-    return true;
-}
 
 int main(int argc, char *argv[])
 {
     /* gtk needs to be inited, otherwise we get an assert failure in gdk */
     gtk_init(&argc, &argv);
-    QApplication::setApplicationName("Unity 2D Dash");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
@@ -86,8 +59,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
-
-    if (!registerDBusService(&view)) {
+    if (!view.connectToBus()) {
+        qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
 

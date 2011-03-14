@@ -1,5 +1,10 @@
 /*
- * Copyright (C) 2010-2011 Canonical, Ltd.
+ * This file is part of unity-2d
+ *
+ * Copyright 2011 Canonical Ltd.
+ *
+ * Authors:
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,20 +18,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef UNITY2DDEBUG_H
+#define UNITY2DDEBUG_H
 
-#ifndef UNITYAPPLICATIONSPLUGIN_H
-#define UNITYAPPLICATIONSPLUGIN_H
+// Local
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
+// Qt
+#include <QObject>
 
-class UnityApplicationsPlugin : public QDeclarativeExtensionPlugin
+/**
+ *
+ */
+namespace Unity2dDebug
 {
-    Q_OBJECT
 
-public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri);
-};
+void installHandlers();
 
+}
 
-#endif // UNITYAPPLICATIONSPLUGIN_H
+#endif /* UNITY2DDEBUG_H */

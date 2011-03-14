@@ -25,8 +25,7 @@ LauncherDevicesList::LauncherDevicesList(QObject* parent) :
     m_volume_monitor = g_volume_monitor_get();
 
     GList* volumes = g_volume_monitor_get_volumes(m_volume_monitor);
-    for(GList* li = volumes; li != NULL; li = g_list_next(li))
-    {
+    for(GList* li = volumes; li != NULL; li = g_list_next(li)) {
         GVolume* volume = (GVolume*) li->data;
         onVolumeAdded(m_volume_monitor, volume);
         g_object_unref(volume);
@@ -34,8 +33,7 @@ LauncherDevicesList::LauncherDevicesList(QObject* parent) :
     g_list_free(volumes);
 
     GList* mounts = g_volume_monitor_get_mounts(m_volume_monitor);
-    for(GList* li = mounts; li != NULL; li = g_list_next(li))
-    {
+    for(GList* li = mounts; li != NULL; li = g_list_next(li)) {
         GMount* mount = (GMount*) li->data;
         onMountAdded(m_volume_monitor, mount);
         g_object_unref(mount);
@@ -55,8 +53,7 @@ LauncherDevicesList::~LauncherDevicesList()
     g_object_unref(m_volume_monitor);
 
     QList<LauncherDevice*>::iterator iter;
-    for(iter = m_devices.begin(); iter != m_devices.end(); ++iter)
-    {
+    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter) {
         delete *iter;
     }
 }
@@ -74,8 +71,9 @@ LauncherDevicesList::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role);
 
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     return QVariant::fromValue(m_devices.at(index.row()));
 }
@@ -90,8 +88,7 @@ LauncherDevicesList::onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume*
 void
 LauncherDevicesList::onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume)
 {
-    if (g_volume_can_eject(volume))
-    {
+    if (g_volume_can_eject(volume)) {
         LauncherDevice* device = new LauncherDevice;
         device->setVolume(volume);
         beginInsertRows(QModelIndex(), m_devices.size(), m_devices.size());
@@ -114,10 +111,8 @@ LauncherDevicesList::onVolumeRemoved(GVolume* volume)
 {
     QList<LauncherDevice*>::iterator iter;
     int i = 0;
-    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter)
-    {
-        if ((*iter)->getVolume() == volume)
-        {
+    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter) {
+        if ((*iter)->getVolume() == volume) {
             beginRemoveRows(QModelIndex(), i, i);
             LauncherDevice* device = m_devices.takeAt(i);
             endRemoveRows();
@@ -138,18 +133,18 @@ LauncherDevicesList::onMountAddedProxy(GVolumeMonitor* volume_monitor, GMount* m
 void
 LauncherDevicesList::onMountAdded(GVolumeMonitor* volume_monitor, GMount* mount)
 {
-    if (!g_mount_can_unmount(mount))
+    if (!g_mount_can_unmount(mount)) {
         return;
+    }
 
     GVolume* volume = g_mount_get_volume(mount);
-    if (volume == NULL)
+    if (volume == NULL) {
         return;
+    }
 
     QList<LauncherDevice*>::const_iterator iter;
-    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter)
-    {
-        if ((*iter)->getVolume() == volume)
-        {
+    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter) {
+        if ((*iter)->getVolume() == volume) {
             /* The device is already displayed. */
             g_object_unref(volume);
             return;
@@ -179,16 +174,13 @@ LauncherDevicesList::onMountUnmounted(GMount* mount)
 {
     QList<LauncherDevice*>::iterator iter;
     int i = 0;
-    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter)
-    {
+    for (iter = m_devices.begin(); iter != m_devices.end(); ++iter) {
         /* At this point the mount is unmounted, so we can't rely on comparing
            it to the current device's mount. */
         GVolume* volume = (*iter)->getVolume();
-        if (!g_volume_can_eject(volume))
-        {
+        if (!g_volume_can_eject(volume)) {
             GMount* m = g_volume_get_mount(volume);
-            if (m == NULL)
-            {
+            if (m == NULL) {
                 /* The volume can't eject and it is not mounted: this is our
                    device. */
                 beginRemoveRows(QModelIndex(), i, i);
@@ -196,11 +188,10 @@ LauncherDevicesList::onMountUnmounted(GMount* mount)
                 endRemoveRows();
                 delete device;
                 break;
-            }
-            else
+            } else {
                 g_object_unref(m);
+            }
         }
         ++i;
     }
 }
-

@@ -23,8 +23,6 @@ DropItem {
         width: parent.width
         z: 1 /* for dnd to remain on top of looseItems */
 
-        paddingTop: 5
-        paddingBottom: 5
         autoScrollSize: tileSize / 2
         autoScrollVelocity: 200
         reorderable: true
@@ -37,10 +35,11 @@ DropItem {
     LauncherList {
         id: shelf
         anchors.bottom: parent.bottom;
-        height: tileSize * count + spacing * Math.max(0, count - 1)
+        height: (tileSize + itemPadding) * count
         width: parent.width
         /* Ensure the tiles in the shelf are always above those in 'main'. */
         itemZ: 1
+        itemPadding: 0
 
         model: ListAggregatorModel {
             id: shelfItems

@@ -6,9 +6,10 @@ AutoScrollingListView {
     id: list
 
     /* The spacing is explicitly set to 0 and compensated for
-       by adding some padding to the tiles because of
+       by adding some padding to the items because of
        http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
     spacing: 0
+    property int itemPadding: 5
 
     property int tileSize: 54
 
@@ -36,6 +37,7 @@ AutoScrollingListView {
 
         width: list.width
         tileSize: list.tileSize
+        padding: list.itemPadding
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: "image://icons/" + item.icon
@@ -77,11 +79,10 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            // The extra 4 pixels are needed to center exactly with the arrow
-            // indicating the active tile.
-            item.menu.show(width, panel.y + list.y +
-                                  y + height / 2 - list.contentY
-                                  - list.paddingTop + 4)
+            // FIXME: The extra 2 pixels are needed to center the menu arrow with
+            // the center of the tile.
+            item.menu.show(width, panel.y + list.y - list.contentY +
+                                  y + height - tileSize / 2 - 2)
 
         }
 
@@ -131,11 +132,20 @@ AutoScrollingListView {
         ListView.onAdd: SequentialAnimation {
             PropertyAction { target: launcherItem; property: "scale"; value: 0 }
             NumberAnimation { target: launcherItem; property: "height";
-                              from: 0; to: launcherItem.tileSize; duration: 250; easing.type: Easing.InOutQuad }
+                              from: 0; duration: 250; easing.type: Easing.InOutQuad }
             NumberAnimation { target: launcherItem; property: "scale"; to: 1; duration: 250; easing.type: Easing.InOutQuad }
         }
 
         ListView.onRemove: SequentialAnimation {
+            /* Disable all mouse interactions on the delegate being removed. This prevents a bug where QT itself
+               crashes when trying to access some properties of the model item being removed while the item is being
+               "kept alive" by ListView.delayRemove.
+               In our case the property causing the bug is 'menu', but there may be others, so it's safer to just disable
+               all mouse interactions. These interactions should not happen anyway while the tile is animating away
+               since there's nothing that the user can do with it anyway: it's for all intents and purposes already gone.
+               See: https://bugs.launchpad.net/unity-2d/+bug/719507 */
+            PropertyAction { target: launcherItem; property: "interactive"; value: false }
+
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: true }
             NumberAnimation { target: launcherItem; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
             NumberAnimation { target: launcherItem; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }

@@ -124,7 +124,7 @@ Renderer {
                 height: results.cellHeight
 
                 Loader {
-                    property url uri: column_0
+                    property string uri: column_0
                     property string iconHint: column_1
                     property string groupId: column_2
                     property string mimetype: column_3
