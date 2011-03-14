@@ -116,6 +116,19 @@ AutoScrollingListView {
                 item.menu.hide()
                 item.activate()
             }
+            else if (event.key == Qt.Key_Right) {
+                item.menu.folded = false
+                showMenu()
+            }
+            else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
+                item.menu.hide()
+            }
+        }
+
+        onActiveFocusChanged: {
+            if (!activeFocus) {
+                item.menu.hide()
+            }
         }
 
         Connections {
