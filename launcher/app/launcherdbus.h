@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LauncherControl_H
-#define LauncherControl_H
+#ifndef LauncherDBus_H
+#define LauncherDBus_H
 
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
@@ -34,13 +34,13 @@ class VisibilityController;
  * VisibilityController::endForceVisible() instead.
  *
  */
-class LauncherControl : public QObject, protected QDBusContext
+class LauncherDBus : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
 public:
-    explicit LauncherControl(VisibilityController* visibilityController, QObject* parent=0);
-    ~LauncherControl();
+    explicit LauncherDBus(VisibilityController* visibilityController, QObject* parent=0);
+    ~LauncherDBus();
 
     bool connectToBus();
 
@@ -56,7 +56,7 @@ private:
     VisibilityController* m_visibilityController;
 };
 
-QML_DECLARE_TYPE(LauncherControl)
+QML_DECLARE_TYPE(LauncherDBus)
 
-#endif // LauncherControl_H
+#endif // LauncherDBus_H
 

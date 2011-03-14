@@ -40,7 +40,7 @@
 
 #include "config.h"
 #include "launcherview.h"
-#include "launchercontrol.h"
+#include "launcherdbus.h"
 #include "visibilitycontroller.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
-    LauncherControl control(visibilityController);
+    LauncherDBus control(visibilityController);
     launcherView->rootContext()->setContextProperty("launcherControl", &control);
     control.connectToBus();
 

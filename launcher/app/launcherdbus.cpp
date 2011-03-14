@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launchercontrol.h"
+#include "launcherdbus.h"
 #include "launcheradaptor.h"
 
 // Local
@@ -32,19 +32,19 @@
 static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 
-LauncherControl::LauncherControl(VisibilityController* visibilityController, QObject* parent)
+LauncherDBus::LauncherDBus(VisibilityController* visibilityController, QObject* parent)
 : QObject(parent)
 , m_visibilityController(visibilityController)
 {
 }
 
-LauncherControl::~LauncherControl()
+LauncherDBus::~LauncherDBus()
 {
     QDBusConnection::sessionBus().unregisterService(LAUNCHER_DBUS_SERVICE);
 }
 
 bool
-LauncherControl::connectToBus()
+LauncherDBus::connectToBus()
 {
     bool ok = QDBusConnection::sessionBus().registerService(LAUNCHER_DBUS_SERVICE);
     if (!ok) {
@@ -57,20 +57,20 @@ LauncherControl::connectToBus()
 }
 
 void
-LauncherControl::AddWebFavorite(const QString& url)
+LauncherDBus::AddWebFavorite(const QString& url)
 {
     Q_EMIT addWebFavorite(url);
 }
 
 void
-LauncherControl::BeginForceVisible()
+LauncherDBus::BeginForceVisible()
 {
     UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->beginForceVisible(message().service());
 }
 
 void
-LauncherControl::EndForceVisible()
+LauncherDBus::EndForceVisible()
 {
     UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->endForceVisible(message().service());
