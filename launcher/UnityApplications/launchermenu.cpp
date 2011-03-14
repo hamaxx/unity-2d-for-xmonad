@@ -245,3 +245,17 @@ LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
 }
+
+void
+LauncherContextualMenu::showEvent(QShowEvent* event)
+{
+    QMenu::showEvent(event);
+    visibleChanged(true);
+}
+
+void
+LauncherContextualMenu::hideEvent(QHideEvent* event)
+{
+    QMenu::hideEvent(event);
+    visibleChanged(false);
+}
