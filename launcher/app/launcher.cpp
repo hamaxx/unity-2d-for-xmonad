@@ -40,8 +40,9 @@
 
 #include "config.h"
 #include "launcherview.h"
-#include "launchercontrol.h"
+#include "launcherdbus.h"
 #include "visibilitycontroller.h"
+#include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
@@ -51,8 +52,7 @@ int main(int argc, char *argv[])
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
-    QApplication::setApplicationName("Unity 2D Launcher");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
@@ -109,9 +109,8 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
-    LauncherControl control(visibilityController);
-    launcherView->rootContext()->setContextProperty("launcherControl", &control);
-    control.connectToBus();
+    LauncherDBus launcherDBus(visibilityController, launcherView);
+    launcherDBus.connectToBus();
 
     launcherView->setSource(QUrl("./Launcher.qml"));
 

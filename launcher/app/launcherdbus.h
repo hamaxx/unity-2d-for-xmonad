@@ -17,22 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LauncherControl_H
-#define LauncherControl_H
+#ifndef LauncherDBus_H
+#define LauncherDBus_H
 
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
-#include <QtDeclarative/qdeclarative.h>
 
+class LauncherView;
 class VisibilityController;
 
-class LauncherControl : public QObject, protected QDBusContext
+/**
+ * DBus interface for the launcher.
+ *
+ * Note: Methods from this class should not be called from within the Launcher:
+ * some of them may rely on the call coming from DBus.
+ */
+class LauncherDBus : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
 public:
-    explicit LauncherControl(VisibilityController* visibilityController, QObject* parent=0);
-    ~LauncherControl();
+    LauncherDBus(VisibilityController* visibilityController, LauncherView* view, QObject* parent=0);
+    ~LauncherDBus();
 
     bool connectToBus();
 
@@ -41,14 +47,10 @@ public Q_SLOTS:
     Q_NOREPLY void EndForceVisible();
     Q_NOREPLY void AddWebFavorite(const QString& url);
 
-Q_SIGNALS:
-    void addWebFavorite(const QString& url);
-
 private:
     VisibilityController* m_visibilityController;
+    LauncherView* m_view;
 };
 
-QML_DECLARE_TYPE(LauncherControl)
-
-#endif // LauncherControl_H
+#endif // LauncherDBus_H
 

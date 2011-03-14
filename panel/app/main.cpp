@@ -32,6 +32,7 @@
 // Unity
 #include <gettexttranslator.h>
 #include <gnomesessionclient.h>
+#include <unity2ddebug.h>
 #include <unity2dpanel.h>
 #include <unity2dapplication.h>
 #include <unity2dstyle.h>
@@ -88,8 +89,7 @@ int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
 
-    QApplication::setApplicationName("Unity 2D Panel");
-    qInstallMsgHandler(globalMessageHandler);
+    Unity2dDebug::installHandlers();
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.

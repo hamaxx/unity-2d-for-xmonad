@@ -101,7 +101,7 @@ LauncherContextualMenu::setTitle(const QString& title)
     /* Escaping ampersands so that they are not considered as keyboard
        accelerators. */
     m_titleAction->setText(m_title.replace("&", "&&"));
-    emit titleChanged(m_title);
+    Q_EMIT titleChanged(m_title);
 }
 
 void
@@ -182,8 +182,9 @@ LauncherContextualMenu::folded() const
 void
 LauncherContextualMenu::setFolded(int folded)
 {
-    if (folded == m_folded)
+    if (folded == m_folded) {
         return;
+    }
 
     if (folded) {
         /* Remove all actions but the first one (the title). */
@@ -219,7 +220,7 @@ LauncherContextualMenu::setFolded(int folded)
 
     m_folded = folded;
 
-    emit foldedChanged(m_folded);
+    Q_EMIT foldedChanged(m_folded);
 }
 
 void

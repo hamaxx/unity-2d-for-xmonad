@@ -123,9 +123,9 @@ void VisibilityController::endForceVisible(const QString& service)
 
 void VisibilityController::setBehavior(AbstractVisibilityBehavior* behavior)
 {
-    // Keep this around: uncommenting it makes it easy to track behavior
-    // changes
-    //UQ_VAR(behavior);
+    // This method could be replaced by code calling reset() directly but
+    // having only one point where the behavior is changed makes it easy to log
+    // behavior changes using something like: UQ_VAR(behavior);
     m_behavior.reset(behavior);
 }
 

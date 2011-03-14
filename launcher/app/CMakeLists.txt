@@ -13,7 +13,7 @@ set(launcher_SRCS
     visibilitycontroller.cpp
     intellihidebehavior.cpp
     launcherview.cpp
-    launchercontrol.cpp
+    launcherdbus.cpp
     gesturehandler.cpp
     )
 
@@ -24,7 +24,7 @@ set(launcher_MOC_HDRS
     visibilitycontroller.h
     intellihidebehavior.h
     launcherview.h
-    launchercontrol.h
+    launcherdbus.h
     gesturehandler.h
     )
 
@@ -33,7 +33,7 @@ qt4_wrap_cpp(launcher_MOC_SRCS ${launcher_MOC_HDRS})
 configure_file(unity-2d-launcher.service.in unity-2d-launcher.service)
 
 qt4_add_dbus_adaptor(launcher_SRCS launcher.xml
-    launchercontrol.h LauncherControl
+    launcherdbus.h LauncherDBus
     )
 
 # Build

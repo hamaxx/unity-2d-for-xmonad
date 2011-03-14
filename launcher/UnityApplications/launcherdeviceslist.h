@@ -44,7 +44,7 @@ private:
     gulong m_handler_id_volume;
     gulong m_handler_id_mount;
 
-private slots:
+private Q_SLOTS:
     static void onVolumeAddedProxy(GVolumeMonitor* volume_monitor, GVolume* volume, gpointer data);
     void onVolumeAdded(GVolumeMonitor* volume_monitor, GVolume* volume);
 

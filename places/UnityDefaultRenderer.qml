@@ -8,13 +8,16 @@ RendererGrid {
 
     cellRenderer: Component {
         Button {
-            property url uri
+            property string uri
             property string iconHint
             property string mimetype
             property string displayName
             property string comment
 
-            onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
+            onClicked: {
+                dashView.active = false
+                placeEntryModel.place.activate(decodeURIComponent(uri))
+            }
 
             Image {
                 id: icon

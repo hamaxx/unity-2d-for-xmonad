@@ -31,10 +31,8 @@ DropItem {
     id: item
 
     anchors.horizontalCenter: parent.horizontalCenter
-    /* Manually add some padding to compensate for the spacing
-       of the ListView being set to 0 to work around
-       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
-    property int padding: 5
+
+    property int padding
     height: tileSize + padding
 
     property int tileSize
@@ -45,6 +43,7 @@ DropItem {
     property bool active: false
     property bool urgent: false
     property bool launching: false
+    property alias interactive: mouse.enabled
 
     property int counter: 0
     property bool counterVisible: false
@@ -70,7 +69,7 @@ DropItem {
            number. The following simple conditional code works and is less
            convoluted than a generic formula. It's ok since we always work with at
            most three pips anyway. */
-        if (pips == 1) return 0;
+        if (pips == 1) return 0
         if (pips == 2) return (index == 0) ? -2 : +2
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
@@ -103,17 +102,12 @@ DropItem {
            the active one */
         Image {
             anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            y: item.height - item.tileSize / 2 - height / 2
+
             source: "image://blended/%1color=%2alpha=%3"
                   .arg(engineBaseUrl + "artwork/launcher_arrow_rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
-
-            /* This extra shift is necessary (as is for the pips below)
-               since we are vertically centering in a parent with even height, so
-               there's one pixel offset that need to be assigned arbitrarily.
-               Unity chose to add it, QML to subtract it. So we adjust for that. */
-            transform: Translate { y: 1 }
 
             visible: active && (looseItem.state != "beingDragged")
         }
@@ -132,12 +126,10 @@ DropItem {
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                anchors.verticalCenter: (parent) ? parent.verticalCenter : undefined
+                y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
 
                 source: "image://blended/%1color=%2alpha=%3"
                         .arg(pipSource).arg("lightgrey").arg(1.0)
-
-                transform: Translate { y: getPipOffset(index) + 1 }
 
                 visible: looseItem.state != "beingDragged"
             }
@@ -148,7 +140,8 @@ DropItem {
             id: tile
             width: item.tileSize
             height: item.tileSize
-            anchors.centerIn: parent
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
 
             /* This is the image providing the background image. The
                color blended with this image is obtained from the color of the icon when it's

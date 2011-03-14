@@ -19,13 +19,16 @@
         </method>
         <method name="BeginForceVisible">
             <dox:d><![CDATA[
-               Ask the launcher to become visible. Must be ended with a call to
-               EndForceVisible()
+               Ask the launcher to become visible and stay visible. Call
+               EndForceVisible() when you don't need the launcher to stay
+               visible anymore.
             ]]></dox:d>
         </method>
         <method name="EndForceVisible">
             <dox:d><![CDATA[
-               End a request to force launcher visibility.
+               Tells the launcher you don't need it to stay visible anymore.
+               Please note this does not mean the launcher will necessarily
+               hide.
             ]]></dox:d>
         </method>
     </interface>

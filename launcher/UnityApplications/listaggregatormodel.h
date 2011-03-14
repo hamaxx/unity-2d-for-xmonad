@@ -52,7 +52,7 @@ protected:
     void aggregateListModel(QAbstractListModel* model);
     void removeListModel(QAbstractListModel* model);
 
-private slots:
+private Q_SLOTS:
     void onRowsInserted(const QModelIndex& parent, int first, int last);
     void onRowsRemoved(const QModelIndex& parent, int first, int last);
     void onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int);

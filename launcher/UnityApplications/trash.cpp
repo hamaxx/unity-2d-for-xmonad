@@ -95,10 +95,8 @@ void
 Trash::open() const
 {
     GError* error = NULL;
-    if (!g_app_info_launch_default_for_uri(TRASH_URI, NULL, &error))
-    {
-        if (error != NULL)
-        {
+    if (!g_app_info_launch_default_for_uri(TRASH_URI, NULL, &error)) {
+        if (error != NULL) {
             qWarning() << "Unable to open the trash folder:" << error->message;
             g_error_free(error);
         }
@@ -118,8 +116,7 @@ Trash::count() const
     GFileInfo* info = g_file_query_info(m_trash,
         G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT,
         G_FILE_QUERY_INFO_NONE, NULL, &error);
-    if (error != NULL)
-    {
+    if (error != NULL) {
         qWarning() << "Unable to obtain the number of items in the trash:"
                    << error->message;
         g_error_free(error);
@@ -144,8 +141,7 @@ Trash::recursive_delete(GFile* dir)
     GFileEnumerator* children = g_file_enumerate_children(dir,
         attributes.toAscii().constData(), G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
         NULL, &error);
-    if (error != NULL)
-    {
+    if (error != NULL) {
         char* uri = g_file_get_uri(dir);
         qWarning() << "Unable to recursively delete files in" << uri << ":"
                    << error->message;
@@ -155,11 +151,9 @@ Trash::recursive_delete(GFile* dir)
     }
 
     GFileInfo* info = NULL;
-    while ((info = g_file_enumerator_next_file(children, NULL, &error)) != NULL)
-    {
+    while ((info = g_file_enumerator_next_file(children, NULL, &error)) != NULL) {
         GFile* child = g_file_get_child(dir, g_file_info_get_name(info));
-        if (g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY)
-        {
+        if (g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY) {
             recursive_delete(child);
         }
 
@@ -177,8 +171,7 @@ Trash::recursive_delete(GFile* dir)
     }
     g_object_unref(children);
 
-    if (error != NULL)
-    {
+    if (error != NULL) {
         char* uri = g_file_get_uri(dir);
         qWarning() << "Unable to recursively delete files in" << uri << ":"
                    << error->message;
@@ -265,8 +258,9 @@ Trashes::data(const QModelIndex& index, int role) const
 {
     Q_UNUSED(role)
 
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     return QVariant::fromValue(m_trash);
 }
