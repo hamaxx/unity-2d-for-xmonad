@@ -109,9 +109,8 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
-    LauncherDBus control(visibilityController);
-    launcherView->rootContext()->setContextProperty("launcherControl", &control);
-    control.connectToBus();
+    LauncherDBus launcherDBus(visibilityController, launcherView);
+    launcherDBus.connectToBus();
 
     launcherView->setSource(QUrl("./Launcher.qml"));
 

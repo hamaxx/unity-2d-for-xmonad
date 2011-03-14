@@ -21,6 +21,7 @@
 #include "launcheradaptor.h"
 
 // Local
+#include <launcherview.h>
 #include <visibilitycontroller.h>
 
 // unity-2d
@@ -32,9 +33,10 @@
 static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 
-LauncherDBus::LauncherDBus(VisibilityController* visibilityController, QObject* parent)
+LauncherDBus::LauncherDBus(VisibilityController* visibilityController, LauncherView* view, QObject* parent)
 : QObject(parent)
 , m_visibilityController(visibilityController)
+, m_view(view)
 {
 }
 
@@ -59,7 +61,7 @@ LauncherDBus::connectToBus()
 void
 LauncherDBus::AddWebFavorite(const QString& url)
 {
-    Q_EMIT addWebFavorite(url);
+    m_view->addWebFavoriteRequested(url);
 }
 
 void

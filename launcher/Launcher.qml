@@ -79,10 +79,6 @@ DropItem {
         target: launcherView
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
         onWebpageUrlDropped: applications.insertWebFavorite(url)
-    }
-
-    Connections {
-        target: launcherControl
-        onAddWebFavorite: applications.insertWebFavorite(url)
+        onAddWebFavoriteRequested: applications.insertWebFavorite(url)
     }
 }

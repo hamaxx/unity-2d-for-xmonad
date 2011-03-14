@@ -22,24 +22,22 @@
 
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
-#include <QtDeclarative/qdeclarative.h>
 
+class LauncherView;
 class VisibilityController;
 
 /**
  * DBus interface for the launcher.
  *
- * Note: BeginForceVisible() and EndForceVisible() should not be called from
- * within the Launcher. Use VisibilityController::beginForceVisible() and
- * VisibilityController::endForceVisible() instead.
- *
+ * Note: Methods from this class should not be called from within the Launcher:
+ * some of them may rely on the call coming from DBus.
  */
 class LauncherDBus : public QObject, protected QDBusContext
 {
     Q_OBJECT
 
 public:
-    explicit LauncherDBus(VisibilityController* visibilityController, QObject* parent=0);
+    LauncherDBus(VisibilityController* visibilityController, LauncherView* view, QObject* parent=0);
     ~LauncherDBus();
 
     bool connectToBus();
@@ -49,14 +47,10 @@ public Q_SLOTS:
     Q_NOREPLY void EndForceVisible();
     Q_NOREPLY void AddWebFavorite(const QString& url);
 
-Q_SIGNALS:
-    void addWebFavorite(const QString& url);
-
 private:
     VisibilityController* m_visibilityController;
+    LauncherView* m_view;
 };
-
-QML_DECLARE_TYPE(LauncherDBus)
 
 #endif // LauncherDBus_H
 
