@@ -36,6 +36,7 @@ DropItem {
             }
 
             focus: true
+            KeyNavigation.down: shelf
         }
 
         LauncherList {
@@ -50,6 +51,8 @@ DropItem {
             model: ListAggregatorModel {
                 id: shelfItems
             }
+
+            KeyNavigation.up: main
         }
 
     }
