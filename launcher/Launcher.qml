@@ -54,7 +54,6 @@ DropItem {
 
             KeyNavigation.up: main
         }
-
     }
 
     LauncherApplicationsList {
