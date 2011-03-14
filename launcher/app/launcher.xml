@@ -26,7 +26,7 @@
         </method>
         <method name="EndForceVisible">
             <dox:d><![CDATA[
-               Tells the launcher you don't need it to stay visible antmore.
+               Tells the launcher you don't need it to stay visible anymore.
                Please note this does not mean the launcher will necessarily
                hide.
             ]]></dox:d>
