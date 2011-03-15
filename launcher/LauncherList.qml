@@ -115,15 +115,18 @@ AutoScrollingListView {
             if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Space) {
                 item.menu.hide()
                 item.activate()
+                event.accepted = true
             }
             else if (event.key == Qt.Key_Right ||
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 showMenu()
                 item.menu.folded = false
                 item.menu.activateWindow()
+                event.accepted = true
             }
             else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
                 item.menu.hide()
+                event.accepted = true
             }
         }
 
