@@ -261,12 +261,11 @@ LauncherContextualMenu::hideEvent(QHideEvent* event)
 }
 
 void
-LauncherContextualMenu::activateWindow()
+LauncherContextualMenu::setFocus()
 {
-    /* FIXME: for some reason I don’t understand yet, invoking
-       QMenu::activateWindow() directly here doesn’t work, the active window
-       remains unchanged. */
-    QTimer::singleShot(1, this, SLOT(reallyActivateWindow()));
+    /* FIXME: for some reason, invoking QMenu::activateWindow() directly here
+       doesn’t work, the active window remains unchanged. */
+    QTimer::singleShot(1, this, SLOT(activateWindow()));
 
     /* Set the first enabled action active. */
     Q_FOREACH(QAction* action, actions()) {
@@ -278,7 +277,7 @@ LauncherContextualMenu::activateWindow()
 }
 
 void
-LauncherContextualMenu::reallyActivateWindow()
+LauncherContextualMenu::activateWindow()
 {
     QMenu::activateWindow();
 }

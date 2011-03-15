@@ -70,7 +70,7 @@ Q_SIGNALS:
     void dismissedByKeyEvent();
 
 public Q_SLOTS:
-    void activateWindow();
+    void setFocus(); // overridden
 
 private:
     void loadCSS();
@@ -85,7 +85,7 @@ private:
 
 private Q_SLOTS:
     void updateMask();
-    void reallyActivateWindow();
+    void activateWindow();
 };
 
 #endif // LAUNCHERMENU_H

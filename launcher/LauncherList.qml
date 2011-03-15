@@ -121,7 +121,7 @@ AutoScrollingListView {
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 showMenu()
                 item.menu.folded = false
-                item.menu.activateWindow()
+                item.menu.setFocus()
                 event.accepted = true
             }
             else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
