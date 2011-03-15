@@ -37,24 +37,19 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
-#include <unity2dpanel.h>
 #include <dragdropevent.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d";
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
+static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 
-LauncherView::LauncherView(Unity2dPanel* parentPanel) :
-    QDeclarativeView(),
-    m_superKeyPressed(false), m_superKeyHeld(false),
-    m_parentPanel(parentPanel)
+LauncherView::LauncherView(QWidget* parent) :
+    QDeclarativeView(parent),
+    m_superKeyPressed(false), m_superKeyHeld(false)
 {
-    if (m_parentPanel != NULL) {
-        connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(togglePanel(bool)));
-    }
-
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
@@ -83,8 +78,10 @@ LauncherView::updateSuperKeyMonitoring()
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
         m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
-        m_superKeyHeld = false;
-        Q_EMIT superKeyHeldChanged(false);
+        if (m_superKeyHeld) {
+            m_superKeyHeld = false;
+            Q_EMIT superKeyHeldChanged(false);
+        }
     }
 }
 
@@ -105,13 +102,13 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
             m_superKeyHoldTimer.stop();
 
             /* If the key is released, and was not being held, it means that the user just
-               performed a "tap". Toggle the Dash in that case. */
+               performed a "tap". Otherwise the user just terminated a hold. */
             if (!m_superKeyHeld) {
                 Q_EMIT superKeyTapped();
+            } else {
+                m_superKeyHeld = false;
+                Q_EMIT superKeyHeldChanged(m_superKeyHeld);
             }
-
-            m_superKeyHeld = false;
-            Q_EMIT superKeyHeldChanged(m_superKeyHeld);
         }
     }
 }
@@ -120,23 +117,10 @@ void
 LauncherView::updateSuperKeyHoldState()
 {
     /* If the key was released in the meantime, just do nothing, otherwise
-       consider the key being held and update the shortcuts */
+       consider the key being held. */
     if (m_superKeyPressed) {
         m_superKeyHeld = true;
         Q_EMIT superKeyHeldChanged(m_superKeyHeld);
-    }
-}
-
-void
-LauncherView::togglePanel(bool visible)
-{
-    if (visible) {
-        m_parentPanel->setManualSliding(true);
-        m_parentPanel->slideIn();
-    } else {
-        /* There's no need to slideOut explicitly, it will be done
-           automatically, if needed, once the sliding is not manual anymore */
-        m_parentPanel->setManualSliding(false);
     }
 }
 
@@ -171,8 +155,6 @@ LauncherView::forwardHotkey()
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
         if (hotkey->key() < Qt::Key_0 || hotkey->key() > Qt::Key_9) {
-            qWarning() << "Received hotkey that we didn't grab:"
-                       << QKeySequence(hotkey->key() | hotkey->modifiers()).toString();
             return;
         }
         int itemIndex = hotkey->key() - Qt::Key_0;
@@ -188,8 +170,24 @@ void
 LauncherView::toggleDash()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    bool dashActive = dashInterface.property("active").toBool();
-    dashInterface.setProperty("active", !dashActive);
+    if (!dashInterface.isValid()) {
+        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
+                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        return;
+    }
+
+    QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
+    if (!dashActiveResult.isValid()) {
+        qWarning() << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+                   << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        return;
+    }
+
+    bool dashActive = dashActiveResult.toBool();
+    if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, !dashActive)) {
+        qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+                   << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+    }
 }
 
 QList<QUrl>

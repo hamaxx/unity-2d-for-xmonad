@@ -79,5 +79,7 @@ DropItem {
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
         onWebpageUrlDropped: applications.insertWebFavorite(url)
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
+        onSuperKeyHeldChanged: if (superKeyHeld) visibilityController.beginForceVisible()
+                               else visibilityController.endForceVisible()
     }
 }

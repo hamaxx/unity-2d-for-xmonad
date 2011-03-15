@@ -27,7 +27,6 @@
 
 #include "gconfitem-qml-wrapper.h"
 
-class Unity2dPanel;
 class DeclarativeDragDropEvent;
 class LauncherDBus;
 
@@ -37,7 +36,7 @@ class LauncherView : public QDeclarativeView
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
-    explicit LauncherView(Unity2dPanel* parentPanel = NULL);
+    explicit LauncherView(QWidget* parent = NULL);
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
     Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
     Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
@@ -58,18 +57,15 @@ private Q_SLOTS:
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void toggleDash();
-    void togglePanel(bool visible);
+    void changeKeyboardShortcutsState(bool enabled);
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
-    void changeKeyboardShortcutsState(bool enabled);
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
     QTimer m_superKeyHoldTimer;
-
-    Unity2dPanel *m_parentPanel;
 
     friend class LauncherDBus;
 };
