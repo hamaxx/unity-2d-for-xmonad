@@ -36,6 +36,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
+#include "visibilitycontroller.h"
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_superKeyPressed(false)
@@ -54,6 +55,28 @@ void
 LauncherView::activateWindow()
 {
     QDeclarativeView::activateWindow();
+}
+
+VisibilityController*
+LauncherView::visibilityController() const
+{
+    /* This context property is set in launcher.cpp  */
+    QVariant property = rootContext()->contextProperty("visibilityController");
+    return qobject_cast<VisibilityController*>(property.value<QObject*>());
+}
+
+void
+LauncherView::focusInEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusInEvent(event);
+    visibilityController()->beginForceVisible();
+}
+
+void
+LauncherView::focusOutEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusOutEvent(event);
+    visibilityController()->endForceVisible();
 }
 
 void

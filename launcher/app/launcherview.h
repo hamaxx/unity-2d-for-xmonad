@@ -28,6 +28,7 @@
 
 class DeclarativeDragDropEvent;
 class LauncherDBus;
+class VisibilityController;
 
 class LauncherView : public QDeclarativeView
 {
@@ -58,12 +59,18 @@ private Q_SLOTS:
 public Q_SLOTS:
     void activateWindow();
 
+protected:
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
+
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
     void changeKeyboardShortcutsState(bool enabled);
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
+
+    VisibilityController* visibilityController() const;
 
     friend class LauncherDBus;
 };
