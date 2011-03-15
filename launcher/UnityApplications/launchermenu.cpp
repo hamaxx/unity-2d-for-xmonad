@@ -245,3 +245,16 @@ LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
 }
+
+void
+LauncherContextualMenu::setVisible(bool value)
+{
+    bool changed = isVisible() != value;
+    // The call to QMenu::setVisible() could probably be skipped if 'changed'
+    // is false, but I'd rather keep the class behavior as close to the default
+    // setVisible() implementation as possible.
+    QMenu::setVisible(value);
+    if (changed) {
+        visibleChanged(value);
+    }
+}

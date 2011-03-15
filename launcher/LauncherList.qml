@@ -123,6 +123,17 @@ AutoScrollingListView {
             onDraggedTileIdChanged: if (reorder.draggedTileId != "") item.menu.hide()
         }
 
+        Connections {
+            target: item.menu
+            onVisibleChanged: {
+                if (item.menu.visible) {
+                    visibilityController.beginForceVisible();
+                } else {
+                    visibilityController.endForceVisible();
+                }
+            }
+        }
+
         function setIconGeometry() {
             if (running) {
                 item.setIconGeometry(x + panel.x, y + panel.y, width, height)
