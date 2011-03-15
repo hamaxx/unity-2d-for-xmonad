@@ -19,7 +19,7 @@
 
 #include <QDeclarativeView>
 
-class QDBusInterface;
+class LauncherClient;
 
 class DashDeclarativeView : public QDeclarativeView
 {
@@ -87,8 +87,7 @@ private:
     void updateMask();
     void initLauncherProxy();
 
-    QDBusInterface* m_launcher;
-    int m_launcherWidth;
+    LauncherClient* m_launcherClient;
     DashMode m_mode;
     bool m_expanded;
     QString m_activePlaceEntry; /* D-Bus object path of the place entry */

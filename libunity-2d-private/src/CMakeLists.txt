@@ -8,6 +8,7 @@ set(libunity-2d-private_SRCS
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp
     hotkey.cpp
+    launcherclient.cpp
     mousearea.cpp
     unity2dapplication.cpp
     unity2ddebug.cpp

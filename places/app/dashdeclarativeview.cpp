@@ -18,14 +18,13 @@
 #include "dashadaptor.h"
 
 // unity-2d
-#include <debug_p.h>
+#include <launcherclient.h>
 
 // Qt
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
 #include <QCloseEvent>
-#include <QDBusInterface>
 #include <QDeclarativeContext>
 #include <QX11Info>
 #include <QGraphicsObject>
@@ -48,14 +47,9 @@ static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
-static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
-static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
-static const char* LAUNCHER_DBUS_INTERFACE = "com.canonical.Unity2d.Launcher";
-
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
-, m_launcher(0)
-, m_launcherWidth(0)
+, m_launcherClient(new LauncherClient(this))
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
@@ -147,7 +141,6 @@ DashDeclarativeView::active() const
 void
 DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
 {
-    const_cast<DashDeclarativeView*>(this)->initLauncherProxy();
     if (m_mode == mode) {
         return;
     }
@@ -156,9 +149,7 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     m_mode = mode;
     if (m_mode == HiddenMode) {
         hide();
-        if (m_launcher) {
-            m_launcher->asyncCall("EndForceVisible");
-        }
+        m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
         show();
@@ -170,10 +161,10 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         } else {
             resizeToDesktopModeSize();
         }
-        if (m_launcher && oldMode == HiddenMode) {
+        if (oldMode == HiddenMode) {
             // Check old mode to ensure we do not call BeginForceVisible twice
             // if we go from desktop to fullscreen mode
-            m_launcher->asyncCall("BeginForceVisible");
+            m_launcherClient->beginForceVisible();
         }
         activeChanged(true);
     }
@@ -279,14 +270,13 @@ DashDeclarativeView::screenGeometry() const
 QRect
 DashDeclarativeView::availableGeometry() const
 {
-    const_cast<DashDeclarativeView*>(this)->initLauncherProxy();
     QRect screenRect = QApplication::desktop()->screenGeometry(this);
     QRect availableRect = QApplication::desktop()->availableGeometry(this);
 
     return QRect(
-        m_launcherWidth,
+        m_launcherClient->maximumWidth(),
         availableRect.top(),
-        screenRect.width() - m_launcherWidth,
+        screenRect.width() - m_launcherClient->maximumWidth(),
         availableRect.height()
         );
 }
@@ -364,23 +354,4 @@ DashDeclarativeView::connectToBus()
     }
     new DashAdaptor(this);
     return QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, this);
-}
-
-void
-DashDeclarativeView::initLauncherProxy()
-{
-    if (m_launcher) {
-        return;
-    }
-
-    m_launcher = new QDBusInterface(LAUNCHER_DBUS_SERVICE, LAUNCHER_DBUS_OBJECT_PATH, LAUNCHER_DBUS_INTERFACE,
-        QDBusConnection::sessionBus(), this);
-    if (!m_launcher->isValid()) {
-        UQ_WARNING << "Could not connect to Launcher on DBus";
-        delete m_launcher;
-        m_launcher = 0;
-        return;
-    }
-    m_launcherWidth = m_launcher->property("MaximumWidth").toInt();
-    UQ_VAR(m_launcherWidth);
 }
