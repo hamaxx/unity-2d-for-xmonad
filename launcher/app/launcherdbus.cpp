@@ -81,5 +81,8 @@ LauncherDBus::EndForceVisible()
 int
 LauncherDBus::maximumWidth() const
 {
+    // The width of the view is set with setFixedWidth(), so asking for the
+    // width() this way returns the maximum width without having to duplicate
+    // the value.
     return m_view->window()->width();
 }
