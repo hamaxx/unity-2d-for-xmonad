@@ -20,9 +20,9 @@
 #include <gtk/gtk.h>
 
 // unity-2d
-#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
+#include <unity2dtr.h>
 #include <propertybinder.h>
 
 // libqtgconf
@@ -35,8 +35,6 @@
 #include <QDeclarativeContext>
 #include <QDir>
 #include <QGraphicsObject>
-
-#include <unity2dapplication.h>
 
 #include "config.h"
 #include "launcherview.h"
@@ -73,9 +71,7 @@ int main(int argc, char *argv[])
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
     /* Configure translations */
-    GettextTranslator translator;
-    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
-    QApplication::installTranslator(&translator);
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;

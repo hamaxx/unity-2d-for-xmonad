@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-02-24 14:57+0100\n"
+"POT-Creation-Date: 2011-03-16 16:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,12 +57,12 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: places/SearchEntry.qml:137
+#: places/SearchEntry.qml:143
 #, qt-format
 msgid "Search for %1"
 msgstr ""
 
-#: places/SearchEntry.qml:139
+#: places/SearchEntry.qml:145
 msgid "Search"
 msgstr ""
 
@@ -75,35 +75,35 @@ msgstr ""
 msgid "See fewer results"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:758
+#: launcher/UnityApplications/launcherapplication.cpp:751
 msgid "Keep In Launcher"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:758
+#: launcher/UnityApplications/launcherapplication.cpp:751
 msgid "Remove From Launcher"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:766
+#: launcher/UnityApplications/launcherapplication.cpp:758
 msgid "Quit"
 msgstr ""
 
-#: launcher/UnityApplications/launcherdevice.cpp:222
+#: launcher/UnityApplications/launcherdevice.cpp:228
 msgid "Eject"
 msgstr ""
 
-#: launcher/UnityApplications/workspaces.cpp:66
+#: launcher/UnityApplications/workspaces.cpp:69
 msgid "Workspaces"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:71
+#: launcher/UnityApplications/trash.cpp:73
 msgid "Trash"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:198
-#, c-format, qt-plural-format
-msgid "%n item(s) in trash"
+#: launcher/UnityApplications/trash.cpp:194
+#, qt-format
+msgid "%1 item in trash"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:205
+#: launcher/UnityApplications/trash.cpp:201
 msgid "Empty Trash"
 msgstr ""

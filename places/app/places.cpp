@@ -34,8 +34,8 @@
 #include <gtk/gtk.h>
 
 // unity-2d
-#include <gettexttranslator.h>
 #include <unity2ddebug.h>
+#include <unity2dtr.h>
 
 #include "dashdeclarativeview.h"
 #include "config.h"
@@ -65,9 +65,7 @@ int main(int argc, char *argv[])
     }
 
     /* Configure translations */
-    GettextTranslator translator;
-    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
-    QApplication::installTranslator(&translator);
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,

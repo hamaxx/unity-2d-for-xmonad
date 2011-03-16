@@ -10,8 +10,10 @@ GETTEXT_FILES=$(mktemp --tmpdir unity-2d.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
 find \( -name '*.cpp' -o -name '*.qml' \) \
-    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*' \) \
+    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*'  -o -path './libunity-2d-private/tests/*' \) \
 > $GETTEXT_FILES
+
+cat $GETTEXT_FILES
 
 # Generate pot from our list
 xgettext \
@@ -19,6 +21,7 @@ xgettext \
     --files-from $GETTEXT_FILES \
     --qt --c++ \
     --keyword=tr --keyword=qsTr \
+    --keyword=u2dTr \
     --package-name unity-2d \
     --copyright-holder "Canonical Ltd" \
     --msgid-bugs-address "https://bugs.launchpad.net/unity-2d/+filebug"

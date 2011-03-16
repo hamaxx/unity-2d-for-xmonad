@@ -24,6 +24,9 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 
+// libunity-2d
+#include <unity2dtr.h>
+
 Workspaces::Workspaces()
 {
 }
@@ -63,7 +66,7 @@ Workspaces::urgent() const
 QString
 Workspaces::name() const
 {
-    return tr("Workspaces");
+    return u2dTr("Workspaces");
 }
 
 QString
