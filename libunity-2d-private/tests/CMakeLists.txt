@@ -31,19 +31,18 @@ macro(libunity_2d_tests)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
-    gettexttest
     keyboardmodifiersmonitortest
     paneltest
     unity2dtrtest
     )
 
-add_custom_target(gettexttest_po COMMAND
+add_custom_target(unity2dtr_po COMMAND
     mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/
     && ${GETTEXT_MSGFMT_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/fr.po
-        -o ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/gettexttest.mo
+        -o ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/unity2dtrtest.mo
     )
 
-add_dependencies(gettexttest gettexttest_po)
+add_dependencies(unity2dtrtest unity2dtr_po)
 
 # gnomesessionclienttest
 add_executable(gnomesessionclienttesthelper

@@ -3,7 +3,6 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 
 # Sources
 set(libunity-2d-private_SRCS
-    gettexttranslator.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp

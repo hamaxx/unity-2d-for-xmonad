@@ -34,7 +34,7 @@ class Unity2dTrTest : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
-        Unity2dTr::init("gettexttest", TEST_LOCALE_DIR);
+        Unity2dTr::init("unity2dtrtest", TEST_LOCALE_DIR);
     }
 
     void testTranslate()
