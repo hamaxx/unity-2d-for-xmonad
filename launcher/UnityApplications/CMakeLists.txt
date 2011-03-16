@@ -15,6 +15,7 @@ set(UnityApplications_SRCS
     launcheritem.cpp
     launcherapplication.cpp
     launcherapplicationslist.cpp
+    launcherapplicationslistdbus.cpp
     launcherdevice.cpp
     launcherdeviceslist.cpp
     placeentry.cpp
@@ -32,6 +33,7 @@ set(UnityApplications_MOC_HDRS
     launcheritem.h
     launcherapplication.h
     launcherapplicationslist.h
+    launcherapplicationslistdbus.h
     launcherdevice.h
     launcherdeviceslist.h
     placeentry.h
