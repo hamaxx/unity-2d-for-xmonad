@@ -63,7 +63,7 @@ QString u2dTr(const char* text);
 /**
  * Plural version of utr. Should be called like this:
  *
- * u2dTr("%1 file", "%1 files", count)
+ * u2dTr("%n file", "%n files", count)
  */
 QString u2dTr(const char* singular, const char* plural, int n);
 

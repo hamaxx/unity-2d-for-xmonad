@@ -45,8 +45,8 @@ private Q_SLOTS:
 
     void testPluralHandling()
     {
-        QCOMPARE(u2dTr("%1 file", "%1 files", 1), QString("1 fichier"));
-        QCOMPARE(u2dTr("%1 file", "%1 files", 2), QString("2 fichiers"));
+        QCOMPARE(u2dTr("%n file", "%n files", 1), QString("1 fichier"));
+        QCOMPARE(u2dTr("%n file", "%n files", 2), QString("2 fichiers"));
     }
 };
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-03-16 18:13+0100\n"
+"POT-Creation-Date: 2011-03-16 18:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: launcher/UnityApplications/trash.cpp:194
-#, fuzzy, qt-format
-msgid "%1 item in trash"
-msgid_plural "%1 items in trash"
-msgstr[0] "%1 élément dans la corbeille"
-msgstr[1] "%1 éléments dans la corbeille"
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n élément dans la corbeille"
+msgstr[1] "%n éléments dans la corbeille"
 
 #: places/Home.qml:183
 msgid "Browse the Web"

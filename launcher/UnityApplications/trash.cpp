@@ -191,7 +191,7 @@ Trash::createMenuActions()
     if (c == 0) return;
 
     QAction* contents = new QAction(m_menu);
-    contents->setText(u2dTr("%1 item in trash", "%1 items in trash", c));
+    contents->setText(u2dTr("%n item in trash", "%n items in trash", c));
     contents->setEnabled(false);
     m_menu->addAction(contents);
 

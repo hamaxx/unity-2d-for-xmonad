@@ -68,7 +68,11 @@ QString u2dTr(const char* text)
 
 QString u2dTr(const char* singular, const char* plural, int n)
 {
-    return QString::fromUtf8(ngettext(singular, plural, n)).arg(n);
+    QString text = QString::fromUtf8(ngettext(singular, plural, n));
+    // Note: if `text` is "%%n" (meaning the string on screen should be "%n"
+    // literally), this will fail. I think we don't care for now.
+    text.replace("%n", QString::number(n));
+    return text;
 }
 
 #include <unity2dtr.moc>
