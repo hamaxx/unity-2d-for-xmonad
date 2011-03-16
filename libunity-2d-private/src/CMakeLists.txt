@@ -36,6 +36,7 @@ target_link_libraries(unity-2d-private
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
+    ${QT_QTDECLARATIVE_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
     )

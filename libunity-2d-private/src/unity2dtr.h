@@ -21,7 +21,11 @@
 #ifndef UNITY2DTR_H
 #define UNITY2DTR_H
 
+// Qt
+#include <QObject>
+
 class QString;
+class QDeclarativeContext;
 
 namespace Unity2dTr
 {
@@ -30,6 +34,24 @@ namespace Unity2dTr
  * Installs our gettext catalog
  */
 void init(const char* domain, const char* localeDir);
+
+/**
+ * Add an object named "u2d" to context.
+ *
+ * One can then get translations with u2d.tr("english text")
+ */
+void qmlInit(QDeclarativeContext* context);
+
+/**
+ * @internal
+ */
+class QmlHelper : public QObject
+{
+    Q_OBJECT
+public:
+    Q_INVOKABLE QString tr(const QString&);
+    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
+};
 
 } // namespace
 

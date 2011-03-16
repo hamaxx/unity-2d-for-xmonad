@@ -40,7 +40,7 @@ FocusScope {
         TextCustom {
             id: title
 
-            text: qsTr("Refine search")
+            text: u2d.tr("Refine search")
             font.bold: true
             font.pixelSize: 16
 
@@ -63,7 +63,7 @@ FocusScope {
         id: optionsModel
 
         SearchRefineOptionType {
-            title: qsTr("Type")
+            title: u2d.tr("Type")
             placeEntryModel: searchRefine.placeEntryModel
         }
     }

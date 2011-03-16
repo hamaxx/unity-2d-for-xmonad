@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+    Unity2dTr::qmlInit(view.rootContext());
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,

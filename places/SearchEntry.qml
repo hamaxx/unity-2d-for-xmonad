@@ -140,9 +140,9 @@ FocusScope {
                     if(search_input.text)
                         return ""
                     else if(dash.currentPage != undefined && dash.currentPage.model.name)
-                        return qsTr("Search for %1").arg(dash.currentPage.model.name)
+                        return u2d.tr("Search for %1").arg(dash.currentPage.model.name)
                     else
-                        return qsTr("Search")
+                        return u2d.tr("Search")
                 }
             }
         }

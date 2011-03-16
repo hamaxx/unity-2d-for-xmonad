@@ -105,6 +105,8 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
 
+    Unity2dTr::qmlInit(launcherView->rootContext());
+
     LauncherDBus launcherDBus(visibilityController, launcherView);
     launcherDBus.connectToBus();
 

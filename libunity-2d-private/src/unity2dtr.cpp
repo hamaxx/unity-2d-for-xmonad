@@ -24,6 +24,9 @@
 // local
 #include <config.h>
 
+// Qt
+#include <QDeclarativeContext>
+
 // libc
 #include <libintl.h>
 
@@ -37,6 +40,25 @@ void init(const char* domain, const char* localeDir)
     textdomain(domain);
 }
 
+void qmlInit(QDeclarativeContext* context)
+{
+    static QmlHelper helper;
+    context->setContextProperty("u2d", &helper);
+}
+
+QString QmlHelper::tr(const QString& text)
+{
+    return ::u2dTr(text.toUtf8().constData());
+}
+
+QString QmlHelper::tr(const QString& singular, const QString& plural, int n)
+{
+    return ::u2dTr(
+        singular.toUtf8().constData(),
+        plural.toUtf8().constData(),
+        n);
+}
+
 } // namespace
 
 QString u2dTr(const char* text)
@@ -48,3 +70,5 @@ QString u2dTr(const char* singular, const char* plural, int n)
 {
     return QString::fromUtf8(ngettext(singular, plural, n)).arg(n);
 }
+
+#include <unity2dtr.moc>
