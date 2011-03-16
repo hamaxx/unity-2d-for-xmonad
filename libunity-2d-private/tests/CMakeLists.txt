@@ -34,6 +34,7 @@ libunity_2d_tests(
     gettexttest
     keyboardmodifiersmonitortest
     paneltest
+    unity2dtrtest
     )
 
 add_custom_target(gettexttest_po COMMAND

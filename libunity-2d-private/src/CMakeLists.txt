@@ -12,6 +12,7 @@ set(libunity-2d-private_SRCS
     unity2dapplication.cpp
     unity2ddebug.cpp
     unity2dpanel.cpp
+    unity2dtr.cpp
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
