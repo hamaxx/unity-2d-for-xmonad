@@ -31,6 +31,10 @@
                hide.
             ]]></dox:d>
         </method>
+
+        <property name="MaximumWidth" type="i" access="read">
+            <dox:d>The width of the launcher when it is fully visible.</dox:d>
+        </property>
     </interface>
 </node>
 
