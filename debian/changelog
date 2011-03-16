@@ -1,3 +1,9 @@
+unity-2d (3.6.2-0ubuntu1) natty; urgency=low
+
+  * New upstream bugfix release
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 15 Mar 2011 17:59:55 +0100
+
 unity-2d (3.6.1-0ubuntu1) natty; urgency=low
 
   * New Upstream, fix FTBFS with po files generation
