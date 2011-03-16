@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-03-16 16:42+0100\n"
+"POT-Creation-Date: 2011-03-16 18:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,9 @@ msgstr ""
 #: launcher/UnityApplications/trash.cpp:194
 #, fuzzy, qt-format
 msgid "%1 item in trash"
-msgstr "%1 élément dans la corbeille"
+msgid_plural "%1 items in trash"
+msgstr[0] "%1 élément dans la corbeille"
+msgstr[1] "%1 éléments dans la corbeille"
 
 #: places/Home.qml:183
 msgid "Browse the Web"
@@ -92,7 +94,7 @@ msgstr ""
 msgid "See fewer results"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:73
+#: launcher/UnityApplications/trash.cpp:74
 msgid "Trash"
 msgstr ""
 
