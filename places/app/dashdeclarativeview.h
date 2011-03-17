@@ -85,7 +85,6 @@ private:
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void updateMask();
-    void initLauncherProxy();
 
     LauncherClient* m_launcherClient;
     DashMode m_mode;
