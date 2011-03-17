@@ -36,7 +36,7 @@ class LauncherClient : public QObject
 public:
     // The amount of pixels used by the launcher on the left edge when it is
     // fully visible.
-    static const int MaximumWidth = 66;
+    static const int MaximumWidth;
 
     LauncherClient(QObject* parent = 0);
     ~LauncherClient();
