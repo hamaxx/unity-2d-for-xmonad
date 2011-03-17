@@ -66,7 +66,7 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         m_autohideTimer->stop();
         break;
     case QEvent::Leave:
-        if (!m_controller->mouseIsOverHomeButton()) {
+        if (!m_controller->isMouseOverHomeButton()) {
             m_autohideTimer->start();
         }
         break;
@@ -76,9 +76,9 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
     return false;
 }
 
-void AutoHideBehavior::mouseIsOverHomeButtonChanged()
+void AutoHideBehavior::onMouseOverHomeButtonChanged()
 {
-    if (m_controller->mouseIsOverHomeButton()) {
+    if (m_controller->isMouseOverHomeButton()) {
         m_panel->slideIn();
     } else {
         if (!m_panel->underMouse()) {

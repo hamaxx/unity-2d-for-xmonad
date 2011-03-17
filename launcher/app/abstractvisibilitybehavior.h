@@ -42,7 +42,7 @@ public:
     AbstractVisibilityBehavior(VisibilityController* controller, Unity2dPanel* panel);
     ~AbstractVisibilityBehavior();
 
-    virtual void mouseIsOverHomeButtonChanged() {}
+    virtual void onMouseOverHomeButtonChanged() {}
 
 protected:
     VisibilityController* m_controller;

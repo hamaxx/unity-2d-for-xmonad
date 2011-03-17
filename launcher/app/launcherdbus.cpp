@@ -79,7 +79,7 @@ LauncherDBus::EndForceVisible()
 }
 
 void
-LauncherDBus::SetMouseIsOverHomeButton(bool isOver)
+LauncherDBus::SetMouseOverHomeButton(bool isOver)
 {
-    m_visibilityController->setMouseIsOverHomeButton(isOver);
+    m_visibilityController->setMouseOverHomeButton(isOver);
 }

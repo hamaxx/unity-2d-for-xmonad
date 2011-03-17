@@ -31,7 +31,7 @@ public:
     IntelliHideBehavior(VisibilityController*, Unity2dPanel* panel);
     ~IntelliHideBehavior();
 
-    void mouseIsOverHomeButtonChanged();
+    void onMouseOverHomeButtonChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*);

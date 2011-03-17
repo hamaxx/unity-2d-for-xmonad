@@ -187,9 +187,9 @@ bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
-void IntelliHideBehavior::mouseIsOverHomeButtonChanged()
+void IntelliHideBehavior::onMouseOverHomeButtonChanged()
 {
-    if (m_controller->mouseIsOverHomeButton()) {
+    if (m_controller->isMouseOverHomeButton()) {
         m_panel->slideIn();
     } else {
         updateVisibility();
@@ -198,6 +198,6 @@ void IntelliHideBehavior::mouseIsOverHomeButtonChanged()
 
 bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
-    return m_controller->mouseIsOverHomeButton()
+    return m_controller->isMouseOverHomeButton()
         || m_panel->underMouse();
 }

@@ -40,7 +40,7 @@ public:
     AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel);
     ~AutoHideBehavior();
 
-    void mouseIsOverHomeButtonChanged();
+    void onMouseOverHomeButtonChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*);

@@ -31,7 +31,7 @@
                hide.
             ]]></dox:d>
         </method>
-        <method name="SetMouseIsOverHomeButton">
+        <method name="SetMouseOverHomeButton">
             <dox:d>
             Tells the launcher the mouse is over the Home button.
             </dox:d>
