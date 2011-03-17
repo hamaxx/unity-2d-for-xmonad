@@ -21,6 +21,8 @@
 #include "place.h"
 #include "launchermenu.h"
 
+#include <debug_p.h>
+
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>
@@ -732,8 +734,18 @@ PlaceEntry::connectToDash()
     connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
             SLOT(slotDashActivePlaceEntryChanged(const QString&)));
 
-    m_dashActive = m_dashDbusIface->property("active").toBool();
-    m_dashActivePlaceEntry = m_dashDbusIface->property("activePlaceEntry").toString();
+    QVariant value = m_dashDbusIface->property("active");
+    if (value.isValid()) {
+        m_dashActive = value.toBool();
+    } else {
+        UQ_WARNING << "Fetching Dash.active property failed";
+    }
+    value = m_dashDbusIface->property("activePlaceEntry");
+    if (value.isValid()) {
+        m_dashActivePlaceEntry = value.toString();
+    } else {
+        UQ_WARNING << "Fetching Dash.activePlaceEntry property failed";
+    }
 
     updateActiveState();
 }
