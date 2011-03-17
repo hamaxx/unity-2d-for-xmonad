@@ -250,6 +250,8 @@ private:
 
     QDBusInterface* m_dbusIface;
     QDBusInterface* m_dashDbusIface;
+    bool m_dashActive;
+    QString m_dashActivePlaceEntry;
 
     void setSection(const QString&);
     void activateEntry(const int section);
@@ -261,6 +263,8 @@ private Q_SLOTS:
 
     void connectToDash();
     void updateActiveState();
+    void slotDashActiveChanged(bool);
+    void slotDashActivePlaceEntryChanged(const QString&);
 
     void startMonitoringSections();
     void stopMonitoringSections();
