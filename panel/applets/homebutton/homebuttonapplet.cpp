@@ -103,7 +103,7 @@ void HomeButtonApplet::toggleDash()
         m_dashInterface->setProperty("active", false);
     } else {
         /* Call com.canonical.Unity2d.Dash.activateHome (will set com.canonical.Unity2d.Dash.active to true */
-        m_dashInterface->call(QDBus::Block, "activateHome");
+        m_dashInterface->asyncCall("activateHome");
     }
 }
 
