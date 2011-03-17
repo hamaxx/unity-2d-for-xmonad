@@ -44,6 +44,8 @@ public:
     void beginForceVisible();
     void endForceVisible();
 
+    void setMouseIsOverHomeButton(bool);
+
 private:
     LauncherClientPrivate* const d;
 };
