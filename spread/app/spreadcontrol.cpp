@@ -37,8 +37,11 @@ void
 SpreadControl::setIsShown(bool isShown)
 {
     m_isShown = isShown;
-    if (!m_isShown) m_launcherClient->endForceVisible();
-    else m_launcherClient->beginForceVisible();
+    if (m_isShown) {
+        m_launcherClient->beginForceVisible();
+    } else {
+        m_launcherClient->endForceVisible();
+    }
 }
 
 SpreadControl::~SpreadControl()
