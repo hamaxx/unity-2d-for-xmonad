@@ -28,8 +28,8 @@
 
 // Qt
 
-ForceVisibleBehavior::ForceVisibleBehavior(Unity2dPanel* panel)
-: AbstractVisibilityBehavior(panel)
+ForceVisibleBehavior::ForceVisibleBehavior(VisibilityController* controller, Unity2dPanel* panel)
+: AbstractVisibilityBehavior(controller, panel)
 {
     m_panel->slideIn();
 }

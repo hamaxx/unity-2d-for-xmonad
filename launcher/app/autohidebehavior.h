@@ -38,7 +38,7 @@ class AutoHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:
-    AutoHideBehavior(Unity2dPanel* panel);
+    AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel);
     ~AutoHideBehavior();
 
 protected:

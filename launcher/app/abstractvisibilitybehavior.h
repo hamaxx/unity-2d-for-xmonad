@@ -26,6 +26,7 @@
 // Qt
 #include <QObject>
 
+class VisibilityController;
 class Unity2dPanel;
 
 /**
@@ -38,10 +39,13 @@ class AbstractVisibilityBehavior : public QObject
 {
     Q_OBJECT
 public:
-    AbstractVisibilityBehavior(Unity2dPanel* panel);
+    AbstractVisibilityBehavior(VisibilityController* controller, Unity2dPanel* panel);
     ~AbstractVisibilityBehavior();
 
+    virtual void mouseIsOverHomeButtonChanged() {}
+
 protected:
+    VisibilityController* m_controller;
     Unity2dPanel* m_panel;
 };
 

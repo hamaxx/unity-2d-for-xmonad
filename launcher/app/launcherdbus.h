@@ -46,6 +46,7 @@ public Q_SLOTS:
     Q_NOREPLY void BeginForceVisible();
     Q_NOREPLY void EndForceVisible();
     Q_NOREPLY void AddWebFavorite(const QString& url);
+    Q_NOREPLY void SetMouseIsOverHomeButton(bool);
 
 private:
     VisibilityController* m_visibilityController;

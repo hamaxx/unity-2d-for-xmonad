@@ -34,8 +34,8 @@
 
 static const int AUTOHIDE_TIMEOUT = 1000;
 
-AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
-: AbstractVisibilityBehavior(panel)
+AutoHideBehavior::AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel)
+: AbstractVisibilityBehavior(controller, panel)
 , m_mouseArea(new MouseArea(this))
 , m_autohideTimer(new QTimer(this))
 {

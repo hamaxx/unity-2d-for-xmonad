@@ -77,3 +77,9 @@ LauncherDBus::EndForceVisible()
     UQ_RETURN_IF_FAIL(calledFromDBus());
     m_visibilityController->endForceVisible(message().service());
 }
+
+void
+LauncherDBus::SetMouseIsOverHomeButton(bool isOver)
+{
+    m_visibilityController->setMouseIsOverHomeButton(isOver);
+}
