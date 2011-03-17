@@ -28,7 +28,6 @@
 #include <QObject>
 
 class QTimer;
-class MouseArea;
 class Unity2dPanel;
 
 /**
@@ -41,15 +40,13 @@ public:
     AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel);
     ~AutoHideBehavior();
 
+    void mouseIsOverHomeButtonChanged();
+
 protected:
     bool eventFilter(QObject*, QEvent*);
 
 private:
-    MouseArea* m_mouseArea;
     QTimer* m_autohideTimer;
-    bool m_requestAttention;
-
-    void updateFromPanelGeometry();
 };
 
 #endif /* AUTOHIDEBEHAVIOR_H */

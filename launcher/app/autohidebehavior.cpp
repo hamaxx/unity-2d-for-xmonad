@@ -22,6 +22,7 @@
 #include "autohidebehavior.h"
 
 // Local
+#include <visibilitycontroller.h>
 
 // libunity-2d
 #include <debug_p.h>
@@ -36,17 +37,13 @@ static const int AUTOHIDE_TIMEOUT = 1000;
 
 AutoHideBehavior::AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel)
 : AbstractVisibilityBehavior(controller, panel)
-, m_mouseArea(new MouseArea(this))
 , m_autohideTimer(new QTimer(this))
 {
-    connect(m_mouseArea, SIGNAL(entered()), m_panel, SLOT(slideIn()));
-
     m_autohideTimer->setSingleShot(true);
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_autohideTimer, SIGNAL(timeout()), m_panel, SLOT(slideOut()));
 
     m_panel->installEventFilter(this);
-    updateFromPanelGeometry();
     if (!m_panel->geometry().contains(QCursor::pos())) {
         if (m_panel->delta() == 0) {
             /* Launcher is fully visible */
@@ -69,12 +66,9 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         m_autohideTimer->stop();
         break;
     case QEvent::Leave:
-        if (!m_mouseArea->containsMouse()) {
+        if (!m_controller->mouseIsOverHomeButton()) {
             m_autohideTimer->start();
         }
-        break;
-    case QEvent::Resize:
-        updateFromPanelGeometry();
         break;
     default:
         break;
@@ -82,8 +76,13 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
     return false;
 }
 
-void AutoHideBehavior::updateFromPanelGeometry()
+void AutoHideBehavior::mouseIsOverHomeButtonChanged()
 {
-    QRect rect(0, m_panel->y(), 1, m_panel->height());
-    m_mouseArea->setGeometry(rect);
+    if (m_controller->mouseIsOverHomeButton()) {
+        m_panel->slideIn();
+    } else {
+        if (!m_panel->underMouse()) {
+            m_autohideTimer->start();
+        }
+    }
 }
