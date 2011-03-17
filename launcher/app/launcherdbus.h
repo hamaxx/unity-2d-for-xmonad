@@ -35,7 +35,6 @@ class VisibilityController;
 class LauncherDBus : public QObject, protected QDBusContext
 {
     Q_OBJECT
-    Q_PROPERTY(int MaximumWidth READ maximumWidth)
 
 public:
     LauncherDBus(VisibilityController* visibilityController, LauncherView* view, QObject* parent=0);
@@ -51,8 +50,6 @@ public Q_SLOTS:
 private:
     VisibilityController* m_visibilityController;
     LauncherView* m_view;
-
-    int maximumWidth() const;
 };
 
 #endif // LauncherDBus_H

@@ -80,13 +80,4 @@ void LauncherClient::endForceVisible()
     d->m_iface->asyncCall("EndForceVisible");
 }
 
-int LauncherClient::maximumWidth() const
-{
-    UQ_RETURN_VALUE_IF_FAIL(d->init(), 0);
-    bool ok;
-    int value = d->m_iface->property("MaximumWidth").toInt(&ok);
-    UQ_RETURN_VALUE_IF_FAIL(ok, 0);
-    return value;
-}
-
 #include "launcherclient.moc"

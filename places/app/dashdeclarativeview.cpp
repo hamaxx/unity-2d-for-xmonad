@@ -274,9 +274,9 @@ DashDeclarativeView::availableGeometry() const
     QRect availableRect = QApplication::desktop()->availableGeometry(this);
 
     return QRect(
-        m_launcherClient->maximumWidth(),
+        LauncherClient::MaximumWidth,
         availableRect.top(),
-        screenRect.width() - m_launcherClient->maximumWidth(),
+        screenRect.width() - LauncherClient::MaximumWidth,
         availableRect.height()
         );
 }

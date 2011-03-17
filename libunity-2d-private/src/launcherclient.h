@@ -34,13 +34,17 @@ class LauncherClient : public QObject
 {
     Q_OBJECT
 public:
+    enum {
+        // The amount of pixels used by the launcher on the left edge when it
+        // is fully visible.
+        MaximumWidth = 66
+    };
+
     LauncherClient(QObject* parent = 0);
     ~LauncherClient();
 
     void beginForceVisible();
     void endForceVisible();
-
-    int maximumWidth() const;
 
 private:
     LauncherClientPrivate* const d;
