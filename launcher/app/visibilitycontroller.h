@@ -67,9 +67,6 @@ public:
     bool isMouseOverHomeButton() const;
     void setMouseOverHomeButton(bool);
 
-Q_SIGNALS:
-    void mouseIsOverHomeButtonChanged(bool);
-
 private Q_SLOTS:
     void update();
     void slotServiceUnregistered(const QString&);
