@@ -3,6 +3,9 @@
 # shared libraries are in plugins directory
 DEB_DH_MAKESHLIBS_ARGS :=-n
 
+# we dont want to convert images to 8bit
+export NO_PNG_PKG_MANGLE=1
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/cmake.mk
 
