@@ -666,10 +666,14 @@ LauncherApplication::spread()
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
     QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.value() == true) {
-        iface.call("FilterByApplication", m_application->desktop_file());
+    if (isShown.isValid()) {
+        if (isShown.value() == true) {
+            iface.asyncCall("FilterByApplication", m_application->desktop_file());
+        } else {
+            iface.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
+        }
     } else {
-        iface.call("ShowCurrentWorkspace", m_application->desktop_file());
+        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 
