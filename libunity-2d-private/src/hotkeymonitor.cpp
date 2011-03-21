@@ -98,8 +98,6 @@ HotkeyMonitor::processKeyEvent(uint x11Keycode, uint x11Modifiers,
             return;
         }
     }
-    qWarning() << "Received x11 key event that wasn't processed by any hotkey:"
-               << x11Keycode << x11Modifiers << ((isPressEvent) ? "Press" : "Release");
 }
 
 #include "hotkeymonitor.moc"
