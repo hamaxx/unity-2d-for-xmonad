@@ -231,7 +231,7 @@ DropItem {
                 id: selectionOutline
                 anchors.centerIn: parent
                 source: "artwork/round_selected_66x66.png"
-                visible: item.activeFocus
+                visible: launcherView.focus && item.activeFocus
             }
 
             Rectangle {
