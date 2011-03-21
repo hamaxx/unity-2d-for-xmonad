@@ -54,6 +54,7 @@ DropItem {
 
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
+    property color selectedBackgroundColor: "#dddddd"
 
     property alias shortcutVisible: shortcut.visible
     property alias shortcutText: shortcutText.text
@@ -163,10 +164,13 @@ DropItem {
 
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
-                source: "image://blended/%1color=%2alpha=%3"
+                source: {
+                    var actualColor = item.activeFocus ? selectedBackgroundColor : color
+                    return "image://blended/%1color=%2alpha=%3"
                         .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
-                        .arg(color.toString().replace("#", ""))
+                        .arg(actualColor.toString().replace("#", ""))
                         .arg(1.0)
+                }
             }
 
             /* This image appears only while launching, and pulses in and out in counterpoint
@@ -221,6 +225,13 @@ DropItem {
                 source: "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
+            }
+
+            Image {
+                id: selectionOutline
+                anchors.centerIn: parent
+                source: "artwork/round_selected_66x66.png"
+                visible: launcherView.focus && item.activeFocus
             }
 
             Rectangle {

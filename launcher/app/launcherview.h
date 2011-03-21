@@ -28,12 +28,14 @@
 
 class DeclarativeDragDropEvent;
 class LauncherDBus;
+class VisibilityController;
 
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
     Q_PROPERTY(bool superKeyPressed READ superKeyPressed
                                     NOTIFY superKeyPressedChanged)
+    Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden
 
 public:
     explicit LauncherView();
@@ -49,11 +51,19 @@ Q_SIGNALS:
     void keyboardShortcutPressed(int itemIndex);
     void superKeyPressedChanged(bool superKeyPressed);
     void addWebFavoriteRequested(const QUrl& url);
+    void focusChanged(bool focus);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardHotkey();
     void updateSuperKeyMonitoring();
+
+public Q_SLOTS:
+    void activateWindow();
+
+protected:
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);

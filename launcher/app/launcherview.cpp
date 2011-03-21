@@ -36,6 +36,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
+#include "visibilitycontroller.h"
 
 LauncherView::LauncherView() :
     QDeclarativeView(), m_superKeyPressed(false)
@@ -44,6 +45,30 @@ LauncherView::LauncherView() :
     QObject::connect(&m_enableSuperKey, SIGNAL(valueChanged()),
                      this, SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
+
+    /* Alt+F1 gives the keyboard focus to the launcher. */
+    Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
+    connect(altF1, SIGNAL(pressed()), SLOT(activateWindow()));
+}
+
+void
+LauncherView::activateWindow()
+{
+    QDeclarativeView::activateWindow();
+}
+
+void
+LauncherView::focusInEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusInEvent(event);
+    Q_EMIT focusChanged(true);
+}
+
+void
+LauncherView::focusOutEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusOutEvent(event);
+    Q_EMIT focusChanged(false);
 }
 
 void
