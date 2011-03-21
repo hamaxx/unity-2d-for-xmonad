@@ -51,6 +51,7 @@ LauncherApplication::LauncherApplication()
     , m_progress(0), m_progressBarVisible(false)
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
+    , m_forceUrgent(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
