@@ -19,6 +19,8 @@
 
 #include <QDeclarativeView>
 
+class LauncherClient;
+
 class DashDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
@@ -45,7 +47,7 @@ public:
     DashMode dashMode() const;
     const QString& activePlaceEntry() const;
     const QRect screenGeometry() const;
-    const QRect availableGeometry() const;
+    QRect availableGeometry() const;
     bool expanded() const;
     bool isCompositingManagerRunning() const;
 
@@ -84,6 +86,7 @@ private:
     void keyPressEvent(QKeyEvent* event);
     void updateMask();
 
+    LauncherClient* m_launcherClient;
     DashMode m_mode;
     bool m_expanded;
     QString m_activePlaceEntry; /* D-Bus object path of the place entry */

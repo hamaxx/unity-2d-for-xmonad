@@ -3,15 +3,16 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 
 # Sources
 set(libunity-2d-private_SRCS
-    gettexttranslator.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp
     hotkey.cpp
+    launcherclient.cpp
     mousearea.cpp
     unity2dapplication.cpp
     unity2ddebug.cpp
     unity2dpanel.cpp
+    unity2dtr.cpp
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
@@ -36,6 +37,7 @@ target_link_libraries(unity-2d-private
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
+    ${QT_QTDECLARATIVE_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
     )
