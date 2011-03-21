@@ -165,10 +165,10 @@ DropItem {
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
                 source: {
-                    var c = item.activeFocus ? selectedBackgroundColor : color
+                    var actualColor = item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
-                        .arg(c.toString().replace("#", ""))
+                        .arg(actualColor.toString().replace("#", ""))
                         .arg(1.0)
                 }
             }
