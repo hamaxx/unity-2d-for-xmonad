@@ -315,14 +315,14 @@ DropItem {
             SequentialAnimation {
                 id: urgentAnimation
                 running: urgent
-                loops: 30
                 alwaysRunToEnd: true
 
                 SequentialAnimation {
+                    loops: 30
                     NumberAnimation { target: tile; property: "rotation"; to: 15; duration: 150 }
                     NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
-                    NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
                 }
+                NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
             }
 
             MouseArea {
