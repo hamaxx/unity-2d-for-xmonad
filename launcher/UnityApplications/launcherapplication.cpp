@@ -35,6 +35,9 @@ extern "C" {
 
 #include <X11/X.h>
 
+// libunity-2d
+#include <unity2dtr.h>
+
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
@@ -749,14 +752,14 @@ LauncherApplication::createStaticMenuActions()
         QAction* keep = new QAction(m_menu);
         keep->setCheckable(is_running);
         keep->setChecked(sticky());
-        keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
+        keep->setText(is_running ? u2dTr("Keep In Launcher") : u2dTr("Remove From Launcher"));
         actions.append(keep);
         QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
     }
 
     if (is_running) {
         QAction* quit = new QAction(m_menu);
-        quit->setText(tr("Quit"));
+        quit->setText(u2dTr("Quit"));
         actions.append(quit);
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }

@@ -65,7 +65,7 @@ AbstractButton {
         TextCustom {
             id: label
 
-            text: groupHeader.folded ? qsTr("See %1 more results").arg(availableCount) : qsTr("See fewer results")
+            text: groupHeader.folded ? u2d.tr("See %1 more results").arg(availableCount) : u2d.tr("See fewer results")
             anchors.left: parent.left
             anchors.baseline: parent.baseline
         }
