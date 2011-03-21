@@ -17,6 +17,10 @@
 #include "dashdeclarativeview.h"
 #include "dashadaptor.h"
 
+// unity-2d
+#include <launcherclient.h>
+
+// Qt
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
@@ -45,6 +49,7 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
+, m_launcherClient(new LauncherClient(this))
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
@@ -80,13 +85,13 @@ DashDeclarativeView::onWorkAreaResized(int screen)
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    setGeometry(QApplication::desktop()->availableGeometry(this));
+    setGeometry(availableGeometry());
 }
 
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = QApplication::desktop()->availableGeometry(this);
+    QRect rect = availableGeometry();
 
     rect.setWidth(DASH_DESKTOP_WIDTH);
     rect.setHeight(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT);
@@ -140,9 +145,11 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         return;
     }
 
+    DashDeclarativeView::DashMode oldMode = m_mode;
     m_mode = mode;
     if (m_mode == HiddenMode) {
         hide();
+        m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
         show();
@@ -153,6 +160,11 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
             fitToAvailableSpace();
         } else {
             resizeToDesktopModeSize();
+        }
+        if (oldMode == HiddenMode) {
+            // Check old mode to ensure we do not call BeginForceVisible twice
+            // if we go from desktop to fullscreen mode
+            m_launcherClient->beginForceVisible();
         }
         activeChanged(true);
     }
@@ -255,11 +267,18 @@ DashDeclarativeView::screenGeometry() const
     return desktop->screenGeometry(this);
 }
 
-const QRect
+QRect
 DashDeclarativeView::availableGeometry() const
 {
-    QDesktopWidget* desktop = QApplication::desktop();
-    return desktop->availableGeometry(this);
+    QRect screenRect = QApplication::desktop()->screenGeometry(this);
+    QRect availableRect = QApplication::desktop()->availableGeometry(this);
+
+    return QRect(
+        LauncherClient::MaximumWidth,
+        availableRect.top(),
+        screenRect.width() - LauncherClient::MaximumWidth,
+        availableRect.height()
+        );
 }
 
 void

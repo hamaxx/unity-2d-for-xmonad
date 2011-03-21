@@ -49,6 +49,7 @@ public:
     void setFolded(int folded);
     void setLauncherItem(LauncherItem* launcherItem);
     void setTitle(const QString& title);
+    void setVisible(bool value);
 
     Q_INVOKABLE void show(int x, int y);
     Q_INVOKABLE void hide();
@@ -58,8 +59,6 @@ protected:
     void resizeEvent(QResizeEvent* event);
     void leaveEvent(QEvent* event);
     void enterEvent(QEvent* event);
-    void showEvent(QShowEvent* event);
-    void hideEvent(QHideEvent* event);
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent* event);
 

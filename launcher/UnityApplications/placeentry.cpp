@@ -21,6 +21,8 @@
 #include "place.h"
 #include "launchermenu.h"
 
+#include <debug_p.h>
+
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>
@@ -160,7 +162,8 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_globalGroupsModel(NULL),
     m_globalResultsModel(NULL),
     m_dbusIface(NULL),
-    m_dashDbusIface(NULL)
+    m_dashDbusIface(NULL),
+    m_dashActive(false)
 {
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
@@ -727,21 +730,49 @@ PlaceEntry::connectToDash()
     m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
-            SLOT(updateActiveState()));
+            SLOT(slotDashActiveChanged(bool)));
     connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
-            SLOT(updateActiveState()));
+            SLOT(slotDashActivePlaceEntryChanged(const QString&)));
+
+    QVariant value = m_dashDbusIface->property("active");
+    if (value.isValid()) {
+        m_dashActive = value.toBool();
+    } else {
+        UQ_WARNING << "Fetching Dash.active property failed";
+    }
+    value = m_dashDbusIface->property("activePlaceEntry");
+    if (value.isValid()) {
+        m_dashActivePlaceEntry = value.toString();
+    } else {
+        UQ_WARNING << "Fetching Dash.activePlaceEntry property failed";
+    }
 
     updateActiveState();
 }
 
 void
+PlaceEntry::slotDashActiveChanged(bool value)
+{
+    if (m_dashActive != value) {
+        m_dashActive = value;
+        updateActiveState();
+    }
+}
+
+void
+PlaceEntry::slotDashActivePlaceEntryChanged(const QString& entry)
+{
+    if (m_dashActivePlaceEntry != entry) {
+        m_dashActivePlaceEntry = entry;
+        updateActiveState();
+    }
+}
+
+void
 PlaceEntry::updateActiveState()
 {
-    bool dashActive = m_dashDbusIface->property("active").toBool();
-    QString activePlaceEntry = m_dashDbusIface->property("activePlaceEntry").toString();
-
     bool active = false;
-    if (dashActive && !m_dbusObjectPath.isEmpty() && (activePlaceEntry == m_dbusObjectPath)) {
+    if (m_dashActive && !m_dbusObjectPath.isEmpty() && (m_dashActivePlaceEntry == m_dbusObjectPath)) {
         active = true;
     }
 
@@ -765,11 +796,7 @@ PlaceEntry::activateEntry(const int section)
     }
 
     QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    QDBusReply<void> reply = iface.call(QLatin1String("activatePlaceEntry"),
-                                        m_fileName, m_groupName, section);
-    if (!reply.isValid()) {
-        qWarning() << "ERROR:" << reply.error().message();
-    }
+    iface.asyncCall(QLatin1String("activatePlaceEntry"), m_fileName, m_groupName, section);
 }
 
 void

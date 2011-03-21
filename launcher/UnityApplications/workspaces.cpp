@@ -23,6 +23,7 @@
 
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDebug>
 
 Workspaces::Workspaces()
 {
@@ -84,10 +85,14 @@ Workspaces::activate()
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
     QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.value() == true) {
-        iface.call("FilterByApplication", QString());
+    if (isShown.isValid()) {
+        if (isShown.value() == true) {
+            iface.asyncCall("FilterByApplication", QString());
+        } else {
+            iface.asyncCall("ShowAllWorkspaces", QString());
+        }
     } else {
-        iface.call("ShowAllWorkspaces", QString());
+        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 

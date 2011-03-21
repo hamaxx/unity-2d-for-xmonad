@@ -22,6 +22,7 @@
 // unity-2d
 #include <gettexttranslator.h>
 #include <gnomesessionclient.h>
+#include <launcherclient.h>
 #include <unity2dapplication.h>
 #include <propertybinder.h>
 
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setFixedWidth(66);
+    panel.setFixedWidth(LauncherClient::MaximumWidth);
 
     VisibilityController* visibilityController = new VisibilityController(&panel);
 
