@@ -1,3 +1,4 @@
+#include "launcherapplication.h"
 #include "launcherapplicationslistdbus.h"
 #include "launcherapplicationslist.h"
 
@@ -21,5 +22,9 @@ LauncherApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString 
     LauncherApplicationsList* applicationsList = qobject_cast<LauncherApplicationsList*>(parent());
     if (applicationsList != NULL && !desktop_file.isEmpty()) {
         applicationsList->insertFavoriteApplication(desktop_file);
+        LauncherApplication *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
+        if (application != NULL) {
+            application->beginForceUrgent(1500);
+        }
     }
 }

@@ -125,11 +125,36 @@ LauncherApplication::windowCount() const
 bool
 LauncherApplication::urgent() const
 {
+    if (m_forceUrgent) {
+        return true;
+    }
+
     if (m_application != NULL) {
         return m_application->urgent();
     }
 
     return false;
+}
+
+void
+LauncherApplication::beginForceUrgent(int duration)
+{
+    bool wasUrgent = urgent();
+    m_forceUrgent = true;
+    if (wasUrgent != urgent()) {
+        Q_EMIT urgentChanged(urgent());
+    }
+    QTimer::singleShot(duration, this, SLOT(endForceUrgent()));
+}
+
+void
+LauncherApplication::endForceUrgent()
+{
+    bool wasUrgent = urgent();
+    m_forceUrgent = false;
+    if (wasUrgent != urgent()) {
+        Q_EMIT urgentChanged(urgent());
+    }
 }
 
 bool

@@ -34,6 +34,7 @@ class GConfItemQmlWrapper;
 class LauncherApplicationsList : public QAbstractListModel
 {
     Q_OBJECT
+    friend class LauncherApplicationsListDBUS;
 
 public:
     LauncherApplicationsList(QObject *parent = 0);
