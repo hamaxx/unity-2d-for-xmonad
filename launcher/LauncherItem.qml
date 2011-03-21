@@ -318,7 +318,7 @@ DropItem {
                 alwaysRunToEnd: true
 
                 SequentialAnimation {
-                    loops: 30
+                    loops: (urgent) ? 30 : 0
                     NumberAnimation { target: tile; property: "rotation"; to: 15; duration: 150 }
                     NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
                 }
