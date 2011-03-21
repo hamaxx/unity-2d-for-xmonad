@@ -156,6 +156,9 @@ LauncherContextualMenu::show(int x, int y)
     m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
+
+    /* FIXME: adjust the position of the menu if it goes offscreen,
+              as is done in setFolded(false). */
 }
 
 void

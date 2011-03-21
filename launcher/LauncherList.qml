@@ -92,6 +92,11 @@ AutoScrollingListView {
                 item.activate()
             }
             else if (mouse.button == Qt.RightButton) {
+                /* Show the menu first, then unfold it. Doing things in this
+                   order is required because at the moment the code path that
+                   adjusts the position of the menu in case it goes offscreen
+                   is traversed only when unfolding it.
+                   See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
                 item.menu.folded = false
             }
@@ -119,6 +124,11 @@ AutoScrollingListView {
             }
             else if (event.key == Qt.Key_Right ||
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
+                /* Show the menu first, then unfold it. Doing things in this
+                   order is required because at the moment the code path that
+                   adjusts the position of the menu in case it goes offscreen
+                   is traversed only when unfolding it.
+                   See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
                 item.menu.folded = false
                 item.menu.setFocus()
