@@ -35,6 +35,7 @@ class LauncherView : public QDeclarativeView
     Q_OBJECT
     Q_PROPERTY(bool superKeyPressed READ superKeyPressed
                                     NOTIFY superKeyPressedChanged)
+    Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden
 
 public:
     explicit LauncherView();
@@ -50,6 +51,7 @@ Q_SIGNALS:
     void keyboardShortcutPressed(int itemIndex);
     void superKeyPressedChanged(bool superKeyPressed);
     void addWebFavoriteRequested(const QUrl& url);
+    void focusChanged(bool focus);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -69,8 +71,6 @@ private:
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
-
-    VisibilityController* visibilityController() const;
 
     friend class LauncherDBus;
 };

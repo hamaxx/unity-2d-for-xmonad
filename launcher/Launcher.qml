@@ -89,5 +89,9 @@ DropItem {
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
         onWebpageUrlDropped: applications.insertWebFavorite(url)
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
+        onFocusChanged: {
+            if (focus) visibilityController.beginForceVisible()
+            else visibilityController.endForceVisible()
+        }
     }
 }
