@@ -21,11 +21,9 @@
 // Self
 #include "launcherclient.h"
 
-// Local
-#include <debug_p.h>
-
 // Qt
-#include <QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QDBusPendingCall>
 
 static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
@@ -38,22 +36,16 @@ struct LauncherClientPrivate
 {
     LauncherClient* q;
 
-    QDBusInterface* m_iface;
-    bool init()
+    void asyncDBusCall(const QString& methodName)
     {
-        if (m_iface) {
-            return true;
-        }
-
-        m_iface = new QDBusInterface(LAUNCHER_DBUS_SERVICE, LAUNCHER_DBUS_OBJECT_PATH, LAUNCHER_DBUS_INTERFACE,
-            QDBusConnection::sessionBus(), q);
-        if (!m_iface->isValid()) {
-            UQ_WARNING << "Could not connect to Launcher on DBus";
-            delete m_iface;
-            m_iface = 0;
-            return false;
-        }
-        return true;
+        /* The constructor for QDBusInterface potentially does synchronous
+           introspection calls. In contrast, this is really asynchronous.
+           See rationale at https://bugs.launchpad.net/unity-2d/+bug/738025. */
+        QDBusMessage call = QDBusMessage::createMethodCall(LAUNCHER_DBUS_SERVICE,
+                                                           LAUNCHER_DBUS_OBJECT_PATH,
+                                                           LAUNCHER_DBUS_INTERFACE,
+                                                           methodName);
+        QDBusConnection::sessionBus().asyncCall(call);
     }
 };
 
@@ -62,7 +54,6 @@ LauncherClient::LauncherClient(QObject* parent)
 , d(new LauncherClientPrivate)
 {
     d->q = this;
-    d->m_iface = 0;
 }
 
 LauncherClient::~LauncherClient()
@@ -72,14 +63,12 @@ LauncherClient::~LauncherClient()
 
 void LauncherClient::beginForceVisible()
 {
-    UQ_RETURN_IF_FAIL(d->init());
-    d->m_iface->asyncCall("BeginForceVisible");
+    d->asyncDBusCall("BeginForceVisible");
 }
 
 void LauncherClient::endForceVisible()
 {
-    UQ_RETURN_IF_FAIL(d->init());
-    d->m_iface->asyncCall("EndForceVisible");
+    d->asyncDBusCall("EndForceVisible");
 }
 
 #include "launcherclient.moc"
