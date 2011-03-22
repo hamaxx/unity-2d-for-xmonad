@@ -16,33 +16,43 @@ DropItem {
     onDragEnter: launcherView.onDragEnter(event)
     onDrop: launcherView.onDrop(event)
 
-    LauncherList {
-        id: main
-        anchors.top: parent.top
-        anchors.bottom: shelf.top
-        width: parent.width
-        z: 1 /* for dnd to remain on top of looseItems */
+    FocusScope {
+        focus: true
+        anchors.fill: parent
 
-        autoScrollSize: tileSize / 2
-        autoScrollVelocity: 200
-        reorderable: true
+        LauncherList {
+            id: main
+            anchors.top: parent.top
+            anchors.bottom: shelf.top
+            width: parent.width
+            z: 1 /* for dnd to remain on top of looseItems */
 
-        model: ListAggregatorModel {
-            id: items
+            autoScrollSize: tileSize / 2
+            autoScrollVelocity: 200
+            reorderable: true
+
+            model: ListAggregatorModel {
+                id: items
+            }
+
+            focus: true
+            KeyNavigation.down: shelf
         }
-    }
 
-    LauncherList {
-        id: shelf
-        anchors.bottom: parent.bottom;
-        height: (tileSize + itemPadding) * count
-        width: parent.width
-        /* Ensure the tiles in the shelf are always above those in 'main'. */
-        itemZ: 1
-        itemPadding: 0
+        LauncherList {
+            id: shelf
+            anchors.bottom: parent.bottom;
+            height: (tileSize + itemPadding) * count
+            width: parent.width
+            /* Ensure the tiles in the shelf are always above those in 'main'. */
+            itemZ: 1
+            itemPadding: 0
 
-        model: ListAggregatorModel {
-            id: shelfItems
+            model: ListAggregatorModel {
+                id: shelfItems
+            }
+
+            KeyNavigation.up: main
         }
     }
 
@@ -79,5 +89,9 @@ DropItem {
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
         onWebpageUrlDropped: applications.insertWebFavorite(url)
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
+        onFocusChanged: {
+            if (focus) visibilityController.beginForceVisible()
+            else visibilityController.endForceVisible()
+        }
     }
 }

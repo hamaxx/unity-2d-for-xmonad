@@ -17,6 +17,7 @@
 #include "launcherapplication.h"
 #include "launcherapplicationslist.h"
 #include "webfavorite.h"
+#include "launcherapplicationslistdbus.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -31,6 +32,8 @@
 #define FAVORITES_KEY QString("/desktop/unity-2d/launcher/favorites")
 #define DBUS_SERVICE_UNITY "com.canonical.Unity"
 #define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
+#define DBUS_SERVICE_LAUNCHER "com.canonical.Unity.Launcher"
+#define DBUS_OBJECT_LAUNCHER "/com/canonical/Unity/Launcher"
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -38,18 +41,32 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     m_favorites_list = new GConfItemQmlWrapper();
     m_favorites_list->setKey(FAVORITES_KEY);
 
+    QDBusConnection session = QDBusConnection::sessionBus();
     /* FIXME: libunity will send out the Update signal for LauncherEntries
        only if it finds com.canonical.Unity on the bus, so let's just quickly
        register ourselves as Unity here. Should be moved somewhere else more proper */
-    if (!QDBusConnection::sessionBus().registerService(DBUS_SERVICE_UNITY)) {
-        qWarning() << "The name com.canonical.Unity is already taken on the bus";
+    if (!session.registerService(DBUS_SERVICE_UNITY)) {
+        qWarning() << "The name" << DBUS_SERVICE_UNITY << "is already taken on DBUS";
     } else {
         /* Set ourselves up to receive any Update signal coming from any
            LauncherEntry */
-        QDBusConnection session = QDBusConnection::sessionBus();
         session.connect(QString(), QString(),
                         DBUS_SERVICE_LAUNCHER_ENTRY, "Update",
                         this, SLOT(onRemoteEntryUpdated(QString,QMap<QString,QVariant>)));
+    }
+
+    if (!session.registerService(DBUS_SERVICE_LAUNCHER)) {
+        qWarning() << "The name" << DBUS_SERVICE_LAUNCHER << "is already taken on DBUS";
+    } else {
+        /* Set ourselves up to receive a method call from Software Center asking us to add
+           to favorites an application that is being installed and that the user requested
+           to be added. */
+        LauncherApplicationsListDBUS *dbusAdapter = new LauncherApplicationsListDBUS(this);
+        if (!session.registerObject(DBUS_OBJECT_LAUNCHER, dbusAdapter,
+                                    QDBusConnection::ExportAllSlots)) {
+            qWarning() << "The object" << DBUS_OBJECT_LAUNCHER << "on" << DBUS_SERVICE_LAUNCHER
+                       << "is already present on DBUS.";
+        }
     }
 
     load();

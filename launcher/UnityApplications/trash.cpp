@@ -22,6 +22,9 @@
 
 #include "config.h"
 
+// libunity-2d
+#include <unity2dtr.h>
+
 #include <QDebug>
 #include <QAction>
 
@@ -68,7 +71,7 @@ Trash::urgent() const
 QString
 Trash::name() const
 {
-    return tr("Trash");
+    return u2dTr("Trash");
 }
 
 QString
@@ -188,14 +191,14 @@ Trash::createMenuActions()
     if (c == 0) return;
 
     QAction* contents = new QAction(m_menu);
-    contents->setText(tr("%n item(s) in trash", 0, c));
+    contents->setText(u2dTr("%n item in trash", "%n items in trash", c));
     contents->setEnabled(false);
     m_menu->addAction(contents);
 
     m_menu->addSeparator();
 
     QAction* empty = new QAction(m_menu);
-    empty->setText(tr("Empty Trash"));
+    empty->setText(u2dTr("Empty Trash"));
     m_menu->addAction(empty);
     QObject::connect(empty, SIGNAL(triggered()), this, SLOT(onEmptyTriggered()));
 }
