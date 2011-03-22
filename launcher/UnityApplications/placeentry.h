@@ -145,6 +145,8 @@ public:
     QMap<QString, QVariant> globalRendererHints() const;
 
     /* setters */
+    /* FIXME: all setters of type QString should be optimized
+       by having the argument as cont QString& */
     void setName(QString);
     void setIcon(QString);
     void setFileName(QString);
