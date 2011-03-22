@@ -28,7 +28,6 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
-#include <QTimer>
 #include <QtDBus/QDBusInterface>
 
 #include <X11/Xlib.h>
