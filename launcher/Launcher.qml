@@ -107,6 +107,10 @@ DropItem {
         onDesktopFileDropped: applications.insertFavoriteApplication(path)
         onWebpageUrlDropped: applications.insertWebFavorite(url)
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
+        onSuperKeyHeldChanged: {
+            if (superKeyHeld) visibilityController.beginForceVisible()
+            else visibilityController.endForceVisible()
+        }
         onFocusChanged: {
             if (focus) visibilityController.beginForceVisible()
             else visibilityController.endForceVisible()

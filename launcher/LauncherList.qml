@@ -74,7 +74,7 @@ AutoScrollingListView {
         emblemVisible: (noOverlays) ? false : item.emblemVisible
 
         shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
-                         index <= 9 && launcherView.superKeyPressed
+                         index <= 9 && launcherView.superKeyHeld
         shortcutText: index + 1
 
         isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
