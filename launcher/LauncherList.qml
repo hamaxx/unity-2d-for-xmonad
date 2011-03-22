@@ -92,8 +92,13 @@ AutoScrollingListView {
                 item.activate()
             }
             else if (mouse.button == Qt.RightButton) {
-                item.menu.folded = false
+                /* Show the menu first, then unfold it. Doing things in this
+                   order is required because at the moment the code path that
+                   adjusts the position of the menu in case it goes offscreen
+                   is traversed only when unfolding it.
+                   See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
+                item.menu.folded = false
             }
         }
 
@@ -109,6 +114,43 @@ AutoScrollingListView {
                 item.menu.hideWithDelay(400)
             else
                 item.menu.hide()
+        }
+
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Space) {
+                item.menu.hide()
+                item.activate()
+                event.accepted = true
+            }
+            else if (event.key == Qt.Key_Right ||
+                    (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
+                /* Show the menu first, then unfold it. Doing things in this
+                   order is required because at the moment the code path that
+                   adjusts the position of the menu in case it goes offscreen
+                   is traversed only when unfolding it.
+                   See FIXME in LauncherContextualMenu::show(…). */
+                showMenu()
+                item.menu.folded = false
+                item.menu.setFocus()
+                event.accepted = true
+            }
+            else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
+                item.menu.hide()
+                event.accepted = true
+            }
+        }
+
+        onActiveFocusChanged: {
+            if (!activeFocus) {
+                item.menu.hide()
+            }
+        }
+
+        Connections {
+            target: item.menu
+            /* The menu had the keyboard focus because the launcher had
+               activated it. Restore it. */
+            onDismissedByKeyEvent: launcherView.activateWindow()
         }
 
         Connections {

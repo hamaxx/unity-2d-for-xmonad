@@ -34,6 +34,7 @@ class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
+    Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden
 
 public:
     explicit LauncherView(QWidget* parent = NULL);
@@ -50,6 +51,7 @@ Q_SIGNALS:
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
     void addWebFavoriteRequested(const QUrl& url);
+    void focusChanged(bool focus);
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -58,6 +60,13 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void changeKeyboardShortcutsState(bool enabled);
+
+public Q_SLOTS:
+    void activateWindow();
+
+protected:
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);

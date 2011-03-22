@@ -59,14 +59,17 @@ protected:
     void resizeEvent(QResizeEvent* event);
     void leaveEvent(QEvent* event);
     void enterEvent(QEvent* event);
+    void paintEvent(QPaintEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
 Q_SIGNALS:
     void foldedChanged(bool);
     void titleChanged(QString);
     void visibleChanged(bool);
+    void dismissedByKeyEvent();
 
-protected:
-    void paintEvent(QPaintEvent* event);
+public Q_SLOTS:
+    void setFocus(); // overridden
 
 private:
     void loadCSS();
@@ -81,6 +84,7 @@ private:
 
 private Q_SLOTS:
     void updateMask();
+    void activateWindow();
 };
 
 #endif // LAUNCHERMENU_H

@@ -60,6 +60,30 @@ LauncherView::LauncherView(QWidget* parent) :
     m_enableSuperKey.setKey("/desktop/unity/launcher/super_key_enable");
     connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
+
+    /* Alt+F1 gives the keyboard focus to the launcher. */
+    Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
+    connect(altF1, SIGNAL(pressed()), SLOT(activateWindow()));
+}
+
+void
+LauncherView::activateWindow()
+{
+    QDeclarativeView::activateWindow();
+}
+
+void
+LauncherView::focusInEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusInEvent(event);
+    Q_EMIT focusChanged(true);
+}
+
+void
+LauncherView::focusOutEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusOutEvent(event);
+    Q_EMIT focusChanged(false);
 }
 
 void
