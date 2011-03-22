@@ -537,7 +537,7 @@ PlaceEntry::setHints(QMap<QString, QVariant> hints)
 }
 
 void
-PlaceEntry::setSearchHint(QString searchHint)
+PlaceEntry::setSearchHint(const QString& searchHint)
 {
     if (m_searchHint != searchHint) {
         m_searchHint = searchHint;

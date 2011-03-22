@@ -158,7 +158,7 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
-    void setSearchHint(QString);
+    void setSearchHint(const QString&);
     void setActiveSection(int);
     void setActive(bool);
 
