@@ -29,6 +29,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
 #include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusPendingCall>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -44,6 +45,7 @@ static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
+static const char* DASH_DBUS_HOME = "activateHome";
 
 LauncherView::LauncherView(QWidget* parent) :
     QDeclarativeView(parent),
@@ -183,9 +185,13 @@ LauncherView::toggleDash()
     }
 
     bool dashActive = dashActiveResult.toBool();
-    if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, !dashActive)) {
-        qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
-                   << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+    if (dashActive) {
+        if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
+            qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+                       << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        }
+    } else {
+        dashInterface.asyncCall(DASH_DBUS_HOME);
     }
 }
 
