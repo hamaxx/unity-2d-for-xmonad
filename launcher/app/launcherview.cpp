@@ -45,7 +45,7 @@ static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
-static const char* DASH_DBUS_HOME = "activateHome";
+static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 
 LauncherView::LauncherView(QWidget* parent) :
     QDeclarativeView(parent),
@@ -215,7 +215,7 @@ LauncherView::toggleDash()
                        << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         }
     } else {
-        dashInterface.asyncCall(DASH_DBUS_HOME);
+        dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
     }
 }
 
