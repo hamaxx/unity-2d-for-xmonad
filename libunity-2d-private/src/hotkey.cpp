@@ -26,6 +26,20 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
+#include <X11/Xproto.h>
+
+static int (*_x_old_errhandler)(Display *, XErrorEvent *);
+static int _x_grabkey_errhandler(Display *display, XErrorEvent *event)
+{
+    Q_UNUSED(display);
+    if ((event->error_code == BadAccess ||
+         event->error_code == BadValue ||
+         event->error_code== BadWindow) &&
+         event->request_code == X_GrabKey) {
+        qWarning() << "Call to XGrabKey failed, this usually means some"
+                      " other client already reserved the hotkey.";
+    }
+}
 
 Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     QObject(parent), m_connections(0),
@@ -70,8 +84,11 @@ Hotkey::connectNotify(const char * signal)
     Q_UNUSED(signal);
     if (m_connections == 0) {
         qDebug() << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        _x_old_errhandler = XSetErrorHandler(_x_grabkey_errhandler);
         XGrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                  QX11Info::appRootWindow(), True, GrabModeAsync, GrabModeAsync);
+        XSync(QX11Info::display(), False);
+        XSetErrorHandler(_x_old_errhandler);
     }
     m_connections++;
 }

@@ -156,6 +156,9 @@ LauncherContextualMenu::show(int x, int y)
     m_arrowY = 6;
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
+
+    /* FIXME: adjust the position of the menu if it goes offscreen,
+              as is done in setFolded(false). */
 }
 
 void
@@ -258,3 +261,43 @@ LauncherContextualMenu::setVisible(bool value)
         visibleChanged(value);
     }
 }
+
+void
+LauncherContextualMenu::setFocus()
+{
+    /* FIXME: for some reason, invoking QMenu::activateWindow() directly here
+       doesn’t work, the active window remains unchanged. */
+    QTimer::singleShot(1, this, SLOT(activateWindow()));
+
+    /* Set the first enabled action active. */
+    Q_FOREACH(QAction* action, actions()) {
+        if (action->isEnabled() && !action->isSeparator()) {
+            setActiveAction(action);
+            break;
+        }
+    }
+}
+
+void
+LauncherContextualMenu::activateWindow()
+{
+    QMenu::activateWindow();
+}
+
+void
+LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
+{
+    int key = event->key();
+    if (key == Qt::Key_Left || key == Qt::Key_Escape) {
+        hide();
+        Q_EMIT dismissedByKeyEvent();
+        event->accept();
+        return;
+    }
+
+    QMenu::keyPressEvent(event);
+    if (event->isAccepted() && isHidden()) {
+        Q_EMIT dismissedByKeyEvent();
+    }
+}
+
