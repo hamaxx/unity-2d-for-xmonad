@@ -35,7 +35,7 @@ class ForceVisibleBehavior : public AbstractVisibilityBehavior
 {
     Q_OBJECT
 public:
-    ForceVisibleBehavior(VisibilityController*, Unity2dPanel*);
+    ForceVisibleBehavior(Unity2dPanel*);
 };
 
 #endif /* FORCEVISIBLEBEHAVIOR_H */

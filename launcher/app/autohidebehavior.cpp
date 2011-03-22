@@ -22,7 +22,6 @@
 #include "autohidebehavior.h"
 
 // Local
-#include <visibilitycontroller.h>
 
 // libunity-2d
 #include <debug_p.h>
@@ -35,8 +34,8 @@
 
 static const int AUTOHIDE_TIMEOUT = 1000;
 
-AutoHideBehavior::AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel)
-: AbstractVisibilityBehavior(controller, panel)
+AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
+: AbstractVisibilityBehavior(panel)
 , m_autohideTimer(new QTimer(this))
 {
     m_autohideTimer->setSingleShot(true);
@@ -66,23 +65,10 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         m_autohideTimer->stop();
         break;
     case QEvent::Leave:
-        if (!m_controller->isMouseOverHomeButton()) {
-            m_autohideTimer->start();
-        }
+        m_autohideTimer->start();
         break;
     default:
         break;
     }
     return false;
-}
-
-void AutoHideBehavior::onMouseOverHomeButtonChanged()
-{
-    if (m_controller->isMouseOverHomeButton()) {
-        m_panel->slideIn();
-    } else {
-        if (!m_panel->underMouse()) {
-            m_autohideTimer->start();
-        }
-    }
 }

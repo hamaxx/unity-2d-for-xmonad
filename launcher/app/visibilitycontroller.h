@@ -64,9 +64,6 @@ public:
     Q_INVOKABLE void beginForceVisible(const QString& service = QString());
     Q_INVOKABLE void endForceVisible(const QString& service = QString());
 
-    bool isMouseOverHomeButton() const;
-    void setMouseOverHomeButton(bool);
-
 private Q_SLOTS:
     void update();
     void slotServiceUnregistered(const QString&);
@@ -82,7 +79,6 @@ private:
     GConfItemQmlWrapper* m_hideModeKey;
     QDBusServiceWatcher* m_dbusWatcher;
     QScopedPointer<AbstractVisibilityBehavior> m_behavior;
-    bool m_mouseOverHomeButton;
 
     typedef QHash<QString, int> ForceVisibleCountHash;
     ForceVisibleCountHash m_forceVisibleCountHash;

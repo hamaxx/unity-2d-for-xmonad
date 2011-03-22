@@ -116,13 +116,13 @@ void HomeButtonApplet::toggleDash()
 void HomeButtonApplet::enterEvent(QEvent* event)
 {
     Unity2d::Applet::enterEvent(event);
-    m_launcherClient->setMouseOverHomeButton(true);
+    m_launcherClient->beginForceVisible();
 }
 
 void HomeButtonApplet::leaveEvent(QEvent* event)
 {
     Unity2d::Applet::leaveEvent(event);
-    m_launcherClient->setMouseOverHomeButton(false);
+    m_launcherClient->endForceVisible();
 }
 
 #include "homebuttonapplet.moc"

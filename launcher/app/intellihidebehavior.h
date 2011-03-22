@@ -28,10 +28,8 @@ class IntelliHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:
-    IntelliHideBehavior(VisibilityController*, Unity2dPanel* panel);
+    IntelliHideBehavior(Unity2dPanel* panel);
     ~IntelliHideBehavior();
-
-    void onMouseOverHomeButtonChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*);

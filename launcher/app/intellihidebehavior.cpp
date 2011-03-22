@@ -12,7 +12,6 @@
 #include "intellihidebehavior.h"
 
 // Local
-#include <visibilitycontroller.h>
 
 // libunity-2d
 #include <debug_p.h>
@@ -61,8 +60,8 @@ GOBJECT_CALLBACK2(stateChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(geometryChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
-IntelliHideBehavior::IntelliHideBehavior(VisibilityController* controller, Unity2dPanel* panel)
-: AbstractVisibilityBehavior(controller, panel)
+IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
+: AbstractVisibilityBehavior(panel)
 , m_activeWindow(0)
 {
     m_panel->installEventFilter(this);
@@ -187,17 +186,7 @@ bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
     return false;
 }
 
-void IntelliHideBehavior::onMouseOverHomeButtonChanged()
-{
-    if (m_controller->isMouseOverHomeButton()) {
-        m_panel->slideIn();
-    } else {
-        updateVisibility();
-    }
-}
-
 bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
-    return m_controller->isMouseOverHomeButton()
-        || m_panel->underMouse();
+    return m_panel->underMouse();
 }

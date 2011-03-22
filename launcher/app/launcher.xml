@@ -31,12 +31,6 @@
                hide.
             ]]></dox:d>
         </method>
-        <method name="SetMouseOverHomeButton">
-            <dox:d>
-            Tells the launcher the mouse is over the Home button.
-            </dox:d>
-            <arg type="b" name="IsOver"/>
-        </method>
     </interface>
 </node>
 

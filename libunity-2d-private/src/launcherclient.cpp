@@ -82,10 +82,4 @@ void LauncherClient::endForceVisible()
     d->m_iface->asyncCall("EndForceVisible");
 }
 
-void LauncherClient::setMouseOverHomeButton(bool value)
-{
-    UQ_RETURN_IF_FAIL(d->init());
-    d->m_iface->asyncCall("SetMouseOverHomeButton", QVariant(value));
-}
-
 #include "launcherclient.moc"

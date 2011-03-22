@@ -44,7 +44,6 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
 , m_panel(panel)
 , m_hideModeKey(new GConfItemQmlWrapper(this))
 , m_dbusWatcher(new QDBusServiceWatcher(this))
-, m_mouseOverHomeButton(false)
 {
     m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
 
@@ -80,10 +79,10 @@ void VisibilityController::update()
         case ManualHide:
             break;
         case AutoHide:
-            setBehavior(new AutoHideBehavior(this, m_panel));
+            setBehavior(new AutoHideBehavior(m_panel));
             break;
         case IntelliHide:
-            setBehavior(new IntelliHideBehavior(this, m_panel));
+            setBehavior(new IntelliHideBehavior(m_panel));
             break;
         }
     }
@@ -101,7 +100,7 @@ void VisibilityController::beginForceVisible(const QString& service)
         }
     }
     if (wasEmpty) {
-        setBehavior(new ForceVisibleBehavior(this, m_panel));
+        setBehavior(new ForceVisibleBehavior(m_panel));
     }
 }
 
@@ -142,20 +141,4 @@ void VisibilityController::slotServiceUnregistered(const QString& service)
     if (m_forceVisibleCountHash.isEmpty()) {
         update();
     }
-}
-
-void VisibilityController::setMouseOverHomeButton(bool isOver)
-{
-    if (m_mouseOverHomeButton == isOver) {
-        return;
-    }
-    m_mouseOverHomeButton = isOver;
-    if (m_behavior) {
-        m_behavior->onMouseOverHomeButtonChanged();
-    }
-}
-
-bool VisibilityController::isMouseOverHomeButton() const
-{
-    return m_mouseOverHomeButton;
 }

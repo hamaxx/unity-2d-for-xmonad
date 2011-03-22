@@ -28,9 +28,8 @@
 
 // Qt
 
-AbstractVisibilityBehavior::AbstractVisibilityBehavior(VisibilityController* controller, Unity2dPanel* panel)
+AbstractVisibilityBehavior::AbstractVisibilityBehavior(Unity2dPanel* panel)
 : QObject(panel)
-, m_controller(controller)
 , m_panel(panel)
 {
 }

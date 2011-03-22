@@ -37,10 +37,8 @@ class AutoHideBehavior : public AbstractVisibilityBehavior
 {
 Q_OBJECT
 public:
-    AutoHideBehavior(VisibilityController* controller, Unity2dPanel* panel);
+    AutoHideBehavior(Unity2dPanel* panel);
     ~AutoHideBehavior();
-
-    void onMouseOverHomeButtonChanged();
 
 protected:
     bool eventFilter(QObject*, QEvent*);
