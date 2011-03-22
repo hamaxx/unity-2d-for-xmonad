@@ -37,6 +37,7 @@ DropItem {
     FocusScope {
         focus: true
         anchors.fill: parent
+        z: 1 /* ensure the lists are always strictly on top of the background */
 
         LauncherList {
             id: main
