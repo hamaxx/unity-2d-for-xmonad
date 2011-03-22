@@ -79,6 +79,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool sensitive READ sensitive WRITE setSensitive NOTIFY sensitiveChanged)
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+    Q_PROPERTY(QString searchHint READ searchHint WRITE setSearchHint NOTIFY searchHintChanged)
     Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(Place* place READ place)
@@ -123,6 +124,7 @@ public:
     bool sensitive() const;
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
+    QString searchHint() const;
     int activeSection() const;
     Place* place() const;
 
@@ -154,6 +156,7 @@ public:
     void setSensitive(bool);
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
+    void setSearchHint(QString);
     void setActiveSection(int);
     void setActive(bool);
 
@@ -189,6 +192,7 @@ Q_SIGNALS:
     void sensitiveChanged(bool);
     void sectionsChanged();
     void hintsChanged();
+    void searchHintChanged(QString);
     void activeSectionChanged();
     void activeChanged();
 
@@ -226,6 +230,7 @@ private:
        QVariant values in order to allow exposing it as a property (see
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
+    QString m_searchHint;
     int m_activeSection;
     bool m_active;
     Place* m_place;

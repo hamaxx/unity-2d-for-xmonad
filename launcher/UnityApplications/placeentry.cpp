@@ -347,6 +347,12 @@ PlaceEntry::hints() const
     return m_hints;
 }
 
+QString
+PlaceEntry::searchHint() const
+{
+    return m_searchHint;
+}
+
 int
 PlaceEntry::activeSection() const
 {
@@ -528,6 +534,15 @@ PlaceEntry::setHints(QMap<QString, QVariant> hints)
 {
     m_hints = hints;
     Q_EMIT hintsChanged();
+}
+
+void
+PlaceEntry::setSearchHint(QString searchHint)
+{
+    if (m_searchHint != searchHint) {
+        m_searchHint = searchHint;
+        Q_EMIT searchHintChanged(m_searchHint);
+    }
 }
 
 void
