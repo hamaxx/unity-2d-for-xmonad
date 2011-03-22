@@ -36,17 +36,13 @@ static const int AUTOHIDE_TIMEOUT = 1000;
 
 AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
-, m_mouseArea(new MouseArea(this))
 , m_autohideTimer(new QTimer(this))
 {
-    connect(m_mouseArea, SIGNAL(entered()), m_panel, SLOT(slideIn()));
-
     m_autohideTimer->setSingleShot(true);
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_autohideTimer, SIGNAL(timeout()), m_panel, SLOT(slideOut()));
 
     m_panel->installEventFilter(this);
-    updateFromPanelGeometry();
     if (!m_panel->geometry().contains(QCursor::pos())) {
         if (m_panel->delta() == 0) {
             /* Launcher is fully visible */
@@ -69,21 +65,10 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         m_autohideTimer->stop();
         break;
     case QEvent::Leave:
-        if (!m_mouseArea->containsMouse()) {
-            m_autohideTimer->start();
-        }
-        break;
-    case QEvent::Resize:
-        updateFromPanelGeometry();
+        m_autohideTimer->start();
         break;
     default:
         break;
     }
     return false;
-}
-
-void AutoHideBehavior::updateFromPanelGeometry()
-{
-    QRect rect(0, m_panel->y(), 1, m_panel->height());
-    m_mouseArea->setGeometry(rect);
 }

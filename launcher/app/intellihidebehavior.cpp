@@ -15,7 +15,6 @@
 
 // libunity-2d
 #include <debug_p.h>
-#include <mousearea.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -63,19 +62,14 @@ GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
 IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
-, m_mouseArea(new MouseArea(this))
 , m_activeWindow(0)
-, m_visibility(VisiblePanel)
 {
     m_panel->installEventFilter(this);
-
-    connect(m_mouseArea, SIGNAL(entered()), SLOT(forceVisiblePanel()));
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
-    updateFromPanelGeometry();
     /* Delay monitoring the active window giving time to the user to reach
        for the panel before it disappears */
     QTimer::singleShot(1000, this, SLOT(updateActiveWindowConnections()));
@@ -118,7 +112,7 @@ void IntelliHideBehavior::updateActiveWindowConnections()
 
 void IntelliHideBehavior::updateVisibility()
 {
-    if (m_visibility == ForceVisiblePanel) {
+    if (isMouseForcingVisibility()) {
         return;
     }
     int launcherPid = getpid();
@@ -166,41 +160,24 @@ void IntelliHideBehavior::updateVisibility()
         }
     }
 
-    m_visibility = crossWindow ? HiddenPanel : VisiblePanel;
-    slidePanel();
+    if (crossWindow) {
+        m_panel->slideOut();
+    } else {
+        m_panel->slideIn();
+    }
 }
 
 bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
 {
-    if (event->type() == QEvent::Leave && !m_mouseArea->containsMouse() && m_visibility == ForceVisiblePanel) {
-        m_visibility = VisiblePanel;
+    if (event->type() == QEvent::Leave && !isMouseForcingVisibility()) {
         updateVisibility();
     } else if (event->type() == QEvent::Resize) {
-        updateFromPanelGeometry();
         updateVisibility();
     }
     return false;
 }
 
-void IntelliHideBehavior::slidePanel()
+bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
-    if (m_visibility != HiddenPanel) {
-        m_panel->slideIn();
-    } else {
-        m_panel->slideOut();
-    }
-}
-
-void IntelliHideBehavior::updateFromPanelGeometry()
-{
-    QRect rect(0, m_panel->y(), 1, m_panel->height());
-    m_mouseArea->setGeometry(rect);
-}
-
-void IntelliHideBehavior::forceVisiblePanel()
-{
-    if (m_visibility != ForceVisiblePanel) {
-        m_visibility = ForceVisiblePanel;
-        slidePanel();
-    }
+    return m_panel->underMouse();
 }
