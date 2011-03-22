@@ -55,13 +55,13 @@ int main(int argc, char *argv[])
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
-       with 'raster' by calling QApplication::setColorSpec.
+       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
+       behaviour with 'raster' by calling QApplication::setColorSpec because
+       of a bug where black rectangular artifacts were appearing randomly:
 
-       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+       https://bugs.launchpad.net/unity-2d/+bug/734143
     */
     QApplication::setGraphicsSystem("raster");
-    QApplication::setColorSpec(QApplication::ManyColor);
     Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
