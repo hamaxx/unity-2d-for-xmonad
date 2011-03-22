@@ -27,6 +27,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include "launcherclient.h"
+
 SpreadView::SpreadView() : QDeclarativeView()
 {
 }
@@ -40,6 +42,7 @@ void SpreadView::fitToAvailableSpace(int screen)
     if(screen == current_screen)
     {
         QRect geometry = desktop->availableGeometry(this);
+        geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
         setGeometry(geometry);
         setFixedSize(geometry.size());
     }

@@ -30,6 +30,8 @@ extern "C" {
     #include <gtk/gtk.h>
 }
 
+// libunity-2d
+#include <unity2dtr.h>
 
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
@@ -223,7 +225,7 @@ void
 LauncherDevice::createMenuActions()
 {
     QAction* eject = new QAction(m_menu);
-    eject->setText(tr("Eject"));
+    eject->setText(u2dTr("Eject"));
     m_menu->addAction(eject);
     QObject::connect(eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
 }

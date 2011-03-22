@@ -151,20 +151,11 @@ void IntelliHideBehavior::updateVisibility()
             WnckWindowState state = wnck_window_get_state(window);
 
             // Skip hidden (==minimized and other states) windows
-            // Note: check this *before* checking if window is maximized
-            // because a window can be both minimized and maximized
             if (state & WNCK_WINDOW_STATE_HIDDEN) {
                 continue;
             }
 
-            // Maximized window should always be considered as crossing the
-            // window
-            if (state & WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY) {
-                crossWindow = true;
-                break;
-            }
-
-            // Not maximized => really check the window rect
+            // Check the window rect
             int x, y, width, height;
             wnck_window_get_geometry(window, &x, &y, &width, &height);
             QRect rect(x, y, width, height);
