@@ -28,7 +28,6 @@
 
 class DeclarativeDragDropEvent;
 class LauncherDBus;
-class VisibilityController;
 
 class LauncherView : public QDeclarativeView
 {
