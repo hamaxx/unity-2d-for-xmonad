@@ -128,16 +128,18 @@ void GnomeSessionClient::stop()
 void GnomeSessionClient::queryEndSession()
 {
     UQ_DEBUG;
-    if (d->sendEndSessionResponse()) {
-        d->m_waitingForEndSession = true;
+    d->m_waitingForEndSession = true;
+
+    if (!d->sendEndSessionResponse()) {
+      d->m_waitingForEndSession = false;
     }
 }
 
 void GnomeSessionClient::endSession()
 {
     UQ_DEBUG;
-    d->m_waitingForEndSession = false;
     d->sendEndSessionResponse();
+    d->m_waitingForEndSession = false;
     QCoreApplication::quit();
 }
 
