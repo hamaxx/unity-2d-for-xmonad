@@ -31,11 +31,15 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCallWatcher>
+#include <QTime>
 
 static const char* SM_DBUS_SERVICE          = "org.gnome.SessionManager";
 static const char* SM_DBUS_PATH             = "/org/gnome/SessionManager";
 static const char* SM_DBUS_INTERFACE        = "org.gnome.SessionManager";
 static const char* SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate";
+
+// Number of seconds to wait for gnome-session to call us back
+static const int MAX_END_SESSION_WAIT = 5;
 
 struct GnomeSessionClientPrivate
 {
@@ -45,12 +49,32 @@ struct GnomeSessionClientPrivate
 
     QString m_applicationId;
     QString m_clientPath;
+    bool m_waitingForEndSession;
+
+    bool sendEndSessionResponse()
+    {
+        UQ_DEBUG;
+        QDBusInterface iface(
+            SM_DBUS_SERVICE,
+            m_clientPath,
+            SM_CLIENT_DBUS_INTERFACE);
+        QDBusReply<void> reply = iface.call("EndSessionResponse", /* is_okay= */ true, /* reason= */ "");
+        if (reply.isValid()) {
+            return true;
+        } else {
+            UQ_WARNING << "EndSessionResponse failed:" << reply.error().message();
+            return false;
+        }
+    }
 };
 
 GnomeSessionClient::GnomeSessionClient(const QString& applicationId, QObject* parent)
 : QObject(parent)
 , d(new GnomeSessionClientPrivate(applicationId))
 {
+    d->m_waitingForEndSession = false;
+    connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
+        SLOT(waitForEndSession()));
 }
 
 GnomeSessionClient::~GnomeSessionClient()
@@ -97,25 +121,41 @@ void GnomeSessionClient::slotRegisterClientFinished(QDBusPendingCallWatcher* wat
 
 void GnomeSessionClient::stop()
 {
+    UQ_DEBUG;
     QCoreApplication::quit();
 }
 
 void GnomeSessionClient::queryEndSession()
 {
-    QDBusInterface iface(
-        SM_DBUS_SERVICE,
-        d->m_clientPath,
-        SM_CLIENT_DBUS_INTERFACE);
-    QDBusReply<void> reply = iface.call("EndSessionResponse", /* is_okay= */ true, /* reason= */ "");
-    if (!reply.isValid()) {
-        UQ_WARNING << "EndSessionResponse failed:" << reply.error().message();
+    UQ_DEBUG;
+    if (d->sendEndSessionResponse()) {
+        d->m_waitingForEndSession = true;
     }
 }
 
 void GnomeSessionClient::endSession()
 {
-    queryEndSession();
+    UQ_DEBUG;
+    d->m_waitingForEndSession = false;
+    d->sendEndSessionResponse();
     QCoreApplication::quit();
+}
+
+void GnomeSessionClient::waitForEndSession()
+{
+    if (!d->m_waitingForEndSession) {
+        return;
+    }
+
+    UQ_DEBUG << "Application is about to quit, waiting for gnome-session to call us back";
+    QTime watchDog;
+    watchDog.start();
+    while (d->m_waitingForEndSession && watchDog.elapsed() < MAX_END_SESSION_WAIT * 1000) {
+        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
+    if (d->m_waitingForEndSession) {
+        UQ_WARNING << "gnome-session did not call back after" << MAX_END_SESSION_WAIT << "seconds, leaving";
+    }
 }
 
 #include "gnomesessionclient.moc"
