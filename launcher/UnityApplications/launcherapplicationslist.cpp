@@ -28,6 +28,13 @@
 #include <QDebug>
 #include <QDBusConnection>
 #include <QFileInfo>
+#include <QX11Info>
+
+extern "C" {
+#include <libsn/sn.h>
+}
+#include <X11/Xlib.h>
+
 
 #define FAVORITES_KEY QString("/desktop/unity-2d/launcher/favorites")
 #define DBUS_SERVICE_UNITY "com.canonical.Unity"
@@ -69,7 +76,56 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         }
     }
 
+    /* Register the display to receive startup notifications */
+    Display *xdisplay = QX11Info::display();
+    m_sn_display = sn_display_new(xdisplay, NULL, NULL);
+    m_sn_context = sn_monitor_context_new(m_sn_display, DefaultScreen (xdisplay),
+                                          LauncherApplicationsList::snEventHandler,
+                                          this, NULL);
+    Unity2dApplication::instance()->installX11EventFilter(this);
+
     load();
+}
+
+void
+LauncherApplicationsList::snEventHandler(SnMonitorEvent *event, void *user_data)
+{
+    /* This method is static and only forwards the event to a non static method. */
+    ((LauncherApplicationsList*)user_data)->onSnMonitorEventReceived(event);
+}
+
+void
+LauncherApplicationsList::onSnMonitorEventReceived(SnMonitorEvent *event)
+{
+    SnStartupSequence *sequence = sn_monitor_event_get_startup_sequence(event);
+
+    switch (sn_monitor_event_get_type (event)) {
+        case SN_MONITOR_EVENT_INITIATED:
+            insertSnStartupSequence(sequence);
+            break;
+        case SN_MONITOR_EVENT_CHANGED:
+        case SN_MONITOR_EVENT_COMPLETED:
+        case SN_MONITOR_EVENT_CANCELED:
+            /* These events are ignored for now. This is acceptable since the
+               case of a failed application startup is handled by
+               LauncherApplication::launching being automatically reset to
+               false after a timeout. */
+            break;
+    }
+}
+
+
+bool
+LauncherApplicationsList::x11EventFilter(XEvent* xevent)
+{
+    /* libsn specifies that all events need to be forwarded to
+       sn_display_process_event but it is not actually necessary.
+       Forwarding only the events of type ClientMessage.
+     */
+    if (xevent->type == ClientMessage) {
+        sn_display_process_event(m_sn_display, xevent);
+    }
+    return false;
 }
 
 void
@@ -95,6 +151,9 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
+    Unity2dApplication::instance()->removeX11EventFilter(this);
+    sn_monitor_context_unref(m_sn_context);
+
     qDeleteAll(m_applications);
     delete m_favorites_list;
 }
@@ -117,10 +176,14 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
     if (!application->desktop_file().isEmpty()) {
         m_applicationForDesktopFile.insert(application->desktop_file(), application);
     }
+    if (!application->executable().isEmpty()) {
+        m_applicationForExecutable.insert(application->executable(), application);
+    }
     endInsertRows();
 
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
+    QObject::connect(application, SIGNAL(launchingChanged(bool)), this, SLOT(onApplicationLaunchingChanged(bool)));
 }
 
 void
@@ -128,12 +191,22 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 {
     int index = m_applications.indexOf(application);
 
+    if (index == -1) {
+        /* application is not present in m_applications */
+        return;
+    }
+
     beginRemoveRows(QModelIndex(), index, index);
     m_applications.removeAt(index);
     m_applicationForDesktopFile.remove(application->desktop_file());
+    m_applicationForExecutable.remove(application->executable());
     endRemoveRows();
 
-    delete application;
+    /* LauncherApplicationsList::removeApplication might have been called in
+       response to a signal emitted by application itself. Do not delete
+       immediately to cater for this case.
+    */
+    application->deleteLater();
 }
 
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
@@ -142,18 +215,30 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
         return;
     }
 
-    LauncherApplication* application;
+    LauncherApplication* matchingApplication = NULL;
+    LauncherApplication* newApplication = new LauncherApplication;
+    newApplication->setBamfApplication(bamf_application);
 
-    QString desktop_file = bamf_application->desktop_file();
+    QString executable = newApplication->executable();
+    QString desktop_file = newApplication->desktop_file();
     if (m_applicationForDesktopFile.contains(desktop_file)) {
         /* A LauncherApplication with the same desktop file already exists */
-        application = m_applicationForDesktopFile[desktop_file];
-        application->setBamfApplication(bamf_application);
+        matchingApplication = m_applicationForDesktopFile[desktop_file];
+    } else if (m_applicationForExecutable.contains(executable)) {
+        /* A LauncherApplication with the same executable already exists */
+        matchingApplication = m_applicationForExecutable[executable];
+    }
+
+    if (matchingApplication != NULL) {
+        /* A LauncherApplication that corresponds to bamf_application already exists */
+        /* FIXME: this deletion blocks for a long time (around 100ms here) and
+           leads to a visual glitch in the launcher when an application finished
+           starting up. This is due to the deletion of the QFileSystemWatcher
+           belonging to the LauncherApplication. */
+        delete newApplication;
+        matchingApplication->setBamfApplication(bamf_application);
     } else {
-        /* Create a new LauncherApplication and append it to the list */
-        application = new LauncherApplication;
-        application->setBamfApplication(bamf_application);
-        insertApplication(application);
+        insertApplication(newApplication);
     }
 }
 
@@ -194,6 +279,26 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
     application->setDesktopFile(webfav->desktopFile());
     insertApplication(application);
     application->setSticky(true);
+}
+
+void
+LauncherApplicationsList::insertSnStartupSequence(SnStartupSequence* sequence)
+{
+    if (sequence == NULL) {
+        return;
+    }
+
+    QString executable = sn_startup_sequence_get_binary_name(sequence);
+
+    if (m_applicationForExecutable.contains(executable)) {
+        /* A LauncherApplication with the same executable already exists */
+        m_applicationForExecutable[executable]->setSnStartupSequence(sequence);
+    } else {
+        /* Create a new LauncherApplication and append it to the list */
+        LauncherApplication* newApplication = new LauncherApplication;
+        newApplication->setSnStartupSequence(sequence);
+        insertApplication(newApplication);
+    }
 }
 
 void
@@ -252,6 +357,16 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
     writeFavoritesToGConf();
 
     if (!sticky && !application->running()) {
+        removeApplication(application);
+    }
+}
+
+void
+LauncherApplicationsList::onApplicationLaunchingChanged(bool launching)
+{
+    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+
+    if (!application->sticky() && !application->running() && !application->launching()) {
         removeApplication(application);
     }
 }

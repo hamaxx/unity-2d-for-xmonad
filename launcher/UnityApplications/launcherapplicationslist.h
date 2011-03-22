@@ -26,12 +26,18 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QMap>
 
+#include <unity2dapplication.h>
+
+struct SnDisplay;
+struct SnMonitorContext;
+struct SnMonitorEvent;
+struct SnStartupSequence;
 class LauncherApplication;
 class BamfApplication;
 class BamfView;
 class GConfItemQmlWrapper;
 
-class LauncherApplicationsList : public QAbstractListModel
+class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter
 {
     Q_OBJECT
     friend class LauncherApplicationsListDBUS;
@@ -52,6 +58,7 @@ public Q_SLOTS:
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
+    void insertSnStartupSequence(SnStartupSequence* sequence);
 
     void insertApplication(LauncherApplication* application);
     void removeApplication(LauncherApplication* application);
@@ -68,13 +75,26 @@ private:
        displayed (m_applications).
     */
     QHash<QString, LauncherApplication*> m_applicationForDesktopFile;
-
+    /* Hash of application executables to LauncherApplication used to reduce
+       the algorithmical complexity of merging the list of launching applications
+       and the list of running applications into the list of applications
+       displayed (m_applications).
+    */
+    QHash<QString, LauncherApplication*> m_applicationForExecutable;
     GConfItemQmlWrapper* m_favorites_list;
+
+    /* Startup notification support */
+    SnDisplay *m_sn_display;
+    SnMonitorContext *m_sn_context;
+    static void snEventHandler(SnMonitorEvent *event, void *user_data);
+    void onSnMonitorEventReceived(SnMonitorEvent *event);
+    bool x11EventFilter(XEvent* xevent);
 
 private Q_SLOTS:
     void onApplicationClosed();
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
+    void onApplicationLaunchingChanged(bool launching);
     void onRemoteEntryUpdated(QString applicationURI,
                               QMap<QString, QVariant> properties);
 };

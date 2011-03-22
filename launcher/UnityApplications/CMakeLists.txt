@@ -7,6 +7,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GDK REQUIRED gdk-2.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
+pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
 
 # Sources
 set(UnityApplications_SRCS
@@ -49,7 +50,7 @@ set(UnityApplications_MOC_HDRS
 qt4_wrap_cpp(UnityApplications_MOC_SRCS ${UnityApplications_MOC_HDRS})
 
 # Build
-add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE)
+add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DSN_API_NOT_YET_FROZEN)
 
 add_library(UnityApplications SHARED ${UnityApplications_SRCS} ${UnityApplications_MOC_SRCS})
 
@@ -68,6 +69,7 @@ include_directories(
     ${GDK_INCLUDE_DIRS}
     ${GIO_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
+    ${STARTUPNOTIFICATION_INCLUDE_DIRS}
     )
 
 target_link_libraries(UnityApplications
@@ -83,6 +85,7 @@ target_link_libraries(UnityApplications
     ${GDK_LDFLAGS}
     ${GIO_LDFLAGS}
     ${WNCK_LDFLAGS}
+    ${STARTUPNOTIFICATION_LDFLAGS}
     )
 
 # Install

@@ -45,10 +45,15 @@ extern "C" {
 #include <QFile>
 #include <QFileSystemWatcher>
 
+extern "C" {
+#include <libsn/sn.h>
+}
+
 LauncherApplication::LauncherApplication()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
     , m_appInfo(NULL)
+    , m_snStartupSequence(NULL)
     , m_sticky(false)
     , m_has_visible_window(false)
     , m_progress(0), m_progressBarVisible(false)
@@ -72,6 +77,7 @@ LauncherApplication::LauncherApplication()
         client_type_set = true;
     }
 
+    m_launching_timer.setSingleShot(true);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
@@ -87,7 +93,13 @@ LauncherApplication::LauncherApplication(const LauncherApplication& other) :
 
 LauncherApplication::~LauncherApplication()
 {
+    if (m_snStartupSequence != NULL) {
+        sn_startup_sequence_unref(m_snStartupSequence);
+        m_snStartupSequence = NULL;
+    }
+
     if (m_application != NULL) {
+        m_application->disconnect(this);
         m_application = NULL;
     }
 
@@ -178,6 +190,10 @@ LauncherApplication::name() const
         return QString::fromUtf8(g_app_info_get_name((GAppInfo*)m_appInfo));
     }
 
+    if (m_snStartupSequence != NULL) {
+        return QString::fromUtf8(sn_startup_sequence_get_name(m_snStartupSequence));
+    }
+
     return QString("");
 }
 
@@ -190,6 +206,10 @@ LauncherApplication::icon() const
 
     if (m_appInfo != NULL) {
         return QString::fromUtf8(g_icon_to_string(g_app_info_get_icon((GAppInfo*)m_appInfo)));
+    }
+
+    if (m_snStartupSequence != NULL) {
+        return QString::fromUtf8(sn_startup_sequence_get_icon_name(m_snStartupSequence));
     }
 
     return QString("");
@@ -214,6 +234,20 @@ LauncherApplication::desktop_file() const
 
     if (m_appInfo != NULL) {
         return QString::fromUtf8(g_desktop_app_info_get_filename(m_appInfo));
+    }
+
+    return QString("");
+}
+
+QString
+LauncherApplication::executable() const
+{
+    if (m_appInfo != NULL) {
+        return QString::fromUtf8(g_app_info_get_executable((GAppInfo*)m_appInfo));
+    }
+
+    if (m_snStartupSequence != NULL) {
+        return QString::fromUtf8(sn_startup_sequence_get_binary_name(m_snStartupSequence));
     }
 
     return QString("");
@@ -248,10 +282,13 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     /* Emit the Changed signal on all properties that can depend on m_appInfo
        m_application's properties take precedence over m_appInfo's
     */
-    if (m_application == NULL && m_appInfo != NULL) {
-        emit desktopFileChanged(desktop_file);
-        emit nameChanged(name());
-        emit iconChanged(icon());
+    if (m_appInfo != NULL) {
+        if (m_application == NULL) {
+            Q_EMIT desktopFileChanged(desktop_file);
+            Q_EMIT nameChanged(name());
+            Q_EMIT iconChanged(icon());
+        }
+        Q_EMIT executableChanged(executable());
     }
 
     monitorDesktopFile(this->desktop_file());
@@ -262,6 +299,10 @@ LauncherApplication::monitorDesktopFile(const QString& path)
 {
     /* Monitor the desktop file for live changes */
     if (m_desktopFileWatcher == NULL) {
+        /* FIXME: deleting a QFileSystemWatcher can be quite slow (sometimes
+           around 100ms on a powerful computer) and can provoke visual glitches
+           where the user interface is blocked for a short moment.
+         */
         m_desktopFileWatcher = new QFileSystemWatcher(this);
         connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
                 SLOT(onDesktopFileChanged(const QString&)));
@@ -382,6 +423,31 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     m_application = NULL;
     updateBamfApplicationDependentProperties();
     emit closed();
+}
+
+void
+LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
+{
+    if (sequence != NULL) {
+        if (!sn_startup_sequence_get_completed(sequence)) {
+            /* 'launching' property becomes true for a maximum of 8 seconds */
+            m_launching_timer.start(8000);
+        } else {
+            m_launching_timer.stop();
+        }
+        sn_startup_sequence_ref(sequence);
+    }
+
+    if (m_snStartupSequence != NULL) {
+        sn_startup_sequence_unref(m_snStartupSequence);
+    }
+
+    m_snStartupSequence = sequence;
+
+    emit nameChanged(name());
+    emit iconChanged(icon());
+    emit executableChanged(executable());
+    emit launchingChanged(launching());
 }
 
 void
@@ -567,7 +633,6 @@ LauncherApplication::launch()
 
     /* 'launching' property becomes true for a maximum of 8 seconds and becomes
        false as soon as the application is launched */
-    m_launching_timer.setSingleShot(true);
     m_launching_timer.start(8000);
     emit launchingChanged(true);
 
