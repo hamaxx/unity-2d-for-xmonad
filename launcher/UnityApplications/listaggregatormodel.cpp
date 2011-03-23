@@ -203,7 +203,7 @@ ListAggregatorModel::data(const QModelIndex& index, int role) const
         if (offset >= rowCount) {
             offset -= rowCount;
         } else {
-            QModelIndex new_index = createIndex(offset, role);
+            QModelIndex new_index = (*iter)->index(offset, 0);
             return (*iter)->data(new_index, role);
         }
     }
