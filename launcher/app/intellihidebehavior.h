@@ -19,6 +19,8 @@
 
 struct _WnckWindow;
 
+class QTimer;
+
 class Unity2dPanel;
 
 /**
@@ -45,6 +47,7 @@ private:
         VisiblePanel,
         HiddenPanel
     };
+    QTimer* m_updateVisibilityTimer;
 
     struct _WnckWindow* m_activeWindow;
 

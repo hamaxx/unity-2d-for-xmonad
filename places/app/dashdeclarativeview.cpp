@@ -30,7 +30,6 @@
 #include <QGraphicsObject>
 #include <QtDBus/QDBusConnection>
 #include <QTimer>
-#include <QDebug>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>

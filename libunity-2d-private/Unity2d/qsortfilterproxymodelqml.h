@@ -28,6 +28,9 @@ class QSortFilterProxyModelQML : public QSortFilterProxyModel
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
+    Q_INVOKABLE QVariantMap get(int row);
+    Q_INVOKABLE int count();
+
     /* getters */
     QObject* sourceModelQObject() const;
 

@@ -1,2 +1,3 @@
 /apps/nautilus/preferences/exit_with_last_window false
 /apps/metacity/global_keybindings/panel_main_menu disabled
+/apps/metacity/global_keybindings/panel_run_dialog disabled

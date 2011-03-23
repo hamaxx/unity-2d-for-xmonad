@@ -18,6 +18,7 @@
 #include <unity2dpanel.h>
 
 // Qt
+#include <QCursor>
 #include <QEvent>
 #include <QTimer>
 
@@ -27,6 +28,8 @@ extern "C" {
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #include <libwnck/libwnck.h>
 }
+
+static const int AUTOHIDE_TIMEOUT = 1000;
 
 // Handy macros to declare GObject callbacks. The 'n' in CALLBACKn refers to
 // the number of dummy arguments the callback returns
@@ -62,17 +65,20 @@ GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
 IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
+, m_updateVisibilityTimer(new QTimer(this))
 , m_activeWindow(0)
 {
+    m_updateVisibilityTimer->setSingleShot(true);
+    m_updateVisibilityTimer->setInterval(AUTOHIDE_TIMEOUT);
+    connect(m_updateVisibilityTimer, SIGNAL(timeout()), SLOT(updateVisibility()));
+
     m_panel->installEventFilter(this);
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
-    /* Delay monitoring the active window giving time to the user to reach
-       for the panel before it disappears */
-    QTimer::singleShot(1000, this, SLOT(updateActiveWindowConnections()));
+    updateActiveWindowConnections();
 }
 
 IntelliHideBehavior::~IntelliHideBehavior()
@@ -169,15 +175,22 @@ void IntelliHideBehavior::updateVisibility()
 
 bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
 {
-    if (event->type() == QEvent::Leave && !isMouseForcingVisibility()) {
-        updateVisibility();
-    } else if (event->type() == QEvent::Resize) {
-        updateVisibility();
+    switch (event->type()) {
+    case QEvent::Enter:
+        m_updateVisibilityTimer->stop();
+        break;
+    case QEvent::Leave:
+        m_updateVisibilityTimer->start();
+        break;
+    default:
+        break;
     }
     return false;
 }
 
 bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
-    return m_panel->underMouse();
+    // We check the cursor position ourself because using QWidget::underMouse()
+    // is unreliable. It causes LP bug #740280
+    return m_panel->geometry().contains(QCursor::pos());
 }

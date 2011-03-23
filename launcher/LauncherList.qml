@@ -185,11 +185,11 @@ AutoScrollingListView {
 
         Connections {
             target: item.menu
-            onVisibleChanged: {
-                if (item.menu.visible) {
-                    visibilityController.beginForceVisible();
-                } else {
+            onFoldedChanged: {
+                if (item.menu.folded) {
                     visibilityController.endForceVisible();
+                } else {
+                    visibilityController.beginForceVisible();
                 }
             }
         }
