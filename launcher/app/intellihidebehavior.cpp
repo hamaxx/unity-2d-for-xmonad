@@ -18,6 +18,7 @@
 #include <unity2dpanel.h>
 
 // Qt
+#include <QCursor>
 #include <QEvent>
 #include <QTimer>
 
@@ -179,5 +180,7 @@ bool IntelliHideBehavior::eventFilter(QObject* object, QEvent* event)
 
 bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
-    return m_panel->underMouse();
+    // We check the cursor position ourself because using QWidget::underMouse()
+    // is unreliable. It causes LP bug #740280
+    return m_panel->geometry().contains(QCursor::pos());
 }
