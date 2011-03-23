@@ -81,7 +81,7 @@ DropItem {
         dynamicSortFilter: true
 
         filterRole: LauncherPlacesList.RoleShowEntry
-        filterRegExp: RegExp("^true$")
+        filterRegExp: RegExp(".*")
     }
 
     LauncherApplicationsList {

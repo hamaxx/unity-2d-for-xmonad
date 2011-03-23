@@ -35,7 +35,6 @@
 class Place : public QAbstractListModel
 {
     Q_OBJECT
-    Q_ENUMS(Roles)
 
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
     Q_PROPERTY(QString dbusName READ dbusName)
@@ -46,11 +45,6 @@ public:
     Place(QObject* parent = 0);
     Place(const Place& other);
     ~Place();
-
-    enum Roles {
-        RoleItem,
-        RoleShowEntry
-    };
 
     /* getters */
     QString fileName() const;

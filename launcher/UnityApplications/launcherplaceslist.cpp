@@ -54,7 +54,7 @@ LauncherPlacesList::~LauncherPlacesList()
 {
     delete m_watch;
 
-    QList<QAbstractListModel*>::iterator iter;
+    QList<QAbstractItemModel*>::iterator iter;
     for(iter = m_models.begin(); iter != m_models.end(); ) {
         Place* place = static_cast<Place*>(*iter);
         removeListModel(place);
@@ -75,7 +75,7 @@ LauncherPlacesList::addPlace(const QString& file)
 Place*
 LauncherPlacesList::removePlace(const QString& file)
 {
-    QList<QAbstractListModel*>::iterator iter;
+    QList<QAbstractItemModel*>::iterator iter;
     for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         Place* place = static_cast<Place*>(*iter);
         if (place->fileName() == file) {
@@ -117,7 +117,7 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
 PlaceEntry*
 LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& groupName)
 {
-    Q_FOREACH(QAbstractListModel* model, m_models) {
+    Q_FOREACH(QAbstractItemModel* model, m_models) {
         Place* place = static_cast<Place*>(model);
         if (place->fileName() == fileName) {
             return place->findPlaceEntry(groupName);
@@ -130,7 +130,7 @@ LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& group
 void
 LauncherPlacesList::startAllPlaceServices()
 {
-    Q_FOREACH(QAbstractListModel* model, m_models) {
+    Q_FOREACH(QAbstractItemModel* model, m_models) {
         Place* place = static_cast<Place*>(model);
         place->connectToRemotePlace();
     }
@@ -142,7 +142,7 @@ QVariant
 LauncherPlacesList::data(const QModelIndex& index, int role) const
 {
     QVariant item = ListAggregatorModel::data(index, Qt::DisplayRole);
-    qDebug() << "ROLE " << role;
+    qDebug() << "LauncherPlacesList::data" << role;
     if (role == RoleItem) {
         return item;
     } else if (role == RoleShowEntry) {

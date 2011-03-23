@@ -40,11 +40,6 @@ Place::Place(QObject* parent) :
     m_dbusIface(NULL),
     m_querying(false)
 {
-    QHash<int, QByteArray> roles;
-    roles[RoleItem] = "item";
-    roles[RoleShowEntry] = "showEntry";
-    setRoleNames(roles);
-
     m_serviceWatcher = new QDBusServiceWatcher(this);
     m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
     connect(m_serviceWatcher, SIGNAL(serviceRegistered(QString)),
@@ -152,20 +147,13 @@ Place::online() const
 QVariant
 Place::data(const QModelIndex& index, int role) const
 {
+    Q_UNUSED(role)
+
     if (!index.isValid()) {
         return QVariant();
     }
-    qDebug() << role;
-    if (role == RoleItem) {
-        return QVariant::fromValue(m_entries.at(index.row()));
-    } else if (role == RoleShowEntry) {
-        bool showEntry = m_entries.at(index.row())->showEntry();
-        QVariant ret = QVariant::fromValue(QString((showEntry) ? "true" : "false"));
-        qDebug() << ret;
-        return ret;
-    } else {
-        return QVariant();
-    }
+
+    return QVariant::fromValue(m_entries.at(index.row()));
 }
 
 int
