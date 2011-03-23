@@ -72,7 +72,7 @@ GnomeSessionClient::GnomeSessionClient(const QString& applicationId, QObject* pa
 : QObject(parent)
 , d(new GnomeSessionClientPrivate(applicationId))
 {
-    d->m_waitingForEndSession = true;
+    d->m_waitingForEndSession = false;
     connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
         SLOT(waitForEndSession()));
 }
@@ -108,6 +108,7 @@ void GnomeSessionClient::slotRegisterClientFinished(QDBusPendingCallWatcher* wat
         return;
     }
 
+    d->m_waitingForEndSession = true;
     QDBusConnection bus = QDBusConnection::sessionBus();
     d->m_clientPath = reply.value().path();
 
