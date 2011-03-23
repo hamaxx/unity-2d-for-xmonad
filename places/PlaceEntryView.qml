@@ -25,6 +25,40 @@ Item {
     /* An instance of PlaceEntryModel */
     property variant model
 
+    function activateFirstResult() {
+        /* Going through the list of groups and selecting the first one
+           that has results for the search. A QSortFilterProxyModelQML
+           ('firstGroupModel') is used to filter the search results per group.
+        */
+        var placeEntry, i
+        for (i=0; i<placeEntryView.model.entryGroupsModel.count(); i=i+1) {
+            firstGroupModel.groupId = i
+            if (firstGroupModel.count() != 0) {
+                var firstResult = firstGroupModel.get(0)
+                /* Places give back the uri of the item in 'column_0' per specification */
+                var uri = firstResult.column_0
+                dashView.active = false
+                model.place.activate(decodeURIComponent(uri))
+                return;
+            }
+        }
+    }
+
+    QSortFilterProxyModelQML {
+        id: firstGroupModel
+
+        property int groupId
+        model: placeEntryView.model.entryResultsModel
+
+        /* placeEntryView.model.entryResultsModel contains data for all
+           the groups of a given Place.
+           Each row has a column (the second one) containing the id of
+           the group it belongs to (groupId).
+        */
+        filterRole: 2 /* second column (see above comment) */
+        filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
+    }
+
     ListViewWithScrollbar {
         id: results
 

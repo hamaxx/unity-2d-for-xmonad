@@ -109,8 +109,8 @@ FocusScope {
             }
 
             Keys.onPressed: {
-                if (event.key == Qt.Key_Return) {
-                    searchQuery = text
+                if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
+                    dash.currentPage.activateFirstResult()
                     event.accepted = true;
                 }
             }

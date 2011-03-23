@@ -56,3 +56,27 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
     connect(itemModel, SIGNAL(modelAboutToBeReset()), SLOT(updateRoleNames()));
     connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
 }
+
+QVariantMap
+QSortFilterProxyModelQML::get(int row)
+{
+    if (sourceModel() == NULL) {
+        return QVariantMap();
+    }
+
+    QVariantMap result;
+    QHashIterator<int, QByteArray> i(roleNames());
+    while (i.hasNext()) {
+        i.next();
+        QModelIndex modelIndex = index(row, 0);
+        QVariant data = modelIndex.data(i.key());
+        result[i.value()] = data;
+     }
+     return result;
+}
+
+int
+QSortFilterProxyModelQML::count()
+{
+    return rowCount();
+}
