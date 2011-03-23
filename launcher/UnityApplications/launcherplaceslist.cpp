@@ -28,6 +28,11 @@
 LauncherPlacesList::LauncherPlacesList(QObject* parent) :
     ListAggregatorModel(parent)
 {
+    QHash<int, QByteArray> roles;
+    roles[RoleItem] = "item";
+    roles[RoleShowEntry] = "showEntry";
+    setRoleNames(roles);
+
     QDir dir(PLACES_DIR);
     QStringList filters;
     filters << FILTER;
@@ -128,5 +133,28 @@ LauncherPlacesList::startAllPlaceServices()
     Q_FOREACH(QAbstractListModel* model, m_models) {
         Place* place = static_cast<Place*>(model);
         place->connectToRemotePlace();
+    }
+}
+
+#include <QDebug>
+
+QVariant
+LauncherPlacesList::data(const QModelIndex& index, int role) const
+{
+    QVariant item = ListAggregatorModel::data(index, Qt::DisplayRole);
+    qDebug() << "ROLE " << role;
+    if (role == RoleItem) {
+        return item;
+    } else if (role == RoleShowEntry) {
+        /* We attempt this cast because we are sure that this aggregator is only
+           aggregating Places, and Places have as items PlaceEntries */
+        PlaceEntry* entry = item.value<PlaceEntry*>();
+        if (entry == NULL) {
+            return QVariant();
+        } else {
+            return QVariant::fromValue(entry->name());
+        }
+    } else {
+        return QVariant();
     }
 }

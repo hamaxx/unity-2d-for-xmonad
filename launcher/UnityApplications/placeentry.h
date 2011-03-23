@@ -80,6 +80,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(DeeListModel* sections READ sections WRITE setSections NOTIFY sectionsChanged)
     Q_PROPERTY(QMap hints READ hints WRITE setHints NOTIFY hintsChanged)
     Q_PROPERTY(QString searchHint READ searchHint WRITE setSearchHint NOTIFY searchHintChanged)
+    Q_PROPERTY(bool showEntry READ showEntry WRITE setShowEntry NOTIFY showEntryChanged)
     Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(Place* place READ place)
@@ -125,6 +126,7 @@ public:
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
     QString searchHint() const;
+    bool showEntry() const;
     int activeSection() const;
     Place* place() const;
 
@@ -159,6 +161,7 @@ public:
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
     void setSearchHint(const QString&);
+    void setShowEntry(bool);
     void setActiveSection(int);
     void setActive(bool);
 
@@ -195,6 +198,7 @@ Q_SIGNALS:
     void sectionsChanged();
     void hintsChanged();
     void searchHintChanged(QString);
+    void showEntryChanged(bool);
     void activeSectionChanged();
     void activeChanged();
 
@@ -233,6 +237,7 @@ private:
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
     QString m_searchHint;
+    bool m_showEntry;
     int m_activeSection;
     bool m_active;
     Place* m_place;

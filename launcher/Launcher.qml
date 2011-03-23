@@ -75,6 +75,15 @@ DropItem {
         }
     }
 
+    QSortFilterProxyModelQML {
+        id: visiblePlaces
+        model: places
+        dynamicSortFilter: true
+
+        filterRole: LauncherPlacesList.RoleShowEntry
+        filterRegExp: RegExp("^true$")
+    }
+
     LauncherApplicationsList {
         id: applications
     }
@@ -98,7 +107,7 @@ DropItem {
     Component.onCompleted: {
         items.appendModel(applications);
         items.appendModel(workspaces);
-        items.appendModel(places);
+        items.appendModel(visiblePlaces);
         items.appendModel(devices);
         shelfItems.appendModel(trashes);
     }
