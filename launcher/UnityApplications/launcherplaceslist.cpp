@@ -152,7 +152,7 @@ LauncherPlacesList::data(const QModelIndex& index, int role) const
         if (entry == NULL) {
             return QVariant();
         } else {
-            return QVariant::fromValue(entry->name());
+            return QVariant::fromValue(QString(entry->showEntry() ? "true" : "false"));
         }
     } else {
         return QVariant();
