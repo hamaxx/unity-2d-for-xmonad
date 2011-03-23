@@ -77,9 +77,7 @@ IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
-    /* Delay monitoring the active window giving time to the user to reach
-       for the panel before it disappears */
-    QTimer::singleShot(1000, this, SLOT(updateActiveWindowConnections()));
+    updateActiveWindowConnections();
 }
 
 IntelliHideBehavior::~IntelliHideBehavior()
