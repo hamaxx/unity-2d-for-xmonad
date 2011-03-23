@@ -153,6 +153,7 @@ LauncherApplicationsList::~LauncherApplicationsList()
 {
     Unity2dApplication::instance()->removeX11EventFilter(this);
     sn_monitor_context_unref(m_snContext);
+    sn_display_unref(m_snDisplay);
 
     qDeleteAll(m_applications);
     delete m_favorites_list;
