@@ -55,6 +55,9 @@ public:
 public Q_SLOTS:
     void move(int from, int to);
 
+protected:
+    bool x11EventFilter(XEvent* xevent);
+
 private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
@@ -88,7 +91,6 @@ private:
     SnMonitorContext *m_snContext;
     static void snEventHandler(SnMonitorEvent *event, void *user_data);
     void onSnMonitorEventReceived(SnMonitorEvent *event);
-    bool x11EventFilter(XEvent* xevent);
 
 private Q_SLOTS:
     void onApplicationClosed();
