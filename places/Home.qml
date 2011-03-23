@@ -32,6 +32,24 @@ Item {
         }
     }
 
+    function activateFirstResult() {
+        /* Going through the list of place entries and selecting the first one
+           that has results for the global search, that is items in its
+           globalResultsModel */
+        var placeEntry, i
+        for (i=0; i<dash.places.rowCount(); i=i+1) {
+            placeEntry = dash.places.get(i)
+            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count() != 0) {
+                var firstResult = placeEntry.globalResultsModel.get(0)
+                /* Places give back the uri of the item in 'column_0' per specification */
+                var uri = firstResult.column_0
+                dashView.active = false
+                placeEntry.place.activate(decodeURIComponent(uri))
+                return;
+            }
+        }
+    }
+
     /* Set to true if shortcut buttons are visible */
     property bool shortcutsActive: false
 
