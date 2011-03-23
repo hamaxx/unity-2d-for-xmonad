@@ -15,13 +15,6 @@ Running separate components
 Notes on the dash (places)
 ==========================
 
-In order to try out the dash fully one should not have any application
-managing the desktop running. In order to stop nautilus from managing the
-desktop, the following GConf key has to be set to false:
-
-gconftool-2 -s /apps/nautilus/preferences/show_desktop -t bool false
-
-
 The dash exposes a D-Bus property for activation and deactivation:
 
 com.canonical.Unity2d /Dash com.canonical.Unity2d.Dash.active true|false

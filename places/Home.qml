@@ -1,3 +1,21 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010-2011 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
@@ -155,47 +173,47 @@ Item {
 
             /* FIXME: dummy icons need to be replaced by design's */
             HomeButton {
-                label: qsTr("Find Media Apps")
+                label: u2d.tr("Find Media Apps")
                 icon: "artwork/find_media_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 9)
             }
 
             HomeButton {
-                label: qsTr("Find Internet Apps")
+                label: u2d.tr("Find Internet Apps")
                 icon: "artwork/find_internet_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 8)
             }
 
             HomeButton {
-                label: qsTr("Find More Apps")
+                label: u2d.tr("Find More Apps")
                 icon: "artwork/find_more_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
             }
 
             HomeButton {
-                label: qsTr("Find Files")
+                label: u2d.tr("Find Files")
                 icon: "artwork/find_files.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
             }
 
             /* FIXME: use user's preferred applications instead of hardcoding them */
             HomeButtonApplication {
-                label: qsTr("Browse the Web")
+                label: u2d.tr("Browse the Web")
                 desktopFile: "firefox.desktop"
             }
 
             HomeButtonApplication {
-                label: qsTr("View Photos")
+                label: u2d.tr("View Photos")
                 desktopFile: "shotwell.desktop"
             }
 
             HomeButtonApplication {
-                label: qsTr("Check Email")
+                label: u2d.tr("Check Email")
                 desktopFile: "evolution.desktop"
             }
 
             HomeButtonApplication {
-                label: qsTr("Listen to Music")
+                label: u2d.tr("Listen to Music")
                 desktopFile: "banshee-1.desktop"
             }
         }

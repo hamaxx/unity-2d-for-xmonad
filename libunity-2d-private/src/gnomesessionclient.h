@@ -52,6 +52,7 @@ private Q_SLOTS:
     void stop();
     void queryEndSession();
     void endSession();
+    void waitForEndSession();
 
 private:
     GnomeSessionClientPrivate* const d;

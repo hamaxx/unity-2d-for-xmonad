@@ -1,3 +1,21 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010-2011 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import Qt 4.7
 import Unity2d 1.0
 
@@ -54,6 +72,7 @@ DropItem {
 
     property bool backgroundFromIcon
     property color defaultBackgroundColor: "#333333"
+    property color selectedBackgroundColor: "#dddddd"
 
     property alias shortcutVisible: shortcut.visible
     property alias shortcutText: shortcutText.text
@@ -163,10 +182,13 @@ DropItem {
 
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
-                source: "image://blended/%1color=%2alpha=%3"
+                source: {
+                    var actualColor = item.activeFocus ? selectedBackgroundColor : color
+                    return "image://blended/%1color=%2alpha=%3"
                         .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
-                        .arg(color.toString().replace("#", ""))
+                        .arg(actualColor.toString().replace("#", ""))
                         .arg(1.0)
+                }
             }
 
             /* This image appears only while launching, and pulses in and out in counterpoint
@@ -221,6 +243,13 @@ DropItem {
                 source: "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
+            }
+
+            Image {
+                id: selectionOutline
+                anchors.centerIn: parent
+                source: "artwork/round_selected_66x66.png"
+                visible: launcherView.focus && item.activeFocus
             }
 
             Rectangle {
@@ -318,7 +347,7 @@ DropItem {
                 alwaysRunToEnd: true
 
                 SequentialAnimation {
-                    loops: 30
+                    loops: (urgent) ? 30 : 0
                     NumberAnimation { target: tile; property: "rotation"; to: 15; duration: 150 }
                     NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
                 }

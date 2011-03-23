@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -19,37 +19,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOMEBUTTONAPPLET_H
-#define HOMEBUTTONAPPLET_H
-
 // Local
-#include <applet.h>
+#include <unity2dtr.h>
 
 // Qt
-#include <QToolButton>
+#include <QCoreApplication>
+#include <QtTest>
 
-class QDBusInterface;
-class LauncherClient;
+#include <config-test.h>
 
-class HomeButtonApplet : public Unity2d::Applet
+class Unity2dTrTest : public QObject
 {
-Q_OBJECT
-public:
-    HomeButtonApplet();
-
-protected:
-    void enterEvent(QEvent*);
-    void leaveEvent(QEvent*);
-
+    Q_OBJECT
 private Q_SLOTS:
-    void toggleDash();
-    void connectToDash();
+    void initTestCase()
+    {
+        Unity2dTr::init("unity2dtrtest", TEST_LOCALE_DIR);
+    }
 
-private:
-    Q_DISABLE_COPY(HomeButtonApplet)
-    QToolButton* m_button;
-    QDBusInterface* m_dashInterface;
-    LauncherClient* m_launcherClient;
+    void testTranslate()
+    {
+        QCOMPARE(u2dTr("Hello"), QString("Bonjour"));
+        QCOMPARE(u2dTr("Not translated"), QString("Not translated"));
+    }
+
+    void testPluralHandling()
+    {
+        QCOMPARE(u2dTr("%n file", "%n files", 1), QString("1 fichier"));
+        QCOMPARE(u2dTr("%n file", "%n files", 2), QString("2 fichiers"));
+    }
 };
 
-#endif /* HOMEBUTTONAPPLET_H */
+QTEST_MAIN(Unity2dTrTest)
+
+#include "unity2dtrtest.moc"

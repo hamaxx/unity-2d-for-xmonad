@@ -1,15 +1,27 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010-2011 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import Qt 4.7
 import Unity2d 1.0
 import "utils.js" as Utils
 
 Rectangle {
     id: switcher
-
-    /* FIXME: setting width and height is not useful since we use
-       view.setResizeMode(QDeclarativeView::SizeRootObjectToView)
-    */
-    width: screen.availableGeometry.width
-    height: screen.availableGeometry.height
 
     color: "black"
 

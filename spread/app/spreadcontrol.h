@@ -26,6 +26,8 @@
 #include <QtDeclarative/qdeclarative.h>
 #include <QWidget>
 
+class LauncherClient;
+
 class SpreadControl : public QObject, protected QDBusContext
 {
     Q_OBJECT
@@ -44,7 +46,7 @@ public Q_SLOTS:
     bool IsShown() { return m_isShown; }
 
 private Q_SLOTS:
-    void setIsShown(bool isShown) { m_isShown = isShown; }
+    void setIsShown(bool isShown);
 
 Q_SIGNALS:
     void showAllWorkspaces(QString applicationDesktopFile);
@@ -54,6 +56,7 @@ Q_SIGNALS:
 
 private:
     bool m_isShown;
+    LauncherClient *m_launcherClient;
 };
 
 QML_DECLARE_TYPE(SpreadControl)

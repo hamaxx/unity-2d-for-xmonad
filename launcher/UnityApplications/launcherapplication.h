@@ -37,6 +37,7 @@ class QFileSystemWatcher;
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
+    friend class LauncherApplicationsListDBUS;
 
     Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
@@ -127,6 +128,8 @@ private Q_SLOTS:
 
     void onDesktopFileChanged(const QString&);
     void checkDesktopFileReallyRemoved();
+    void beginForceUrgent(int duration);
+    void endForceUrgent();
 
 private:
     BamfApplication *m_application;
@@ -143,6 +146,7 @@ private:
     bool m_counterVisible;
     QString m_emblem;
     bool m_emblemVisible;
+    bool m_forceUrgent;
 
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);

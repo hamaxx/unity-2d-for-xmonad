@@ -20,10 +20,10 @@
 #include <gtk/gtk.h>
 
 // unity-2d
-#include <gettexttranslator.h>
 #include <gnomesessionclient.h>
 #include <launcherclient.h>
 #include <unity2dapplication.h>
+#include <unity2dtr.h>
 #include <propertybinder.h>
 
 // libqtgconf
@@ -36,8 +36,6 @@
 #include <QDeclarativeContext>
 #include <QDir>
 #include <QGraphicsObject>
-
-#include <unity2dapplication.h>
 
 #include "config.h"
 #include "launcherview.h"
@@ -57,13 +55,13 @@ int main(int argc, char *argv[])
 
     /* Forcing graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We mimick that behaviour
-       with 'raster' by calling QApplication::setColorSpec.
+       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
+       behaviour with 'raster' by calling QApplication::setColorSpec because
+       of a bug where black rectangular artifacts were appearing randomly:
 
-       Reference: https://bugs.launchpad.net/upicek/+bug/674484
+       https://bugs.launchpad.net/unity-2d/+bug/734143
     */
     QApplication::setGraphicsSystem("raster");
-    QApplication::setColorSpec(QApplication::ManyColor);
     Unity2dApplication application(argc, argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
@@ -74,9 +72,7 @@ int main(int argc, char *argv[])
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
     /* Configure translations */
-    GettextTranslator translator;
-    translator.init("unity-2d", INSTALL_PREFIX "/share/locale");
-    QApplication::installTranslator(&translator);
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel;
@@ -86,7 +82,7 @@ int main(int argc, char *argv[])
     VisibilityController* visibilityController = new VisibilityController(&panel);
 
     /* QML declarative view */
-    LauncherView *launcherView = new LauncherView;
+    LauncherView *launcherView = new LauncherView(&panel);
 
     /* FIXME: possible optimisations */
 //    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);
@@ -109,6 +105,8 @@ int main(int argc, char *argv[])
     /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
     launcherView->rootContext()->setContextProperty("engineBaseUrl",
                                                     launcherView->engine()->baseUrl().toLocalFile());
+
+    Unity2dTr::qmlInit(launcherView->rootContext());
 
     LauncherDBus launcherDBus(visibilityController, launcherView);
     launcherDBus.connectToBus();

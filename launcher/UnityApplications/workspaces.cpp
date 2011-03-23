@@ -23,6 +23,10 @@
 
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDebug>
+
+// libunity-2d
+#include <unity2dtr.h>
 
 Workspaces::Workspaces()
 {
@@ -63,7 +67,7 @@ Workspaces::urgent() const
 QString
 Workspaces::name() const
 {
-    return tr("Workspaces");
+    return u2dTr("Workspaces");
 }
 
 QString
@@ -84,10 +88,14 @@ Workspaces::activate()
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
     QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.value() == true) {
-        iface.call("FilterByApplication", QString());
+    if (isShown.isValid()) {
+        if (isShown.value() == true) {
+            iface.asyncCall("FilterByApplication", QString());
+        } else {
+            iface.asyncCall("ShowAllWorkspaces", QString());
+        }
     } else {
-        iface.call("ShowAllWorkspaces", QString());
+        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 

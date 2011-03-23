@@ -35,6 +35,9 @@ extern "C" {
 
 #include <X11/X.h>
 
+// libunity-2d
+#include <unity2dtr.h>
+
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
@@ -51,6 +54,7 @@ LauncherApplication::LauncherApplication()
     , m_progress(0), m_progressBarVisible(false)
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
+    , m_forceUrgent(false)
 {
     /* Make sure wnck_set_client_type is called only once */
     static bool client_type_set = false;
@@ -125,11 +129,36 @@ LauncherApplication::windowCount() const
 bool
 LauncherApplication::urgent() const
 {
+    if (m_forceUrgent) {
+        return true;
+    }
+
     if (m_application != NULL) {
         return m_application->urgent();
     }
 
     return false;
+}
+
+void
+LauncherApplication::beginForceUrgent(int duration)
+{
+    bool wasUrgent = urgent();
+    m_forceUrgent = true;
+    if (wasUrgent != urgent()) {
+        Q_EMIT urgentChanged(urgent());
+    }
+    QTimer::singleShot(duration, this, SLOT(endForceUrgent()));
+}
+
+void
+LauncherApplication::endForceUrgent()
+{
+    bool wasUrgent = urgent();
+    m_forceUrgent = false;
+    if (wasUrgent != urgent()) {
+        Q_EMIT urgentChanged(urgent());
+    }
 }
 
 bool
@@ -666,10 +695,14 @@ LauncherApplication::spread()
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
     QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.value() == true) {
-        iface.call("FilterByApplication", m_application->desktop_file());
+    if (isShown.isValid()) {
+        if (isShown.value() == true) {
+            iface.asyncCall("FilterByApplication", m_application->desktop_file());
+        } else {
+            iface.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
+        }
     } else {
-        iface.call("ShowCurrentWorkspace", m_application->desktop_file());
+        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 
@@ -745,14 +778,14 @@ LauncherApplication::createStaticMenuActions()
         QAction* keep = new QAction(m_menu);
         keep->setCheckable(is_running);
         keep->setChecked(sticky());
-        keep->setText(is_running ? tr("Keep In Launcher") : tr("Remove From Launcher"));
+        keep->setText(is_running ? u2dTr("Keep In Launcher") : u2dTr("Remove From Launcher"));
         actions.append(keep);
         QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
     }
 
     if (is_running) {
         QAction* quit = new QAction(m_menu);
-        quit->setText(tr("Quit"));
+        quit->setText(u2dTr("Quit"));
         actions.append(quit);
         QObject::connect(quit, SIGNAL(triggered()), this, SLOT(onQuitTriggered()));
     }
