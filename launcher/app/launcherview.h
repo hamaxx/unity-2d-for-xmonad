@@ -23,6 +23,7 @@
 #include <QDeclarativeView>
 #include <QList>
 #include <QUrl>
+#include <QTimer>
 
 #include "gconfitem-qml-wrapper.h"
 
@@ -32,23 +33,23 @@ class LauncherDBus;
 class LauncherView : public QDeclarativeView
 {
     Q_OBJECT
-    Q_PROPERTY(bool superKeyPressed READ superKeyPressed
-                                    NOTIFY superKeyPressedChanged)
+    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden
 
 public:
-    explicit LauncherView();
+    explicit LauncherView(QWidget* parent = NULL);
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
     Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
     Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
-    bool superKeyPressed() const { return m_superKeyPressed; }
+    bool superKeyHeld() const { return m_superKeyHeld; }
 
 Q_SIGNALS:
     void desktopFileDropped(QString path);
     void webpageUrlDropped(const QUrl& url);
     void keyboardShortcutPressed(int itemIndex);
-    void superKeyPressedChanged(bool superKeyPressed);
+    void superKeyHeldChanged(bool superKeyHeld);
+    void superKeyTapped();
     void addWebFavoriteRequested(const QUrl& url);
     void focusChanged(bool focus);
 
@@ -56,6 +57,9 @@ private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardHotkey();
     void updateSuperKeyMonitoring();
+    void updateSuperKeyHoldState();
+    void toggleDash();
+    void changeKeyboardShortcutsState(bool enabled);
 
 public Q_SLOTS:
     void activateWindow();
@@ -66,10 +70,11 @@ protected:
 
 private:
     QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
-    void changeKeyboardShortcutsState(bool enabled);
 
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
+    bool m_superKeyHeld;
+    QTimer m_superKeyHoldTimer;
 
     friend class LauncherDBus;
 };

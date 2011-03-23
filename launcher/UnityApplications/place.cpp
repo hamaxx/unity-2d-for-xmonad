@@ -98,6 +98,7 @@ Place::setFileName(const QString &file)
             // FIXME: extract localized name
             entry->setName(m_file->value("Name").toString());
             entry->setIcon(m_file->value("Icon").toString());
+            entry->setSearchHint(m_file->value("SearchHint").toString());
             m_file->endGroup();
             entry->setPosition(i++);
             connect(entry, SIGNAL(positionChanged(uint)),

@@ -25,6 +25,9 @@
 // Local
 #include <debug_p.h>
 
+// libunity-2d
+#include <launcherclient.h>
+
 // Qt
 #include <QHBoxLayout>
 #include <QDBusInterface>
@@ -35,7 +38,10 @@ static const char* DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DBUS_PATH = "/Dash";
 static const char* DBUS_IFACE = "com.canonical.Unity2d.Dash";
 
-HomeButtonApplet::HomeButtonApplet() : m_button(new QToolButton), m_dashInterface(NULL)
+HomeButtonApplet::HomeButtonApplet()
+: m_button(new QToolButton)
+, m_dashInterface(NULL)
+, m_launcherClient(new LauncherClient(this))
 {
     m_button->setAutoRaise(true);
     QIcon::setThemeName("unity-icon-theme");
@@ -105,6 +111,18 @@ void HomeButtonApplet::toggleDash()
         /* Call com.canonical.Unity2d.Dash.activateHome (will set com.canonical.Unity2d.Dash.active to true */
         m_dashInterface->call(QDBus::Block, "activateHome");
     }
+}
+
+void HomeButtonApplet::enterEvent(QEvent* event)
+{
+    Unity2d::Applet::enterEvent(event);
+    m_launcherClient->beginForceVisible();
+}
+
+void HomeButtonApplet::leaveEvent(QEvent* event)
+{
+    Unity2d::Applet::leaveEvent(event);
+    m_launcherClient->endForceVisible();
 }
 
 #include "homebuttonapplet.moc"
