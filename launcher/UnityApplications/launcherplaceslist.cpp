@@ -136,13 +136,10 @@ LauncherPlacesList::startAllPlaceServices()
     }
 }
 
-#include <QDebug>
-
 QVariant
 LauncherPlacesList::data(const QModelIndex& index, int role) const
 {
     QVariant item = ListAggregatorModel::data(index, Qt::DisplayRole);
-    qDebug() << "LauncherPlacesList::data" << role;
     if (role == RoleItem) {
         return item;
     } else if (role == RoleShowEntry) {
