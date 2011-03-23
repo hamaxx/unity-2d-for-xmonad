@@ -33,10 +33,11 @@ AbstractButton {
 
         anchors.left: box.right
         anchors.leftMargin: 8
-        width: paintedWidth
+        anchors.right: tickBox.right
         anchors.top: parent.top
         font.pixelSize: 16
         text: tickBox.text
+        elide: Text.ElideRight
     }
 
     Image {
