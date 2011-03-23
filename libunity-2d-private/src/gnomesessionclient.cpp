@@ -39,7 +39,7 @@ static const char* SM_DBUS_INTERFACE        = "org.gnome.SessionManager";
 static const char* SM_CLIENT_DBUS_INTERFACE = "org.gnome.SessionManager.ClientPrivate";
 
 // Number of seconds to wait for gnome-session to call us back
-static const int MAX_END_SESSION_WAIT = 5;
+static const int MAX_END_SESSION_WAIT = 3;
 
 struct GnomeSessionClientPrivate
 {
@@ -108,6 +108,7 @@ void GnomeSessionClient::slotRegisterClientFinished(QDBusPendingCallWatcher* wat
         return;
     }
 
+    d->m_waitingForEndSession = true;
     QDBusConnection bus = QDBusConnection::sessionBus();
     d->m_clientPath = reply.value().path();
 
@@ -128,8 +129,6 @@ void GnomeSessionClient::stop()
 void GnomeSessionClient::queryEndSession()
 {
     UQ_DEBUG;
-    d->m_waitingForEndSession = true;
-
     if (!d->sendEndSessionResponse()) {
       d->m_waitingForEndSession = false;
     }
