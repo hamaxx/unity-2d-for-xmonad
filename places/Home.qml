@@ -108,9 +108,9 @@ Item {
             width: ListView.view.width
 
             parentListView: list
-            placeEntryModel: modelData
-            displayName: modelData.name
-            iconHint: modelData.icon
+            placeEntryModel: item
+            displayName: item.name
+            iconHint: item.icon
 
             /* Filter out results for which the corresponding group's renderer
                is 'UnityEmptySearchRenderer'.
@@ -118,7 +118,7 @@ Item {
                the group it belongs to (groupId).
             */
             model:  QSortFilterProxyModelQML {
-                model: modelData.globalResultsModel
+                model: item.globalResultsModel
 
                 /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'
                    by hardcoding it instead of looking it up in the Place's
