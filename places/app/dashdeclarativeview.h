@@ -78,7 +78,6 @@ protected:
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
     void forceActivateWindow();
-    void showCommandsPlace();
 
 private:
     void fitToAvailableSpace();

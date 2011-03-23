@@ -19,8 +19,6 @@
 
 // unity-2d
 #include <launcherclient.h>
-#include <hotkey.h>
-#include <hotkeymonitor.h>
 
 // Qt
 #include <QDesktopWidget>
@@ -47,8 +45,6 @@ static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
-static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
-static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
 DashDeclarativeView::DashDeclarativeView()
 : QDeclarativeView()
@@ -69,15 +65,6 @@ DashDeclarativeView::DashDeclarativeView()
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
-
-    Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
-    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
-}
-
-void
-DashDeclarativeView::showCommandsPlace()
-{
-    activatePlaceEntry(APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY);
 }
 
 void

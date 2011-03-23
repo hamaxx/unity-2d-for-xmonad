@@ -46,6 +46,8 @@ static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
+static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
+static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
 LauncherView::LauncherView(QWidget* parent) :
     QDeclarativeView(parent),
@@ -64,6 +66,10 @@ LauncherView::LauncherView(QWidget* parent) :
     /* Alt+F1 gives the keyboard focus to the launcher. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
     connect(altF1, SIGNAL(pressed()), SLOT(activateWindow()));
+
+    /* Alt+F2 shows the dash with the commands place entry activated. */
+    Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
+    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
 }
 
 void
@@ -319,4 +325,18 @@ LauncherView::getColorsFromIcon(QUrl source, QSize size) const
     colors.append(QVariant::fromValue(hsv.toRgb()));
 
     return colors;
+}
+
+void
+LauncherView::showCommandsPlace()
+{
+    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+    if (!dashInterface.isValid()) {
+        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
+                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        return;
+    }
+
+    dashInterface.asyncCall("activatePlaceEntry",
+                            APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
