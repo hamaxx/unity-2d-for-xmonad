@@ -60,6 +60,7 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void changeKeyboardShortcutsState(bool enabled);
+    void showCommandsPlace();
 
 public Q_SLOTS:
     void activateWindow();
