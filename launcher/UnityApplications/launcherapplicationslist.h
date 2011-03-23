@@ -84,8 +84,8 @@ private:
     GConfItemQmlWrapper* m_favorites_list;
 
     /* Startup notification support */
-    SnDisplay *m_sn_display;
-    SnMonitorContext *m_sn_context;
+    SnDisplay *m_snDisplay;
+    SnMonitorContext *m_snContext;
     static void snEventHandler(SnMonitorEvent *event, void *user_data);
     void onSnMonitorEventReceived(SnMonitorEvent *event);
     bool x11EventFilter(XEvent* xevent);

@@ -78,8 +78,8 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 
     /* Register the display to receive startup notifications */
     Display *xdisplay = QX11Info::display();
-    m_sn_display = sn_display_new(xdisplay, NULL, NULL);
-    m_sn_context = sn_monitor_context_new(m_sn_display, DefaultScreen (xdisplay),
+    m_snDisplay = sn_display_new(xdisplay, NULL, NULL);
+    m_snContext = sn_monitor_context_new(m_snDisplay, DefaultScreen (xdisplay),
                                           LauncherApplicationsList::snEventHandler,
                                           this, NULL);
     Unity2dApplication::instance()->installX11EventFilter(this);
@@ -123,7 +123,7 @@ LauncherApplicationsList::x11EventFilter(XEvent* xevent)
        Forwarding only the events of type ClientMessage.
      */
     if (xevent->type == ClientMessage) {
-        sn_display_process_event(m_sn_display, xevent);
+        sn_display_process_event(m_snDisplay, xevent);
     }
     return false;
 }
@@ -152,7 +152,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
 LauncherApplicationsList::~LauncherApplicationsList()
 {
     Unity2dApplication::instance()->removeX11EventFilter(this);
-    sn_monitor_context_unref(m_sn_context);
+    sn_monitor_context_unref(m_snContext);
 
     qDeleteAll(m_applications);
     delete m_favorites_list;
