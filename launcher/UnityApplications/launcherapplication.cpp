@@ -78,6 +78,7 @@ LauncherApplication::LauncherApplication()
     }
 
     m_launching_timer.setSingleShot(true);
+    m_launching_timer.setInterval(8000);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
@@ -430,8 +431,8 @@ LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
 {
     if (sequence != NULL) {
         if (!sn_startup_sequence_get_completed(sequence)) {
-            /* 'launching' property becomes true for a maximum of 8 seconds */
-            m_launching_timer.start(8000);
+            /* 'launching' property becomes true for a few seconds */
+            m_launching_timer.start();
         } else {
             m_launching_timer.stop();
         }
@@ -631,9 +632,9 @@ LauncherApplication::launch()
         return false;
     }
 
-    /* 'launching' property becomes true for a maximum of 8 seconds and becomes
+    /* 'launching' property becomes true for a few seconds and becomes
        false as soon as the application is launched */
-    m_launching_timer.start(8000);
+    m_launching_timer.start();
     emit launchingChanged(true);
 
     return true;
