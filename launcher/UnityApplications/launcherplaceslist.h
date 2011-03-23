@@ -31,13 +31,21 @@ class PlaceEntry;
 class LauncherPlacesList : public ListAggregatorModel
 {
     Q_OBJECT
+    Q_ENUMS(Roles)
 
 public:
     LauncherPlacesList(QObject* parent = 0);
     ~LauncherPlacesList();
 
+    enum Roles {
+        RoleItem,
+        RoleShowEntry
+    };
+
     Q_INVOKABLE PlaceEntry* findPlaceEntry(const QString& fileName, const QString& groupName);
     Q_INVOKABLE void startAllPlaceServices();
+
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 private:
     QStringList m_placeFiles;

@@ -22,6 +22,17 @@
 
 #include <QAbstractListModel>
 
+/* Aggregates the data of several models and present them to the client
+   as if they were one single model.
+   The models that can be aggregated can only be QAbstractListModels or
+   QSortFilterProxyModels.
+   For this reason there are several non public methods in this class
+   that handle QAbstractItemModel (which is the common ancestor of the
+   two classes we can aggregate), but please note that this is only for
+   keeping the code simpler.
+   The public interface checks that the models it manipulates are of the
+   accepted types only.
+*/
 class ListAggregatorModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -38,7 +49,7 @@ public:
        The reason why aggregateListModel wasn't directly exposed to QML is that
        QAbstractListModel can't be exposed to QML directly since it's an abstract
        class. Therefore we accept a QVariant here and internally cast it back
-       to a QAbstractListModel */
+       to a QAbstractListModel. We also accept QSortFilterProxyModels. */
     Q_INVOKABLE void appendModel(const QVariant& model);
 
 public Q_SLOTS:
@@ -47,10 +58,10 @@ public Q_SLOTS:
     void move(int from, int to);
 
 protected:
-    QList<QAbstractListModel*> m_models;
+    QList<QAbstractItemModel*> m_models;
 
-    void aggregateListModel(QAbstractListModel* model);
-    void removeListModel(QAbstractListModel* model);
+    void aggregateListModel(QAbstractItemModel* model);
+    void removeListModel(QAbstractItemModel* model);
 
 private Q_SLOTS:
     void onRowsInserted(const QModelIndex& parent, int first, int last);
@@ -58,8 +69,8 @@ private Q_SLOTS:
     void onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int);
 
 private:
-    int computeOffset(QAbstractListModel* model) const;
-    QAbstractListModel* modelAtIndex(int index) const;
+    int computeOffset(QAbstractItemModel* model) const;
+    QAbstractItemModel* modelAtIndex(int index) const;
 };
 
 #endif // LISTAGGREGATORMODEL_H

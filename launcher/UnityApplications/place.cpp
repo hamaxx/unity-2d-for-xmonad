@@ -99,6 +99,11 @@ Place::setFileName(const QString &file)
             entry->setName(m_file->value("Name").toString());
             entry->setIcon(m_file->value("Icon").toString());
             entry->setSearchHint(m_file->value("SearchHint").toString());
+            if (!m_file->contains("ShowEntry")) {
+                entry->setShowEntry(true);
+            } else {
+                entry->setShowEntry(m_file->value("ShowEntry").toBool());
+            }
             m_file->endGroup();
             entry->setPosition(i++);
             connect(entry, SIGNAL(positionChanged(uint)),
@@ -147,7 +152,7 @@ Place::online() const
 QVariant
 Place::data(const QModelIndex& index, int role) const
 {
-    Q_UNUSED(role);
+    Q_UNUSED(role)
 
     if (!index.isValid()) {
         return QVariant();

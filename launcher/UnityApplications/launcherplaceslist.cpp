@@ -28,6 +28,11 @@
 LauncherPlacesList::LauncherPlacesList(QObject* parent) :
     ListAggregatorModel(parent)
 {
+    QHash<int, QByteArray> roles;
+    roles[RoleItem] = "item";
+    roles[RoleShowEntry] = "showEntry";
+    setRoleNames(roles);
+
     QDir dir(PLACES_DIR);
     QStringList filters;
     filters << FILTER;
@@ -49,7 +54,7 @@ LauncherPlacesList::~LauncherPlacesList()
 {
     delete m_watch;
 
-    QList<QAbstractListModel*>::iterator iter;
+    QList<QAbstractItemModel*>::iterator iter;
     for(iter = m_models.begin(); iter != m_models.end(); ) {
         Place* place = static_cast<Place*>(*iter);
         removeListModel(place);
@@ -70,7 +75,7 @@ LauncherPlacesList::addPlace(const QString& file)
 Place*
 LauncherPlacesList::removePlace(const QString& file)
 {
-    QList<QAbstractListModel*>::iterator iter;
+    QList<QAbstractItemModel*>::iterator iter;
     for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         Place* place = static_cast<Place*>(*iter);
         if (place->fileName() == file) {
@@ -112,7 +117,7 @@ LauncherPlacesList::onDirectoryChanged(const QString& path)
 PlaceEntry*
 LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& groupName)
 {
-    Q_FOREACH(QAbstractListModel* model, m_models) {
+    Q_FOREACH(QAbstractItemModel* model, m_models) {
         Place* place = static_cast<Place*>(model);
         if (place->fileName() == fileName) {
             return place->findPlaceEntry(groupName);
@@ -125,8 +130,28 @@ LauncherPlacesList::findPlaceEntry(const QString& fileName, const QString& group
 void
 LauncherPlacesList::startAllPlaceServices()
 {
-    Q_FOREACH(QAbstractListModel* model, m_models) {
+    Q_FOREACH(QAbstractItemModel* model, m_models) {
         Place* place = static_cast<Place*>(model);
         place->connectToRemotePlace();
+    }
+}
+
+QVariant
+LauncherPlacesList::data(const QModelIndex& index, int role) const
+{
+    QVariant item = ListAggregatorModel::data(index, Qt::DisplayRole);
+    if (role == RoleItem) {
+        return item;
+    } else if (role == RoleShowEntry) {
+        /* We attempt this cast because we are sure that this aggregator is only
+           aggregating Places, and Places have as items PlaceEntries */
+        PlaceEntry* entry = item.value<PlaceEntry*>();
+        if (entry == NULL) {
+            return QVariant();
+        } else {
+            return QVariant::fromValue(QString(entry->showEntry() ? "true" : "false"));
+        }
+    } else {
+        return QVariant();
     }
 }

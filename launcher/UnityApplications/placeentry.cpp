@@ -154,6 +154,7 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_position(0),
     m_sensitive(false),
     m_sections(NULL),
+    m_showEntry(false),
     m_activeSection(-1),
     m_active(false),
     m_place((Place*)parent),
@@ -353,6 +354,12 @@ PlaceEntry::searchHint() const
     return m_searchHint;
 }
 
+bool
+PlaceEntry::showEntry() const
+{
+    return m_showEntry;
+}
+
 int
 PlaceEntry::activeSection() const
 {
@@ -542,6 +549,15 @@ PlaceEntry::setSearchHint(const QString& searchHint)
     if (m_searchHint != searchHint) {
         m_searchHint = searchHint;
         Q_EMIT searchHintChanged(m_searchHint);
+    }
+}
+
+void
+PlaceEntry::setShowEntry(bool showEntry)
+{
+    if (m_showEntry != showEntry) {
+        m_showEntry = showEntry;
+        Q_EMIT showEntryChanged(m_showEntry);
     }
 }
 

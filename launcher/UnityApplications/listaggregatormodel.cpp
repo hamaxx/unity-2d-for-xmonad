@@ -20,6 +20,7 @@
 #include "listaggregatormodel.h"
 
 #include <QDebug>
+#include <QSortFilterProxyModel>
 
 ListAggregatorModel::ListAggregatorModel(QObject* parent) :
     QAbstractListModel(parent)
@@ -37,12 +38,20 @@ void
 ListAggregatorModel::appendModel(const QVariant& model)
 {
     QObject* object = qvariant_cast<QObject*>(model);
-    QAbstractListModel* list = qobject_cast<QAbstractListModel*>(object);
+    QAbstractItemModel* list = qobject_cast<QAbstractListModel*>(object);
+    if (list == NULL) {
+        list = qobject_cast<QSortFilterProxyModel*>(object);
+        if (list == NULL) {
+            qWarning() << "Unable to append model that is not of type QAbstractListModel."
+                       << object->objectName() << "is of type" << object->metaObject()->className();
+            return;
+        }
+    }
     aggregateListModel(list);
 }
 
 void
-ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
+ListAggregatorModel::aggregateListModel(QAbstractItemModel* model)
 {
     if (model == NULL) {
         return;
@@ -69,7 +78,7 @@ ListAggregatorModel::aggregateListModel(QAbstractListModel* model)
 }
 
 void
-ListAggregatorModel::removeListModel(QAbstractListModel* model)
+ListAggregatorModel::removeListModel(QAbstractItemModel* model)
 {
     int modelRowCount = model->rowCount();
     if (modelRowCount > 0) {
@@ -94,35 +103,40 @@ ListAggregatorModel::removeListModel(QAbstractListModel* model)
 void
 ListAggregatorModel::move(int from, int to)
 {
-    QAbstractListModel* model = modelAtIndex(from);
+    QAbstractItemModel* model = modelAtIndex(from);
     if (modelAtIndex(to) != model) {
         qWarning() << "cannot move an item from one model to another";
         return;
     }
 
+    if (qobject_cast<QSortFilterProxyModel*>(model) != NULL) {
+        qWarning() << "cannot move the items of a QSortFilterProxyModel";
+        return;
+    }
+
     int offset = computeOffset(model);
-    // "move" is not a member of QAbstractListModel, cannot be invoked directly
+    // "move" is not a member of QAbstractItemModel, cannot be invoked directly
     QMetaObject::invokeMethod(model, "move",
                               Q_ARG(int, from - offset),
                               Q_ARG(int, to - offset));
 }
 
 int
-ListAggregatorModel::computeOffset(QAbstractListModel* model) const
+ListAggregatorModel::computeOffset(QAbstractItemModel* model) const
 {
     int offset = 0;
-    QList<QAbstractListModel*>::const_iterator iter;
+    QList<QAbstractItemModel*>::const_iterator iter;
     for (iter = m_models.begin(); (iter != m_models.end()) && (*iter != model); ++iter) {
         offset += (*iter)->rowCount();
     }
     return offset;
 }
 
-QAbstractListModel*
+QAbstractItemModel*
 ListAggregatorModel::modelAtIndex(int index) const
 {
     int offset = index;
-    Q_FOREACH(QAbstractListModel* model, m_models) {
+    Q_FOREACH(QAbstractItemModel* model, m_models) {
         int size = model->rowCount();
         if (offset < size) {
             return model;
@@ -167,7 +181,7 @@ ListAggregatorModel::rowCount(const QModelIndex& parent) const
     Q_UNUSED(parent)
 
     int count = 0;
-    QList<QAbstractListModel*>::const_iterator iter;
+    QList<QAbstractItemModel*>::const_iterator iter;
     for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         count += (*iter)->rowCount();
     }
@@ -183,13 +197,13 @@ ListAggregatorModel::data(const QModelIndex& index, int role) const
 
     int row = index.row();
     int offset = row;
-    QList<QAbstractListModel*>::const_iterator iter;
+    QList<QAbstractItemModel*>::const_iterator iter;
     for (iter = m_models.begin(); iter != m_models.end(); ++iter) {
         int rowCount = (*iter)->rowCount();
         if (offset >= rowCount) {
             offset -= rowCount;
         } else {
-            QModelIndex new_index = createIndex(offset, role);
+            QModelIndex new_index = (*iter)->index(offset, 0);
             return (*iter)->data(new_index, role);
         }
     }
