@@ -29,12 +29,17 @@
 #include <QToolButton>
 
 class QDBusInterface;
+class LauncherClient;
 
 class HomeButtonApplet : public Unity2d::Applet
 {
 Q_OBJECT
 public:
     HomeButtonApplet();
+
+protected:
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
 
 private Q_SLOTS:
     void toggleDash();
@@ -44,6 +49,7 @@ private:
     Q_DISABLE_COPY(HomeButtonApplet)
     QToolButton* m_button;
     QDBusInterface* m_dashInterface;
+    LauncherClient* m_launcherClient;
 };
 
 #endif /* HOMEBUTTONAPPLET_H */

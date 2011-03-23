@@ -28,6 +28,8 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusPendingCall>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -37,12 +39,26 @@
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
 
-LauncherView::LauncherView() :
-    QDeclarativeView(), m_superKeyPressed(false)
+static const int KEY_HOLD_THRESHOLD = 250;
+
+static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
+static const char* DASH_DBUS_PATH = "/Dash";
+static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
+static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
+static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
+
+LauncherView::LauncherView(QWidget* parent) :
+    QDeclarativeView(parent),
+    m_superKeyPressed(false), m_superKeyHeld(false)
 {
+    m_superKeyHoldTimer.setSingleShot(true);
+    m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
+    connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
+    connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
+    connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(changeKeyboardShortcutsState(bool)));
+
     m_enableSuperKey.setKey("/desktop/unity/launcher/super_key_enable");
-    QObject::connect(&m_enableSuperKey, SIGNAL(valueChanged()),
-                     this, SLOT(updateSuperKeyMonitoring()));
+    connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
     /* Alt+F1 gives the keyboard focus to the launcher. */
@@ -85,9 +101,12 @@ LauncherView::updateSuperKeyMonitoring()
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
-        Q_EMIT superKeyPressedChanged(false);
-        changeKeyboardShortcutsState(false);
+        if (m_superKeyHeld) {
+            m_superKeyHeld = false;
+            Q_EMIT superKeyHeldChanged(false);
+        }
     }
 }
 
@@ -100,8 +119,33 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
 
     if (m_superKeyPressed != superKeyPressed) {
         m_superKeyPressed = superKeyPressed;
-        Q_EMIT superKeyPressedChanged(m_superKeyPressed);
-        changeKeyboardShortcutsState(m_superKeyPressed);
+        if (superKeyPressed) {
+            /* If the key is pressed, start up a timer to monitor if it's being held short
+               enough to qualify as just a "tap" or as a proper hold */
+            m_superKeyHoldTimer.start();
+        } else {
+            m_superKeyHoldTimer.stop();
+
+            /* If the key is released, and was not being held, it means that the user just
+               performed a "tap". Otherwise the user just terminated a hold. */
+            if (!m_superKeyHeld) {
+                Q_EMIT superKeyTapped();
+            } else {
+                m_superKeyHeld = false;
+                Q_EMIT superKeyHeldChanged(m_superKeyHeld);
+            }
+        }
+    }
+}
+
+void
+LauncherView::updateSuperKeyHoldState()
+{
+    /* If the key was released in the meantime, just do nothing, otherwise
+       consider the key being held. */
+    if (m_superKeyPressed) {
+        m_superKeyHeld = true;
+        Q_EMIT superKeyHeldChanged(m_superKeyHeld);
     }
 }
 
@@ -135,12 +179,43 @@ LauncherView::forwardHotkey()
            from 0 to 8. Shortcut for 0 should activate item with index 10.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
+        if (hotkey->key() < Qt::Key_0 || hotkey->key() > Qt::Key_9) {
+            return;
+        }
         int itemIndex = hotkey->key() - Qt::Key_0;
         itemIndex = (itemIndex == 0) ? 9 : itemIndex - 1;
 
         if (itemIndex >= 0 && itemIndex <= 10) {
             Q_EMIT keyboardShortcutPressed(itemIndex);
         }
+    }
+}
+
+void
+LauncherView::toggleDash()
+{
+    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+    if (!dashInterface.isValid()) {
+        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
+                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        return;
+    }
+
+    QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
+    if (!dashActiveResult.isValid()) {
+        qWarning() << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+                   << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        return;
+    }
+
+    bool dashActive = dashActiveResult.toBool();
+    if (dashActive) {
+        if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
+            qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+                       << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
+        }
+    } else {
+        dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
     }
 }
 

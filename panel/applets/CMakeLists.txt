@@ -68,6 +68,7 @@ include_directories(
     ${WNCK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
+    ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 add_library(uqapplets ${uqapplets_SRCS})
@@ -85,4 +86,5 @@ target_link_libraries(uqapplets
     ${X11_Xcomposite_LIB}
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
+    unity-2d-private
     )
