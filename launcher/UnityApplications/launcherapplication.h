@@ -28,9 +28,11 @@
 #include <QString>
 #include <QTimer>
 #include <QHash>
+#include <QPointer>
 
 #include "bamf-application.h"
 
+struct SnStartupSequence;
 class DBusMenuImporter;
 class QFileSystemWatcher;
 
@@ -42,6 +44,7 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
+    Q_PROPERTY(QString executable READ executable NOTIFY executableChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
     Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
@@ -65,6 +68,7 @@ public:
     virtual QString icon() const;
     QString application_type() const;
     QString desktop_file() const;
+    QString executable() const;
     virtual bool launching() const;
     bool has_visible_window() const;
     float progress() const;
@@ -78,6 +82,7 @@ public:
     void setDesktopFile(const QString& desktop_file);
     void setSticky(bool sticky);
     void setBamfApplication(BamfApplication *application);
+    void setSnStartupSequence(SnStartupSequence* sequence);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -95,6 +100,7 @@ Q_SIGNALS:
     void stickyChanged(bool);
     void applicationTypeChanged(QString);
     void desktopFileChanged(QString);
+    void executableChanged(QString);
     void hasVisibleWindowChanged(bool);
     void progressBarVisibleChanged(bool);
     void counterVisibleChanged(bool);
@@ -132,9 +138,10 @@ private Q_SLOTS:
     void endForceUrgent();
 
 private:
-    BamfApplication *m_application;
+    QPointer<BamfApplication> m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
     GDesktopAppInfo *m_appInfo;
+    SnStartupSequence *m_snStartupSequence;
     bool m_sticky;
     QTimer m_launching_timer;
     bool m_has_visible_window;
