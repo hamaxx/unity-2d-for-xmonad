@@ -33,7 +33,6 @@
 extern "C" {
 #include <libsn/sn.h>
 }
-#include <X11/Xlib.h>
 
 
 #define FAVORITES_KEY QString("/desktop/unity-2d/launcher/favorites")
@@ -79,7 +78,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     /* Register the display to receive startup notifications */
     Display *xdisplay = QX11Info::display();
     m_snDisplay = sn_display_new(xdisplay, NULL, NULL);
-    m_snContext = sn_monitor_context_new(m_snDisplay, DefaultScreen (xdisplay),
+    m_snContext = sn_monitor_context_new(m_snDisplay, QX11Info::appScreen(),
                                           LauncherApplicationsList::snEventHandler,
                                           this, NULL);
     Unity2dApplication::instance()->installX11EventFilter(this);
