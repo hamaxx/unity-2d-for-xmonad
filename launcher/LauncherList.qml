@@ -118,6 +118,9 @@ AutoScrollingListView {
                 showMenu()
                 item.menu.folded = false
             }
+	    else if (mouse.button == Qt.MidButton) {
+		item.newInstance()
+	    }
         }
 
         /* Display the tooltip when hovering the item only when the list

@@ -58,6 +58,7 @@ public:
     /* methods */
     Q_INVOKABLE virtual void activate() = 0;
     Q_INVOKABLE virtual void createMenuActions() = 0;
+    Q_INVOKABLE virtual void newInstance();
 
 protected:
     LauncherContextualMenu* m_menu;
