@@ -38,4 +38,29 @@
     return (value); \
 }
 
+/**
+ * A class to monitor entering and leaving blocks. Use it as is, or use the
+ * convenience UQ_DEBUG_BLOCK macro which sets "from" to the current function.
+ */
+class Unity2dDebugBlock
+{
+public:
+    Unity2dDebugBlock(const QString& from)
+    : m_from(from)
+    {
+        qDebug() << "-->" << m_from;
+    }
+
+    ~Unity2dDebugBlock()
+    {
+        qDebug() << "<--" << m_from;
+    }
+
+private:
+    QString m_from;
+};
+
+#define UQ_DEBUG_BLOCK Unity2dDebugBlock __unity2dDebugBlock__(__PRETTY_FUNCTION__)
+
+
 #endif /* DEBUG_P_H */
