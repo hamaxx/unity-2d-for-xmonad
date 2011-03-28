@@ -26,15 +26,15 @@ PropertyBinder::PropertyBinder(QObject *parent) :
 {
 }
 
-static const char* signalNameFromMethod(QMetaMethod* signalMetaMethod)
+static QByteArray signalNameFromMethod(const QMetaMethod& signalMetaMethod)
 {
     /* Prepend QSIGNAL_CODE to the signature of the method mimicking
        the behaviour of the SIGNAL macro.
        See src/corelib/kernel/qobjectdefs.h in Qt's source.
     */
-    QString signalName = signalMetaMethod->signature();
+    QByteArray signalName = signalMetaMethod.signature();
     signalName.prepend(QSIGNAL_CODE);
-    return signalName.toAscii().data();
+    return signalName;
 }
 
 bool PropertyBinder::bind(QObject* objectA, const char* propertyA,
@@ -52,11 +52,11 @@ bool PropertyBinder::bind(QObject* objectA, const char* propertyA,
        Fixed in Qt 4.8.
        See http://bugreports.qt.nokia.com/browse/QTBUG-10637
     */
-    success = connect(objectA, signalNameFromMethod(&m_metaPropertyA.notifySignal()), SLOT(copyAintoB()));
+    success = connect(objectA, signalNameFromMethod(m_metaPropertyA.notifySignal()).data(), SLOT(copyAintoB()));
     if (!success) {
         return false;
     }
-    success = connect(objectB, signalNameFromMethod(&m_metaPropertyB.notifySignal()), SLOT(copyBintoA()));
+    success = connect(objectB, signalNameFromMethod(m_metaPropertyB.notifySignal()).data(), SLOT(copyBintoA()));
     if (!success) {
         objectA->disconnect(this);
         return false;
