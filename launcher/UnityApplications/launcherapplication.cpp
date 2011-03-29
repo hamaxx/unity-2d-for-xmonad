@@ -38,12 +38,14 @@ extern "C" {
 // libunity-2d
 #include <unity2dtr.h>
 
+// Qt
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QFile>
 #include <QFileSystemWatcher>
+#include <QScopedPointer>
 
 extern "C" {
 #include <libsn/sn.h>
@@ -136,7 +138,8 @@ LauncherApplication::windowCount() const
         return 0;
     }
 
-    return m_application->windows()->size();
+    QScopedPointer<BamfWindowList> lst(m_application->windows());
+    return lst->size();
 }
 
 bool
