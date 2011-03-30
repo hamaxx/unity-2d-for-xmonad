@@ -1,5 +1,6 @@
 set(panel_SRCS
     main.cpp
+    panelsmanager.cpp
     unity2dstyle.cpp
     )
 
