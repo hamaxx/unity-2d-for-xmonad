@@ -134,8 +134,8 @@ LauncherApplication::windowCount() const
         return 0;
     }
 
-    QScopedPointer<BamfWindowList> lst(m_application->windows());
-    return lst->size();
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    return windows->size();
 }
 
 bool
