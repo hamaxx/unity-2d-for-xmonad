@@ -595,7 +595,9 @@ LauncherApplication::windowCountOnCurrentWorkspace()
 void
 LauncherApplication::activate()
 {
-    if (active()) {
+    if (urgent()) {
+        show();
+    } else if (active()) {
         if (windowCountOnCurrentWorkspace() > 1) {
             spread();
         }
