@@ -41,6 +41,8 @@ HomeButton {
                    by the client. */
                 return desktopFile
             }
+            /* Ignore extra parameters. */
+            exec = exec.split(" ", 1)[0]
             /* The value may contain either the full path to the executable
                (e.g. "/usr/bin/chromium-browser") or only its basename
                (e.g. "rhythmbox"). */

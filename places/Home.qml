@@ -226,7 +226,7 @@ Item {
 
             HomeButtonApplication {
                 label: u2d.tr("Check Email")
-                key: "/desktop/gnome/applications/calendar/exec"
+                key: "/desktop/gnome/url-handlers/mailto/command"
             }
 
             HomeButtonApplication {
