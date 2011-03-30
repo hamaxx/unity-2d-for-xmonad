@@ -20,7 +20,6 @@ import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
 import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
 import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
-import gconf 1.0
 
 Item {
     property variant model: PageModel {
@@ -217,7 +216,7 @@ Item {
             /* FIXME: use user's preferred applications instead of hardcoding them */
             HomeButtonApplication {
                 label: u2d.tr("Browse the Web")
-                desktopFile: "firefox.desktop"
+                key: "/desktop/gnome/applications/browser/exec"
             }
 
             HomeButtonApplication {
@@ -227,12 +226,12 @@ Item {
 
             HomeButtonApplication {
                 label: u2d.tr("Check Email")
-                desktopFile: "evolution.desktop"
+                key: "/desktop/gnome/applications/calendar/exec"
             }
 
             HomeButtonApplication {
                 label: u2d.tr("Listen to Music")
-                desktopFile: "banshee-1.desktop"
+                key: "/desktop/gnome/applications/media/exec"
             }
         }
     }
