@@ -40,6 +40,8 @@ extern "C" {
 
 // Qt
 #include <QDateTime>
+#include <QApplication>
+#include <QDesktopWidget>
 
 struct WindowHelperPrivate
 {
@@ -109,6 +111,29 @@ bool WindowHelper::isMaximized() const
         return false;
     }
     return wnck_window_is_maximized(d->m_window);
+}
+
+bool WindowHelper::isMostlyOnScreen(int screen) const
+{
+    if (!d->m_window) {
+        return false;
+    }
+    int x, y, width, height;
+    wnck_window_get_geometry(d->m_window, &x, &y, &width, &height);
+    const QRect windowGeometry(x, y, width, height);
+    QDesktopWidget* desktop = QApplication::desktop();
+    const QRect screenGeometry = desktop->screenGeometry(screen);
+    QRect onScreen = screenGeometry.intersected(windowGeometry);
+    int intersected = onScreen.width() * onScreen.height();
+    for (int i = 0; i < desktop->screenCount(); ++i) {
+        if (i != screen) {
+            onScreen = desktop->screenGeometry(i).intersected(windowGeometry);
+            if (onScreen.width() * onScreen.height() > intersected) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 void WindowHelper::close()

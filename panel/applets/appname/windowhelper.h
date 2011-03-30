@@ -38,6 +38,7 @@ public:
     void setXid(uint);
 
     bool isMaximized() const;
+    bool isMostlyOnScreen(int screen) const;
 
 public Q_SLOTS:
     void close();
