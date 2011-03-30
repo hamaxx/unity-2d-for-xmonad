@@ -36,7 +36,6 @@
 #include <unity2dpanel.h>
 
 // Qt
-#include <QList>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLabel>
@@ -69,44 +68,63 @@ QLabel* createSeparator()
     return label;
 }
 
-struct PanelsManagerPrivate
+Unity2dPanel* instantiatePanel(int screen)
 {
-    QList<Unity2dPanel*> m_panels;
+    Unity2dPanel* panel = new Unity2dPanel;
+    panel->setEdge(Unity2dPanel::TopEdge);
+    panel->setPalette(getPalette());
+    panel->setFixedHeight(24);
 
-    Unity2dPanel* instantiatePanel(int screen) const
-    {
-        Unity2dPanel* panel = new Unity2dPanel;
-        panel->setEdge(Unity2dPanel::TopEdge);
-        panel->setPalette(getPalette());
-        panel->setFixedHeight(24);
-
-        if (screen == QApplication::desktop()->primaryScreen()) {
-            panel->addWidget(new HomeButtonApplet);
-            panel->addWidget(createSeparator());
-        }
-        panel->addWidget(new AppNameApplet);
-        panel->addWidget(new LegacyTrayApplet);
-        panel->addWidget(new IndicatorApplet);
-        return panel;
+    if (screen == QApplication::desktop()->primaryScreen()) {
+        panel->addWidget(new HomeButtonApplet);
+        panel->addWidget(createSeparator());
     }
-};
+    panel->addWidget(new AppNameApplet);
+    panel->addWidget(new LegacyTrayApplet);
+    panel->addWidget(new IndicatorApplet);
+    return panel;
+}
 
 PanelsManager::PanelsManager(QObject* parent)
     : QObject(parent)
-    , d(new PanelsManagerPrivate)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
-        Unity2dPanel* panel = d->instantiatePanel(i);
-        d->m_panels.append(panel);
+        Unity2dPanel* panel = instantiatePanel(i);
+        m_panels.append(panel);
         panel->move(desktop->screenGeometry(i).topLeft());
         panel->show();
     }
+    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
 }
 
 PanelsManager::~PanelsManager()
 {
-    qDeleteAll(d->m_panels);
-    delete d;
+    qDeleteAll(m_panels);
 }
+
+void
+PanelsManager::onScreenCountChanged(int newCount)
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    int size = m_panels.size();
+    /* Update the position of existing panels, and instantiate new panels. */
+    for (int i = 0; i < newCount; ++i) {
+        Unity2dPanel* panel;
+        if (i < size) {
+            panel = m_panels[i];
+        } else {
+            panel = instantiatePanel(i);
+            m_panels.append(panel);
+        }
+        panel->move(desktop->screenGeometry(i).topLeft());
+        panel->show();
+    }
+    /* Remove extra panels if any. */
+    while (m_panels.size() > newCount) {
+        delete m_panels.takeLast();
+    }
+}
+
+#include "panelsmanager.moc"
 
