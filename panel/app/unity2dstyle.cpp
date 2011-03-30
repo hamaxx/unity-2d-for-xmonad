@@ -43,8 +43,14 @@ Unity2dStyle::Unity2dStyle()
 void Unity2dStyle::drawControl(QStyle::ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
 {
     if (element == QStyle::CE_MenuBarItem && widget) {
-        // Avoid solid gray background behind the menubar items
-        QProxyStyle::drawControl(element, option, painter, 0);
+        QStyleOptionMenuItem opt = *qstyleoption_cast<const QStyleOptionMenuItem*>(option);
+        if (!(opt.state & QStyle::State_Enabled) && (opt.state & QStyle::State_Sunken)) {
+            // Reset State_Sunken flag to avoid drawing a frame on a disabled menu item
+            // See https://bugs.launchpad.net/unity-2d/+bug/717744
+            opt.state ^= QStyle::State_Sunken;
+        }
+        // Skip "widget" parameter to avoid solid gray background behind the menubar items
+        QProxyStyle::drawControl(element, &opt, painter, 0);
     } else if (element == QStyle::CE_MenuBarEmptyArea) {
         // Avoid gray borders around the menubar items
     } else {
