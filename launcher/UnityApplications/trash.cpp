@@ -95,7 +95,7 @@ Trash::activate()
 }
 
 void
-Trash::newInstance()
+Trash::launchNewInstance()
 {
     open();
 }

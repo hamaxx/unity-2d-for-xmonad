@@ -119,7 +119,7 @@ AutoScrollingListView {
                 item.menu.folded = false
             }
             else if (mouse.button == Qt.MidButton) {
-                item.newInstance()
+                item.launchNewInstance()
             }
         }
 

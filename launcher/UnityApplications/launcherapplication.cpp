@@ -607,7 +607,7 @@ LauncherApplication::activate()
 }
 
 void
-LauncherApplication::newInstance()
+LauncherApplication::launchNewInstance()
 {
     launch();
 }
