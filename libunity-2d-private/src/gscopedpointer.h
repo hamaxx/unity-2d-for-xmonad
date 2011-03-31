@@ -28,7 +28,9 @@ class GScopedPointerDeleter
 public:
     static void cleanup(T* ptr)
     {
-        cleanup_fcn(ptr);
+        if (ptr) {
+            cleanup_fcn(ptr);
+        }
     }
 };
 
@@ -60,7 +62,9 @@ class GObjectScopedPointerDeleter
 public:
     static void cleanup(T* ptr)
     {
-        cleanup_fcn(ptr);
+        if (ptr) {
+            cleanup_fcn(ptr);
+        }
     }
 };
 
