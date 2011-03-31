@@ -98,7 +98,7 @@ Renderer {
                We assume that renderer.parentListView is the ListView we nest our
                GridView into.
             */
-            property variant flickable: renderer.parentListView
+            property variant flickable: renderer.parentListView.contentItem
 
             /* flickable.contentY*0 is equal to 0 but is necessary in order to
                have the entire expression being evaluated at the right moment.
