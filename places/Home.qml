@@ -191,19 +191,19 @@ Item {
 
             /* FIXME: dummy icons need to be replaced by design's */
             HomeButton {
-                label: u2d.tr("Find Media Apps")
+                label: u2d.tr("Media Apps")
                 icon: "artwork/find_media_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 9)
             }
 
             HomeButton {
-                label: u2d.tr("Find Internet Apps")
+                label: u2d.tr("Internet Apps")
                 icon: "artwork/find_internet_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 8)
             }
 
             HomeButton {
-                label: u2d.tr("Find More Apps")
+                label: u2d.tr("More Apps")
                 icon: "artwork/find_more_apps.png"
                 onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
             }
