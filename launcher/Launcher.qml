@@ -63,8 +63,6 @@ DropItem {
             anchors.bottom: parent.bottom;
             height: (tileSize + itemPadding) * count
             width: parent.width
-            /* Ensure the tiles in the shelf are always above those in 'main'. */
-            itemZ: 1
             itemPadding: 0
 
             model: ListAggregatorModel {

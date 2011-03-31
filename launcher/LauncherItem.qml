@@ -100,12 +100,12 @@ DropItem {
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem
-        parent: launcher
+        parent: list
         width: item.width
         height: item.height
         x: item.x
-        y: ListView.view.y - ListView.view.contentY + item.y
-        z: ListView.view.itemZ
+        y: -ListView.view.contentY + item.y
+        z: 0
 
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
