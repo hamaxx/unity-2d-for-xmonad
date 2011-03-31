@@ -293,6 +293,9 @@ LauncherApplicationsList::insertSnStartupSequence(SnStartupSequence* sequence)
     }
 
     QString executable = sn_startup_sequence_get_binary_name(sequence);
+    if (EXECUTABLES_BLACKLIST.contains(executable)) {
+        return;
+    }
 
     if (m_applicationForExecutable.contains(executable)) {
         /* A LauncherApplication with the same executable already exists */
