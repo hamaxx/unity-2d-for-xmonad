@@ -105,7 +105,9 @@ DropItem {
         height: item.height
         x: item.x
         y: -ListView.view.contentY + item.y
-        z: 0
+        /* The item is under everything else in the list: top and bottom
+           gradients, ListViewDragAndDrop and autoscroll areas. */
+        z: -1
 
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
