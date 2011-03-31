@@ -41,6 +41,9 @@ extern "C" {
 #define DBUS_SERVICE_LAUNCHER "com.canonical.Unity.Launcher"
 #define DBUS_OBJECT_LAUNCHER "/com/canonical/Unity/Launcher"
 
+/* List of executables that are too generic to be matched against a single application. */
+static const QStringList EXECUTABLES_BLACKLIST = (QStringList() << "xdg-open");
+
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -176,8 +179,9 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
     if (!application->desktop_file().isEmpty()) {
         m_applicationForDesktopFile.insert(application->desktop_file(), application);
     }
-    if (!application->executable().isEmpty()) {
-        m_applicationForExecutable.insert(application->executable(), application);
+    QString executable = application->executable();
+    if (!executable.isEmpty() && !EXECUTABLES_BLACKLIST.contains(executable)) {
+        m_applicationForExecutable.insert(executable, application);
     }
     endInsertRows();
 
