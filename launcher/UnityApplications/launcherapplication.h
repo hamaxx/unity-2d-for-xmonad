@@ -22,6 +22,10 @@
 
 #include "launcheritem.h"
 
+// libunity-2d
+#include <gscopedpointer.h>
+
+// Qt
 #include <QObject>
 #include <QUrl>
 #include <QMetaType>
@@ -33,9 +37,16 @@
 #include "bamf-application.h"
 
 struct SnStartupSequence;
+extern "C" {
+void sn_startup_sequence_unref(struct SnStartupSequence*);
+}
+
 class DBusMenuImporter;
 class QFileSystemWatcher;
 
+typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
+typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
+typedef GScopedPointer<SnStartupSequence, sn_startup_sequence_unref> SnStartupSequencePointer;
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
@@ -140,8 +151,8 @@ private Q_SLOTS:
 private:
     QPointer<BamfApplication> m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
-    GDesktopAppInfo *m_appInfo;
-    SnStartupSequence *m_snStartupSequence;
+    GAppInfoPointer m_appInfo;
+    SnStartupSequencePointer m_snStartupSequence;
     bool m_sticky;
     QTimer m_launching_timer;
     bool m_has_visible_window;
