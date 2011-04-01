@@ -53,8 +53,8 @@ class Registrar : public QObject, protected QDBusContext
     Q_OBJECT
 
 public:
-    Registrar(QObject*);
-    ~Registrar();
+    /* The registrar is a singleton shared between all instances of MenuBarWidget. */
+    static Registrar* instance();
 
     bool connectToBus(const QString& service = QString(), const QString& objectPath = QString());
 
@@ -72,6 +72,10 @@ private Q_SLOTS:
     void slotServiceUnregistered(const QString& service);
 
 private:
+    explicit Registrar();
+    Q_DISABLE_COPY(Registrar)
+    ~Registrar();
+
     QDBusServiceWatcher* mServiceWatcher;
     typedef QHash<WId, MenuInfo> MenuInfoDb;
     MenuInfoDb mDb;

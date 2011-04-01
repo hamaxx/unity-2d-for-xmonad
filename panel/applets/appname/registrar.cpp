@@ -51,8 +51,8 @@ const QDBusArgument& operator>>(const QDBusArgument& argument, MenuInfo& info)
     return argument;
 }
 
-Registrar::Registrar(QObject* parent)
-: QObject(parent)
+Registrar::Registrar()
+: QObject()
 , mServiceWatcher(new QDBusServiceWatcher(this))
 {
     qDBusRegisterMetaType<MenuInfo>();
@@ -65,6 +65,12 @@ Registrar::Registrar(QObject* parent)
 Registrar::~Registrar()
 {
     QDBusConnection::sessionBus().unregisterService(mService);
+}
+
+Registrar* Registrar::instance()
+{
+    static Registrar* singleton = new Registrar();
+    return singleton;
 }
 
 bool Registrar::connectToBus(const QString& _service, const QString& _path)

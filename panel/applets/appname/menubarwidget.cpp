@@ -74,7 +74,7 @@ MenuBarWidget::MenuBarWidget(QMenu* windowMenu, QWidget* parent)
 
 void MenuBarWidget::setupRegistrar()
 {
-    m_registrar = new Registrar(this);
+    m_registrar = Registrar::instance();
     if (!m_registrar->connectToBus()) {
         UQ_WARNING << "could not connect registrar to DBus";
     }
