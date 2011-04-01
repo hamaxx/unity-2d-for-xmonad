@@ -601,8 +601,8 @@ LauncherApplication::activate()
     if (urgent()) {
         show();
     } else if (active()) {
-        if (windowCountOnCurrentWorkspace() > 1) {
-            spread();
+        if (windowCountOnCurrentWorkspace() > 0) {
+            spread(windowCount() > windowCountOnCurrentWorkspace());
         }
     } else if (running() && has_visible_window()) {
         show();
@@ -761,7 +761,7 @@ LauncherApplication::moveViewportToWindow(WnckWindow* window)
 }
 
 void
-LauncherApplication::spread()
+LauncherApplication::spread(bool showAllWorkspaces)
 {
     QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
                          "com.canonical.Unity2d.Spread");
@@ -770,7 +770,11 @@ LauncherApplication::spread()
         if (isShown.value() == true) {
             iface.asyncCall("FilterByApplication", m_application->desktop_file());
         } else {
-            iface.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
+            if (showAllWorkspaces) {
+                iface.asyncCall("ShowAllWorkspaces", m_application->desktop_file());
+            } else {
+                iface.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
+            }
         }
     } else {
         qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
