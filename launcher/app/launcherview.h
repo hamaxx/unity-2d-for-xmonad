@@ -61,6 +61,7 @@ private Q_SLOTS:
     void toggleDash();
     void changeKeyboardShortcutsState(bool enabled);
     void showCommandsPlace();
+    void showWorkspaceSwitcher();
 
 public Q_SLOTS:
     void activateWindow();
