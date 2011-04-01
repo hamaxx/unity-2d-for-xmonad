@@ -46,29 +46,34 @@ void qmlInit(QDeclarativeContext* context)
     context->setContextProperty("u2d", &helper);
 }
 
-QString QmlHelper::tr(const QString& text)
+QString QmlHelper::tr(const QString& text, const QString& domain)
 {
-    return ::u2dTr(text.toUtf8().constData());
+    if (domain.isNull()) {
+        return ::u2dTr(text.toUtf8().constData());
+    } else {
+        return ::u2dTr(text.toUtf8().constData(), domain.toUtf8().constData());
+    }
 }
 
-QString QmlHelper::tr(const QString& singular, const QString& plural, int n)
+QString QmlHelper::tr(const QString& singular, const QString& plural, int n, const QString& domain)
 {
-    return ::u2dTr(
-        singular.toUtf8().constData(),
-        plural.toUtf8().constData(),
-        n);
+    if (domain.isNull()) {
+        return ::u2dTr(singular.toUtf8().constData(), plural.toUtf8().constData(), n);
+    } else {
+        return ::u2dTr(singular.toUtf8().constData(), plural.toUtf8().constData(), n, domain.toUtf8().constData());
+    }
 }
 
 } // namespace
 
-QString u2dTr(const char* text)
+QString u2dTr(const char* text, const char* domain)
 {
-    return QString::fromUtf8(gettext(text));
+    return QString::fromUtf8(dgettext(domain, text));
 }
 
-QString u2dTr(const char* singular, const char* plural, int n)
+QString u2dTr(const char* singular, const char* plural, int n, const char* domain)
 {
-    QString text = QString::fromUtf8(ngettext(singular, plural, n));
+    QString text = QString::fromUtf8(dngettext(domain, singular, plural, n));
     // Note: if `text` is "%%n" (meaning the string on screen should be "%n"
     // literally), this will fail. I think we don't care for now.
     text.replace("%n", QString::number(n));
