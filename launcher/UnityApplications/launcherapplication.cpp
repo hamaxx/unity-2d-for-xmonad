@@ -38,12 +38,14 @@ extern "C" {
 // libunity-2d
 #include <unity2dtr.h>
 
+// Qt
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QFile>
 #include <QFileSystemWatcher>
+#include <QScopedPointer>
 
 extern "C" {
 #include <libsn/sn.h>
@@ -99,12 +101,8 @@ LauncherApplication::~LauncherApplication()
         m_snStartupSequence = NULL;
     }
 
-    if (m_application != NULL) {
-        m_application->disconnect(this);
-        m_application = NULL;
-    }
-
     if (m_appInfo != NULL) {
+        g_object_unref(m_appInfo);
         m_appInfo = NULL;
     }
 }
@@ -136,7 +134,8 @@ LauncherApplication::windowCount() const
         return 0;
     }
 
-    return m_application->windows()->size();
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    return windows->size();
 }
 
 bool
@@ -270,6 +269,10 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
 {
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
+
+    if (m_appInfo) {
+        g_object_unref(m_appInfo);
+    }
 
     if(desktop_file.startsWith("/")) {
         /* It looks like a full path to a desktop file */

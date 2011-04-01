@@ -126,6 +126,8 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
                                                             requestedSize.width(),
                                                             (GtkIconLookupFlags)0);
     GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
+    gtk_icon_info_free(icon_info);
+    g_object_unref(g_icon);
 
     /* FIXME: maybe an exception should be raised instead? */
     if (pixbuf == NULL) {

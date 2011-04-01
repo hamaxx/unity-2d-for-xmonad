@@ -343,6 +343,7 @@ load_module (const gchar * name, GtkWidget * menubar)
 	gchar * fullpath = g_build_filename(INDICATOR_DIR, name, NULL);
 	IndicatorObject * io = indicator_object_new_from_file(fullpath);
 	g_free(fullpath);
+	g_return_val_if_fail(io != NULL, FALSE);
 
 	/* Attach the 'name' to the object */
 	g_object_set_data(G_OBJECT(io), IO_DATA_ORDER_NUMBER, GINT_TO_POINTER(name2order(name)));
@@ -438,8 +439,14 @@ indicator_new ()
 
     dir = g_dir_open(INDICATOR_DIR, 0, NULL);
     while ((name = g_dir_read_name (dir)) != NULL) {
-      if ((g_strcmp0(name, "libappmenu.so") != 0) && load_module(name, indicator->menu)) {
+      if (g_strcmp0(name, "libappmenu.so") == 0) {
+        continue;
+      }
+
+      if (load_module(name, indicator->menu)) {
         indicators_loaded++;
+      } else {
+        g_warning("Failed to load module %s", name);
       }
     }
     g_dir_close(dir);

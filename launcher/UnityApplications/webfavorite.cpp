@@ -100,9 +100,9 @@ WebFavorite::modifyDesktopFile(const QString& key, const QString& value) const
     if (loaded) {
         g_key_file_set_string(keyFile, "Desktop Entry", key.toUtf8().constData(), value.toUtf8().constData());
         QByteArray contents = g_key_file_to_data(keyFile, NULL, NULL);
-        g_key_file_free(keyFile);
         writeDesktopFile(contents);
     }
+    g_key_file_free(keyFile);
 }
 
 void
