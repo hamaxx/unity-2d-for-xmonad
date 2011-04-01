@@ -40,6 +40,7 @@ ListView {
         height: autoScrollSize
         anchors.top: parent.top
         hoverEnabled: true
+        z: overlayZ
     }
 
     MouseArea {
@@ -48,6 +49,7 @@ ListView {
         height: autoScrollSize
         anchors.bottom: parent.bottom
         hoverEnabled: true
+        z: overlayZ
     }
 
     SmoothedAnimation {

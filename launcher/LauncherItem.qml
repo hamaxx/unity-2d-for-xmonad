@@ -105,9 +105,10 @@ DropItem {
         height: item.height
         x: item.x
         y: -ListView.view.contentY + item.y
-        /* The item is under everything else in the list: top and bottom
-           gradients, ListViewDragAndDrop and autoscroll areas. */
-        z: -1
+        /* The item is above the list's contentItem.
+           Top and bottom gradients, ListViewDragAndDrop and autoscroll areas
+           are above the item */
+        z: list.contentItem.z + 1
 
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
@@ -375,7 +376,7 @@ DropItem {
                 target: looseItem
                 y: item.dragPosition - tile.height / 2
                 /* When dragging an item, stack it on top of all its siblings */
-                z: 1
+                z: list.contentItem.z + 2
             }
         }
         Behavior on y {

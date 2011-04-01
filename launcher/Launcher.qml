@@ -44,7 +44,6 @@ DropItem {
             anchors.top: parent.top
             anchors.bottom: shelf.top
             width: parent.width
-            z: 1 /* for dnd to remain on top of looseItems */
 
             autoScrollSize: tileSize / 2
             autoScrollVelocity: 200
