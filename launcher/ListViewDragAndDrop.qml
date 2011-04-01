@@ -38,7 +38,10 @@ MouseArea {
     /* id (desktop file path) of the tile being dragged */
     property string draggedTileId: ""
     /* absolute mouse coordinates in the list */
-    property variant listCoordinates: mapToItem(list.contentItem, mouseX, mouseY)
+    /* list.contentY is artificially introduced in the calculation to make sure
+       the coordinates are updated when the list is being flicked.
+       Ref: https://bugs.launchpad.net/unity-2d/+bug/731449 */
+    property variant listCoordinates: mapToItem(list.contentItem, mouseX, mouseY + 0 * list.contentY)
     /* list index of the tile underneath the cursor */
     property int tileAtCursorIndex: list.indexAt(listCoordinates.x, listCoordinates.y)
 
@@ -82,7 +85,7 @@ MouseArea {
         }
     }
     onExited: drop()
-    onPositionChanged: {
+    function reorder() {
         if (draggedTileId != "" && tileAtCursorIndex != -1 && tileAtCursorIndex != draggedTileIndex) {
             /* Workaround a bug in QML whereby moving an item down in
                the list results in its visual representation being
@@ -104,5 +107,12 @@ MouseArea {
             }
             draggedTileIndex = tileAtCursorIndex
         }
+    }
+    onPositionChanged: reorder()
+    Connections {
+        /* Also trigger a re-ordering when the mouse is not moving but the list
+           is auto-scrolling. */
+        target: list
+        onContentYChanged: reorder()
     }
 }
