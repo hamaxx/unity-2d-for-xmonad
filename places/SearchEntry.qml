@@ -158,7 +158,7 @@ FocusScope {
                     if(search_input.text)
                         return ""
                     else if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
-                        return dash.currentPage.model.searchHint
+                        return u2d.tr(dash.currentPage.model.searchHint)
                     else
                         return ""
                 }
