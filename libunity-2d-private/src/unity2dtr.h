@@ -49,22 +49,24 @@ class QmlHelper : public QObject
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE QString tr(const QString&);
-    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
+    Q_INVOKABLE QString tr(const QString&, const QString& domain = QString());
+    Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n, const QString& domain = QString());
 };
 
 } // namespace
 
 /**
- * Translate the string text
+ * Translate the string text.
+ *
+ * If domain is NULL, the default domain name (set in init(…)) is used instead.
  */
-QString u2dTr(const char* text);
+QString u2dTr(const char* text, const char* domain = NULL);
 
 /**
- * Plural version of utr. Should be called like this:
+ * Plural version of u2dTr. Should be called like this:
  *
- * u2dTr("%n file", "%n files", count)
+ * u2dTr("%n file", "%n files", count, domain)
  */
-QString u2dTr(const char* singular, const char* plural, int n);
+QString u2dTr(const char* singular, const char* plural, int n, const char* domain = NULL);
 
 #endif /* UNITY2DTR_H */
