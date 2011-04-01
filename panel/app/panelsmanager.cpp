@@ -92,8 +92,8 @@ PanelsManager::PanelsManager(QObject* parent)
     for(int i = 0; i < desktop->screenCount(); ++i) {
         Unity2dPanel* panel = instantiatePanel(i);
         m_panels.append(panel);
-        panel->move(desktop->screenGeometry(i).topLeft());
         panel->show();
+        panel->move(desktop->screenGeometry(i).topLeft());
     }
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
 }
@@ -117,8 +117,8 @@ PanelsManager::onScreenCountChanged(int newCount)
             panel = instantiatePanel(i);
             m_panels.append(panel);
         }
-        panel->move(desktop->screenGeometry(i).topLeft());
         panel->show();
+        panel->move(desktop->screenGeometry(i).topLeft());
     }
     /* Remove extra panels if any. */
     while (m_panels.size() > newCount) {
