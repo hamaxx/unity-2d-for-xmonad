@@ -20,6 +20,9 @@
 #include "launcherapplication.h"
 #include "place.h"
 
+// libunity-2d
+#include <unity2dtr.h>
+
 #include <QStringList>
 #include <QDebug>
 #include <QDBusPendingReply>
@@ -85,6 +88,8 @@ Place::setFileName(const QString &file)
         m_dbusName = m_file->value("Place/DBusName").toString();
         m_dbusObjectPath = m_file->value("Place/dbusObjectPath").toString();
 
+        QString gettextDomain = m_file->value("Desktop Entry/X-Ubuntu-Gettext-Domain").toString();
+
         QStringList entries = m_file->childGroups().filter("Entry:");
         QStringList::const_iterator iter;
         uint i = 0;
@@ -95,8 +100,8 @@ Place::setFileName(const QString &file)
             m_file->beginGroup(*iter);
             entry->setDbusName(m_dbusName);
             entry->setDbusObjectPath(m_file->value("DBusObjectPath").toString());
-            // FIXME: extract localized name
-            entry->setName(m_file->value("Name").toString());
+            entry->setName(u2dTr(m_file->value("Name").toString().toUtf8().constData(),
+                                 gettextDomain.toUtf8().constData()));
             entry->setIcon(m_file->value("Icon").toString());
             entry->setSearchHint(m_file->value("SearchHint").toString());
             if (!m_file->contains("ShowEntry")) {
