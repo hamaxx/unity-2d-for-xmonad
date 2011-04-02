@@ -165,7 +165,7 @@ DropItem {
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
                 source: {
-                    var actualColor = item.activeFocus ? selectedBackgroundColor : color
+                    var actualColor = launcherView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg(engineBaseUrl + "artwork/round_corner_54x54.png")
                         .arg(actualColor.toString().replace("#", ""))
