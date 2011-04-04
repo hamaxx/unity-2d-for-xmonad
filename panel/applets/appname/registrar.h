@@ -72,7 +72,7 @@ private Q_SLOTS:
     void slotServiceUnregistered(const QString& service);
 
 private:
-    explicit Registrar();
+    Registrar();
     Q_DISABLE_COPY(Registrar)
     ~Registrar();
 
