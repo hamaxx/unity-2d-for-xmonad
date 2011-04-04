@@ -95,6 +95,12 @@ Trash::activate()
 }
 
 void
+Trash::launchNewInstance()
+{
+    open();
+}
+
+void
 Trash::open() const
 {
     GError* error = NULL;

@@ -611,6 +611,12 @@ LauncherApplication::activate()
     }
 }
 
+void
+LauncherApplication::launchNewInstance()
+{
+    launch();
+}
+
 bool
 LauncherApplication::launch()
 {

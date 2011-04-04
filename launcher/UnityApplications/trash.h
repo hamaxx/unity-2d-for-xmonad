@@ -48,6 +48,7 @@ public:
     /* methods */
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE virtual void createMenuActions();
+    Q_INVOKABLE virtual void launchNewInstance();
 
 public Q_SLOTS:
     /* Custom implementation of drag’n’drop handling. Dropping files on the

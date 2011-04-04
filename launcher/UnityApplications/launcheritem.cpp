@@ -51,3 +51,8 @@ LauncherItem::onDrop(DeclarativeDragDropEvent* event)
     /* Default to doing nothing. */
 }
 
+void
+LauncherItem::launchNewInstance()
+{
+    /* Default to doing nothing. */
+}

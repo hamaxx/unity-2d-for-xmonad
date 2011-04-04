@@ -359,7 +359,7 @@ DropItem {
                 anchors.fill: parent
 
                 hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MidButton
                 onClicked: item.clicked(mouse)
                 onEntered: item.entered()
                 onExited: item.exited()
