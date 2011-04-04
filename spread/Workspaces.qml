@@ -205,7 +205,9 @@ Rectangle {
             if (event.modifiers & Qt.MetaModifier) {
                 cancelAndExit()
                 event.accepted = true
+                return
             }
+            break
         }
     }
 

@@ -355,11 +355,16 @@ LauncherView::showWorkspaceSwitcher()
 {
     QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
     if (!spreadInterface.isValid()) {
-        qWarning() << "Can't access the dash via DBUS on" << SPREAD_DBUS_SERVICE
+        qWarning() << "Can't access the spread via DBUS on" << SPREAD_DBUS_SERVICE
                    << SPREAD_DBUS_PATH << SPREAD_DBUS_INTERFACE;
         return;
     }
 
+    /* Here we only show the spread, if it's hidden.
+       However on Super+s the spread should exit if it's already running.
+       That is done directly in spread/Workspaces.qml because the spread
+       fully grabs the keyboard, so it's the only place where Super+s can
+       be handled while the spread is active */
     QDBusReply<bool> isShown = spreadInterface.call("IsShown");
     if (isShown.isValid()) {
         if (isShown.value() == false) {
