@@ -69,8 +69,8 @@ Registrar::~Registrar()
 
 Registrar* Registrar::instance()
 {
-    static Registrar* singleton = new Registrar();
-    return singleton;
+    static Registrar singleton;
+    return &singleton;
 }
 
 bool Registrar::connectToBus(const QString& _service, const QString& _path)
