@@ -59,7 +59,7 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
     connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(changeKeyboardShortcutsState(bool)));
 
-    m_enableSuperKey.setKey("/desktop/unity/launcher/super_key_enable");
+    m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
     connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
