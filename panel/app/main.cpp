@@ -21,7 +21,7 @@
 
 // Local
 #include <config.h>
-#include <panelsmanager.h>
+#include <panelmanager.h>
 
 // Unity
 #include <gnomesessionclient.h>
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
-    PanelsManager panels;
+    PanelManager panels;
 
     return app.exec();
 }

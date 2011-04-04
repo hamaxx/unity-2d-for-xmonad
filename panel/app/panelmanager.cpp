@@ -20,7 +20,7 @@
  */
 
 // Self
-#include "panelsmanager.h"
+#include "panelmanager.h"
 
 // Local
 #include <config.h>
@@ -90,7 +90,7 @@ Unity2dPanel* instantiatePanel(int screen)
     return panel;
 }
 
-PanelsManager::PanelsManager(QObject* parent)
+PanelManager::PanelManager(QObject* parent)
     : QObject(parent)
 {
     QDesktopWidget* desktop = QApplication::desktop();
@@ -103,13 +103,13 @@ PanelsManager::PanelsManager(QObject* parent)
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
 }
 
-PanelsManager::~PanelsManager()
+PanelManager::~PanelManager()
 {
     qDeleteAll(m_panels);
 }
 
 void
-PanelsManager::onScreenCountChanged(int newCount)
+PanelManager::onScreenCountChanged(int newCount)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     int size = m_panels.size();
@@ -131,5 +131,5 @@ PanelsManager::onScreenCountChanged(int newCount)
     }
 }
 
-#include "panelsmanager.moc"
+#include "panelmanager.moc"
 

@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef PanelsManager_H
-#define PanelsManager_H
+#ifndef PanelManager_H
+#define PanelManager_H
 
 // Qt
 #include <QObject>
@@ -28,21 +28,21 @@
 
 class Unity2dPanel;
 
-class PanelsManager : public QObject
+class PanelManager : public QObject
 {
 Q_OBJECT
 
 public:
-    PanelsManager(QObject* parent = 0);
-    ~PanelsManager();
+    PanelManager(QObject* parent = 0);
+    ~PanelManager();
 
 private:
-    Q_DISABLE_COPY(PanelsManager)
+    Q_DISABLE_COPY(PanelManager)
     QList<Unity2dPanel*> m_panels;
 
 private Q_SLOTS:
     void onScreenCountChanged(int newCount);
 };
 
-#endif // PanelsManager_H
+#endif // PanelManager_H
 
