@@ -282,6 +282,8 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
         m_appInfo = g_desktop_app_info_new(file);
     }
 
+    /* setDesktopFile(…) may be called with the same desktop file, when e.g. the
+       contents of the file have changed. Some properties may have changed. */
     QString newDesktopFile = this->desktop_file();
     if (newDesktopFile != oldDesktopFile) {
         Q_EMIT desktopFileChanged(newDesktopFile);
