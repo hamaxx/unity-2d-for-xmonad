@@ -22,13 +22,42 @@ import Qt 4.7
    - LauncherApplication
 */
 import UnityApplications 1.0
+import gconf 1.0
 
 HomeButton {
-    property alias desktopFile: application.desktop_file
+    property alias key: gconfKey.key
+    property string desktopFile
+
+    GConfItem {
+        id: gconfKey
+    }
 
     LauncherApplication {
         id: application
+        desktop_file: {
+            var exec = gconfKey.value
+            if (!exec) {
+                /* Invalid key or value, fall back on the desktop file passed
+                   by the client. */
+                return desktopFile
+            }
+            /* Ignore extra parameters. */
+            exec = exec.split(" ", 1)[0]
+            /* The value may contain either the full path to the executable
+               (e.g. "/usr/bin/chromium-browser") or only its basename
+               (e.g. "rhythmbox"). */
+            var lastSlashPos = exec.lastIndexOf("/")
+            if (lastSlashPos != -1) {
+                exec = exec.substring(lastSlashPos + 1)
+            }
+            /* Infer the desktop file name from the basename of the executable.
+               This is not 100% reliable, but should work reasonably well in
+               most cases. */
+            return exec + ".desktop"
+        }
     }
+
+    visible: application.desktop_file != ""
 
     onClicked: {
         dashView.active = false

@@ -267,6 +267,8 @@ LauncherApplication::setSticky(bool sticky)
 void
 LauncherApplication::setDesktopFile(const QString& desktop_file)
 {
+    QString oldDesktopFile = this->desktop_file();
+
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
@@ -283,19 +285,24 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
         m_appInfo = g_desktop_app_info_new(file);
     }
 
+    /* setDesktopFile(…) may be called with the same desktop file, when e.g. the
+       contents of the file have changed. Some properties may have changed. */
+    QString newDesktopFile = this->desktop_file();
+    if (newDesktopFile != oldDesktopFile) {
+        Q_EMIT desktopFileChanged(newDesktopFile);
+    }
     /* Emit the Changed signal on all properties that can depend on m_appInfo
        m_application's properties take precedence over m_appInfo's
     */
     if (m_appInfo != NULL) {
         if (m_application == NULL) {
-            Q_EMIT desktopFileChanged(desktop_file);
             Q_EMIT nameChanged(name());
             Q_EMIT iconChanged(icon());
         }
         Q_EMIT executableChanged(executable());
     }
 
-    monitorDesktopFile(this->desktop_file());
+    monitorDesktopFile(newDesktopFile);
 }
 
 void
