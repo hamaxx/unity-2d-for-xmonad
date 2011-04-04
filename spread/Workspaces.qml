@@ -162,6 +162,9 @@ Rectangle {
 
         spreadView.show()
         spreadView.forceActivateWindow()
+        /* This is necessary otherwise we don't get keypresses until the user does a
+           mouse over on a window */
+        switcher.forceActiveFocus()
         initial = false
     }
 
@@ -198,6 +201,13 @@ Rectangle {
             cancelAndExit()
             event.accepted = true
             return
+        case Qt.Key_S:
+            if (event.modifiers & Qt.MetaModifier) {
+                cancelAndExit()
+                event.accepted = true
+                return
+            }
+            break
         }
     }
 

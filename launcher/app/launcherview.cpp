@@ -30,6 +30,7 @@
 #include <QDeclarativeImageProvider>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusPendingCall>
+#include <QtDBus/QDBusReply>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -44,6 +45,10 @@ static const int KEY_HOLD_THRESHOLD = 250;
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
+static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
+static const char* SPREAD_DBUS_PATH = "/Spread";
+static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
+
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
@@ -70,6 +75,10 @@ LauncherView::LauncherView(QWidget* parent) :
     /* Alt+F2 shows the dash with the commands place entry activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
+
+    /* Super+s activated the workspaces switcher. */
+    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+    connect(superS, SIGNAL(pressed()), SLOT(showWorkspaceSwitcher()));
 }
 
 void
@@ -339,4 +348,29 @@ LauncherView::showCommandsPlace()
 
     dashInterface.asyncCall("activatePlaceEntry",
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
+}
+
+void
+LauncherView::showWorkspaceSwitcher()
+{
+    QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
+    if (!spreadInterface.isValid()) {
+        qWarning() << "Can't access the spread via DBUS on" << SPREAD_DBUS_SERVICE
+                   << SPREAD_DBUS_PATH << SPREAD_DBUS_INTERFACE;
+        return;
+    }
+
+    /* Here we only show the spread, if it's hidden.
+       However on Super+s the spread should exit if it's already running.
+       That is done directly in spread/Workspaces.qml because the spread
+       fully grabs the keyboard, so it's the only place where Super+s can
+       be handled while the spread is active */
+    QDBusReply<bool> isShown = spreadInterface.call("IsShown");
+    if (isShown.isValid()) {
+        if (isShown.value() == false) {
+            spreadInterface.asyncCall("ShowAllWorkspaces", QString());
+        }
+    } else {
+        qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
+    }
 }
