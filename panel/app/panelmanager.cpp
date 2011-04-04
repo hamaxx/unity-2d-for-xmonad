@@ -42,7 +42,7 @@
 
 using namespace Unity2d;
 
-QPalette getPalette()
+static QPalette getPalette()
 {
     QPalette palette;
 
@@ -59,7 +59,7 @@ QPalette getPalette()
     return palette;
 }
 
-QLabel* createSeparator()
+static QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
     QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
@@ -68,7 +68,7 @@ QLabel* createSeparator()
     return label;
 }
 
-Unity2dPanel* instantiatePanel(int screen)
+static Unity2dPanel* instantiatePanel(int screen)
 {
     Unity2dPanel* panel = new Unity2dPanel;
     panel->setEdge(Unity2dPanel::TopEdge);
