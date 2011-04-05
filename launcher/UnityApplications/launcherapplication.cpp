@@ -82,8 +82,7 @@ LauncherApplication::LauncherApplication()
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
-LauncherApplication::LauncherApplication(const LauncherApplication& other) :
-    m_application(NULL), m_appInfo(NULL)
+LauncherApplication::LauncherApplication(const LauncherApplication& other)
 {
     /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
