@@ -32,6 +32,7 @@
 #include <QRegExp>
 #include <QPixmap>
 #include <QCryptographicHash>
+#include <QTextDocumentFragment>
 
 static const QString WEBFAV_STORE = QDir::homePath() + "/.local/share/applications/";
 static const QString ICON_STORE = QDir::homePath() + "/.local/share/icons/";
@@ -139,7 +140,9 @@ WebFavorite::slotFetchPageFinished(QNetworkReply* reply)
             QRegExp reTitle("<title>(.*)</title>", Qt::CaseInsensitive);
             int index = reTitle.indexIn(data);
             if (index != -1) {
-                modifyDesktopFile("Name", reTitle.cap(1).simplified());
+                /* The title may contain HTML entities, unescape them. */
+                QString title = QTextDocumentFragment::fromHtml(reTitle.cap(1).simplified()).toPlainText();
+                modifyDesktopFile("Name", title);
             }
 
             /* lookup favicons */
