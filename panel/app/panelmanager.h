@@ -4,7 +4,7 @@
  * Copyright 2010 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Olivier Tilloy <olivier.tilloy@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,44 +16,33 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef WINDOWHELPER_H
-#define WINDOWHELPER_H
-
-// Local
+#ifndef PanelManager_H
+#define PanelManager_H
 
 // Qt
 #include <QObject>
+#include <QList>
 
-struct WindowHelperPrivate;
-class WindowHelper : public QObject
+class Unity2dPanel;
+
+class PanelManager : public QObject
 {
 Q_OBJECT
+
 public:
-    WindowHelper(QObject* parent);
-    ~WindowHelper();
-
-    void setXid(uint);
-
-    bool isMaximized() const;
-    bool isMostlyOnScreen(int screen) const;
-
-public Q_SLOTS:
-    void close();
-    void minimize();
-    void unmaximize();
-
-private Q_SLOTS:
-    void update();
-
-Q_SIGNALS:
-    void nameChanged();
-    void stateChanged();
+    PanelManager(QObject* parent = 0);
+    ~PanelManager();
 
 private:
-    WindowHelperPrivate* const d;
+    Q_DISABLE_COPY(PanelManager)
+    QList<Unity2dPanel*> m_panels;
+
+private Q_SLOTS:
+    void onScreenCountChanged(int newCount);
 };
 
-#endif /* WINDOWHELPER_H */
+#endif // PanelManager_H
+

@@ -41,6 +41,8 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QPainter>
+#include <QApplication>
+#include <QDesktopWidget>
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
@@ -217,12 +219,13 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp)
+    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
+    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
         && (window()->geometry().contains(QCursor::pos())
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp;
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
     d->m_windowButtonWidget->setVisible(isMaximized);
 

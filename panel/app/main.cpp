@@ -21,18 +21,11 @@
 
 // Local
 #include <config.h>
-
-// Applets
-#include <appindicator/appindicatorapplet.h>
-#include <appname/appnameapplet.h>
-#include <homebutton/homebuttonapplet.h>
-#include <indicator/indicatorapplet.h>
-#include <legacytray/legacytrayapplet.h>
+#include <panelmanager.h>
 
 // Unity
 #include <gnomesessionclient.h>
 #include <unity2ddebug.h>
-#include <unity2dpanel.h>
 #include <unity2dapplication.h>
 #include <unity2dstyle.h>
 #include <unity2dtr.h>
@@ -41,9 +34,6 @@
 #include <QAbstractFileEngineHandler>
 #include <QApplication>
 #include <QFSFileEngine>
-#include <QLabel>
-
-using namespace Unity2d;
 
 class ThemeEngineHandler : public QAbstractFileEngineHandler
 {
@@ -58,32 +48,6 @@ public:
         }
     }
 };
-
-QPalette getPalette()
-{
-    QPalette palette;
-
-    /* Should use the panel's background provided by Unity but it turns
-       out not to be good. It would look like:
-
-         QBrush bg(QPixmap("theme:/panel_background.png"));
-    */
-    QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
-    palette.setBrush(QPalette::Window, bg);
-    palette.setBrush(QPalette::Button, bg);
-    palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::ButtonText, Qt::white);
-    return palette;
-}
-
-QLabel* createSeparator()
-{
-    QLabel* label = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    label->setPixmap(pix);
-    label->setFixedSize(pix.size());
-    return label;
-}
 
 int main(int argc, char** argv)
 {
@@ -109,16 +73,7 @@ int main(int argc, char** argv)
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
-    Unity2dPanel panel;
-    panel.setEdge(Unity2dPanel::TopEdge);
-    panel.setPalette(getPalette());
-    panel.setFixedHeight(24);
+    PanelManager panels;
 
-    panel.addWidget(new HomeButtonApplet);
-    panel.addWidget(createSeparator());
-    panel.addWidget(new AppNameApplet);
-    panel.addWidget(new LegacyTrayApplet);
-    panel.addWidget(new IndicatorApplet);
-    panel.show();
     return app.exec();
 }
