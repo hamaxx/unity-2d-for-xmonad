@@ -21,6 +21,10 @@
 
 #include "webfavorite.h"
 
+// libunity-2d
+#include <gscopedpointer.h>
+
+// Qt
 #include <QDir>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
@@ -91,18 +95,19 @@ WebFavorite::writeDesktopFile(const QByteArray& contents) const
     file.close();
 }
 
+typedef GScopedPointer<GKeyFile, g_key_file_free> GKeyFilePointer;
+
 void
 WebFavorite::modifyDesktopFile(const QString& key, const QString& value) const
 {
-    GKeyFile* keyFile = g_key_file_new();
-    gboolean loaded = g_key_file_load_from_file(keyFile, m_desktopFile.toUtf8().constData(),
+    GKeyFilePointer keyFile(g_key_file_new());
+    gboolean loaded = g_key_file_load_from_file(keyFile.data(), m_desktopFile.toUtf8().constData(),
         (GKeyFileFlags) (G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS), NULL);
     if (loaded) {
-        g_key_file_set_string(keyFile, "Desktop Entry", key.toUtf8().constData(), value.toUtf8().constData());
-        QByteArray contents = g_key_file_to_data(keyFile, NULL, NULL);
+        g_key_file_set_string(keyFile.data(), "Desktop Entry", key.toUtf8().constData(), value.toUtf8().constData());
+        QByteArray contents = g_key_file_to_data(keyFile.data(), NULL, NULL);
         writeDesktopFile(contents);
     }
-    g_key_file_free(keyFile);
 }
 
 void

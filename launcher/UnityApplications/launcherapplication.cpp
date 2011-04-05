@@ -54,8 +54,6 @@ extern "C" {
 LauncherApplication::LauncherApplication()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
-    , m_appInfo(NULL)
-    , m_snStartupSequence(NULL)
     , m_sticky(false)
     , m_has_visible_window(false)
     , m_progress(0), m_progressBarVisible(false)
@@ -84,8 +82,7 @@ LauncherApplication::LauncherApplication()
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
-LauncherApplication::LauncherApplication(const LauncherApplication& other) :
-    m_application(NULL), m_appInfo(NULL)
+LauncherApplication::LauncherApplication(const LauncherApplication& other)
 {
     /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
@@ -96,15 +93,6 @@ LauncherApplication::LauncherApplication(const LauncherApplication& other) :
 
 LauncherApplication::~LauncherApplication()
 {
-    if (m_snStartupSequence != NULL) {
-        sn_startup_sequence_unref(m_snStartupSequence);
-        m_snStartupSequence = NULL;
-    }
-
-    if (m_appInfo != NULL) {
-        g_object_unref(m_appInfo);
-        m_appInfo = NULL;
-    }
 }
 
 bool
@@ -187,11 +175,11 @@ LauncherApplication::name() const
     }
 
     if (m_appInfo != NULL) {
-        return QString::fromUtf8(g_app_info_get_name((GAppInfo*)m_appInfo));
+        return QString::fromUtf8(g_app_info_get_name(m_appInfo.data()));
     }
 
     if (m_snStartupSequence != NULL) {
-        return QString::fromUtf8(sn_startup_sequence_get_name(m_snStartupSequence));
+        return QString::fromUtf8(sn_startup_sequence_get_name(m_snStartupSequence.data()));
     }
 
     return QString("");
@@ -205,11 +193,12 @@ LauncherApplication::icon() const
     }
 
     if (m_appInfo != NULL) {
-        return QString::fromUtf8(g_icon_to_string(g_app_info_get_icon((GAppInfo*)m_appInfo)));
+        GCharPointer ptr(g_icon_to_string(g_app_info_get_icon(m_appInfo.data())));
+        return QString::fromUtf8(ptr.data());
     }
 
     if (m_snStartupSequence != NULL) {
-        return QString::fromUtf8(sn_startup_sequence_get_icon_name(m_snStartupSequence));
+        return QString::fromUtf8(sn_startup_sequence_get_icon_name(m_snStartupSequence.data()));
     }
 
     return QString("");
@@ -233,7 +222,7 @@ LauncherApplication::desktop_file() const
     }
 
     if (m_appInfo != NULL) {
-        return QString::fromUtf8(g_desktop_app_info_get_filename(m_appInfo));
+        return QString::fromUtf8(g_desktop_app_info_get_filename((GDesktopAppInfo*)m_appInfo.data()));
     }
 
     return QString("");
@@ -243,11 +232,11 @@ QString
 LauncherApplication::executable() const
 {
     if (m_appInfo != NULL) {
-        return QString::fromUtf8(g_app_info_get_executable((GAppInfo*)m_appInfo));
+        return QString::fromUtf8(g_app_info_get_executable(m_appInfo.data()));
     }
 
     if (m_snStartupSequence != NULL) {
-        return QString::fromUtf8(sn_startup_sequence_get_binary_name(m_snStartupSequence));
+        return QString::fromUtf8(sn_startup_sequence_get_binary_name(m_snStartupSequence.data()));
     }
 
     return QString("");
@@ -272,17 +261,13 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     QByteArray byte_array = desktop_file.toUtf8();
     gchar *file = byte_array.data();
 
-    if (m_appInfo) {
-        g_object_unref(m_appInfo);
-    }
-
     if(desktop_file.startsWith("/")) {
         /* It looks like a full path to a desktop file */
-        m_appInfo = g_desktop_app_info_new_from_filename(file);
+        m_appInfo.reset((GAppInfo*)g_desktop_app_info_new_from_filename(file));
     } else {
         /* It might just be a desktop file name; let GIO look for the actual
            desktop file for us */
-        m_appInfo = g_desktop_app_info_new(file);
+        m_appInfo.reset((GAppInfo*)g_desktop_app_info_new(file));
     }
 
     /* setDesktopFile(…) may be called with the same desktop file, when e.g. the
@@ -449,11 +434,7 @@ LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
         sn_startup_sequence_ref(sequence);
     }
 
-    if (m_snStartupSequence != NULL) {
-        sn_startup_sequence_unref(m_snStartupSequence);
-    }
-
-    m_snStartupSequence = sequence;
+    m_snStartupSequence.reset(sequence);
 
     emit nameChanged(name());
     emit iconChanged(icon());
@@ -632,17 +613,15 @@ LauncherApplication::launch()
     }
 
     GError* error = NULL;
-    GdkAppLaunchContext *context;
     GTimeVal timeval;
 
     g_get_current_time (&timeval);
-    context = gdk_app_launch_context_new();
+    GObjectScopedPointer<GdkAppLaunchContext> context(gdk_app_launch_context_new());
     /* Using GDK_CURRENT_TIME doesn’t seem to work, launched windows
        sometimes don’t get focus (see https://launchpad.net/bugs/643616). */
-    gdk_app_launch_context_set_timestamp(context, timeval.tv_sec);
+    gdk_app_launch_context_set_timestamp(context.data(), timeval.tv_sec);
 
-    g_app_info_launch((GAppInfo*)m_appInfo, NULL, (GAppLaunchContext*)context, &error);
-    g_object_unref(context);
+    g_app_info_launch(m_appInfo.data(), NULL, (GAppLaunchContext*)context.data(), &error);
 
     if (error != NULL) {
         qWarning() << "Failed to launch application:" << error->message;
