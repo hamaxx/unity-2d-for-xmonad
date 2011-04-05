@@ -100,12 +100,15 @@ DropItem {
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem
-        parent: launcher
+        parent: list
         width: item.width
         height: item.height
         x: item.x
-        y: ListView.view.y - ListView.view.contentY + item.y
-        z: ListView.view.itemZ
+        y: -ListView.view.contentY + item.y
+        /* The item is above the list's contentItem.
+           Top and bottom gradients, ListViewDragAndDrop and autoscroll areas
+           are above the item */
+        z: list.contentItem.z + 1
 
         /* Bind to the scale of the delegate so that it is animated upon insertion/removal */
         scale: item.scale
@@ -373,7 +376,7 @@ DropItem {
                 target: looseItem
                 y: item.dragPosition - tile.height / 2
                 /* When dragging an item, stack it on top of all its siblings */
-                z: 1
+                z: list.contentItem.z + 2
             }
         }
         Behavior on y {
