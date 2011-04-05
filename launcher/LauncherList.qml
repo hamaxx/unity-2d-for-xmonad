@@ -66,7 +66,7 @@ AutoScrollingListView {
 
         anchors.bottom: list.bottom
         width: topGradient.width
-        height: Math.max(0, Math.min(list.contentHeight*(1-list.visibleArea.heightRatio)-list.contentY, 50))
+        height: Math.max(0, Math.min(list.contentHeight * (1 - list.visibleArea.heightRatio) - list.contentY, 50))
         source: "artwork/gradient_more_items_bottom.png"
         z: overlayZ
     }
