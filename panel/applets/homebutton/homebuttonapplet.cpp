@@ -44,13 +44,9 @@ HomeButtonApplet::HomeButtonApplet()
 , m_launcherClient(new LauncherClient(this))
 {
     m_button->setAutoRaise(true);
-    QIcon::setThemeName("unity-icon-theme");
-    /* FIXME: Even though the size is set properly the wrong png is loaded.
-              unity-icon-theme has 2 visually different distributor-logo icons,
-              one 22x22 and another 24x24 (the one we want).
-    */
     m_button->setIconSize(QSize(24, 24));
-    m_button->setIcon(QIcon::fromTheme("distributor-logo"));
+    QString themeIconName = QIcon::hasThemeIcon("start-here") ? "start-here" : "distributor-logo";
+    m_button->setIcon(QIcon::fromTheme(themeIconName));
     m_button->setCheckable(true);
     connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
 
