@@ -77,7 +77,7 @@ Item {
         }
 
         TextCustom {
-            text: "Shortcuts"
+            text: u2d.tr("Shortcuts")
             anchors.left: icon.right
             anchors.leftMargin: 3
             width: paintedWidth
