@@ -173,6 +173,7 @@ DropItem {
                 id: tileBackground
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
+                smooth: true
 
                 SequentialAnimation on opacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -199,6 +200,7 @@ DropItem {
             Image {
                 id: tileOutline
                 anchors.fill: parent
+                smooth: true
 
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
@@ -220,6 +222,7 @@ DropItem {
             Image {
                 id: icon
                 anchors.centerIn: parent
+                smooth: true
 
                 sourceSize.width: 48
                 sourceSize.height: 48
@@ -242,6 +245,7 @@ DropItem {
             Image {
                 id: tileShine
                 anchors.fill: parent
+                smooth: true
 
                 source: "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
@@ -251,6 +255,7 @@ DropItem {
             Image {
                 id: selectionOutline
                 anchors.centerIn: parent
+                smooth: true
                 source: "artwork/round_selected_66x66.png"
                 visible: launcherView.focus && item.activeFocus
             }
@@ -263,6 +268,7 @@ DropItem {
                 y: 1
                 x: 1
                 radius: height / 2 - 1
+                smooth: true
                 border.width: 2
                 border.color: "white"
                 color: "#595959"
@@ -272,6 +278,7 @@ DropItem {
                     anchors.centerIn: parent
                     font.pixelSize: parent.height - 3
                     width: parent.width - 5
+                    smooth: true
                     elide: Text.ElideRight
                     horizontalAlignment: Text.AlignHCenter
                     color: "white"
@@ -285,6 +292,7 @@ DropItem {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 width: tile.width
+                smooth: true
                 state: launcherItem.progressBarVisible ? "" : "hidden"
 
                 Image {
@@ -293,6 +301,7 @@ DropItem {
                     anchors.verticalCenter: parent.verticalCenter
                     x: 6
                     width: sourceSize.width * launcherItem.progress
+                    smooth: true
 
                     Behavior on width {
                        NumberAnimation { duration: 200; easing.type: Easing.InOutSine }
@@ -326,11 +335,13 @@ DropItem {
                 radius: 2
                 width: 22
                 height: 22
+                smooth: true
 
                 Text {
                     id: shortcutText
                     anchors.centerIn: parent
                     color: "white"
+                    smooth: true
                 }
             }
 
@@ -339,6 +350,7 @@ DropItem {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 visible: launcherItem.emblemVisible && !counter.visible
+                smooth: true
             }
 
 
