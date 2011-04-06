@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-03-16 18:27+0100\n"
+"POT-Creation-Date: 2011-04-06 23:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,95 +18,90 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: places/Home.qml:158
-msgid "Find Media Apps"
-msgstr ""
-
-#: places/Home.qml:164
-msgid "Find Internet Apps"
-msgstr ""
-
-#: places/Home.qml:170
-msgid "Find More Apps"
-msgstr ""
-
-#: places/Home.qml:176
-msgid "Find Files"
-msgstr ""
-
-#: places/Home.qml:183
-msgid "Browse the Web"
-msgstr ""
-
-#: places/Home.qml:188
-msgid "View Photos"
-msgstr ""
-
-#: places/Home.qml:193
-msgid "Check Email"
-msgstr ""
-
-#: places/Home.qml:198
-msgid "Listen to Music"
-msgstr ""
-
-#: places/SearchRefine.qml:43
+#: places/SearchRefine.qml:61
 msgid "Refine search"
 msgstr ""
 
-#: places/SearchRefine.qml:66
+#: places/SearchRefine.qml:84
 msgid "Type"
 msgstr ""
 
-#: places/SearchEntry.qml:143
-#, qt-format
-msgid "Search for %1"
-msgstr ""
-
-#: places/SearchEntry.qml:145
-msgid "Search"
-msgstr ""
-
-#: places/GroupHeader.qml:68
+#: places/GroupHeader.qml:86
 #, qt-format
 msgid "See %1 more results"
 msgstr ""
 
-#: places/GroupHeader.qml:68
+#: places/GroupHeader.qml:86
 msgid "See fewer results"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:751
-msgid "Keep In Launcher"
+#: places/Home.qml:80
+msgid "Shortcuts"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:751
-msgid "Remove From Launcher"
+#: places/Home.qml:193
+msgid "Media Apps"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:758
-msgid "Quit"
+#: places/Home.qml:199
+msgid "Internet Apps"
 msgstr ""
 
-#: launcher/UnityApplications/launcherdevice.cpp:228
-msgid "Eject"
+#: places/Home.qml:205
+msgid "More Apps"
 msgstr ""
 
-#: launcher/UnityApplications/workspaces.cpp:69
-msgid "Workspaces"
+#: places/Home.qml:211
+msgid "Find Files"
+msgstr ""
+
+#: places/Home.qml:218
+msgid "Browse the Web"
+msgstr ""
+
+#: places/Home.qml:223
+msgid "View Photos"
+msgstr ""
+
+#: places/Home.qml:228
+msgid "Check Email"
+msgstr ""
+
+#: places/Home.qml:233
+msgid "Listen to Music"
 msgstr ""
 
 #: launcher/UnityApplications/trash.cpp:74
 msgid "Trash"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:194
+#: launcher/UnityApplications/trash.cpp:200
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
 msgstr[0] ""
 msgstr[1] ""
 
-#: launcher/UnityApplications/trash.cpp:201
+#: launcher/UnityApplications/trash.cpp:207
 msgid "Empty Trash"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:844
+msgid "Keep In Launcher"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:844
+msgid "Remove From Launcher"
+msgstr ""
+
+#: launcher/UnityApplications/launcherapplication.cpp:851
+msgid "Quit"
+msgstr ""
+
+#: launcher/UnityApplications/workspaces.cpp:70
+msgid "Workspaces"
+msgstr ""
+
+#: launcher/UnityApplications/launcherdevice.cpp:228
+msgid "Eject"
 msgstr ""
