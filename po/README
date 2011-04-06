@@ -1,3 +1,6 @@
 There are intentionally no .po files in this dir. .po files come from
-Launchpad. For testing purposes, you can create a .po file here by copying
-unity-2d.pot to <lang>.po.
+Launchpad.
+
+To test, create a po file in the po/ directory with "msginit -l <lang>" where
+<lang> is a standard lang code. For example, for French: 'msginit -l fr", and
+for Chinese/Simplified 'msginit -l zh_CN'
