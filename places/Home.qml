@@ -180,8 +180,8 @@ Item {
             onClicked: shortcutsActive = false
         }
 
-        /* Try to load a custom version of the shortcuts first,
-           and fall back on the default one if it doesn’t exist. */
+        /* Try to load a custom version of the shortcuts first, and fall back
+           on the default version if a custom one doesn’t exist. */
         Loader {
             id: customShortcutsLoader
             anchors.fill: parent
