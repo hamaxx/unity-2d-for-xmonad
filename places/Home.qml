@@ -180,6 +180,17 @@ Item {
             onClicked: shortcutsActive = false
         }
 
-        HomeShortcuts {}
+        /* Try to load a custom version of the shortcuts first,
+           and fall back on the default one if it doesn’t exist. */
+        Loader {
+            id: customShortcutsLoader
+            anchors.fill: parent
+            source: "HomeShortcutsCustomized.qml"
+        }
+        Loader {
+            id: defaultShortcutsLoader
+            anchors.fill: parent
+            source: (customShortcutsLoader.status == Loader.Error) ? "HomeShortcuts.qml" : ""
+        }
     }
 }
