@@ -103,7 +103,8 @@ Place::setFileName(const QString &file)
             entry->setName(u2dTr(m_file->value("Name").toString().toUtf8().constData(),
                                  gettextDomain.toUtf8().constData()));
             entry->setIcon(m_file->value("Icon").toString());
-            entry->setSearchHint(m_file->value("SearchHint").toString());
+            entry->setSearchHint(u2dTr(m_file->value("SearchHint").toString().toUtf8().constData(),
+                                 gettextDomain.toUtf8().constData()));
             if (!m_file->contains("ShowEntry")) {
                 entry->setShowEntry(true);
             } else {
