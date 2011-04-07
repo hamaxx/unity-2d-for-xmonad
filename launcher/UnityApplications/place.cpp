@@ -114,7 +114,10 @@ Place::setFileName(const QString &file)
             connect(entry, SIGNAL(positionChanged(uint)),
                     SLOT(onEntryPositionChanged(uint)));
             m_static_entries[entry->dbusObjectPath()] = entry;
+            int index = m_entries.size();
+            beginInsertRows(QModelIndex(), index, index);
             m_entries.append(entry);
+            endInsertRows();
         }
 
         /* Monitor the corresponding D-Bus place service */
