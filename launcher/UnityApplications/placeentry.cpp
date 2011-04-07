@@ -925,10 +925,12 @@ PlaceEntry::connectToRemotePlaceEntry()
 void
 PlaceEntry::updateInfo(const PlaceEntryInfoStruct& info)
 {
-    if (info.name != "") {
+    if (!info.name.isEmpty()) {
         setName(info.name);
     }
-    setIcon(info.icon);
+    if (!info.icon.isEmpty()) {
+        setIcon(info.icon);
+    }
     setPosition(info.position);
     setMimetypes(info.mimetypes);
     setSensitive(info.sensitive);
