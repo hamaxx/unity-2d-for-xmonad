@@ -25,7 +25,6 @@ TextCustom {
     wrapMode: Text.Wrap
     verticalAlignment: Text.AlignTop
 
-    state: mouse.containsMouse ? "expanded" : ""
     states: [
         State {
             name: "expanded"
