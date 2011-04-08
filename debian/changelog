@@ -1,9 +1,46 @@
 unity-2d (3.8.2-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Oliver Grawert ]
+  * New upstream bugfix release
+   - (LP: #632526)  Dash elipsizes file and application names too soon, making them
+     unreadable
+   - (LP: #669926) [launcher] Web favorites support
+   - (LP: #708479) Dash view should use "Prefferred Applications" icons where
+     appropriate
+   - (LP: #718686) [dash] Group of results sometimes badly positioned
+   - (LP: #727483) unity-2d-panel crashed with SIGSEGV in g_return_if_fail_warning()
+   - (LP: #731449) [launcher] Dragging a tile at the top of the launcher while
+     autoscrolling makes autoscroll wrong afterwards
+   - (LP: #736097) [dash] home screen misses icons for applications that are not
+     installed
+   - (LP: #744999) [launcher] launchers are truncated when too many items to fit
+     onscreen
+   - (LP: #745077) [spread] clicking launcher with open windows not working correctly
+     across workspaces
+   - (LP: #745237) [dash] search field default string not translated
+   - (LP: #746693) [launcher] .places messages not i18nized
+   - (LP: #747836) [dash] Banshee no longer works from the dash home page in 3.8.2
+   - (LP: #750753) [dash] showing/hiding places causing graphical corruption
+   - (LP: #670608) [dash] Home screen customization should be easy
+   - (LP: #683084) Global menu doesn't work well with more than one screen
+   - (LP: #714646) [launcher] icons jagged edges during animation
+   - (LP: #717744) [panel] inactive menus are clickable
+   - (LP: #729002) First four items in Dash begin "Find" "Find" "Find" "Find"
+   - (LP: #745758) [spread] super+s should toggle the workspace switcher
+   - (LP: #751284) [launcher] Escaping of title broken with webfavorites
+   - (LP: #751325) [panel] circle of friends button icon needs to be updated to match
+     Unity's
+   - (LP: #697816) [launcher] if an urgent window is available then the spread should
+     not be activated
+   - (LP: #729478) [launcher] Clicking middle mouse button should launch another
+     instance of application
+   - (LP: #750244) [launcher] Newly installed lenses don’t appear
+   - (LP: #752948) Home's "Shortcuts" not i18n/l10n
+
   [ Aurélien Gâteau ]
   * Include .mo files in unity-2d package (LP: #751425)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 08 Apr 2011 14:39:10 +0200
+ -- Oliver Grawert <ogra@ubuntu.com>  Fri, 08 Apr 2011 14:56:10 +0200
 
 unity-2d (3.8.1-0ubuntu1) natty; urgency=low
 
