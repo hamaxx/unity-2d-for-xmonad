@@ -1,8 +1,9 @@
-unity-2d (3.8.1-0ubuntu2) UNRELEASED ; urgency=low
+unity-2d (3.8.2-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Aurélien Gâteau ]
   * Include .mo files in unity-2d package (LP: #751425)
 
- -- Aurélien Gâteau <aurelien.gateau@canonical.com>  Wed, 06 Apr 2011 10:10:07 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Fri, 08 Apr 2011 14:39:10 +0200
 
 unity-2d (3.8.1-0ubuntu1) natty; urgency=low
 
