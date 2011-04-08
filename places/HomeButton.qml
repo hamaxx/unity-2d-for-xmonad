@@ -48,11 +48,10 @@ Button {
         }
     }
 
-    TextCustom {
+    TextMultiLine {
         id: label
 
         color: parent.state == "pressed" ? "#444444" : "#ffffff"
-        elide: Text.ElideMiddle
         horizontalAlignment: Text.AlignHCenter
         anchors.bottom: parent.bottom
         anchors.right: parent.right
@@ -60,6 +59,7 @@ Button {
         anchors.bottomMargin: 3
         anchors.rightMargin: 5
         anchors.leftMargin: 7
+        height: 40
         font.underline: parent.activeFocus
         font.bold: true
         font.pixelSize: 16

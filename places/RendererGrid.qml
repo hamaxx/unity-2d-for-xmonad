@@ -140,8 +140,12 @@ Renderer {
 
                 width: results.cellWidth
                 height: results.cellHeight
+                /* When hovered the item needs to be on top of every other item
+                   in order for its label to not be covered */
+                z: loader.item.state == "selected" ? 1 : 0
 
                 Loader {
+                    id: loader
                     property string uri: column_0
                     property string iconHint: column_1
                     property string groupId: column_2

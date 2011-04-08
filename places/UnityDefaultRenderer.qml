@@ -55,18 +55,18 @@ RendererGrid {
                 Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
             }
 
-            TextCustom {
+            TextMultiLine {
                 id: label
 
                 text: displayName
                 color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
-                elide: Text.ElideMiddle
+                state: parent.state == "selected" ? "expanded" : ""
                 horizontalAlignment: Text.AlignHCenter
                 anchors.top: icon.bottom
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
                 anchors.left: parent.left
-                anchors.topMargin: 13
+                anchors.topMargin: 10
                 anchors.bottomMargin: 5
                 anchors.rightMargin: 3
                 anchors.leftMargin: 3
