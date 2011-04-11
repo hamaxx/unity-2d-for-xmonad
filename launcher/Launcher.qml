@@ -72,7 +72,7 @@ DropItem {
         }
     }
 
-    QSortFilterProxyModelQML {
+    SortFilterProxyModel {
         id: visiblePlaces
         model: places
         dynamicSortFilter: true

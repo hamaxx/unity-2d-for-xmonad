@@ -55,7 +55,7 @@ Rectangle {
                                                        ((height - 2*margin) / switcher.height)
 
     /* When this is set, it is used to filter the global list of windows to limit it to
-       a single application. See the QSortFilterProxyModelQML used in Spread.qml */
+       a single application. See the SortFilterProxyModel used in Spread.qml */
     property string applicationFilter
 
     /* The number of the currently zoomed workspace (-1 means no workspace)

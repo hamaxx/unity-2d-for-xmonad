@@ -63,7 +63,7 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 
 void Unity2dPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "QSortFilterProxyModelQML");
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");

@@ -17,7 +17,7 @@
  */
 
 import Qt 4.7
-import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
 
 Item {
     id: placeEntryView
@@ -27,7 +27,7 @@ Item {
 
     function activateFirstResult() {
         /* Going through the list of groups and selecting the first one
-           that has results for the search. A QSortFilterProxyModelQML
+           that has results for the search. A SortFilterProxyModel
            ('firstGroupModel') is used to filter the search results per group.
         */
         var placeEntry, i
@@ -44,7 +44,7 @@ Item {
         }
     }
 
-    QSortFilterProxyModelQML {
+    SortFilterProxyModel {
         id: firstGroupModel
 
         property int groupId
@@ -89,7 +89,7 @@ Item {
             width: ListView.view.width
 
             /* Model that will be used by the group's delegate */
-            QSortFilterProxyModelQML {
+            SortFilterProxyModel {
                 id: group_model
 
                 model: placeEntryView.model.entryResultsModel

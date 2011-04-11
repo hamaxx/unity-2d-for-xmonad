@@ -18,7 +18,7 @@
 
 import Qt 4.7
 import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
-import Unity2d 1.0 /* Necessary for QSortFilterProxyModelQML */
+import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
 import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 
 Item {
@@ -116,7 +116,7 @@ Item {
                Each result has a column (the second one) containing the id of
                the group it belongs to (groupId).
             */
-            model:  QSortFilterProxyModelQML {
+            model:  SortFilterProxyModel {
                 model: item.globalResultsModel
 
                 /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'

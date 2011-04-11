@@ -53,7 +53,7 @@ GridView {
 
     /* This proxy model takes care of removing all windows that are not on
        the current workspace and that are not pinned to all workspaces. */
-    QSortFilterProxyModelQML {
+    SortFilterProxyModel {
         id: filteredByWorkspace
         model: switcher.allWindows
         dynamicSortFilter: true
@@ -64,7 +64,7 @@ GridView {
 
     /* If there's any application filter set, this proxy model will remove
        all windows that do not belong to it. */
-    QSortFilterProxyModelQML {
+    SortFilterProxyModel {
         id: filteredByApplication
         model: filteredByWorkspace
         dynamicSortFilter: true
