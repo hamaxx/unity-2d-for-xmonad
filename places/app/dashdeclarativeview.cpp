@@ -52,7 +52,7 @@ DashDeclarativeView::DashDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
-    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     if (QX11Info::isCompositingManagerRunning()) {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -147,18 +147,10 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     DashDeclarativeView::DashMode oldMode = m_mode;
     m_mode = mode;
     if (m_mode == HiddenMode) {
-        /* Before hiding and showing the window it is important to remove and put back
-           the dock flag. This is because we need the window to be a dock to have the
-           WM maintain it on top of all others properly. However metacity has a bug
-           that causes corruption when hiding dock windows in certain conditions.
-           Therefore we remove the flag before hiding, which is enough to fix the
-           metacity issue. */
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
         hide();
         m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
         show();
         raise();
         // We need a delay, otherwise the window may not be visible when we try to activate it
