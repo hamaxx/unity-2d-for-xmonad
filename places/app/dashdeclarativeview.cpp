@@ -84,7 +84,8 @@ DashDeclarativeView::onWorkAreaResized(int screen)
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    setGeometry(availableGeometry());
+    move(availableGeometry().topLeft());
+    setFixedSize(availableGeometry().size());
 }
 
 void
@@ -92,9 +93,12 @@ DashDeclarativeView::resizeToDesktopModeSize()
 {
     QRect rect = availableGeometry();
 
-    rect.setWidth(DASH_DESKTOP_WIDTH);
-    rect.setHeight(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT);
-    setGeometry(rect);
+    rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
+    rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
+                        rect.height()));
+
+    move(rect.topLeft());
+    setFixedSize(rect.size());
 }
 
 void
