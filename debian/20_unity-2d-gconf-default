@@ -8,6 +8,7 @@
 /desktop/gnome/applications/window_manager/current /usr/bin/metacity
 /apps/metacity/general/show_maximized_titlebars false
 /apps/metacity/general/auto_maximize_windows true
+/apps/metacity/general/capture_before_unmap true
 /apps/metacity/general/theme Ambiance
 /desktop/gnome/interface/gtk_theme Ambiance
 /desktop/gnome/interface/icon_theme ubuntu-mono-dark
