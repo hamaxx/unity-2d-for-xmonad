@@ -170,6 +170,10 @@ LauncherApplication::sticky() const
 QString
 LauncherApplication::name() const
 {
+    if (sticky() && (m_appInfo != NULL)) {
+        return QString::fromUtf8(g_app_info_get_name(m_appInfo.data()));
+    }
+
     if (m_application != NULL) {
         return m_application->name();
     }
@@ -188,6 +192,11 @@ LauncherApplication::name() const
 QString
 LauncherApplication::icon() const
 {
+    if (sticky() && (m_appInfo != NULL)) {
+        GCharPointer ptr(g_icon_to_string(g_app_info_get_icon(m_appInfo.data())));
+        return QString::fromUtf8(ptr.data());
+    }
+
     if (m_application != NULL) {
         return m_application->icon();
     }
@@ -368,7 +377,9 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     }
 
     m_application = application;
-    setDesktopFile(application->desktop_file());
+    if (!sticky()) {
+        setDesktopFile(application->desktop_file());
+    }
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
