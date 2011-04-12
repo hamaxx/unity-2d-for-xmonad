@@ -52,7 +52,7 @@ DashDeclarativeView::DashDeclarativeView()
 , m_mode(HiddenMode)
 , m_expanded(false)
 {
-    setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     if (QX11Info::isCompositingManagerRunning()) {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -84,7 +84,9 @@ DashDeclarativeView::onWorkAreaResized(int screen)
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    setGeometry(availableGeometry());
+    QRect rect = availableGeometry();
+    move(rect.topLeft());
+    setFixedSize(rect.size());
 }
 
 void
@@ -92,9 +94,12 @@ DashDeclarativeView::resizeToDesktopModeSize()
 {
     QRect rect = availableGeometry();
 
-    rect.setWidth(DASH_DESKTOP_WIDTH);
-    rect.setHeight(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT);
-    setGeometry(rect);
+    rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
+    rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
+                        rect.height()));
+
+    move(rect.topLeft());
+    setFixedSize(rect.size());
 }
 
 void
@@ -110,6 +115,31 @@ static int getenvInt(const char* name, int defaultValue)
     bool ok;
     int value = stringValue.toInt(&ok);
     return ok ? value : defaultValue;
+}
+
+void
+DashDeclarativeView::setWMFlags()
+{
+    Display *display = QX11Info::display();
+    Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", False);
+    Atom propAtom;
+
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", False);
+    XChangeProperty(display, effectiveWinId(), stateAtom,
+                    XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
+
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_PAGER", False);
+    XChangeProperty(display, effectiveWinId(), stateAtom,
+                    XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
+}
+
+void
+DashDeclarativeView::showEvent(QShowEvent *event)
+{
+    QDeclarativeView::showEvent(event);
+    /* Note that this has to be called everytime the window is shown, as the WM
+       will remove the flags when the window is hidden */
+    setWMFlags();
 }
 
 void
@@ -147,18 +177,10 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     DashDeclarativeView::DashMode oldMode = m_mode;
     m_mode = mode;
     if (m_mode == HiddenMode) {
-        /* Before hiding and showing the window it is important to remove and put back
-           the dock flag. This is because we need the window to be a dock to have the
-           WM maintain it on top of all others properly. However metacity has a bug
-           that causes corruption when hiding dock windows in certain conditions.
-           Therefore we remove the flag before hiding, which is enough to fix the
-           metacity issue. */
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, false);
         hide();
         m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
-        setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
         show();
         raise();
         // We need a delay, otherwise the window may not be visible when we try to activate it

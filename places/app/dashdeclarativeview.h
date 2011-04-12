@@ -74,6 +74,7 @@ Q_SIGNALS:
 
 protected:
     void resizeEvent(QResizeEvent*);
+    virtual void showEvent(QShowEvent *event);
 
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
@@ -85,6 +86,7 @@ private:
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void updateMask();
+    void setWMFlags();
 
     LauncherClient* m_launcherClient;
     DashMode m_mode;
