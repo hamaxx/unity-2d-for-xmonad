@@ -183,7 +183,7 @@ void WindowsList::removeWindow(BamfView *view)
     for (int i = 0; i < m_windows.length(); i++) {
         if (m_windows.at(i)->isSameBamfWindow(window)) {
             beginRemoveRows(QModelIndex(), i, i);
-            m_windows.removeAt(i);
+            delete m_windows.takeAt(i);
             endRemoveRows();
             return;
         }
