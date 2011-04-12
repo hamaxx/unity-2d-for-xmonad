@@ -368,7 +368,9 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     }
 
     m_application = application;
-    setDesktopFile(application->desktop_file());
+    if (!sticky()) {
+        setDesktopFile(application->desktop_file());
+    }
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
