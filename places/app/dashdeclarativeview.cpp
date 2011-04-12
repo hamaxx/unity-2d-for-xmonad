@@ -84,8 +84,9 @@ DashDeclarativeView::onWorkAreaResized(int screen)
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    move(availableGeometry().topLeft());
-    setFixedSize(availableGeometry().size());
+    QRect rect = availableGeometry();
+    move(rect.topLeft());
+    setFixedSize(rect.size());
 }
 
 void
@@ -120,14 +121,14 @@ void
 DashDeclarativeView::setWMFlags()
 {
     Display *display = QX11Info::display();
-    Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", True);
+    Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", False);
     Atom propAtom;
 
-    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", True);
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", False);
     XChangeProperty(display, effectiveWinId(), stateAtom,
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 
-    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_PAGER", True);
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_PAGER", False);
     XChangeProperty(display, effectiveWinId(), stateAtom,
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
@@ -137,7 +138,7 @@ DashDeclarativeView::showEvent(QShowEvent *event)
 {
     QDeclarativeView::showEvent(event);
     /* Note that this has to be called everytime the window is shown, as the WM
-       will to clean the flags when the window is hidden (whitdrawn) */
+       will remove the flags when the window is hidden */
     setWMFlags();
 }
 
