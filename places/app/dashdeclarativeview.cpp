@@ -117,6 +117,31 @@ static int getenvInt(const char* name, int defaultValue)
 }
 
 void
+DashDeclarativeView::setWMFlags()
+{
+    Display *display = QX11Info::display();
+    Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", True);
+    Atom propAtom;
+
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", True);
+    XChangeProperty(display, effectiveWinId(), stateAtom,
+                    XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
+
+    propAtom = XInternAtom(display, "_NET_WM_STATE_SKIP_PAGER", True);
+    XChangeProperty(display, effectiveWinId(), stateAtom,
+                    XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
+}
+
+void
+DashDeclarativeView::showEvent(QShowEvent *event)
+{
+    QDeclarativeView::showEvent(event);
+    /* Note that this has to be called everytime the window is shown, as the WM
+       will to clean the flags when the window is hidden (whitdrawn) */
+    setWMFlags();
+}
+
+void
 DashDeclarativeView::setActive(bool value)
 {
     if (value != active()) {
