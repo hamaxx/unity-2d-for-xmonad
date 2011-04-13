@@ -61,6 +61,11 @@ WindowHelper::WindowHelper(QObject* parent)
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*,BamfWindow*)),
         SLOT(update()));
+    /* Work around a bug in BAMF: the ActiveWindowChanged signal is not emitted
+       for some windows that open maximized. This is for example the case of the
+       LibreOffice startcenter. */
+    connect(&BamfMatcher::get_default(), SIGNAL(ViewOpened(BamfView*)),
+        SLOT(update()));
     // Work around a BAMF bug: it does not emit ActiveWindowChanged when the
     // last window is closed. Should be removed when this bug is fixed.
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
