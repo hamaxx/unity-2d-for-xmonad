@@ -210,11 +210,6 @@ void
 LauncherView::toggleDash()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (!dashInterface.isValid()) {
-        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
-                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        return;
-    }
 
     QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
     if (!dashActiveResult.isValid()) {
@@ -340,12 +335,6 @@ void
 LauncherView::showCommandsPlace()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (!dashInterface.isValid()) {
-        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
-                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        return;
-    }
-
     dashInterface.asyncCall("activatePlaceEntry",
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
@@ -354,11 +343,6 @@ void
 LauncherView::showWorkspaceSwitcher()
 {
     QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
-    if (!spreadInterface.isValid()) {
-        qWarning() << "Can't access the spread via DBUS on" << SPREAD_DBUS_SERVICE
-                   << SPREAD_DBUS_PATH << SPREAD_DBUS_INTERFACE;
-        return;
-    }
 
     /* Here we only show the spread, if it's hidden.
        However on Super+s the spread should exit if it's already running.
