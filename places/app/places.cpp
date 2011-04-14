@@ -27,6 +27,7 @@
 #include <QDBusConnectionInterface>
 #include <QDeclarativeContext>
 #include <QAbstractEventDispatcher>
+#include <QDir>
 
 #include <X11/Xlib.h>
 
@@ -86,6 +87,13 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("dashView", &view);
     view.rootContext()->setContextProperty("engineBaseUrl", view.engine()->baseUrl().toLocalFile());
     view.setSource(QUrl("./dash.qml"));
+
+    /* When spawned via DBus activation, the current working directory is
+       inherited from the DBus daemon, and it usually is not the user’s home
+       directory. Applications launched from the dash in turn inherit their
+       current working directory from the dash, and they expect a sane default
+       (see e.g. https://bugs.launchpad.net/bugs/684471). */
+    QDir::setCurrent(QDir::homePath());
 
     application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
