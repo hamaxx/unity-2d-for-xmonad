@@ -18,8 +18,18 @@
    compilation errors. */
 #include <gdk/gdk.h>
 
-/* Required otherwise using wnck_set_client_type breaks linking with error:
-   undefined reference to `wnck_set_client_type(WnckClientType)'
+/* Note regarding the use of wnck: it is critically important that the client
+   type be set to pager because wnck will pass that type over to the window
+   manager through XEvents.
+   Window managers tend to respect orders from pagers to the letter by for
+   example bypassing focus stealing prevention. Compiz does exactly that in
+   src/event.c:handleEvent(…) in the ClientMessage case (line 1702). Metacity
+   has a similar policy in src/core/window.c:window_activate(…) (line 2951).
+
+   The client type has already been set in Unity2dPlugin::initializeEngine(…),
+   and the corresponding shared library (libunity-2d-private-qml.so) is loaded
+   via QML’s import statement (`import Unity2d 1.0`), so there is no need to
+   set it again here.
 */
 extern "C" {
 #include <libwnck/libwnck.h>
@@ -61,22 +71,6 @@ LauncherApplication::LauncherApplication()
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
 {
-    /* Make sure wnck_set_client_type is called only once */
-    static bool client_type_set = false;
-    if(!client_type_set) {
-        /* Critically important to set the client type to pager because wnck
-           will pass that type over to the window manager through XEvents.
-           Window managers tend to respect orders from pagers to the letter by
-           for example bypassing focus stealing prevention.
-           Compiz does exactly that in src/event.c:handleEvent(...) in the
-           ClientMessage case (line 1702).
-           Metacity has a similar policy in src/core/window.c:window_activate(...)
-           (line 2951).
-        */
-        wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
-        client_type_set = true;
-    }
-
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
