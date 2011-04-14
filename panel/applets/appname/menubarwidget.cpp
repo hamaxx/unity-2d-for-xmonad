@@ -69,6 +69,11 @@ MenuBarWidget::MenuBarWidget(QMenu* windowMenu, QWidget* parent)
 
     connect(&BamfMatcher::get_default(), SIGNAL(ActiveWindowChanged(BamfWindow*, BamfWindow*)),
         SLOT(slotActiveWindowChanged(BamfWindow*, BamfWindow*)));
+    /* Work around a bug in BAMF: the ActiveWindowChanged signal is not emitted
+       for some windows that open maximized. This is for example the case of the
+       LibreOffice startcenter. */
+    connect(&BamfMatcher::get_default(), SIGNAL(ViewOpened(BamfView*)),
+        SLOT(slotViewOpened()));
     updateActiveWinId(BamfMatcher::get_default().active_window());
 }
 
@@ -118,6 +123,19 @@ void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* 
 {
     if (current) {
         updateActiveWinId(current);
+    }
+}
+
+void MenuBarWidget::slotViewOpened()
+{
+    BamfWindow* active = BamfMatcher::get_default().active_window();
+    if (active != NULL) {
+        if (active->xid() != m_activeWinId) {
+            /* This shouldn’t be needed as BAMF should have emitted the
+               ActiveWindowChanged signal, but it sometimes doesn’t (e.g. when
+               LibreOffice startcenter starts automatically maximized). */
+            updateActiveWinId(active);
+        }
     }
 }
 
