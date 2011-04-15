@@ -127,6 +127,9 @@ DropItem {
     Connections {
         target: applications
         onApplicationBecameUrgent: {
+            if (main.autoScrolling) {
+                main.stopAutoScrolling()
+            }
             /* index does not need to be translated because we know that
                applications are always first in the list. */
             main.positionViewAtIndex(index, ListView.Visible)   

@@ -71,6 +71,11 @@ ListView {
                  || draggingOnScrollZoneBottom
     }
 
+    function stopAutoScrolling() {
+        scrollUp.stop()
+        scrollDown.stop()
+    }
+
     /* The code below this comment is only needed as a workaround for a strange behavior
        (or bug) in QML. Essentially MouseEvents have an accepted property, but in most cases
        it doesn't matter what you set it to: the event is always accepted and not propagated
