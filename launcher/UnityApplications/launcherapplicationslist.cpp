@@ -188,7 +188,7 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
     QObject::connect(application, SIGNAL(launchingChanged(bool)), this, SLOT(onApplicationLaunchingChanged(bool)));
-    connect(application, SIGNAL(urgentChanged(bool)), SLOT(onApplicationUrgentChanged(bool)));
+    QObject::connect(application, SIGNAL(urgentChanged(bool)), this, SLOT(onApplicationUrgentChanged(bool)));
 }
 
 void
