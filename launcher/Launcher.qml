@@ -127,9 +127,13 @@ DropItem {
     Connections {
         target: applications
         onApplicationBecameUrgent: {
+            visibilityController.beginForceVisible()
+            /* When the urgent animation stops, endForceVisible() will be called. */
+
             if (main.autoScrolling) {
                 main.stopAutoScrolling()
             }
+
             /* index does not need to be translated because we know that
                applications are always first in the list. */
             main.positionViewAtIndex(index, ListView.Visible)
