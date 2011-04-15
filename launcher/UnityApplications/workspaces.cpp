@@ -73,7 +73,7 @@ Workspaces::name() const
 QString
 Workspaces::icon() const
 {
-    return QString("workspace-switcher");
+    return QString("unity-icon-theme/workspace-switcher");
 }
 
 bool

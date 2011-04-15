@@ -77,7 +77,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return "user-trash";
+    return "unity-icon-theme/user-trash";
 }
 
 bool
