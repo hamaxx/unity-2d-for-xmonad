@@ -123,4 +123,13 @@ DropItem {
             else visibilityController.endForceVisible()
         }
     }
+
+    Connections {
+        target: applications
+        onApplicationBecameUrgent: {
+            /* index does not need to be translated because we know that
+               applications are always first in the list. */
+            main.positionViewAtIndex(index, ListView.Visible)   
+        }
+    }
 }
