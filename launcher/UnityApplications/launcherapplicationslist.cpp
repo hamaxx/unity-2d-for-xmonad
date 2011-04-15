@@ -231,6 +231,15 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
     } else if (m_applicationForExecutable.contains(executable)) {
         /* A LauncherApplication with the same executable already exists */
         matchingApplication = m_applicationForExecutable[executable];
+        /* If the application already registered for that executable has a
+           desktop file assigned then make sure that the one to be inserted
+           has the same desktop file.
+        */
+        QString matchingDesktopFile = matchingApplication->desktop_file();
+        if (!matchingDesktopFile.isEmpty() && !desktop_file.isEmpty() &&
+            matchingDesktopFile != desktop_file) {
+                matchingApplication = NULL;
+        }
     }
 
     if (matchingApplication != NULL) {
