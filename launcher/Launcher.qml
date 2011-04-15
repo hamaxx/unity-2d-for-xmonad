@@ -132,7 +132,7 @@ DropItem {
             }
             /* index does not need to be translated because we know that
                applications are always first in the list. */
-            main.positionViewAtIndex(index, ListView.Visible)   
+            main.positionViewAtIndex(index, ListView.Visible)
         }
     }
 }
