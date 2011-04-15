@@ -21,6 +21,7 @@
 #define TRASH_H
 
 #include <gio/gio.h>
+#include <libwnck/libwnck.h>
 
 #include "launcheritem.h"
 
@@ -50,6 +51,9 @@ public:
     Q_INVOKABLE virtual void createMenuActions();
     Q_INVOKABLE virtual void launchNewInstance();
 
+    static void showWindow(WnckWindow* window);
+    static void moveViewportToWindow(WnckWindow* window);
+
 public Q_SLOTS:
     /* Custom implementation of drag’n’drop handling. Dropping files on the
        trash will… move them to the trash! */
@@ -58,6 +62,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void onEmptyTriggered();
+	void show();
 
 private:
     void open() const;
