@@ -31,6 +31,7 @@
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusPendingCall>
 #include <QtDBus/QDBusReply>
+#include <QtDBus/QDBusConnectionInterface>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -51,6 +52,7 @@ static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
 
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
+static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
@@ -225,6 +227,25 @@ LauncherView::toggleDash()
                        << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         }
     } else {
+        /* Check if the spread is active before activating the dash.
+           We need to do this since the spread can't prevent the launcher from
+           monitoring the super key and therefore getting to this point if
+           it's tapped. */
+
+        /* Check if the spread is present on DBUS first, as we don't want to have DBUS
+           activate it if it's not running yet */
+        QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+        QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
+        if (reply.isValid() && reply.value() == true) {
+            QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
+                                           SPREAD_DBUS_INTERFACE);
+
+            QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
+            if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
+                return;
+            }
+        }
+
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
     }
 }
