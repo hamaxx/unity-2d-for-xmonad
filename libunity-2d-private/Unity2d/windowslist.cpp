@@ -35,10 +35,6 @@ WindowsList::WindowsList(QObject *parent) :
     roles[WindowInfo::RoleDesktopFile] = "desktopFile";
     roles[WindowInfo::RoleWorkspace] = "workspace";
     setRoleNames(roles);
-
-    BamfMatcher &matcher = BamfMatcher::get_default();
-    connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(addWindow(BamfView*)));
-    connect(&matcher, SIGNAL(ViewClosed(BamfView*)), SLOT(removeWindow(BamfView*)));
 }
 
 WindowsList::~WindowsList()
@@ -74,6 +70,10 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
 
 void WindowsList::load()
 {
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    connect(&matcher, SIGNAL(ViewOpened(BamfView*)), SLOT(addWindow(BamfView*)));
+    connect(&matcher, SIGNAL(ViewClosed(BamfView*)), SLOT(removeWindow(BamfView*)));
+
     if (m_windows.count() > 0) {
         beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
         qDeleteAll(m_windows);
@@ -81,7 +81,6 @@ void WindowsList::load()
         endRemoveRows();
     }
 
-    BamfMatcher &matcher = BamfMatcher::get_default();
     QList<BamfApplication*> applications;
 
     /* List the windows of all the applications */
@@ -122,6 +121,10 @@ void WindowsList::load()
 
 void WindowsList::unload()
 {
+    BamfMatcher &matcher = BamfMatcher::get_default();
+    matcher.disconnect(this, SLOT(addWindow(BamfView*)));
+    matcher.disconnect(this, SLOT(removeWindow(BamfView*)));
+
     beginRemoveRows(QModelIndex(), 0, m_windows.count() - 1);
     qDeleteAll(m_windows);
     m_windows.clear();

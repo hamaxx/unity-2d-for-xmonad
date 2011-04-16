@@ -188,6 +188,7 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
     QObject::connect(application, SIGNAL(closed()), this, SLOT(onApplicationClosed()));
     QObject::connect(application, SIGNAL(stickyChanged(bool)), this, SLOT(onApplicationStickyChanged(bool)));
     QObject::connect(application, SIGNAL(launchingChanged(bool)), this, SLOT(onApplicationLaunchingChanged(bool)));
+    QObject::connect(application, SIGNAL(urgentChanged(bool)), this, SLOT(onApplicationUrgentChanged(bool)));
 }
 
 void
@@ -384,6 +385,15 @@ LauncherApplicationsList::onApplicationLaunchingChanged(bool launching)
 
     if (!application->sticky() && !application->running() && !application->launching()) {
         removeApplication(application);
+    }
+}
+
+void
+LauncherApplicationsList::onApplicationUrgentChanged(bool urgent)
+{
+    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+    if (urgent) {
+        Q_EMIT applicationBecameUrgent(m_applications.indexOf(application));
     }
 }
 
