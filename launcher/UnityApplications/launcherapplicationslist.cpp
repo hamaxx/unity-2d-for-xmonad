@@ -232,6 +232,15 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
     } else if (m_applicationForExecutable.contains(executable)) {
         /* A LauncherApplication with the same executable already exists */
         matchingApplication = m_applicationForExecutable[executable];
+        /* If the application already registered for that executable has a
+           desktop file assigned then make sure that the one to be inserted
+           has the same desktop file.
+        */
+        QString matchingDesktopFile = matchingApplication->desktop_file();
+        if (!matchingDesktopFile.isEmpty() && !desktop_file.isEmpty() &&
+            matchingDesktopFile != desktop_file) {
+                matchingApplication = NULL;
+        }
     }
 
     if (matchingApplication != NULL) {
@@ -265,6 +274,17 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
                    << desktop_file << ")";
         delete application;
     } else {
+        /* Register favorite desktop file into BAMF: applications with the same
+           executable file will match with the given desktop file. This replicates
+           the behaviour of Unity that does it automatically when calling libbamf's
+           bamf_matcher_get_application_for_desktop_file.
+           It fixes bug https://bugs.launchpad.net/unity-2d/+bug/739454
+           The need for that API call is odd and causes at least one bug:
+           https://bugs.launchpad.net/unity/+bug/762898
+        */
+        BamfMatcher& matcher = BamfMatcher::get_default();
+        matcher.register_favorites(QStringList(application->desktop_file()));
+
         insertApplication(application);
         application->setSticky(true);
     }
