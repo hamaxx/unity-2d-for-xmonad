@@ -274,6 +274,17 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
                    << desktop_file << ")";
         delete application;
     } else {
+        /* Register favorite desktop file into BAMF: applications with the same
+           executable file will match with the given desktop file. This replicates
+           the behaviour of Unity that does it automatically when calling libbamf's
+           bamf_matcher_get_application_for_desktop_file.
+           It fixes bug https://bugs.launchpad.net/unity-2d/+bug/739454
+           The need for that API call is odd and causes at least one bug:
+           https://bugs.launchpad.net/unity/+bug/762898
+        */
+        BamfMatcher& matcher = BamfMatcher::get_default();
+        matcher.register_favorites(QStringList(application->desktop_file()));
+
         insertApplication(application);
         application->setSticky(true);
     }
