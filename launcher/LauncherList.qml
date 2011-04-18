@@ -270,9 +270,19 @@ AutoScrollingListView {
             target: urgentAnimation
             onRunningChanged: {
                 if (urgentAnimation.running) {
-                    visibilityController.beginForceVisible();
+                    visibilityController.beginForceVisible()
                 } else {
-                    visibilityController.endForceVisible();
+                    visibilityController.endForceVisible()
+                }
+            }
+            Component.onCompleted: {
+                if (urgentAnimation.running) {
+                    visibilityController.beginForceVisible()
+                }
+            }
+            Component.onDestruction: {
+                if (urgentAnimation.running) {
+                    visibilityController.endForceVisible()
                 }
             }
         }
