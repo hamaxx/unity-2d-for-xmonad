@@ -127,9 +127,6 @@ DropItem {
     Connections {
         target: applications
         onApplicationBecameUrgent: {
-            visibilityController.beginForceVisible()
-            /* When the urgent animation stops, endForceVisible() will be called. */
-
             if (main.autoScrolling) {
                 main.stopAutoScrolling()
             }
