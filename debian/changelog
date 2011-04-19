@@ -1,4 +1,4 @@
-unity-2d (3.8.4-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (3.8.4-0ubuntu1) natty; urgency=low
 
   * New upstream bugfix release
     * (LP: #764690)  [launcher] launcher won't fully paint, corrupted view
@@ -29,7 +29,7 @@ unity-2d (3.8.4-0ubuntu1) UNRELEASED; urgency=low
       is inactive
     * (LP: #721121)  UIFe: Icon in Launcher should be home folder icon
 
- -- Oliver Grawert <ogra@ubuntu.com>  Tue, 19 Apr 2011 11:33:17 +0200
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 19 Apr 2011 14:23:17 +0200
 
 unity-2d (3.8.2-0ubuntu1) natty; urgency=low
 
