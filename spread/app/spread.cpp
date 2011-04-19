@@ -26,6 +26,7 @@
 
 #include "spreadview.h"
 #include "spreadcontrol.h"
+#include "launcherclient.h"
 
 #include <unity2ddebug.h>
 
@@ -87,6 +88,8 @@ int main(int argc, char *argv[])
     control.connectToBus();
     control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(setIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
+
+    view.rootContext()->setContextProperty("launcherMaximumWidth", LauncherClient::MaximumWidth);
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
