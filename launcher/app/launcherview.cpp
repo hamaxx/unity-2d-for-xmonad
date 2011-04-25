@@ -353,24 +353,28 @@ LauncherView::showCommandsPlace()
 void
 LauncherView::showWorkspaceSwitcher()
 {
-    QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
-    if (!spreadInterface.isValid()) {
-        qWarning() << "Can't access the spread via DBUS on" << SPREAD_DBUS_SERVICE
-                   << SPREAD_DBUS_PATH << SPREAD_DBUS_INTERFACE;
-        return;
-    }
+    QDBusInterface compiz("org.freedesktop.compiz",
+                          "/org/freedesktop/compiz/expo/screen0/expo_key",
+                          "org.freedesktop.compiz");
 
-    /* Here we only show the spread, if it's hidden.
-       However on Super+s the spread should exit if it's already running.
-       That is done directly in spread/Workspaces.qml because the spread
-       fully grabs the keyboard, so it's the only place where Super+s can
-       be handled while the spread is active */
-    QDBusReply<bool> isShown = spreadInterface.call("IsShown");
-    if (isShown.isValid()) {
-        if (isShown.value() == false) {
-            spreadInterface.asyncCall("ShowAllWorkspaces", QString());
-        }
+    if (compiz.isValid()) {
+        Qt::HANDLE root = QX11Info::appRootWindow();
+        compiz.asyncCall("activate", "root", static_cast<int>(root));
     } else {
-        qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
+        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
+
+        /* Here we only show the spread, if it's hidden.
+           However on Super+s the spread should exit if it's already running.
+           That is done directly in spread/Workspaces.qml because the spread
+           fully grabs the keyboard, so it's the only place where Super+s can
+           be handled while the spread is active */
+        QDBusReply<bool> isShown = spreadInterface.call("IsShown");
+        if (isShown.isValid()) {
+            if (isShown.value() == false) {
+                spreadInterface.asyncCall("ShowAllWorkspaces", QString());
+            }
+        } else {
+            qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
+        }
     }
 }
