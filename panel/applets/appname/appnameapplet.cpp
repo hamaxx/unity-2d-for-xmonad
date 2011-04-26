@@ -227,7 +227,7 @@ void AppNameApplet::updateWidgets()
         );
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
-    d->m_windowButtonWidget->setVisible(isMaximized);
+    d->m_windowButtonWidget->setVisible(isOnSameScreen && isMaximized);
 
     d->m_label->setVisible(showLabel);
     if (showLabel) {
