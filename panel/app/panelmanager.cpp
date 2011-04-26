@@ -111,19 +111,39 @@ PanelManager::~PanelManager()
 void
 PanelManager::onScreenCountChanged(int newCount)
 {
-    QDesktopWidget* desktop = QApplication::desktop();
-    int size = m_panels.size();
-    /* Update the position of existing panels, and instantiate new panels. */
-    for (int i = 0; i < newCount; ++i) {
+    if (newCount > 0) {
+        QDesktopWidget* desktop = QApplication::desktop();
+        int size = m_panels.size();
         Unity2dPanel* panel;
-        if (i < size) {
-            panel = m_panels[i];
+
+        /* The first panel is always the one on the leftmost screen. */
+        int leftmost = desktop->screenNumber(QPoint());
+        if (size > 0) {
+            panel = m_panels[0];
         } else {
-            panel = instantiatePanel(i);
+            panel = instantiatePanel(leftmost);
             m_panels.append(panel);
         }
         panel->show();
-        panel->move(desktop->screenGeometry(i).topLeft());
+        panel->move(desktop->screenGeometry(leftmost).topLeft());
+
+        /* Update the position of other existing panels, and instantiate new
+           panels as needed. */
+        int i = 1;
+        for (int screen = 0; screen < newCount; ++screen) {
+            if (screen == leftmost) {
+                continue;
+            }
+            if (i < size) {
+                panel = m_panels[i];
+            } else {
+                panel = instantiatePanel(screen);
+                m_panels.append(panel);
+            }
+            panel->show();
+            panel->move(desktop->screenGeometry(screen).topLeft());
+            ++i;
+        }
     }
     /* Remove extra panels if any. */
     while (m_panels.size() > newCount) {
