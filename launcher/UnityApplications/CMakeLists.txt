@@ -8,6 +8,7 @@ pkg_check_modules(GDK REQUIRED gdk-2.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
+pkg_check_modules(INDICATOR REQUIRED indicator)
 
 # Sources
 set(UnityApplications_SRCS
@@ -70,6 +71,7 @@ include_directories(
     ${GIO_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
     ${STARTUPNOTIFICATION_INCLUDE_DIRS}
+    ${INDICATOR_INCLUDE_DIRS}
     )
 
 target_link_libraries(UnityApplications
@@ -86,6 +88,7 @@ target_link_libraries(UnityApplications
     ${GIO_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${STARTUPNOTIFICATION_LDFLAGS}
+    ${INDICATOR_LDFLAGS}
     )
 
 # Install
