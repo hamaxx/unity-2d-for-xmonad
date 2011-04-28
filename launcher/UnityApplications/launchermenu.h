@@ -55,6 +55,9 @@ public:
     Q_INVOKABLE void hide();
     Q_INVOKABLE void hideWithDelay(int delay);
 
+    void insertActionBeforeTitle(QAction* action);
+    void insertSeparatorBeforeTitle();
+
 protected:
     void resizeEvent(QResizeEvent* event);
     void leaveEvent(QEvent* event);

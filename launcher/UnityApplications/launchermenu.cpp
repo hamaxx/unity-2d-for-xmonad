@@ -203,7 +203,6 @@ LauncherContextualMenu::setFolded(int folded)
             }
         }
     } else {
-        insertSeparator(m_titleAction);
         addSeparator();
         m_launcherItem->createMenuActions();
 
@@ -302,5 +301,17 @@ LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
     if (event->isAccepted() && isHidden()) {
         Q_EMIT dismissedByKeyEvent();
     }
+}
+
+void
+LauncherContextualMenu::insertActionBeforeTitle(QAction* action)
+{
+    insertAction(m_titleAction, action);
+}
+
+void
+LauncherContextualMenu::insertSeparatorBeforeTitle()
+{
+    insertSeparator(m_titleAction);
 }
 

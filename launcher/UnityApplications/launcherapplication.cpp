@@ -851,10 +851,10 @@ LauncherApplication::createDynamicMenuActions()
         QList<QAction*> actions = m_dynamicQuicklistImporter->menu()->actions();
         Q_FOREACH(QAction* action, actions) {
             if (action->isSeparator()) {
-                m_menu->addSeparator();
+                m_menu->insertSeparatorBeforeTitle();
             } else {
                 connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
-                m_menu->addAction(action);
+                m_menu->insertActionBeforeTitle(action);
             }
         }
     }
@@ -863,8 +863,6 @@ LauncherApplication::createDynamicMenuActions()
 void
 LauncherApplication::createStaticMenuActions()
 {
-    QList<QAction*> actions;
-
     /* Custom menu actions from the desktop file. */
     if (!m_staticShortcuts.isNull()) {
         const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts.data());
@@ -875,15 +873,15 @@ LauncherApplication::createStaticMenuActions()
                 QAction* action = new QAction(m_menu);
                 action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
                 action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
-                actions.append(action);
+                m_menu->insertActionBeforeTitle(action);
                 connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
                 ++i;
             }
         }
     }
-    m_menu->insertActions(m_menu->actions().first(), actions);
+    m_menu->insertSeparatorBeforeTitle();
 
-    actions.clear();
+    QList<QAction*> actions;
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
@@ -938,10 +936,10 @@ LauncherApplication::onIndicatorMenuUpdated()
     QList<QAction*> actions = importer->menu()->actions();
     Q_FOREACH(QAction* action, actions) {
         if (action->isSeparator()) {
-            m_menu->addSeparator();
+            m_menu->insertSeparatorBeforeTitle();
         } else {
             connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
-            m_menu->addAction(action);
+            m_menu->insertActionBeforeTitle(action);
         }
     }
 
