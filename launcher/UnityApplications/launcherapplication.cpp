@@ -53,9 +53,9 @@ extern "C" {
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDBusServiceWatcher>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include <QScopedPointer>
 
 extern "C" {
 #include <libsn/sn.h>
@@ -1011,8 +1011,32 @@ LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QV
         Q_EMIT emblemVisibleChanged(m_emblemVisible);
     }
     if (updateOverlayState(properties, "quicklist", &m_dynamicQuicklistPath)) {
-        m_dynamicQuicklistImporter.reset(new DBusMenuImporter(sender, m_dynamicQuicklistPath, this));
-        m_dynamicQuicklistImporter->updateMenu();
+        setDynamicQuicklistImporter(sender);
     }
+}
+
+void
+LauncherApplication::setDynamicQuicklistImporter(const QString& service)
+{
+    if (m_dynamicQuicklistServiceWatcher.isNull()) {
+        m_dynamicQuicklistServiceWatcher.reset(new QDBusServiceWatcher());
+        m_dynamicQuicklistServiceWatcher->setConnection(QDBusConnection::sessionBus());
+        connect(m_dynamicQuicklistServiceWatcher.data(), SIGNAL(serviceOwnerChanged(const QString&, const QString&, const QString&)),
+                SLOT(dynamicQuicklistImporterServiceOwnerChanged(const QString&, const QString&, const QString&)));
+    }
+    if (m_dynamicQuicklistPath.isEmpty() || service.isEmpty()) {
+        m_dynamicQuicklistImporter.reset();
+    } else {
+        m_dynamicQuicklistImporter.reset(new DBusMenuImporter(service, m_dynamicQuicklistPath));
+        m_dynamicQuicklistImporter->updateMenu();
+        m_dynamicQuicklistServiceWatcher->addWatchedService(service);
+    }
+}
+
+void
+LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner)
+{
+    m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
+    setDynamicQuicklistImporter(newOwner);
 }
 

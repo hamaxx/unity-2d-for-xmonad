@@ -47,6 +47,7 @@ void sn_startup_sequence_unref(struct SnStartupSequence*);
 
 class DBusMenuImporter;
 class QFileSystemWatcher;
+class QDBusServiceWatcher;
 
 typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
 typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
@@ -155,6 +156,8 @@ private Q_SLOTS:
     void beginForceUrgent(int duration);
     void endForceUrgent();
 
+    void dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner);
+
 private:
     QPointer<BamfApplication> m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
@@ -185,6 +188,8 @@ private:
 
     QString m_dynamicQuicklistPath;
     QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;
+    QScopedPointer<QDBusServiceWatcher> m_dynamicQuicklistServiceWatcher;
+    void setDynamicQuicklistImporter(const QString& service);
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 
