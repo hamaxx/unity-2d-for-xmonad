@@ -21,8 +21,8 @@
 #include "config.h"
 
 #include <QFile>
-#include <QDebug>
 
+#include <debug_p.h>
 
 static const char* UNITY_RES_PATH = "/usr/share/unity/";
 
@@ -63,7 +63,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     if (!iconFilePath.isEmpty()) {
         QImage icon(iconFilePath);
         if (icon.isNull()) {
-            qWarning() << "Failed to directly load icon at path:" << iconFilePath;
+            UQ_WARNING << "Failed to directly load icon at path:" << iconFilePath;
             return QImage();
         }
 

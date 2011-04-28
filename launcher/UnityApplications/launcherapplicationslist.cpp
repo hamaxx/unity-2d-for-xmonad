@@ -25,10 +25,11 @@
 
 #include <QStringList>
 #include <QDir>
-#include <QDebug>
 #include <QDBusConnection>
 #include <QFileInfo>
 #include <QX11Info>
+
+#include <debug_p.h>
 
 extern "C" {
 #include <libsn/sn.h>
@@ -55,7 +56,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
        only if it finds com.canonical.Unity on the bus, so let's just quickly
        register ourselves as Unity here. Should be moved somewhere else more proper */
     if (!session.registerService(DBUS_SERVICE_UNITY)) {
-        qWarning() << "The name" << DBUS_SERVICE_UNITY << "is already taken on DBUS";
+        UQ_WARNING << "The name" << DBUS_SERVICE_UNITY << "is already taken on DBUS";
     } else {
         /* Set ourselves up to receive any Update signal coming from any
            LauncherEntry */
@@ -65,7 +66,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     }
 
     if (!session.registerService(DBUS_SERVICE_LAUNCHER)) {
-        qWarning() << "The name" << DBUS_SERVICE_LAUNCHER << "is already taken on DBUS";
+        UQ_WARNING << "The name" << DBUS_SERVICE_LAUNCHER << "is already taken on DBUS";
     } else {
         /* Set ourselves up to receive a method call from Software Center asking us to add
            to favorites an application that is being installed and that the user requested
@@ -73,7 +74,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         LauncherApplicationsListDBUS *dbusAdapter = new LauncherApplicationsListDBUS(this);
         if (!session.registerObject(DBUS_OBJECT_LAUNCHER, dbusAdapter,
                                     QDBusConnection::ExportAllSlots)) {
-            qWarning() << "The object" << DBUS_OBJECT_LAUNCHER << "on" << DBUS_SERVICE_LAUNCHER
+            UQ_WARNING << "The object" << DBUS_OBJECT_LAUNCHER << "on" << DBUS_SERVICE_LAUNCHER
                        << "is already present on DBUS.";
         }
     }
@@ -137,7 +138,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
     if (applicationURI.indexOf("application://") == 0) {
         desktopFile = applicationURI.mid(14);
     } else {
-        qWarning() << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
+        UQ_WARNING << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
         return;
     }
 
@@ -148,7 +149,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
         }
     }
 
-    qWarning() << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
+    UQ_WARNING << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
 }
 
 LauncherApplicationsList::~LauncherApplicationsList()
@@ -270,7 +271,7 @@ LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
     /* If the desktop_file property is empty after setting it, it
        means glib couldn't load the desktop file (probably corrupted) */
     if (application->desktop_file().isEmpty()) {
-        qWarning() << "Favorite application not added due to desktop file missing or corrupted ("
+        UQ_WARNING << "Favorite application not added due to desktop file missing or corrupted ("
                    << desktop_file << ")";
         delete application;
     } else {
@@ -294,7 +295,7 @@ void
 LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 {
     if (!url.isValid() || url.isRelative()) {
-        qWarning() << "Invalid URL:" << url;
+        UQ_WARNING << "Invalid URL:" << url;
         return;
     }
 

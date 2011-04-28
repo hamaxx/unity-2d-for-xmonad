@@ -19,8 +19,9 @@
 
 #include "listaggregatormodel.h"
 
-#include <QDebug>
 #include <QSortFilterProxyModel>
+
+#include <debug_p.h>
 
 ListAggregatorModel::ListAggregatorModel(QObject* parent) :
     QAbstractListModel(parent)
@@ -42,7 +43,7 @@ ListAggregatorModel::appendModel(const QVariant& model)
     if (list == NULL) {
         list = qobject_cast<QSortFilterProxyModel*>(object);
         if (list == NULL) {
-            qWarning() << "Unable to append model that is not of type QAbstractListModel."
+            UQ_WARNING << "Unable to append model that is not of type QAbstractListModel."
                        << object->objectName() << "is of type" << object->metaObject()->className();
             return;
         }
@@ -105,12 +106,12 @@ ListAggregatorModel::move(int from, int to)
 {
     QAbstractItemModel* model = modelAtIndex(from);
     if (modelAtIndex(to) != model) {
-        qWarning() << "cannot move an item from one model to another";
+        UQ_WARNING << "cannot move an item from one model to another";
         return;
     }
 
     if (qobject_cast<QSortFilterProxyModel*>(model) != NULL) {
-        qWarning() << "cannot move the items of a QSortFilterProxyModel";
+        UQ_WARNING << "cannot move the items of a QSortFilterProxyModel";
         return;
     }
 

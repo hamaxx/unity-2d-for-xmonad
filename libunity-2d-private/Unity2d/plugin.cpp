@@ -85,7 +85,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 {
     Q_UNUSED(uri);
 
-    XSetErrorHandler(_x_errhandler);
+    // XSetErrorHandler(_x_errhandler);
 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);

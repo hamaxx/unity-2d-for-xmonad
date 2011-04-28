@@ -32,6 +32,7 @@ extern "C" {
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 LauncherDevice::LauncherDevice() :
     m_volume(NULL)
@@ -137,7 +138,7 @@ LauncherDevice::open()
         GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL) {
-            qWarning() << error->message;
+            UQ_WARNING << error->message;
         }
 
         g_free(uri);
@@ -145,7 +146,7 @@ LauncherDevice::open()
         g_object_unref(mount);
     } else {
         if (!g_volume_can_mount(m_volume)) {
-            qWarning() << "Volume cannot be mounted";
+            UQ_WARNING << "Volume cannot be mounted";
             return;
         }
         g_volume_mount(m_volume, G_MOUNT_MOUNT_NONE, NULL, NULL,
@@ -165,14 +166,14 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
         GError* error = NULL;
         g_app_info_launch_default_for_uri(uri, NULL, &error);
         if (error != NULL) {
-            qWarning() << error->message;
+            UQ_WARNING << error->message;
         }
 
         g_free(uri);
         g_object_unref(root);
         g_object_unref(mount);
     } else {
-        qWarning() << "Unable to mount volume";
+        UQ_WARNING << "Unable to mount volume";
     }
 }
 

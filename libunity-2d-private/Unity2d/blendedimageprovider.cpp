@@ -16,7 +16,7 @@
 
 #include "blendedimageprovider.h"
 #include <QPainter>
-#include <QDebug>
+#include <debug_p.h>
 
 BlendedImageProvider::BlendedImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
 {
@@ -31,14 +31,14 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
     /* id is of the form [FILENAME]color=[COLORNAME]alpha=[FLOAT] */
     QRegExp rx("^(.+)color=(.+)alpha=(\\d+(?:\\.\\d+)?)$");
     if (rx.indexIn(id)) {
-        qWarning() << "BlendedImageProvider: failed to match id:" << id;
+        UQ_WARNING << "BlendedImageProvider: failed to match id:" << id;
         return QImage();
     }
     QStringList list = rx.capturedTexts();
 
     QString fileName = list[1];
     if (fileName.isEmpty()) {
-        qWarning() << "BlendedImageProvider: filename can't be empty.";
+        UQ_WARNING << "BlendedImageProvider: filename can't be empty.";
         return QImage();
     }
 
@@ -53,7 +53,7 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
         */
         colorName.prepend("#");
         if (!QColor::isValidColor(colorName)) {
-            qWarning() << "BlendedImageProvider: invalid color name:" << list[2];
+            UQ_WARNING << "BlendedImageProvider: invalid color name:" << list[2];
             return QImage();
         }
     }
@@ -62,14 +62,14 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
     bool valid = false;
     float alpha = list[3].toFloat(&valid);
     if (!valid) {
-        qWarning() << "BlendedImageProvider: can't convert alpha to floating point:" << list[3];
+        UQ_WARNING << "BlendedImageProvider: can't convert alpha to floating point:" << list[3];
         return QImage();
     }
     color.setAlphaF(alpha);
 
     QImage image(fileName);
     if (image.isNull()) {
-        qWarning() << "BlendedImageProvider: failed to load image from file:" << fileName;
+        UQ_WARNING << "BlendedImageProvider: failed to load image from file:" << fileName;
         return QImage();
     }
 

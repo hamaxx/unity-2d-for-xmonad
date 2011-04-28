@@ -47,6 +47,7 @@ extern "C" {
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 // Qt
 #include <QDebug>
@@ -635,7 +636,7 @@ LauncherApplication::launch()
     g_app_info_launch(m_appInfo.data(), NULL, (GAppLaunchContext*)context.data(), &error);
 
     if (error != NULL) {
-        qWarning() << "Failed to launch application:" << error->message;
+        UQ_WARNING << "Failed to launch application:" << error->message;
         g_error_free(error);
         return false;
     }
@@ -780,7 +781,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
             }
         }
     } else {
-        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 

@@ -28,6 +28,8 @@
 #include <X11/extensions/XKB.h>
 #include <X11/Xproto.h>
 
+#include <debug_p.h>
+
 static int (*_x_old_errhandler)(Display *, XErrorEvent *);
 static int _x_grabkey_errhandler(Display *display, XErrorEvent *event)
 {
@@ -36,9 +38,11 @@ static int _x_grabkey_errhandler(Display *display, XErrorEvent *event)
          event->error_code == BadValue ||
          event->error_code== BadWindow) &&
          event->request_code == X_GrabKey) {
-        qWarning() << "Call to XGrabKey failed, this usually means some"
+        UQ_WARNING << "Call to XGrabKey failed, this usually means some"
                       " other client already reserved the hotkey.";
     }
+
+    return 0;
 }
 
 Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
@@ -68,11 +72,11 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     QString keyString = QKeySequence(key).toString();
     KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
     if (keysym == NoSymbol) {
-        qWarning() << "Could not convert" << keyString << "to an x11 keysym";
+        UQ_WARNING << "Could not convert" << keyString << "to an x11 keysym";
     } else {
         m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
         if (m_x11key == 0) {
-            qWarning() << "Could not get keycode for keysym" << keysym
+            UQ_WARNING << "Could not get keycode for keysym" << keysym
                        << "(" << keyString << ")";
         }
     }
@@ -83,7 +87,7 @@ Hotkey::connectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 0) {
-        qDebug() << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        UQ_DEBUG << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
         _x_old_errhandler = XSetErrorHandler(_x_grabkey_errhandler);
         XGrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                  QX11Info::appRootWindow(), True, GrabModeAsync, GrabModeAsync);
@@ -98,7 +102,7 @@ Hotkey::disconnectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 1) {
-        qDebug() << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        UQ_DEBUG << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
         XUngrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                    QX11Info::appRootWindow());
     }

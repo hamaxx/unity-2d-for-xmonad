@@ -23,10 +23,10 @@
 
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <QDebug>
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 Workspaces::Workspaces()
 {
@@ -95,7 +95,7 @@ Workspaces::activate()
             iface.asyncCall("ShowAllWorkspaces", QString());
         }
     } else {
-        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 

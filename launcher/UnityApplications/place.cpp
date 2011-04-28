@@ -22,6 +22,7 @@
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 #include <QStringList>
 #include <QDebug>
@@ -136,7 +137,7 @@ Place::setFileName(const QString &file)
     } else {
         delete m_file;
         m_file = NULL;
-        qWarning() << "Invalid place file, missing [Place] group";
+        UQ_WARNING << "Invalid place file, missing [Place] group";
     }
 }
 
@@ -192,7 +193,7 @@ Place::connectToRemotePlace()
 
     QDBusConnection connection = m_dbusIface->connection();
     if (!connection.isConnected()) {
-        qWarning() << "ERROR: unable to connect to bus:"
+        UQ_WARNING << "ERROR: unable to connect to bus:"
                    << connection.lastError();
         return;
     }
@@ -342,7 +343,7 @@ Place::gotEntries(QDBusPendingCallWatcher* watcher)
 {
     QDBusPendingReply<QList<PlaceEntryInfoStruct> > reply = *watcher;
     if (reply.isError()) {
-        qWarning() << "ERROR:" << m_dbusName << reply.error().message();
+        UQ_WARNING << "ERROR:" << m_dbusName << reply.error().message();
         onPlaceServiceUnregistered();
     } else {
         QList<PlaceEntryInfoStruct> entries = reply.argumentAt<0>();
@@ -420,8 +421,8 @@ Place::activate(QString uri)
         return;
     }
 
-    qWarning() << "FIXME: Possibly no handler for scheme: " << url.scheme();
-    qWarning() << "Trying to open" << uri;
+    UQ_WARNING << "FIXME: Possibly no handler for scheme: " << url.scheme();
+    UQ_WARNING << "Trying to open" << uri;
     /* Try our luck */
     QDesktopServices::openUrl(url);
 }

@@ -40,6 +40,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
+#include <debug_p.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -215,7 +216,7 @@ LauncherView::toggleDash()
 
     QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
     if (!dashActiveResult.isValid()) {
-        qWarning() << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+        UQ_WARNING << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                    << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         return;
     }
@@ -223,7 +224,7 @@ LauncherView::toggleDash()
     bool dashActive = dashActiveResult.toBool();
     if (dashActive) {
         if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
-            qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+            UQ_WARNING << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                        << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         }
     } else {
@@ -314,7 +315,7 @@ LauncherView::getColorsFromIcon(QUrl source, QSize size) const
     // FIXME: we should find a way to avoid reloading the icon
     QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
     if (icon.width() == 0 || icon.height() == 0) {
-        qWarning() << "Unable to load icon in getColorsFromIcon from" << source;
+        UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
         return colors;
     }
 
@@ -376,6 +377,6 @@ LauncherView::showWorkspaceSwitcher()
             spreadInterface.asyncCall("ShowAllWorkspaces", QString());
         }
     } else {
-        qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
+        UQ_WARNING << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
     }
 }

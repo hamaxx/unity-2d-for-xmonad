@@ -24,8 +24,8 @@
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
-#include <QDebug>
 #include <QAction>
 
 #define TRASH_URI "trash://"
@@ -106,7 +106,7 @@ Trash::open() const
     GError* error = NULL;
     if (!g_app_info_launch_default_for_uri(TRASH_URI, NULL, &error)) {
         if (error != NULL) {
-            qWarning() << "Unable to open the trash folder:" << error->message;
+            UQ_WARNING << "Unable to open the trash folder:" << error->message;
             g_error_free(error);
         }
     }
@@ -126,7 +126,7 @@ Trash::count() const
         G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT,
         G_FILE_QUERY_INFO_NONE, NULL, &error);
     if (error != NULL) {
-        qWarning() << "Unable to obtain the number of items in the trash:"
+        UQ_WARNING << "Unable to obtain the number of items in the trash:"
                    << error->message;
         g_error_free(error);
         return 0;
@@ -152,7 +152,7 @@ Trash::recursive_delete(GFile* dir)
         NULL, &error);
     if (error != NULL) {
         char* uri = g_file_get_uri(dir);
-        qWarning() << "Unable to recursively delete files in" << uri << ":"
+        UQ_WARNING << "Unable to recursively delete files in" << uri << ":"
                    << error->message;
         g_free(uri);
         g_error_free(error);
@@ -182,7 +182,7 @@ Trash::recursive_delete(GFile* dir)
 
     if (error != NULL) {
         char* uri = g_file_get_uri(dir);
-        qWarning() << "Unable to recursively delete files in" << uri << ":"
+        UQ_WARNING << "Unable to recursively delete files in" << uri << ":"
                    << error->message;
         g_free(uri);
         g_error_free(error);
@@ -235,7 +235,7 @@ Trash::onDrop(DeclarativeDragDropEvent* event)
         if (url.scheme() == "file") {
             GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
             if (!g_file_trash(file, NULL, NULL)) {
-                qWarning() << "Unable to send" << url << "to the trash";
+                UQ_WARNING << "Unable to send" << url << "to the trash";
             }
             g_object_unref(file);
         }

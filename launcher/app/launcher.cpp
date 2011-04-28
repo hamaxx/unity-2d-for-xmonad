@@ -45,6 +45,33 @@
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
+#if defined(QMLJSDEBUGGER)
+#include <qt_private/qdeclarativedebughelper_p.h>
+#endif
+
+#if defined(QMLJSDEBUGGER) && !defined(NO_JSDEBUGGER)
+#include <jsdebuggeragent.h>
+#endif
+#if defined(QMLJSDEBUGGER) && !defined(NO_QMLOBSERVER)
+#include <qdeclarativeviewobserver.h>
+#endif
+
+#if defined(QMLJSDEBUGGER)
+
+// Enable debugging before any QDeclarativeEngine is created
+struct QmlJsDebuggingEnabler
+{
+    QmlJsDebuggingEnabler()
+    {
+        QDeclarativeDebugHelper::enableDebugging();
+    }
+};
+
+// Execute code in constructor before first QDeclarativeEngine is instantiated
+static QmlJsDebuggingEnabler enableDebuggingHelper;
+
+#endif // QMLJSDEBUGGER
+
 int main(int argc, char *argv[])
 {
     /* UnityApplications plugin uses GTK APIs to retrieve theme icons
