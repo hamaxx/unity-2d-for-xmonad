@@ -92,7 +92,18 @@ LauncherDevice::name() const
 QString
 LauncherDevice::icon() const
 {
-    return QString(unity2dDirectory() + "/launcher/artwork/devices.png");
+    if (m_volume != NULL) {
+        GIcon* icon = g_volume_get_icon(m_volume);
+        if (icon != NULL) {
+            gchar* iconName = g_icon_to_string(icon);
+            QString s = QString::fromUtf8(iconName);
+            g_free(iconName);
+            g_object_unref(icon);
+            return s;
+        }
+    }
+
+    return QString("");
 }
 
 bool
