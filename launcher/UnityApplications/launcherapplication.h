@@ -36,6 +36,7 @@
 #include <QTimer>
 #include <QHash>
 #include <QPointer>
+#include <QScopedPointer>
 
 #include "bamf-application.h"
 
@@ -110,7 +111,7 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
-    void updateOverlaysState(QMap<QString, QVariant> properties);
+    void updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties);
 
 Q_SIGNALS:
     void stickyChanged(bool);
@@ -175,12 +176,15 @@ private:
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
+    void createDynamicMenuActions();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
     template<typename T>
     bool updateOverlayState(QMap<QString, QVariant> properties,
                             QString propertyName, T* member);
 
+    QString m_dynamicQuicklistPath;
+    QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 

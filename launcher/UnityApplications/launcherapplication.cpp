@@ -839,7 +839,24 @@ LauncherApplication::createMenuActions()
             importer->updateMenu();
         }
     } else {
+        createDynamicMenuActions();
         createStaticMenuActions();
+    }
+}
+
+void
+LauncherApplication::createDynamicMenuActions()
+{
+    if (!m_dynamicQuicklistImporter.isNull()) {
+        QList<QAction*> actions = m_dynamicQuicklistImporter->menu()->actions();
+        Q_FOREACH(QAction* action, actions) {
+            if (action->isSeparator()) {
+                m_menu->addSeparator();
+            } else {
+                connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
+                m_menu->addAction(action);
+            }
+        }
     }
 }
 
@@ -930,6 +947,7 @@ LauncherApplication::onIndicatorMenuUpdated()
 
     if (++m_indicatorMenusReady == m_indicatorMenus.size()) {
         /* All indicator menus have been updated. */
+        createDynamicMenuActions();
         createStaticMenuActions();
     }
 }
@@ -974,7 +992,7 @@ bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
 }
 
 void
-LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
+LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);
@@ -993,6 +1011,10 @@ LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
     }
     if (updateOverlayState(properties, "emblem-visible", &m_emblemVisible)) {
         Q_EMIT emblemVisibleChanged(m_emblemVisible);
+    }
+    if (updateOverlayState(properties, "quicklist", &m_dynamicQuicklistPath)) {
+        m_dynamicQuicklistImporter.reset(new DBusMenuImporter(sender, m_dynamicQuicklistPath, this));
+        m_dynamicQuicklistImporter->updateMenu();
     }
 }
 

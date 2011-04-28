@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QDBusConnection>
+#include <QDBusMessage>
 #include <QFileInfo>
 #include <QX11Info>
 
@@ -133,6 +134,7 @@ LauncherApplicationsList::x11EventFilter(XEvent* xevent)
 void
 LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
 {
+    QString sender = message().service();
     QString desktopFile;
     if (applicationURI.indexOf("application://") == 0) {
         desktopFile = applicationURI.mid(14);
@@ -143,7 +145,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
 
     Q_FOREACH(LauncherApplication *application, m_applications) {
         if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
-            application->updateOverlaysState(properties);
+            application->updateOverlaysState(sender, properties);
             return;
         }
     }
