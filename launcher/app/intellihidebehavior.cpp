@@ -15,6 +15,7 @@
 
 // libunity-2d
 #include <debug_p.h>
+#include <edgemousearea.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -66,6 +67,7 @@ GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
 , m_updateVisibilityTimer(new QTimer(this))
+, m_mouseArea(0)
 , m_activeWindow(0)
 {
     m_updateVisibilityTimer->setSingleShot(true);
@@ -167,9 +169,9 @@ void IntelliHideBehavior::updateVisibility()
     }
 
     if (crossWindow) {
-        m_panel->slideOut();
+        hidePanel();
     } else {
-        m_panel->slideIn();
+        showPanel();
     }
 }
 
@@ -193,4 +195,25 @@ bool IntelliHideBehavior::isMouseForcingVisibility() const
     // We check the cursor position ourself because using QWidget::underMouse()
     // is unreliable. It causes LP bug #740280
     return m_panel->geometry().contains(QCursor::pos());
+}
+
+void IntelliHideBehavior::hidePanel()
+{
+    m_panel->slideOut();
+    createMouseArea();
+}
+
+void IntelliHideBehavior::showPanel()
+{
+    // Delete the mouse area so that it does not prevent mouse events from
+    // reaching the panel
+    delete m_mouseArea;
+    m_mouseArea = 0;
+    m_panel->slideIn();
+}
+
+void IntelliHideBehavior::createMouseArea()
+{
+    m_mouseArea = new EdgeMouseArea(this);
+    connect(m_mouseArea, SIGNAL(entered()), SLOT(showPanel()));
 }
