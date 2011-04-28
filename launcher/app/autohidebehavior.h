@@ -27,6 +27,7 @@
 // Qt
 #include <QObject>
 
+class EdgeMouseArea;
 class QTimer;
 class Unity2dPanel;
 
@@ -43,8 +44,15 @@ public:
 protected:
     bool eventFilter(QObject*, QEvent*);
 
+private Q_SLOTS:
+    void hidePanel();
+    void showPanel();
+
 private:
     QTimer* m_autohideTimer;
+    EdgeMouseArea* m_mouseArea;
+
+    void createMouseArea();
 };
 
 #endif /* AUTOHIDEBEHAVIOR_H */

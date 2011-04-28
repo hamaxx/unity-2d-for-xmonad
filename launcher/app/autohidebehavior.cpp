@@ -22,11 +22,11 @@
 #include "autohidebehavior.h"
 
 // Local
+#include <edgemousearea.h>
 
 // libunity-2d
 #include <debug_p.h>
 #include <unity2dpanel.h>
-#include <mousearea.h>
 
 // Qt
 #include <QCursor>
@@ -37,10 +37,11 @@ static const int AUTOHIDE_TIMEOUT = 1000;
 AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
 , m_autohideTimer(new QTimer(this))
+, m_mouseArea(0)
 {
     m_autohideTimer->setSingleShot(true);
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
-    connect(m_autohideTimer, SIGNAL(timeout()), m_panel, SLOT(slideOut()));
+    connect(m_autohideTimer, SIGNAL(timeout()), SLOT(hidePanel()));
 
     m_panel->installEventFilter(this);
     if (!m_panel->geometry().contains(QCursor::pos())) {
@@ -49,7 +50,7 @@ AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
             m_autohideTimer->start();
         } else {
             /* Launcher is partially hidden */
-            m_panel->slideOut();
+            hidePanel();
         }
     }
 }
@@ -71,4 +72,26 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
         break;
     }
     return false;
+}
+
+void AutoHideBehavior::hidePanel()
+{
+    m_panel->slideOut();
+    createMouseArea();
+}
+
+void AutoHideBehavior::showPanel()
+{
+    // Delete the mouse area so that it does not prevent mouse events from
+    // reaching the panel
+    delete m_mouseArea;
+    m_mouseArea = 0;
+    m_autohideTimer->stop();
+    m_panel->slideIn();
+}
+
+void AutoHideBehavior::createMouseArea()
+{
+    m_mouseArea = new EdgeMouseArea(this);
+    connect(m_mouseArea, SIGNAL(entered()), SLOT(showPanel()));
 }
