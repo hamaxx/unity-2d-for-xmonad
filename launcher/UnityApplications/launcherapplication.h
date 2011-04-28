@@ -50,6 +50,7 @@ class QFileSystemWatcher;
 typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
 typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
 typedef GScopedPointer<SnStartupSequence, sn_startup_sequence_unref> SnStartupSequencePointer;
+typedef GObjectScopedPointer<IndicatorDesktopShortcuts> IndicatorDesktopShortcutsPointer;
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
@@ -180,7 +181,7 @@ private:
     bool updateOverlayState(QMap<QString, QVariant> properties,
                             QString propertyName, T* member);
 
-    IndicatorDesktopShortcuts* m_staticShortcuts;
+    IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

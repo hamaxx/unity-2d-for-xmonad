@@ -72,7 +72,6 @@ LauncherApplication::LauncherApplication()
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
-    , m_staticShortcuts(NULL)
 {
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
@@ -90,9 +89,6 @@ LauncherApplication::LauncherApplication(const LauncherApplication& other)
 
 LauncherApplication::~LauncherApplication()
 {
-    if (m_staticShortcuts != NULL) {
-        g_object_unref(m_staticShortcuts);
-    }
 }
 
 bool
@@ -298,10 +294,7 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
 
     /* Update the list of static shortcuts
        (quicklist entries defined in the desktop file). */
-    if (m_staticShortcuts != NULL) {
-        g_object_unref(m_staticShortcuts);
-    }
-    m_staticShortcuts = indicator_desktop_shortcuts_new(newDesktopFile.toUtf8().constData(), "Unity");
+    m_staticShortcuts.reset(indicator_desktop_shortcuts_new(newDesktopFile.toUtf8().constData(), "Unity"));
 
     monitorDesktopFile(newDesktopFile);
 }
@@ -857,14 +850,14 @@ LauncherApplication::createStaticMenuActions()
     QList<QAction*> actions;
 
     /* Custom menu actions from the desktop file. */
-    if (m_staticShortcuts != NULL) {
-        const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts);
+    if (!m_staticShortcuts.isNull()) {
+        const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts.data());
         if (nicks) {
             int i = 0;
             while (((gpointer*) nicks)[i]) {
                 const gchar* nick = nicks[i];
                 QAction* action = new QAction(m_menu);
-                action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts, nick)));
+                action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
                 action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
                 m_menu->addAction(action);
                 connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
@@ -947,7 +940,7 @@ LauncherApplication::onStaticShortcutTriggered()
     QAction* action = static_cast<QAction*>(sender());
     QString nick = action->property(SHORTCUT_NICK_PROPERTY).toString();
     m_menu->hide();
-    indicator_desktop_shortcuts_nick_exec(m_staticShortcuts, nick.toUtf8().constData());
+    indicator_desktop_shortcuts_nick_exec(m_staticShortcuts.data(), nick.toUtf8().constData());
 }
 
 void
