@@ -61,6 +61,8 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
+const char* SHORTCUT_NICK_PROPERTY = "nick";
+
 LauncherApplication::LauncherApplication()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
@@ -289,6 +291,10 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
         }
         Q_EMIT executableChanged(executable());
     }
+
+    /* Update the list of static shortcuts
+       (quicklist entries defined in the desktop file). */
+    m_staticShortcuts.reset(indicator_desktop_shortcuts_new(newDesktopFile.toUtf8().constData(), "Unity"));
 
     monitorDesktopFile(newDesktopFile);
 }
@@ -840,9 +846,27 @@ LauncherApplication::createMenuActions()
 void
 LauncherApplication::createStaticMenuActions()
 {
-    m_menu->addSeparator();
     QList<QAction*> actions;
 
+    /* Custom menu actions from the desktop file. */
+    if (!m_staticShortcuts.isNull()) {
+        const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts.data());
+        if (nicks) {
+            int i = 0;
+            while (((gpointer*) nicks)[i]) {
+                const gchar* nick = nicks[i];
+                QAction* action = new QAction(m_menu);
+                action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
+                action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
+                actions.append(action);
+                connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
+                ++i;
+            }
+        }
+    }
+    m_menu->insertActions(m_menu->actions().first(), actions);
+
+    actions.clear();
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
@@ -908,6 +932,15 @@ LauncherApplication::onIndicatorMenuUpdated()
         /* All indicator menus have been updated. */
         createStaticMenuActions();
     }
+}
+
+void
+LauncherApplication::onStaticShortcutTriggered()
+{
+    QAction* action = static_cast<QAction*>(sender());
+    QString nick = action->property(SHORTCUT_NICK_PROPERTY).toString();
+    m_menu->hide();
+    indicator_desktop_shortcuts_nick_exec(m_staticShortcuts.data(), nick.toUtf8().constData());
 }
 
 void
