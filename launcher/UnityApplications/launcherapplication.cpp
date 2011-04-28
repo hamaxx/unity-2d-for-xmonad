@@ -1018,17 +1018,18 @@ LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QV
 void
 LauncherApplication::setDynamicQuicklistImporter(const QString& service)
 {
-    if (m_dynamicQuicklistServiceWatcher.isNull()) {
-        m_dynamicQuicklistServiceWatcher.reset(new QDBusServiceWatcher());
-        m_dynamicQuicklistServiceWatcher->setConnection(QDBusConnection::sessionBus());
-        connect(m_dynamicQuicklistServiceWatcher.data(), SIGNAL(serviceOwnerChanged(const QString&, const QString&, const QString&)),
-                SLOT(dynamicQuicklistImporterServiceOwnerChanged(const QString&, const QString&, const QString&)));
-    }
     if (m_dynamicQuicklistPath.isEmpty() || service.isEmpty()) {
         m_dynamicQuicklistImporter.reset();
     } else {
         m_dynamicQuicklistImporter.reset(new DBusMenuImporter(service, m_dynamicQuicklistPath));
         m_dynamicQuicklistImporter->updateMenu();
+        if (m_dynamicQuicklistServiceWatcher.isNull()) {
+            m_dynamicQuicklistServiceWatcher.reset(new QDBusServiceWatcher());
+            m_dynamicQuicklistServiceWatcher->setConnection(QDBusConnection::sessionBus());
+            connect(m_dynamicQuicklistServiceWatcher.data(),
+                    SIGNAL(serviceOwnerChanged(const QString&, const QString&, const QString&)),
+                    SLOT(dynamicQuicklistImporterServiceOwnerChanged(const QString&, const QString&, const QString&)));
+        }
         m_dynamicQuicklistServiceWatcher->addWatchedService(service);
     }
 }
