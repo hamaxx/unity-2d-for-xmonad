@@ -81,9 +81,9 @@ Trash::running() const
 			BamfWindow *bamfWindow = windowApplications->at(j);
 			
 			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-			QString *windowName = new QString(wnck_window_get_name(wnckWindow));
+			QString windowName = QString(wnck_window_get_name(wnckWindow));
 
-			int found = QString::compare("Trash", windowName, Qt::CaseSensitive);
+			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
 
 			if (found == 0) {
 				
@@ -112,9 +112,9 @@ Trash::show()
 			BamfWindow *bamfWindow = windowApplications->at(j);
 			
 			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-			QString *windowName = new QString(wnck_window_get_name(wnckWindow));
+			QString windowName = QString(wnck_window_get_name(wnckWindow));
 
-			int found = QString::compare("Trash", windowName, Qt::CaseSensitive);
+			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
 
 			if (found == 0) {
 				showWindow(wnckWindow);
