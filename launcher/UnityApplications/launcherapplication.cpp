@@ -846,7 +846,6 @@ LauncherApplication::createMenuActions()
 void
 LauncherApplication::createStaticMenuActions()
 {
-    m_menu->addSeparator();
     QList<QAction*> actions;
 
     /* Custom menu actions from the desktop file. */
@@ -859,14 +858,15 @@ LauncherApplication::createStaticMenuActions()
                 QAction* action = new QAction(m_menu);
                 action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
                 action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
-                m_menu->addAction(action);
+                actions.append(action);
                 connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
                 ++i;
             }
         }
     }
+    m_menu->insertActions(m_menu->actions().first(), actions);
 
-    m_menu->addSeparator();
+    actions.clear();
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
