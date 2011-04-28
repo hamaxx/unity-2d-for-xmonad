@@ -188,7 +188,7 @@ private:
 
     QString m_dynamicQuicklistPath;
     QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;
-    QScopedPointer<QDBusServiceWatcher> m_dynamicQuicklistServiceWatcher;
+    QDBusServiceWatcher* m_dynamicQuicklistServiceWatcher;
     void setDynamicQuicklistImporter(const QString& service);
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };

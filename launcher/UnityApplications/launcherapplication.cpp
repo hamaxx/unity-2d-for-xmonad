@@ -72,6 +72,7 @@ LauncherApplication::LauncherApplication()
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
+    , m_dynamicQuicklistServiceWatcher(NULL)
 {
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
@@ -1023,10 +1024,10 @@ LauncherApplication::setDynamicQuicklistImporter(const QString& service)
     } else {
         m_dynamicQuicklistImporter.reset(new DBusMenuImporter(service, m_dynamicQuicklistPath));
         m_dynamicQuicklistImporter->updateMenu();
-        if (m_dynamicQuicklistServiceWatcher.isNull()) {
-            m_dynamicQuicklistServiceWatcher.reset(new QDBusServiceWatcher());
+        if (m_dynamicQuicklistServiceWatcher == NULL) {
+            m_dynamicQuicklistServiceWatcher = new QDBusServiceWatcher(this);
             m_dynamicQuicklistServiceWatcher->setConnection(QDBusConnection::sessionBus());
-            connect(m_dynamicQuicklistServiceWatcher.data(),
+            connect(m_dynamicQuicklistServiceWatcher,
                     SIGNAL(serviceOwnerChanged(const QString&, const QString&, const QString&)),
                     SLOT(dynamicQuicklistImporterServiceOwnerChanged(const QString&, const QString&, const QString&)));
         }
