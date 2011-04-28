@@ -309,9 +309,9 @@ LauncherContextualMenu::insertActionBeforeTitle(QAction* action)
     insertAction(m_titleAction, action);
 }
 
-void
+QAction*
 LauncherContextualMenu::insertSeparatorBeforeTitle()
 {
-    insertSeparator(m_titleAction);
+    return insertSeparator(m_titleAction);
 }
 
