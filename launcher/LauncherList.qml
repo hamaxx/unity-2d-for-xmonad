@@ -98,9 +98,18 @@ AutoScrollingListView {
         emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
         emblemVisible: (noOverlays) ? false : item.emblemVisible
 
-        shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
-                         index <= 9 && launcherView.superKeyHeld
-        shortcutText: index + 1
+        shortcutVisible: launcherView.superKeyHeld &&
+                         ((item.toString().indexOf("LauncherApplication") == 0 &&
+                           index <= 9 && launcherView.superKeyHeld) ||
+                          (item.toString().indexOf("PlaceEntry") == 0 &&
+                           item.shortcutKey != 0))
+        shortcutText: {
+            if (item.toString().indexOf("PlaceEntry") == 0) {
+                return String.fromCharCode(item.shortcutKey).toLowerCase()
+            } else {
+                return (index + 1)
+            }
+        }
 
         isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
         dragPosition: reorder.listCoordinates.y - list.contentY

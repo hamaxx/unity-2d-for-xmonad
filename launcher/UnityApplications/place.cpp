@@ -106,6 +106,16 @@ Place::setFileName(const QString &file)
             entry->setIcon(m_file->value("Icon").toString());
             entry->setSearchHint(u2dTr(m_file->value("SearchHint").toString().toUtf8().constData(),
                                  gettextDomain.toUtf8().constData()));
+            if (m_file->contains("Shortcut")) {
+                QString value = m_file->value("Shortcut").toString();
+                if (value.size() == 1) {
+                    QChar c = value.at(0);
+                    if (c.isLetter()) {
+                        Qt::Key key = (Qt::Key) (Qt::Key_A + (c.toLower().toAscii() - 'a'));
+                        entry->setShortcutKey(key);
+                    }
+                }
+            }
             if (!m_file->contains("ShowEntry")) {
                 entry->setShowEntry(true);
             } else {

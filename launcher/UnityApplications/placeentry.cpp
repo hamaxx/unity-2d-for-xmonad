@@ -21,7 +21,10 @@
 #include "place.h"
 #include "launchermenu.h"
 
+// libunity-2d
 #include <debug_p.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
 
 #include <QDBusMetaType>
 #include <QAction>
@@ -154,6 +157,7 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_position(0),
     m_sensitive(false),
     m_sections(NULL),
+    m_shortcutKey((Qt::Key) 0),
     m_showEntry(false),
     m_activeSection(-1),
     m_active(false),
@@ -354,6 +358,12 @@ PlaceEntry::searchHint() const
     return m_searchHint;
 }
 
+Qt::Key
+PlaceEntry::shortcutKey() const
+{
+    return m_shortcutKey;
+}
+
 bool
 PlaceEntry::showEntry() const
 {
@@ -549,6 +559,23 @@ PlaceEntry::setSearchHint(const QString& searchHint)
     if (m_searchHint != searchHint) {
         m_searchHint = searchHint;
         Q_EMIT searchHintChanged(m_searchHint);
+    }
+}
+
+void
+PlaceEntry::setShortcutKey(Qt::Key key)
+{
+    if (m_shortcutKey != key) {
+        if (m_shortcutKey != 0) {
+            Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(m_shortcutKey, Qt::MetaModifier);
+            disconnect(hotkey, SIGNAL(pressed()), this, SLOT(activate()));
+        }
+        m_shortcutKey = key;
+        if (m_shortcutKey != 0) {
+            Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(m_shortcutKey, Qt::MetaModifier);
+            connect(hotkey, SIGNAL(pressed()), SLOT(activate()));
+        }
+        Q_EMIT shortcutKeyChanged(m_shortcutKey);
     }
 }
 

@@ -83,6 +83,7 @@ class PlaceEntry : public LauncherItem
     Q_PROPERTY(bool showEntry READ showEntry WRITE setShowEntry NOTIFY showEntryChanged)
     Q_PROPERTY(int activeSection READ activeSection WRITE setActiveSection NOTIFY activeSectionChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(Qt::Key shortcutKey READ shortcutKey WRITE setShortcutKey NOTIFY shortcutKeyChanged)
     Q_PROPERTY(Place* place READ place)
 
     /* Entry rendering info */
@@ -126,6 +127,7 @@ public:
     DeeListModel* sections() const;
     QMap<QString, QVariant> hints() const;
     QString searchHint() const;
+    Qt::Key shortcutKey() const;
     bool showEntry() const;
     int activeSection() const;
     Place* place() const;
@@ -161,6 +163,7 @@ public:
     void setSections(DeeListModel*);
     void setHints(QMap<QString, QVariant>);
     void setSearchHint(const QString&);
+    void setShortcutKey(Qt::Key);
     void setShowEntry(bool);
     void setActiveSection(int);
     void setActive(bool);
@@ -198,6 +201,7 @@ Q_SIGNALS:
     void sectionsChanged();
     void hintsChanged();
     void searchHintChanged(QString);
+    void shortcutKeyChanged(Qt::Key);
     void showEntryChanged(bool);
     void activeSectionChanged();
     void activeChanged();
@@ -237,6 +241,7 @@ private:
        http://doc.trolltech.com/properties.html#requirements-for-declaring-properties). */
     QMap<QString, QVariant> m_hints;
     QString m_searchHint;
+    Qt::Key m_shortcutKey;
     bool m_showEntry;
     int m_activeSection;
     bool m_active;
