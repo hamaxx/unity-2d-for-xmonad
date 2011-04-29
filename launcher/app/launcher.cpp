@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     Unity2dApplication application(argc, argv);
+    QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
@@ -110,6 +111,7 @@ int main(int argc, char *argv[])
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView(&panel);
+    launcherView->setUseOpenGL(arguments.contains("-opengl"));
 
     /* FIXME: possible optimisations */
 //    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);

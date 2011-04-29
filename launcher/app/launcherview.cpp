@@ -58,7 +58,7 @@ static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.pl
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
 LauncherView::LauncherView(QWidget* parent) :
-    QDeclarativeView(parent),
+    Unity2DDeclarativeView(parent),
     m_superKeyPressed(false), m_superKeyHeld(false)
 {
     m_superKeyHoldTimer.setSingleShot(true);

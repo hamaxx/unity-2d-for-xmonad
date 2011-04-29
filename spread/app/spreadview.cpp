@@ -29,7 +29,7 @@
 
 #include "launcherclient.h"
 
-SpreadView::SpreadView() : QDeclarativeView()
+SpreadView::SpreadView() : Unity2DDeclarativeView()
 {
 }
 

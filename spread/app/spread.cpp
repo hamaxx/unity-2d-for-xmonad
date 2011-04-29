@@ -50,8 +50,10 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
+    QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
+    view.setUseOpenGL(arguments.contains("-opengl"));
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
