@@ -24,6 +24,7 @@ include_directories(
     ${QT_QTDECLARATIVE_INCLUDE_DIR}
     ${QT_QTXML_INCLUDE_DIR}
     ${QT_QTGUI_INCLUDE_DIR}
+    ${QT_QTOPENGL_INCLUDE_DIR}
     ${X11_INCLUDE_DIR}
     )
 
