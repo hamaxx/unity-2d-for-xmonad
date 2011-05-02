@@ -47,7 +47,7 @@ static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
 DashDeclarativeView::DashDeclarativeView()
-: QDeclarativeView()
+: Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
 , m_mode(HiddenMode)
 , m_expanded(false)

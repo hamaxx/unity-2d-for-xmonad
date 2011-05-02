@@ -27,10 +27,12 @@
 
 #include "gconfitem-qml-wrapper.h"
 
+#include <unity2ddeclarativeview.h>
+
 class DeclarativeDragDropEvent;
 class LauncherDBus;
 
-class LauncherView : public QDeclarativeView
+class LauncherView : public Unity2DDeclarativeView
 {
     Q_OBJECT
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)

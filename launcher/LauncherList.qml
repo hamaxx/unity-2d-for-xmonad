@@ -107,7 +107,7 @@ AutoScrollingListView {
             if (item.toString().indexOf("PlaceEntry") == 0) {
                 return String.fromCharCode(item.shortcutKey).toLowerCase()
             } else {
-                return (index + 1)
+                return (index + 1) % 10
             }
         }
 
