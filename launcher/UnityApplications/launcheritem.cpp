@@ -20,7 +20,13 @@
 #include "launcheritem.h"
 #include "launchermenu.h"
 
-LauncherItem::LauncherItem(QObject* parent): QObject(parent)
+// libunity-2d
+#include <hotkey.h>
+#include <hotkeymonitor.h>
+
+LauncherItem::LauncherItem(QObject* parent)
+    : QObject(parent)
+    , m_shortcutKey((Qt::Key) 0)
 {
     m_menu = new LauncherContextualMenu;
     m_menu->setLauncherItem(this);
@@ -29,6 +35,29 @@ LauncherItem::LauncherItem(QObject* parent): QObject(parent)
 LauncherItem::~LauncherItem()
 {
     delete m_menu;
+}
+
+Qt::Key
+LauncherItem::shortcutKey() const
+{
+    return m_shortcutKey;
+}
+
+void
+LauncherItem::setShortcutKey(Qt::Key key)
+{
+    if (m_shortcutKey != key) {
+        if (m_shortcutKey != 0) {
+            Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(m_shortcutKey, Qt::MetaModifier);
+            disconnect(hotkey, SIGNAL(pressed()), this, SLOT(activate()));
+        }
+        m_shortcutKey = key;
+        if (m_shortcutKey != 0) {
+            Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(m_shortcutKey, Qt::MetaModifier);
+            connect(hotkey, SIGNAL(pressed()), SLOT(activate()));
+        }
+        Q_EMIT shortcutKeyChanged(m_shortcutKey);
+    }
 }
 
 QObject*
