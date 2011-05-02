@@ -100,7 +100,7 @@ AutoScrollingListView {
 
         shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
                          index <= 9 && launcherView.superKeyHeld
-        shortcutText: index + 1
+        shortcutText: (index + 1) % 10
 
         isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
         dragPosition: reorder.listCoordinates.y - list.contentY
