@@ -20,10 +20,10 @@
 #ifndef TRASH_H
 #define TRASH_H
 
-#include <gio/gio.h>
 #include <libwnck/libwnck.h>
 
 #include "launcheritem.h"
+#include "launcherutility.h"
 
 #include <QAbstractListModel>
 #include <QMetaType>
@@ -51,9 +51,6 @@ public:
     Q_INVOKABLE virtual void createMenuActions();
     Q_INVOKABLE virtual void launchNewInstance();
 
-    static void showWindow(WnckWindow* window);
-    static void moveViewportToWindow(WnckWindow* window);
-
 public Q_SLOTS:
     /* Custom implementation of drag’n’drop handling. Dropping files on the
        trash will… move them to the trash! */
@@ -70,7 +67,7 @@ private:
     int count() const;
 
     static void recursive_delete(GFile* dir);
-
+	
     GFile* m_trash;
 };
 

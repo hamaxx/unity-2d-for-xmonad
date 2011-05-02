@@ -104,8 +104,6 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
 
-    static void showWindow(WnckWindow* window);
-    static void moveViewportToWindow(WnckWindow* window);
     void updateOverlaysState(QMap<QString, QVariant> properties);
 
 Q_SIGNALS:
