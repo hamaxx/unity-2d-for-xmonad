@@ -33,6 +33,7 @@
 Trash::Trash()
 {
     m_trash = g_file_new_for_uri(TRASH_URI);
+    setShortcutKey(Qt::Key_T);
 }
 
 Trash::Trash(const Trash& other)
@@ -41,6 +42,7 @@ Trash::Trash(const Trash& other)
 
 Trash::~Trash()
 {
+    setShortcutKey((Qt::Key) 0);
     g_object_unref(m_trash);
 }
 
