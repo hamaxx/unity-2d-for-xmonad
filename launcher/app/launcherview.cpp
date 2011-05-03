@@ -65,7 +65,6 @@ LauncherView::LauncherView(QWidget* parent) :
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
-    connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(changeKeyboardShortcutsState(bool)));
 
     m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
     connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
@@ -82,6 +81,12 @@ LauncherView::LauncherView(QWidget* parent) :
     /* Super+s activated the workspaces switcher. */
     Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
     connect(superS, SIGNAL(pressed()), SLOT(showWorkspaceSwitcher()));
+
+    /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
+    for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
+        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
+    }
 }
 
 void
@@ -168,43 +173,18 @@ LauncherView::updateSuperKeyHoldState()
 }
 
 void
-LauncherView::changeKeyboardShortcutsState(bool enabled)
+LauncherView::forwardNumericHotkey()
 {
-    /* We are going to connect 10 Hotkeys, but to make things simpler on the QML
-       side we want to have only one signal with the number of the item that needs to
-       be activated in response to the hotkey press.
-       So we connect all of them to a single slot where we emit a single signal with
-       an index based on which Hotkey was the sender. */
-    Qt::Key key = Qt::Key_0;
-    while (key <= Qt::Key_9) {
-        Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
-
-        if (enabled) {
-            QObject::connect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        } else {
-            QObject::disconnect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        }
-        key = (Qt::Key) (key + 1);
-    }
-}
-
-void
-LauncherView::forwardHotkey()
-{
-    Hotkey *hotkey = qobject_cast<Hotkey*>(sender());
+    Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey != NULL) {
         /* Shortcuts from 1 to 9 should activate the items with index
-           from 0 to 8. Shortcut for 0 should activate item with index 10.
+           from 0 to 8. Shortcut for 0 should activate item with index 9.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
-        if (hotkey->key() < Qt::Key_0 || hotkey->key() > Qt::Key_9) {
-            return;
-        }
-        int itemIndex = hotkey->key() - Qt::Key_0;
-        itemIndex = (itemIndex == 0) ? 9 : itemIndex - 1;
-
-        if (itemIndex >= 0 && itemIndex <= 10) {
-            Q_EMIT keyboardShortcutPressed(itemIndex);
+        Qt::Key key = hotkey->key();
+        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
+            int index = (key - Qt::Key_0 + 9) % 10;
+            Q_EMIT keyboardShortcutPressed(index);
         }
     }
 }
