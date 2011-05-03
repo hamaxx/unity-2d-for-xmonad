@@ -78,7 +78,7 @@ LauncherView::LauncherView(QWidget* parent) :
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
 
-    /* Super+s activated the workspaces switcher. */
+    /* Super+s activates the workspaces switcher. */
     Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
     connect(superS, SIGNAL(pressed()), SLOT(showWorkspaceSwitcher()));
 
