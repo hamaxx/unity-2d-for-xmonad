@@ -114,6 +114,8 @@ Place::setFileName(const QString &file)
                         Qt::Key key = (Qt::Key) (Qt::Key_A + (c.toLower().toAscii() - 'a'));
                         entry->setShortcutKey(key);
                     }
+                } else {
+                    UQ_WARNING << "Invalid shorcut key (should be one single character):" << value;
                 }
             }
             if (!m_file->contains("ShowEntry")) {
