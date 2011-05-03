@@ -42,7 +42,6 @@ Trash::Trash(const Trash& other)
 
 Trash::~Trash()
 {
-    setShortcutKey((Qt::Key) 0);
     g_object_unref(m_trash);
 }
 
