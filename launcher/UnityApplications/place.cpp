@@ -106,6 +106,21 @@ Place::setFileName(const QString &file)
             entry->setIcon(m_file->value("Icon").toString());
             entry->setSearchHint(u2dTr(m_file->value("SearchHint").toString().toUtf8().constData(),
                                  gettextDomain.toUtf8().constData()));
+            if (m_file->contains("Shortcut")) {
+                QString value = m_file->value("Shortcut").toString();
+                if (value.size() == 1) {
+                    Qt::Key key = (Qt::Key) value.at(0).toUpper().unicode();
+                    entry->setShortcutKey(key);
+                } else {
+                    /* Note: some text editors insert the decomposed form of
+                       e.g. accented characters (e.g. 0xc3 + 0xa9 for "É"
+                       instead of the canonical form 0xc9). Unfortunately Qt
+                       doesn’t seem to be able to perform composition, so in
+                       such cases setting the shortcut key fails. See
+                       http://www.unicode.org/reports/tr15/ for details. */
+                    UQ_WARNING << "Invalid shorcut key (should be one single character):" << value;
+                }
+            }
             if (!m_file->contains("ShowEntry")) {
                 entry->setShowEntry(true);
             } else {

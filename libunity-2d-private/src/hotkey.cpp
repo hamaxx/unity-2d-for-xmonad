@@ -72,13 +72,16 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     QString keyString = QKeySequence(key).toString();
     KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
     if (keysym == NoSymbol) {
-        UQ_WARNING << "Could not convert" << keyString << "to an x11 keysym";
-    } else {
-        m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
-        if (m_x11key == 0) {
-            UQ_WARNING << "Could not get keycode for keysym" << keysym
-                       << "(" << keyString << ")";
-        }
+        /* XStringToKeysym doesn’t work well with exotic characters (such as
+          'É'). Note that this fallback code path looks much simpler but doesn’t
+          work for special keys such as the function keys (e.g. F1), which is
+          why the translation with XStringToKeysym is attempted first. */
+        keysym = (ushort) key;
+    }
+    m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
+    if (m_x11key == 0) {
+        UQ_WARNING << "Could not get keycode for keysym" << keysym
+                   << "(" << keyString << ")";
     }
 }
 
