@@ -18,8 +18,18 @@
    compilation errors. */
 #include <gdk/gdk.h>
 
-/* Required otherwise using wnck_set_client_type breaks linking with error:
-   undefined reference to `wnck_set_client_type(WnckClientType)'
+/* Note regarding the use of wnck: it is critically important that the client
+   type be set to pager because wnck will pass that type over to the window
+   manager through XEvents.
+   Window managers tend to respect orders from pagers to the letter by for
+   example bypassing focus stealing prevention. Compiz does exactly that in
+   src/event.c:handleEvent(…) in the ClientMessage case (line 1702). Metacity
+   has a similar policy in src/core/window.c:window_activate(…) (line 2951).
+
+   The client type has already been set in Unity2dPlugin::initializeEngine(…),
+   and the corresponding shared library (libunity-2d-private-qml.so) is loaded
+   via QML’s import statement (`import Unity2d 1.0`), so there is no need to
+   set it again here.
 */
 extern "C" {
 #include <libwnck/libwnck.h>
@@ -37,6 +47,7 @@ extern "C" {
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 // Qt
 #include <Qt>
@@ -53,6 +64,8 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
+const char* SHORTCUT_NICK_PROPERTY = "nick";
+
 LauncherApplication::LauncherApplication()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
@@ -63,22 +76,6 @@ LauncherApplication::LauncherApplication()
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
 {
-    /* Make sure wnck_set_client_type is called only once */
-    static bool client_type_set = false;
-    if(!client_type_set) {
-        /* Critically important to set the client type to pager because wnck
-           will pass that type over to the window manager through XEvents.
-           Window managers tend to respect orders from pagers to the letter by
-           for example bypassing focus stealing prevention.
-           Compiz does exactly that in src/event.c:handleEvent(...) in the
-           ClientMessage case (line 1702).
-           Metacity has a similar policy in src/core/window.c:window_activate(...)
-           (line 2951).
-        */
-        wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
-        client_type_set = true;
-    }
-
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
@@ -297,6 +294,10 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
         }
         Q_EMIT executableChanged(executable());
     }
+
+    /* Update the list of static shortcuts
+       (quicklist entries defined in the desktop file). */
+    m_staticShortcuts.reset(indicator_desktop_shortcuts_new(newDesktopFile.toUtf8().constData(), "Unity"));
 
     monitorDesktopFile(newDesktopFile);
 }
@@ -637,7 +638,7 @@ LauncherApplication::launch()
     g_app_info_launch(m_appInfo.data(), NULL, (GAppLaunchContext*)context.data(), &error);
 
     if (error != NULL) {
-        qWarning() << "Failed to launch application:" << error->message;
+        UQ_WARNING << "Failed to launch application:" << error->message;
         g_error_free(error);
         return false;
     }
@@ -801,7 +802,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
                 }
             }
         } else {
-            qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+            UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
         }
     }
 }
@@ -868,9 +869,27 @@ LauncherApplication::createMenuActions()
 void
 LauncherApplication::createStaticMenuActions()
 {
-    m_menu->addSeparator();
     QList<QAction*> actions;
 
+    /* Custom menu actions from the desktop file. */
+    if (!m_staticShortcuts.isNull()) {
+        const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts.data());
+        if (nicks) {
+            int i = 0;
+            while (((gpointer*) nicks)[i]) {
+                const gchar* nick = nicks[i];
+                QAction* action = new QAction(m_menu);
+                action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
+                action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
+                actions.append(action);
+                connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
+                ++i;
+            }
+        }
+    }
+    m_menu->insertActions(m_menu->actions().first(), actions);
+
+    actions.clear();
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
@@ -936,6 +955,15 @@ LauncherApplication::onIndicatorMenuUpdated()
         /* All indicator menus have been updated. */
         createStaticMenuActions();
     }
+}
+
+void
+LauncherApplication::onStaticShortcutTriggered()
+{
+    QAction* action = static_cast<QAction*>(sender());
+    QString nick = action->property(SHORTCUT_NICK_PROPERTY).toString();
+    m_menu->hide();
+    indicator_desktop_shortcuts_nick_exec(m_staticShortcuts.data(), nick.toUtf8().constData());
 }
 
 void

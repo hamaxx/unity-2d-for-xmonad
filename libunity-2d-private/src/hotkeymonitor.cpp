@@ -30,13 +30,15 @@
 #include <QX11Info>
 #include <QAbstractEventDispatcher>
 
+#include <debug_p.h>
+
 HotkeyMonitor::HotkeyMonitor(QObject* parent)
     : QObject(parent)
 {
     int opcode, baseError, baseEvent;
     if (XkbQueryExtension(QX11Info::display(), &opcode, &baseEvent,
                           &baseError, NULL, NULL) == False) {
-        qWarning() << "Failed to initialize Xkb extension. CapsLock and NumLock"
+        UQ_WARNING << "Failed to initialize Xkb extension. CapsLock and NumLock"
                       "active will prevent shortcuts from working.";
     } else {
         /* With this call we ignore CapsLock and NumLock when grabbing keys. */

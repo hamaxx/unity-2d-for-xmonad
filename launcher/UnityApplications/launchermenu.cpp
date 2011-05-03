@@ -190,17 +190,20 @@ LauncherContextualMenu::setFolded(int folded)
     }
 
     if (folded) {
-        /* Remove all actions but the first one (the title). */
-        while (actions().size() > 1) {
-            QAction* action = actions().last();
-            removeAction(action);
-            if (action->parent() == this) {
-                /* Delete the action only if we "own" it,
-                   otherwise let its parent take care of it. */
-                delete action;
+        /* Remove all actions but the title. */
+        for (int i = actions().size(); i > 0; --i) {
+            QAction* action = actions().at(i - 1);
+            if (action != m_titleAction) {
+                removeAction(action);
+                if (action->parent() == this) {
+                    /* Delete the action only if we "own" it,
+                       otherwise let its parent take care of it. */
+                    delete action;
+                }
             }
         }
     } else {
+        insertSeparator(m_titleAction);
         addSeparator();
         m_launcherItem->createMenuActions();
 

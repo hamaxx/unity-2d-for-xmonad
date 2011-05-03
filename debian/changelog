@@ -1,3 +1,42 @@
+unity-2d (3.8.4.1-0ubuntu1) natty; urgency=low
+
+  * (LP: #766078) [spread] Windows and background are not positioned correctly
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 19 Apr 2011 20:01:06 +0200
+
+unity-2d (3.8.4-0ubuntu1) natty; urgency=low
+
+  * New upstream bugfix release
+    * (LP: #764690)  [launcher] launcher won't fully paint, corrupted view
+    * (LP: #740387)  graphical corruption with multiple drivers and classic desktop
+    * (LP: #753269)  [spread] crash when sending applications to other workspaces
+    * (LP: #755599)  [dash] Exiting the dash causes launcher and panel to disappear
+    * (LP: #760522)  [launcher] LibreOffice applications that are not favorite are all
+      matched with LibreOffice Impress
+    * (LP: #763116)  [launcher] Launcher doesn’t autohide after an application
+      requested attention
+    * (LP: #684471)  [dash] Default terminal PATH when opening it from the Applications
+      menu is / instead of $HOME
+    * (LP: #739454)  [launcher] nautilus windows are not matched with the home icon
+    * (LP: #741160)  [launcher] Launching nautilus changes the favorite’s icon
+    * (LP: #744970)  [launcher] item calling for attention needs to always be visible
+    * (LP: #751450)  [launcher] icon for workspace switcher incorrect (back to old pink
+      one)
+    * (LP: #753382)  [launcher] Synaptic favorite turns into software-properties
+    * (LP: #759189)  [dash] no singular/plural option for "See %1 more results"
+    * (LP: #759776)  [launcher] Looses track of open windows for synaptic and empathy
+    * (LP: #728927)  Unity Min,Max,Close buttons not available in Libreoffice
+    * (LP: #759191)  [launcher] most keyboard shortcuts don't activate properly the
+      first time/ever
+    * (LP: #760001)  [launcher] Super key shouldn't activate dash while spread is
+      (LP: #running
+    * (LP: #760233)  [launcher] critical warning from wnck
+    * (LP: #761661)  [spread] New WindowInfo objects should not be created while spread
+      is inactive
+    * (LP: #721121)  UIFe: Icon in Launcher should be home folder icon
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Tue, 19 Apr 2011 14:23:17 +0200
+
 unity-2d (3.8.2-0ubuntu1) natty; urgency=low
 
   [ Oliver Grawert ]

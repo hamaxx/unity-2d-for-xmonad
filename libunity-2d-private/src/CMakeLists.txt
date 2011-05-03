@@ -13,6 +13,7 @@ set(libunity-2d-private_SRCS
     unity2ddebug.cpp
     unity2dpanel.cpp
     unity2dtr.cpp
+    unity2ddeclarativeview.cpp
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
@@ -38,6 +39,7 @@ target_link_libraries(unity-2d-private
     ${QT_QTCORE_LIBRARIES}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
+    ${QT_QTOPENGL_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
     )

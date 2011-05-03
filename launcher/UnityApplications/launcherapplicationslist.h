@@ -55,6 +55,9 @@ public:
 public Q_SLOTS:
     void move(int from, int to);
 
+Q_SIGNALS:
+    void applicationBecameUrgent(int index);
+
 protected:
     bool x11EventFilter(XEvent* xevent);
 
@@ -97,6 +100,7 @@ private Q_SLOTS:
     void onBamfViewOpened(BamfView* bamf_view);
     void onApplicationStickyChanged(bool sticky);
     void onApplicationLaunchingChanged(bool launching);
+    void onApplicationUrgentChanged(bool urgent);
     void onRemoteEntryUpdated(QString applicationURI,
                               QMap<QString, QVariant> properties);
 };

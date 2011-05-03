@@ -15,12 +15,12 @@
  */
 
 #include <QX11Info>
-#include <QDebug>
 #include <QPixmap>
 #include <QPainter>
 #include <QImage>
 
 #include "windowimageprovider.h"
+#include <debug_p.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -109,16 +109,43 @@ QImage WindowImageProvider::requestImage(const QString &id,
     /* After doing this, split the rest of the id on the character "|". The first
        part is the window ID of the decorations, the latter of the actual content. */
     atPos = windowIds.indexOf('|');
-    QString frameId = (atPos == -1) ? windowIds : windowIds.left(atPos);
-    QString contentId = (atPos == -1) ? windowIds : windowIds.mid(atPos + 1);
+    Window frameId = ((atPos == -1) ? windowIds : windowIds.left(atPos)).toULong();
+    Window contentId = ((atPos == -1) ? windowIds : windowIds.mid(atPos + 1)).toULong();
 
-    QPixmap shot;
+    QImage image;
+    QPixmap pixmap = getWindowPixmap(frameId, contentId);
+    if (!pixmap.isNull()) {
+        image = convertWindowPixmap(pixmap, frameId);
+        if (image.isNull()) {
+            /* This means that the window got unmapped while we were converting it to
+               an image. Try again so that we will pick up the pixmap captured by
+               metacity instead. */
+            pixmap = getWindowPixmap(frameId, contentId);
+            if (!pixmap.isNull()) {
+                image = convertWindowPixmap(pixmap, frameId);
+            }
+        }
+    }
+
+    if (!image.isNull()) {
+        if (requestedSize.isValid()) {
+            image = image.scaled(requestedSize);
+        }
+        size->setWidth(image.width());
+        size->setHeight(image.height());
+    }
+
+    return image;
+}
+
+QPixmap WindowImageProvider::getWindowPixmap(Window frameWindowId,
+                                             Window contentWindowId)
+{
     XWindowAttributes attr;
-    Window frame = (Window) frameId.toULong();
 
-    XGetWindowAttributes(QX11Info::display(), frame, &attr);
+    XGetWindowAttributes(QX11Info::display(), frameWindowId, &attr);
     if (attr.map_state == IsViewable) {
-        shot = QPixmap::fromX11Pixmap(frame);
+        return QPixmap::fromX11Pixmap(frameWindowId);
     } else {
         /* If the window is not viewable, grabbing the pixmap directly will fail.
            Therefore we try to retrieve the captured pixmap from the special metacity
@@ -127,20 +154,25 @@ QImage WindowImageProvider::requestImage(const QString &id,
            window including decorations.
         */
         XID pixmap;
-        Window content = (Window) contentId.toULong();
-        if (!tryGetWindowCapture(content, &pixmap)) {
-            return QImage();
-        }
-        else {
-            shot = QPixmap::fromX11Pixmap(pixmap);
+        if (!tryGetWindowCapture(contentWindowId, &pixmap)) {
+            return QPixmap();
+        } else {
+            return QPixmap::fromX11Pixmap(pixmap);
         }
     }
+}
 
-    if (shot.isNull()) {
-        return QImage();
-    }
-
-    QImage result;
+/* All the exception checks in this method are due to the fact that
+   the windowPixmap is an X11 Drawable tied to a window. When we called
+   this function the drawable was valid since the window was mapped, however
+   there's no guarantee it will stay that way.
+   All the operations we do here involve at some point converting the pixmap
+   into a QImage (since we use the rester paint engine). This conversion will
+   throw std::bad_alloc if the drawable is not valid, so we need to catch it.
+*/
+QImage WindowImageProvider::convertWindowPixmap(QPixmap windowPixmap,
+                                                Window frameWindowId)
+{
     if (m_x11supportsShape) {
         /* The borders of the window may be irregularly shaped.
            To capture this correctly we need to ask the Shape extension
@@ -150,34 +182,38 @@ QImage WindowImageProvider::requestImage(const QString &id,
         XRectangle *rectangles;
         int rectangle_count, rectangle_order;
         rectangles = XShapeGetRectangles (QX11Info::display(),
-                                          frame,
+                                          frameWindowId,
                                           ShapeBounding,
                                           &rectangle_count,
                                           &rectangle_order);
 
-        result = QImage(shot.size(), QImage::Format_ARGB32_Premultiplied);
+        QImage result(windowPixmap.size(), QImage::Format_ARGB32_Premultiplied);
         result.fill(Qt::transparent);
         QPainter painter(&result);
 
         for (int i = 0; i < rectangle_count; i++) {
             XRectangle r = rectangles[i];
-            painter.drawPixmap(QPointF(r.x, r.y), shot,
-                               QRectF(r.x, r.y, r.width, r.height));
+            try {
+                /* Since we're using the raster paint engine, this will internally
+                   call QX11PixmapData::toImage on windowPixmap to be able to
+                   draw it on the QImage */
+                painter.drawPixmap(QPointF(r.x, r.y), windowPixmap,
+                                   QRectF(r.x, r.y, r.width, r.height));
+            } catch (std::bad_alloc) {
+                return QImage();
+            }
         }
 
         painter.end();
         XFree(rectangles);
+        return result;
     } else {
-        result = shot.toImage();
+        try {
+            return windowPixmap.toImage();
+        } catch (std::bad_alloc) {
+            return QImage();
+        }
     }
-
-    if (requestedSize.isValid()) {
-        result = result.scaled(requestedSize);
-    }
-    size->setWidth(result.width());
-    size->setHeight(result.height());
-
-    return result;
 }
 
 /*! Tries to ask the X Composite extension (if supported) to redirect all
@@ -200,15 +236,15 @@ void WindowImageProvider::activateComposite()
 
         if (major > 0 || minor >= 2) {
             compositeSupport = true;
-            qDebug().nospace() << "Server supports the Composite extension (ver "
+            (UQ_DEBUG).nospace() << "Server supports the Composite extension (ver "
                     << major << "." << minor << ")";
         }
         else {
-            qDebug().nospace() << "Server supports the Composite extension, but "
+            (UQ_DEBUG).nospace() << "Server supports the Composite extension, but "
                                   "version is < 0.2 (ver " << major << "." << minor << ")";
         }
     } else {
-        qDebug() << "Server doesn't support the Composite extension.";
+        UQ_DEBUG << "Server doesn't support the Composite extension.";
     }
 
     if (compositeSupport) {

@@ -23,7 +23,7 @@
 #include "keyboardmodifiersmonitor.h"
 
 // Local
-#include "debug_p.h"
+#include <debug_p.h>
 
 // Qt
 #include <QX11Info>
@@ -62,7 +62,7 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject *parent)
     Unity2dApplication* application;
     application = qobject_cast<Unity2dApplication*>(QApplication::instance());
     if (application == NULL) {
-        qWarning() << "The application is not an Unity2dApplication."
+        UQ_WARNING << "The application is not an Unity2dApplication."
                       "Modifiers will not be monitored.";
     } else {
         Unity2dApplication::instance()->installX11EventFilter(this);

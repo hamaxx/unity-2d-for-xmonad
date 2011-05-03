@@ -21,6 +21,8 @@
 #include <QImage>
 #include <QSize>
 
+typedef unsigned long Window;
+
 class WindowImageProvider : public QDeclarativeImageProvider
 {
 public:
@@ -30,6 +32,9 @@ public:
     static void activateComposite();
 
 private:
+    QPixmap getWindowPixmap(Window frameWindowId, Window contentWindowId);
+    QImage convertWindowPixmap(QPixmap windowPixmap, Window frameWindowId);
+
     bool m_x11supportsShape;
 };
 

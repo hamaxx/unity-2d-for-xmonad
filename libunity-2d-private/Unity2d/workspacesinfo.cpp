@@ -1,6 +1,7 @@
 #include "workspacesinfo.h"
 #include "screeninfo.h"
 #include "signalwaiter.h"
+#include <debug_p.h>
 
 #undef signals
 extern "C" {
@@ -13,7 +14,6 @@ extern "C" {
 
 #include <QAbstractEventDispatcher>
 #include <QX11Info>
-#include <QDebug>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -185,7 +185,7 @@ bool WorkspacesInfo::changeCurrent(int newWorkspace)
     WnckScreen *screen = wnck_screen_get_default();
     WnckWorkspace *workspace = wnck_screen_get_workspace(screen, newWorkspace);
     if (workspace == NULL) {
-        qWarning() << "Requested activation workspace" << newWorkspace << " but it does not exist.";
+        UQ_WARNING << "Requested activation workspace" << newWorkspace << " but it does not exist.";
         return false;
     }
 

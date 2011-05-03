@@ -20,6 +20,9 @@
 #include <gio/gdesktopappinfo.h>
 #include <libwnck/libwnck.h>
 
+// libindicator
+#include <libindicator/indicator-desktop-shortcuts.h>
+
 #include "launcheritem.h"
 
 // libunity-2d
@@ -47,6 +50,7 @@ class QFileSystemWatcher;
 typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
 typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
 typedef GScopedPointer<SnStartupSequence, sn_startup_sequence_unref> SnStartupSequencePointer;
+typedef GObjectScopedPointer<IndicatorDesktopShortcuts> IndicatorDesktopShortcutsPointer;
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
@@ -135,6 +139,7 @@ private Q_SLOTS:
     void show();
 
     /* Contextual menu callbacks */
+    void onStaticShortcutTriggered();
     void onKeepTriggered();
     void onQuitTriggered();
 
@@ -175,6 +180,8 @@ private:
     template<typename T>
     bool updateOverlayState(QMap<QString, QVariant> properties,
                             QString propertyName, T* member);
+
+    IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

@@ -23,7 +23,9 @@
 #include <QDeclarativeView>
 #include <QEvent>
 
-class SpreadView : public QDeclarativeView
+#include <unity2ddeclarativeview.h>
+
+class SpreadView : public Unity2DDeclarativeView
 {
     Q_OBJECT
 

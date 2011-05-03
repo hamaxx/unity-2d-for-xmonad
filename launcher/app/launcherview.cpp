@@ -31,6 +31,7 @@
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusPendingCall>
 #include <QtDBus/QDBusReply>
+#include <QtDBus/QDBusConnectionInterface>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -39,6 +40,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
+#include <debug_p.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -51,11 +53,12 @@ static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
 
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
+static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
 LauncherView::LauncherView(QWidget* parent) :
-    QDeclarativeView(parent),
+    Unity2DDeclarativeView(parent),
     m_superKeyPressed(false), m_superKeyHeld(false)
 {
     m_superKeyHoldTimer.setSingleShot(true);
@@ -210,15 +213,10 @@ void
 LauncherView::toggleDash()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (!dashInterface.isValid()) {
-        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
-                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        return;
-    }
 
     QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
     if (!dashActiveResult.isValid()) {
-        qWarning() << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+        UQ_WARNING << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                    << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         return;
     }
@@ -226,10 +224,29 @@ LauncherView::toggleDash()
     bool dashActive = dashActiveResult.toBool();
     if (dashActive) {
         if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
-            qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+            UQ_WARNING << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                        << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         }
     } else {
+        /* Check if the spread is active before activating the dash.
+           We need to do this since the spread can't prevent the launcher from
+           monitoring the super key and therefore getting to this point if
+           it's tapped. */
+
+        /* Check if the spread is present on DBUS first, as we don't want to have DBUS
+           activate it if it's not running yet */
+        QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+        QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
+        if (reply.isValid() && reply.value() == true) {
+            QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
+                                           SPREAD_DBUS_INTERFACE);
+
+            QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
+            if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
+                return;
+            }
+        }
+
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
     }
 }
@@ -298,7 +315,7 @@ LauncherView::getColorsFromIcon(QUrl source, QSize size) const
     // FIXME: we should find a way to avoid reloading the icon
     QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
     if (icon.width() == 0 || icon.height() == 0) {
-        qWarning() << "Unable to load icon in getColorsFromIcon from" << source;
+        UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
         return colors;
     }
 
@@ -340,12 +357,6 @@ void
 LauncherView::showCommandsPlace()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (!dashInterface.isValid()) {
-        qWarning() << "Can't access the dash via DBUS on" << DASH_DBUS_SERVICE
-                   << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        return;
-    }
-
     dashInterface.asyncCall("activatePlaceEntry",
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
@@ -374,7 +385,7 @@ LauncherView::showWorkspaceSwitcher()
                 spreadInterface.asyncCall("ShowAllWorkspaces", QString());
             }
         } else {
-            qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
+            UQ_WARNING << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
         }
     }
 }

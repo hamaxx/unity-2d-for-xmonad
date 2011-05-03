@@ -83,7 +83,16 @@ AbstractButton {
         TextCustom {
             id: label
 
-            text: groupHeader.folded ? u2d.tr("See %1 more results").arg(availableCount) : u2d.tr("See fewer results")
+            text: if(groupHeader.folded) {
+                      if(availableCount == 1) {
+                          return u2d.tr("See one more result")
+                      } else {
+                          return u2d.tr("See %1 more results").arg(availableCount)
+                      }
+                  } else {
+                      return u2d.tr("See fewer results")
+                  }
+
             anchors.left: parent.left
             anchors.baseline: parent.baseline
         }

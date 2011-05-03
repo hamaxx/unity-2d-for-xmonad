@@ -21,14 +21,14 @@
 
 #include "config.h"
 
-#include <Qt>
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <QDebug>
+#include <Qt>
 #include <QX11Info>
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 Workspaces::Workspaces()
 {
@@ -75,7 +75,7 @@ Workspaces::name() const
 QString
 Workspaces::icon() const
 {
-    return QString("workspace-switcher");
+    return QString("unity-icon-theme/workspace-switcher");
 }
 
 bool
@@ -105,7 +105,7 @@ Workspaces::activate()
                 spread.asyncCall("ShowAllWorkspaces", QString());
             }
         } else {
-            qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+            UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
         }
     }
 }

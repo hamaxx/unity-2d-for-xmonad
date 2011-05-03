@@ -83,7 +83,7 @@ Item {
         height: screen.geometry.height
 
         smooth: true
-        x: - screen.availableGeometry.x
+        x: - launcherMaximumWidth
         y: - screen.availableGeometry.y
 
         /* Possible modes are:

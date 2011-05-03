@@ -98,9 +98,16 @@ AutoScrollingListView {
         emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
         emblemVisible: (noOverlays) ? false : item.emblemVisible
 
-        shortcutVisible: item.toString().indexOf("LauncherApplication") == 0 &&
-                         index <= 9 && launcherView.superKeyHeld
-        shortcutText: index + 1
+        shortcutVisible: launcherView.superKeyHeld &&
+                         ((item.toString().indexOf("LauncherApplication") == 0 && index <= 9) ||
+                          item.shortcutKey != 0)
+        shortcutText: {
+            if (item.toString().indexOf("LauncherApplication") == 0) {
+                return (index + 1) % 10
+            } else {
+                return String.fromCharCode(item.shortcutKey).toLowerCase()
+            }
+        }
 
         isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
         dragPosition: reorder.listCoordinates.y - list.contentY
@@ -270,9 +277,19 @@ AutoScrollingListView {
             target: urgentAnimation
             onRunningChanged: {
                 if (urgentAnimation.running) {
-                    visibilityController.beginForceVisible();
+                    visibilityController.beginForceVisible()
                 } else {
-                    visibilityController.endForceVisible();
+                    visibilityController.endForceVisible()
+                }
+            }
+            Component.onCompleted: {
+                if (urgentAnimation.running) {
+                    visibilityController.beginForceVisible()
+                }
+            }
+            Component.onDestruction: {
+                if (urgentAnimation.running) {
+                    visibilityController.endForceVisible()
                 }
             }
         }

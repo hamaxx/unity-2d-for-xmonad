@@ -26,6 +26,7 @@
 
 #include "spreadview.h"
 #include "spreadcontrol.h"
+#include "launcherclient.h"
 
 #include <unity2ddebug.h>
 
@@ -49,8 +50,10 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     QApplication application(argc, argv);
+    QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
+    view.setUseOpenGL(arguments.contains("-opengl"));
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -87,6 +90,8 @@ int main(int argc, char *argv[])
     control.connectToBus();
     control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(setIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
+
+    view.rootContext()->setContextProperty("launcherMaximumWidth", LauncherClient::MaximumWidth);
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);

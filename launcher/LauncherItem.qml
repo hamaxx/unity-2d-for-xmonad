@@ -157,6 +157,17 @@ DropItem {
             }
         }
 
+        MouseArea {
+            id: mouse
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MidButton
+
+            onClicked: item.clicked(mouse)
+            onEntered: item.entered()
+            onExited: item.exited()
+        }
+
         /* This is the for centering the actual tile in the launcher */
         Item {
             id: tile
@@ -367,17 +378,6 @@ DropItem {
                     NumberAnimation { target: tile; property: "rotation"; to: -15; duration: 150 }
                 }
                 NumberAnimation { target: tile; property: "rotation"; to: 0; duration: 75 }
-            }
-
-            MouseArea {
-                id: mouse
-                anchors.fill: parent
-
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MidButton
-                onClicked: item.clicked(mouse)
-                onEntered: item.entered()
-                onExited: item.exited()
             }
         }
 
