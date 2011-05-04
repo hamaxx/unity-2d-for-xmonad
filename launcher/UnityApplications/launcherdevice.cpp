@@ -20,6 +20,7 @@
 #include "launcherdevice.h"
 #include "launchermenu.h"
 
+#include <gscopedpointer.h>
 #include "config.h"
 
 #include <QDebug>
@@ -93,7 +94,15 @@ LauncherDevice::name() const
 QString
 LauncherDevice::icon() const
 {
-    return QString(unity2dDirectory() + "/launcher/artwork/devices.png");
+    if (m_volume != NULL) {
+        GObjectPointer icon((GObject*)g_volume_get_icon(m_volume));
+        if (!icon.isNull()) {
+            GCharPointer iconName(g_icon_to_string((GIcon*)icon.data()));
+            return QString::fromUtf8(iconName.data());
+        }
+    }
+
+    return QString();
 }
 
 bool
