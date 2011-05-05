@@ -40,7 +40,7 @@ RendererGrid {
 
             DragItem {
                 anchors.fill: parent
-                url: uri
+                url: decodeURIComponent(uri)
                 delegate: Image {
                     source: icon.source
                     width: icon.width
