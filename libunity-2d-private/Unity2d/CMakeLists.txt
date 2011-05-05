@@ -15,6 +15,7 @@ set(unity-2d-private-qml_SRCS
     cacheeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp
+    dragitem.cpp
     dropitem.cpp
     )
 
@@ -27,6 +28,7 @@ set(unity-2d-private-qml_MOC_HDRS
     cacheeffect.h
     workspacesinfo.h
     signalwaiter.h
+    dragitem.h
     dropitem.h
     )
 

@@ -17,6 +17,7 @@
  */
 
 import Qt 4.7
+import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
     cellWidth: 136
@@ -35,6 +36,20 @@ RendererGrid {
             onClicked: {
                 dashView.active = false
                 placeEntryModel.place.activate(decodeURIComponent(uri))
+            }
+
+            DragItem {
+                anchors.fill: parent
+                url: uri
+                delegate: Image {
+                    source: icon.source
+                    width: icon.width
+                    height: icon.height
+                    fillMode: icon.fillMode
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    asynchronous: true
+                }
             }
 
             Image {
