@@ -50,7 +50,7 @@ Item {
     }
 
     /* Set to true if shortcut buttons are visible */
-    property bool shortcutsActive: false
+    property bool shortcutsActive: true
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.entrySearchQuery != ""
