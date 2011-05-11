@@ -63,6 +63,9 @@ DropItem {
             height: (tileSize + itemPadding) * count
             width: parent.width
             itemPadding: 0
+            /* Ensure all delegates are cached in order to improve smoothness of
+               scrolling on very low end platforms */
+            cacheBuffer: 10000
 
             model: ListAggregatorModel {
                 id: shelfItems
