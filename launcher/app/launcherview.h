@@ -57,11 +57,10 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
-    void forwardHotkey();
+    void forwardNumericHotkey();
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void toggleDash();
-    void changeKeyboardShortcutsState(bool enabled);
     void showCommandsPlace();
     void showWorkspaceSwitcher();
 
