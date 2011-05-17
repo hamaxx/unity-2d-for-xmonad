@@ -78,10 +78,6 @@ LauncherView::LauncherView(QWidget* parent) :
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
 
-    /* Super+s activates the workspaces switcher. */
-    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-    connect(superS, SIGNAL(pressed()), SLOT(showWorkspaceSwitcher()));
-
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
@@ -341,22 +337,3 @@ LauncherView::showCommandsPlace()
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
 
-void
-LauncherView::showWorkspaceSwitcher()
-{
-    QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
-
-    /* Here we only show the spread, if it's hidden.
-       However on Super+s the spread should exit if it's already running.
-       That is done directly in spread/Workspaces.qml because the spread
-       fully grabs the keyboard, so it's the only place where Super+s can
-       be handled while the spread is active */
-    QDBusReply<bool> isShown = spreadInterface.call("IsShown");
-    if (isShown.isValid()) {
-        if (isShown.value() == false) {
-            spreadInterface.asyncCall("ShowAllWorkspaces", QString());
-        }
-    } else {
-        UQ_WARNING << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
-    }
-}
