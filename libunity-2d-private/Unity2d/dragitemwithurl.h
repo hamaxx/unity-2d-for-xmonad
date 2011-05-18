@@ -32,6 +32,8 @@ class DeclarativeDragItemWithUrl : public DeclarativeDragItem
 {
     Q_OBJECT
 
+    /* The URL cannot be a QUrl due to the malformed URIs returned by the place
+    backends (see https://bugs.launchpad.net/unity-place-applications/+bug/784478). */
     Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
 
 public:
