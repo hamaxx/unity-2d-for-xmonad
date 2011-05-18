@@ -849,6 +849,10 @@ void
 LauncherApplication::createDynamicMenuActions()
 {
     if (!m_dynamicQuicklistImporter.isNull()) {
+        /* FIXME: the menu is only partially updated while visible: stale
+           actions will correctly be removed from the menu, but new actions
+           will not be added until the menu is closed and opened again.
+           This is an acceptable limitation for now. */
         QList<QAction*> actions = m_dynamicQuicklistImporter->menu()->actions();
         Q_FOREACH(QAction* action, actions) {
             if (action->isSeparator()) {
