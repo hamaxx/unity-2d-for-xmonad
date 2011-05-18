@@ -1,7 +1,7 @@
 #include "signalwaiter.h"
 
 #include <QTimer>
-#include <QDebug>
+#include <debug_p.h>
 
 SignalWaiter::SignalWaiter(QObject *parent) : QObject(parent)
 {
@@ -31,7 +31,7 @@ bool SignalWaiter::waitForSignal(const QObject *sender, const char *signal, int 
     */
     int result = m_loop.exec(QEventLoop::ExcludeUserInputEvents);
     if (result != 0) {
-        qWarning() << "Timeout expired while waiting for signal";
+        UQ_WARNING << "Timeout expired while waiting for signal";
     }
     return (result == 0);
 }

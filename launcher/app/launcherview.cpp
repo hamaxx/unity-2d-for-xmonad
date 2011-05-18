@@ -40,6 +40,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <dragdropevent.h>
+#include <debug_p.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -57,14 +58,13 @@ static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.pl
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
 
 LauncherView::LauncherView(QWidget* parent) :
-    QDeclarativeView(parent),
+    Unity2DDeclarativeView(parent),
     m_superKeyPressed(false), m_superKeyHeld(false)
 {
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
-    connect(this, SIGNAL(superKeyHeldChanged(bool)), SLOT(changeKeyboardShortcutsState(bool)));
 
     m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
     connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
@@ -78,9 +78,11 @@ LauncherView::LauncherView(QWidget* parent) :
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
 
-    /* Super+s activated the workspaces switcher. */
-    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-    connect(superS, SIGNAL(pressed()), SLOT(showWorkspaceSwitcher()));
+    /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
+    for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
+        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
+    }
 }
 
 void
@@ -167,43 +169,18 @@ LauncherView::updateSuperKeyHoldState()
 }
 
 void
-LauncherView::changeKeyboardShortcutsState(bool enabled)
+LauncherView::forwardNumericHotkey()
 {
-    /* We are going to connect 10 Hotkeys, but to make things simpler on the QML
-       side we want to have only one signal with the number of the item that needs to
-       be activated in response to the hotkey press.
-       So we connect all of them to a single slot where we emit a single signal with
-       an index based on which Hotkey was the sender. */
-    Qt::Key key = Qt::Key_0;
-    while (key <= Qt::Key_9) {
-        Hotkey *hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
-
-        if (enabled) {
-            QObject::connect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        } else {
-            QObject::disconnect(hotkey, SIGNAL(pressed()), this, SLOT(forwardHotkey()));
-        }
-        key = (Qt::Key) (key + 1);
-    }
-}
-
-void
-LauncherView::forwardHotkey()
-{
-    Hotkey *hotkey = qobject_cast<Hotkey*>(sender());
+    Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey != NULL) {
         /* Shortcuts from 1 to 9 should activate the items with index
-           from 0 to 8. Shortcut for 0 should activate item with index 10.
+           from 0 to 8. Shortcut for 0 should activate item with index 9.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
-        if (hotkey->key() < Qt::Key_0 || hotkey->key() > Qt::Key_9) {
-            return;
-        }
-        int itemIndex = hotkey->key() - Qt::Key_0;
-        itemIndex = (itemIndex == 0) ? 9 : itemIndex - 1;
-
-        if (itemIndex >= 0 && itemIndex <= 10) {
-            Q_EMIT keyboardShortcutPressed(itemIndex);
+        Qt::Key key = hotkey->key();
+        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
+            int index = (key - Qt::Key_0 + 9) % 10;
+            Q_EMIT keyboardShortcutPressed(index);
         }
     }
 }
@@ -215,7 +192,7 @@ LauncherView::toggleDash()
 
     QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
     if (!dashActiveResult.isValid()) {
-        qWarning() << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+        UQ_WARNING << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                    << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         return;
     }
@@ -223,7 +200,7 @@ LauncherView::toggleDash()
     bool dashActive = dashActiveResult.toBool();
     if (dashActive) {
         if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
-            qWarning() << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
+            UQ_WARNING << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
                        << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
         }
     } else {
@@ -314,7 +291,7 @@ LauncherView::getColorsFromIcon(QUrl source, QSize size) const
     // FIXME: we should find a way to avoid reloading the icon
     QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
     if (icon.width() == 0 || icon.height() == 0) {
-        qWarning() << "Unable to load icon in getColorsFromIcon from" << source;
+        UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
         return colors;
     }
 
@@ -360,22 +337,3 @@ LauncherView::showCommandsPlace()
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
 
-void
-LauncherView::showWorkspaceSwitcher()
-{
-    QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH, SPREAD_DBUS_INTERFACE);
-
-    /* Here we only show the spread, if it's hidden.
-       However on Super+s the spread should exit if it's already running.
-       That is done directly in spread/Workspaces.qml because the spread
-       fully grabs the keyboard, so it's the only place where Super+s can
-       be handled while the spread is active */
-    QDBusReply<bool> isShown = spreadInterface.call("IsShown");
-    if (isShown.isValid()) {
-        if (isShown.value() == false) {
-            spreadInterface.asyncCall("ShowAllWorkspaces", QString());
-        }
-    } else {
-        qWarning() << "Failed to get property IsShown on" << SPREAD_DBUS_SERVICE;
-    }
-}

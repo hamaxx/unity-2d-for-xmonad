@@ -23,20 +23,22 @@
 #include <QSocketNotifier>
 #include <QDBusInterface>
 
+#include <debug_p.h>
+
 GestureHandler::GestureHandler(Unity2dPanel* launcher, QObject *parent) : QObject(parent), m_launcher(launcher)
 {
     if (geisInitialize() != GEIS_STATUS_SUCCESS) {
-        qWarning("GEIS initialization failed: multitouch support disabled");
+        UQ_WARNING << "GEIS initialization failed: multitouch support disabled";
         return;
     }
 
     if (geisStartEventDispatching() != GEIS_STATUS_SUCCESS) {
-        qWarning("No file descriptor available for gesture events dispatching");
+        UQ_WARNING << "No file descriptor available for gesture events dispatching";
         return;
     }
 
     if (geisSubscribeGestures() != GEIS_STATUS_SUCCESS) {
-        qWarning("Subscribing to gestures failed: multitouch support disabled");
+        UQ_WARNING << "Subscribing to gestures failed: multitouch support disabled";
     }
 }
 

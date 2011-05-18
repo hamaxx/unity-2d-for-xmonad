@@ -14,11 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QDebug>
 #include <QRegExp>
 #include <QApplication>
 #include <QWidget>
 
+#include <debug_p.h>
 #include "windowslist.h"
 #include "windowinfo.h"
 
@@ -63,7 +63,7 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
     case WindowInfo::RoleWorkspace:
         return QVariant::fromValue(info->workspace());
     default:
-        qDebug() << "Requested invalid role (index" << role << ")";
+        UQ_DEBUG << "Requested invalid role (index" << role << ")";
         return QVariant();
     }
 }
@@ -142,7 +142,7 @@ void WindowsList::addWindow(BamfView *view)
     }
 
     if (window->xid() == 0) {
-        qWarning() << "Received ViewOpened but window's xid is zero";
+        UQ_WARNING << "Received ViewOpened but window's xid is zero";
         return;
     }
 

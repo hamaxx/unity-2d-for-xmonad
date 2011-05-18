@@ -62,21 +62,17 @@ struct Unity2dPanelPrivate
         const QRect screen = desktop->screenGeometry(q);
         const QRect available = desktop->availableGeometry(q);
 
-        ulong struts[12];
+        ulong struts[12] = {};
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            struts = {
-                q->width(), 0, 0, 0,
-                available.top(), available.bottom(), 0, 0,
-                0, 0, 0, 0
-                };
+            struts[0] = q->width();
+            struts[4] = available.top();
+            struts[5] = available.y() + available.height();
             break;
         case Unity2dPanel::TopEdge:
-            struts = {
-                0, 0, q->height(), 0,
-                0, 0, 0, 0,
-                screen.left(), screen.right(), 0, 0
-                };
+            struts[2] = q->height();
+            struts[8] = screen.left();
+            struts[9] = screen.x() + screen.width();
             break;
         }
 

@@ -45,6 +45,33 @@
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
 
+#if defined(QMLJSDEBUGGER)
+#include <qt_private/qdeclarativedebughelper_p.h>
+#endif
+
+#if defined(QMLJSDEBUGGER) && !defined(NO_JSDEBUGGER)
+#include <jsdebuggeragent.h>
+#endif
+#if defined(QMLJSDEBUGGER) && !defined(NO_QMLOBSERVER)
+#include <qdeclarativeviewobserver.h>
+#endif
+
+#if defined(QMLJSDEBUGGER)
+
+// Enable debugging before any QDeclarativeEngine is created
+struct QmlJsDebuggingEnabler
+{
+    QmlJsDebuggingEnabler()
+    {
+        QDeclarativeDebugHelper::enableDebugging();
+    }
+};
+
+// Execute code in constructor before first QDeclarativeEngine is instantiated
+static QmlJsDebuggingEnabler enableDebuggingHelper;
+
+#endif // QMLJSDEBUGGER
+
 int main(int argc, char *argv[])
 {
     /* UnityApplications plugin uses GTK APIs to retrieve theme icons
@@ -63,6 +90,7 @@ int main(int argc, char *argv[])
     */
     QApplication::setGraphicsSystem("raster");
     Unity2dApplication application(argc, argv);
+    QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
     client.connectToSessionManager();
@@ -83,6 +111,7 @@ int main(int argc, char *argv[])
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView(&panel);
+    launcherView->setUseOpenGL(arguments.contains("-opengl"));
 
     /* FIXME: possible optimisations */
 //    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);

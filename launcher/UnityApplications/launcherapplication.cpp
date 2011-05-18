@@ -47,19 +47,22 @@ extern "C" {
 
 // libunity-2d
 #include <unity2dtr.h>
+#include <debug_p.h>
 
 // Qt
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDBusServiceWatcher>
 #include <QFile>
 #include <QFileSystemWatcher>
-#include <QScopedPointer>
 
 extern "C" {
 #include <libsn/sn.h>
 }
+
+const char* SHORTCUT_NICK_PROPERTY = "nick";
 
 LauncherApplication::LauncherApplication()
     : m_application(NULL)
@@ -70,6 +73,7 @@ LauncherApplication::LauncherApplication()
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
+    , m_dynamicQuicklistServiceWatcher(NULL)
 {
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
@@ -289,6 +293,10 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
         }
         Q_EMIT executableChanged(executable());
     }
+
+    /* Update the list of static shortcuts
+       (quicklist entries defined in the desktop file). */
+    m_staticShortcuts.reset(indicator_desktop_shortcuts_new(newDesktopFile.toUtf8().constData(), "Unity"));
 
     monitorDesktopFile(newDesktopFile);
 }
@@ -629,7 +637,7 @@ LauncherApplication::launch()
     g_app_info_launch(m_appInfo.data(), NULL, (GAppLaunchContext*)context.data(), &error);
 
     if (error != NULL) {
-        qWarning() << "Failed to launch application:" << error->message;
+        UQ_WARNING << "Failed to launch application:" << error->message;
         g_error_free(error);
         return false;
     }
@@ -774,7 +782,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
             }
         }
     } else {
-        qWarning() << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
     }
 }
 
@@ -833,16 +841,53 @@ LauncherApplication::createMenuActions()
             importer->updateMenu();
         }
     } else {
+        createDynamicMenuActions();
         createStaticMenuActions();
+    }
+}
+
+void
+LauncherApplication::createDynamicMenuActions()
+{
+    if (!m_dynamicQuicklistImporter.isNull()) {
+        /* FIXME: the menu is only partially updated while visible: stale
+           actions will correctly be removed from the menu, but new actions
+           will not be added until the menu is closed and opened again.
+           This is an acceptable limitation for now. */
+        QList<QAction*> actions = m_dynamicQuicklistImporter->menu()->actions();
+        Q_FOREACH(QAction* action, actions) {
+            if (action->isSeparator()) {
+                m_menu->insertSeparatorBeforeTitle();
+            } else {
+                connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
+                m_menu->insertActionBeforeTitle(action);
+            }
+        }
     }
 }
 
 void
 LauncherApplication::createStaticMenuActions()
 {
-    m_menu->addSeparator();
-    QList<QAction*> actions;
+    /* Custom menu actions from the desktop file. */
+    if (!m_staticShortcuts.isNull()) {
+        const gchar** nicks = indicator_desktop_shortcuts_get_nicks(m_staticShortcuts.data());
+        if (nicks) {
+            int i = 0;
+            while (((gpointer*) nicks)[i]) {
+                const gchar* nick = nicks[i];
+                QAction* action = new QAction(m_menu);
+                action->setText(QString::fromUtf8(indicator_desktop_shortcuts_nick_get_name(m_staticShortcuts.data(), nick)));
+                action->setProperty(SHORTCUT_NICK_PROPERTY, QVariant(nick));
+                m_menu->insertActionBeforeTitle(action);
+                connect(action, SIGNAL(triggered()), SLOT(onStaticShortcutTriggered()));
+                ++i;
+            }
+        }
+    }
+    m_menu->insertSeparatorBeforeTitle();
 
+    QList<QAction*> actions;
     bool is_running = running();
 
     /* Only applications with a corresponding desktop file can be kept in the launcher */
@@ -897,17 +942,27 @@ LauncherApplication::onIndicatorMenuUpdated()
     QList<QAction*> actions = importer->menu()->actions();
     Q_FOREACH(QAction* action, actions) {
         if (action->isSeparator()) {
-            m_menu->addSeparator();
+            m_menu->insertSeparatorBeforeTitle();
         } else {
             connect(action, SIGNAL(triggered()), m_menu, SLOT(hide()));
-            m_menu->addAction(action);
+            m_menu->insertActionBeforeTitle(action);
         }
     }
 
     if (++m_indicatorMenusReady == m_indicatorMenus.size()) {
         /* All indicator menus have been updated. */
+        createDynamicMenuActions();
         createStaticMenuActions();
     }
+}
+
+void
+LauncherApplication::onStaticShortcutTriggered()
+{
+    QAction* action = static_cast<QAction*>(sender());
+    QString nick = action->property(SHORTCUT_NICK_PROPERTY).toString();
+    m_menu->hide();
+    indicator_desktop_shortcuts_nick_exec(m_staticShortcuts.data(), nick.toUtf8().constData());
 }
 
 void
@@ -941,7 +996,7 @@ bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
 }
 
 void
-LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
+LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);
@@ -961,5 +1016,34 @@ LauncherApplication::updateOverlaysState(QMap<QString, QVariant> properties)
     if (updateOverlayState(properties, "emblem-visible", &m_emblemVisible)) {
         Q_EMIT emblemVisibleChanged(m_emblemVisible);
     }
+    if (updateOverlayState(properties, "quicklist", &m_dynamicQuicklistPath)) {
+        setDynamicQuicklistImporter(sender);
+    }
+}
+
+void
+LauncherApplication::setDynamicQuicklistImporter(const QString& service)
+{
+    if (m_dynamicQuicklistPath.isEmpty() || service.isEmpty()) {
+        m_dynamicQuicklistImporter.reset();
+    } else {
+        m_dynamicQuicklistImporter.reset(new DBusMenuImporter(service, m_dynamicQuicklistPath));
+        m_dynamicQuicklistImporter->updateMenu();
+        if (m_dynamicQuicklistServiceWatcher == NULL) {
+            m_dynamicQuicklistServiceWatcher = new QDBusServiceWatcher(this);
+            m_dynamicQuicklistServiceWatcher->setConnection(QDBusConnection::sessionBus());
+            connect(m_dynamicQuicklistServiceWatcher,
+                    SIGNAL(serviceOwnerChanged(const QString&, const QString&, const QString&)),
+                    SLOT(dynamicQuicklistImporterServiceOwnerChanged(const QString&, const QString&, const QString&)));
+        }
+        m_dynamicQuicklistServiceWatcher->addWatchedService(service);
+    }
+}
+
+void
+LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner)
+{
+    m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
+    setDynamicQuicklistImporter(newOwner);
 }
 

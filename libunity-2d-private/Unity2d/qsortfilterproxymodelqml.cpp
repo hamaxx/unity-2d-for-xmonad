@@ -15,7 +15,7 @@
  */
 
 #include "qsortfilterproxymodelqml.h"
-#include <QDebug>
+#include <debug_p.h>
 
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
     QSortFilterProxyModel(parent)
@@ -43,7 +43,7 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 
     QAbstractItemModel* itemModel = qobject_cast<QAbstractItemModel*>(model);
     if (itemModel == NULL) {
-        qWarning() << "QSortFilterProxyModelQML only accepts objects of type QAbstractItemModel as its model";
+        UQ_WARNING << "QSortFilterProxyModelQML only accepts objects of type QAbstractItemModel as its model";
         return;
     }
 

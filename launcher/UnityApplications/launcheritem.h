@@ -22,6 +22,7 @@
 
 #include <QObject>
 #include <QString>
+#include <Qt>
 
 #include "dragdropevent.h"
 
@@ -38,6 +39,7 @@ class LauncherItem : public QObject
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(bool launching READ launching NOTIFY launchingChanged)
+    Q_PROPERTY(Qt::Key shortcutKey READ shortcutKey WRITE setShortcutKey NOTIFY shortcutKeyChanged)
     /* Export the menu as a plain QObject so that it can be used from QML */
     Q_PROPERTY(QObject* menu READ menu NOTIFY menuChanged)
 
@@ -53,7 +55,11 @@ public:
     virtual QString name() const = 0;
     virtual QString icon() const = 0;
     virtual bool launching() const = 0;
+    Qt::Key shortcutKey() const;
     QObject* menu() const;
+
+    /* setters */
+    void setShortcutKey(Qt::Key);
 
     /* methods */
     Q_INVOKABLE virtual void activate() = 0;
@@ -71,6 +77,7 @@ Q_SIGNALS:
     void nameChanged(QString);
     void iconChanged(QString);
     void launchingChanged(bool);
+    void shortcutKeyChanged(Qt::Key);
     void menuChanged(QObject*);
 
 public Q_SLOTS:
@@ -78,6 +85,9 @@ public Q_SLOTS:
        subclasses to implement custom behaviours. */
     virtual void onDragEnter(DeclarativeDragDropEvent*);
     virtual void onDrop(DeclarativeDragDropEvent*);
+
+private:
+    Qt::Key m_shortcutKey;
 };
 
 #endif // LAUNCHERITEM_H

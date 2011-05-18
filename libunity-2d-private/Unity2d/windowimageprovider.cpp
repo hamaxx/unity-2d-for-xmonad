@@ -15,12 +15,12 @@
  */
 
 #include <QX11Info>
-#include <QDebug>
 #include <QPixmap>
 #include <QPainter>
 #include <QImage>
 
 #include "windowimageprovider.h"
+#include <debug_p.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -236,15 +236,15 @@ void WindowImageProvider::activateComposite()
 
         if (major > 0 || minor >= 2) {
             compositeSupport = true;
-            qDebug().nospace() << "Server supports the Composite extension (ver "
+            (UQ_DEBUG).nospace() << "Server supports the Composite extension (ver "
                     << major << "." << minor << ")";
         }
         else {
-            qDebug().nospace() << "Server supports the Composite extension, but "
+            (UQ_DEBUG).nospace() << "Server supports the Composite extension, but "
                                   "version is < 0.2 (ver " << major << "." << minor << ")";
         }
     } else {
-        qDebug() << "Server doesn't support the Composite extension.";
+        UQ_DEBUG << "Server doesn't support the Composite extension.";
     }
 
     if (compositeSupport) {

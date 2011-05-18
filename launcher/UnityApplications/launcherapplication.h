@@ -20,6 +20,9 @@
 #include <gio/gdesktopappinfo.h>
 #include <libwnck/libwnck.h>
 
+// libindicator
+#include <libindicator/indicator-desktop-shortcuts.h>
+
 #include "launcheritem.h"
 
 // libunity-2d
@@ -33,6 +36,7 @@
 #include <QTimer>
 #include <QHash>
 #include <QPointer>
+#include <QScopedPointer>
 
 #include "bamf-application.h"
 
@@ -43,10 +47,12 @@ void sn_startup_sequence_unref(struct SnStartupSequence*);
 
 class DBusMenuImporter;
 class QFileSystemWatcher;
+class QDBusServiceWatcher;
 
 typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
 typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
 typedef GScopedPointer<SnStartupSequence, sn_startup_sequence_unref> SnStartupSequencePointer;
+typedef GObjectScopedPointer<IndicatorDesktopShortcuts> IndicatorDesktopShortcutsPointer;
 class LauncherApplication : public LauncherItem
 {
     Q_OBJECT
@@ -106,7 +112,7 @@ public:
 
     static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
-    void updateOverlaysState(QMap<QString, QVariant> properties);
+    void updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties);
 
 Q_SIGNALS:
     void stickyChanged(bool);
@@ -135,6 +141,7 @@ private Q_SLOTS:
     void show();
 
     /* Contextual menu callbacks */
+    void onStaticShortcutTriggered();
     void onKeepTriggered();
     void onQuitTriggered();
 
@@ -148,6 +155,8 @@ private Q_SLOTS:
     void checkDesktopFileReallyRemoved();
     void beginForceUrgent(int duration);
     void endForceUrgent();
+
+    void dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner);
 
 private:
     QPointer<BamfApplication> m_application;
@@ -170,11 +179,18 @@ private:
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
+    void createDynamicMenuActions();
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
     template<typename T>
     bool updateOverlayState(QMap<QString, QVariant> properties,
                             QString propertyName, T* member);
+
+    QString m_dynamicQuicklistPath;
+    QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;
+    QDBusServiceWatcher* m_dynamicQuicklistServiceWatcher;
+    void setDynamicQuicklistImporter(const QString& service);
+    IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 
 Q_DECLARE_METATYPE(LauncherApplication*)

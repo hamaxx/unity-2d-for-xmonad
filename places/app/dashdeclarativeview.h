@@ -18,10 +18,11 @@
 #define DashDeclarativeView_H
 
 #include <QDeclarativeView>
+#include <unity2ddeclarativeview.h>
 
 class LauncherClient;
 
-class DashDeclarativeView : public QDeclarativeView
+class DashDeclarativeView : public Unity2DDeclarativeView
 {
     Q_OBJECT
     Q_ENUMS(DashMode)

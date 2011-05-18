@@ -21,8 +21,8 @@
 #include "config.h"
 
 #include <QFile>
-#include <QDebug>
 
+#include <debug_p.h>
 
 static const char* UNITY_RES_PATH = "/usr/share/unity/";
 
@@ -63,7 +63,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     if (!iconFilePath.isEmpty()) {
         QImage icon(iconFilePath);
         if (icon.isNull()) {
-            qWarning() << "Failed to directly load icon at path:" << iconFilePath;
+            UQ_WARNING << "Failed to directly load icon at path:" << iconFilePath;
             return QImage();
         }
 
@@ -139,7 +139,26 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
                    gdk_pixbuf_get_height(pixbuf),
                    gdk_pixbuf_get_rowstride(pixbuf),
                    QImage::Format_ARGB32);
+
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+    /* ABGR → ARGB */
     QImage swappedImage = image.rgbSwapped();
+#else
+    /* ABGR → BGRA */
+    /* Reference: https://bugs.launchpad.net/unity-2d/+bug/758782 */
+    QImage swappedImage(image.size(), image.format());
+    for (int i = 0; i < swappedImage.height(); ++i) {
+        QRgb* p = (QRgb*) image.constScanLine(i);
+        QRgb* q = (QRgb*) swappedImage.scanLine(i);
+        QRgb* end = p + image.width();
+        while (p < end) {
+            *q = qRgba(qAlpha(*p), qRed(*p), qGreen(*p), qBlue(*p));
+            p++;
+            q++;
+        }
+    }
+#endif
+
     g_object_unref(pixbuf);
 
     if (size) {
