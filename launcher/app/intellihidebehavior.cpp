@@ -215,5 +215,5 @@ void IntelliHideBehavior::showPanel()
 void IntelliHideBehavior::createMouseArea()
 {
     m_mouseArea = new EdgeMouseArea(this);
-    connect(m_mouseArea, SIGNAL(entered()), SLOT(showPanel()));
+    connect(m_mouseArea, SIGNAL(edgeHit()), SLOT(showPanel()));
 }

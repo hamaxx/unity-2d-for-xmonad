@@ -23,17 +23,22 @@ class QTimer;
 /**
  * A mouse area which stays on the left edge of the leftmost screen
  */
-class EdgeMouseArea : public MouseArea
+class EdgeMouseArea : public QObject
 {
 Q_OBJECT
 public:
     EdgeMouseArea(QObject* parent = 0);
 
+Q_SIGNALS:
+    void edgeHit();
+
 private Q_SLOTS:
     void updateGeometryFromScreen();
 
 private:
+    MouseArea* m_mouseArea;
     QTimer* m_updateTimer;
+    QTimer* m_edgeHitTimer;
 };
 
 #endif /* EDGEMOUSEAREA_H */

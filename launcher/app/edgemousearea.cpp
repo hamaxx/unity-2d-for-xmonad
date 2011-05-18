@@ -20,9 +20,13 @@
 #include <QDesktopWidget>
 #include <QTimer>
 
+static const int EDGE_HIT_DELAY = 500;
+
 EdgeMouseArea::EdgeMouseArea(QObject* parent)
-: MouseArea(parent)
+: QObject(parent)
+, m_mouseArea(new MouseArea(this))
 , m_updateTimer(new QTimer(this))
+, m_edgeHitTimer(new QTimer(this))
 {
     updateGeometryFromScreen();
 
@@ -36,11 +40,18 @@ EdgeMouseArea::EdgeMouseArea(QObject* parent)
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), m_updateTimer, SLOT(start()));
     connect(desktop, SIGNAL(screenCountChanged(int)), m_updateTimer, SLOT(start()));
+
+    m_edgeHitTimer->setInterval(EDGE_HIT_DELAY);
+    m_edgeHitTimer->setSingleShot(true);
+    connect(m_edgeHitTimer, SIGNAL(timeout()), SIGNAL(edgeHit()));
+
+    connect(m_mouseArea, SIGNAL(entered()), m_edgeHitTimer, SLOT(start()));
+    connect(m_mouseArea, SIGNAL(exited()), m_edgeHitTimer, SLOT(stop()));
 }
 
 void EdgeMouseArea::updateGeometryFromScreen()
 {
     int leftScreen = QApplication::desktop()->screenNumber(QPoint());
     QRect rect = QApplication::desktop()->screenGeometry(leftScreen);
-    setGeometry(rect.left(), rect.top(), 1, rect.height());
+    m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
 }

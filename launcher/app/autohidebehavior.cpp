@@ -93,5 +93,5 @@ void AutoHideBehavior::showPanel()
 void AutoHideBehavior::createMouseArea()
 {
     m_mouseArea = new EdgeMouseArea(this);
-    connect(m_mouseArea, SIGNAL(entered()), SLOT(showPanel()));
+    connect(m_mouseArea, SIGNAL(edgeHit()), SLOT(showPanel()));
 }
