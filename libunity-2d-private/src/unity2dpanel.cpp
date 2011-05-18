@@ -67,12 +67,12 @@ struct Unity2dPanelPrivate
         case Unity2dPanel::LeftEdge:
             struts[0] = q->width();
             struts[4] = available.top();
-            struts[5] = available.bottom();
+            struts[5] = available.y() + available.height();
             break;
         case Unity2dPanel::TopEdge:
             struts[2] = q->height();
             struts[8] = screen.left();
-            struts[9] = screen.right();
+            struts[9] = screen.x() + screen.width();
             break;
         }
 
