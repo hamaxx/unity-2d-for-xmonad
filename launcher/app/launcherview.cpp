@@ -22,7 +22,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QX11Info>
-#include <QFileInfo>
 #include <QDebug>
 
 #include <QtDeclarative/qdeclarative.h>
@@ -284,7 +283,6 @@ void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
 {
     Q_FOREACH(QUrl url, getEventUrls(event)) {
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme() == "application" ||
             url.scheme().startsWith("http")) {
             event->setAccepted(true);
             return;
@@ -297,8 +295,6 @@ void LauncherView::onDrop(DeclarativeDragDropEvent* event)
     foreach (QUrl url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
-        } else if (url.scheme() == "application") {
-            emit desktopFileDropped(QFileInfo(url.path()).fileName());
         } else if (url.scheme().startsWith("http")) {
             emit webpageUrlDropped(url);
         }

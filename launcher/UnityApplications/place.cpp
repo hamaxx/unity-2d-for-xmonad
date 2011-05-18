@@ -33,7 +33,6 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QDBusReply>
-#include <QFileInfo>
 
 static const char* UNITY_PLACE_INTERFACE = "com.canonical.Unity.Place";
 static const char* UNITY_ACTIVATION_INTERFACE = "com.canonical.Unity.Activation";
@@ -427,7 +426,12 @@ Place::activate(QString uri)
 
     if (url.scheme() == "application") {
         LauncherApplication application;
-        application.setDesktopFile(QFileInfo(url.path()).fileName());
+        /* Cannot set the desktop file to url.host(), because the QUrl constructor
+           converts the host name to lower case to conform to the Nameprep
+           RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
+           Ref: https://bugs.launchpad.net/unity-place-applications/+bug/784478 */
+        QString desktopFile = uri.mid(uri.indexOf("://") + 3);
+        application.setDesktopFile(desktopFile);
         application.activate();
         return;
     }

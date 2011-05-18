@@ -159,18 +159,7 @@ Renderer {
 
                     sourceComponent: cellRenderer
                     onLoaded: {
-                        if (!uri.indexOf("application://") && uri.charAt(14) != "/") {
-                            /* The backend builds URLs of the form "application://filename.desktop".
-                               Strictly speaking, this is not a valid URL as the filename takes the
-                               position of the host. This is problematic because the QUrl constructor
-                               converts the host name to lower case to conform to the Nameprep RFC
-                               (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum), thus
-                               loosing the case of the filename. This code path fixes the URL.
-                               Ref: http://bugs.launchpad.net/unity-2d/+bug/723604 */
-                            item.uri = "application:///" + uri.substr(14)
-                        } else {
-                            item.uri = uri
-                        }
+                        item.uri = uri
                         item.iconHint = iconHint
                         item.mimetype = mimetype
                         item.displayName = displayName
