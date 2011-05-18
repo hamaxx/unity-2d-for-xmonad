@@ -21,14 +21,14 @@
 #define DeclarativeDragItem_H
 
 #include <QDeclarativeItem>
-#include <QUrl>
+
+class QMimeData;
 
 class DeclarativeDragItem : public QDeclarativeItem
 {
     Q_OBJECT
 
     Q_PROPERTY(QDeclarativeItem* delegate READ delegate WRITE setDelegate NOTIFY delegateChanged RESET resetDelegate)
-    Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged)
     Q_PROPERTY(Qt::DropActions supportedActions READ supportedActions WRITE setSupportedActions NOTIFY supportedActionsChanged)
     Q_PROPERTY(Qt::DropAction defaultAction READ defaultAction WRITE setDefaultAction NOTIFY defaultActionChanged)
 
@@ -40,16 +40,17 @@ public:
     QDeclarativeItem* delegate() const;
     void setDelegate(QDeclarativeItem* delegate);
     void resetDelegate();
-    const QUrl& url() const;
-    void setUrl(const QUrl& url);
     Qt::DropActions supportedActions() const;
     void setSupportedActions(Qt::DropActions actions);
     Qt::DropAction defaultAction() const;
     void setDefaultAction(Qt::DropAction action);
 
+protected:
+    // override in child classes to set a non-empty mime data
+    virtual QMimeData* mimeData() const;
+
 Q_SIGNALS:
     void delegateChanged();
-    void urlChanged(const QUrl&);
     void supportedActionsChanged();
     void defaultActionChanged();
     void drop(int action);
@@ -67,7 +68,6 @@ protected:
 
 private:
     QDeclarativeItem* m_delegate;
-    QUrl m_url;
     Qt::DropActions m_supportedActions;
     Qt::DropAction m_defaultAction;
 };

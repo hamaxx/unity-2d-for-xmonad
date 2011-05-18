@@ -16,6 +16,7 @@ set(unity-2d-private-qml_SRCS
     workspacesinfo.cpp
     signalwaiter.cpp
     dragitem.cpp
+    dragitemwithurl.cpp
     dropitem.cpp
     )
 
@@ -29,6 +30,7 @@ set(unity-2d-private-qml_MOC_HDRS
     workspacesinfo.h
     signalwaiter.h
     dragitem.h
+    dragitemwithurl.h
     dropitem.h
     )
 

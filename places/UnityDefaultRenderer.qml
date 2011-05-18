@@ -38,9 +38,15 @@ RendererGrid {
                 placeEntryModel.place.activate(decodeURIComponent(uri))
             }
 
-            DragItem {
+            DragItemWithUrl {
                 anchors.fill: parent
                 url: decodeURIComponent(uri)
+                defaultAction: {
+                    if (!url.indexOf("application://")) return Qt.CopyAction
+                    else if (!url.indexOf("unity-install://")) return Qt.IgnoreAction
+                    else return Qt.LinkAction
+                }
+                supportedActions: defaultAction
                 delegate: Image {
                     source: icon.source
                     width: icon.width

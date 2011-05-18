@@ -60,21 +60,6 @@ DeclarativeDragItem::resetDelegate()
     setDelegate(NULL);
 }
 
-const QUrl&
-DeclarativeDragItem::url() const
-{
-    return m_url;
-}
-
-void
-DeclarativeDragItem::setUrl(const QUrl& url)
-{
-    if (url != m_url) {
-        m_url = url;
-        Q_EMIT urlChanged(m_url);
-    }
-}
-
 Qt::DropActions
 DeclarativeDragItem::supportedActions() const
 {
@@ -105,6 +90,12 @@ DeclarativeDragItem::setDefaultAction(Qt::DropAction action)
     }
 }
 
+QMimeData* DeclarativeDragItem::mimeData() const
+{
+    // Default implementation, empty mime data.
+    return new QMimeData;
+}
+
 void
 DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -114,14 +105,7 @@ DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
 
     QDrag* drag = new QDrag(event->widget());
-
-    QMimeData* data = new QMimeData;
-    if (!m_url.isEmpty()) {
-        QList<QUrl> urls;
-        urls.append(m_url);
-        data->setUrls(urls);
-    }
-    drag->setMimeData(data);
+    drag->setMimeData(mimeData());
 
     if (m_delegate != NULL) {
         /* Render the delegate to a pixmap. */
