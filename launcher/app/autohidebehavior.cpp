@@ -22,7 +22,7 @@
 #include "autohidebehavior.h"
 
 // Local
-#include <edgemousearea.h>
+#include <edgehitdetector.h>
 
 // libunity-2d
 #include <debug_p.h>
@@ -37,7 +37,7 @@ static const int AUTOHIDE_TIMEOUT = 1000;
 AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
 , m_autohideTimer(new QTimer(this))
-, m_mouseArea(0)
+, m_edgeHitDetector(0)
 {
     m_autohideTimer->setSingleShot(true);
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
@@ -77,21 +77,21 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
 void AutoHideBehavior::hidePanel()
 {
     m_panel->slideOut();
-    createMouseArea();
+    createEdgeHitDetector();
 }
 
 void AutoHideBehavior::showPanel()
 {
     // Delete the mouse area so that it does not prevent mouse events from
     // reaching the panel
-    delete m_mouseArea;
-    m_mouseArea = 0;
+    delete m_edgeHitDetector;
+    m_edgeHitDetector = 0;
     m_autohideTimer->stop();
     m_panel->slideIn();
 }
 
-void AutoHideBehavior::createMouseArea()
+void AutoHideBehavior::createEdgeHitDetector()
 {
-    m_mouseArea = new EdgeMouseArea(this);
-    connect(m_mouseArea, SIGNAL(edgeHit()), SLOT(showPanel()));
+    m_edgeHitDetector = new EdgeHitDetector(this);
+    connect(m_edgeHitDetector, SIGNAL(edgeHit()), SLOT(showPanel()));
 }

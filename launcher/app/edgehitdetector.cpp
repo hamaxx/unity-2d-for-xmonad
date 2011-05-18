@@ -9,7 +9,7 @@
  * License: GPL v3
  */
 // Self
-#include "edgemousearea.h"
+#include "edgehitdetector.h"
 
 // Local
 
@@ -22,7 +22,7 @@
 
 static const int EDGE_HIT_DELAY = 500;
 
-EdgeMouseArea::EdgeMouseArea(QObject* parent)
+EdgeHitDetector::EdgeHitDetector(QObject* parent)
 : QObject(parent)
 , m_mouseArea(new MouseArea(this))
 , m_updateTimer(new QTimer(this))
@@ -49,7 +49,7 @@ EdgeMouseArea::EdgeMouseArea(QObject* parent)
     connect(m_mouseArea, SIGNAL(exited()), m_edgeHitTimer, SLOT(stop()));
 }
 
-void EdgeMouseArea::updateGeometryFromScreen()
+void EdgeHitDetector::updateGeometryFromScreen()
 {
     int leftScreen = QApplication::desktop()->screenNumber(QPoint());
     QRect rect = QApplication::desktop()->screenGeometry(leftScreen);

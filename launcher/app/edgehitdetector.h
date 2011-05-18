@@ -8,8 +8,8 @@
  *
  * License: GPL v3
  */
-#ifndef EDGEMOUSEAREA_H
-#define EDGEMOUSEAREA_H
+#ifndef EDGEHITDETECTOR_H
+#define EDGEHITDETECTOR_H
 
 // Local
 
@@ -23,11 +23,11 @@ class QTimer;
 /**
  * A mouse area which stays on the left edge of the leftmost screen
  */
-class EdgeMouseArea : public QObject
+class EdgeHitDetector : public QObject
 {
 Q_OBJECT
 public:
-    EdgeMouseArea(QObject* parent = 0);
+    EdgeHitDetector(QObject* parent = 0);
 
 Q_SIGNALS:
     void edgeHit();
@@ -41,4 +41,4 @@ private:
     QTimer* m_edgeHitTimer;
 };
 
-#endif /* EDGEMOUSEAREA_H */
+#endif /* EDGEHITDETECTOR_H */

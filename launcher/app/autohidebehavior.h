@@ -27,7 +27,7 @@
 // Qt
 #include <QObject>
 
-class EdgeMouseArea;
+class EdgeHitDetector;
 class QTimer;
 class Unity2dPanel;
 
@@ -50,9 +50,9 @@ private Q_SLOTS:
 
 private:
     QTimer* m_autohideTimer;
-    EdgeMouseArea* m_mouseArea;
+    EdgeHitDetector* m_edgeHitDetector;
 
-    void createMouseArea();
+    void createEdgeHitDetector();
 };
 
 #endif /* AUTOHIDEBEHAVIOR_H */

@@ -15,7 +15,7 @@
 
 // libunity-2d
 #include <debug_p.h>
-#include <edgemousearea.h>
+#include <edgehitdetector.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -67,7 +67,7 @@ GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
 : AbstractVisibilityBehavior(panel)
 , m_updateVisibilityTimer(new QTimer(this))
-, m_mouseArea(0)
+, m_edgeHitDetector(0)
 , m_activeWindow(0)
 {
     m_updateVisibilityTimer->setSingleShot(true);
@@ -200,20 +200,20 @@ bool IntelliHideBehavior::isMouseForcingVisibility() const
 void IntelliHideBehavior::hidePanel()
 {
     m_panel->slideOut();
-    createMouseArea();
+    createEdgeHitDetector();
 }
 
 void IntelliHideBehavior::showPanel()
 {
-    // Delete the mouse area so that it does not prevent mouse events from
-    // reaching the panel
-    delete m_mouseArea;
-    m_mouseArea = 0;
+    // Delete the edge hit detector so that it does not prevent mouse events
+    // from reaching the panel
+    delete m_edgeHitDetector;
+    m_edgeHitDetector = 0;
     m_panel->slideIn();
 }
 
-void IntelliHideBehavior::createMouseArea()
+void IntelliHideBehavior::createEdgeHitDetector()
 {
-    m_mouseArea = new EdgeMouseArea(this);
-    connect(m_mouseArea, SIGNAL(edgeHit()), SLOT(showPanel()));
+    m_edgeHitDetector = new EdgeHitDetector(this);
+    connect(m_edgeHitDetector, SIGNAL(edgeHit()), SLOT(showPanel()));
 }

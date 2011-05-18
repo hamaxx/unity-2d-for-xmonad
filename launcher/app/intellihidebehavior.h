@@ -22,7 +22,7 @@ struct _WnckWindow;
 class QTimer;
 
 class Unity2dPanel;
-class EdgeMouseArea;
+class EdgeHitDetector;
 
 /**
  * This class implements the Intellihide behavior of the launcher
@@ -51,7 +51,7 @@ private:
         HiddenPanel
     };
     QTimer* m_updateVisibilityTimer;
-    EdgeMouseArea* m_mouseArea;
+    EdgeHitDetector* m_edgeHitDetector;
 
     struct _WnckWindow* m_activeWindow;
 
@@ -59,7 +59,7 @@ private:
 
     bool isMouseForcingVisibility() const;
 
-    void createMouseArea();
+    void createEdgeHitDetector();
 };
 
 #endif /* INTELLIHIDEBEHAVIOR_H */
