@@ -50,7 +50,12 @@ RendererGrid {
                     sourceSize.height: height
                     asynchronous: true
                 }
-                onReleased: parent.clicked()
+                onPressed: parent.pressed = true
+                onReleased: {
+                    parent.pressed = false
+                    parent.clicked()
+                }
+                onDrop: parent.pressed = false
             }
 
             Image {
