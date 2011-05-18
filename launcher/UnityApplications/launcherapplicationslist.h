@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
 #include <QMap>
+#include <QDBusContext>
 
 #include <unity2dapplication.h>
 
@@ -37,7 +38,7 @@ class BamfApplication;
 class BamfView;
 class GConfItemQmlWrapper;
 
-class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter
+class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
 {
     Q_OBJECT
     friend class LauncherApplicationsListDBUS;
