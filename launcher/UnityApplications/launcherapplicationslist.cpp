@@ -23,6 +23,9 @@
 #include "bamf-application.h"
 #include "gconfitem-qml-wrapper.h"
 
+// unity-2d
+#include <debug_p.h>
+
 #include <QStringList>
 #include <QDir>
 #include <QDebug>
@@ -134,6 +137,7 @@ LauncherApplicationsList::x11EventFilter(XEvent* xevent)
 void
 LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
 {
+    UQ_RETURN_IF_FAIL(calledFromDBus());
     QString sender = message().service();
     QString desktopFile;
     if (applicationURI.indexOf("application://") == 0) {
