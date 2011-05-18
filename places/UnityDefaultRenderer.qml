@@ -50,6 +50,7 @@ RendererGrid {
                     sourceSize.height: height
                     asynchronous: true
                 }
+                onReleased: parent.clicked()
             }
 
             Image {

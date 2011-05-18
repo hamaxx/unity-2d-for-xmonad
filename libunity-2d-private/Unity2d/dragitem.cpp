@@ -144,3 +144,15 @@ DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     Q_EMIT drop(action);
 }
 
+void
+DeclarativeDragItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    Q_EMIT pressed();
+}
+
+void
+DeclarativeDragItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    Q_EMIT released();
+}
+

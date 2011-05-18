@@ -32,7 +32,6 @@ class DeclarativeDragItem : public QDeclarativeItem
     Q_PROPERTY(Qt::DropActions supportedActions READ supportedActions WRITE setSupportedActions NOTIFY supportedActionsChanged)
     Q_PROPERTY(Qt::DropAction defaultAction READ defaultAction WRITE setDefaultAction NOTIFY defaultActionChanged)
 
-
 public:
     DeclarativeDragItem(QDeclarativeItem* parent=0);
     ~DeclarativeDragItem();
@@ -55,11 +54,16 @@ Q_SIGNALS:
     void defaultActionChanged();
     void drop(int action);
 
+    // Can’t pass around the mouse events as parameters
+    // as QDeclarativeMouseEvent is a private class.
+    void pressed();
+    void released();
+
 protected:
     // reimplemented
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-    void mousePressEvent(QGraphicsSceneMouseEvent*) {}
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent*) {}
+    void mousePressEvent(QGraphicsSceneMouseEvent* event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
 private:
     QDeclarativeItem* m_delegate;
