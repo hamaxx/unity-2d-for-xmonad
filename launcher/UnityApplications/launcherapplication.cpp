@@ -778,17 +778,13 @@ LauncherApplication::spread(bool showAllWorkspaces)
     if (compiz.isValid()) {
         Qt::HANDLE root = QX11Info::appRootWindow();
         BamfUintList* xids = m_application->xids();
-        QString match = "";
+        QStringList fragments;
         for (int i = 0; i < xids->size(); i++) {
             uint xid = xids->at(i);
-            match.append("xid=");
-            QVariant tmp(xid);
-            match.append(tmp.toString());
-            if (i < xids->size() - 1) {
-                match.append(" | ");
-            }
+            fragments.append("xid=" + QString::number(xid));
         }
-        compiz.asyncCall("activate", "root", static_cast<int>(root), "match", match);
+
+        compiz.asyncCall("activate", "root", static_cast<int>(root), "match", fragments.join(" | "));
     } else {
         QDBusInterface spread("com.canonical.Unity2d.Spread", "/Spread",
                               "com.canonical.Unity2d.Spread");
