@@ -57,8 +57,17 @@ Trash::active() const
 }
 
 bool
-Trash::running() const
+Trash::isTrashWindow(WnckWindow* window) const
 {
+    QString windowName = QString(wnck_window_get_name(window));
+    int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
+    return found == 0;
+}
+
+QList<WnckWindow*>
+Trash::trashWindows() const
+{
+    QList<WnckWindow*> trashWindows;
     BamfMatcher& matcher = BamfMatcher::get_default();
     QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
     BamfApplication* bamfApplication;
@@ -70,44 +79,28 @@ Trash::running() const
 
         for (int j=0; j < windowApplications->size(); j++) {
             BamfWindow *bamfWindow = windowApplications->at(j);
-
             WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-            QString windowName = QString(wnck_window_get_name(wnckWindow));
 
-            int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
-
-            if (found == 0) {
-                return true;
+            if (wnckWindow != NULL && isTrashWindow(wnckWindow)) {
+                trashWindows.append(wnckWindow);
             }
         }
     }
 
-    return false;
+    return trashWindows;
+}
+
+bool
+Trash::running() const
+{
+    return trashWindows().length() > 0;
 }
 
 void
 Trash::show()
 {
-    BamfMatcher& matcher = BamfMatcher::get_default();
-    QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
-    BamfApplication* bamfApplication;
-
-    for(int i=0; i<running_applications->size(); i++) {
-        bamfApplication = running_applications->at(i);
-
-        QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
-
-        for (int j=0; j < windowApplications->size(); j++) {
-            BamfWindow *bamfWindow = windowApplications->at(j);
-            WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-            QString windowName = QString(wnck_window_get_name(wnckWindow));
-
-            int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
-
-            if (found == 0) {
-                LauncherUtility::showWindow(wnckWindow);
-            }
-        }
+    Q_FOREACH(WnckWindow* wnckWindow, trashWindows()) {
+        LauncherUtility::showWindow(wnckWindow);
     }
 }
 
