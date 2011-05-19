@@ -8,8 +8,7 @@
 class LauncherUtility {
 
 public:
-
-	static void showWindow(WnckWindow* window);
+    static void showWindow(WnckWindow* window);
     static void moveViewportToWindow(WnckWindow* window);
 };
 

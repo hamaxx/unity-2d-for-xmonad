@@ -33,7 +33,6 @@
 
 #include <QAction>
 
-
 #define TRASH_URI "trash://"
 
 Trash::Trash()

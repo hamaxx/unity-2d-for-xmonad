@@ -59,7 +59,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void onEmptyTriggered();
-	void show();
+    void show();
 
 private:
     void open() const;
@@ -67,7 +67,7 @@ private:
     int count() const;
 
     static void recursive_delete(GFile* dir);
-	
+
     GFile* m_trash;
 };
 

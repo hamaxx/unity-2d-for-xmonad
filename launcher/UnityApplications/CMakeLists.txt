@@ -20,7 +20,7 @@ set(UnityApplications_SRCS
     launcherapplicationslistdbus.cpp
     launcherdevice.cpp
     launcherdeviceslist.cpp
-	launcherutility.cpp
+    launcherutility.cpp
     placeentry.cpp
     place.cpp
     launcherplaceslist.cpp
@@ -39,7 +39,7 @@ set(UnityApplications_MOC_HDRS
     launcherapplicationslistdbus.h
     launcherdevice.h
     launcherdeviceslist.h
-	launcherutility.h
+    launcherutility.h
     placeentry.h
     place.h
     launcherplaceslist.h
