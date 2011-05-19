@@ -19,6 +19,11 @@
 
 #include "trash.h"
 #include "launchermenu.h"
+#include "launcherutility.h"
+
+#include "bamf-application.h"
+#include "bamf-window.h"
+#include "bamf-matcher.h"
 
 #include "config.h"
 
@@ -52,9 +57,51 @@ Trash::active() const
 }
 
 bool
+Trash::isTrashWindow(WnckWindow* window) const
+{
+    QString windowName = QString(wnck_window_get_name(window));
+    int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
+    return found == 0;
+}
+
+QList<WnckWindow*>
+Trash::trashWindows() const
+{
+    QList<WnckWindow*> trashWindows;
+    BamfMatcher& matcher = BamfMatcher::get_default();
+    QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
+    BamfApplication* bamfApplication;
+
+    for(int i=0; i<running_applications->size(); i++) {
+        bamfApplication = running_applications->at(i);
+
+        QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
+
+        for (int j=0; j < windowApplications->size(); j++) {
+            BamfWindow *bamfWindow = windowApplications->at(j);
+            WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
+
+            if (wnckWindow != NULL && isTrashWindow(wnckWindow)) {
+                trashWindows.append(wnckWindow);
+            }
+        }
+    }
+
+    return trashWindows;
+}
+
+bool
 Trash::running() const
 {
-    return false;
+    return trashWindows().length() > 0;
+}
+
+void
+Trash::show()
+{
+    Q_FOREACH(WnckWindow* wnckWindow, trashWindows()) {
+        LauncherUtility::showWindow(wnckWindow);
+    }
 }
 
 int
@@ -92,7 +139,11 @@ Trash::launching() const
 void
 Trash::activate()
 {
-    open();
+    if (running()) {
+        show();
+    } else {
+        open();
+    }
 }
 
 void

@@ -22,7 +22,13 @@
 
 #include <gio/gio.h>
 
+extern "C" {
+#include <libwnck/libwnck.h>
+}
+
 #include "launcheritem.h"
+#include "launcherutility.h"
+
 
 #include <QAbstractListModel>
 #include <QMetaType>
@@ -63,6 +69,9 @@ private:
     void open() const;
     void empty() const;
     int count() const;
+    void show();
+    QList<WnckWindow*> trashWindows() const;
+    bool isTrashWindow(WnckWindow* window) const;
 
     static void recursive_delete(GFile* dir);
 
