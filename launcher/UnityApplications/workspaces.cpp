@@ -32,6 +32,7 @@
 
 Workspaces::Workspaces()
 {
+    setShortcutKey(Qt::Key_S);
 }
 
 Workspaces::Workspaces(const Workspaces& other)

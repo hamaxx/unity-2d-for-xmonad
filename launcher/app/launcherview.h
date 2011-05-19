@@ -62,7 +62,6 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void showCommandsPlace();
-    void showWorkspaceSwitcher();
 
 public Q_SLOTS:
     void activateWindow();
