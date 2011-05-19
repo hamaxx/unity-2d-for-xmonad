@@ -20,9 +20,10 @@
 #ifndef TRASH_H
 #define TRASH_H
 
-#include <gio/gio.h>
+#include <libwnck/libwnck.h>
 
 #include "launcheritem.h"
+#include "launcherutility.h"
 
 #include <QAbstractListModel>
 #include <QMetaType>
@@ -58,6 +59,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void onEmptyTriggered();
+	void show();
 
 private:
     void open() const;
@@ -65,7 +67,7 @@ private:
     int count() const;
 
     static void recursive_delete(GFile* dir);
-
+	
     GFile* m_trash;
 };
 

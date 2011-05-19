@@ -19,6 +19,11 @@
 
 #include "trash.h"
 #include "launchermenu.h"
+#include "launcherutility.h"
+
+#include "bamf-application.h"
+#include "bamf-window.h"
+#include "bamf-matcher.h"
 
 #include "config.h"
 
@@ -27,6 +32,7 @@
 #include <debug_p.h>
 
 #include <QAction>
+
 
 #define TRASH_URI "trash://"
 
@@ -54,7 +60,61 @@ Trash::active() const
 bool
 Trash::running() const
 {
-    return false;
+	BamfMatcher& matcher = BamfMatcher::get_default();
+	QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
+    BamfApplication* bamfApplication;
+
+    for(int i=0; i<running_applications->size(); i++) {
+        bamfApplication = running_applications->at(i);
+
+		QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
+
+		for (int j=0; j < windowApplications->size(); j++) {
+
+			BamfWindow *bamfWindow = windowApplications->at(j);
+			
+			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
+			QString windowName = QString(wnck_window_get_name(wnckWindow));
+
+			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
+
+			if (found == 0) {
+				
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void
+Trash::show()
+{
+	BamfMatcher& matcher = BamfMatcher::get_default();
+	QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
+    BamfApplication* bamfApplication;
+
+    for(int i=0; i<running_applications->size(); i++) {
+        bamfApplication = running_applications->at(i);
+
+		QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
+
+		for (int j=0; j < windowApplications->size(); j++) {
+
+			BamfWindow *bamfWindow = windowApplications->at(j);
+			
+			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
+			QString windowName = QString(wnck_window_get_name(wnckWindow));
+
+			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
+
+			if (found == 0) {
+				LauncherUtility::showWindow(wnckWindow);
+			}
+		}
+	}
+
 }
 
 int
@@ -92,7 +152,11 @@ Trash::launching() const
 void
 Trash::activate()
 {
-    open();
+	if (running()) {
+		show();
+	} else {
+    	open();
+	}
 }
 
 void
