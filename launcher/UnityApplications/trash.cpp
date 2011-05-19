@@ -59,61 +59,56 @@ Trash::active() const
 bool
 Trash::running() const
 {
-	BamfMatcher& matcher = BamfMatcher::get_default();
-	QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
+    BamfMatcher& matcher = BamfMatcher::get_default();
+    QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
     BamfApplication* bamfApplication;
 
     for(int i=0; i<running_applications->size(); i++) {
         bamfApplication = running_applications->at(i);
 
-		QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
+        QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
 
-		for (int j=0; j < windowApplications->size(); j++) {
+        for (int j=0; j < windowApplications->size(); j++) {
+            BamfWindow *bamfWindow = windowApplications->at(j);
 
-			BamfWindow *bamfWindow = windowApplications->at(j);
-			
-			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-			QString windowName = QString(wnck_window_get_name(wnckWindow));
+            WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
+            QString windowName = QString(wnck_window_get_name(wnckWindow));
 
-			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
+            int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
 
-			if (found == 0) {
-				
-				return true;
-			}
-		}
-	}
+            if (found == 0) {
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 void
 Trash::show()
 {
-	BamfMatcher& matcher = BamfMatcher::get_default();
-	QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
+    BamfMatcher& matcher = BamfMatcher::get_default();
+    QScopedPointer<BamfApplicationList> running_applications(matcher.running_applications());
     BamfApplication* bamfApplication;
 
     for(int i=0; i<running_applications->size(); i++) {
         bamfApplication = running_applications->at(i);
 
-		QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
+        QScopedPointer<BamfWindowList> windowApplications(bamfApplication->windows());
 
-		for (int j=0; j < windowApplications->size(); j++) {
+        for (int j=0; j < windowApplications->size(); j++) {
+            BamfWindow *bamfWindow = windowApplications->at(j);
+            WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
+            QString windowName = QString(wnck_window_get_name(wnckWindow));
 
-			BamfWindow *bamfWindow = windowApplications->at(j);
-			
-			WnckWindow* wnckWindow = wnck_window_get(bamfWindow->xid());
-			QString windowName = QString(wnck_window_get_name(wnckWindow));
+            int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
 
-			int found = QString::compare(u2dTr("Trash", "nautilus"), windowName, Qt::CaseSensitive);
-
-			if (found == 0) {
-				LauncherUtility::showWindow(wnckWindow);
-			}
-		}
-	}
-
+            if (found == 0) {
+                LauncherUtility::showWindow(wnckWindow);
+            }
+        }
+    }
 }
 
 int
@@ -151,11 +146,11 @@ Trash::launching() const
 void
 Trash::activate()
 {
-	if (running()) {
-		show();
-	} else {
-    	open();
-	}
+    if (running()) {
+        show();
+    } else {
+        open();
+    }
 }
 
 void
