@@ -21,6 +21,8 @@ class ScreenInfo : public QObject
     Q_PROPERTY(unsigned int activeWindow READ activeWindow NOTIFY activeWindowChanged)
     Q_PROPERTY(QRect geometry READ geometry NOTIFY geometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
+    Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning
+                                                NOTIFY isCompositingManagerRunningChanged)
 
 public:
     static ScreenInfo* instance();
@@ -35,12 +37,14 @@ public:
     unsigned int activeWindow() const { return m_activeWindow; }
     QRect availableGeometry() const;
     QRect geometry() const;
+    bool isCompositingManagerRunning() const;
 
 Q_SIGNALS:
     void activeWindowChanged(unsigned int activeWindow);
     void geometryChanged(QRect geometry);
     void availableGeometryChanged(QRect availableGeometry);
     void workspacesChanged(WorkspacesInfo *workspaces);
+    void isCompositingManagerRunningChanged(bool);
 
 private:
     explicit ScreenInfo(QObject *parent = 0);

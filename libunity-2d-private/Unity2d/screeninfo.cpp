@@ -93,3 +93,8 @@ void ScreenInfo::updateAvailableGeometry(int screen)
         Q_EMIT availableGeometryChanged(availableGeometry());
     }
 }
+
+bool ScreenInfo::isCompositingManagerRunning() const
+{
+    return QX11Info::isCompositingManagerRunning();
+}
