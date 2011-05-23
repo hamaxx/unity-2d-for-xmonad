@@ -47,6 +47,7 @@
 #include <debug_p.h>
 
 // Qt
+#include <Qt>
 #include <QDebug>
 #include <QAction>
 #include <QDBusInterface>
@@ -54,6 +55,8 @@
 #include <QDBusServiceWatcher>
 #include <QFile>
 #include <QFileSystemWatcher>
+#include <QScopedPointer>
+#include <QX11Info>
 
 extern "C" {
 #include <libsn/sn.h>
@@ -714,21 +717,37 @@ LauncherApplication::show()
 void
 LauncherApplication::spread(bool showAllWorkspaces)
 {
-    QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
-                         "com.canonical.Unity2d.Spread");
-    QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.isValid()) {
-        if (isShown.value() == true) {
-            iface.asyncCall("FilterByApplication", m_application->desktop_file());
-        } else {
-            if (showAllWorkspaces) {
-                iface.asyncCall("ShowAllWorkspaces", m_application->desktop_file());
-            } else {
-                iface.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
-            }
+    QDBusInterface compiz("org.freedesktop.compiz",
+                          "/org/freedesktop/compiz/scale/screen0/initiate_all_key",
+                          "org.freedesktop.compiz");
+
+    if (compiz.isValid()) {
+        Qt::HANDLE root = QX11Info::appRootWindow();
+        BamfUintList* xids = m_application->xids();
+        QStringList fragments;
+        for (int i = 0; i < xids->size(); i++) {
+            uint xid = xids->at(i);
+            fragments.append("xid=" + QString::number(xid));
         }
+
+        compiz.asyncCall("activate", "root", static_cast<int>(root), "match", fragments.join(" | "));
     } else {
-        UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        QDBusInterface spread("com.canonical.Unity2d.Spread", "/Spread",
+                              "com.canonical.Unity2d.Spread");
+        QDBusReply<bool> isShown = spread.call("IsShown");
+        if (isShown.isValid()) {
+            if (isShown.value() == true) {
+                spread.asyncCall("FilterByApplication", m_application->desktop_file());
+            } else {
+                if (showAllWorkspaces) {
+                    spread.asyncCall("ShowAllWorkspaces", m_application->desktop_file());
+                } else {
+                    spread.asyncCall("ShowCurrentWorkspace", m_application->desktop_file());
+                }
+            }
+        } else {
+            UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        }
     }
 }
 

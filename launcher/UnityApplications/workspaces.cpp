@@ -23,6 +23,8 @@
 
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <Qt>
+#include <QX11Info>
 
 // libunity-2d
 #include <unity2dtr.h>
@@ -86,17 +88,26 @@ Workspaces::launching() const
 void
 Workspaces::activate()
 {
-    QDBusInterface iface("com.canonical.Unity2d.Spread", "/Spread",
-                         "com.canonical.Unity2d.Spread");
-    QDBusReply<bool> isShown = iface.call("IsShown");
-    if (isShown.isValid()) {
-        if (isShown.value() == true) {
-            iface.asyncCall("FilterByApplication", QString());
-        } else {
-            iface.asyncCall("ShowAllWorkspaces", QString());
-        }
+    QDBusInterface compiz("org.freedesktop.compiz",
+                          "/org/freedesktop/compiz/expo/screen0/expo_key",
+                          "org.freedesktop.compiz");
+
+    if (compiz.isValid()) {
+        Qt::HANDLE root = QX11Info::appRootWindow();
+        compiz.asyncCall("activate", "root", static_cast<int>(root));
     } else {
-        UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        QDBusInterface spread("com.canonical.Unity2d.Spread", "/Spread",
+                              "com.canonical.Unity2d.Spread");
+        QDBusReply<bool> isShown = spread.call("IsShown");
+        if (isShown.isValid()) {
+            if (isShown.value() == true) {
+                spread.asyncCall("FilterByApplication", QString());
+            } else {
+                spread.asyncCall("ShowAllWorkspaces", QString());
+            }
+        } else {
+            UQ_WARNING << "Failed to get property IsShown on com.canonical.Unity2d.Spread";
+        }
     }
 }
 
