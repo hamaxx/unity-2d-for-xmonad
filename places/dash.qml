@@ -86,14 +86,14 @@ Item {
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
-        overlay_alpha: 0.71
+        overlay_alpha: 0.89
         visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !screen.isCompositingManagerRunning
     }
 
     Rectangle {
         anchors.fill: parent
         color: "black"
-        opacity: 0.69
+        opacity: 0.89
         visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && screen.isCompositingManagerRunning
     }
 
