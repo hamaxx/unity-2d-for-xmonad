@@ -113,9 +113,6 @@ int main(int argc, char *argv[])
     LauncherView *launcherView = new LauncherView(&panel);
     launcherView->setUseOpenGL(arguments.contains("-opengl"));
 
-    /* FIXME: possible optimisations */
-//    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);
-//    launcherView->setAttribute(Qt::WA_NoSystemBackground);
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();
 

@@ -23,12 +23,18 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 DropItem {
     id: launcher
 
-    Image {
-        id: background
-
+    GnomeBackground {
         anchors.fill: parent
-        fillMode: Image.TileVertically
-        source: "artwork/background.png"
+        overlay_color: "black"
+        overlay_alpha: 0.66
+        visible: !screen.isCompositingManagerRunning
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.66
+        visible: screen.isCompositingManagerRunning
     }
 
     onDragEnter: launcherView.onDragEnter(event)
