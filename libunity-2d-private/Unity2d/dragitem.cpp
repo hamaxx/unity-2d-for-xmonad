@@ -113,10 +113,8 @@ DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         scene.addItem(m_delegate);
 
         QPixmap pixmap(scene.sceneRect().width(), scene.sceneRect().height());
-        pixmap.fill(Qt::transparent);
-
         QPainter painter(&pixmap);
-        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setCompositionMode(QPainter::CompositionMode_Source);
         scene.render(&painter);
         scene.removeItem(m_delegate);
 
