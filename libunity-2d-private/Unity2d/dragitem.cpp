@@ -25,6 +25,7 @@
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QMimeData>
+#include <QX11Info>
 
 DeclarativeDragItem::DeclarativeDragItem(QDeclarativeItem* parent)
     : QDeclarativeItem(parent)
@@ -113,8 +114,19 @@ DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         scene.addItem(m_delegate);
 
         QPixmap pixmap(scene.sceneRect().width(), scene.sceneRect().height());
+        bool compositing = QX11Info::isCompositingManagerRunning();
+        if (!compositing) {
+            pixmap.fill(Qt::transparent);
+        }
         QPainter painter(&pixmap);
-        painter.setCompositionMode(QPainter::CompositionMode_Source);
+        if (compositing) {
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+        } else {
+            /* Cheap solution to avoid aliasing: draw a solid white background. */
+            painter.setPen(Qt::white);
+            painter.setBrush(Qt::white);
+            painter.drawRoundedRect(scene.sceneRect(), 5, 5);
+        }
         scene.render(&painter);
         scene.removeItem(m_delegate);
 
