@@ -59,6 +59,8 @@ Item {
 
         visible: picture_filename.value
         source: {
+            if (!visible) return ""
+                        
             /* FIXME: Because /usr/share/backgrounds/warty-final-ubuntu.png is
                       actually a jpeg and Qt relies by default on the extension
                       that particular background fails to load. We workaround
@@ -77,12 +79,12 @@ Item {
             else
                 return filename
         }
-        width: dashView.screenGeometry.width
-        height: dashView.screenGeometry.height
+        width: screen.geometry.width
+        height: screen.geometry.height
 
         smooth: true
-        x: -dashView.availableGeometry.x
-        y: -dashView.availableGeometry.y
+        x: screen.availableGeometry.x
+        y: -screen.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"
