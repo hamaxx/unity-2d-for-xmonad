@@ -44,6 +44,7 @@ MouseArea {
     property variant listCoordinates: mapToItem(list.contentItem, mouseX, mouseY + 0 * list.contentY)
     /* list index of the tile underneath the cursor */
     property int tileAtCursorIndex: list.indexAt(listCoordinates.x, listCoordinates.y)
+    property bool ignoreNextClick: false
 
     Timer {
         id: longPressDelay
@@ -74,15 +75,25 @@ MouseArea {
     onReleased: {
         if (draggedTileId != "") {
             drop()
-        } else if (draggedTileIndex == tileAtCursorIndex) {
-            /* Forward the click to the launcher item below. */
-            var point = mapToItem(list.contentItem, mouse.x, mouse.y)
-            var item = list.contentItem.childAt(point.x, point.y)
-            /* FIXME: the coordinates of the mouse event forwarded are
-               incorrect. Luckily, it’s acceptable as they are not used in
-               the handler anyway. */
-            if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+            ignoreNextClick = true
         }
+    }
+    onClicked: {
+        if (ignoreNextClick) {
+            ignoreNextClick = false
+            return
+        }
+        /* Forward the click to the launcher item below. */
+        var point = mapToItem(list.contentItem, mouse.x, mouse.y)
+        var item = list.contentItem.childAt(point.x, point.y)
+        /* FIXME: the coordinates of the mouse event forwarded are
+           incorrect. Luckily, it’s acceptable as they are not used in
+           the handler anyway. */
+        if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+    }
+    /* This handler is necessary to avoid receiving duplicate "clicked"
+       signals. */
+    onDoubleClicked: {
     }
     onExited: drop()
     function reorder() {
