@@ -35,7 +35,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-static const int SLIDE_DURATION = 500;
+static const int SLIDE_DURATION = 125;
 
 struct Unity2dPanelPrivate
 {
@@ -148,14 +148,12 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
     d->m_slideInAnimation->setTargetObject(this);
     d->m_slideInAnimation->setPropertyName("delta");
     d->m_slideInAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideInAnimation->setEasingCurve(QEasingCurve::InOutCubic);
     d->m_slideInAnimation->setEndValue(0);
 
     d->m_slideOutAnimation = new QPropertyAnimation(this);
     d->m_slideOutAnimation->setTargetObject(this);
     d->m_slideOutAnimation->setPropertyName("delta");
     d->m_slideOutAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideOutAnimation->setEasingCurve(QEasingCurve::InOutCubic);
     d->m_slideOutAnimation->setEndValue(-panelSize());
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
