@@ -16,6 +16,7 @@ unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
   * debian/libunity-2d-private0.post*
     - removed: ldconfig is generated directly by dh_makeshlibs as we don't pass
       -n anymore
+  * don't install unity-2d session as it's in gnome-session now
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 
