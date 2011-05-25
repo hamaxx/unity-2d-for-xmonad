@@ -22,9 +22,6 @@ Recommends: indicator-application, indicator-datetime,
  gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
  appmenu-gtk, appmenu-qt,
  gtk2-engines-pixbuf
-Provides: unity-2d-default-settings
-Breaks: unity-2d-default-settings (<= 0.4)
-Replaces: unity-2d-default-settings (<= 0.4)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -32,20 +29,10 @@ Description: Unity interface for non-accelerated graphics cards
  .
  Unity 2D is designed to run smoothly without any graphics acceleration.
 
-Package: unity-2d-default-settings
-Architecture: all
-Depends: ${misc:Depends}, unity-2d
-Description: Transitional package for upgrades to the new unity-2d package
- This is a transitional package to properly handle upgrading from natty
- pre-release installations of unity-2d and also for handling upgrades of 
- maverick installs from the unity-2d team PPA.
-
 Package: libunity-2d-private0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Breaks: libuqpanel0 ( <= 3.2.2-0ubuntu1 )
-Replaces: libuqpanel0
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
@@ -55,8 +42,6 @@ Package: libunity-2d-private-dev
 Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0 (= ${binary:Version})
-Breaks: libuqpanel-dev ( <= 3.2.2-0ubuntu1 )
-Replaces: libuqpanel-dev
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  .
@@ -98,19 +83,3 @@ Description: Unity 2D Spread
  switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
-Package: libuqpanel0
-Architecture: any
-Depends: ${misc:Depends}, libunity-2d-private0
-Description: dummy transitional package for libuqpanel0
- This transitional package helps users transition to the
- libunity-2d-private0 package.  Once this package and its dependencies
- are installed you can safely remove it.
-
-Package: libuqpanel-dev
-Section: libdevel
-Architecture: any
-Depends: ${misc:Depends}, libunity-2d-private-dev
-Description: dummy transitional package for libuqpanel-dev
- This transitional package helps users transition to the
- libunity-2d-private-dev package.  Once this package and its dependencies
- are installed you can safely remove it.
