@@ -6,6 +6,11 @@ unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
     - don't dep on gnome-session-bin
     - remove the -dev package, uneeded for a private library internal to this
       source
+    - remove bzr build-dep, we will refresh the pot with dh_translations
+  * debian/rules:
+    - build with dh7 now
+    - buid with --fail-missing and purging installed but not shipped private
+      headers
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 
