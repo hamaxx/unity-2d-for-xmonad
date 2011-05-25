@@ -26,6 +26,7 @@
 #include <applet.h>
 
 // Qt
+#include <QTime>
 #include <QToolButton>
 
 class QDBusInterface;
@@ -42,6 +43,7 @@ protected:
     void leaveEvent(QEvent*);
 
 private Q_SLOTS:
+    void onClicked();
     void toggleDash();
     void connectToDash();
 
@@ -50,6 +52,7 @@ private:
     QToolButton* m_button;
     QDBusInterface* m_dashInterface;
     LauncherClient* m_launcherClient;
+    QTime lastClickTime;
 };
 
 #endif /* HOMEBUTTONAPPLET_H */

@@ -29,6 +29,7 @@
 #include <launcherclient.h>
 
 // Qt
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
@@ -48,7 +49,7 @@ HomeButtonApplet::HomeButtonApplet()
     QString themeIconName = QIcon::hasThemeIcon("start-here") ? "start-here" : "distributor-logo";
     m_button->setIcon(QIcon::fromTheme(themeIconName));
     m_button->setCheckable(true);
-    connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
+    connect(m_button, SIGNAL(clicked()), SLOT(onClicked()));
 
     m_button->setStyleSheet(
             "QToolButton { border: none; margin: 0; padding: 0; width: 61 }"
@@ -91,6 +92,18 @@ void HomeButtonApplet::connectToDash()
 
     /* Immediately update the home button with the current state of the dash */
     m_button->setChecked(m_dashInterface->property("active").toBool());
+}
+
+void HomeButtonApplet::onClicked()
+{
+    if (lastClickTime.isValid() &&
+        lastClickTime.elapsed() < QApplication::doubleClickInterval()) {
+        /* ignore this click */
+        return;
+    }
+
+    toggleDash();
+    lastClickTime.restart();
 }
 
 void HomeButtonApplet::toggleDash()
