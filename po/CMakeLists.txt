@@ -46,12 +46,13 @@ macro(create_translation_targets _potFile)
 endmacro(create_translation_targets)
 
 file(GLOB PO_FILES *.po)
+set(GETTEXT_PACKAGE "unity-2d")
 
-create_translation_targets(unity-2d.pot ${PO_FILES})
+create_translation_targets(${GETTEXT_PACKAGE}.pot ${PO_FILES})
 
-add_custom_target(update-unity-2d-pot
+add_custom_target(${GETTEXT_PACKAGE}.pot
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/update-unity-2d-pot
     )
 
 add_custom_target(update-po)
-add_dependencies(update-po update-unity-2d-pot msgmerge)
+add_dependencies(update-po ${GETTEXT_PACKAGE}.pot msgmerge)
