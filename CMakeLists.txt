@@ -9,6 +9,10 @@ configure_file(config.h.in config.h)
 
 # Build flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")
+# Flags to help detecting use of deprecated GTK APIs and direct access to object fields
+# https://live.gnome.org/GnomeGoals/RemoveDeprecatedSymbols/GTK+
+# https://live.gnome.org/GnomeGoals/UseGseal
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGSEAL_ENABLE -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED")
 
 # Dependencies
 include(FindPkgConfig)
