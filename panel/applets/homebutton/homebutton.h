@@ -1,10 +1,10 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Alberto Mardegan <mardy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,35 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOMEBUTTONAPPLET_H
-#define HOMEBUTTONAPPLET_H
+#ifndef HOMEBUTTON_H
+#define HOMEBUTTON_H
 
-// Local
-#include <applet.h>
-#include "homebutton.h"
+// Qt
+#include <QTime>
+#include <QToolButton>
 
-class QDBusInterface;
-class LauncherClient;
-
-class HomeButtonApplet : public Unity2d::Applet
+class HomeButton : public QToolButton
 {
 Q_OBJECT
 public:
-    HomeButtonApplet();
+    HomeButton(QWidget *parent = 0);
 
 protected:
-    void enterEvent(QEvent*);
-    void leaveEvent(QEvent*);
-
-private Q_SLOTS:
-    void toggleDash();
-    void connectToDash();
+    void mousePressEvent(QMouseEvent*);
 
 private:
-    Q_DISABLE_COPY(HomeButtonApplet)
-    HomeButton* m_button;
-    QDBusInterface* m_dashInterface;
-    LauncherClient* m_launcherClient;
+    Q_DISABLE_COPY(HomeButton)
+    QTime lastClickTime;
 };
 
-#endif /* HOMEBUTTONAPPLET_H */
+#endif /* HOMEBUTTON_H */

@@ -29,7 +29,6 @@
 #include <launcherclient.h>
 
 // Qt
-#include <QApplication>
 #include <QHBoxLayout>
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
@@ -40,24 +39,11 @@ static const char* DBUS_PATH = "/Dash";
 static const char* DBUS_IFACE = "com.canonical.Unity2d.Dash";
 
 HomeButtonApplet::HomeButtonApplet()
-: m_button(new QToolButton)
+: m_button(new HomeButton)
 , m_dashInterface(NULL)
 , m_launcherClient(new LauncherClient(this))
 {
-    m_button->setAutoRaise(true);
-    m_button->setIconSize(QSize(24, 24));
-    QString themeIconName = QIcon::hasThemeIcon("start-here") ? "start-here" : "distributor-logo";
-    m_button->setIcon(QIcon::fromTheme(themeIconName));
-    m_button->setCheckable(true);
-    connect(m_button, SIGNAL(clicked()), SLOT(onClicked()));
-
-    m_button->setStyleSheet(
-            "QToolButton { border: none; margin: 0; padding: 0; width: 61 }"
-            "QToolButton:checked, QToolButton:pressed {"
-            // Use border-image here, not background-image, because bfb_bg_active.png is 56px wide
-            "     border-image: url(theme:/bfb_bg_active.png);"
-            "}"
-    );
+    connect(m_button, SIGNAL(clicked()), SLOT(toggleDash()));
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -92,18 +78,6 @@ void HomeButtonApplet::connectToDash()
 
     /* Immediately update the home button with the current state of the dash */
     m_button->setChecked(m_dashInterface->property("active").toBool());
-}
-
-void HomeButtonApplet::onClicked()
-{
-    if (lastClickTime.isValid() &&
-        lastClickTime.elapsed() < QApplication::doubleClickInterval()) {
-        /* ignore this click */
-        return;
-    }
-
-    toggleDash();
-    lastClickTime.restart();
 }
 
 void HomeButtonApplet::toggleDash()
