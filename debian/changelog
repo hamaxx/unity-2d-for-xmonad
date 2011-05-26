@@ -11,8 +11,11 @@ unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
     - build with dh7 now
     - buid with --fail-missing and purging installed but not shipped private
       headers
-  * debian/libunity-2d-private0.post*, debian/unity-2d-launcher.preinst:
+  * debian/unity-2d-launcher.preinst:
     - removed, deprecated as it was for the ppa migration
+  * debian/libunity-2d-private0.post*
+    - removed: ldconfig is generated directly by dh_makeshlibs as we don't pass
+      -n anymore
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 
