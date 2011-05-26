@@ -1,5 +1,31 @@
-unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (3.8.6-0ubuntu1) oneiric; urgency=low
 
+  * New upstream release:
+    - [launcher] Support static shortcuts in the quicklists. (LP: #669923)
+    - [launcher] Make sure the whole area of the item tile handle mouse events
+      (LP: #743402)
+    - [dash, launcher, spread] Added a new command line switch (-opengl) that
+      triggers the use of a QGLWidget for the QML viewport. (LP: #773397)
+    - [launcher] Fix the last shortcut text to display "0", not "10", to be
+      consistent with a typical keyboard layout. (LP: #743420)
+    - [launcher] Keyboard shortcuts for place entries (LP: #732637)
+    - <Meta>+T to open the trash. (LP: #771886)
+    - [launcher] Use appropriate icon for devices depending on their type
+      (instead of always showing a USB icon). (LP: #703309)
+    - [launcher] Grab the Meta+n (for 0 ≤ n ≤ 9) hotkeys at startup, and release
+      them only when exiting. (LP: #758650)
+    - Fix the byte order of images on Big Endian architectures (like PowerPC).
+      Original algorithm by Paul J. Wells, reworked for efficiency.
+      (LP: #758782)
+    - [launcher] Ensure all delegates are cached in order to improve smoothness
+      of scrolling on very low end platforms. (LP: #780566)
+    - [dash] Shortcuts expanded state are now persistent. (LP: #774437)
+    - [launcher] Match trash nautilus window with the trash item in the
+      launcher. (LP: #692444)
+    - [launcher] For the workspaces and window overviews, trigger Compiz's Expo
+      and Scale plugins if Compiz is running. If Compiz isn't running, said
+      plugins aren't enabled or the D-Bus plugin isn't enabled, fall back to
+      using unity-2d-spread. (LP: #760674, #715244)
   * debian/control:
     - remove deprecated transitional packages (only from maverick ppa or early
       natty alpha)
