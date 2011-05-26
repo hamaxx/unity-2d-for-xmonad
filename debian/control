@@ -3,11 +3,21 @@ Section: x11
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
-Build-Depends: cdbs, debhelper (>= 7),
-               cmake, bzr, libqt4-dev, libqt4-opengl-dev,
-               libglib2.0-dev, libwnck-dev,
-               libqtgconf-dev, libqtbamf-dev, libqtdee-dev, libdbusmenu-qt-dev,
-               libx11-dev, libindicator-dev, libgtk2.0-dev, libutouch-geis-dev,
+Build-Depends: debhelper (>= 7.0.50~),
+               dh-translations (>= 99),
+               cmake,
+               libqt4-dev,
+               libqt4-opengl-dev,
+               libglib2.0-dev,
+               libwnck-dev,
+               libqtgconf-dev,
+               libqtbamf-dev,
+               libqtdee-dev,
+               libdbusmenu-qt-dev,
+               libx11-dev,
+               libindicator-dev,
+               libgtk2.0-dev,
+               libutouch-geis-dev,
                libstartup-notification0-dev
 Standards-Version: 3.9.1
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
@@ -15,16 +25,16 @@ Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
 Package: unity-2d
 Architecture: all
 Depends: ${misc:Depends},
- unity-2d-launcher, unity-2d-panel, unity-2d-places, unity-2d-spread,
- metacity ( >= 2.30.3-0ubuntu5 ), gnome-session-bin
+         unity-2d-launcher,
+         unity-2d-panel,
+         unity-2d-places,
+         unity-2d-spread,
+         metacity (>= 2.30.3-0ubuntu5)
 Recommends: indicator-application, indicator-datetime, 
  indicator-me, indicator-messages, indicator-session, indicator-sound, 
  gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
  appmenu-gtk, appmenu-qt,
  gtk2-engines-pixbuf
-Provides: unity-2d-default-settings
-Breaks: unity-2d-default-settings (<= 0.4)
-Replaces: unity-2d-default-settings (<= 0.4)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -32,39 +42,23 @@ Description: Unity interface for non-accelerated graphics cards
  .
  Unity 2D is designed to run smoothly without any graphics acceleration.
 
-Package: unity-2d-default-settings
-Architecture: all
-Depends: ${misc:Depends}, unity-2d
-Description: Transitional package for upgrades to the new unity-2d package
- This is a transitional package to properly handle upgrading from natty
- pre-release installations of unity-2d and also for handling upgrades of 
- maverick installs from the unity-2d team PPA.
-
 Package: libunity-2d-private0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Breaks: libuqpanel0 ( <= 3.2.2-0ubuntu1 )
-Replaces: libuqpanel0
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
  project.
 
-Package: libunity-2d-private-dev
-Section: libdevel
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0 (= ${binary:Version})
-Breaks: libuqpanel-dev ( <= 3.2.2-0ubuntu1 )
-Replaces: libuqpanel-dev
-Description: Unity 2D shared library - development files
- This library is used to host common code used by several Unity 2D components
- .
- This package contains the development header files.
-
 Package: unity-2d-launcher
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-asset-pool, libqt4-svg, libunity-2d-private0
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         unity-asset-pool,
+         libunity-2d-private0,
+         libqt4-svg,
 Recommends: unity-place-files, unity-place-applications
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
@@ -74,7 +68,9 @@ Description: Unity 2D Launcher
  
 Package: unity-2d-panel
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libunity-2d-private0
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libunity-2d-private0
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
  various indicators. It is part of Unity 2D and can not run  as a standalone
@@ -82,7 +78,11 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-private0, libqt4-svg
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         unity-2d-launcher,
+         libunity-2d-private0,
+         libqt4-svg
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It is part of Unity 2D and can not run
@@ -90,7 +90,10 @@ Description: Unity 2D Places
 
 Package: unity-2d-spread
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, unity-2d-launcher, libunity-2d-private0,
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         unity-2d-launcher,
+         libunity-2d-private0,
          libqt4-svg
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
@@ -98,19 +101,3 @@ Description: Unity 2D Spread
  switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
-Package: libuqpanel0
-Architecture: any
-Depends: ${misc:Depends}, libunity-2d-private0
-Description: dummy transitional package for libuqpanel0
- This transitional package helps users transition to the
- libunity-2d-private0 package.  Once this package and its dependencies
- are installed you can safely remove it.
-
-Package: libuqpanel-dev
-Section: libdevel
-Architecture: any
-Depends: ${misc:Depends}, libunity-2d-private-dev
-Description: dummy transitional package for libuqpanel-dev
- This transitional package helps users transition to the
- libunity-2d-private-dev package.  Once this package and its dependencies
- are installed you can safely remove it.
