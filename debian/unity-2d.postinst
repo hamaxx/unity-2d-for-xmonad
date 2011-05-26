@@ -10,23 +10,23 @@ signal_daemons()
 case "$1" in
   configure|upgrade)
     if [ -x /usr/lib/gdm/gdm-set-default-session ] ; then
-        /usr/lib/gdm/gdm-set-default-session --keep-old unity-2d || true
+        /usr/lib/gdm/gdm-set-default-session --keep-old ubuntu-2d || true
     fi
     if which update-gconf-defaults >/dev/null 2>&1 ; then
-        mkdir -p /var/lib/gconf/unity-2d.mandatory
-        mkdir -p /var/lib/gconf/unity-2d.default
+        mkdir -p /var/lib/gconf/ubuntu-2d.mandatory
+        mkdir -p /var/lib/gconf/ubuntu-2d.default
     fi
   ;;
   triggered)
     for trigger in $2; do
       case $trigger in
-        /usr/share/gconf/unity-2d/mandatory)
-          update-gconf-defaults --source /usr/share/gconf/unity-2d/mandatory \
-          --destination /var/lib/gconf/unity-2d.mandatory --no-signal
+        /usr/share/gconf/ubuntu-2d/mandatory)
+          update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/mandatory \
+          --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
         ;;
-        /usr/share/gconf/unity-2d/default)
-          update-gconf-defaults --source /usr/share/gconf/unity-2d/default \
-          --destination /var/lib/gconf/unity-2d.default --no-signal
+        /usr/share/gconf/ubuntu-2d/default)
+          update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/default \
+          --destination /var/lib/gconf/ubuntu-2d.default --no-signal
         ;;
       esac
     done
@@ -39,9 +39,9 @@ esac
 
 # Upon installation/upgrade, regenerate all databases, because in this case 
 # there will be no trigger run
-update-gconf-defaults --source /usr/share/gconf/unity-2d/mandatory \
-                      --destination /var/lib/gconf/unity-2d.mandatory --no-signal
-update-gconf-defaults --source /usr/share/gconf/unity-2d/default \
-                      --destination /var/lib/gconf/unity-2d.default --no-signal
+update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/mandatory \
+                      --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
+update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/default \
+                      --destination /var/lib/gconf/ubuntu-2d.default --no-signal
 signal_daemons
 

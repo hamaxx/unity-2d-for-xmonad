@@ -25,6 +25,9 @@ unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
     - remove uneeded defaults and mandatory
     - remove some deprecated keys
     - the session is now called ubuntu-2d and not unity-2d anymore
+  * debian/unity-2d.preinst, debian/unity-2d.postinst
+    debian/unity-2d.postrm:
+    - take into account the natty -> oneiric migration with session name change
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 
