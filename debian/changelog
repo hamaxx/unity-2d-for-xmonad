@@ -16,6 +16,15 @@ unity-2d (3.8.4.1-0ubuntu2) UNRELEASED; urgency=low
   * debian/libunity-2d-private0.post*
     - removed: ldconfig is generated directly by dh_makeshlibs as we don't pass
       -n anymore
+  * don't install unity-2d session as it's in gnome-session now
+  * debian/unity-2d.install
+    debian/20_ubuntu-2d-gconf-default
+    debian/20_ubuntu-2d-gconf-mandatory
+    debian/gconf/ubuntu-2d.default.path
+    debian/gconf/ubuntu-2d.mandatory.path:
+    - remove uneeded defaults and mandatory
+    - remove some deprecated keys
+    - the session is now called ubuntu-2d and not unity-2d anymore
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 

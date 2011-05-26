@@ -1,8 +1,0 @@
-[GNOME Session]
-Name=Unity 2D
-Required=windowmanager;panel;filemanager;
-Required-windowmanager=metacity
-Required-panel=unity-2d-panel
-Required-filemanager=nautilus
-DefaultApps=gnome-settings-daemon;unity-2d-launcher;
-FallbackSession=classic-gnome

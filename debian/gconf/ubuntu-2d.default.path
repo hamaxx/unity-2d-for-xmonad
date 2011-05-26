@@ -1,0 +1,3 @@
+# Additional mandatory path for ubuntu-2d experience
+xml:readonly:/var/lib/gconf/ubuntu-2d.default
+
