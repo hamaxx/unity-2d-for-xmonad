@@ -79,6 +79,12 @@ MouseArea {
         }
     }
     onClicked: {
+        /* a "clicked" signal is emitted whenever the mouse is pressed and
+           released in a MouseArea, regardless of any intervening mouse
+           movements; for this reason, one is emitted also after a DragAndDrop
+           action, and we clearly don't want to process it.
+           The ignoreNextClick flag serves this purpose, and is set in the
+           onRelease handler. */
         if (ignoreNextClick) {
             ignoreNextClick = false
             return
