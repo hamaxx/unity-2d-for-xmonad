@@ -34,8 +34,6 @@ Recommends: gnome-settings-daemon,
             nautilus,
             policykit-1-gnome,
             gnome-power-manager, 
-            appmenu-gtk,
-            appmenu-qt,
             gtk2-engines-pixbuf
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
