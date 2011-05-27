@@ -30,11 +30,6 @@ Depends: ${misc:Depends},
          unity-2d-places,
          unity-2d-spread,
          metacity (>= 2.30.3-0ubuntu5)
-Recommends: gnome-settings-daemon,
-            nautilus,
-            policykit-1-gnome,
-            gnome-power-manager, 
-            gtk2-engines-pixbuf
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
