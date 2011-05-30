@@ -30,11 +30,6 @@ Depends: ${misc:Depends},
          unity-2d-places,
          unity-2d-spread,
          metacity (>= 2.30.3-0ubuntu5)
-Recommends: indicator-application, indicator-datetime, 
- indicator-me, indicator-messages, indicator-session, indicator-sound, 
- gnome-settings-daemon, nautilus, policykit-1-gnome, gnome-power-manager, 
- appmenu-gtk, appmenu-qt,
- gtk2-engines-pixbuf
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -59,7 +54,8 @@ Depends: ${shlibs:Depends},
          unity-asset-pool,
          libunity-2d-private0,
          libqt4-svg,
-Recommends: unity-place-files, unity-place-applications
+Recommends: unity-place-files,
+            unity-place-applications
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.
@@ -71,6 +67,14 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          libunity-2d-private0
+Provides: indicator-renderer
+Recommends: indicator-application,
+            indicator-appmenu,
+            indicator-datetime,
+            indicator-me,
+            indicator-messages,
+            indicator-session,
+            indicator-sound,
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
  various indicators. It is part of Unity 2D and can not run  as a standalone
