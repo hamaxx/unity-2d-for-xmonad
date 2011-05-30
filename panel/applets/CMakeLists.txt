@@ -35,6 +35,7 @@ set(uqapplets_SRCS
     appname/windowhelper.cpp
     common/applet.cpp
     homebutton/homebuttonapplet.cpp
+    homebutton/homebutton.cpp
     indicator/abstractindicator.cpp
     indicator/datetimeindicator.cpp
     indicator/indicatorapplet.cpp
