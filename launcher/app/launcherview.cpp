@@ -271,8 +271,7 @@ void LauncherView::onDrop(DeclarativeDragDropEvent* event)
     foreach (QUrl url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
-        }
-        else if (url.scheme().startsWith("http")) {
+        } else if (url.scheme().startsWith("http")) {
             emit webpageUrlDropped(url);
         }
     }

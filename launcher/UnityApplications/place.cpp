@@ -429,8 +429,8 @@ Place::activate(QString uri)
         /* Cannot set the desktop file to url.host(), because the QUrl constructor
            converts the host name to lower case to conform to the Nameprep
            RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
-           Ref: http://bugs.launchpad.net/unity-2d/+bug/723604 */
-        QString desktopFile = uri.right(uri.size() - uri.indexOf("://") - 3);
+           Ref: https://bugs.launchpad.net/unity-place-applications/+bug/784478 */
+        QString desktopFile = uri.mid(uri.indexOf("://") + 3);
         application.setDesktopFile(desktopFile);
         application.activate();
         return;

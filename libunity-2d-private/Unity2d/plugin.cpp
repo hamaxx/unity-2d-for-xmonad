@@ -34,6 +34,7 @@
 
 #include "mimedata.h"
 #include "dragdropevent.h"
+#include "dragitemwithurl.h"
 #include "dropitem.h"
 
 #include <QtDeclarative/qdeclarative.h>
@@ -76,6 +77,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");
 
     /* Custom drag’n’drop implementation in QML */
+    qmlRegisterType<DeclarativeDragItemWithUrl>(uri, 0, 1, "DragItemWithUrl");
     qmlRegisterType<DeclarativeDropItem>(uri, 0, 1, "DropItem");
     qmlRegisterType<DeclarativeMimeData>();
     qmlRegisterType<DeclarativeDragDropEvent>();

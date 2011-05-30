@@ -21,6 +21,13 @@ import Qt 4.7
 FocusScope {
     property bool enabled: true
 
+    /* Use to manually set the "pressed" state of the button. This is not
+       necessary in the normal use case, but is useful when a child item eats
+       the mouse events (e.g. a DragArea).
+       This is a clumsy workaround for the lack of a MouseProxy element
+       (see http://bugreports.qt.nokia.com/browse/QTBUG-13007). */
+    property bool pressed: false
+
     signal clicked
 
     MouseArea {
@@ -45,7 +52,7 @@ FocusScope {
     }
 
     state: {
-        if(mouse_area.pressed)
+        if(pressed || mouse_area.pressed)
             return "pressed"
         else if(mouse_area.containsMouse)
             return "selected"
