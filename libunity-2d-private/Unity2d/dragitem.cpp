@@ -19,6 +19,8 @@
 
 #include "dragitem.h"
 
+#include <QDeclarativeEngine>
+#include <QDeclarativeComponent>
 #include <QGraphicsSceneMouseEvent>
 #include <QApplication>
 #include <QDrag>
@@ -40,14 +42,14 @@ DeclarativeDragItem::~DeclarativeDragItem()
 {
 }
 
-QDeclarativeItem*
+QDeclarativeComponent*
 DeclarativeDragItem::delegate() const
 {
     return m_delegate;
 }
 
 void
-DeclarativeDragItem::setDelegate(QDeclarativeItem* delegate)
+DeclarativeDragItem::setDelegate(QDeclarativeComponent* delegate)
 {
     if (delegate != m_delegate) {
         m_delegate = delegate;
@@ -109,29 +111,34 @@ DeclarativeDragItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     drag->setMimeData(mimeData());
 
     if (m_delegate != NULL) {
-        /* Render the delegate to a pixmap. */
-        QGraphicsScene scene;
-        scene.addItem(m_delegate);
+        QObject* delegateObject = m_delegate->create(QDeclarativeEngine::contextForObject(this));
+        QDeclarativeItem* delegate = qobject_cast<QDeclarativeItem*>(delegateObject);
+        if (delegate != NULL) {
+            /* Render the delegate to a pixmap. */
+            QGraphicsScene scene;
+            scene.addItem(delegate);
 
-        QPixmap pixmap(scene.sceneRect().width(), scene.sceneRect().height());
-        bool compositing = QX11Info::isCompositingManagerRunning();
-        if (!compositing) {
-            pixmap.fill(Qt::transparent);
-        }
-        QPainter painter(&pixmap);
-        if (compositing) {
-            painter.setCompositionMode(QPainter::CompositionMode_Source);
-        } else {
-            /* Cheap solution to avoid aliasing: draw a solid white background. */
-            painter.setPen(Qt::white);
-            painter.setBrush(Qt::white);
-            painter.drawRoundedRect(scene.sceneRect(), 5, 5);
-        }
-        scene.render(&painter);
-        scene.removeItem(m_delegate);
+            QPixmap pixmap(scene.sceneRect().width(), scene.sceneRect().height());
+            bool compositing = QX11Info::isCompositingManagerRunning();
+            if (!compositing) {
+                pixmap.fill(Qt::transparent);
+            }
+            QPainter painter(&pixmap);
+            if (compositing) {
+                painter.setCompositionMode(QPainter::CompositionMode_Source);
+            } else {
+                /* Cheap solution to avoid aliasing: draw a solid white background. */
+                painter.setPen(Qt::white);
+                painter.setBrush(Qt::white);
+                painter.drawRoundedRect(scene.sceneRect(), 5, 5);
+            }
+            scene.render(&painter);
+            scene.removeItem(delegate);
+            delete delegate;
 
-        drag->setPixmap(pixmap);
-        drag->setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2));
+            drag->setPixmap(pixmap);
+            drag->setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2));
+        }
     }
 
     Qt::DropAction action = drag->exec(m_supportedActions, m_defaultAction);

@@ -47,14 +47,16 @@ RendererGrid {
                     else return Qt.LinkAction
                 }
                 supportedActions: defaultAction
-                delegate: Image {
-                    source: icon.source
-                    width: icon.width
-                    height: icon.height
-                    fillMode: icon.fillMode
-                    sourceSize.width: width
-                    sourceSize.height: height
-                    asynchronous: true
+                delegate: Component {
+                    Image {
+                        source: icon.source
+                        width: icon.width
+                        height: icon.height
+                        fillMode: icon.fillMode
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        asynchronous: true
+                    }
                 }
                 onPressed: parent.pressed = true
                 onReleased: {

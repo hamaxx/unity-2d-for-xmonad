@@ -23,12 +23,13 @@
 #include <QDeclarativeItem>
 
 class QMimeData;
+class QDeclarativeComponent;
 
 class DeclarativeDragItem : public QDeclarativeItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QDeclarativeItem* delegate READ delegate WRITE setDelegate NOTIFY delegateChanged RESET resetDelegate)
+    Q_PROPERTY(QDeclarativeComponent* delegate READ delegate WRITE setDelegate NOTIFY delegateChanged RESET resetDelegate)
     Q_PROPERTY(Qt::DropActions supportedActions READ supportedActions WRITE setSupportedActions NOTIFY supportedActionsChanged)
     Q_PROPERTY(Qt::DropAction defaultAction READ defaultAction WRITE setDefaultAction NOTIFY defaultActionChanged)
 
@@ -37,8 +38,8 @@ public:
     ~DeclarativeDragItem();
 
     // getters and setters
-    QDeclarativeItem* delegate() const;
-    void setDelegate(QDeclarativeItem* delegate);
+    QDeclarativeComponent* delegate() const;
+    void setDelegate(QDeclarativeComponent* delegate);
     void resetDelegate();
     Qt::DropActions supportedActions() const;
     void setSupportedActions(Qt::DropActions actions);
@@ -67,7 +68,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
 private:
-    QDeclarativeItem* m_delegate;
+    QDeclarativeComponent* m_delegate;
     Qt::DropActions m_supportedActions;
     Qt::DropAction m_defaultAction;
 };
