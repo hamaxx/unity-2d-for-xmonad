@@ -38,6 +38,9 @@ FocusScope {
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0
+
+        clip: true
+        cached: false
     }
 
     Windows {

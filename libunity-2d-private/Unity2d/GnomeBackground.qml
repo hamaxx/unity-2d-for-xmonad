@@ -24,9 +24,13 @@ import Unity2d 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
-
+    
     /* Avoid redraw at rendering */
-    effect: CacheEffect {}
+    CacheEffect {
+        id: cacheEffect
+    }
+    property bool cached: true
+    effect: (cached) ? cacheEffect : null
 
     GConfItem {
         id: primary_color
