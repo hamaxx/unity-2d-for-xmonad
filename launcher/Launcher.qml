@@ -36,6 +36,16 @@ DropItem {
         opacity: 0.66
         visible: screen.isCompositingManagerRunning
     }
+    
+    Image {
+        id: border
+
+        width: 1
+        height: parent.height
+        anchors.right: parent.right
+        fillMode: Image.TileVertically
+        source: "artwork/background.png"
+    }
 
     onDragEnter: launcherView.onDragEnter(event)
     onDrop: launcherView.onDrop(event)
