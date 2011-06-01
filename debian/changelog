@@ -1,10 +1,10 @@
-unity-2d (3.8.6-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (3.8.6-0ubuntu2) oneiric; urgency=low
 
   * debian/unity-2d.postinst, debian/unity-2d.postrm:
     - remove the magic to set unity-2d in oneiric as the default session in gdm
       as it's now installed on the ubuntu CD.
 
- -- Didier Roche <didrocks@ubuntu.com>  Wed, 01 Jun 2011 09:40:54 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 01 Jun 2011 09:42:21 +0200
 
 unity-2d (3.8.6-0ubuntu1) oneiric; urgency=low
 
