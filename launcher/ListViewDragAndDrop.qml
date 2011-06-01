@@ -75,7 +75,9 @@ MouseArea {
     onCanceled: {
         /* The parent flickable (dnd.parent) can steal the mouse grab and when
            that happens onReleased will not be trigerred and the dragging will
-           not be stopped anymore. Do it manually. */
+           not be stopped anymore. Do it manually.
+           Ref.: https://bugs.launchpad.net/unity-2d/+bug/768812
+        */
         drop()
     }
     onReleased: {
