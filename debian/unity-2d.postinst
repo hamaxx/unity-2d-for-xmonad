@@ -9,9 +9,6 @@ signal_daemons()
 
 case "$1" in
   configure|upgrade)
-    if [ -x /usr/lib/gdm/gdm-set-default-session ] ; then
-        /usr/lib/gdm/gdm-set-default-session --keep-old ubuntu-2d || true
-    fi
     if which update-gconf-defaults >/dev/null 2>&1 ; then
         mkdir -p /var/lib/gconf/ubuntu-2d.mandatory
         mkdir -p /var/lib/gconf/ubuntu-2d.default

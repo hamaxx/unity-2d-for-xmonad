@@ -15,9 +15,6 @@ case "$1" in
     if [ -d /var/lib/gconf/ubuntu-2d.default ]; then
         rm -rf /var/lib/gconf/ubuntu-2d.default
     fi
-    if [ -x /usr/lib/gdm/gdm-set-default-session ] ; then
-        /usr/lib/gdm/gdm-set-default-session --remove ubuntu-2d || true
-    fi
     ;;
 esac
 
