@@ -65,6 +65,9 @@ public Q_SLOTS:
 private Q_SLOTS:
     void onEmptyTriggered();
 
+    static void fileChangedProxy(GFileMonitor *file_monitor, GFile *child, GFile *other_file, GFileMonitorEvent event_type, gpointer user_data);
+    void fileChanged(GFileMonitor *file_monitor, GFile *child, GFile *other_file, GFileMonitorEvent event_type);
+
 private:
     void open() const;
     void empty() const;
@@ -74,6 +77,9 @@ private:
     bool isTrashWindow(WnckWindow* window) const;
 
     static void recursive_delete(GFile* dir);
+
+    void start_monitoring_trash();
+    QString iconName;
 
     GFile* m_trash;
 };

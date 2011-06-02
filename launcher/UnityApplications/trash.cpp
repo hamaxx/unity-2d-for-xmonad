@@ -39,6 +39,8 @@ Trash::Trash()
 {
     m_trash = g_file_new_for_uri(TRASH_URI);
     setShortcutKey(Qt::Key_T);
+    iconName = "unity-icon-theme/user-trash";   //FIXME: detect if Trash is full or empty at start
+    start_monitoring_trash();
 }
 
 Trash::Trash(const Trash& other)
@@ -125,7 +127,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return "unity-icon-theme/user-trash";
+    return iconName;
 }
 
 bool
@@ -326,3 +328,46 @@ Trashes::data(const QModelIndex& index, int role) const
     return QVariant::fromValue(m_trash);
 }
 
+void
+Trash::fileChangedProxy(GFileMonitor      *file_monitor,
+              GFile             *child,
+              GFile             *other_file,
+              GFileMonitorEvent  event_type,
+              gpointer           data)
+{
+    Trash* _this = static_cast<Trash*>(data);
+    return _this->fileChanged(file_monitor, child, other_file, event_type);
+}
+
+void
+Trash::fileChanged(GFileMonitor      *file_monitor,
+              GFile             *child,
+              GFile             *other_file,
+              GFileMonitorEvent  event_type)
+{
+    switch (event_type)
+    {
+    case G_FILE_MONITOR_EVENT_DELETED:
+      iconName = "unity-icon-theme/user-trash";
+      emit iconChanged(icon());
+      break;
+    case G_FILE_MONITOR_EVENT_CREATED:
+      iconName = "unity-icon-theme/user-trash-full";
+      emit iconChanged(icon());
+      break;
+    default: ;
+    }
+}
+
+void
+Trash::start_monitoring_trash(void)
+{
+  GFile *file;
+  GFileMonitor *monitor;
+
+  file = g_file_new_for_uri ("trash://");
+  monitor = g_file_monitor_directory (file, G_FILE_MONITOR_NONE, NULL, NULL);
+  g_object_unref (file);
+
+  g_signal_connect(monitor, "changed", G_CALLBACK(Trash::fileChangedProxy), this);
+}
