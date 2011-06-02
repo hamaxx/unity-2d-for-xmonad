@@ -77,10 +77,10 @@ private:
     bool isTrashWindow(WnckWindow* window) const;
 
     static void recursive_delete(GFile* dir);
-
     void start_monitoring_trash();
-    QString iconName;
+    void initTrashIcon();
 
+    QString iconName;
     GFile* m_trash;
 };
 

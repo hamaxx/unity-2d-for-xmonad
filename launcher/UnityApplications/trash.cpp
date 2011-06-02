@@ -39,7 +39,7 @@ Trash::Trash()
 {
     m_trash = g_file_new_for_uri(TRASH_URI);
     setShortcutKey(Qt::Key_T);
-    iconName = "unity-icon-theme/user-trash";   //FIXME: detect if Trash is full or empty at start
+    initTrashIcon();
     start_monitoring_trash();
 }
 
@@ -348,11 +348,11 @@ Trash::fileChanged(GFileMonitor      *file_monitor,
     switch (event_type)
     {
     case G_FILE_MONITOR_EVENT_DELETED:
-      iconName = "unity-icon-theme/user-trash";
+      initTrashIcon();
       emit iconChanged(icon());
       break;
     case G_FILE_MONITOR_EVENT_CREATED:
-      iconName = "unity-icon-theme/user-trash-full";
+      initTrashIcon();
       emit iconChanged(icon());
       break;
     default: ;
@@ -370,4 +370,13 @@ Trash::start_monitoring_trash(void)
   g_object_unref (file);
 
   g_signal_connect(monitor, "changed", G_CALLBACK(Trash::fileChangedProxy), this);
+}
+
+void
+Trash::initTrashIcon(void)
+{
+    if(count() == 0)
+        iconName = "unity-icon-theme/user-trash";
+    else
+        iconName = "unity-icon-theme/user-trash-full";
 }
