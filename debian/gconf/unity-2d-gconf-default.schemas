@@ -1,0 +1,157 @@
+<gconfschemafile>
+<schemalist>
+	<schema>
+		<key>/apps/gnome-power-manager/lock/use_screensaver_settings</key>
+		<applyto>/gnome-power-manager/lock/use_screensaver_settings</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/gnome-power-manager/general/use_time_for_policy</key>
+		<applyto>/gnome-power-manager/general/use_time_for_policy</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/unity-2d/launcher/favorites</key>
+		<applyto>/unity-2d/launcher/favorites</applyto>
+		<owner>unity-2d</owner>
+		<type>list</type>
+		<default>[ubiquity-gtkui.desktop,nautilus-home.desktop,firefox.desktop,libreoffice-writer.desktop,libreoffice-calc.desktop,libreoffice-impress.desktop,ubuntu-software-center.desktop,ubuntuone-control-panel-gtk.desktop]</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/unity-2d/launcher/hide_mode</key>
+		<applyto>/unity-2d/launcher/hide_mode</applyto>
+		<owner>unity-2d</owner>
+		<type>int</type>
+		<default>2</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/unity-2d/launcher/use_strut</key>
+		<applyto>/unity-2d/launcher/use_strut</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/unity-2d/launcher/super_key_enable</key>
+		<applyto>/unity-2d/launcher/super_key_enable</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/gnome/applications/window_manager/default</key>
+		<applyto>/gnome/applications/window_manager/default</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>/usr/bin/metacity</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/gnome/applications/window_manager/current</key>
+		<applyto>/gnome/applications/window_manager/current</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>/usr/bin/metacity</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/show_maximized_titlebars</key>
+		<applyto>/metacity/general/show_maximized_titlebars</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/auto_maximize_windows</key>
+		<applyto>/metacity/general/auto_maximize_windows</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/capture_before_unmap</key>
+		<applyto>/metacity/general/capture_before_unmap</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/compositing_manager</key>
+		<applyto>/metacity/general/compositing_manager</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/compositor_effects</key>
+		<applyto>/metacity/general/compositor_effects</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/apps/metacity/general/theme</key>
+		<applyto>/metacity/general/theme</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>Ambiance</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/gnome/interface/gtk_theme</key>
+		<applyto>/gnome/interface/gtk_theme</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>Ambiance</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/gnome/interface/icon_theme</key>
+		<applyto>/gnome/interface/icon_theme</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>ubuntu-mono-dark</default>
+		<locale name="C"/>
+	</schema>
+
+	<schema>
+		<key>/desktop/gnome/peripherals/mouse/cursor_theme</key>
+		<applyto>/gnome/peripherals/mouse/cursor_theme</applyto>
+		<owner>unity-2d</owner>
+		<type>string</type>
+		<default>DMZ-White</default>
+		<locale name="C"/>
+	</schema>
+</schemalist>
+</gconfschemafile>
+
