@@ -37,6 +37,8 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    Q_INVOKABLE virtual bool removeRows(int row, int count,
+                                        const QModelIndex& parent = QModelIndex());
 
     Q_INVOKABLE void load();
     Q_INVOKABLE void unload();

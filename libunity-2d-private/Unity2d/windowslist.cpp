@@ -17,7 +17,7 @@
 #include <QRegExp>
 #include <QApplication>
 #include <QWidget>
-
+#include <QList>
 #include <debug_p.h>
 #include "windowslist.h"
 #include "windowinfo.h"
@@ -209,4 +209,34 @@ void WindowsList::updateWorkspaceRole(int workspace)
             Q_EMIT dataChanged(changedItem, changedItem);
         }
     }
+}
+
+bool WindowsList::removeRows(int row, int count, const QModelIndex& parent)
+{
+    if (row < 0 || row >= m_windows.count() || count <= 0) {
+        return false;
+    }
+    count = qMin(count, m_windows.count() - row);
+
+    beginRemoveRows(parent, row, row + count - 1);
+    
+    QMutableListIterator<WindowInfo*> i(m_windows);
+    i.next();
+
+    int current = 0;
+    while (count > 0) {
+        if (current >= row) {
+          i.remove();
+          qDebug() << "removed";
+          count--;
+        }
+        
+        if (i.hasNext()) {
+            i.next();
+        }
+        current++;
+    }
+    
+    endRemoveRows();
+    return true;
 }
