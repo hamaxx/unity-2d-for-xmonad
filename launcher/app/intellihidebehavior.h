@@ -22,6 +22,7 @@ struct _WnckWindow;
 class QTimer;
 
 class Unity2dPanel;
+class EdgeHitDetector;
 
 /**
  * This class implements the Intellihide behavior of the launcher
@@ -39,6 +40,8 @@ protected:
 private Q_SLOTS:
     void updateVisibility();
     void updateActiveWindowConnections();
+    void showPanel();
+    void hidePanel();
 
 private:
     Q_DISABLE_COPY(IntelliHideBehavior);
@@ -48,12 +51,15 @@ private:
         HiddenPanel
     };
     QTimer* m_updateVisibilityTimer;
+    EdgeHitDetector* m_edgeHitDetector;
 
     struct _WnckWindow* m_activeWindow;
 
     void disconnectFromGSignals();
 
     bool isMouseForcingVisibility() const;
+
+    void createEdgeHitDetector();
 };
 
 #endif /* INTELLIHIDEBEHAVIOR_H */

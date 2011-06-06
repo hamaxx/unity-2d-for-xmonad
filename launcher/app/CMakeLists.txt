@@ -9,6 +9,7 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 set(launcher_SRCS
     abstractvisibilitybehavior.cpp
     autohidebehavior.cpp
+    edgehitdetector.cpp
     forcevisiblebehavior.cpp
     visibilitycontroller.cpp
     intellihidebehavior.cpp
@@ -20,6 +21,7 @@ set(launcher_SRCS
 set(launcher_MOC_HDRS
     abstractvisibilitybehavior.h
     autohidebehavior.h
+    edgehitdetector.h
     forcevisiblebehavior.h
     visibilitycontroller.h
     intellihidebehavior.h
