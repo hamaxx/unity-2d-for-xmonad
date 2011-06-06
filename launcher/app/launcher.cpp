@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     /* Panel containing the QML declarative view */
-    Unity2dPanel panel;
+    Unity2dPanel panel(true);
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
 
