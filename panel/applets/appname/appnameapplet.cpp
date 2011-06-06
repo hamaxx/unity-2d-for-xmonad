@@ -221,7 +221,7 @@ void AppNameApplet::updateWidgets()
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
     bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
-        && (window()->geometry().contains(QCursor::pos())
+        && (geometry().contains(window()->mapFromGlobal(QCursor::pos()))
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
@@ -258,26 +258,12 @@ void AppNameApplet::updateWidgets()
     d->m_menuBarWidget->setVisible(showMenu);
 }
 
-bool AppNameApplet::event(QEvent* event)
-{
-    if (event->type() == QEvent::ParentChange) {
-        // Install an event filter on the panel to detect mouse over
-        window()->installEventFilter(this);
-    }
-    return Applet::event(event);
+void AppNameApplet::enterEvent(QEvent*) {
+    updateWidgets();
 }
 
-bool AppNameApplet::eventFilter(QObject*, QEvent* event)
-{
-    switch (event->type()) {
-    case QEvent::HoverEnter:
-    case QEvent::HoverLeave:
-        updateWidgets();
-        break;
-    default:
-        break;
-    }
-    return false;
+void AppNameApplet::leaveEvent(QEvent*) {
+    updateWidgets();
 }
 
 } // namespace
