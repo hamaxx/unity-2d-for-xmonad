@@ -227,7 +227,6 @@ bool WindowsList::removeRows(int row, int count, const QModelIndex& parent)
     while (count > 0) {
         if (current >= row) {
           i.remove();
-          qDebug() << "removed";
           count--;
         }
         
