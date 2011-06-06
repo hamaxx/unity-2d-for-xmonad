@@ -66,7 +66,7 @@ private Q_SLOTS:
     void onEmptyTriggered();
 
     static void fileChangedProxy(GFileMonitor *file_monitor, GFile *child, GFile *other_file, GFileMonitorEvent event_type, gpointer user_data);
-    void fileChanged(/*GFileMonitor *file_monitor, GFile *child, GFile *other_file, GFileMonitorEvent event_type */);
+    void fileChanged();
 
 private:
     void open() const;

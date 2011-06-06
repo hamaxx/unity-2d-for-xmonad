@@ -337,21 +337,18 @@ Trash::fileChangedProxy(GFileMonitor      *file_monitor,
               gpointer           data)
 {
     Trash* _this = static_cast<Trash*>(data);
+
     switch (event_type)
     {
         case (G_FILE_MONITOR_EVENT_DELETED || G_FILE_MONITOR_EVENT_CREATED):
-        return _this->fileChanged(/*file_monitor, child, other_file, event_type */);
+        return _this->fileChanged();
         break;
     default: ;
     }
-    return _this->fileChanged(/*file_monitor, child, other_file, event_type */);
 }
 
 void
-Trash::fileChanged(/*GFileMonitor      *file_monitor,
-              GFile             *child,
-              GFile             *other_file,
-              GFileMonitorEvent  event_type*/)
+Trash::fileChanged()
 {
     updateTrashIcon();
     emit iconChanged(icon());
