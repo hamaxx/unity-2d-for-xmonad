@@ -244,8 +244,9 @@ bool ListAggregatorModel::removeRows(int row, int count,
         
         int removeCount = qMin(count, model->rowCount() - removeAt);
         model->removeRows(removeAt, removeCount);
-        
-        if (++removed >= count) {
+        removed += removeCount;
+
+        if (removed >= count) {
             break;
         }
     }

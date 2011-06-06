@@ -219,23 +219,10 @@ bool WindowsList::removeRows(int row, int count, const QModelIndex& parent)
     count = qMin(count, m_windows.count() - row);
 
     beginRemoveRows(parent, row, row + count - 1);
-    
-    QMutableListIterator<WindowInfo*> i(m_windows);
-    i.next();
 
-    int current = 0;
-    while (count > 0) {
-        if (current >= row) {
-          i.remove();
-          count--;
-        }
-        
-        if (i.hasNext()) {
-            i.next();
-        }
-        current++;
-    }
-    
+    for (int i = 0; i < count; i++) {
+        m_windows.removeAt(row);
+
     endRemoveRows();
     return true;
 }
