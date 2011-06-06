@@ -221,7 +221,7 @@ void AppNameApplet::updateWidgets()
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
     bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
-        && (geometry().contains(window()->mapFromGlobal(QCursor::pos()))
+        && (rect().contains(mapFromGlobal(QCursor::pos()))
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
