@@ -41,8 +41,8 @@ public:
     ~AppNameApplet();
 
 protected:
-    bool event(QEvent*); // reimp
-    bool eventFilter(QObject*, QEvent*); // reimp
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
 
 private Q_SLOTS:
     void updateWidgets();
