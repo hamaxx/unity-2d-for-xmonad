@@ -222,6 +222,7 @@ bool WindowsList::removeRows(int row, int count, const QModelIndex& parent)
 
     for (int i = 0; i < count; i++) {
         m_windows.removeAt(row);
+    }
 
     endRemoveRows();
     return true;
