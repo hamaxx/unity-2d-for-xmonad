@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     /* Panel containing the QML declarative view */
-    Unity2dPanel panel;
+    Unity2dPanel panel(true);
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
 
@@ -116,9 +116,6 @@ int main(int argc, char *argv[])
     LauncherView *launcherView = new LauncherView(&panel);
     launcherView->setUseOpenGL(arguments.contains("-opengl"));
 
-    /* FIXME: possible optimisations */
-//    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);
-//    launcherView->setAttribute(Qt::WA_NoSystemBackground);
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();
 

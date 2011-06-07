@@ -24,11 +24,13 @@ import Unity2d 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
-    clip: true
-
-// FIXME: disabled since it doesn't work properly with a size animation
-//    /* Avoid redraw at rendering */
-//    effect: CacheEffect {}
+    
+    /* Avoid redraw at rendering */
+    CacheEffect {
+        id: cacheEffect
+    }
+    property bool cached: true
+    effect: (cached) ? cacheEffect : null
 
     GConfItem {
         id: primary_color
@@ -61,6 +63,8 @@ Item {
 
         visible: picture_filename.value
         source: {
+            if (!visible) return ""
+            
             /* FIXME: Because /usr/share/backgrounds/warty-final-ubuntu.png is
                       actually a jpeg and Qt relies by default on the extension
                       that particular background fails to load. We workaround
@@ -83,8 +87,8 @@ Item {
         height: screen.geometry.height
 
         smooth: true
-        x: - launcherMaximumWidth
-        y: - screen.availableGeometry.y
+        x: screen.availableGeometry.x
+        y: -screen.availableGeometry.y
 
         /* Possible modes are:
             - "wallpaper"

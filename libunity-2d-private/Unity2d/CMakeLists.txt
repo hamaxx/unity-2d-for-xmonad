@@ -34,6 +34,8 @@ set(unity-2d-private-qml_MOC_HDRS
     dropitem.h
     )
 
+file(GLOB unity-2d-private-qml_QML *.qml)
+
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})
 
 # Build
@@ -65,7 +67,7 @@ install(TARGETS unity-2d-private-qml
     LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
     )
 
-install(FILES qmldir
+install(FILES qmldir ${unity-2d-private-qml_QML}
     DESTINATION ${IMPORT_INSTALL_DIR}
     )
 

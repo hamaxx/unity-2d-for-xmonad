@@ -23,10 +23,26 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 DropItem {
     id: launcher
 
-    Image {
-        id: background
-
+    GnomeBackground {
         anchors.fill: parent
+        overlay_color: "black"
+        overlay_alpha: 0.66
+        visible: !screen.isCompositingManagerRunning
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
+        opacity: 0.66
+        visible: screen.isCompositingManagerRunning
+    }
+    
+    Image {
+        id: border
+
+        width: 1
+        height: parent.height
+        anchors.right: parent.right
         fillMode: Image.TileVertically
         source: "artwork/background.png"
     }

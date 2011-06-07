@@ -50,7 +50,7 @@ public:
         TopEdge
     };
 
-    Unity2dPanel(QWidget* parent = 0);
+    Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
     ~Unity2dPanel();
 
     void setEdge(Edge);

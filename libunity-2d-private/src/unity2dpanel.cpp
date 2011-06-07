@@ -131,7 +131,7 @@ struct Unity2dPanelPrivate
     }
 };
 
-Unity2dPanel::Unity2dPanel(QWidget* parent)
+Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
 : QWidget(parent)
 , d(new Unity2dPanelPrivate)
 {
@@ -158,7 +158,13 @@ Unity2dPanel::Unity2dPanel(QWidget* parent)
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
-    setAutoFillBackground(true);
+
+    if (QX11Info::isCompositingManagerRunning() && requiresTransparency) {
+        setAttribute(Qt::WA_TranslucentBackground);
+    } else {
+        setAutoFillBackground(true);
+    }
+    
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
 }
 
