@@ -46,6 +46,7 @@ extern "C" {
 #include "screeninfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
+#include "iconutilities.h"
 
 #include "mimedata.h"
 #include "dragdropevent.h"
@@ -114,6 +115,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
+
+    qmlRegisterType<IconUtilities>(uri, 0, 1, "IconUtilities");
+
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

@@ -41,6 +41,7 @@ set(unity-2d-private-qml_SRCS
     launchermenu.cpp
     webfavorite.cpp
     workspaces.cpp
+    iconutilities.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
@@ -70,6 +71,7 @@ set(unity-2d-private-qml_MOC_HDRS
     launchermenu.h
     webfavorite.h
     workspaces.h
+    iconutilities.h
     )
 
 file(GLOB unity-2d-private-qml_QML *.qml)

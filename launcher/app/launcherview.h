@@ -40,7 +40,6 @@ class LauncherView : public Unity2DDeclarativeView
 
 public:
     explicit LauncherView(QWidget* parent = NULL);
-    Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
     Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
     Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
