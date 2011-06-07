@@ -11,8 +11,11 @@ unity-2d (3.8.6-0ubuntu2) UNRELEASED; urgency=low
     - do not install usr/lib/qt4/imports/UnityApplications/ anylonger as all of
       UnityApplications features have been moved to the Unity2d QML plugin
       installed by libunity-2d-private0
+  * debian/control:
+    - unity-2d-places and unity-2d-spread do not depend on unity-2d-launcher.
+      All they need is now in libunity-2d-private0.
 
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 07 Jun 2011 18:41:45 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 07 Jun 2011 18:53:52 +0200
 
 unity-2d (3.8.6-0ubuntu1) natty; urgency=low
 
