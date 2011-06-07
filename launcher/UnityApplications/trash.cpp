@@ -337,7 +337,8 @@ Trash::fileChangedProxy(GFileMonitor      *file_monitor,
               gpointer           data)
 {
     if (event_type == G_FILE_MONITOR_EVENT_DELETED || event_type == G_FILE_MONITOR_EVENT_CREATED) {
-       (static_cast<Trash*>(data))->fileChanged(); }
+       (static_cast<Trash*>(data))->fileChanged();
+    }
 }
 
 void
