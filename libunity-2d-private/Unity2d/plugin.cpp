@@ -122,7 +122,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     // XSetErrorHandler(_x_errhandler);
 
-    engine->addImageProvider(QString("blended"), new BlendedImageProvider);
+    engine->addImageProvider(QString("blended"), new BlendedImageProvider(engine->baseUrl()));
     engine->addImageProvider(QString("window"), new WindowImageProvider);
     engine->addImageProvider(QString("icons"), new IconImageProvider);
 

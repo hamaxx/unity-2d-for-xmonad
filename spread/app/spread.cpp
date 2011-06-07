@@ -79,13 +79,6 @@ int main(int argc, char *argv[])
         view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }
 
-    /* This is needed by GnomeBackground.qml (see explanation in there)
-       The dash provides already the symlink needed to for the default
-       wallpaper to work, so we just re-use it instead of having our own here
-       in the spread too. FIXME: this should be removed when spread and dash
-       are merged together. */
-    view.rootContext()->setContextProperty("engineBaseUrl", unity2dDirectory() + "/places/");
-
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
               instantiated on the QML side */

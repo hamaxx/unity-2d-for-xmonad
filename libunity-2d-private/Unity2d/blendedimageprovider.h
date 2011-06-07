@@ -18,13 +18,17 @@
 #define BLENDEDIMAGEPROVIDER_H
 
 #include <QDeclarativeImageProvider>
+#include <QUrl>
 
 class BlendedImageProvider : public QDeclarativeImageProvider
 {
 public:
-    BlendedImageProvider();
+    BlendedImageProvider(QUrl baseUrl);
     ~BlendedImageProvider();
     virtual QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+
+private:
+    QUrl m_baseUrl;
 };
 
 #endif // BLENDEDIMAGEPROVIDER_H

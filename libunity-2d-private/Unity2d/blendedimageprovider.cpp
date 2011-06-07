@@ -18,7 +18,8 @@
 #include <QPainter>
 #include <debug_p.h>
 
-BlendedImageProvider::BlendedImageProvider() : QDeclarativeImageProvider(QDeclarativeImageProvider::Image)
+BlendedImageProvider::BlendedImageProvider(QUrl baseUrl) : QDeclarativeImageProvider(QDeclarativeImageProvider::Image),
+                                                           m_baseUrl(baseUrl)
 {
 }
 
@@ -41,6 +42,10 @@ QImage BlendedImageProvider::requestImage(const QString &id, QSize *size, const 
         UQ_WARNING << "BlendedImageProvider: filename can't be empty.";
         return QImage();
     }
+
+    /* Merge baseUrl with fileName. If fileName is an absolute path, the result
+       will be fileName itself. */
+    fileName = m_baseUrl.resolved(QUrl::fromLocalFile(fileName)).toLocalFile();
 
     QString colorName = list[2];
     if (!QColor::isValidColor(colorName)) {
