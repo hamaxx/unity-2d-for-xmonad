@@ -72,9 +72,6 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
     if (!isRunningInstalled()) {
-        /* Spread.qml imports Unity2d, which is part of the launcher
-           component */
-        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Spread.qml imports Unity2d */
         view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }
