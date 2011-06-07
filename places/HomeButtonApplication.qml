@@ -21,7 +21,7 @@ import Qt 4.7
    - ImageProvider serving image://icons/theme_name/icon_name
    - LauncherApplication
 */
-import UnityApplications 1.0
+import Unity2d 1.0
 import gconf 1.0
 
 HomeButton {

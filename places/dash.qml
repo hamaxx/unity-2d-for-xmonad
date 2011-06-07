@@ -17,9 +17,8 @@
  */
 
 import Qt 4.7
-import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
 import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
-import Unity2d 1.0 /* Necessary for GnomeBackground */
+import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
 
 Item {
     id: dash

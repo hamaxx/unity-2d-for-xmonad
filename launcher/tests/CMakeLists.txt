@@ -7,7 +7,6 @@ macro(launcher_tests)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
             uqlauncher
-            UnityApplications
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
@@ -19,7 +18,6 @@ endmacro(launcher_tests)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../app
-    ${CMAKE_CURRENT_SOURCE_DIR}/../UnityApplications
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     ${QTGCONF_INCLUDE_DIRS}
@@ -28,7 +26,6 @@ include_directories(
 enable_testing()
 
 launcher_tests(
-    launchermenutest
     launcherviewtest
     )
 

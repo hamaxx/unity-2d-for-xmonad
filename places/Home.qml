@@ -17,8 +17,7 @@
  */
 
 import Qt 4.7
-import UnityApplications 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
-import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
+import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
 import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
 
 Item {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-04-06 23:13+0200\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr ""
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr ""
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr ""
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr ""
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr ""
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr ""
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr ""
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr ""
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr ""
+
 #: places/SearchRefine.qml:61
 msgid "Refine search"
 msgstr ""
@@ -26,82 +75,37 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: places/GroupHeader.qml:86
-#, qt-format
-msgid "See %1 more results"
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
 msgstr ""
 
-#: places/GroupHeader.qml:86
-msgid "See fewer results"
-msgstr ""
-
-#: places/Home.qml:80
-msgid "Shortcuts"
-msgstr ""
-
-#: places/Home.qml:193
-msgid "Media Apps"
-msgstr ""
-
-#: places/Home.qml:199
-msgid "Internet Apps"
-msgstr ""
-
-#: places/Home.qml:205
-msgid "More Apps"
-msgstr ""
-
-#: places/Home.qml:211
-msgid "Find Files"
-msgstr ""
-
-#: places/Home.qml:218
-msgid "Browse the Web"
-msgstr ""
-
-#: places/Home.qml:223
-msgid "View Photos"
-msgstr ""
-
-#: places/Home.qml:228
-msgid "Check Email"
-msgstr ""
-
-#: places/Home.qml:233
-msgid "Listen to Music"
-msgstr ""
-
-#: launcher/UnityApplications/trash.cpp:74
+#: libunity-2d-private/Unity2d/trash.cpp:125
 msgid "Trash"
 msgstr ""
 
-#: launcher/UnityApplications/trash.cpp:200
+#: libunity-2d-private/Unity2d/trash.cpp:255
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
 msgstr[0] ""
 msgstr[1] ""
 
-#: launcher/UnityApplications/trash.cpp:207
+#: libunity-2d-private/Unity2d/trash.cpp:262
 msgid "Empty Trash"
 msgstr ""
 
-#: launcher/UnityApplications/launcherapplication.cpp:844
-msgid "Keep In Launcher"
-msgstr ""
-
-#: launcher/UnityApplications/launcherapplication.cpp:844
-msgid "Remove From Launcher"
-msgstr ""
-
-#: launcher/UnityApplications/launcherapplication.cpp:851
-msgid "Quit"
-msgstr ""
-
-#: launcher/UnityApplications/workspaces.cpp:70
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
 msgid "Workspaces"
 msgstr ""
 
-#: launcher/UnityApplications/launcherdevice.cpp:228
-msgid "Eject"
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep In Launcher"
+msgstr ""
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove From Launcher"
+msgstr ""
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
 msgstr ""
