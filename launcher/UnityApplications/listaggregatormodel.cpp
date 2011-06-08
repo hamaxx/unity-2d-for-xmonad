@@ -222,7 +222,7 @@ ListAggregatorModel::get(int row) const
 bool ListAggregatorModel::removeRows(int row, int count,
                                     const QModelIndex& parent)
 {
-    if (row < 0) {
+    if (row < 0 || row >= rowCount(parent) || count <= 0) {
         return false;
     }
  
@@ -242,7 +242,7 @@ bool ListAggregatorModel::removeRows(int row, int count,
             continue;
         }
         
-        int removeCount = qMin(count, model->rowCount() - removeAt);
+        int removeCount = qMin(count - removed, model->rowCount() - removeAt);
         model->removeRows(removeAt, removeCount);
         removed += removeCount;
 
