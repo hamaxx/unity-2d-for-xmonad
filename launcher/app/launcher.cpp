@@ -74,7 +74,7 @@ static QmlJsDebuggingEnabler enableDebuggingHelper;
 
 int main(int argc, char *argv[])
 {
-    /* UnityApplications plugin uses GTK APIs to retrieve theme icons
+    /* Unity2d plugin uses GTK APIs to retrieve theme icons
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 

@@ -81,9 +81,6 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
 
     if (!isRunningInstalled()) {
-        /* Place.qml imports UnityApplications, which is part of the launcher
-           component… */
-        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Place.qml imports Unity2d */
         view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }

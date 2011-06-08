@@ -4,7 +4,3 @@ usr/share/applications/unity-2d-launcher.desktop
 usr/share/unity-2d/launcher/*.qml
 usr/share/unity-2d/launcher/launchermenu.css
 usr/share/unity-2d/launcher/artwork
-usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1
-usr/lib/qt4/imports/UnityApplications/libUnityApplications.so.1.0.0
-usr/lib/qt4/imports/UnityApplications/qmldir
-usr/lib/qt4/imports/UnityApplications/libUnityApplications.so

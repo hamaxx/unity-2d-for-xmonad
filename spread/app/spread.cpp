@@ -34,7 +34,7 @@
 
 int main(int argc, char *argv[])
 {
-    /* UnityApplications plugin uses GTK APIs to retrieve theme icons
+    /* Unity2d plugin uses GTK APIs to retrieve theme icons
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
@@ -72,9 +72,6 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
     if (!isRunningInstalled()) {
-        /* Spread.qml imports UnityApplications, which is part of the launcher
-           component */
-        view.engine()->addImportPath(unity2dDirectory() + "/launcher/");
         /* Spread.qml imports Unity2d */
         view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }

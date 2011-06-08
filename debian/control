@@ -84,7 +84,6 @@ Package: unity-2d-places
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-2d-launcher,
          libunity-2d-private0,
          libqt4-svg
 Description: Unity 2D Places
@@ -96,7 +95,6 @@ Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-2d-launcher,
          libunity-2d-private0,
          libqt4-svg
 Description: Unity 2D Spread

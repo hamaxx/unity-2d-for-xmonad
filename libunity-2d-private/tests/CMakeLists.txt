@@ -3,6 +3,7 @@ configure_file(config-test.h.in config-test.h)
 
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
+    ${libunity-2d-private_SOURCE_DIR}/Unity2d
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
     )
@@ -21,6 +22,7 @@ macro(libunity_2d_tests)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
             unity-2d-private
+            unity-2d-private-qml
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
@@ -34,6 +36,7 @@ libunity_2d_tests(
     keyboardmodifiersmonitortest
     paneltest
     unity2dtrtest
+    launchermenutest
     )
 
 add_custom_target(unity2dtr_po COMMAND
