@@ -219,8 +219,7 @@ ListAggregatorModel::get(int row) const
     return data(QAbstractListModel::index(row), 0);
 }
 
-bool ListAggregatorModel::removeRows(int row, int count,
-                                    const QModelIndex& parent)
+bool ListAggregatorModel::removeRows(int row, int count, const QModelIndex& parent)
 {
     if (row < 0 || row >= rowCount(parent) || count <= 0) {
         return false;

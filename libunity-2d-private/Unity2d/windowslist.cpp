@@ -18,6 +18,7 @@
 #include <QApplication>
 #include <QWidget>
 #include <QList>
+
 #include <debug_p.h>
 #include "windowslist.h"
 #include "windowinfo.h"
