@@ -5,6 +5,8 @@ unity-2d (3.8.6-0ubuntu2) UNRELEASED; urgency=low
     - unity-2d-panel recommends the indicator, not unity-2d
     - appmenu-gtk and appmenu-qt are already provided by indicator-appmenu
     - remove other meaningless recommends
+  * debian/libunity-2d-private0.install:
+    - install everything in Unity2d private directory
 
   [ Florian Boucault ]
   * debian/unity-2d-launcher.install:
@@ -18,7 +20,7 @@ unity-2d (3.8.6-0ubuntu2) UNRELEASED; urgency=low
     - move symbolic link to /usr/share/backgrounds/warty-final-ubuntu.png from
       /usr/share/unity-2d/places/artwork to /usr/share/unity-2d
 
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 07 Jun 2011 23:49:55 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Tue, 07 Jun 2011 18:53:52 +0200
 
 unity-2d (3.8.6-0ubuntu1) natty; urgency=low
 

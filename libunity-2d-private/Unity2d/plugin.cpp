@@ -38,7 +38,6 @@ extern "C" {
 #include "launcherplaceslist.h"
 #include "iconimageprovider.h"
 #include "blendedimageprovider.h"
-#include "cacheeffect.h"
 #include "qsortfilterproxymodelqml.h"
 #include "windowimageprovider.h"
 #include "windowinfo.h"
