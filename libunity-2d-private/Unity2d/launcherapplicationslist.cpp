@@ -89,13 +89,12 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     m_snContext = sn_monitor_context_new(m_snDisplay, QX11Info::appScreen(),
                                           LauncherApplicationsList::snEventHandler,
                                           this, NULL);
-    Unity2dApplication* application;
-    application = qobject_cast<Unity2dApplication*>(QApplication::instance());
+    Unity2dApplication* application = Unity2dApplication::instance();
     if (application == NULL) {
         UQ_WARNING << "The application is not an Unity2dApplication."
                       "Applications startup notifications will be ignored.";
     } else {
-        Unity2dApplication::instance()->installX11EventFilter(this);
+        application->installX11EventFilter(this);
     }
 
     load();
@@ -167,10 +166,9 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
-    Unity2dApplication* application;
-    application = qobject_cast<Unity2dApplication*>(QApplication::instance());
+    Unity2dApplication* application = Unity2dApplication::instance();
     if (application != NULL) {
-        Unity2dApplication::instance()->removeX11EventFilter(this);
+        application->removeX11EventFilter(this);
     }
 
     sn_monitor_context_unref(m_snContext);
