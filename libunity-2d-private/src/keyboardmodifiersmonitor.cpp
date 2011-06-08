@@ -61,6 +61,7 @@ KeyboardModifiersMonitor::KeyboardModifiersMonitor(QObject *parent)
 
     Unity2dApplication* application = Unity2dApplication::instance();
     if (application == NULL) {
+        /* This can happen for example when using qmlviewer to run the launcher */
         UQ_WARNING << "The application is not an Unity2dApplication."
                       "Modifiers will not be monitored.";
     } else {
