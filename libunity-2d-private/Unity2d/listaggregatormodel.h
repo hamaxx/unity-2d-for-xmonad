@@ -44,6 +44,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     Q_INVOKABLE int rowCount(const QModelIndex& parent = QModelIndex()) const;
     Q_INVOKABLE QVariant get(int row) const;
+    Q_INVOKABLE virtual bool removeRows(int row, int count,
+                                        const QModelIndex& parent = QModelIndex());
 
     /* This method is the QML equivalent of aggregateListModel.
        The reason why aggregateListModel wasn't directly exposed to QML is that
