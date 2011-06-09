@@ -232,9 +232,15 @@ bool ListAggregatorModel::removeRows(int row, int count, const QModelIndex& pare
 
     int removed = 0;
     Q_FOREACH (QAbstractItemModel* model, m_models) {
+        /* Please note that the offset of the current model is computed
+           by iterating over all previous models and making a sum of their
+           row count.
+           By taking that into accountcalculation for removeAt would be:
+           (row + removed) - (offset + removed)
+           This can be semplified to just row - offset as you see below */
         int offset = computeOffset(model);
+        int removeAt = row - offset;
 
-        int removeAt = row + removed - offset;
         if (removeAt < 0 || removeAt >= model->rowCount()) {
             // The item(s) that we need to remove are outside of this model
             // move on to the next one.
