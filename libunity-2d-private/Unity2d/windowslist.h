@@ -47,7 +47,7 @@ public Q_SLOTS:
     void addWindow(BamfView *view);
     void removeWindow(BamfView *view);
     void updateWorkspaceRole(int workspace);
-    
+
 protected:
     QList<WindowInfo*> m_windows;
 };

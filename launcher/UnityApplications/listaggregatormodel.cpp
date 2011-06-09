@@ -219,9 +219,10 @@ ListAggregatorModel::get(int row) const
     return data(QAbstractListModel::index(row), 0);
 }
 
-bool ListAggregatorModel::removeRows(int row, int count, const QModelIndex& parent)
+bool
+ListAggregatorModel::removeRows(int row, int count, const QModelIndex& parent)
 {
-    if (row < 0 || row >= rowCount(parent) || count <= 0) {
+    if (row < 0 || row >= rowCount() || count <= 0) {
         return false;
     }
  
@@ -235,9 +236,9 @@ bool ListAggregatorModel::removeRows(int row, int count, const QModelIndex& pare
         /* Please note that the offset of the current model is computed
            by iterating over all previous models and making a sum of their
            row count.
-           By taking that into accountcalculation for removeAt would be:
+           By taking that into account the calculation for removeAt is:
            (row + removed) - (offset + removed)
-           This can be semplified to just row - offset as you see below */
+           This can be simplified to just row - offset as you see below */
         int offset = computeOffset(model);
         int removeAt = row - offset;
 
