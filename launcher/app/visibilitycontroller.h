@@ -67,6 +67,7 @@ public:
 private Q_SLOTS:
     void update();
     void slotServiceUnregistered(const QString&);
+    void updatePanelVisibility(bool);
 
 private:
     enum AutoHideMode {

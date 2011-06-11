@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Florian Boucault <florian.boucault@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +27,15 @@
 
 // libunity-2d
 #include <debug_p.h>
-#include <unity2dpanel.h>
 
 // Qt
 #include <QCursor>
 #include <QTimer>
+#include <QWidget>
 
 static const int AUTOHIDE_TIMEOUT = 1000;
 
-AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
+AutoHideBehavior::AutoHideBehavior(QWidget* panel)
 : AbstractVisibilityBehavior(panel)
 , m_autohideTimer(new QTimer(this))
 , m_edgeHitDetector(0)
@@ -43,16 +44,7 @@ AutoHideBehavior::AutoHideBehavior(Unity2dPanel* panel)
     m_autohideTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_autohideTimer, SIGNAL(timeout()), SLOT(hidePanel()));
 
-    m_panel->installEventFilter(this);
-    if (!m_panel->geometry().contains(QCursor::pos())) {
-        if (m_panel->delta() == 0) {
-            /* Launcher is fully visible */
-            m_autohideTimer->start();
-        } else {
-            /* Launcher is partially hidden */
-            hidePanel();
-        }
-    }
+    setPanel(panel);
 }
 
 AutoHideBehavior::~AutoHideBehavior()
@@ -64,6 +56,8 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
     switch (event->type()) {
     case QEvent::Enter:
         m_autohideTimer->stop();
+        m_visible = true;
+        Q_EMIT visibleChanged(m_visible);
         break;
     case QEvent::Leave:
         m_autohideTimer->start();
@@ -76,7 +70,8 @@ bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
 
 void AutoHideBehavior::hidePanel()
 {
-    m_panel->slideOut();
+    m_visible = false;
+    Q_EMIT visibleChanged(m_visible);
     createEdgeHitDetector();
 }
 
@@ -87,7 +82,8 @@ void AutoHideBehavior::showPanel()
     delete m_edgeHitDetector;
     m_edgeHitDetector = 0;
     m_autohideTimer->stop();
-    m_panel->slideIn();
+    m_visible = true;
+    Q_EMIT visibleChanged(m_visible);
 }
 
 void AutoHideBehavior::createEdgeHitDetector()
@@ -95,3 +91,20 @@ void AutoHideBehavior::createEdgeHitDetector()
     m_edgeHitDetector = new EdgeHitDetector(this);
     connect(m_edgeHitDetector, SIGNAL(edgeHit()), SLOT(showPanel()));
 }
+
+
+void AutoHideBehavior::setPanel(QWidget *panel)
+{
+    if (m_panel != NULL) {
+        m_panel->removeEventFilter(this);
+    }
+    AbstractVisibilityBehavior::setPanel(panel);
+    if (m_panel != NULL) {
+        m_panel->installEventFilter(this);
+        if (!m_panel->geometry().contains(QCursor::pos())) {
+            m_autohideTimer->start();
+        }
+    }
+}
+
+#include "autohidebehavior.moc"
