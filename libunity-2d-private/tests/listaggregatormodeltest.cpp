@@ -113,6 +113,42 @@ private Q_SLOTS:
             QCOMPARE(model.get(i).toString(), data[i]);
         }
     }
+
+    void testComputeOffset()
+    {
+        ListAggregatorModel model;
+        QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
+        model.aggregateListModel(&list1);
+        QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
+        model.aggregateListModel(&list2);
+        QStringListModel list3(QStringList() << "ca" << "cb");
+        model.aggregateListModel(&list3);
+
+        QCOMPARE(model.computeOffset(&list1), 0);
+        QCOMPARE(model.computeOffset(&list2), 3);
+        QCOMPARE(model.computeOffset(&list3), 7);
+    }
+
+    void testModelAtIndex()
+    {
+        ListAggregatorModel model;
+        QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
+        model.aggregateListModel(&list1);
+        QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
+        model.aggregateListModel(&list2);
+        QStringListModel list3(QStringList() << "ca" << "cb");
+        model.aggregateListModel(&list3);
+
+        QCOMPARE(model.modelAtIndex(0), &list1);
+        QCOMPARE(model.modelAtIndex(1), &list1);
+        QCOMPARE(model.modelAtIndex(2), &list1);
+        QCOMPARE(model.modelAtIndex(3), &list2);
+        QCOMPARE(model.modelAtIndex(4), &list2);
+        QCOMPARE(model.modelAtIndex(5), &list2);
+        QCOMPARE(model.modelAtIndex(6), &list2);
+        QCOMPARE(model.modelAtIndex(7), &list3);
+        QCOMPARE(model.modelAtIndex(8), &list3);
+    }
 };
 
 QTEST_MAIN(ListAggregatorModelTest)
