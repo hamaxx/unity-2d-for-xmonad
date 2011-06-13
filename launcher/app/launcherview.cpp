@@ -61,13 +61,7 @@ LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
     m_superKeyPressed(false), m_superKeyHeld(false)
 {
-    if (QX11Info::isCompositingManagerRunning()) {
-        setAttribute(Qt::WA_TranslucentBackground);
-        viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    } else {
-        setAttribute(Qt::WA_OpaquePaintEvent);
-        setAttribute(Qt::WA_NoSystemBackground);
-    }
+    setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
