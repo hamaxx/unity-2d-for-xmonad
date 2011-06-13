@@ -21,9 +21,11 @@ panel/app/unity-2d-panel
 panel/applets/indicator-config.h
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
+panel/tests/Testing
 panel/tests/homebuttonapplettest
 
 libunity-2d-private/src/libunity-2d-private.so.*
+libunity-2d-private/tests/Testing
 libunity-2d-private/tests/config-test.h
 libunity-2d-private/tests/gnomesessionclienttest.sh
 libunity-2d-private/tests/gnomesessionclienttesthelper
@@ -34,6 +36,7 @@ libunity-2d-private/tests/locale
 libunity-2d-private/tests/mouseareademo
 libunity-2d-private/tests/paneltest
 libunity-2d-private/tests/unity2dtrtest
+libunity-2d-private/tests/listaggregatormodeltest
 
 po/*.gmo
 
