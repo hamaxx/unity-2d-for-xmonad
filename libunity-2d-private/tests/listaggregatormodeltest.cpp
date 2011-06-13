@@ -22,6 +22,7 @@
 
 // Qt
 #include <QTest>
+#include <QStringListModel>
 
 class ListAggregatorModelTest : public QObject
 {
@@ -36,6 +37,81 @@ private Q_SLOTS:
         QCOMPARE(roleNames.size(), 1);
         QVERIFY(roleNames.contains(0));
         QCOMPARE(roleNames[0], QByteArray("item"));
+    }
+
+    void testAppendModelWrongType()
+    {
+        ListAggregatorModel model;
+        QVERIFY(model.m_models.isEmpty());
+        QTest::ignoreMessage(QtWarningMsg, "void ListAggregatorModel::appendModel(const QVariant&): Unable to append a model that is not of type QAbstractListModel. Invalid model. ");
+        model.appendModel(QVariant());
+        QVERIFY(model.m_models.isEmpty());
+        QTest::ignoreMessage(QtWarningMsg, "void ListAggregatorModel::appendModel(const QVariant&): Unable to append a model that is not of type QAbstractListModel. QVariant(bool, true) is of type bool ");
+        model.appendModel(QVariant(true));
+        QVERIFY(model.m_models.isEmpty());
+        QTest::ignoreMessage(QtWarningMsg, "void ListAggregatorModel::appendModel(const QVariant&): Unable to append a model that is not of type QAbstractListModel. \"\" is of type QObject ");
+        model.appendModel(QVariant::fromValue(new QObject));
+        QVERIFY(model.m_models.isEmpty());
+    }
+
+    void testAggregateListModel()
+    {
+        ListAggregatorModel model;
+        QVERIFY(model.m_models.isEmpty());
+        QCOMPARE(model.rowCount(), 0);
+
+        QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
+        model.aggregateListModel(&list1);
+        QCOMPARE(model.m_models.size(), 1);
+        QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[0]), &list1);
+        QCOMPARE(model.rowCount(), 3);
+
+        QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
+        model.aggregateListModel(&list2);
+        QCOMPARE(model.m_models.size(), 2);
+        QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[1]), &list2);
+        QCOMPARE(model.rowCount(), 7);
+    }
+
+    void testRemoveListModel()
+    {
+        ListAggregatorModel model;
+        QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
+        model.aggregateListModel(&list1);
+        QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
+        model.aggregateListModel(&list2);
+        QStringListModel list3(QStringList() << "ca" << "cb");
+        model.aggregateListModel(&list3);
+
+        model.removeListModel(&list2);
+        QCOMPARE(model.m_models.size(), 2);
+        QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[0]), &list1);
+        QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[1]), &list3);
+        QCOMPARE(model.rowCount(), 5);
+    }
+
+    void testData()
+    {
+        ListAggregatorModel model;
+        model.aggregateListModel(new QStringListModel(QStringList() << "aa" << "ab" << "ac", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ba" << "bb" << "bc" << "bd", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ca" << "cb", &model));
+        QStringList data = QStringList() << "aa" << "ab" << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb";
+        for (int i = 0; i < model.rowCount(); ++i) {
+            QCOMPARE(model.data(model.index(i)).toString(), data[i]);
+        }
+    }
+
+    void testGet()
+    {
+        ListAggregatorModel model;
+        model.aggregateListModel(new QStringListModel(QStringList() << "aa" << "ab" << "ac", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ba" << "bb" << "bc" << "bd", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ca" << "cb", &model));
+        QStringList data = QStringList() << "aa" << "ab" << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb";
+        for (int i = 0; i < model.rowCount(); ++i) {
+            QCOMPARE(model.get(i).toString(), data[i]);
+        }
     }
 };
 

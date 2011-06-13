@@ -41,6 +41,9 @@ public:
     ListAggregatorModel(QObject* parent = 0);
     ~ListAggregatorModel();
 
+    /* Allow test fixtures to access protected and private members. */
+    friend class ListAggregatorModelTest;
+
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     Q_INVOKABLE int rowCount(const QModelIndex& parent = QModelIndex()) const;
     Q_INVOKABLE QVariant get(int row) const;
