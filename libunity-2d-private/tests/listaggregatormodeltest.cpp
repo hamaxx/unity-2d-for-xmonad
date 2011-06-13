@@ -25,6 +25,47 @@
 #include <QStringListModel>
 #include <QSignalSpy>
 #include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QAbstractListModel>
+
+class QMovableStringListModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+    QMovableStringListModel(const QStringList& lst, QObject* parent = 0)
+        : QAbstractListModel(parent)
+        , m_lst(lst)
+    {
+    }
+
+    int rowCount(const QModelIndex& parent = QModelIndex()) const
+    {
+        return m_lst.size();
+    }
+
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const
+    {
+        if (!index.isValid() || index.row() < 0 || index.row() >= m_lst.size()) {
+           return QVariant();
+        }
+        return QVariant(m_lst[index.row()]);
+    }
+
+    Q_INVOKABLE void move(int from, int to)
+    {
+        if (from < 0 || from >= m_lst.size() || to < 0 || to >= m_lst.size() || from == to) {
+            return;
+        }
+        QModelIndex parent;
+        beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
+        m_lst.move(from, to);
+        endMoveRows();
+    }
+
+private:
+    QStringList m_lst;
+};
 
 class ListAggregatorModelTest : public QObject
 {
@@ -199,7 +240,6 @@ private Q_SLOTS:
         model.aggregateListModel(new QStringListModel(QStringList() << "aa" << "ab" << "ac", &model));
         model.aggregateListModel(new QStringListModel(QStringList() << "ba" << "bb" << "bc" << "bd", &model));
         model.aggregateListModel(new QStringListModel(QStringList() << "ca" << "cb", &model));
-        QStringList data;
 
         // Invalid boundaries, doesn’t remove anything.
         QVERIFY(!model.removeRows(-1, 2));
@@ -226,10 +266,7 @@ private Q_SLOTS:
         signal = spyOnRowsRemoved.takeFirst();
         QCOMPARE(signal[1].toInt(), 0);
         QCOMPARE(signal[2].toInt(), 1);
-        data = QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb";
-        for (int i = 0; i < model.rowCount(); ++i) {
-            QCOMPARE(model.get(i).toString(), data[i]);
-        }
+        checkModelData(&model, QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb");
 
         // Request to remove three rows starting from the last index,
         // only one row is actually removed.
@@ -243,10 +280,7 @@ private Q_SLOTS:
         signal = spyOnRowsRemoved.takeFirst();
         QCOMPARE(signal[1].toInt(), 6);
         QCOMPARE(signal[2].toInt(), 6);
-        data = QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca";
-        for (int i = 0; i < model.rowCount(); ++i) {
-            QCOMPARE(model.get(i).toString(), data[i]);
-        }
+        checkModelData(&model, QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca");
 
         // Remove rows that span two models.
         QVERIFY(model.removeRows(3, 3));
@@ -265,9 +299,78 @@ private Q_SLOTS:
         signal = spyOnRowsRemoved.takeFirst();
         QCOMPARE(signal[1].toInt(), 3);
         QCOMPARE(signal[2].toInt(), 3);
-        data = QStringList() << "ac" << "ba" << "bb";
-        for (int i = 0; i < model.rowCount(); ++i) {
-            QCOMPARE(model.get(i).toString(), data[i]);
+        checkModelData(&model, QStringList() << "ac" << "ba" << "bb");
+    }
+
+    void testMove()
+    {
+        ListAggregatorModel model;
+
+        qRegisterMetaType<QModelIndex>("QModelIndex");
+        QSignalSpy spyOnRowsAboutToBeMoved(&model, SIGNAL(rowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        QSignalSpy spyOnRowsMoved(&model, SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        QList<QVariant> signal;
+
+        model.aggregateListModel(new QStringListModel(QStringList() << "aa" << "ab" << "ac", &model));
+        model.aggregateListModel(new QMovableStringListModel(QStringList() << "ba" << "bb" << "bc" << "bd", &model));
+        QStringListModel proxiedModel(QStringList() << "ca" << "cb");
+        QSortFilterProxyModel proxyModel;
+        proxyModel.setSourceModel(&proxiedModel);
+        model.aggregateListModel(&proxyModel);
+
+        // Moving rows from one model to another is forbidden.
+        QTest::ignoreMessage(QtWarningMsg, "void ListAggregatorModel::move(int, int): cannot move an item from one model to another ");
+        model.move(1, 5);
+        QCOMPARE(spyOnRowsAboutToBeMoved.count(), 0);
+        QCOMPARE(spyOnRowsMoved.count(), 0);
+        checkModelData(&model, QStringList() << "aa" << "ab" << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb");
+
+        // Cannot move rows in a QSortFilterProxyModel.
+        QTest::ignoreMessage(QtWarningMsg, "void ListAggregatorModel::move(int, int): cannot move the items of a QSortFilterProxyModel ");
+        model.move(8, 7);
+        QCOMPARE(spyOnRowsAboutToBeMoved.count(), 0);
+        QCOMPARE(spyOnRowsMoved.count(), 0);
+        checkModelData(&model, QStringList() << "aa" << "ab" << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb");
+
+        // 'move' is not defined for a QStringListModel, won’t have any effect.
+        QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QStringListModel::move(int,int)");
+        model.move(0, 2);
+        QCOMPARE(spyOnRowsAboutToBeMoved.count(), 0);
+        QCOMPARE(spyOnRowsMoved.count(), 0);
+        checkModelData(&model, QStringList() << "aa" << "ab" << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb");
+
+        // Actually move rows in a model that supports the operation.
+        model.move(4, 6);
+        QCOMPARE(spyOnRowsAboutToBeMoved.count(), 1);
+        signal = spyOnRowsAboutToBeMoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 4);
+        QCOMPARE(signal[2].toInt(), 4);
+        QCOMPARE(signal[4].toInt(), 7);
+        QCOMPARE(spyOnRowsMoved.count(), 1);
+        signal = spyOnRowsMoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 4);
+        QCOMPARE(signal[2].toInt(), 4);
+        QCOMPARE(signal[4].toInt(), 7);
+        checkModelData(&model, QStringList() << "aa" << "ab" << "ac" << "ba" << "bc" << "bd" << "bb" << "ca" << "cb");
+        model.move(5, 4);
+        QCOMPARE(spyOnRowsAboutToBeMoved.count(), 1);
+        signal = spyOnRowsAboutToBeMoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 5);
+        QCOMPARE(signal[2].toInt(), 5);
+        QCOMPARE(signal[4].toInt(), 4);
+        QCOMPARE(spyOnRowsMoved.count(), 1);
+        signal = spyOnRowsMoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 5);
+        QCOMPARE(signal[2].toInt(), 5);
+        QCOMPARE(signal[4].toInt(), 4);
+        checkModelData(&model, QStringList() << "aa" << "ab" << "ac" << "ba" << "bd" << "bc" << "bb" << "ca" << "cb");
+    }
+
+private:
+    void checkModelData(ListAggregatorModel* model, const QStringList& data)
+    {
+        for (int i = 0; i < model->rowCount(); ++i) {
+            QCOMPARE(model->get(i).toString(), data[i]);
         }
     }
 };
