@@ -23,6 +23,8 @@
 // Qt
 #include <QTest>
 #include <QStringListModel>
+#include <QSignalSpy>
+#include <QModelIndex>
 
 class ListAggregatorModelTest : public QObject
 {
@@ -60,22 +62,49 @@ private Q_SLOTS:
         QVERIFY(model.m_models.isEmpty());
         QCOMPARE(model.rowCount(), 0);
 
+        qRegisterMetaType<QModelIndex>("QModelIndex");
+        QSignalSpy spyOnRowsAboutToBeInserted(&model, SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+        QSignalSpy spyOnRowsInserted(&model, SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+        QList<QVariant> signal;
+
         QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
         model.aggregateListModel(&list1);
         QCOMPARE(model.m_models.size(), 1);
         QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[0]), &list1);
         QCOMPARE(model.rowCount(), 3);
+        QCOMPARE(spyOnRowsAboutToBeInserted.count(), 1);
+        signal = spyOnRowsAboutToBeInserted.takeFirst();
+        QCOMPARE(signal[1].toInt(), 0);
+        QCOMPARE(signal[2].toInt(), 2);
+        QCOMPARE(spyOnRowsInserted.count(), 1);
+        signal = spyOnRowsInserted.takeFirst();
+        QCOMPARE(signal[1].toInt(), 0);
+        QCOMPARE(signal[2].toInt(), 2);
 
         QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
         model.aggregateListModel(&list2);
         QCOMPARE(model.m_models.size(), 2);
         QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[1]), &list2);
         QCOMPARE(model.rowCount(), 7);
+        QCOMPARE(spyOnRowsAboutToBeInserted.count(), 1);
+        signal = spyOnRowsAboutToBeInserted.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 6);
+        QCOMPARE(spyOnRowsInserted.count(), 1);
+        signal = spyOnRowsInserted.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 6);
     }
 
     void testRemoveListModel()
     {
         ListAggregatorModel model;
+
+        qRegisterMetaType<QModelIndex>("QModelIndex");
+        QSignalSpy spyOnRowsAboutToBeRemoved(&model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)));
+        QSignalSpy spyOnRowsRemoved(&model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)));
+        QList<QVariant> signal;
+
         QStringListModel list1(QStringList() << "aa" << "ab" << "ac");
         model.aggregateListModel(&list1);
         QStringListModel list2(QStringList() << "ba" << "bb" << "bc" << "bd");
@@ -88,6 +117,14 @@ private Q_SLOTS:
         QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[0]), &list1);
         QCOMPARE(qobject_cast<QStringListModel*>(model.m_models[1]), &list3);
         QCOMPARE(model.rowCount(), 5);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 1);
+        signal = spyOnRowsAboutToBeRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 6);
+        QCOMPARE(spyOnRowsRemoved.count(), 1);
+        signal = spyOnRowsRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 6);
     }
 
     void testData()
