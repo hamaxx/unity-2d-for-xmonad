@@ -186,6 +186,90 @@ private Q_SLOTS:
         QCOMPARE(model.modelAtIndex(7), &list3);
         QCOMPARE(model.modelAtIndex(8), &list3);
     }
+
+    void testRemoveRows()
+    {
+        ListAggregatorModel model;
+
+        qRegisterMetaType<QModelIndex>("QModelIndex");
+        QSignalSpy spyOnRowsAboutToBeRemoved(&model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)));
+        QSignalSpy spyOnRowsRemoved(&model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)));
+        QList<QVariant> signal;
+
+        model.aggregateListModel(new QStringListModel(QStringList() << "aa" << "ab" << "ac", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ba" << "bb" << "bc" << "bd", &model));
+        model.aggregateListModel(new QStringListModel(QStringList() << "ca" << "cb", &model));
+        QStringList data;
+
+        // Invalid boundaries, doesn’t remove anything.
+        QVERIFY(!model.removeRows(-1, 2));
+        QCOMPARE(model.rowCount(), 9);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 0);
+        QCOMPARE(spyOnRowsRemoved.count(), 0);
+        QVERIFY(!model.removeRows(10, 2));
+        QCOMPARE(model.rowCount(), 9);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 0);
+        QCOMPARE(spyOnRowsRemoved.count(), 0);
+        QVERIFY(!model.removeRows(2, 0));
+        QCOMPARE(model.rowCount(), 9);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 0);
+        QCOMPARE(spyOnRowsRemoved.count(), 0);
+
+        // Remove two rows from the beginning, only modifies the first model.
+        QVERIFY(model.removeRows(0, 2));
+        QCOMPARE(model.rowCount(), 7);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 1);
+        signal = spyOnRowsAboutToBeRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 0);
+        QCOMPARE(signal[2].toInt(), 1);
+        QCOMPARE(spyOnRowsRemoved.count(), 1);
+        signal = spyOnRowsRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 0);
+        QCOMPARE(signal[2].toInt(), 1);
+        data = QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca" << "cb";
+        for (int i = 0; i < model.rowCount(); ++i) {
+            QCOMPARE(model.get(i).toString(), data[i]);
+        }
+
+        // Request to remove three rows starting from the last index,
+        // only one row is actually removed.
+        QVERIFY(model.removeRows(6, 3));
+        QCOMPARE(model.rowCount(), 6);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 1);
+        signal = spyOnRowsAboutToBeRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 6);
+        QCOMPARE(signal[2].toInt(), 6);
+        QCOMPARE(spyOnRowsRemoved.count(), 1);
+        signal = spyOnRowsRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 6);
+        QCOMPARE(signal[2].toInt(), 6);
+        data = QStringList() << "ac" << "ba" << "bb" << "bc" << "bd" << "ca";
+        for (int i = 0; i < model.rowCount(); ++i) {
+            QCOMPARE(model.get(i).toString(), data[i]);
+        }
+
+        // Remove rows that span two models.
+        QVERIFY(model.removeRows(3, 3));
+        QCOMPARE(model.rowCount(), 3);
+        QCOMPARE(spyOnRowsAboutToBeRemoved.count(), 2);
+        signal = spyOnRowsAboutToBeRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 4);
+        signal = spyOnRowsAboutToBeRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 3);
+        QCOMPARE(spyOnRowsRemoved.count(), 2);
+        signal = spyOnRowsRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 4);
+        signal = spyOnRowsRemoved.takeFirst();
+        QCOMPARE(signal[1].toInt(), 3);
+        QCOMPARE(signal[2].toInt(), 3);
+        data = QStringList() << "ac" << "ba" << "bb";
+        for (int i = 0; i < model.rowCount(); ++i) {
+            QCOMPARE(model.get(i).toString(), data[i]);
+        }
+    }
 };
 
 QTEST_MAIN(ListAggregatorModelTest)
