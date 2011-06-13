@@ -38,13 +38,21 @@ ListAggregatorModel::~ListAggregatorModel()
 void
 ListAggregatorModel::appendModel(const QVariant& model)
 {
+    static const char* errorMsg = "Unable to append a model that is not of type QAbstractListModel.";
+    if (!model.isValid()) {
+        UQ_WARNING << errorMsg << "Invalid model.";
+        return;
+    }
     QObject* object = qvariant_cast<QObject*>(model);
+    if (object == NULL) {
+        UQ_WARNING << errorMsg << model << "is of type" << model.typeName();
+        return;
+    }
     QAbstractItemModel* list = qobject_cast<QAbstractListModel*>(object);
     if (list == NULL) {
         list = qobject_cast<QSortFilterProxyModel*>(object);
         if (list == NULL) {
-            UQ_WARNING << "Unable to append model that is not of type QAbstractListModel."
-                       << object->objectName() << "is of type" << object->metaObject()->className();
+            UQ_WARNING << errorMsg << object->objectName() << "is of type" << object->metaObject()->className();
             return;
         }
     }
