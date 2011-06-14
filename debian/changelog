@@ -1,4 +1,4 @@
-unity-2d (3.8.6-0ubuntu3) UNRELEASED; urgency=low
+unity-2d (3.8.8-0ubuntu1) UNRELEASED; urgency=low
 
   [ Didier Roche ]
   * debian/control:
