@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
-    qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
+    qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
     view.setUseOpenGL(arguments.contains("-opengl"));
 
