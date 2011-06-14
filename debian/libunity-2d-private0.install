@@ -1,3 +1,2 @@
 usr/lib/libunity-2d-private.so.*
-usr/lib/qt4/imports/Unity2d/libunity-2d-private-qml.so
-usr/lib/qt4/imports/Unity2d/qmldir
+usr/lib/qt4/imports/Unity2d

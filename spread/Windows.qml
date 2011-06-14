@@ -18,7 +18,6 @@
 
 import Qt 4.7
 import "utils.js" as Utils
-import UnityApplications 1.0
 import Unity2d 1.0
 
 /* The main component that manages the windows.

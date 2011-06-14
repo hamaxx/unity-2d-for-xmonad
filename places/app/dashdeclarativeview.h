@@ -33,7 +33,6 @@ class DashDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
-    Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning NOTIFY isCompositingManagerRunningChanged)
 
 public:
     enum DashMode {
@@ -50,7 +49,6 @@ public:
     const QRect screenGeometry() const;
     QRect availableGeometry() const;
     bool expanded() const;
-    bool isCompositingManagerRunning() const;
 
     /* setters */
     Q_SLOT void setActive(bool active);
@@ -71,7 +69,6 @@ Q_SIGNALS:
 
     void screenGeometryChanged();
     void availableGeometryChanged();
-    void isCompositingManagerRunningChanged(bool);
 
 protected:
     void resizeEvent(QResizeEvent*);

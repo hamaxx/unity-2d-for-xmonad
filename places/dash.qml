@@ -17,8 +17,8 @@
  */
 
 import Qt 4.7
-import UnityApplications 1.0 /* Necessary for LauncherPlacesList */
 import Places 1.0 /* Necessary for DashDeclarativeView.*Dash */
+import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
 
 Item {
     id: dash
@@ -86,21 +86,21 @@ Item {
     GnomeBackground {
         anchors.fill: parent
         overlay_color: "black"
-        overlay_alpha: 0.71
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !dashView.isCompositingManagerRunning
+        overlay_alpha: 0.89
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !screen.isCompositingManagerRunning
     }
 
     Rectangle {
         anchors.fill: parent
         color: "black"
-        opacity: 0.69
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && dashView.isCompositingManagerRunning
+        opacity: 0.89
+        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && screen.isCompositingManagerRunning
     }
 
     BorderImage {
         anchors.fill: parent
         visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-        source: dashView.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+        source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
     }
     /* /Backgrounds */
 

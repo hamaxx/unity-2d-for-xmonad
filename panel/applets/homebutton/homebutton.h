@@ -1,5 +1,10 @@
 /*
- * Copyright (C) 2010-2011 Canonical, Ltd.
+ * This file is part of unity-2d
+ *
+ * Copyright 2011 Canonical Ltd.
+ *
+ * Authors:
+ * - Alberto Mardegan <mardy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNITYAPPLICATIONSPLUGIN_H
-#define UNITYAPPLICATIONSPLUGIN_H
+#ifndef HOMEBUTTON_H
+#define HOMEBUTTON_H
 
-#include <QtDeclarative/QDeclarativeExtensionPlugin>
+// Qt
+#include <QTime>
+#include <QToolButton>
 
-class UnityApplicationsPlugin : public QDeclarativeExtensionPlugin
+class HomeButton : public QToolButton
 {
-    Q_OBJECT
-
+Q_OBJECT
 public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri);
+    HomeButton(QWidget *parent = 0);
+
+protected:
+    void mousePressEvent(QMouseEvent*);
+
+private:
+    Q_DISABLE_COPY(HomeButton)
+    QTime lastClickTime;
 };
 
-
-#endif // UNITYAPPLICATIONSPLUGIN_H
+#endif /* HOMEBUTTON_H */

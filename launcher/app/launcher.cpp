@@ -74,13 +74,14 @@ static QmlJsDebuggingEnabler enableDebuggingHelper;
 
 int main(int argc, char *argv[])
 {
-    /* UnityApplications plugin uses GTK APIs to retrieve theme icons
+    /* Unity2d plugin uses GTK APIs to retrieve theme icons
        (gtk_icon_theme_get_default) and requires a call to gtk_init */
     gtk_init(&argc, &argv);
 
     Unity2dDebug::installHandlers();
 
-    /* Forcing graphics system to 'raster' instead of the default 'native'
+    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
+       force graphics system to 'raster' instead of the default 'native'
        which on X11 is 'XRender'.
        'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
        behaviour with 'raster' by calling QApplication::setColorSpec because
@@ -88,7 +89,9 @@ int main(int argc, char *argv[])
 
        https://bugs.launchpad.net/unity-2d/+bug/734143
     */
-    QApplication::setGraphicsSystem("raster");
+    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
+        QApplication::setGraphicsSystem("raster");
+    }
     Unity2dApplication application(argc, argv);
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
@@ -103,7 +106,7 @@ int main(int argc, char *argv[])
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     /* Panel containing the QML declarative view */
-    Unity2dPanel panel;
+    Unity2dPanel panel(true);
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
 
@@ -113,9 +116,6 @@ int main(int argc, char *argv[])
     LauncherView *launcherView = new LauncherView(&panel);
     launcherView->setUseOpenGL(arguments.contains("-opengl"));
 
-    /* FIXME: possible optimisations */
-//    launcherView->setAttribute(Qt::WA_OpaquePaintEvent);
-//    launcherView->setAttribute(Qt::WA_NoSystemBackground);
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();
 

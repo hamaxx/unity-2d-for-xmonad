@@ -27,6 +27,7 @@
 // Qt
 #include <QObject>
 
+class EdgeHitDetector;
 class QTimer;
 class Unity2dPanel;
 
@@ -43,8 +44,15 @@ public:
 protected:
     bool eventFilter(QObject*, QEvent*);
 
+private Q_SLOTS:
+    void hidePanel();
+    void showPanel();
+
 private:
     QTimer* m_autohideTimer;
+    EdgeHitDetector* m_edgeHitDetector;
+
+    void createEdgeHitDetector();
 };
 
 #endif /* AUTOHIDEBEHAVIOR_H */

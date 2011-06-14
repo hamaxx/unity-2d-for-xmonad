@@ -17,7 +17,6 @@
  */
 
 import Qt 4.7
-import UnityApplications 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
@@ -90,13 +89,12 @@ AutoScrollingListView {
         launching: item.launching
         pips: Math.min(item.windowCount, 3)
 
-        property bool noOverlays: item.counter == undefined
-        counter: (noOverlays) ? 0 : item.counter
-        counterVisible: (noOverlays) ? false : item.counterVisible
-        progress: (noOverlays) ? 0.0 : item.progress
-        progressBarVisible: (noOverlays) ? false : item.progressBarVisible
-        emblem: (noOverlays && item.emblem) ? "image://icons/" + item.emblem : ""
-        emblemVisible: (noOverlays) ? false : item.emblemVisible
+        counter: item.counter
+        counterVisible: item.counterVisible
+        progress: item.progress
+        progressBarVisible: item.progressBarVisible
+        emblem: item.emblem ? "image://icons/" + item.emblem : ""
+        emblemVisible: item.emblemVisible
 
         shortcutVisible: launcherView.superKeyHeld &&
                          ((item.toString().indexOf("LauncherApplication") == 0 && index <= 9) ||

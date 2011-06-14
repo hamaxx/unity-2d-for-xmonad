@@ -44,6 +44,7 @@ MouseArea {
     property variant listCoordinates: mapToItem(list.contentItem, mouseX, mouseY + 0 * list.contentY)
     /* list index of the tile underneath the cursor */
     property int tileAtCursorIndex: list.indexAt(listCoordinates.x, listCoordinates.y)
+    property bool ignoreNextClick: false
 
     Timer {
         id: longPressDelay
@@ -71,40 +72,47 @@ MouseArea {
         draggedTileId = ""
         parent.interactive = true
     }
+    onCanceled: {
+        /* The parent flickable (dnd.parent) can steal the mouse grab and when
+           that happens onReleased will not be triggerred and the dragging will
+           not be stopped anymore. Do it manually.
+           Ref.: https://bugs.launchpad.net/unity-2d/+bug/768812
+        */
+        drop()
+    }
     onReleased: {
         if (draggedTileId != "") {
             drop()
-        } else if (draggedTileIndex == tileAtCursorIndex) {
-            /* Forward the click to the launcher item below. */
-            var point = mapToItem(list.contentItem, mouse.x, mouse.y)
-            var item = list.contentItem.childAt(point.x, point.y)
-            /* FIXME: the coordinates of the mouse event forwarded are
-               incorrect. Luckily, it’s acceptable as they are not used in
-               the handler anyway. */
-            if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+            ignoreNextClick = true
         }
+    }
+    onClicked: {
+        /* a "clicked" signal is emitted whenever the mouse is pressed and
+           released in a MouseArea, regardless of any intervening mouse
+           movements; for this reason, one is emitted also after a DragAndDrop
+           action, and we clearly don't want to process it.
+           The ignoreNextClick flag serves this purpose, and is set in the
+           onRelease handler. */
+        if (ignoreNextClick) {
+            ignoreNextClick = false
+            return
+        }
+        /* Forward the click to the launcher item below. */
+        var point = mapToItem(list.contentItem, mouse.x, mouse.y)
+        var item = list.contentItem.childAt(point.x, point.y)
+        /* FIXME: the coordinates of the mouse event forwarded are
+           incorrect. Luckily, it’s acceptable as they are not used in
+           the handler anyway. */
+        if (item && typeof(item.clicked) == "function") item.clicked(mouse)
+    }
+    /* This handler is necessary to avoid receiving duplicate "clicked"
+       signals. */
+    onDoubleClicked: {
     }
     onExited: drop()
     function reorder() {
         if (draggedTileId != "" && tileAtCursorIndex != -1 && tileAtCursorIndex != draggedTileIndex) {
-            /* Workaround a bug in QML whereby moving an item down in
-               the list results in its visual representation being
-               shifted too far down by one index
-               (http://bugreports.qt.nokia.com/browse/QTBUG-15841).
-               Since the bug happens only when moving an item *down*,
-               and since moving an item one index down is strictly
-               equivalent to moving the item below one index up, we
-               achieve the same result by tricking the list model into
-               thinking that the mirror operation was performed.
-               Note: this bug will be fixed in Qt 4.7.2, at which point
-               this workaround can go away. */
-            if (tileAtCursorIndex > draggedTileIndex) {
-                items.move(tileAtCursorIndex, draggedTileIndex, 1)
-            } else {
-                /* This should be the only code path here, if it wasn’t
-                   for the bug explained and worked around above. */
-                items.move(draggedTileIndex, tileAtCursorIndex, 1)
-            }
+            items.move(draggedTileIndex, tileAtCursorIndex, 1)
             draggedTileIndex = tileAtCursorIndex
         }
     }

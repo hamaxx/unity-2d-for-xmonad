@@ -5,7 +5,6 @@ include_directories(
     )
 
 # Source
-add_subdirectory(UnityApplications)
 add_subdirectory(app)
 add_subdirectory(tests)
 

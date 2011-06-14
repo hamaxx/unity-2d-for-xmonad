@@ -61,6 +61,14 @@ LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
     m_superKeyPressed(false), m_superKeyHeld(false)
 {
+    if (QX11Info::isCompositingManagerRunning()) {
+        setAttribute(Qt::WA_TranslucentBackground);
+        viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    } else {
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(Qt::WA_NoSystemBackground);
+    }
+
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
@@ -271,8 +279,7 @@ void LauncherView::onDrop(DeclarativeDragDropEvent* event)
     foreach (QUrl url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             emit desktopFileDropped(url.path());
-        }
-        else if (url.scheme().startsWith("http")) {
+        } else if (url.scheme().startsWith("http")) {
             emit webpageUrlDropped(url);
         }
     }

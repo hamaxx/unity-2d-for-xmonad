@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical, Ltd.
+ * Copyright (C) 2010-2011 Canonical, Ltd.
  *
  * Authors:
  *  Florian Boucault <florian.boucault@canonical.com>
@@ -20,10 +20,24 @@
 /* Required otherwise using wnck_set_client_type breaks linking with error:
    undefined reference to `wnck_set_client_type(WnckClientType)'
 */
+extern "C" {
+#include <libwnck/util.h>
+}
+
 #include "plugin.h"
 
+#include "launcherapplication.h"
+#include "place.h"
+#include "placeentry.h"
+#include "launcherdevice.h"
+#include "trash.h"
+#include "workspaces.h"
+#include "listaggregatormodel.h"
+#include "launcherapplicationslist.h"
+#include "launcherdeviceslist.h"
+#include "launcherplaceslist.h"
+#include "iconimageprovider.h"
 #include "blendedimageprovider.h"
-#include "cacheeffect.h"
 #include "qsortfilterproxymodelqml.h"
 #include "windowimageprovider.h"
 #include "windowinfo.h"
@@ -34,17 +48,16 @@
 
 #include "mimedata.h"
 #include "dragdropevent.h"
+#include "dragitemwithurl.h"
 #include "dropitem.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsEffect>
+#include <QAbstractListModel>
 
 #undef signals
-extern "C" {
-#include <libwnck/util.h>
-}
 
 #include <X11/Xlib.h>
 
@@ -76,9 +89,30 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");
 
     /* Custom drag’n’drop implementation in QML */
+    qmlRegisterType<DeclarativeDragItemWithUrl>(uri, 0, 1, "DragItemWithUrl");
     qmlRegisterType<DeclarativeDropItem>(uri, 0, 1, "DropItem");
     qmlRegisterType<DeclarativeMimeData>();
     qmlRegisterType<DeclarativeDragDropEvent>();
+
+    qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
+
+    qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
+    qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
+
+    qmlRegisterType<LauncherPlacesList>(uri, 0, 1, "LauncherPlacesList");
+    qmlRegisterType<Place>(uri, 0, 1, "Place");
+    qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
+    /* DeeListModel is exposed to QML by PlaceEntry */
+    qmlRegisterType<DeeListModel>(uri, 0, 1, "DeeListModel");
+
+    qmlRegisterType<LauncherDevicesList>(uri, 0, 1, "LauncherDevicesList");
+    qmlRegisterType<LauncherDevice>(uri, 0, 1, "LauncherDevice");
+
+    qmlRegisterType<Trashes>(uri, 0, 1, "Trashes");
+    qmlRegisterType<Trash>(uri, 0, 1, "Trash");
+
+    qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
+    qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -89,6 +123,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     engine->addImageProvider(QString("blended"), new BlendedImageProvider);
     engine->addImageProvider(QString("window"), new WindowImageProvider);
+    engine->addImageProvider(QString("icons"), new IconImageProvider);
 
     /* ScreenInfo is exposed as a context property as it's a singleton and therefore
        not creatable directly in QML */

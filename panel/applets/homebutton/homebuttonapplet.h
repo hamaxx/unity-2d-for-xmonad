@@ -24,9 +24,7 @@
 
 // Local
 #include <applet.h>
-
-// Qt
-#include <QToolButton>
+#include "homebutton.h"
 
 class QDBusInterface;
 class LauncherClient;
@@ -47,7 +45,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(HomeButtonApplet)
-    QToolButton* m_button;
+    HomeButton* m_button;
     QDBusInterface* m_dashInterface;
     LauncherClient* m_launcherClient;
 };

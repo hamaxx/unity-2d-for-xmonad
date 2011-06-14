@@ -369,12 +369,6 @@ DashDeclarativeView::updateMask()
 }
 
 bool
-DashDeclarativeView::isCompositingManagerRunning() const
-{
-    return QX11Info::isCompositingManagerRunning();
-}
-
-bool
 DashDeclarativeView::connectToBus()
 {
     bool ok = QDBusConnection::sessionBus().registerService(DASH_DBUS_SERVICE);

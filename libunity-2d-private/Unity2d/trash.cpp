@@ -39,6 +39,8 @@ Trash::Trash()
 {
     m_trash = g_file_new_for_uri(TRASH_URI);
     setShortcutKey(Qt::Key_T);
+    updateTrashIcon();
+    startMonitoringTrash();
 }
 
 Trash::Trash(const Trash& other)
@@ -47,6 +49,7 @@ Trash::Trash(const Trash& other)
 
 Trash::~Trash()
 {
+    g_object_unref(m_monitor);
     g_object_unref(m_trash);
 }
 
@@ -125,7 +128,7 @@ Trash::name() const
 QString
 Trash::icon() const
 {
-    return "unity-icon-theme/user-trash";
+    return m_iconName;
 }
 
 bool
@@ -167,7 +170,7 @@ Trash::open() const
 void
 Trash::empty() const
 {
-    recursive_delete(m_trash);
+    recursiveDelete(m_trash);
 }
 
 int
@@ -192,7 +195,7 @@ Trash::count() const
 }
 
 void
-Trash::recursive_delete(GFile* dir)
+Trash::recursiveDelete(GFile* dir)
 {
     GError* error = NULL;
     QString attributes;
@@ -215,7 +218,7 @@ Trash::recursive_delete(GFile* dir)
     while ((info = g_file_enumerator_next_file(children, NULL, &error)) != NULL) {
         GFile* child = g_file_get_child(dir, g_file_info_get_name(info));
         if (g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY) {
-            recursive_delete(child);
+            recursiveDelete(child);
         }
 
         /* If passed a GError* as third parameter, g_file_delete incorrectly
@@ -326,3 +329,42 @@ Trashes::data(const QModelIndex& index, int role) const
     return QVariant::fromValue(m_trash);
 }
 
+void
+Trash::fileChangedProxy(GFileMonitor      *file_monitor,
+              GFile             *child,
+              GFile             *other_file,
+              GFileMonitorEvent  event_type,
+              gpointer           data)
+{
+    if (event_type == G_FILE_MONITOR_EVENT_DELETED || event_type == G_FILE_MONITOR_EVENT_CREATED) {
+       (static_cast<Trash*>(data))->fileChanged();
+    }
+}
+
+void
+Trash::fileChanged()
+{
+    updateTrashIcon();
+    emit iconChanged(icon());
+}
+
+void
+Trash::startMonitoringTrash(void)
+{
+    GFile *file;
+
+    file = g_file_new_for_uri ("trash://");
+    m_monitor = g_file_monitor_directory (file, G_FILE_MONITOR_NONE, NULL, NULL);
+    g_object_unref(file);
+
+    g_signal_connect(m_monitor, "changed", G_CALLBACK(Trash::fileChangedProxy), this);
+}
+
+void
+Trash::updateTrashIcon(void)
+{
+    if(count() == 0) {
+        m_iconName = "unity-icon-theme/user-trash"; }
+    else {
+        m_iconName = "unity-icon-theme/user-trash-full"; }
+}
