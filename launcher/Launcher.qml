@@ -58,6 +58,7 @@ DropItem {
             id: main
             anchors.top: parent.top
             anchors.bottom: shelf.top
+            anchors.bottomMargin: itemPadding
             width: parent.width
 
             autoScrollSize: tileSize / 2
@@ -74,7 +75,8 @@ DropItem {
 
         LauncherList {
             id: shelf
-            anchors.bottom: parent.bottom;
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: main.anchors.bottomMargin
             height: (tileSize + itemPadding) * count
             width: parent.width
             itemPadding: 0
