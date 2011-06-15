@@ -160,7 +160,7 @@ FocusScope {
                     else if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
                         return dash.currentPage.model.searchHint
                     else
-                        return ""
+                        return u2d.tr("Search")
                 }
             }
         }
