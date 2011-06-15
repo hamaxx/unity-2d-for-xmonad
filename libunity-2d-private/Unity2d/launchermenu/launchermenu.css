@@ -26,11 +26,11 @@ QMenu {
 }
 
 QMenu[transparencyAvailable=true] {
-    border-image: url(artwork:tooltip/background.png) 5px 5px 4px 15px Repeat Repeat;
+    border-image: url(:/launchermenu/background.png) 5px 5px 4px 15px Repeat Repeat;
 }
 
 QMenu[transparencyAvailable=false] {
-    border-image: url(artwork:tooltip/background_no_transparency.png) 5px 5px 4px 15px Repeat Repeat;
+    border-image: url(:/launchermenu/background_no_transparency.png) 5px 5px 4px 15px Repeat Repeat;
 }
 
 
@@ -62,11 +62,11 @@ QMenu::indicator {
 }
 
 QMenu::indicator:checked {
-    image: url(artwork:tooltip/check_default.png);
+    image: url(:/launchermenu/check_default.png);
 }
 
 QMenu::indicator:checked:selected {
-    image: url(artwork:tooltip/check_selected.png);
+    image: url(:/launchermenu/check_selected.png);
 }
 
 QMenu::separator {

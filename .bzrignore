@@ -37,6 +37,7 @@ libunity-2d-private/tests/mouseareademo
 libunity-2d-private/tests/paneltest
 libunity-2d-private/tests/unity2dtrtest
 libunity-2d-private/tests/listaggregatormodeltest
+libunity-2d-private/Unity2d/qrc_launchermenu.cxx
 
 po/*.gmo
 

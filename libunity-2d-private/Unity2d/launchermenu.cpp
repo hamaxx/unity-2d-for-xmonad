@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
 #include "launchermenu.h"
 #include "launcheritem.h"
 
@@ -59,9 +58,9 @@ LauncherContextualMenu::LauncherContextualMenu():
     /* Load the pixmap for the arrow. It is drawn separately as its position
        may vary depending on the position of the menu on the screen. */
     if (transparencyAvailable()) {
-        m_arrow.load("artwork:tooltip/arrow.png");
+        m_arrow.load(":/launchermenu/arrow.png");
     } else {
-        m_arrow.load("artwork:tooltip/arrow_no_transparency.png");
+        m_arrow.load(":/launchermenu/arrow_no_transparency.png");
     }
 
     /* First action used to display the title of the item */
@@ -77,7 +76,7 @@ LauncherContextualMenu::~LauncherContextualMenu()
 void
 LauncherContextualMenu::loadCSS()
 {
-    QString cssFilePath = unity2dDirectory() + "/launcher/launchermenu.css";
+    QString cssFilePath = ":/launchermenu/launchermenu.css";
 
     QFile file(cssFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
