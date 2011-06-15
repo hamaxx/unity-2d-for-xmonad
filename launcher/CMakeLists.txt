@@ -11,7 +11,7 @@ add_subdirectory(tests)
 file(GLOB launcher_QML *.qml)
 
 # Install
-install(FILES ${launcher_QML} launchermenu.css
+install(FILES ${launcher_QML}
     DESTINATION ${UNITY_2D_DIR}/launcher
     )
 

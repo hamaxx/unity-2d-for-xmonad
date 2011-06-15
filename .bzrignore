@@ -18,13 +18,25 @@ spread/app/unity-2d-spread.service
 spread/app/spreadadaptor.*
 
 panel/app/unity-2d-panel
+panel/applets/indicator-config.h
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
 panel/tests/homebuttonapplettest
 
-libunity-2d/src/libunity-2d.so.*
-libunity-2d/tests/keyboardmodifiersmonitortest
-libunity-2d/tests/paneltest
+libunity-2d-private/src/libunity-2d-private.so.*
+libunity-2d-private/tests/config-test.h
+libunity-2d-private/tests/gnomesessionclienttest.sh
+libunity-2d-private/tests/gnomesessionclienttesthelper
+libunity-2d-private/tests/gnomesessionclienttesthelper.desktop
+libunity-2d-private/tests/keyboardmodifiersmonitortest
+libunity-2d-private/tests/launchermenutest
+libunity-2d-private/tests/locale
+libunity-2d-private/tests/mouseareademo
+libunity-2d-private/tests/paneltest
+libunity-2d-private/tests/unity2dtrtest
+libunity-2d-private/Unity2d/qrc_launchermenu.cxx
+
+po/*.gmo
 
 # Cmake files and generated files
 Makefile

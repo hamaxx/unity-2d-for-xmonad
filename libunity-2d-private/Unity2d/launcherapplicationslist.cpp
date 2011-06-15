@@ -167,11 +167,6 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
 
 LauncherApplicationsList::~LauncherApplicationsList()
 {
-    Unity2dApplication* application = Unity2dApplication::instance();
-    if (application != NULL) {
-        application->removeX11EventFilter(this);
-    }
-
     sn_monitor_context_unref(m_snContext);
     sn_display_unref(m_snDisplay);
 

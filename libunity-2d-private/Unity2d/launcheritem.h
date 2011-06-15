@@ -43,6 +43,13 @@ class LauncherItem : public QObject
     /* Export the menu as a plain QObject so that it can be used from QML */
     Q_PROPERTY(QObject* menu READ menu NOTIFY menuChanged)
 
+    Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
+    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(bool counterVisible READ counterVisible NOTIFY counterVisibleChanged)
+    Q_PROPERTY(int counter READ counter NOTIFY counterChanged)
+    Q_PROPERTY(bool emblemVisible READ emblemVisible NOTIFY emblemVisibleChanged)
+    Q_PROPERTY(QString emblem READ emblem NOTIFY emblemChanged)
+
 public:
     LauncherItem(QObject* parent = 0);
     ~LauncherItem();
@@ -57,6 +64,13 @@ public:
     virtual bool launching() const = 0;
     Qt::Key shortcutKey() const;
     QObject* menu() const;
+
+    virtual bool progressBarVisible() const;
+    virtual float progress() const;
+    virtual bool counterVisible() const;
+    virtual int counter() const;
+    virtual bool emblemVisible() const;
+    virtual QString emblem() const;
 
     /* setters */
     void setShortcutKey(Qt::Key);
@@ -79,6 +93,13 @@ Q_SIGNALS:
     void launchingChanged(bool);
     void shortcutKeyChanged(Qt::Key);
     void menuChanged(QObject*);
+
+    void progressBarVisibleChanged(bool);
+    void progressChanged(float);
+    void counterVisibleChanged(bool);
+    void counterChanged(int);
+    void emblemVisibleChanged(bool);
+    void emblemChanged(QString);
 
 public Q_SLOTS:
     /* Default implementation of drag’n’drop handling, should be overridden in

@@ -63,12 +63,6 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(QString desktop_file READ desktop_file WRITE setDesktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(QString executable READ executable NOTIFY executableChanged)
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
-    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
-    Q_PROPERTY(bool progressBarVisible READ progressBarVisible NOTIFY progressBarVisibleChanged)
-    Q_PROPERTY(int counter READ counter NOTIFY counterChanged)
-    Q_PROPERTY(QString emblem READ emblem NOTIFY emblemChanged)
-    Q_PROPERTY(bool counterVisible READ counterVisible NOTIFY counterVisibleChanged)
-    Q_PROPERTY(bool emblemVisible READ emblemVisible NOTIFY emblemVisibleChanged)
 
 public:
     LauncherApplication();
@@ -88,12 +82,13 @@ public:
     QString executable() const;
     virtual bool launching() const;
     bool has_visible_window() const;
-    float progress() const;
-    int counter() const;
-    QString emblem() const;
-    bool counterVisible() const;
-    bool progressBarVisible() const;
-    bool emblemVisible() const;
+
+    virtual bool progressBarVisible() const;
+    virtual float progress() const;
+    virtual bool counterVisible() const;
+    virtual int counter() const;
+    virtual bool emblemVisible() const;
+    virtual QString emblem() const;
 
     /* setters */
     void setDesktopFile(const QString& desktop_file);
@@ -118,12 +113,6 @@ Q_SIGNALS:
     void desktopFileChanged(QString);
     void executableChanged(QString);
     void hasVisibleWindowChanged(bool);
-    void progressBarVisibleChanged(bool);
-    void counterVisibleChanged(bool);
-    void emblemVisibleChanged(bool);
-    void progressChanged(float);
-    void counterChanged(int);
-    void emblemChanged(QString);
 
     void closed();
 
