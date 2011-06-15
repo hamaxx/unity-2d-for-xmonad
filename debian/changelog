@@ -1,6 +1,32 @@
-unity-2d (3.8.8-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (3.8.8-0ubuntu1) natty; urgency=low
 
   [ Didier Roche ]
+  * new upstream release:
+    - [spread] Corruption when switching workspaces after windows have been
+      moved to other workspaces (LP: #760787)
+    - [launcher] launcher won't fully paint, corrupted view (LP: #764690)
+    - [launcher] icons no longer active after an incomplete drag (LP: #768812)
+    - drag from dash to launcher (LP: #662616)
+    - Don't create windows over the launcher (LP: #688816)
+    - [launcher] Does not reveal when hovering over the left edge of the
+      screen (LP: #760537)
+    - UIFe: Launcher - update launcher reveal interaction to make it more
+      accessible to first time users (LP: #754583)
+    - [launcher] Trash icon should indicate when it has deleted elements
+      (LP: #715611)
+    - When windows open for the first time they should not hide the launcher
+      (LP: #723878)
+    - double clicks should be disabled on bfb/Place launcher icon/double key
+      press (LP: #766776)
+    - [dash][launcher] Should use real transparency when a compositing manager
+      is running (LP: #794042)
+    - [dash] Thunderbird icon is pixelated (LP: #767115)
+    - [panel] Hovering the mouse cursor over the BFB reveals the current
+      window’s menu (LP: #793403)
+    - [panel] Hovering the mouse cursor away from the appmenu applet doesn’t
+      hide the menu (LP: #793406)
+    - unity-2d: does not parse QT_GRAPHICSSYSTEM env var (LP: #791852)
+    - Cannot drag applications from dash to desktop (LP: #756614)
   * debian/control:
     - unity-2d-panel recommends the indicator, not unity-2d
     - appmenu-gtk and appmenu-qt are already provided by indicator-appmenu
@@ -17,7 +43,7 @@ unity-2d (3.8.8-0ubuntu1) UNRELEASED; urgency=low
     - unity-2d-places and unity-2d-spread do not depend on unity-2d-launcher.
       All they need is now in libunity-2d-private0.
 
- -- Florian Boucault <florian.boucault@canonical.com>  Tue, 07 Jun 2011 18:53:52 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 14 Jun 2011 16:14:18 +0200
 
 unity-2d (3.8.6-0ubuntu1) natty; urgency=low
 
