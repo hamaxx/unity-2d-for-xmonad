@@ -35,6 +35,7 @@ void LauncherDropItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
             return;
         }
     }
+    event->setAccepted(false);
 }
 
 void LauncherDropItem::dropEvent(QGraphicsSceneDragDropEvent *event)
@@ -46,6 +47,7 @@ void LauncherDropItem::dropEvent(QGraphicsSceneDragDropEvent *event)
             emit webpageUrlDropped(url);
         }
     }
+    event->setAccepted(false);
 }
 
 QList<QUrl>
