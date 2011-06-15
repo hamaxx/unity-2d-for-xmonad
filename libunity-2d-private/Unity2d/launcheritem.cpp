@@ -85,3 +85,40 @@ LauncherItem::launchNewInstance()
 {
     /* Default to doing nothing. */
 }
+
+bool
+LauncherItem::progressBarVisible() const
+{
+    return false;
+}
+
+float
+LauncherItem::progress() const
+{
+    return 0.0;
+}
+
+bool
+LauncherItem::counterVisible() const
+{
+    return false;
+}
+
+int
+LauncherItem::counter() const
+{
+    return 0;
+}
+
+bool
+LauncherItem::emblemVisible() const
+{
+    return false;
+}
+
+QString
+LauncherItem::emblem() const
+{
+    return QString();
+}
+

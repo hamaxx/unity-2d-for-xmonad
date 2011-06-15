@@ -41,7 +41,14 @@ MouseArea::MouseArea(QObject* parent)
 : QObject(parent)
 , d(new MouseAreaPrivate)
 {
-    Unity2dApplication::instance()->installX11EventFilter(this);
+    Unity2dApplication* application = Unity2dApplication::instance();
+    if (application == NULL) {
+        /* This can happen for example when using qmlviewer */
+        UQ_WARNING << "The application is not an Unity2dApplication."
+                      "MouseArea disabled.";
+    } else {
+        application->installX11EventFilter(this);
+    }
 
     d->m_containsMouse = false;
 

@@ -36,7 +36,6 @@
 
 // unity-2d
 #include <unity2ddebug.h>
-#include <unity2dtr.h>
 
 #include "dashdeclarativeview.h"
 #include "config.h"
@@ -62,7 +61,7 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
-    qmlRegisterType<DashDeclarativeView>("Places", 1, 0, "DashDeclarativeView");
+    qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
     view.setUseOpenGL(arguments.contains("-opengl"));
 
@@ -70,10 +69,6 @@ int main(int argc, char *argv[])
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
-
-    /* Configure translations */
-    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
-    Unity2dTr::qmlInit(view.rootContext());
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,

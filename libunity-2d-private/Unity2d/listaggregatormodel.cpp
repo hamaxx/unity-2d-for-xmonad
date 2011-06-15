@@ -218,3 +218,44 @@ ListAggregatorModel::get(int row) const
 {
     return data(QAbstractListModel::index(row), 0);
 }
+
+bool
+ListAggregatorModel::removeRows(int row, int count, const QModelIndex& parent)
+{
+    if (row < 0 || row >= rowCount() || count <= 0) {
+        return false;
+    }
+ 
+    /* Note that since this is an aggregator, the underlying models will
+       take care of signaling the addition and removal of rows and this
+       model will update accordingly.
+       Therefore we don't need to call beginRemoveRows */
+
+    int removed = 0;
+    Q_FOREACH (QAbstractItemModel* model, m_models) {
+        /* Please note that the offset of the current model is computed
+           by iterating over all previous models and making a sum of their
+           row count.
+           By taking that into account the calculation for removeAt is:
+           (row + removed) - (offset + removed)
+           This can be simplified to just row - offset as you see below */
+        int offset = computeOffset(model);
+        int removeAt = row - offset;
+
+        if (removeAt < 0 || removeAt >= model->rowCount()) {
+            // The item(s) that we need to remove are outside of this model
+            // move on to the next one.
+            continue;
+        }
+        
+        int removeCount = qMin(count - removed, model->rowCount() - removeAt);
+        model->removeRows(removeAt, removeCount);
+        removed += removeCount;
+
+        if (removed >= count) {
+            break;
+        }
+    }
+
+    return true;
+}
