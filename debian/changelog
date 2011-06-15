@@ -1,6 +1,8 @@
 unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * debian/unity-2d-launcher.install:
+    - do not install launcher/launchermenu.css anylonger as its now shipped as
+      part as libunity-2d-private-qml.so using the Qt resource system
 
  -- Florian Boucault <florian.boucault@canonical.com>  Wed, 15 Jun 2011 15:06:53 +0200
 

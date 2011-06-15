@@ -74,10 +74,11 @@ set(unity-2d-private-qml_MOC_HDRS
 
 file(GLOB unity-2d-private-qml_QML *.qml)
 
+qt4_add_resources(unity-2d-private-qml_RC_SRCS launchermenu/launchermenu.qrc)
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})
 
 # Build
-add_library(unity-2d-private-qml SHARED ${unity-2d-private-qml_SRCS} ${unity-2d-private-qml_MOC_SRCS})
+add_library(unity-2d-private-qml SHARED ${unity-2d-private-qml_SRCS} ${unity-2d-private-qml_MOC_SRCS} ${unity-2d-private-qml_RC_SRCS})
 add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DSN_API_NOT_YET_FROZEN)
 
 include_directories(
