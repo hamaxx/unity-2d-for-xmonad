@@ -38,7 +38,6 @@ extern "C" {
 #include "launcherplaceslist.h"
 #include "iconimageprovider.h"
 #include "blendedimageprovider.h"
-#include "cacheeffect.h"
 #include "qsortfilterproxymodelqml.h"
 #include "windowimageprovider.h"
 #include "windowinfo.h"
@@ -47,11 +46,14 @@ extern "C" {
 #include "plugin.h"
 #include "cacheeffect.h"
 #include "iconutilities.h"
+#include "unity2dtr.h"
 
 #include "mimedata.h"
 #include "dragdropevent.h"
 #include "dragitemwithurl.h"
 #include "dropitem.h"
+
+#include "config.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -144,6 +146,10 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
        (line 2951).
     */
     wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
+
+    /* Configure translations */
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+    Unity2dTr::qmlInit(engine->rootContext());
 }
 
 Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

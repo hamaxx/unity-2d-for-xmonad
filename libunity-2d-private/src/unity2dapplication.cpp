@@ -26,7 +26,10 @@
 
 AbstractX11EventFilter::~AbstractX11EventFilter()
 {
-    Unity2dApplication::instance()->removeX11EventFilter(this);
+    Unity2dApplication* application = Unity2dApplication::instance();
+    if (application != NULL) {
+        application->removeX11EventFilter(this);
+    }
 }
 
 Unity2dApplication::Unity2dApplication(int& argc, char** argv)
