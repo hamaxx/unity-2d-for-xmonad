@@ -55,6 +55,10 @@ extern "C" {
 
 #include "config.h"
 
+#include "autohidebehavior.h"
+#include "intellihidebehavior.h"
+#include "forcevisiblebehavior.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -118,6 +122,10 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
+
+    qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
+    qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
+    qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

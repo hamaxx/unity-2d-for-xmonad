@@ -24,12 +24,13 @@
 // Local
 
 // libunity-2d
-#include <unity2dpanel.h>
 
 // Qt
+#include <QWidget>
 
-ForceVisibleBehavior::ForceVisibleBehavior(Unity2dPanel* panel)
+ForceVisibleBehavior::ForceVisibleBehavior(QWidget* panel)
 : AbstractVisibilityBehavior(panel)
 {
-    m_panel->slideIn();
 }
+
+#include "forcevisiblebehavior.moc"
