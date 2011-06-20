@@ -51,6 +51,7 @@ extern "C" {
 #include "dragdropevent.h"
 #include "dragitemwithurl.h"
 #include "dropitem.h"
+#include "launcherdropitem.h"
 
 #include "config.h"
 
@@ -96,6 +97,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeDropItem>(uri, 0, 1, "DropItem");
     qmlRegisterType<DeclarativeMimeData>();
     qmlRegisterType<DeclarativeDragDropEvent>();
+    qmlRegisterType<LauncherDropItem>(uri, 0, 1, "LauncherDropItem");
 
     qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
 

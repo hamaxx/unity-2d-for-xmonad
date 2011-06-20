@@ -39,7 +39,6 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
-#include <dragdropevent.h>
 #include <debug_p.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
@@ -232,56 +231,6 @@ LauncherView::toggleDash()
         }
 
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
-    }
-}
-
-QList<QUrl>
-LauncherView::getEventUrls(DeclarativeDragDropEvent* event)
-{
-    const QMimeData* mimeData = event->mimeData();
-    if (mimeData->hasUrls()) {
-        return mimeData->urls();
-    }
-    else if (mimeData->hasText()) {
-        /* When dragging an URL from firefox’s address bar, it is properly
-           recognized as such by the event. However, the same doesn’t work
-           for chromium: the URL is recognized as plain text.
-           We cope with this unfriendly behaviour by trying to build a URL out
-           of the text. This assumes there’s only one URL. */
-        QString text = mimeData->text();
-        QUrl url(text);
-        if (url.isRelative()) {
-            /* On top of that, chromium sometimes chops off the scheme… */
-            url = QUrl("http://" + text);
-        }
-        if (url.isValid()) {
-            QList<QUrl> urls;
-            urls.append(url);
-            return urls;
-        }
-    }
-    return QList<QUrl>();
-}
-
-void LauncherView::onDragEnter(DeclarativeDragDropEvent* event)
-{
-    Q_FOREACH(QUrl url, getEventUrls(event)) {
-        if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
-            url.scheme().startsWith("http")) {
-            event->setAccepted(true);
-            return;
-        }
-    }
-}
-
-void LauncherView::onDrop(DeclarativeDragDropEvent* event)
-{
-    foreach (QUrl url, getEventUrls(event)) {
-        if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            emit desktopFileDropped(url.path());
-        } else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url);
-        }
     }
 }
 
