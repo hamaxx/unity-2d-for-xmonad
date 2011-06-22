@@ -23,7 +23,6 @@
 #include <gnomesessionclient.h>
 #include <launcherclient.h>
 #include <unity2dapplication.h>
-#include <unity2dtr.h>
 #include <propertybinder.h>
 
 // libqtgconf
@@ -102,9 +101,6 @@ int main(int argc, char *argv[])
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
-    /* Configure translations */
-    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
-
     /* Panel containing the QML declarative view */
     Unity2dPanel panel(true);
     panel.setEdge(Unity2dPanel::LeftEdge);
@@ -130,8 +126,6 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
     launcherView->rootContext()->setContextProperty("visibilityController", visibilityController);
-
-    Unity2dTr::qmlInit(launcherView->rootContext());
 
     LauncherDBus launcherDBus(visibilityController, launcherView);
     launcherDBus.connectToBus();

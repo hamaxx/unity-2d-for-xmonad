@@ -41,14 +41,10 @@ class LauncherView : public Unity2DDeclarativeView
 public:
     explicit LauncherView(QWidget* parent = NULL);
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
-    Q_INVOKABLE void onDragEnter(DeclarativeDragDropEvent* event);
-    Q_INVOKABLE void onDrop(DeclarativeDragDropEvent* event);
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 
 Q_SIGNALS:
-    void desktopFileDropped(QString path);
-    void webpageUrlDropped(const QUrl& url);
     void keyboardShortcutPressed(int itemIndex);
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
@@ -71,8 +67,6 @@ protected:
     void focusOutEvent(QFocusEvent* event);
 
 private:
-    QList<QUrl> getEventUrls(DeclarativeDragDropEvent* event);
-
     GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
     bool m_superKeyHeld;

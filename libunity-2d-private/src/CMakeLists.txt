@@ -1,5 +1,6 @@
 # Dependencies
 pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(WNCK REQUIRED libwnck)
 
 # Sources
 set(libunity-2d-private_SRCS
@@ -17,6 +18,11 @@ set(libunity-2d-private_SRCS
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
+    abstractvisibilitybehavior.cpp
+    autohidebehavior.cpp
+    edgehitdetector.cpp
+    forcevisiblebehavior.cpp
+    intellihidebehavior.cpp
     )
 
 # Build
@@ -26,6 +32,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GLIB_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     )
 
 add_library(unity-2d-private SHARED ${libunity-2d-private_SRCS})
@@ -42,6 +49,7 @@ target_link_libraries(unity-2d-private
     ${QT_QTOPENGL_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
+    ${WNCK_LDFLAGS}
     )
 
 # Install
