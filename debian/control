@@ -6,6 +6,7 @@ XSBC-Original-Maintainer: Olivier Tilloy <olivier.tilloy@canonical.com>
 Build-Depends: debhelper (>= 7.0.50~),
                dh-translations (>= 99),
                cmake,
+               pkg-config,
                libqt4-dev,
                libqt4-opengl-dev,
                libglib2.0-dev,
