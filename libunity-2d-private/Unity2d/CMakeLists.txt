@@ -10,6 +10,8 @@ pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
 pkg_check_modules(INDICATOR REQUIRED indicator)
 
+find_package(X11 REQUIRED)
+
 # Sources
 set(unity-2d-private-qml_SRCS
     plugin.cpp
@@ -41,6 +43,7 @@ set(unity-2d-private-qml_SRCS
     launchermenu.cpp
     webfavorite.cpp
     workspaces.cpp
+    launcherdropitem.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
@@ -70,14 +73,16 @@ set(unity-2d-private-qml_MOC_HDRS
     launchermenu.h
     webfavorite.h
     workspaces.h
+    launcherdropitem.h
     )
 
 file(GLOB unity-2d-private-qml_QML *.qml)
 
+qt4_add_resources(unity-2d-private-qml_RC_SRCS launchermenu/launchermenu.qrc)
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})
 
 # Build
-add_library(unity-2d-private-qml SHARED ${unity-2d-private-qml_SRCS} ${unity-2d-private-qml_MOC_SRCS})
+add_library(unity-2d-private-qml SHARED ${unity-2d-private-qml_SRCS} ${unity-2d-private-qml_MOC_SRCS} ${unity-2d-private-qml_RC_SRCS})
 add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DSN_API_NOT_YET_FROZEN)
 
 include_directories(
@@ -92,6 +97,7 @@ include_directories(
     ${GIO_INCLUDE_DIRS}
     ${STARTUPNOTIFICATION_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIR}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -111,6 +117,7 @@ target_link_libraries(unity-2d-private-qml
     ${GIO_LDFLAGS}
     ${STARTUPNOTIFICATION_LDFLAGS}
     ${INDICATOR_LDFLAGS}
+    ${X11_Xcomposite_LIB}
     unity-2d-private
     )
 
@@ -123,5 +130,9 @@ install(TARGETS unity-2d-private-qml
 
 install(FILES qmldir ${unity-2d-private-qml_QML}
     DESTINATION ${IMPORT_INSTALL_DIR}
+    )
+
+install(FILES warty-final-ubuntu.jpg
+    DESTINATION ${UNITY_2D_DIR}
     )
 

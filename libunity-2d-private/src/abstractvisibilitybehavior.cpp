@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Florian Boucault <florian.boucault@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,41 +19,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef AUTOHIDEBEHAVIOR_H
-#define AUTOHIDEBEHAVIOR_H
+// Self
+#include "abstractvisibilitybehavior.h"
 
 // Local
-#include <abstractvisibilitybehavior.h>
+
+// libunity-2d
 
 // Qt
-#include <QObject>
+#include <QWidget>
 
-class EdgeHitDetector;
-class QTimer;
-class Unity2dPanel;
-
-/**
- * This class implements the classic autohide-on-timeout behavior
- */
-class AutoHideBehavior : public AbstractVisibilityBehavior
+AbstractVisibilityBehavior::AbstractVisibilityBehavior(QWidget* panel)
+: QObject(panel)
+, m_panel(panel)
+, m_visible(true)
 {
-Q_OBJECT
-public:
-    AutoHideBehavior(Unity2dPanel* panel);
-    ~AutoHideBehavior();
+}
 
-protected:
-    bool eventFilter(QObject*, QEvent*);
+AbstractVisibilityBehavior::~AbstractVisibilityBehavior()
+{
+}
 
-private Q_SLOTS:
-    void hidePanel();
-    void showPanel();
+bool AbstractVisibilityBehavior::visible() const
+{
+    return m_visible;
+}
 
-private:
-    QTimer* m_autohideTimer;
-    EdgeHitDetector* m_edgeHitDetector;
+QWidget* AbstractVisibilityBehavior::panel() const
+{
+    return m_panel;
+}
 
-    void createEdgeHitDetector();
-};
+void AbstractVisibilityBehavior::setPanel(QWidget* panel)
+{
+    m_panel = panel;
+    Q_EMIT panelChanged(m_panel);
+}
 
-#endif /* AUTOHIDEBEHAVIOR_H */
+#include "abstractvisibilitybehavior.moc"

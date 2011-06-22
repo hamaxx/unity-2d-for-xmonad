@@ -127,6 +127,19 @@ void VisibilityController::setBehavior(AbstractVisibilityBehavior* behavior)
     // having only one point where the behavior is changed makes it easy to log
     // behavior changes using something like: UQ_VAR(behavior);
     m_behavior.reset(behavior);
+    if (behavior != NULL) {
+        connect(behavior, SIGNAL(visibleChanged(bool)), SLOT(updatePanelVisibility(bool)));
+        updatePanelVisibility(behavior->visible());
+    }
+}
+
+void VisibilityController::updatePanelVisibility(bool visible)
+{
+    if (visible) {
+        m_panel->slideIn();
+    } else {
+        m_panel->slideOut();
+    }
 }
 
 void VisibilityController::slotServiceUnregistered(const QString& service)

@@ -37,6 +37,7 @@ libunity_2d_tests(
     paneltest
     unity2dtrtest
     launchermenutest
+    listaggregatormodeltest
     )
 
 add_custom_target(unity2dtr_po COMMAND

@@ -570,7 +570,7 @@ PlaceEntry::setActiveSection(int activeSection)
         if (m_dbusIface != NULL) {
             /* the cast to uint is necessary for the D-Bus call to succeed as the
                interface expects that type */
-            m_dbusIface->call("SetActiveSection", (uint)m_activeSection);
+            m_dbusIface->asyncCall("SetActiveSection", (uint)m_activeSection);
         }
         Q_EMIT activeSectionChanged();
     }
@@ -582,14 +582,14 @@ PlaceEntry::setActive(bool active)
     if (active != m_active) {
         m_active = active;
         if (m_dbusIface != NULL) {
-            m_dbusIface->call("SetActive", m_active);
+            m_dbusIface->asyncCall("SetActive", m_active);
         }
         Q_EMIT activeChanged();
 
         if (m_dbusIface && m_active) {
             /* SetActiveSection needs to be called after SetActive(true)
                in order for it to have an effect. */
-            m_dbusIface->call("SetActiveSection", m_activeSection);
+            m_dbusIface->asyncCall("SetActiveSection", m_activeSection);
         }
     }
 }
@@ -601,7 +601,7 @@ PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
         m_entrySearchQuery = entrySearchQuery;
         if (m_dbusIface != NULL) {
             QHash<QString, QString> searchHints;
-            m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+            m_dbusIface->asyncCall("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
         }
         Q_EMIT entrySearchQueryChanged();
     }
@@ -680,7 +680,7 @@ PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
         m_globalSearchQuery = globalSearchQuery;
         if (m_dbusIface != NULL) {
             QHash<QString, QString> searchHints;
-            m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
+            m_dbusIface->asyncCall("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
         }
         Q_EMIT globalSearchQueryChanged();
     }
@@ -917,10 +917,10 @@ PlaceEntry::connectToRemotePlaceEntry()
 
     /* Update state of D-Bus daemon according to the values of local properties */
     QHash<QString, QString> searchHints;
-    m_dbusIface->call("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
-    m_dbusIface->call("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
-    m_dbusIface->call("SetActive", m_active);
-    m_dbusIface->call("SetActiveSection", m_activeSection);
+    m_dbusIface->asyncCall("SetSearch", m_entrySearchQuery, qVariantFromValue(searchHints));
+    m_dbusIface->asyncCall("SetGlobalSearch", m_globalSearchQuery, qVariantFromValue(searchHints));
+    m_dbusIface->asyncCall("SetActive", m_active);
+    m_dbusIface->asyncCall("SetActiveSection", m_activeSection);
 }
 
 void

@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Florian Boucault <florian.boucault@canonical.com>
  *
  * License: GPL v3
  */
@@ -21,7 +22,7 @@ struct _WnckWindow;
 
 class QTimer;
 
-class Unity2dPanel;
+class QWidget;
 class EdgeHitDetector;
 
 /**
@@ -29,10 +30,19 @@ class EdgeHitDetector;
  */
 class IntelliHideBehavior : public AbstractVisibilityBehavior
 {
-Q_OBJECT
+    Q_OBJECT
+
+    Q_PROPERTY(QWidget* panel READ panel WRITE setPanel NOTIFY panelChanged)
+
 public:
-    IntelliHideBehavior(Unity2dPanel* panel);
+    IntelliHideBehavior(QWidget* panel=0);
     ~IntelliHideBehavior();
+
+    // setters
+    void setPanel(QWidget *panel);
+
+Q_SIGNALS:
+    void panelChanged(QWidget *panel);
 
 protected:
     bool eventFilter(QObject*, QEvent*);

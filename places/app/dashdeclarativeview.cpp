@@ -53,14 +53,7 @@ DashDeclarativeView::DashDeclarativeView()
 , m_expanded(false)
 {
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-
-    if (QX11Info::isCompositingManagerRunning()) {
-        setAttribute(Qt::WA_TranslucentBackground);
-        viewport()->setAttribute(Qt::WA_TranslucentBackground);
-    } else {
-        setAttribute(Qt::WA_OpaquePaintEvent);
-        setAttribute(Qt::WA_NoSystemBackground);
-    }
+    setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));

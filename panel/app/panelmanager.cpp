@@ -54,8 +54,6 @@ static QPalette getPalette()
     QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
-    palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::ButtonText, Qt::white);
     return palette;
 }
 

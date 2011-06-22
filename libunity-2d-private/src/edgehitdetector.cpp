@@ -55,3 +55,5 @@ void EdgeHitDetector::updateGeometryFromScreen()
     QRect rect = QApplication::desktop()->screenGeometry(leftScreen);
     m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
 }
+
+#include "edgehitdetector.moc"

@@ -1,10 +1,8 @@
 /*
- * This file is part of unity-2d
- *
- * Copyright 2011 Canonical Ltd.
+ * Copyright (C) 2011 Canonical, Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ *  Florian Boucault <florian.boucault@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FORCEVISIBLEBEHAVIOR_H
-#define FORCEVISIBLEBEHAVIOR_H
 
-// Local
-#include <abstractvisibilitybehavior.h>
+#ifndef LAUNCHERDROPITEM_H
+#define LAUNCHERDROPITEM_H
 
-// Qt
-#include <QObject>
+#include "dropitem.h"
 
-/**
- * Behavior used when someone requested the launcher to be visible even if it
- * is supposed to be hidden
- */
-class ForceVisibleBehavior : public AbstractVisibilityBehavior
+class LauncherDropItem : public DeclarativeDropItem
 {
     Q_OBJECT
+
 public:
-    ForceVisibleBehavior(Unity2dPanel*);
+    LauncherDropItem(QDeclarativeItem *parent=0);
+
+Q_SIGNALS:
+    void desktopFileDropped(QString path);
+    void webpageUrlDropped(const QUrl& url);
+
+protected:
+    void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
+    void dropEvent(QGraphicsSceneDragDropEvent *event);
+
+private:
+    QList<QUrl> getEventUrls(QGraphicsSceneDragDropEvent* event);
 };
 
-#endif /* FORCEVISIBLEBEHAVIOR_H */
+#endif // LAUNCHERDROPITEM_H
