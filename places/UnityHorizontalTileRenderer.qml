@@ -20,13 +20,15 @@ import Qt 4.7
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
-    cellWidth: 250
-    cellHeight: 70
+    cellWidth: 280
+    cellHeight: 75
     horizontalSpacing: 10
     verticalSpacing: 10
 
     cellRenderer: Component {
         Button {
+            id: button
+
             property string uri
             property string iconHint
             property string mimetype
