@@ -71,7 +71,8 @@ RendererGrid {
             Image {
                 id: icon
 
-                source: iconHint
+                /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
+                source: iconHint != "" && iconHint.indexOf("/") == -1 ? "image://icons/" + iconHint : iconHint
                 width: 48
                 height: 48
                 anchors.verticalCenter: parent.verticalCenter
