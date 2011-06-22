@@ -97,10 +97,6 @@ DropItem {
     signal entered
     signal exited
 
-    IconUtilities {
-        id: iconUtilities
-    }
-
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem

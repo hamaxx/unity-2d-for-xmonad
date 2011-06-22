@@ -21,15 +21,19 @@
 #include <QUrl>
 #include <QSize>
 #include <QVariant>
+#include <QDeclarativeEngine>
 
 class IconUtilities : public QObject
 {
     Q_OBJECT
 
 public :
-    explicit IconUtilities(QObject *parent = 0);
+    explicit IconUtilities(QDeclarativeEngine *engine);
 
     Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
+
+private:
+    QDeclarativeEngine* m_engine;
 };
 
 #endif // ICONUTILITIES_H

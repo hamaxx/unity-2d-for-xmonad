@@ -128,7 +128,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
     qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
 
-    qmlRegisterType<IconUtilities>(uri, 0, 1, "IconUtilities");
+    qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -144,6 +144,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* ScreenInfo is exposed as a context property as it's a singleton and therefore
        not creatable directly in QML */
     engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
+    engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.

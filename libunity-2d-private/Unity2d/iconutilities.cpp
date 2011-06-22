@@ -28,7 +28,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
 
-IconUtilities::IconUtilities(QObject *parent) : QObject(parent)
+IconUtilities::IconUtilities(QDeclarativeEngine *engine) : QObject(engine), m_engine(engine)
 {
 }
 
@@ -43,8 +43,7 @@ IconUtilities::getColorsFromIcon(QUrl source, QSize size) const
     QList<QVariant> colors;
 
     // FIXME: we should find a way to avoid reloading the icon
-    QDeclarativeEngine *engine = QDeclarativeEngine::contextForObject(this)->engine();
-    QImage icon = engine->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
+    QImage icon = m_engine->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
     if (icon.width() == 0 || icon.height() == 0) {
         UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
         return colors;
