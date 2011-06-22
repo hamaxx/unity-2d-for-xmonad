@@ -127,10 +127,6 @@ int main(int argc, char *argv[])
     launcherView->rootContext()->setContextProperty("panel", &panel);
     launcherView->rootContext()->setContextProperty("visibilityController", visibilityController);
 
-    /* FIXME: this is needed since the blended image provider doesn't support relative paths yet */
-    launcherView->rootContext()->setContextProperty("engineBaseUrl",
-                                                    launcherView->engine()->baseUrl().toLocalFile());
-
     LauncherDBus launcherDBus(visibilityController, launcherView);
     launcherDBus.connectToBus();
 

@@ -132,3 +132,7 @@ install(FILES qmldir ${unity-2d-private-qml_QML}
     DESTINATION ${IMPORT_INSTALL_DIR}
     )
 
+install(FILES warty-final-ubuntu.jpg
+    DESTINATION ${UNITY_2D_DIR}
+    )
+
