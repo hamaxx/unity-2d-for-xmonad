@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Florian Boucault <florian.boucault@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,23 +27,37 @@
 // Qt
 #include <QObject>
 
-class Unity2dPanel;
+class QWidget;
 
 /**
  * Base class for various visibility behaviors.
  *
- * Does not provide much for now, only a pointer to the panel the behavior
- * handles.
  */
 class AbstractVisibilityBehavior : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(bool visible READ visible NOTIFY visibleChanged)
+    Q_PROPERTY(QWidget* panel READ panel WRITE setPanel NOTIFY panelChanged)
+
 public:
-    AbstractVisibilityBehavior(Unity2dPanel* panel);
+    AbstractVisibilityBehavior(QWidget* panel=0);
     ~AbstractVisibilityBehavior();
 
+    // getters
+    bool visible() const;
+    QWidget* panel() const;
+
+    // setters
+    void setPanel(QWidget* panel);
+
+Q_SIGNALS:
+    void visibleChanged(bool visible);
+    void panelChanged(QWidget* panel);
+
 protected:
-    Unity2dPanel* m_panel;
+    QWidget* m_panel;
+    bool m_visible;
 };
 
 #endif /* ABSTRACTVISIBILITYBEHAVIOR_H */

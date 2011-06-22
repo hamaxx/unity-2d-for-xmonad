@@ -1,0 +1,56 @@
+<gconfschemafile>
+<schemalist>
+	<schema>
+		<key>/schemas/desktop/unity-2d/launcher/favorites</key>
+		<applyto>/desktop/unity-2d/launcher/favorites</applyto>
+		<owner>unity-2d</owner>
+		<type>list</type>
+		<list_type>string</list_type>
+		<default>[ubiquity-gtkui.desktop,nautilus-home.desktop,firefox.desktop,libreoffice-writer.desktop,libreoffice-calc.desktop,libreoffice-impress.desktop,ubuntu-software-center.desktop,ubuntuone-control-panel-gtk.desktop]</default>
+		<locale name="C">
+		   <short>Favorite applications</short>
+		   <long>List of desktop files of applications that have been marked as favorites by the user in the launcher</long>
+		</locale>
+	</schema>
+
+	<schema>
+		<key>/schemas/desktop/unity-2d/launcher/hide_mode</key>
+		<applyto>/desktop/unity-2d/launcher/hide_mode</applyto>
+		<owner>unity-2d</owner>
+		<type>int</type>
+		<default>2</default>
+		<locale name="C">
+		   <short>Hiding mode of the launcher</short>
+		   <long>Possible values:
+0: never hide; the launcher is always visible. Always set /desktop/unity-2d/launcher/use_strut to true when using that mode
+1: auto hide; the launcher will disappear after a short time if the user is not interacting with it
+2: intellihide; the launcher will disappear if a window is placed on top of it and if the user is not interacting with it</long>
+		</locale>
+	</schema>
+
+	<schema>
+		<key>/schemas/desktop/unity-2d/launcher/use_strut</key>
+		<applyto>/desktop/unity-2d/launcher/use_strut</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>false</default>
+		<locale name="C">
+		   <short>Reserve launcher area</short>
+		   <long>Use EWMH standard to reserve an area of the desktop (struts) so that no window can use the launcher's area</long>
+		</locale>
+	</schema>
+
+	<schema>
+		<key>/schemas/desktop/unity-2d/launcher/super_key_enable</key>
+		<applyto>/desktop/unity-2d/launcher/super_key_enable</applyto>
+		<owner>unity-2d</owner>
+		<type>bool</type>
+		<default>true</default>
+		<locale name="C">
+		   <short>Super key activation</short>
+		   <long>Whether or not the super (also called windows key) key is used</long>
+		</locale>
+	</schema>
+</schemalist>
+</gconfschemafile>
+

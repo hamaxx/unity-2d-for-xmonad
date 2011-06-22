@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Florian Boucault <florian.boucault@canonical.com>
  *
  * License: GPL v3
  */
@@ -16,12 +17,12 @@
 // libunity-2d
 #include <debug_p.h>
 #include <edgehitdetector.h>
-#include <unity2dpanel.h>
 
 // Qt
 #include <QCursor>
 #include <QEvent>
 #include <QTimer>
+#include <QWidget>
 
 // libwnck
 #undef signals
@@ -64,7 +65,7 @@ GOBJECT_CALLBACK2(stateChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(geometryChangedCB, "updateVisibility");
 GOBJECT_CALLBACK0(workspaceChangedCB, "updateVisibility");
 
-IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
+IntelliHideBehavior::IntelliHideBehavior(QWidget* panel)
 : AbstractVisibilityBehavior(panel)
 , m_updateVisibilityTimer(new QTimer(this))
 , m_edgeHitDetector(0)
@@ -74,7 +75,7 @@ IntelliHideBehavior::IntelliHideBehavior(Unity2dPanel* panel)
     m_updateVisibilityTimer->setInterval(AUTOHIDE_TIMEOUT);
     connect(m_updateVisibilityTimer, SIGNAL(timeout()), SLOT(updateVisibility()));
 
-    m_panel->installEventFilter(this);
+    setPanel(panel);
 
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
@@ -120,6 +121,9 @@ void IntelliHideBehavior::updateActiveWindowConnections()
 
 void IntelliHideBehavior::updateVisibility()
 {
+    if (m_panel == NULL) {
+        return;
+    }
     if (isMouseForcingVisibility()) {
         return;
     }
@@ -194,12 +198,13 @@ bool IntelliHideBehavior::isMouseForcingVisibility() const
 {
     // We check the cursor position ourself because using QWidget::underMouse()
     // is unreliable. It causes LP bug #740280
-    return m_panel->geometry().contains(QCursor::pos());
+    return m_panel != NULL && m_panel->geometry().contains(QCursor::pos());
 }
 
 void IntelliHideBehavior::hidePanel()
 {
-    m_panel->slideOut();
+    m_visible = false;
+    Q_EMIT visibleChanged(m_visible);
     createEdgeHitDetector();
 }
 
@@ -209,7 +214,8 @@ void IntelliHideBehavior::showPanel()
     // from reaching the panel
     delete m_edgeHitDetector;
     m_edgeHitDetector = 0;
-    m_panel->slideIn();
+    m_visible = true;
+    Q_EMIT visibleChanged(m_visible);
 }
 
 void IntelliHideBehavior::createEdgeHitDetector()
@@ -217,3 +223,16 @@ void IntelliHideBehavior::createEdgeHitDetector()
     m_edgeHitDetector = new EdgeHitDetector(this);
     connect(m_edgeHitDetector, SIGNAL(edgeHit()), SLOT(showPanel()));
 }
+
+void IntelliHideBehavior::setPanel(QWidget *panel)
+{
+    if (m_panel != NULL) {
+        m_panel->removeEventFilter(this);
+    }
+    AbstractVisibilityBehavior::setPanel(panel);
+    if (m_panel != NULL) {
+        m_panel->installEventFilter(this);
+    }
+}
+
+#include "intellihidebehavior.moc"

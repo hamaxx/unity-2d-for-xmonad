@@ -4,6 +4,8 @@
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent), m_useOpenGL(false)
 {
+    setAttribute(Qt::WA_NoSystemBackground);
+    setTransparentBackground(false);
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const
@@ -32,6 +34,21 @@ void Unity2DDeclarativeView::setUseOpenGL(bool useOpenGL)
 
     m_useOpenGL = useOpenGL;
     Q_EMIT useOpenGLChanged(useOpenGL);
+}
+
+bool Unity2DDeclarativeView::transparentBackground() const
+{
+    return m_transparentBackground;
+}
+
+void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground)
+{
+    setAttribute(Qt::WA_TranslucentBackground, transparentBackground);
+    viewport()->setAttribute(Qt::WA_TranslucentBackground, transparentBackground);
+    setAttribute(Qt::WA_OpaquePaintEvent, !transparentBackground);
+
+    m_transparentBackground = transparentBackground;
+    Q_EMIT transparentBackgroundChanged(transparentBackground);
 }
 
 #include <unity2ddeclarativeview.moc>

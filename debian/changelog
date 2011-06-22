@@ -1,8 +1,13 @@
 unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * debian/unity-2d-launcher.install:
+    - do not install launcher/launchermenu.css anylonger as its now shipped as
+      part as libunity-2d-private-qml.so using the Qt resource system
+  * debian/libunity-2d-private0:
+    - move symbolic link to /usr/share/backgrounds/warty-final-ubuntu.png from
+      /usr/share/unity-2d/places/artwork to /usr/share/unity-2d 
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 15 Jun 2011 15:06:53 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 10:32:44 +0200
 
 unity-2d (3.8.8-0ubuntu1) natty; urgency=low
 

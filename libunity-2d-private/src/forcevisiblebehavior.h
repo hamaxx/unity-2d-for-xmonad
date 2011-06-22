@@ -18,22 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// Self
-#include "abstractvisibilitybehavior.h"
+#ifndef FORCEVISIBLEBEHAVIOR_H
+#define FORCEVISIBLEBEHAVIOR_H
 
 // Local
-
-// libunity-2d
-#include <unity2dpanel.h>
+#include <abstractvisibilitybehavior.h>
 
 // Qt
+#include <QObject>
 
-AbstractVisibilityBehavior::AbstractVisibilityBehavior(Unity2dPanel* panel)
-: QObject(panel)
-, m_panel(panel)
+/**
+ * Behavior used when someone requested the launcher to be visible even if it
+ * is supposed to be hidden
+ */
+class ForceVisibleBehavior : public AbstractVisibilityBehavior
 {
-}
+    Q_OBJECT
+public:
+    ForceVisibleBehavior(QWidget* panel=0);
+};
 
-AbstractVisibilityBehavior::~AbstractVisibilityBehavior()
-{
-}
+#endif /* FORCEVISIBLEBEHAVIOR_H */

@@ -19,7 +19,7 @@
 import Qt 4.7
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
-DropItem {
+LauncherDropItem {
     id: launcher
 
     GnomeBackground {
@@ -46,8 +46,8 @@ DropItem {
         source: "artwork/background.png"
     }
 
-    onDragEnter: launcherView.onDragEnter(event)
-    onDrop: launcherView.onDrop(event)
+    onDesktopFileDropped: applications.insertFavoriteApplication(path)
+    onWebpageUrlDropped: applications.insertWebFavorite(url)
 
     FocusScope {
         focus: true
@@ -58,6 +58,7 @@ DropItem {
             id: main
             anchors.top: parent.top
             anchors.bottom: shelf.top
+            anchors.bottomMargin: itemPadding
             width: parent.width
 
             autoScrollSize: tileSize / 2
@@ -74,7 +75,8 @@ DropItem {
 
         LauncherList {
             id: shelf
-            anchors.bottom: parent.bottom;
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: main.anchors.bottomMargin
             height: (tileSize + itemPadding) * count
             width: parent.width
             itemPadding: 0
@@ -129,8 +131,6 @@ DropItem {
 
     Connections {
         target: launcherView
-        onDesktopFileDropped: applications.insertFavoriteApplication(path)
-        onWebpageUrlDropped: applications.insertWebFavorite(url)
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
         onSuperKeyHeldChanged: {
             if (superKeyHeld) visibilityController.beginForceVisible()

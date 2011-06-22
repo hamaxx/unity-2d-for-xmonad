@@ -52,8 +52,13 @@ extern "C" {
 #include "dragdropevent.h"
 #include "dragitemwithurl.h"
 #include "dropitem.h"
+#include "launcherdropitem.h"
 
 #include "config.h"
+
+#include "autohidebehavior.h"
+#include "intellihidebehavior.h"
+#include "forcevisiblebehavior.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -97,6 +102,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<DeclarativeDropItem>(uri, 0, 1, "DropItem");
     qmlRegisterType<DeclarativeMimeData>();
     qmlRegisterType<DeclarativeDragDropEvent>();
+    qmlRegisterType<LauncherDropItem>(uri, 0, 1, "LauncherDropItem");
 
     qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
 
@@ -118,8 +124,11 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
 
-    qmlRegisterType<IconUtilities>(uri, 0, 1, "IconUtilities");
+    qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
+    qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
+    qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
 
+    qmlRegisterType<IconUtilities>(uri, 0, 1, "IconUtilities");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -128,7 +137,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     // XSetErrorHandler(_x_errhandler);
 
-    engine->addImageProvider(QString("blended"), new BlendedImageProvider);
+    engine->addImageProvider(QString("blended"), new BlendedImageProvider(engine->baseUrl()));
     engine->addImageProvider(QString("window"), new WindowImageProvider);
     engine->addImageProvider(QString("icons"), new IconImageProvider);
 
