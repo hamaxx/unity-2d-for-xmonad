@@ -91,7 +91,7 @@ RendererGrid {
                 text: displayName
                 color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
                 state: parent.state == "selected" ? "expanded" : ""
-                horizontalAlignment: Text.AlignHLeft
+                horizontalAlignment: Text.AlignLeft
                 anchors.left: icon.right
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
