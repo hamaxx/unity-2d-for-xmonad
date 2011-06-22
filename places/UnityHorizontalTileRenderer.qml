@@ -72,11 +72,10 @@ RendererGrid {
                 source: iconHint != "" ? "image://icons/"+iconHint : ""
                 width: 48
                 height: 48
-                /* anchors.horizontalCenter: parent.horizontalCenter */
                 anchors.top: parent.top
-		anchors.left: parent.left
+                anchors.left: parent.left
                 anchors.topMargin: 10
-		anchors.leftMargin: 10
+                anchors.leftMargin: 10
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -94,8 +93,8 @@ RendererGrid {
                 state: parent.state == "selected" ? "expanded" : ""
                 horizontalAlignment: Text.AlignHLeft
                 anchors.left: icon.right
-		anchors.right: parent.right
-		anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 anchors.bottomMargin: 5
