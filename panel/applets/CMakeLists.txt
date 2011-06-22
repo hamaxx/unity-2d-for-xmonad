@@ -16,7 +16,7 @@ pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(GTK REQUIRED gtk+-2.0)
 pkg_check_modules(INDICATOR REQUIRED indicator)
-pkg_check_modules(WNCK REQUIRED libwnck)
+pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 
 find_package(X11 REQUIRED)
 
