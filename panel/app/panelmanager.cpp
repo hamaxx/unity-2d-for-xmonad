@@ -31,6 +31,7 @@
 #include <homebutton/homebuttonapplet.h>
 //#include <indicator/indicatorapplet.h>
 #include <legacytray/legacytrayapplet.h>
+#include <unitycore/unitycoreapplet.h>
 
 // Unity
 #include <unity2dpanel.h>
@@ -84,7 +85,7 @@ static Unity2dPanel* instantiatePanel(int screen)
            XEmbed’ed windows can be displayed only once anyway. */
         panel->addWidget(new LegacyTrayApplet);
     }
-    //panel->addWidget(new IndicatorApplet);
+    panel->addWidget(new UnityCoreApplet);
     return panel;
 }
 

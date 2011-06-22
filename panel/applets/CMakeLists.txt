@@ -43,6 +43,9 @@ set(uqapplets_SRCS
     legacytray/x11embedcontainer.cpp
     legacytray/x11embeddelegate.cpp
     legacytray/x11embedpainter.cpp
+    unitycore/indicatorentrywidget.cpp
+    unitycore/indicatorwidget.cpp
+    unitycore/unitycoreapplet.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
@@ -58,6 +61,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
+    ${CMAKE_CURRENT_SOURCE_DIR}/unitycore
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
@@ -65,6 +69,7 @@ include_directories(
     ${WNCK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
+    ${UNITYCORE_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -83,5 +88,6 @@ target_link_libraries(uqapplets
     ${X11_Xcomposite_LIB}
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
+    ${UNITYCORE_LDFLAGS}
     unity-2d-private
     )
