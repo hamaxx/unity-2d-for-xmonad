@@ -71,13 +71,12 @@ RendererGrid {
             Image {
                 id: icon
 
-                source: iconHint != "" ? "image://icons/"+iconHint : ""
+                source: iconHint
                 width: 48
                 height: 48
-                anchors.top: parent.top
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.topMargin: 10
-                anchors.leftMargin: 10
+                anchors.leftMargin: 3
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -87,22 +86,46 @@ RendererGrid {
                 Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
             }
 
-            TextMultiLine {
-                id: label
+            Item {
+                id: labels
 
-                text: displayName
-                color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
-                state: parent.state == "selected" ? "expanded" : ""
-                horizontalAlignment: Text.AlignLeft
-                anchors.left: icon.right
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
                 anchors.top: parent.top
-                anchors.topMargin: 10
-                anchors.bottomMargin: 5
+                anchors.topMargin: 3
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 3
+                anchors.left: icon.right
+                anchors.leftMargin: 15
+                anchors.right: parent.right
                 anchors.rightMargin: 3
-                anchors.leftMargin: 3
-                font.underline: parent.activeFocus
+
+                TextCustom {
+                    id: firstLine
+
+                    text: displayName
+                    color: button.state == "pressed" ? "#5e5e5e" : "#ffffff"
+                    elide: Text.ElideMiddle
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: paintedHeight
+                }
+
+                TextCustom {
+                    id: secondLine
+
+                    text: comment
+                    color: button.state == "pressed" ? "#888888" : "#cccccc"
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: firstLine.bottom
+                    anchors.bottom: parent.bottom
+
+                    clip: true
+                    wrapMode: Text.Wrap
+                    verticalAlignment: Text.AlignTop
+                }
             }
         }
     }
