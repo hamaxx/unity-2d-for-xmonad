@@ -29,6 +29,8 @@
 // Qt
 #include <QWidget>
 
+class QPainter;
+
 class IndicatorEntryWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
@@ -51,6 +53,7 @@ private:
     QPixmap m_pix;
     void updatePix();
     QPixmap decodeIcon();
+    void paintActiveBackground(QPainter*);
 };
 
 #endif /* INDICATORENTRYWIDGET_H */

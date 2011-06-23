@@ -23,6 +23,7 @@
 
 // Local
 #include <debug_p.h>
+#include <fakecairo.h>
 
 // Qt
 #include <QIcon>
@@ -58,8 +59,100 @@ void IndicatorEntryWidget::paintEvent(QPaintEvent*)
 {
     if (!m_pix.isNull()) {
         QPainter painter(this);
+        if (m_entry->active()) {
+            paintActiveBackground(&painter);
+        }
         painter.drawPixmap(0, 0, m_pix);
     }
+}
+
+
+void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
+{
+    // This code should be kept in sync with the draw_menu_bg() function from
+    // plugins/unityshell/src/PanelIndicatorObjectEntryView.cpp
+    int radius = 4;
+    double x = 0;
+    double y = 0;
+    double xos = 0.5;
+    double yos = 0.5;
+    /* FIXME */
+    double mpi = 3.14159265358979323846;
+
+    nux::Color bgtop = QColor::fromHsvF(0, 0, .3);
+    nux::Color bgbot = QColor::fromHsvF(0, 0, .2);
+    nux::Color line = QColor::fromHsvF(0, 0, 0);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    fake_cairo_t cr(painter);
+
+    cairo_move_to (cr, x+xos+radius, y+yos);
+    cairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
+    cairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+2);
+    cairo_line_to (cr, x+xos, y+yos+height()-yos*2+2);
+    cairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
+
+    cairo_pattern_t * pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
+    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+                                     bgtop.red,
+                                     bgtop.green,
+                                     bgtop.blue,
+                                     1.0f - bgbot.red);
+    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+                                     bgbot.red,
+                                     bgbot.green,
+                                     bgbot.blue,
+                                     1.0f - bgtop.red);
+    cairo_set_source (cr, pat);
+    cairo_fill_preserve (cr);
+    cairo_pattern_destroy (pat);
+
+    /*
+    pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
+    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+                                     line.red,
+                                     line.green,
+                                     line.blue,
+                                     1.0f);
+    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+                                     line.red,
+                                     line.green,
+                                     line.blue,
+                                     1.0f);
+    cairo_set_source (cr, pat);
+    */
+    cairo_set_source_rgb (cr, line.red, line.green, line.blue);
+    cairo_stroke (cr);
+    //cairo_pattern_destroy (pat);
+
+    xos++;
+    yos++;
+
+    /* enlarging the area to not draw the lightborder at bottom, ugly trick :P */
+    cairo_move_to (cr, x+radius+xos, y+yos);
+    cairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
+    cairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+3);
+    cairo_line_to (cr, x+xos, y+yos+height()-yos*2+3);
+    cairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
+
+    /*
+    pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+3);
+    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+                                     bgbot.red,
+                                     bgbot.green,
+                                     bgbot.blue,
+                                     1.0f);
+    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+                                     bgbot.red,
+                                     bgbot.green,
+                                     bgbot.blue,
+                                     1.0f);
+    cairo_set_source (cr, pat);
+    */
+    cairo_set_source_rgb (cr, bgbot.red, bgbot.green, bgbot.blue);
+    cairo_stroke (cr);
+    //cairo_pattern_destroy (pat);
 }
 
 void IndicatorEntryWidget::updatePix()
