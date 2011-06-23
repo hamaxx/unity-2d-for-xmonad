@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
+import QtQuick 1.0
 
 /* When added as a child of a ListView and the listview itself is set to the
    'list' property it will make it possible to use drag’n’drop to re-order

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
+import QtQuick 1.0
 import gconf 1.0
 /* Necessary to access the blended image provider and CacheEffect */
 import Unity2d 1.0
