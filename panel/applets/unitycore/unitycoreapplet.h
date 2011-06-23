@@ -39,6 +39,7 @@ private:
     unity::indicator::DBusIndicators::Ptr m_indicators;
 
     void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+    void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
 };
 
 #endif /* UNITYCOREAPPLET_H */
