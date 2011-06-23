@@ -38,6 +38,8 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
+    void showMenu();
+
 protected:
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);

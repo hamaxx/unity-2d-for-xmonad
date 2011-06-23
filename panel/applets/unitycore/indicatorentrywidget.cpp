@@ -144,11 +144,7 @@ void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
     if ((m_entry->label_visible() && m_entry->label_sensitive()) ||
         (m_entry->image_visible() && m_entry->image_sensitive()))
     {
-        QPoint pos = mapToGlobal(rect().bottomLeft());
-        m_entry->ShowMenu(pos.x(), pos.y(),
-            time(NULL),
-            1 //nux::GetEventButton(button_flags)
-            );
+        showMenu();
     } else {
         update();
     }
@@ -162,6 +158,15 @@ void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
 void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)
 {
     m_entry->Scroll(event->delta());
+}
+
+void IndicatorEntryWidget::showMenu()
+{
+    QPoint pos = mapToGlobal(rect().bottomLeft());
+    m_entry->ShowMenu(pos.x(), pos.y(),
+        time(NULL),
+        1 //nux::GetEventButton(button_flags)
+        );
 }
 
 #include "indicatorentrywidget.moc"

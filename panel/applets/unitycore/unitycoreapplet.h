@@ -40,6 +40,7 @@ private:
 
     void onObjectAdded(unity::indicator::Indicator::Ptr const&);
     void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
+    void onMenuPointerMoved(int x, int y);
 };
 
 #endif /* UNITYCOREAPPLET_H */

@@ -23,6 +23,7 @@
 
 // Local
 #include <debug_p.h>
+#include <indicatorentrywidget.h>
 #include <indicatorwidget.h>
 
 // Qt
@@ -48,6 +49,10 @@ UnityCoreApplet::UnityCoreApplet()
 
     m_indicators->on_entry_show_menu.connect(
         sigc::mem_fun(this, &UnityCoreApplet::onEntryShowMenu)
+        );
+
+    m_indicators->on_menu_pointer_moved.connect(
+        sigc::mem_fun(this, &UnityCoreApplet::onMenuPointerMoved)
         );
 }
 
@@ -95,6 +100,16 @@ void UnityCoreApplet::onEntryShowMenu(const std::string& /*entryId*/, int posX, 
         True
     };
     qApp->x11ProcessEvent(reinterpret_cast<XEvent*>(&event));
+}
+
+void UnityCoreApplet::onMenuPointerMoved(int posX, int posY)
+{
+    QWidget* widget = QApplication::widgetAt(posX, posY);
+    IndicatorEntryWidget* entryWidget = qobject_cast<IndicatorEntryWidget*>(widget);
+    if (!entryWidget) {
+        return;
+    }
+    entryWidget->showMenu();
 }
 
 #include "unitycoreapplet.moc"
