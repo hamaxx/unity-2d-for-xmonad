@@ -29,7 +29,7 @@
 // Qt
 #include <QWidget>
 
-class IndicatorEntryWidget : public QWidget
+class IndicatorEntryWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:

@@ -28,7 +28,7 @@
 // libunity-core
 #include <UnityCore/UnityCore.h>
 
-class UnityCoreApplet : public Unity2d::Applet
+class UnityCoreApplet : public Unity2d::Applet, public sigc::trackable
 {
 Q_OBJECT
 public:
