@@ -105,7 +105,9 @@ QPixmap IndicatorEntryWidget::decodeIcon()
 
     int type = m_entry->image_type();
 
-    if (type == 3) {
+    if (type == 0) {
+        // No icon
+    } else if (type == 3) {
         // GTK_IMAGE_PIXBUF
         QByteArray data = QByteArray::fromBase64(m_entry->image_data().c_str());
         QImage image;
