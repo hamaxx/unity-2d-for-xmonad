@@ -75,6 +75,7 @@ void IndicatorEntryWidget::updatePix()
         width += fontMetrics().width(label);
     }
 
+    QPixmap oldPix = m_pix;
     if (width == 0) {
         m_pix = QPixmap();
     } else {
@@ -90,7 +91,12 @@ void IndicatorEntryWidget::updatePix()
         }
     }
 
-    updateGeometry();
+    // Notify others we changed, but only trigger a layout update if necessary
+    if (m_pix.size() == oldPix.size()) {
+        update();
+    } else {
+        updateGeometry();
+    }
 }
 
 QPixmap IndicatorEntryWidget::decodeIcon()
