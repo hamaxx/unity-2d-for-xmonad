@@ -45,7 +45,7 @@ private:
     unity::indicator::Entry::Ptr m_entry;
     QPixmap m_pix;
     void updatePix();
-    QPixmap decodeIconPix();
+    QPixmap decodeIcon();
 };
 
 #endif /* INDICATORENTRYWIDGET_H */

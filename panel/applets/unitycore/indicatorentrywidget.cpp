@@ -60,7 +60,7 @@ void IndicatorEntryWidget::updatePix()
     int width = 0;
     int textX = 0;
 
-    QPixmap iconPix = decodeIconPix();
+    QPixmap iconPix = decodeIcon();
     if (!iconPix.isNull()) {
         width = iconPix.width();
         textX = iconPix.width();
@@ -93,7 +93,7 @@ void IndicatorEntryWidget::updatePix()
     updateGeometry();
 }
 
-QPixmap IndicatorEntryWidget::decodeIconPix()
+QPixmap IndicatorEntryWidget::decodeIcon()
 {
     QPixmap pix;
 
