@@ -32,6 +32,9 @@
 // libc
 #include <time.h>
 
+static const int SPACING = 3;
+static const int PADDING = 3;
+
 using namespace unity::indicator;
 
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
@@ -61,37 +64,46 @@ void IndicatorEntryWidget::paintEvent(QPaintEvent*)
 
 void IndicatorEntryWidget::updatePix()
 {
-    int width = 0;
-    int textX = 0;
+    int width = PADDING;
+    int iconX = PADDING;
+    int labelX = 0;
+    bool hasIcon = false;
+    bool hasLabel = false;
 
+    // Compute width, labelX and has{Icon,Label}
     QPixmap iconPix = decodeIcon();
     if (!iconPix.isNull()) {
-        width = iconPix.width();
-        textX = iconPix.width();
+        hasIcon = true;
+        width += iconPix.width();
     }
 
     QString label = QString::fromStdString(m_entry->label());
     label.replace("_", "");
     if (!label.isEmpty()) {
-        if (width > 0) {
-            label = " " + label;
+        hasLabel = true;
+        if (hasIcon) {
+            width += SPACING;
         }
+        labelX = width;
         width += fontMetrics().width(label);
     }
 
+    width += PADDING;
+
+    // Paint
     QPixmap oldPix = m_pix;
-    if (width == 0) {
+    if (!hasIcon && !hasLabel) {
         m_pix = QPixmap();
     } else {
         m_pix = QPixmap(width, 24);
         m_pix.fill(Qt::transparent);
         QPainter painter(&m_pix);
         painter.initFrom(this);
-        if (!iconPix.isNull()) {
-            painter.drawPixmap(0, 0, iconPix);
+        if (hasIcon) {
+            painter.drawPixmap(iconX, 0, iconPix);
         }
-        if (!label.isEmpty()) {
-            painter.drawText(textX, 0, width - textX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
+        if (hasLabel) {
+            painter.drawText(labelX, 0, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
         }
     }
 
