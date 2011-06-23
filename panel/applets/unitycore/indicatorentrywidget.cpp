@@ -27,6 +27,10 @@
 // Qt
 #include <QIcon>
 #include <QPainter>
+#include <QWheelEvent>
+
+// libc
+#include <time.h>
 
 using namespace unity::indicator;
 
@@ -129,6 +133,35 @@ QPixmap IndicatorEntryWidget::decodeIcon()
         UQ_WARNING << "Unknown image type" << m_entry->image_type();
     }
     return pix;
+}
+
+void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
+{
+    if (m_entry->active()) {
+        return;
+    }
+
+    if ((m_entry->label_visible() && m_entry->label_sensitive()) ||
+        (m_entry->image_visible() && m_entry->image_sensitive()))
+    {
+        QPoint pos = mapToGlobal(rect().bottomLeft());
+        m_entry->ShowMenu(pos.x(), pos.y(),
+            time(NULL),
+            1 //nux::GetEventButton(button_flags)
+            );
+    } else {
+        update();
+    }
+}
+
+void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
+{
+    update();
+}
+
+void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)
+{
+    m_entry->Scroll(event->delta());
 }
 
 #include "indicatorentrywidget.moc"

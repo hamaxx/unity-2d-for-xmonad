@@ -40,6 +40,9 @@ public:
 
 protected:
     void paintEvent(QPaintEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void wheelEvent(QWheelEvent*);
 
 private:
     unity::indicator::Entry::Ptr m_entry;
