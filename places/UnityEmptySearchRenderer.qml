@@ -49,6 +49,8 @@ Renderer {
             property string displayName: column_4
             property string comment: column_5
 
+            Accessible.name: displayName
+
             width: 336
             height: resultHeight
             /* If no uri is available then disable the button entirely (no

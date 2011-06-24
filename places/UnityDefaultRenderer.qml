@@ -33,6 +33,8 @@ RendererGrid {
             property string displayName
             property string comment
 
+            Accessible.name: displayName
+
             onClicked: {
                 dashView.active = false
                 placeEntryModel.place.activate(decodeURIComponent(uri))

@@ -25,6 +25,9 @@ AbstractButton {
     property bool ticked: false
     property bool canUntick: true
 
+    Accessible.name: text
+    Accessible.role: Accessible.CheckBox
+
     width: childrenRect.width
     height: childrenRect.height
 

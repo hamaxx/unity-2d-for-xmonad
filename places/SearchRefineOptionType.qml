@@ -24,6 +24,8 @@ SearchRefineOption {
     AbstractButton {
         id: header
 
+        Accessible.name: searchRefineOption.title
+
         focus: true
         anchors.top: parent.top
         anchors.left: parent.left

@@ -48,6 +48,8 @@ RendererGrid {
                 return directoryName
             }
 
+            Accessible.name: displayName
+
             onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
 
             Image {

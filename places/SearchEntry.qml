@@ -22,6 +22,8 @@ import Effects 1.0
 FocusScope {
     property string searchQuery
 
+    Accessible.name: "Search Entry"
+
     /* Cancels current search when the dash becomes invisible */
     Connections {
         target: dashView
@@ -68,6 +70,9 @@ FocusScope {
         MouseArea {
             id: clear_button
 
+            Accessible.name: "Clear"
+            Accessible.role: Accessible.PushButton
+
             anchors.fill: search_icon
 
             onClicked: {
@@ -78,6 +83,9 @@ FocusScope {
 
         TextInput {
             id: search_input
+
+            Accessible.name: "Search Input"
+            Accessible.role: Accessible.EditableText
 
             effect: DropShadow {
                     id: glow

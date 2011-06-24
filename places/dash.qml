@@ -22,6 +22,8 @@ import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
 Item {
     id: dash
 
+    Accessible.name: "root"
+
     property variant currentPage
 
     Binding {
@@ -153,6 +155,8 @@ Item {
         Loader {
             id: pageLoader
 
+            Accessible.name: "loader"
+
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
             anchors.bottom: parent.bottom
@@ -165,6 +169,9 @@ Item {
 
     Button {
         id: fullScreenButton
+
+        Accessible.name: "Full Screen"
+
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.rightMargin: 15

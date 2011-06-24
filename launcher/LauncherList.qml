@@ -77,6 +77,8 @@ AutoScrollingListView {
     delegate: LauncherItem {
         id: launcherItem
 
+        Accessible.name: item.name
+
         width: list.width
         tileSize: list.tileSize
         padding: list.itemPadding

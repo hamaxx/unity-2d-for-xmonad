@@ -59,6 +59,8 @@ Item {
     Button {
         id: openShortcutsButton
 
+        Accessible.name: "Open Shortcuts"
+
         anchors.bottom: parent.top
         anchors.right: parent.right
         anchors.rightMargin: 50
