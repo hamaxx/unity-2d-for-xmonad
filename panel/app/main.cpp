@@ -68,6 +68,7 @@ int main(int argc, char** argv)
         QApplication::setGraphicsSystem("raster");
     }
     Unity2dApplication app(argc, argv);
+    app.setApplicationName("Unity 2D Panel");
     QApplication::setStyle(new Unity2dStyle);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");

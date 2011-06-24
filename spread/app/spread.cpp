@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
         QApplication::setGraphicsSystem("raster");
     }
     QApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Workspace Switcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;

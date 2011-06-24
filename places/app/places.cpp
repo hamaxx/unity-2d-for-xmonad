@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
         QApplication::setGraphicsSystem("raster");
     }
     QApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Dash");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
