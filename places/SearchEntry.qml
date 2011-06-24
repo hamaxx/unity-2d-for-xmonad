@@ -84,7 +84,7 @@ FocusScope {
         TextInput {
             id: search_input
 
-            Accessible.name: "Search Input"
+            Accessible.name: search_instructions.text
             Accessible.role: Accessible.EditableText
 
             effect: DropShadow {
