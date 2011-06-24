@@ -21,10 +21,11 @@ import QtQuick 1.0
 SearchRefineOption {
     id: searchRefineOption
 
-    AbstractButton {
+    Item {
         id: header
 
         Accessible.name: searchRefineOption.title
+        KeyNavigation.down: filters
 
         focus: true
         anchors.top: parent.top
@@ -41,6 +42,7 @@ SearchRefineOption {
             text: searchRefineOption.title
             font.pixelSize: 16
             font.bold: true
+            font.underline: parent.state == "selected"
         }
     }
 
@@ -65,6 +67,7 @@ SearchRefineOption {
 
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
+        KeyNavigation.up: header
 
         delegate: TickBox {
             height: filters.cellHeight

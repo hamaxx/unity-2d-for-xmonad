@@ -51,6 +51,8 @@ FocusScope {
 
         focus: true
 
+        KeyNavigation.down: options
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
@@ -63,6 +65,7 @@ FocusScope {
             text: u2d.tr("Refine search")
             font.bold: true
             font.pixelSize: 16
+            font.underline: parent.state == "selected"
 
             anchors.top: parent.top
             anchors.left: parent.left
@@ -93,6 +96,8 @@ FocusScope {
 
         opacity: folded ? 0.0 : 1.0
         Behavior on opacity {NumberAnimation {duration: 100; easing.type: Easing.InOutQuad}}
+
+        KeyNavigation.up: header
 
         anchors.left: parent.left
         anchors.right: parent.right

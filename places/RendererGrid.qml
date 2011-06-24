@@ -57,6 +57,9 @@ Renderer {
     GroupHeader {
         id: header
 
+        focus: true
+        KeyNavigation.down: results
+
         visible: results.count > 0
         availableCount: results.count - results.cellsPerRow
         folded: parent.folded
@@ -82,6 +85,9 @@ Renderer {
 
         CenteredGridView {
             id: results
+
+            opacity: activeFocus ? 1.0 : 0.5
+            KeyNavigation.up: header
 
             /* FIXME: this is a gross hack compensating for the lack of sections
                in GridView (see ListView.section).
@@ -133,10 +139,10 @@ Renderer {
             delegateWidth: renderer.cellWidth
             delegateHeight: renderer.cellHeight
 
-            interactive: false
+//            interactive: false
             clip: true
 
-            delegate: Item {
+            delegate: FocusScope {
 
                 width: results.cellWidth
                 height: results.cellHeight
@@ -157,6 +163,7 @@ Renderer {
                     height: results.delegateHeight
                     anchors.horizontalCenter: parent.horizontalCenter
 
+                    focus: true
                     sourceComponent: cellRenderer
                     onLoaded: {
                         item.uri = uri

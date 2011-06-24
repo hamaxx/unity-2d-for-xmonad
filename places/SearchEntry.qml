@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Effects 1.0
 
-FocusScope {
+AbstractButton {
     property string searchQuery
 
     Accessible.name: "Search Entry"
@@ -38,6 +38,8 @@ FocusScope {
 
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
+
+    opacity: state == "selected" ? 1.0 : 0.7
 
     BorderImage {
         anchors.fill: parent
