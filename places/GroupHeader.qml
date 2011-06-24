@@ -27,7 +27,8 @@ AbstractButton {
     property bool folded: true
     property int availableCount
 
-    Accessible.name: label
+    Accessible.name: title.text
+    Accessible.description: title.text + label.text
 
     effect: DropShadow {
                 blurRadius: 6
