@@ -18,13 +18,14 @@
 
 import QtQuick 1.0
 
-Item {
+FocusScope {
     property alias list: list
     property alias scrollbar: scrollbar
 
     ListView {
         id: list
 
+        focus: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left

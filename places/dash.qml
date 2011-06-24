@@ -123,6 +123,8 @@ Item {
             id: search_entry
 
             focus: true
+            KeyNavigation.right: refine_search.visible ? refine_search : search_entry
+            KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
             anchors.topMargin: 10
@@ -136,6 +138,8 @@ Item {
 
         SearchRefine {
             id: refine_search
+
+            KeyNavigation.left: search_entry
 
             /* SearchRefine is only to be displayed for places, not in the home page */
             visible: dashView.activePlaceEntry != ""
@@ -152,6 +156,9 @@ Item {
 
         Loader {
             id: pageLoader
+
+            KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
+            KeyNavigation.up: search_entry
 
             anchors.top: search_entry.bottom
             anchors.topMargin: 2

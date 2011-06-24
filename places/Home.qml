@@ -96,6 +96,7 @@ Item {
     ListViewWithScrollbar {
         id: globalSearch
 
+        focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
@@ -104,6 +105,7 @@ Item {
         list.delegate: UnityDefaultRenderer {
             width: ListView.view.width
 
+            focus: true
             parentListView: list
             placeEntryModel: item
             displayName: item.name
@@ -137,9 +139,10 @@ Item {
         }
     }
 
-    Rectangle {
+    FocusScope {
         id: shortcuts
 
+        focus: !globalSearchActive
         opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -147,11 +150,14 @@ Item {
         width: 888
         height: 466
 
-        radius: 5
-        border.width: 1
-        /* FIXME: wrong colors */
-        border.color: Qt.rgba(1, 1, 1, 0.2)
-        color: Qt.rgba(0, 0, 0, 0.3)
+        Rectangle {
+            anchors.fill: parent
+            radius: 5
+            border.width: 1
+            /* FIXME: wrong colors */
+            border.color: Qt.rgba(1, 1, 1, 0.2)
+            color: Qt.rgba(0, 0, 0, 0.3)
+        }
 
         Button {
             id: closeShortcutsButton
@@ -182,11 +188,13 @@ Item {
            on the default version if a custom one doesn’t exist. */
         Loader {
             id: customShortcutsLoader
+            focus: status == Loader.Ready
             anchors.fill: parent
             source: "HomeShortcutsCustomized.qml"
         }
         Loader {
             id: defaultShortcutsLoader
+            focus: !customShortcutsLoader.focus
             anchors.fill: parent
             source: (customShortcutsLoader.status == Loader.Error) ? "HomeShortcuts.qml" : ""
         }

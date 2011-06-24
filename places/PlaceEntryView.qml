@@ -62,6 +62,7 @@ Item {
     ListViewWithScrollbar {
         id: results
 
+        focus: true
         anchors.fill: parent
 
         /* The group's delegate is chosen dynamically depending on what
@@ -80,6 +81,7 @@ Item {
             property string iconHint: column_2
             property int groupId: index
 
+            focus: true
             source: groupRenderer ? groupRenderer+".qml" : ""
             onStatusChanged: {
                 if (status == Loader.Error)
