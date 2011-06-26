@@ -24,6 +24,7 @@
 // Local
 #include <debug_p.h>
 #include <fakecairo.h>
+#include <panelstyle.h>
 
 // Qt
 #include <QIcon>
@@ -79,9 +80,9 @@ void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
     /* FIXME */
     double mpi = 3.14159265358979323846;
 
-    nux::Color bgtop = QColor::fromHsvF(0, 0, .3);
-    nux::Color bgbot = QColor::fromHsvF(0, 0, .2);
-    nux::Color line = QColor::fromHsvF(0, 0, 0);
+    nux::Color bgtop = PanelStyle::instance()->backgroundTopColor();
+    nux::Color bgbot = PanelStyle::instance()->backgroundBottomColor();
+    nux::Color line = PanelStyle::instance()->lineColor();
 
     painter->setRenderHint(QPainter::Antialiasing);
 
