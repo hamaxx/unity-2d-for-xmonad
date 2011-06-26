@@ -30,8 +30,8 @@
 using namespace unity::indicator;
 
 IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator)
-: m_indicator(indicator)
-, m_layout(new QHBoxLayout(this))
+: m_layout(new QHBoxLayout(this))
+, m_indicator(indicator)
 {
     m_layout->setMargin(0);
     m_layout->setSpacing(0);
