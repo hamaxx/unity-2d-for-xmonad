@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
 
-Item {
+FocusScope {
     property variant model: PageModel {
         /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
         onEntrySearchQueryChanged: {
@@ -105,7 +105,6 @@ Item {
         list.delegate: UnityDefaultRenderer {
             width: ListView.view.width
 
-            focus: true
             parentListView: list
             placeEntryModel: item
             displayName: item.name

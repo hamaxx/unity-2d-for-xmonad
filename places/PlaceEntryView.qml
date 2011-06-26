@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
 
-Item {
+FocusScope {
     id: placeEntryView
 
     /* An instance of PlaceEntryModel */
@@ -111,6 +111,7 @@ Item {
                 item.groupId = groupId
                 item.model = group_model
                 item.placeEntryModel = placeEntryView.model
+                item.focus = true
             }
         }
 
