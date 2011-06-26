@@ -24,6 +24,9 @@ class QSortFilterProxyModelQML : public QSortFilterProxyModel
     Q_OBJECT
 
     Q_PROPERTY(QObject* model READ sourceModelQObject WRITE setSourceModelQObject)
+    Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
+    Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
@@ -33,12 +36,26 @@ public:
 
     /* getters */
     QObject* sourceModelQObject() const;
+    int limit() const;
+    int totalCount() const;
 
     /* setters */
     void setSourceModelQObject(QObject *model);
+    void setLimit(int limit);
+
+Q_SIGNALS:
+    void limitChanged();
+    void totalCountChanged();
+    void countChanged();
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 private Q_SLOTS:
     void updateRoleNames();
+
+private:
+    int m_limit;
 };
 
 #endif // QSORTFILTERPROXYMODELQML_H

@@ -18,7 +18,7 @@
 #include <debug_p.h>
 
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
-    QSortFilterProxyModel(parent)
+    QSortFilterProxyModel(parent), m_limit(-1)
 {
 }
 
@@ -55,6 +55,16 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 
     connect(itemModel, SIGNAL(modelAboutToBeReset()), SLOT(updateRoleNames()));
     connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
+
+    connect(itemModel, SIGNAL(modelReset()), SIGNAL(totalCountChanged()));
+    connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
+    connect(itemModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
+    Q_EMIT totalCountChanged();
+
+    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
+    Q_EMIT countChanged();
 }
 
 QVariantMap
@@ -76,7 +86,43 @@ QSortFilterProxyModelQML::get(int row)
 }
 
 int
+QSortFilterProxyModelQML::totalCount() const
+{
+    if (sourceModel() != NULL) {
+        return sourceModel()->rowCount();
+    } else {
+        return 0;
+    }
+}
+
+int
 QSortFilterProxyModelQML::count()
 {
     return rowCount();
+}
+
+bool
+QSortFilterProxyModelQML::filterAcceptsRow(int source_row, const QModelIndex & source_parent) const
+{
+    if (m_limit >= 0 && source_row >= m_limit) {
+        return false;
+    } else {
+        return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    }
+}
+
+int
+QSortFilterProxyModelQML::limit() const
+{
+    return m_limit;
+}
+
+void
+QSortFilterProxyModelQML::setLimit(int limit)
+{
+    if (limit != m_limit) {
+        m_limit = limit;
+        invalidateFilter();
+        Q_EMIT limitChanged();
+    }
 }
