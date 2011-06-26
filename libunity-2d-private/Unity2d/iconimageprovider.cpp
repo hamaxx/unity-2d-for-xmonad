@@ -125,12 +125,18 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
     GtkIconInfo *icon_info = gtk_icon_theme_lookup_by_gicon(theme, g_icon,
                                                             requestedSize.width(),
                                                             (GtkIconLookupFlags)0);
-    GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
-    gtk_icon_info_free(icon_info);
     g_object_unref(g_icon);
 
-    /* FIXME: maybe an exception should be raised instead? */
+    if (icon_info == NULL) {
+        UQ_WARNING << "Failed to find icon:" << icon_name;
+        return QImage();
+    }
+
+    GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
+    gtk_icon_info_free(icon_info);
+
     if (pixbuf == NULL) {
+        UQ_WARNING << "Failed to load icon:" << icon_name;
         return QImage();
     }
 
