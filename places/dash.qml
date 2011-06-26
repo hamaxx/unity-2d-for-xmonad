@@ -116,13 +116,16 @@ Item {
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
-        Keys.forwardTo: [search_entry]
+        //Keys.forwardTo: [search_entry]
 
 
         SearchEntry {
             id: search_entry
 
             focus: true
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
             KeyNavigation.right: refine_search.visible ? refine_search : search_entry
             KeyNavigation.down: pageLoader
 
@@ -157,6 +160,9 @@ Item {
         Loader {
             id: pageLoader
 
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
             KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
             KeyNavigation.up: search_entry
 
