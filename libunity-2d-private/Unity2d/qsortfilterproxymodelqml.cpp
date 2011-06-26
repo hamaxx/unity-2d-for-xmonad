@@ -55,6 +55,16 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
 
     connect(itemModel, SIGNAL(modelAboutToBeReset()), SLOT(updateRoleNames()));
     connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
+
+    connect(itemModel, SIGNAL(modelReset()), SIGNAL(totalCountChanged()));
+    connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
+    connect(itemModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
+    Q_EMIT totalCountChanged();
+
+    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
+    Q_EMIT countChanged();
 }
 
 QVariantMap
@@ -73,6 +83,16 @@ QSortFilterProxyModelQML::get(int row)
         result[i.value()] = data;
      }
      return result;
+}
+
+int
+QSortFilterProxyModelQML::totalCount() const
+{
+    if (sourceModel() != NULL) {
+        return sourceModel()->rowCount();
+    } else {
+        return 0;
+    }
 }
 
 int
