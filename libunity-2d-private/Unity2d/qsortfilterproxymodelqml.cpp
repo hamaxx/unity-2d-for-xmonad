@@ -18,7 +18,7 @@
 #include <debug_p.h>
 
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
-    QSortFilterProxyModel(parent)
+    QSortFilterProxyModel(parent), m_limit(-1)
 {
 }
 
@@ -79,4 +79,30 @@ int
 QSortFilterProxyModelQML::count()
 {
     return rowCount();
+}
+
+bool
+QSortFilterProxyModelQML::filterAcceptsRow(int source_row, const QModelIndex & source_parent) const
+{
+    if (m_limit >= 0 && source_row >= m_limit) {
+        return false;
+    } else {
+        return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    }
+}
+
+int
+QSortFilterProxyModelQML::limit() const
+{
+    return m_limit;
+}
+
+void
+QSortFilterProxyModelQML::setLimit(int limit)
+{
+    if (limit != m_limit) {
+        m_limit = limit;
+        invalidateFilter();
+        Q_EMIT limitChanged();
+    }
 }
