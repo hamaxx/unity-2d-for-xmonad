@@ -43,6 +43,7 @@ set(uqapplets_SRCS
     legacytray/x11embedcontainer.cpp
     legacytray/x11embeddelegate.cpp
     legacytray/x11embedpainter.cpp
+    unitycore/appmenuindicatorwidget.cpp
     unitycore/indicatorentrywidget.cpp
     unitycore/indicatorwidget.cpp
     unitycore/panelstyle.cpp

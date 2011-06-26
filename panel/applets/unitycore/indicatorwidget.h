@@ -29,11 +29,19 @@
 // Qt
 #include <QWidget>
 
+class QHBoxLayout;
+
+class IndicatorEntryWidget;
+
 class IndicatorWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:
     IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator);
+
+protected:
+    QHBoxLayout* m_layout;
+    virtual void addIndicatorEntryWidget(IndicatorEntryWidget*);
 
 private:
     unity::indicator::Indicator::Ptr m_indicator;

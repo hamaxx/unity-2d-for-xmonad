@@ -23,6 +23,7 @@
 
 // Local
 #include <debug_p.h>
+#include <appmenuindicatorwidget.h>
 #include <indicatorentrywidget.h>
 #include <indicatorwidget.h>
 
@@ -42,6 +43,7 @@ UnityCoreApplet::UnityCoreApplet()
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     m_indicators->on_object_added.connect(
         sigc::mem_fun(this, &UnityCoreApplet::onObjectAdded)
@@ -59,11 +61,12 @@ UnityCoreApplet::UnityCoreApplet()
 void UnityCoreApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
+    IndicatorWidget* widget;
     if (name == "libappmenu.so") {
-        // Skip appmenu for now
-        return;
+        widget = new AppMenuIndicatorWidget(indicator);
+    } else {
+        widget = new IndicatorWidget(indicator);
     }
-    IndicatorWidget* widget = new IndicatorWidget(indicator);
     layout()->addWidget(widget);
 }
 

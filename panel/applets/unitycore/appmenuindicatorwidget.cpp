@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // Self
-#include "indicatorwidget.h"
+#include "appmenuindicatorwidget.h"
 
 // Local
 #include <indicatorentrywidget.h>
@@ -29,26 +29,17 @@
 
 using namespace unity::indicator;
 
-IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator)
-: m_indicator(indicator)
-, m_layout(new QHBoxLayout(this))
+AppMenuIndicatorWidget::AppMenuIndicatorWidget(const Indicator::Ptr& indicator)
+: IndicatorWidget(indicator)
 {
-    m_layout->setMargin(0);
-    m_layout->setSpacing(0);
-
-    m_indicator->on_entry_added.connect(sigc::mem_fun(this, &IndicatorWidget::onEntryAdded));
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_layout->addStretch();
 }
 
-void IndicatorWidget::onEntryAdded(const Entry::Ptr& entry)
+void AppMenuIndicatorWidget::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
 {
-    IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
-    addIndicatorEntryWidget(widget);
+    // Insert *before* stretch
+    m_layout->insertWidget(m_layout->count() - 1, widget);
 }
 
-void IndicatorWidget::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
-{
-    m_layout->addWidget(widget);
-}
-
-
-#include "indicatorwidget.moc"
+#include "appmenuindicatorwidget.moc"

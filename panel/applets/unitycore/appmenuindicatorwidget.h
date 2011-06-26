@@ -18,37 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// Self
-#include "indicatorwidget.h"
+#ifndef APPMENUINDICATORWIDGET_H
+#define APPMENUINDICATORWIDGET_H
 
 // Local
-#include <indicatorentrywidget.h>
+#include <indicatorwidget.h>
 
 // Qt
-#include <QHBoxLayout>
 
-using namespace unity::indicator;
-
-IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator)
-: m_indicator(indicator)
-, m_layout(new QHBoxLayout(this))
+/**
+ * A specific version of IndicatorWidget, holding the appmenu
+ */
+class AppMenuIndicatorWidget : public IndicatorWidget
 {
-    m_layout->setMargin(0);
-    m_layout->setSpacing(0);
+    Q_OBJECT
+public:
+    AppMenuIndicatorWidget(const unity::indicator::Indicator::Ptr& indicator);
 
-    m_indicator->on_entry_added.connect(sigc::mem_fun(this, &IndicatorWidget::onEntryAdded));
-}
+protected:
+    void addIndicatorEntryWidget(IndicatorEntryWidget*); // reimp
+};
 
-void IndicatorWidget::onEntryAdded(const Entry::Ptr& entry)
-{
-    IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
-    addIndicatorEntryWidget(widget);
-}
-
-void IndicatorWidget::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
-{
-    m_layout->addWidget(widget);
-}
-
-
-#include "indicatorwidget.moc"
+#endif /* APPMENUINDICATORWIDGET_H */
