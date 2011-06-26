@@ -27,6 +27,8 @@
 // Qt
 #include <QHBoxLayout>
 
+static const int MENU_ITEM_PADDING = 6;
+
 using namespace unity::indicator;
 
 AppMenuIndicatorWidget::AppMenuIndicatorWidget(const Indicator::Ptr& indicator)
@@ -38,6 +40,7 @@ AppMenuIndicatorWidget::AppMenuIndicatorWidget(const Indicator::Ptr& indicator)
 
 void AppMenuIndicatorWidget::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
 {
+    widget->setPadding(MENU_ITEM_PADDING);
     // Insert *before* stretch
     m_layout->insertWidget(m_layout->count() - 1, widget);
 }

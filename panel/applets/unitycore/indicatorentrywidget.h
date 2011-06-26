@@ -41,6 +41,7 @@ public:
     QSize sizeHint() const;
 
     void showMenu();
+    void setPadding(int);
 
 protected:
     void paintEvent(QPaintEvent*);
@@ -51,6 +52,7 @@ protected:
 private:
     unity::indicator::Entry::Ptr m_entry;
     QPixmap m_pix;
+    int m_padding;
     void updatePix();
     QPixmap decodeIcon();
     void paintActiveBackground(QPainter*);

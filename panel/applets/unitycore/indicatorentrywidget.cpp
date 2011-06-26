@@ -41,6 +41,7 @@ using namespace unity::indicator;
 
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 : m_entry(entry)
+, m_padding(PADDING)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
@@ -158,8 +159,8 @@ void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
 
 void IndicatorEntryWidget::updatePix()
 {
-    int width = PADDING;
-    int iconX = PADDING;
+    int width = m_padding;
+    int iconX = m_padding;
     int labelX = 0;
     bool hasIcon = false;
     bool hasLabel = false;
@@ -182,7 +183,7 @@ void IndicatorEntryWidget::updatePix()
         width += fontMetrics().width(label);
     }
 
-    width += PADDING;
+    width += m_padding;
 
     // Paint
     QPixmap oldPix = m_pix;
@@ -273,6 +274,14 @@ void IndicatorEntryWidget::showMenu()
         time(NULL),
         1 //nux::GetEventButton(button_flags)
         );
+}
+
+void IndicatorEntryWidget::setPadding(int padding)
+{
+    if (m_padding != padding) {
+        m_padding = padding;
+        updatePix();
+    }
 }
 
 #include "indicatorentrywidget.moc"
