@@ -110,31 +110,7 @@ FocusScope {
             displayName: item.name
             iconHint: item.icon
 
-            /* Filter out results for which the corresponding group's renderer
-               is 'UnityEmptySearchRenderer'.
-               Each result has a column (the second one) containing the id of
-               the group it belongs to (groupId).
-            */
-            model:  SortFilterProxyModel {
-                model: item.globalResultsModel
-
-                /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'
-                   by hardcoding it instead of looking it up in the Place's
-                   groupsModel as Unity does.
-
-                   Two solutions could be envisioned:
-                   1) Actually looking for the row in the Place's groupsModel
-                      that has in its first column 'UnityEmptySearchRenderer'.
-                      That would require adding an API in libqtdee's DeeListModel.
-                   2) Changing the behaviour of the place daemons so that the
-                      Place's globalResultsModel is empty when there are no
-                      results. The applications place does that but not the
-                      files place.
-                */
-                property int ignoredGroupId: 5
-                filterRole: 2 /* groupId column */
-                filterRegExp: RegExp("^[^%1]$".arg(ignoredGroupId)) /* anything but the ignoredGroupId */
-            }
+            model: item.globalResultsModel
         }
     }
 
