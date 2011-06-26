@@ -79,7 +79,6 @@ static Unity2dPanel* instantiatePanel(int screen)
         panel->addWidget(new HomeButtonApplet);
         panel->addWidget(createSeparator());
     }
-    panel->addWidget(new AppNameApplet);
     if (screen == leftmost) {
         /* It doesn’t make sense to have more than one instance of the systray,
            XEmbed’ed windows can be displayed only once anyway. */
