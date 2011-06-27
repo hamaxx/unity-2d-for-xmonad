@@ -1,7 +1,5 @@
 extern "C" {
-#include <libwnck/screen.h>
-#include <libwnck/window.h>
-#include <libwnck/workspace.h>
+#include <libwnck/libwnck.h>
 }
 
 #include "bamf-matcher.h"

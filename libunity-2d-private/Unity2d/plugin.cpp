@@ -20,10 +20,6 @@
 /* Required otherwise using wnck_set_client_type breaks linking with error:
    undefined reference to `wnck_set_client_type(WnckClientType)'
 */
-extern "C" {
-#include <libwnck/util.h>
-}
-
 #include "plugin.h"
 
 #include "launcherapplication.h"
