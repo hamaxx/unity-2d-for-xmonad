@@ -174,7 +174,7 @@ void IndicatorEntryWidget::updatePix()
         width += iconPix.width();
     }
 
-    QString label = QString::fromStdString(m_entry->label());
+    QString label = QString::fromUtf8(m_entry->label().c_str());
     label.replace("_", "");
     if (!label.isEmpty()) {
         hasLabel = true;
