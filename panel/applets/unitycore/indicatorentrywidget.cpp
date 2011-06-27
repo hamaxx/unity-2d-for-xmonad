@@ -197,11 +197,28 @@ void IndicatorEntryWidget::updatePix()
         QPainter painter(&m_pix);
         painter.initFrom(this);
         if (hasIcon) {
+            bool disabled = !m_entry->image_sensitive();
+            if (disabled) {
+                painter.setOpacity(0.5);
+            }
             painter.drawPixmap(iconX, 0, iconPix);
+            if (disabled) {
+                painter.setOpacity(1);
+            }
         }
         if (hasLabel) {
-            painter.setPen(style->textColor());
             painter.setFont(style->font());
+
+            // Shadow
+            QColor color = style->textShadowColor();
+            color.setAlphaF(1. - color.redF());
+            painter.setPen(color);
+            painter.drawText(labelX, 1, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
+
+            // Text
+            color = style->textColor();
+            color.setAlphaF(m_entry->label_sensitive() ? 1. : .5);
+            painter.setPen(color);
             painter.drawText(labelX, 0, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
         }
     }
