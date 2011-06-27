@@ -4,9 +4,7 @@
 #include <debug_p.h>
 
 extern "C" {
-#include <libwnck/screen.h>
-#include <libwnck/window.h>
-#include <libwnck/workspace.h>
+#include <libwnck/libwnck.h>
 }
 
 #include "gconfitem-qml-wrapper.h"
