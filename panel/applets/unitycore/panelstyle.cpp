@@ -68,10 +68,10 @@ public:
         GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
 
         m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
-        m_backgroundTopColor    = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
-        m_backgroundBottomColor = m_backgroundTopColor.darker(130);
-        m_textShadowColor       = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
-        m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
+        m_textShadowColor       = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
+        m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL).darker(130);
+        m_backgroundTopColor    = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
+        m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
 
         q->changed();
     }
