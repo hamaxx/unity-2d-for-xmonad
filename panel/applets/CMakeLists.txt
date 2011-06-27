@@ -33,11 +33,11 @@ set(uqapplets_SRCS
     common/applet.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
-    indicator/abstractindicator.cpp
-    indicator/datetimeindicator.cpp
-    indicator/indicatorapplet.cpp
-    indicator/indicatorservicemanager.cpp
-    indicator/indicator.c
+    #indicator/abstractindicator.cpp
+    #indicator/datetimeindicator.cpp
+    #indicator/indicatorapplet.cpp
+    #indicator/indicatorservicemanager.cpp
+    #indicator/indicator.c
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
