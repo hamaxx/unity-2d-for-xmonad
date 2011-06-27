@@ -15,6 +15,7 @@ include(FindPkgConfig)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(PANGO REQUIRED pango)
 
 # Get indicator dirs from pkgconfig
 read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
@@ -72,6 +73,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
     ${UNITYCORE_INCLUDE_DIRS}
+    ${PANGO_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -91,5 +93,6 @@ target_link_libraries(uqapplets
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
     ${UNITYCORE_LDFLAGS}
+    ${PANGO_LDFLAGS}
     unity-2d-private
     )

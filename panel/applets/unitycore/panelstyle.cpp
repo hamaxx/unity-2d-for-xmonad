@@ -22,12 +22,16 @@
 #include "panelstyle.h"
 
 // Local
+#include <debug_p.h>
+#include <gscopedpointer.h>
 
 // Qt
 #include <QColor>
+#include <QFont>
 
 // GTK
 #include <gtk/gtk.h>
+#include <pango/pango.h>
 
 typedef void (*ColorGetter)(GtkStyleContext*, GtkStateFlags, GdkRGBA*);
 
@@ -51,6 +55,7 @@ public:
     QColor m_backgroundBottomColor;
     QColor m_textShadowColor;
     QColor m_lineColor;
+    QFont m_font;
 
     static void onStyleChanged(GObject*, GParamSpec*, gpointer data)
     {
@@ -72,6 +77,26 @@ public:
         m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL).darker(130);
         m_backgroundTopColor    = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
         m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
+
+        updateFont();
+    }
+
+    void updateFont()
+    {
+        GtkSettings* settings = gtk_settings_get_default();
+        char* fontName;
+        g_object_get(settings, "gtk-font-name", &fontName, NULL);
+        GScopedPointer<PangoFontDescription, pango_font_description_free> fontDescription(
+            pango_font_description_from_string(fontName)
+            );
+        g_free(fontName);
+
+        int size = pango_font_description_get_size(fontDescription.data());
+
+        m_font = QFont(
+            pango_font_description_get_family(fontDescription.data()),
+            size / PANGO_SCALE
+            );
 
         q->changed();
     }
@@ -131,6 +156,11 @@ QColor PanelStyle::textShadowColor() const
 QColor PanelStyle::lineColor() const
 {
     return d->m_lineColor;
+}
+
+QFont PanelStyle::font() const
+{
+    return d->m_font;
 }
 
 #include "panelstyle.moc"

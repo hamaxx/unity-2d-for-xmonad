@@ -165,6 +165,8 @@ void IndicatorEntryWidget::updatePix()
     bool hasIcon = false;
     bool hasLabel = false;
 
+    PanelStyle* style = PanelStyle::instance();
+
     // Compute width, labelX and has{Icon,Label}
     QPixmap iconPix = decodeIcon();
     if (!iconPix.isNull()) {
@@ -180,7 +182,7 @@ void IndicatorEntryWidget::updatePix()
             width += SPACING;
         }
         labelX = width;
-        width += fontMetrics().width(label);
+        width += QFontMetrics(style->font()).width(label);
     }
 
     width += m_padding;
@@ -198,7 +200,8 @@ void IndicatorEntryWidget::updatePix()
             painter.drawPixmap(iconX, 0, iconPix);
         }
         if (hasLabel) {
-            painter.setPen(PanelStyle::instance()->textColor());
+            painter.setPen(style->textColor());
+            painter.setFont(style->font());
             painter.drawText(labelX, 0, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
         }
     }

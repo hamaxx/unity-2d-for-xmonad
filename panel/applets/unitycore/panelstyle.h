@@ -27,6 +27,7 @@
 #include <QObject>
 
 class QColor;
+class QFont;
 
 class PanelStylePrivate;
 /**
@@ -46,6 +47,8 @@ public:
     QColor backgroundBottomColor() const;
     QColor textShadowColor() const;
     QColor lineColor() const;
+
+    QFont font() const;
 
 Q_SIGNALS:
     void changed();
