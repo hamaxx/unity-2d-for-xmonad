@@ -27,13 +27,15 @@
 #include <gnomesessionclient.h>
 #include <unity2ddebug.h>
 #include <unity2dapplication.h>
-#include <unity2dstyle.h>
 #include <unity2dtr.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>
 #include <QApplication>
 #include <QFSFileEngine>
+
+// GTK
+#include <gtk/gtk.h>
 
 class ThemeEngineHandler : public QAbstractFileEngineHandler
 {
@@ -68,7 +70,7 @@ int main(int argc, char** argv)
         QApplication::setGraphicsSystem("raster");
     }
     Unity2dApplication app(argc, argv);
-    QApplication::setStyle(new Unity2dStyle);
+    gtk_init(&argc, &argv);
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");
     client.connectToSessionManager();
