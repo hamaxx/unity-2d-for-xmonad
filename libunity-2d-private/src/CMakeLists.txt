@@ -1,5 +1,4 @@
 # Dependencies
-pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 
 # Sources
