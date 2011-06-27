@@ -15,7 +15,6 @@ include(FindPkgConfig)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(INDICATOR REQUIRED indicator)
-pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 
 # Get indicator dirs from pkgconfig
 read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
