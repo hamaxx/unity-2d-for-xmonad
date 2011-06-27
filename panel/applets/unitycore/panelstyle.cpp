@@ -29,13 +29,13 @@
 // GTK
 #include <gtk/gtk.h>
 
-inline QColor colorFromGdkColor(const GdkColor& color)
+typedef void (*ColorGetter)(GtkStyleContext*, GtkStateFlags, GdkRGBA*);
+
+inline QColor colorFromContext(ColorGetter getter, GtkStyleContext* context, GtkStateFlags state)
 {
-    return QColor(
-        color.red / 256,
-        color.green / 256,
-        color.blue / 256
-        );
+    GdkRGBA color;
+    getter(context, state, &color);
+    return QColor::fromRgbF(color.red, color.green, color.blue, color.alpha);
 }
 
 class PanelStylePrivate
@@ -65,13 +65,13 @@ public:
         m_themeName = QString::fromUtf8(themeName);
         g_free(themeName);
 
-        GtkStyle* style = gtk_widget_get_style(m_offScreenWindow);
+        GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
 
-        m_textColor             = colorFromGdkColor(style->text[0]);
-        m_backgroundTopColor    = colorFromGdkColor(style->text[3]);
-        m_backgroundBottomColor = colorFromGdkColor(style->dark[0]);
-        m_textShadowColor       = colorFromGdkColor(style->bg[1]);
-        m_lineColor             = colorFromGdkColor(style->bg[0]);
+        m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
+        m_backgroundTopColor    = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
+        m_backgroundBottomColor = m_backgroundTopColor.darker(130);
+        m_textShadowColor       = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
+        m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
 
         q->changed();
     }
@@ -84,9 +84,7 @@ PanelStyle::PanelStyle(QObject* parent)
     d->m_offScreenWindow = gtk_offscreen_window_new();
     gtk_widget_set_name(d->m_offScreenWindow, "UnityPanelWidget");
     gtk_widget_set_size_request(d->m_offScreenWindow, 100, 24);
-#ifdef GTK3 // < I have no idea whether this #define exists!
     gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
-#endif
     gtk_widget_show_all(d->m_offScreenWindow);
 
     d->m_connection = g_signal_connect(gtk_settings_get_default(), "notify::gtk-theme-name",
