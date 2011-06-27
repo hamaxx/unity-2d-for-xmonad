@@ -33,7 +33,14 @@ struct fake_cairo_t
 {
     fake_cairo_t(QPainter* _painter)
     : painter(_painter)
-    {}
+    {
+        painter->save();
+    }
+
+    ~fake_cairo_t()
+    {
+        painter->restore();
+    }
 
     QPainter* painter;
     QPainterPath path;
@@ -71,6 +78,7 @@ inline void cairo_stroke(fake_cairo_t& cr)
 {
     QPen pen(cr.painter->brush().color(), 1);
     cr.painter->strokePath(cr.path, pen);
+    cr.path = QPainterPath();
 }
 
 typedef QGradient cairo_pattern_t;
