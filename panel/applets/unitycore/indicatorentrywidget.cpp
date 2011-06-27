@@ -198,6 +198,7 @@ void IndicatorEntryWidget::updatePix()
             painter.drawPixmap(iconX, 0, iconPix);
         }
         if (hasLabel) {
+            painter.setPen(PanelStyle::instance()->textColor());
             painter.drawText(labelX, 0, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
         }
     }
