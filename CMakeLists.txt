@@ -14,6 +14,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")
 # https://live.gnome.org/GnomeGoals/UseGseal
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGSEAL_ENABLE -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED")
 
+# gtk and unity-core (actually sigc++) do not like Qt defining macros named
+# "signals" and "slots"
+add_definitions(-DQT_NO_KEYWORDS)
+
 # Dependencies
 include(FindPkgConfig)
 find_package(Qt4 REQUIRED)

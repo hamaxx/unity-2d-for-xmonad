@@ -42,9 +42,9 @@ void LauncherDropItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     Q_FOREACH(QUrl url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
-            emit desktopFileDropped(url.path());
+            desktopFileDropped(url.path());
         } else if (url.scheme().startsWith("http")) {
-            emit webpageUrlDropped(url);
+            webpageUrlDropped(url);
         }
     }
     event->setAccepted(false);
