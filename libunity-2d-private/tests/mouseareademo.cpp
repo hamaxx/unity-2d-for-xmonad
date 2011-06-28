@@ -29,6 +29,7 @@
 
 int main(int argc, char** argv)
 {
+    Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication app(argc, argv);
     QWidget window;
     QLabel* enteredLabel = new QLabel("Entered");
