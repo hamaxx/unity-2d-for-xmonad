@@ -53,6 +53,7 @@ protected:
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void wheelEvent(QWheelEvent*);
+    bool event(QEvent*);
 
 private:
     unity::indicator::Entry::Ptr m_entry;

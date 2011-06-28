@@ -167,8 +167,6 @@ void IndicatorEntryWidget::updatePix()
     int iconX = m_padding;
     int labelX = 0;
 
-    PanelStyle* style = PanelStyle::instance();
-
     // Compute width, labelX and update m_has{Icon,Label}
     QPixmap iconPix = decodeIcon();
     m_hasIcon = !iconPix.isNull();
@@ -184,7 +182,7 @@ void IndicatorEntryWidget::updatePix()
             width += SPACING;
         }
         labelX = width;
-        width += QFontMetrics(style->font()).width(label);
+        width += fontMetrics().width(label);
     }
 
     width += m_padding;
@@ -209,7 +207,7 @@ void IndicatorEntryWidget::updatePix()
             }
         }
         if (m_hasLabel) {
-            painter.setFont(style->font());
+            PanelStyle* style = PanelStyle::instance();
 
             // Shadow
             QColor color = style->textShadowColor();
@@ -312,6 +310,20 @@ void IndicatorEntryWidget::setPadding(int padding)
         m_padding = padding;
         updatePix();
     }
+}
+
+bool IndicatorEntryWidget::event(QEvent* ev)
+{
+    bool ret = QWidget::event(ev);
+    switch (ev->type()) {
+    case QEvent::FontChange:
+    case QEvent::PaletteChange:
+        updatePix();
+        break;
+    default:
+        break;
+    }
+    return ret;
 }
 
 bool IndicatorEntryWidget::isEmpty() const

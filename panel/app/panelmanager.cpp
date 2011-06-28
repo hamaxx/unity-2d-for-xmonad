@@ -24,6 +24,7 @@
 
 // Local
 #include <config.h>
+#include <panelstyle.h>
 #include <indicatorsmanager.h>
 
 // Applets
@@ -45,6 +46,8 @@ using namespace Unity2d;
 
 static QPalette getPalette()
 {
+    PanelStyle* style = PanelStyle::instance();
+
     QPalette palette;
 
     /* Should use the panel's background provided by Unity but it turns
@@ -55,6 +58,7 @@ static QPalette getPalette()
     QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
+    palette.setColor(QPalette::Text, style->textColor());
     return palette;
 }
 
@@ -92,6 +96,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     panel->setEdge(Unity2dPanel::TopEdge);
     panel->setPalette(getPalette());
     panel->setFixedHeight(24);
+    panel->setFont(PanelStyle::instance()->font());
 
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
     if (screen == leftmost) {
