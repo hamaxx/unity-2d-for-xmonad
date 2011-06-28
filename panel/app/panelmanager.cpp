@@ -24,14 +24,14 @@
 
 // Local
 #include <config.h>
+#include <indicatorsmanager.h>
 
 // Applets
 #include <appindicator/appindicatorapplet.h>
 #include <appname/appnameapplet.h>
 #include <homebutton/homebuttonapplet.h>
-//#include <indicator/indicatorapplet.h>
+#include <indicator/indicatorapplet.h>
 #include <legacytray/legacytrayapplet.h>
-#include <unitycore/unitycoreapplet.h>
 
 // Unity
 #include <unity2dpanel.h>
@@ -42,7 +42,6 @@
 #include <QLabel>
 
 using namespace Unity2d;
-using namespace unity::indicator;
 
 static QPalette getPalette()
 {
@@ -70,7 +69,7 @@ static QLabel* createSeparator()
 
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
-, m_indicators(new DBusIndicators)
+, m_indicatorsManager(new IndicatorsManager(this))
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
@@ -104,7 +103,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
            XEmbed’ed windows can be displayed only once anyway. */
         panel->addWidget(new LegacyTrayApplet);
     }
-    panel->addWidget(new UnityCoreApplet(m_indicators));
+    panel->addWidget(new IndicatorApplet(m_indicatorsManager));
     return panel;
 }
 

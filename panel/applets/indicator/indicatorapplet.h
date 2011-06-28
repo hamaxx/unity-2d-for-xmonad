@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -25,36 +25,21 @@
 // Local
 #include <applet.h>
 
-// Qt
-#include <QDBusInterface>
-#include <QMenuBar>
+// libunity-core
+#include <UnityCore/UnityCore.h>
 
-class QX11EmbedContainer;
+class IndicatorsManager;
 
-struct _IndicatorPlugin;
-
-class IndicatorApplet : public Unity2d::Applet
+class IndicatorApplet : public Unity2d::Applet, public sigc::trackable
 {
 Q_OBJECT
 public:
-    IndicatorApplet();
-
-private Q_SLOTS:
-    void loadIndicators();
-    void slotActionAdded(QAction*);
-    void slotActionRemoved(QAction*);
-    void createGtkIndicator();
-    void adjustGtkIndicatorSize();
+    IndicatorApplet(IndicatorsManager* manager);
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)
-
-    QDBusInterface* m_watcher;
-    QMenuBar* m_menuBar;
-    QX11EmbedContainer* m_container;
-    struct _IndicatorPlugin* m_gtkIndicator;
-
-    void setupUi();
+    IndicatorsManager* m_indicatorsManager;
+    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
 };
 
 #endif /* INDICATORAPPLET_H */

@@ -26,9 +26,7 @@
 #include <QObject>
 #include <QList>
 
-// libunity-core
-#include <UnityCore/UnityCore.h>
-
+class IndicatorsManager;
 class Unity2dPanel;
 
 class PanelManager : public QObject
@@ -41,7 +39,7 @@ public:
 
 private:
     Q_DISABLE_COPY(PanelManager)
-    unity::indicator::DBusIndicators::Ptr m_indicators;
+    IndicatorsManager* m_indicatorsManager;
     QList<Unity2dPanel*> m_panels;
 
     Unity2dPanel* instantiatePanel(int screen);

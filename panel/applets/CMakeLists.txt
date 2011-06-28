@@ -1,26 +1,11 @@
 project(uqapplets)
 
-macro(read_pkg_variable cmake_var pkg pkg_var)
-    execute_process(
-        COMMAND pkg-config --variable=${pkg_var} ${pkg}
-        OUTPUT_VARIABLE tmp
-        )
-    # Remove trailing newline from ${tmp}
-    string(STRIP "${tmp}" ${cmake_var})
-endmacro(read_pkg_variable)
-
 # Dependencies
 include(FindPkgConfig)
 
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(INDICATOR REQUIRED indicator)
 pkg_check_modules(PANGO REQUIRED pango)
-
-# Get indicator dirs from pkgconfig
-read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
-read_pkg_variable(INDICATOR_ICONS_DIR indicator iconsdir)
-configure_file(indicator-config.h.in indicator-config.h)
 
 # Sources
 set(uqapplets_SRCS
@@ -33,11 +18,7 @@ set(uqapplets_SRCS
     common/applet.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
-    #indicator/abstractindicator.cpp
-    #indicator/datetimeindicator.cpp
-    #indicator/indicatorapplet.cpp
-    #indicator/indicatorservicemanager.cpp
-    #indicator/indicator.c
+    indicator/indicatorapplet.cpp
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
@@ -46,9 +27,9 @@ set(uqapplets_SRCS
     legacytray/x11embedpainter.cpp
     unitycore/appmenuindicatorwidget.cpp
     unitycore/indicatorentrywidget.cpp
+    unitycore/indicatorsmanager.cpp
     unitycore/indicatorwidget.cpp
     unitycore/panelstyle.cpp
-    unitycore/unitycoreapplet.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
@@ -68,7 +49,6 @@ include_directories(
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
-    ${INDICATOR_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
@@ -85,7 +65,6 @@ target_link_libraries(uqapplets
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
     ${GTK_LDFLAGS}
-    ${INDICATOR_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${X11_LIBRARIES}
     ${X11_Xrender_LIB}
