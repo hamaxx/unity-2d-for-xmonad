@@ -42,6 +42,7 @@
 #include <QLabel>
 
 using namespace Unity2d;
+using namespace unity::indicator;
 
 static QPalette getPalette()
 {
@@ -67,7 +68,26 @@ static QLabel* createSeparator()
     return label;
 }
 
-static Unity2dPanel* instantiatePanel(int screen)
+PanelManager::PanelManager(QObject* parent)
+: QObject(parent)
+, m_indicators(new DBusIndicators)
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    for(int i = 0; i < desktop->screenCount(); ++i) {
+        Unity2dPanel* panel = instantiatePanel(i);
+        m_panels.append(panel);
+        panel->show();
+        panel->move(desktop->screenGeometry(i).topLeft());
+    }
+    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+}
+
+PanelManager::~PanelManager()
+{
+    qDeleteAll(m_panels);
+}
+
+Unity2dPanel* PanelManager::instantiatePanel(int screen)
 {
     Unity2dPanel* panel = new Unity2dPanel;
     panel->setEdge(Unity2dPanel::TopEdge);
@@ -84,26 +104,8 @@ static Unity2dPanel* instantiatePanel(int screen)
            XEmbed’ed windows can be displayed only once anyway. */
         panel->addWidget(new LegacyTrayApplet);
     }
-    panel->addWidget(new UnityCoreApplet);
+    panel->addWidget(new UnityCoreApplet(m_indicators));
     return panel;
-}
-
-PanelManager::PanelManager(QObject* parent)
-    : QObject(parent)
-{
-    QDesktopWidget* desktop = QApplication::desktop();
-    for(int i = 0; i < desktop->screenCount(); ++i) {
-        Unity2dPanel* panel = instantiatePanel(i);
-        m_panels.append(panel);
-        panel->show();
-        panel->move(desktop->screenGeometry(i).topLeft());
-    }
-    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
-}
-
-PanelManager::~PanelManager()
-{
-    qDeleteAll(m_panels);
 }
 
 void

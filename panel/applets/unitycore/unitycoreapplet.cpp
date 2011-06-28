@@ -37,8 +37,8 @@
 
 using namespace unity::indicator;
 
-UnityCoreApplet::UnityCoreApplet()
-: m_indicators(new DBusIndicators())
+UnityCoreApplet::UnityCoreApplet(const unity::indicator::DBusIndicators::Ptr& indicators)
+: m_indicators(indicators)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);

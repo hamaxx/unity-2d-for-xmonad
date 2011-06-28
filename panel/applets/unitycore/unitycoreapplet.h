@@ -32,7 +32,7 @@ class UnityCoreApplet : public Unity2d::Applet, public sigc::trackable
 {
 Q_OBJECT
 public:
-    UnityCoreApplet();
+    UnityCoreApplet(const unity::indicator::DBusIndicators::Ptr& indicators);
 
 private:
     Q_DISABLE_COPY(UnityCoreApplet)
