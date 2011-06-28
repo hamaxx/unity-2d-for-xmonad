@@ -42,6 +42,8 @@ using namespace unity::indicator;
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 : m_entry(entry)
 , m_padding(PADDING)
+, m_hasIcon(false)
+, m_hasLabel(false)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
@@ -159,26 +161,26 @@ void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
 
 void IndicatorEntryWidget::updatePix()
 {
+    bool oldIsEmpty = isEmpty();
+
     int width = m_padding;
     int iconX = m_padding;
     int labelX = 0;
-    bool hasIcon = false;
-    bool hasLabel = false;
 
     PanelStyle* style = PanelStyle::instance();
 
-    // Compute width, labelX and has{Icon,Label}
+    // Compute width, labelX and update m_has{Icon,Label}
     QPixmap iconPix = decodeIcon();
-    if (!iconPix.isNull()) {
-        hasIcon = true;
+    m_hasIcon = !iconPix.isNull();
+    if (m_hasIcon) {
         width += iconPix.width();
     }
 
     QString label = QString::fromUtf8(m_entry->label().c_str());
     label.replace("_", "");
-    if (!label.isEmpty()) {
-        hasLabel = true;
-        if (hasIcon) {
+    m_hasLabel = !label.isEmpty();
+    if (m_hasLabel) {
+        if (m_hasIcon) {
             width += SPACING;
         }
         labelX = width;
@@ -189,14 +191,14 @@ void IndicatorEntryWidget::updatePix()
 
     // Paint
     QPixmap oldPix = m_pix;
-    if (!hasIcon && !hasLabel) {
+    if (!m_hasIcon && !m_hasLabel) {
         m_pix = QPixmap();
     } else {
         m_pix = QPixmap(width, 24);
         m_pix.fill(Qt::transparent);
         QPainter painter(&m_pix);
         painter.initFrom(this);
-        if (hasIcon) {
+        if (m_hasIcon) {
             bool disabled = !m_entry->image_sensitive();
             if (disabled) {
                 painter.setOpacity(0.5);
@@ -206,7 +208,7 @@ void IndicatorEntryWidget::updatePix()
                 painter.setOpacity(1);
             }
         }
-        if (hasLabel) {
+        if (m_hasLabel) {
             painter.setFont(style->font());
 
             // Shadow
@@ -228,6 +230,13 @@ void IndicatorEntryWidget::updatePix()
         update();
     } else {
         updateGeometry();
+    }
+    bool newIsEmpty = isEmpty();
+    if (newIsEmpty != oldIsEmpty) {
+        // If we emit isEmptyChanged() directly it won't reach any connected
+        // slot. I assume this is because this method is called as a response
+        // to a sigc++ signal.
+        QMetaObject::invokeMethod(this, "isEmptyChanged", Qt::QueuedConnection);
     }
 }
 
@@ -303,6 +312,11 @@ void IndicatorEntryWidget::setPadding(int padding)
         m_padding = padding;
         updatePix();
     }
+}
+
+bool IndicatorEntryWidget::isEmpty() const
+{
+    return !m_hasIcon && !m_hasLabel;
 }
 
 #include "indicatorentrywidget.moc"

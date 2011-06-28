@@ -35,6 +35,7 @@ static const int MENU_ITEM_PADDING = 6;
 MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* parent)
 : QWidget(parent)
 , m_layout(new QHBoxLayout(this))
+, m_isEmpty(true)
 {
     m_layout->setMargin(0);
     m_layout->setSpacing(0);
@@ -47,8 +48,7 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
 
 bool MenuBarWidget::isEmpty() const
 {
-    // FIXME
-    return false;
+    return m_isEmpty;
 }
 
 bool MenuBarWidget::isOpened() const
@@ -69,8 +69,25 @@ void MenuBarWidget::onEntryAdded(const unity::indicator::Entry::Ptr& entry)
 {
     IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
     widget->setPadding(MENU_ITEM_PADDING);
+    m_widgetList.append(widget);
     // Insert *before* stretch
     m_layout->insertWidget(m_layout->count() - 1, widget);
+    connect(widget, SIGNAL(isEmptyChanged()), SLOT(updateIsEmpty()));
+}
+
+void MenuBarWidget::updateIsEmpty()
+{
+    bool empty = true;
+    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList) {
+        if (!widget->isEmpty()) {
+            empty = false;
+            break;
+        }
+    }
+    if (m_isEmpty != empty) {
+        m_isEmpty = empty;
+        isEmptyChanged();
+    }
 }
 
 #include "menubarwidget.moc"

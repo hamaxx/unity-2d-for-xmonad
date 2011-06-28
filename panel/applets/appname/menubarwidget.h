@@ -30,6 +30,7 @@
 
 class QHBoxLayout;
 
+class IndicatorEntryWidget;
 class IndicatorsManager;
 
 class MenuBarWidget : public QWidget, public sigc::trackable
@@ -45,10 +46,15 @@ Q_SIGNALS:
     void menuBarClosed();
     void isEmptyChanged();
 
+private Q_SLOTS:
+    void updateIsEmpty();
+
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
     QHBoxLayout* m_layout;
+    bool m_isEmpty;
+    QList<IndicatorEntryWidget*> m_widgetList;
 
     void onObjectAdded(const unity::indicator::Indicator::Ptr&);
     void onEntryAdded(const unity::indicator::Entry::Ptr&);

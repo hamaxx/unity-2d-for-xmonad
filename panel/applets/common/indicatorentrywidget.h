@@ -43,6 +43,11 @@ public:
     void showMenu();
     void setPadding(int);
 
+    bool isEmpty() const;
+
+Q_SIGNALS:
+    void isEmptyChanged();
+
 protected:
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);
@@ -53,6 +58,8 @@ private:
     unity::indicator::Entry::Ptr m_entry;
     QPixmap m_pix;
     int m_padding;
+    bool m_hasIcon;
+    bool m_hasLabel;
     void updatePix();
     QPixmap decodeIcon();
     void paintActiveBackground(QPainter*);
