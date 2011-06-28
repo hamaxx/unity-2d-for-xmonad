@@ -49,6 +49,13 @@ public:
     void removeX11EventFilter(AbstractX11EventFilter*);
 
     /**
+     * This method must be called *before* instantiating a Unity2dApplication.
+     * It inits gtk and adjusts settings like the graphics system and the Qt
+     * style.
+     */
+    static void earlySetup(int& argc, char** argv);
+
+    /**
      * Note: This function will return a null pointer if you did not use a Unity2dApplication in your application!
      */
     static Unity2dApplication* instance();
