@@ -23,7 +23,6 @@
 
 // Local
 #include <debug_p.h>
-#include <appmenuindicatorwidget.h>
 #include <indicatorsmanager.h>
 #include <indicatorwidget.h>
 
@@ -38,7 +37,7 @@ IndicatorApplet::IndicatorApplet(IndicatorsManager* manager)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 
     m_indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
@@ -48,12 +47,11 @@ IndicatorApplet::IndicatorApplet(IndicatorsManager* manager)
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
-    IndicatorWidget* widget;
     if (name == "libappmenu.so") {
-        widget = new AppMenuIndicatorWidget(indicator);
-    } else {
-        widget = new IndicatorWidget(indicator);
+        // appmenu indicator is handled by AppNameApplet
+        return;
     }
+    IndicatorWidget* widget = new IndicatorWidget(indicator);
     layout()->addWidget(widget);
 }
 

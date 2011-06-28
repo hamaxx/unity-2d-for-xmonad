@@ -23,50 +23,20 @@
 #define MENUBARWIDGET_H
 
 // Qt
-#include <QHash>
 #include <QWidget>
 
-class BamfWindow;
+// libunity-core
+#include <UnityCore/UnityCore.h>
 
-class QActionEvent;
-class QDBusObjectPath;
-class QMenu;
-class QMenuBar;
-class QTimer;
+class QHBoxLayout;
 
-class MyDBusMenuImporter;
-class Registrar;
+class IndicatorsManager;
 
-typedef QHash<WId, MyDBusMenuImporter*> ImporterForWId;
-
-class MenuBarWidget;
-
-/**
- * An helper class which monitors the menubar and emits MenuBarWidget::menuBarClosed()
- * when necessary
- */
-class MenuBarClosedHelper : public QObject
+class MenuBarWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:
-    MenuBarClosedHelper(MenuBarWidget*);
-
-protected:
-    bool eventFilter(QObject*, QEvent*); //reimp
-
-private Q_SLOTS:
-    void emitMenuBarClosed();
-
-private:
-    MenuBarWidget* m_widget;
-    void menuBarActionEvent(QActionEvent*);
-};
-
-class MenuBarWidget : public QWidget
-{
-Q_OBJECT
-public:
-    MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
+    MenuBarWidget(IndicatorsManager*, QWidget* parent = 0);
 
     bool isEmpty() const;
     bool isOpened() const;
@@ -75,34 +45,13 @@ Q_SIGNALS:
     void menuBarClosed();
     void isEmptyChanged();
 
-protected:
-    bool eventFilter(QObject*, QEvent*); // reimp
-
-private Q_SLOTS:
-    void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
-    void slotViewOpened();
-    void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
-    void slotWindowUnregistered(WId);
-    void slotMenuUpdated();
-    void slotActionActivationRequested(QAction* action);
-    void updateMenuBar();
-
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
-    QMenuBar* m_menuBar;
-    Registrar* m_registrar;
-    ImporterForWId m_importers;
-    WId m_activeWinId;
-    QMenu* m_windowMenu;
-    QTimer* m_updateMenuBarTimer;
+    QHBoxLayout* m_layout;
 
-    void setupRegistrar();
-    void setupMenuBar();
-    QMenu* menuForWinId(WId) const;
-    void updateActiveWinId(BamfWindow*);
-
-    friend class MenuBarClosedHelper;
+    void onObjectAdded(const unity::indicator::Indicator::Ptr&);
+    void onEntryAdded(const unity::indicator::Entry::Ptr&);
 };
 
 #endif /* MENUBARWIDGET_H */

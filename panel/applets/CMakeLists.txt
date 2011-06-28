@@ -13,10 +13,8 @@ set(uqapplets_SRCS
     appindicator/sniitem.cpp
     appname/appnameapplet.cpp
     appname/menubarwidget.cpp
-    appname/registrar.cpp
     appname/windowhelper.cpp
     common/applet.cpp
-    common/appmenuindicatorwidget.cpp
     common/indicatorentrywidget.cpp
     common/indicatorsmanager.cpp
     common/indicatorwidget.cpp
@@ -30,10 +28,6 @@ set(uqapplets_SRCS
     legacytray/x11embedcontainer.cpp
     legacytray/x11embeddelegate.cpp
     legacytray/x11embedpainter.cpp
-    )
-
-qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
-    registrar.h Registrar
     )
 
 qt4_automoc(${uqapplets_SRCS})

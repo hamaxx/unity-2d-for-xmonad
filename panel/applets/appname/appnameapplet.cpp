@@ -170,9 +170,9 @@ struct AppNameAppletPrivate
             q, SLOT(updateWidgets()));
     }
 
-    void setupMenuBarWidget()
+    void setupMenuBarWidget(IndicatorsManager* manager)
     {
-        m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
+        m_menuBarWidget = new MenuBarWidget(manager);
         QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
@@ -186,7 +186,7 @@ struct AppNameAppletPrivate
     }
 };
 
-AppNameApplet::AppNameApplet()
+AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
@@ -200,7 +200,7 @@ AppNameApplet::AppNameApplet()
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMenuBarWidget();
+    d->setupMenuBarWidget(indicatorsManager);
     d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
