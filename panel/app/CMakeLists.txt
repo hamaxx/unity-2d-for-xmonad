@@ -12,7 +12,6 @@ include_directories(
     ${GTK_INCLUDE_DIRS}
     ${uqapplets_SOURCE_DIR}
     ${uqapplets_SOURCE_DIR}/common
-    ${uqapplets_SOURCE_DIR}/unitycore
     ${UNITYCORE_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )

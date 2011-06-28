@@ -16,6 +16,11 @@ set(uqapplets_SRCS
     appname/registrar.cpp
     appname/windowhelper.cpp
     common/applet.cpp
+    common/appmenuindicatorwidget.cpp
+    common/indicatorentrywidget.cpp
+    common/indicatorsmanager.cpp
+    common/indicatorwidget.cpp
+    common/panelstyle.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
     indicator/indicatorapplet.cpp
@@ -25,11 +30,6 @@ set(uqapplets_SRCS
     legacytray/x11embedcontainer.cpp
     legacytray/x11embeddelegate.cpp
     legacytray/x11embedpainter.cpp
-    unitycore/appmenuindicatorwidget.cpp
-    unitycore/indicatorentrywidget.cpp
-    unitycore/indicatorsmanager.cpp
-    unitycore/indicatorwidget.cpp
-    unitycore/panelstyle.cpp
     )
 
 qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
