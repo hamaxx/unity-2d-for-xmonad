@@ -22,15 +22,18 @@
 #include "indicatorwidget.h"
 
 // Local
+#include <debug_p.h>
 #include <indicatorentrywidget.h>
+#include <indicatorsmanager.h>
 
 // Qt
 #include <QHBoxLayout>
 
 using namespace unity::indicator;
 
-IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator)
+IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator, IndicatorsManager* manager)
 : m_layout(new QHBoxLayout(this))
+, m_indicatorsManager(manager)
 , m_indicator(indicator)
 {
     m_layout->setMargin(0);
@@ -42,6 +45,7 @@ IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator)
 void IndicatorWidget::onEntryAdded(const Entry::Ptr& entry)
 {
     IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
+    m_indicatorsManager->addIndicatorEntryWidget(widget);
     addIndicatorEntryWidget(widget);
 }
 

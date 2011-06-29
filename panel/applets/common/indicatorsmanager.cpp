@@ -22,11 +22,15 @@
 #include "indicatorsmanager.h"
 
 // Local
+#include <debug_p.h>
 #include <indicatorentrywidget.h>
 
 // Qt
 #include <QApplication>
 #include <QX11Info>
+
+// UnityCore
+#include <UnityCore/UnityCore.h>
 
 // X11
 #include <X11/Xlib.h>
@@ -43,6 +47,10 @@ IndicatorsManager::IndicatorsManager(QObject* parent)
 
     m_indicators->on_menu_pointer_moved.connect(
         sigc::mem_fun(this, &IndicatorsManager::onMenuPointerMoved)
+        );
+
+    m_indicators->on_entry_activate_request.connect(
+        sigc::mem_fun(this, &IndicatorsManager::onEntryActivateRequest)
         );
 }
 
@@ -94,6 +102,24 @@ void IndicatorsManager::onMenuPointerMoved(int posX, int posY)
         return;
     }
     entryWidget->showMenu();
+}
+
+void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
+{
+    if (entryId.empty()) {
+        return;
+    }
+    IndicatorEntryWidget* widget = m_widgetForEntryId.value(entryId);
+    if (!widget) {
+        UQ_WARNING << "Could not find a widget for IndicatorEntry with id" << QString::fromStdString(entryId);
+        return;
+    }
+    widget->showMenu();
+}
+
+void IndicatorsManager::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
+{
+    m_widgetForEntryId.insert(widget->entry()->id(), widget);
 }
 
 #include "indicatorsmanager.moc"

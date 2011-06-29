@@ -24,10 +24,13 @@
 // Local
 
 // Qt
+#include <QMap>
 #include <QObject>
 
 // libunity-core
 #include <UnityCore/UnityCore.h>
+
+class IndicatorEntryWidget;
 
 /**
  * Instantiates DBusIndicators and implement common behavior
@@ -40,12 +43,17 @@ public:
 
     unity::indicator::DBusIndicators::Ptr indicators() const;
 
+    void addIndicatorEntryWidget(IndicatorEntryWidget* widget);
+
 private:
     Q_DISABLE_COPY(IndicatorsManager)
     unity::indicator::DBusIndicators::Ptr m_indicators;
 
+    QMap<std::string, IndicatorEntryWidget*> m_widgetForEntryId;
+
     void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
     void onMenuPointerMoved(int x, int y);
+    void onEntryActivateRequest(const std::string& entryId);
 };
 
 #endif /* INDICATORSMANAGER_H */

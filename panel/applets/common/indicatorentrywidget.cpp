@@ -331,4 +331,9 @@ bool IndicatorEntryWidget::isEmpty() const
     return !m_hasIcon && !m_hasLabel;
 }
 
+unity::indicator::Entry::Ptr IndicatorEntryWidget::entry() const
+{
+    return m_entry;
+}
+
 #include "indicatorentrywidget.moc"

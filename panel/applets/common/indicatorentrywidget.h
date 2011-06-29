@@ -45,6 +45,8 @@ public:
 
     bool isEmpty() const;
 
+    unity::indicator::Entry::Ptr entry() const;
+
 Q_SIGNALS:
     void isEmptyChanged();
 

@@ -52,6 +52,7 @@ private Q_SLOTS:
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
+    IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     bool m_isEmpty;
     QList<IndicatorEntryWidget*> m_widgetList;

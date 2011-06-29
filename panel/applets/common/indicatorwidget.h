@@ -32,18 +32,20 @@
 class QHBoxLayout;
 
 class IndicatorEntryWidget;
+class IndicatorsManager;
 
 class IndicatorWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:
-    IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator);
+    IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator, IndicatorsManager* manager);
 
 protected:
     QHBoxLayout* m_layout;
     virtual void addIndicatorEntryWidget(IndicatorEntryWidget*);
 
 private:
+    IndicatorsManager* m_indicatorsManager;
     unity::indicator::Indicator::Ptr m_indicator;
 
     void onEntryAdded(const unity::indicator::Entry::Ptr& entry);

@@ -34,6 +34,7 @@ static const int MENU_ITEM_PADDING = 6;
 
 MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* parent)
 : QWidget(parent)
+, m_indicatorsManager(indicatorsManager)
 , m_layout(new QHBoxLayout(this))
 , m_isEmpty(true)
 {
@@ -69,10 +70,13 @@ void MenuBarWidget::onEntryAdded(const unity::indicator::Entry::Ptr& entry)
 {
     IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
     widget->setPadding(MENU_ITEM_PADDING);
+    connect(widget, SIGNAL(isEmptyChanged()), SLOT(updateIsEmpty()));
+
     m_widgetList.append(widget);
+    m_indicatorsManager->addIndicatorEntryWidget(widget);
+
     // Insert *before* stretch
     m_layout->insertWidget(m_layout->count() - 1, widget);
-    connect(widget, SIGNAL(isEmptyChanged()), SLOT(updateIsEmpty()));
 }
 
 void MenuBarWidget::updateIsEmpty()
