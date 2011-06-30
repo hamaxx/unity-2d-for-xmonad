@@ -27,6 +27,7 @@
 
 // Qt
 #include <QApplication>
+#include <QTimer>
 #include <QX11Info>
 
 // UnityCore
@@ -40,7 +41,12 @@ using namespace unity::indicator;
 IndicatorsManager::IndicatorsManager(QObject* parent)
 : QObject(parent)
 , m_indicators(new DBusIndicators)
+, m_geometrySyncTimer(new QTimer(this))
 {
+    m_geometrySyncTimer->setInterval(0);
+    m_geometrySyncTimer->setSingleShot(true);
+    connect(m_geometrySyncTimer, SIGNAL(timeout()), SLOT(syncGeometries()));
+
     m_indicators->on_entry_show_menu.connect(
         sigc::mem_fun(this, &IndicatorsManager::onEntryShowMenu)
         );
@@ -51,6 +57,10 @@ IndicatorsManager::IndicatorsManager(QObject* parent)
 
     m_indicators->on_entry_activate_request.connect(
         sigc::mem_fun(this, &IndicatorsManager::onEntryActivateRequest)
+        );
+
+    m_indicators->on_synced.connect(
+        sigc::mem_fun(this, &IndicatorsManager::onSynced)
         );
 }
 
@@ -117,9 +127,48 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
     widget->showMenu();
 }
 
+void IndicatorsManager::onSynced()
+{
+    QMetaObject::invokeMethod(m_geometrySyncTimer, "start", Qt::QueuedConnection);
+}
+
 void IndicatorsManager::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
 {
     m_widgetForEntryId.insert(widget->entry()->id(), widget);
+    widget->installEventFilter(this);
+}
+
+bool IndicatorsManager::eventFilter(QObject*, QEvent* event)
+{
+    switch (event->type()) {
+    case QEvent::Show:
+    case QEvent::Hide:
+    case QEvent::Move:
+    case QEvent::Resize:
+        m_geometrySyncTimer->start();
+        break;
+    default:
+        break;
+    }
+    return false;
+}
+
+void IndicatorsManager::syncGeometries()
+{
+    EntryLocationMap locations;
+    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetForEntryId) {
+        if (!widget->isVisible()) {
+            continue;
+        }
+        Entry::Ptr entry = widget->entry();
+        if (entry->IsUnused()) {
+            continue;
+        }
+        QPoint topLeft = widget->mapToGlobal(QPoint(0, 0));
+        nux::Rect rect(topLeft.x(), topLeft.y(), widget->width(), widget->height());
+        locations[widget->entry()->id()] = rect;
+    }
+    m_indicators->SyncGeometries("Panel", locations);
 }
 
 #include "indicatorsmanager.moc"

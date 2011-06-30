@@ -30,6 +30,8 @@
 // libunity-core
 #include <UnityCore/UnityCore.h>
 
+class QTimer;
+
 class IndicatorEntryWidget;
 
 /**
@@ -45,12 +47,20 @@ public:
 
     void addIndicatorEntryWidget(IndicatorEntryWidget* widget);
 
+protected:
+    bool eventFilter(QObject*, QEvent*);
+
+private Q_SLOTS:
+    void syncGeometries();
+
 private:
     Q_DISABLE_COPY(IndicatorsManager)
     unity::indicator::DBusIndicators::Ptr m_indicators;
+    QTimer* m_geometrySyncTimer;
 
     QMap<std::string, IndicatorEntryWidget*> m_widgetForEntryId;
 
+    void onSynced();
     void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
     void onMenuPointerMoved(int x, int y);
     void onEntryActivateRequest(const std::string& entryId);
