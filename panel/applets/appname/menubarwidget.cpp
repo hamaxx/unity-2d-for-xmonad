@@ -37,11 +37,15 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
 , m_indicatorsManager(indicatorsManager)
 , m_layout(new QHBoxLayout(this))
 , m_isEmpty(true)
+, m_isOpened(false)
 {
     m_layout->setMargin(0);
     m_layout->setSpacing(0);
     indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &MenuBarWidget::onObjectAdded)
+        );
+    indicatorsManager->indicators()->on_entry_activated.connect(
+        sigc::mem_fun(this, &MenuBarWidget::onEntryActivated)
         );
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_layout->addStretch();
@@ -55,7 +59,7 @@ bool MenuBarWidget::isEmpty() const
 bool MenuBarWidget::isOpened() const
 {
     // FIXME
-    return false;
+    return m_isOpened;
 }
 
 void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indicator)
@@ -91,6 +95,24 @@ void MenuBarWidget::updateIsEmpty()
     if (m_isEmpty != empty) {
         m_isEmpty = empty;
         isEmptyChanged();
+    }
+}
+
+void MenuBarWidget::onEntryActivated(const std::string& id)
+{
+    bool isOpened = false;
+    if (!id.empty()) {
+        // We only cares about menubar entries
+        Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList) {
+            if (widget->entry()->id() == id) {
+                isOpened = true;
+                break;
+            }
+        }
+    }
+    if (m_isOpened != isOpened) {
+        m_isOpened = isOpened;
+        isOpenedChanged();
     }
 }
 

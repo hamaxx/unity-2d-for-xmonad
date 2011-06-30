@@ -43,7 +43,7 @@ public:
     bool isOpened() const;
 
 Q_SIGNALS:
-    void menuBarClosed();
+    void isOpenedChanged();
     void isEmptyChanged();
 
 private Q_SLOTS:
@@ -55,10 +55,12 @@ private:
     IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     bool m_isEmpty;
+    bool m_isOpened;
     QList<IndicatorEntryWidget*> m_widgetList;
 
     void onObjectAdded(const unity::indicator::Indicator::Ptr&);
     void onEntryAdded(const unity::indicator::Entry::Ptr&);
+    void onEntryActivated(const std::string&);
 };
 
 #endif /* MENUBARWIDGET_H */

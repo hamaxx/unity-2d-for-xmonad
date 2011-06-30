@@ -173,7 +173,7 @@ struct AppNameAppletPrivate
     void setupMenuBarWidget(IndicatorsManager* manager)
     {
         m_menuBarWidget = new MenuBarWidget(manager);
-        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
+        QObject::connect(m_menuBarWidget, SIGNAL(isOpenedChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));
