@@ -44,24 +44,6 @@
 
 using namespace Unity2d;
 
-static QPalette getPalette()
-{
-    PanelStyle* style = PanelStyle::instance();
-
-    QPalette palette;
-
-    /* Should use the panel's background provided by Unity but it turns
-       out not to be good. It would look like:
-
-         QBrush bg(QPixmap("theme:/panel_background.png"));
-    */
-    QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
-    palette.setBrush(QPalette::Window, bg);
-    palette.setBrush(QPalette::Button, bg);
-    palette.setColor(QPalette::Text, style->textColor());
-    return palette;
-}
-
 static QLabel* createSeparator()
 {
     QLabel* label = new QLabel;
@@ -94,9 +76,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
 {
     Unity2dPanel* panel = new Unity2dPanel;
     panel->setEdge(Unity2dPanel::TopEdge);
-    panel->setPalette(getPalette());
     panel->setFixedHeight(24);
-    panel->setFont(PanelStyle::instance()->font());
 
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
     if (screen == leftmost) {

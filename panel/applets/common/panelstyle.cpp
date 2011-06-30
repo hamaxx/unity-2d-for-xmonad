@@ -26,8 +26,10 @@
 #include <gscopedpointer.h>
 
 // Qt
+#include <QApplication>
 #include <QColor>
 #include <QFont>
+#include <QPalette>
 
 // GTK
 #include <gtk/gtk.h>
@@ -80,6 +82,15 @@ public:
         m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
 
         updateFont();
+
+        QPalette pal;
+        pal.setColor(QPalette::Window, m_backgroundTopColor);
+        pal.setColor(QPalette::Button, m_backgroundTopColor);
+        pal.setColor(QPalette::Text, m_textColor);
+        pal.setColor(QPalette::WindowText, m_textColor);
+        pal.setColor(QPalette::ButtonText, m_textColor);
+        QApplication::setPalette(pal);
+        QApplication::setFont(m_font);
     }
 
     void updateFont()
@@ -98,8 +109,6 @@ public:
             pango_font_description_get_family(fontDescription.data()),
             size / PANGO_SCALE
             );
-
-        q->changed();
     }
 };
 

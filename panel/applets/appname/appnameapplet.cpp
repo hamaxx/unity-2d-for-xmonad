@@ -192,11 +192,6 @@ AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
-    QPalette palette;
-    palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::ButtonText, Qt::white);
-    setPalette(palette);
-
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();

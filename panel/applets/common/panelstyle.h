@@ -50,9 +50,6 @@ public:
 
     QFont font() const;
 
-Q_SIGNALS:
-    void changed();
-
 private:
     friend class PanelStylePrivate;
     // Use a pimpl to avoid the need for gtk includes here
