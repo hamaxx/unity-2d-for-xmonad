@@ -71,6 +71,7 @@ public:
         g_free(themeName);
 
         GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
+        UQ_RETURN_IF_FAIL(context);
 
         m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
         m_textShadowColor       = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
@@ -113,7 +114,7 @@ PanelStyle::PanelStyle(QObject* parent)
     gtk_widget_show_all(d->m_offScreenWindow);
 
     d->m_connection = g_signal_connect(gtk_settings_get_default(), "notify::gtk-theme-name",
-            G_CALLBACK(PanelStylePrivate::onStyleChanged), this);
+            G_CALLBACK(PanelStylePrivate::onStyleChanged), d);
 
     d->update();
 }
