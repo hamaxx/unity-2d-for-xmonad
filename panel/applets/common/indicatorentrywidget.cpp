@@ -39,6 +39,47 @@ static const int PADDING = 3;
 
 using namespace unity::indicator;
 
+// Copied from libdbusmenu-qt
+static QString swapMnemonicChar(const QString &in, const char src, const char dst)
+{
+    QString out;
+    bool mnemonicFound = false;
+
+    for (int pos = 0; pos < in.length(); ) {
+        QChar ch = in[pos];
+        if (ch == src) {
+            if (pos == in.length() - 1) {
+                // 'src' at the end of string, skip it
+                ++pos;
+            } else {
+                if (in[pos + 1] == src) {
+                    // A real 'src'
+                    out += src;
+                    pos += 2;
+                } else if (!mnemonicFound) {
+                    // We found the mnemonic
+                    mnemonicFound = true;
+                    out += dst;
+                    ++pos;
+                } else {
+                    // We already have a mnemonic, just skip the char
+                    ++pos;
+                }
+            }
+        } else if (ch == dst) {
+            // Escape 'dst'
+            out += dst;
+            out += dst;
+            ++pos;
+        } else {
+            out += ch;
+            ++pos;
+        }
+    }
+
+    return out;
+}
+
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 : m_entry(entry)
 , m_padding(PADDING)
@@ -175,14 +216,16 @@ void IndicatorEntryWidget::updatePix()
     }
 
     QString label = QString::fromUtf8(m_entry->label().c_str());
-    label.replace("_", "");
+    label = swapMnemonicChar(label, '_', '&');
     m_hasLabel = !label.isEmpty();
     if (m_hasLabel) {
         if (m_hasIcon) {
             width += SPACING;
         }
         labelX = width;
-        width += fontMetrics().width(label);
+        QString visibleLabel = label;
+        visibleLabel.remove('&');
+        width += fontMetrics().width(visibleLabel);
     }
 
     width += m_padding;
@@ -209,17 +252,20 @@ void IndicatorEntryWidget::updatePix()
         if (m_hasLabel) {
             PanelStyle* style = PanelStyle::instance();
 
+            int flags = Qt::AlignLeft | Qt::AlignVCenter;
+            flags |= m_entry->show_now() ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
+
             // Shadow
             QColor color = style->textShadowColor();
             color.setAlphaF(1. - color.redF());
             painter.setPen(color);
-            painter.drawText(labelX, 1, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
+            painter.drawText(labelX, 1, width - labelX, m_pix.height(), flags, label);
 
             // Text
             color = style->textColor();
             color.setAlphaF(m_entry->label_sensitive() ? 1. : .5);
             painter.setPen(color);
-            painter.drawText(labelX, 0, width - labelX, m_pix.height(), Qt::AlignLeft | Qt::AlignVCenter, label);
+            painter.drawText(labelX, 0, width - labelX, m_pix.height(), flags, label);
         }
     }
 
