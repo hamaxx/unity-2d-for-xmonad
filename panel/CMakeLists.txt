@@ -11,8 +11,3 @@ include_directories(
 add_subdirectory(applets)
 add_subdirectory(app)
 add_subdirectory(tests)
-
-# Install
-install(DIRECTORY artwork
-    DESTINATION ${UNITY_2D_DIR}/panel
-    )

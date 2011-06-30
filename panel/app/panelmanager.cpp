@@ -44,13 +44,12 @@
 
 using namespace Unity2d;
 
-static QLabel* createSeparator()
+static QWidget* createSeparator()
 {
-    QLabel* label = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    label->setPixmap(pix);
-    label->setFixedSize(pix.size());
-    return label;
+    // Just a quick-hack: homebutton is going away anyway
+    QWidget* widget = new QWidget;
+    widget->setFixedWidth(6);
+    return widget;
 }
 
 PanelManager::PanelManager(QObject* parent)
