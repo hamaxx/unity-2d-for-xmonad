@@ -1,11 +1,19 @@
 unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Florian Boucault ]
   * debian/unity-2d-launcher.install:
     - do not install launcher/launchermenu.css anylonger as its now shipped as
       part as libunity-2d-private-qml.so using the Qt resource system
   * debian/libunity-2d-private0:
     - move symbolic link to /usr/share/backgrounds/warty-final-ubuntu.png from
       /usr/share/unity-2d/places/artwork to /usr/share/unity-2d 
+
+  [ Didier Roche ]
+  * debian/unity-2d.gconf-defaults,
+    debian/20_ubuntu-2d-gconf-default:
+    - transition some gconf keys from session-wide to system-wide
+  * debian/control:
+    - ensure we are still using gtk2 indicator for alpha2
 
  -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 10:32:44 +0200
 
