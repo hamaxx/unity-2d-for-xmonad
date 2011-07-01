@@ -326,14 +326,8 @@ void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
     if (m_entry->active()) {
         return;
     }
-
-    if ((m_entry->label_visible() && m_entry->label_sensitive()) ||
-        (m_entry->image_visible() && m_entry->image_sensitive()))
-    {
-        showMenu();
-    } else {
-        update();
-    }
+    UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
+    showMenu();
 }
 
 void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
