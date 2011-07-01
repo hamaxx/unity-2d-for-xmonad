@@ -15,13 +15,6 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - ensure we are still using gtk2 indicator for alpha2
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 10:32:44 +0200
-
-unity-2d (3.8.8-0ubuntu2) UNRELEASED; urgency=low
-
-  * debian/control:
-    recommends -gtk2 version of indicator for alpha2
-
  -- Didier Roche <didrocks@ubuntu.com>  Fri, 01 Jul 2011 15:20:30 +0000
 
 unity-2d (3.8.8-0ubuntu1) oneiric; urgency=low
