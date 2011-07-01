@@ -209,15 +209,20 @@ void IndicatorEntryWidget::updatePix()
     int labelX = 0;
 
     // Compute width, labelX and update m_has{Icon,Label}
-    QPixmap iconPix = decodeIcon();
-    m_hasIcon = !iconPix.isNull();
+    QPixmap iconPix;
+    if (m_entry->image_visible()) {
+        iconPix = decodeIcon();
+        m_hasIcon = !iconPix.isNull();
+    } else {
+        m_hasIcon = false;
+    }
     if (m_hasIcon) {
         width += iconPix.width();
     }
 
     QString label = QString::fromUtf8(m_entry->label().c_str());
     label = swapMnemonicChar(label, '_', '&');
-    m_hasLabel = !label.isEmpty();
+    m_hasLabel = !label.isEmpty() && m_entry->label_visible();
     if (m_hasLabel) {
         if (m_hasIcon) {
             width += SPACING;
