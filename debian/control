@@ -68,13 +68,13 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libunity-2d-private0
 Provides: indicator-renderer
-Recommends: indicator-application,
-            indicator-appmenu,
-            indicator-datetime,
-            indicator-me,
-            indicator-messages,
-            indicator-session,
-            indicator-sound,
+Recommends: indicator-application-gtk2,
+            indicator-appmenu-gtk2,
+            indicator-datetime-gtk2,
+            indicator-me-gtk2,
+            indicator-messages-gtk2,
+            indicator-session-gtk2,
+            indicator-sound-gtk2,
 Description: Unity 2D Panel
  The Unity 2D panel displays a top panel containing the application menu and
  various indicators. It is part of Unity 2D and can not run  as a standalone
