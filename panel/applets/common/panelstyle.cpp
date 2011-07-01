@@ -44,13 +44,39 @@ inline QColor colorFromContext(ColorGetter getter, GtkStyleContext* context, Gtk
     return QColor::fromRgbF(color.red, color.green, color.blue, color.alpha);
 }
 
+class GConnector
+{
+    struct Connection {
+        gpointer instance;
+        gulong id;
+    };
+public:
+    void connect(gpointer instance, const char* signal, GCallback handler, gpointer data)
+    {
+        Connection connection;
+        connection.instance = instance;
+        connection.id = g_signal_connect(instance, signal, handler, data);
+        m_connections << connection;
+    }
+
+    ~GConnector()
+    {
+        Q_FOREACH(const Connection& connection, m_connections) {
+            g_signal_handler_disconnect(connection.instance, connection.id);
+        }
+    }
+
+private:
+    QList<Connection> m_connections;
+};
+
 class PanelStylePrivate
 {
 public:
     PanelStyle* q;
     GtkWidget* m_offScreenWindow;
-    QString m_themeName;
-    gulong m_connection;
+    GConnector m_gConnector;
+    QList<gulong> m_connections;
 
     QColor m_textColor;
     QColor m_backgroundTopColor;
@@ -59,19 +85,20 @@ public:
     QColor m_lineColor;
     QFont m_font;
 
-    static void onStyleChanged(GObject*, GParamSpec*, gpointer data)
+    static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
     {
         PanelStylePrivate* priv = reinterpret_cast<PanelStylePrivate*>(data);
-        priv->update();
+        priv->updatePalette();
     }
 
-    void update()
+    static void onFontChanged(GObject*, GParamSpec*, gpointer data)
     {
-        gchar* themeName = 0;
-        g_object_get(gtk_settings_get_default(), "gtk-theme-name", &themeName, NULL);
-        m_themeName = QString::fromUtf8(themeName);
-        g_free(themeName);
+        PanelStylePrivate* priv = reinterpret_cast<PanelStylePrivate*>(data);
+        priv->updateFont();
+    }
 
+    void updatePalette()
+    {
         GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
         UQ_RETURN_IF_FAIL(context);
 
@@ -81,8 +108,6 @@ public:
         m_backgroundTopColor    = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
         m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
 
-        updateFont();
-
         QPalette pal;
         pal.setColor(QPalette::Window, m_backgroundTopColor);
         pal.setColor(QPalette::Button, m_backgroundTopColor);
@@ -90,14 +115,12 @@ public:
         pal.setColor(QPalette::WindowText, m_textColor);
         pal.setColor(QPalette::ButtonText, m_textColor);
         QApplication::setPalette(pal);
-        QApplication::setFont(m_font);
     }
 
     void updateFont()
     {
-        GtkSettings* settings = gtk_settings_get_default();
-        char* fontName;
-        g_object_get(settings, "gtk-font-name", &fontName, NULL);
+        gchar* fontName = 0;
+        g_object_get(gtk_settings_get_default(), "gtk-font-name", &fontName, NULL);
         GScopedPointer<PangoFontDescription, pango_font_description_free> fontDescription(
             pango_font_description_from_string(fontName)
             );
@@ -109,6 +132,8 @@ public:
             pango_font_description_get_family(fontDescription.data()),
             size / PANGO_SCALE
             );
+
+        QApplication::setFont(m_font);
     }
 };
 
@@ -122,18 +147,18 @@ PanelStyle::PanelStyle(QObject* parent)
     gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
     gtk_widget_show_all(d->m_offScreenWindow);
 
-    d->m_connection = g_signal_connect(gtk_settings_get_default(), "notify::gtk-theme-name",
-            G_CALLBACK(PanelStylePrivate::onStyleChanged), d);
+    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
+        G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
+    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-font-name",
+        G_CALLBACK(PanelStylePrivate::onFontChanged), d);
 
-    d->update();
+    d->updatePalette();
+    d->updateFont();
 }
 
 PanelStyle::~PanelStyle()
 {
     gtk_widget_destroy(d->m_offScreenWindow);
-    if (d->m_connection) {
-        g_signal_handler_disconnect(gtk_settings_get_default(), d->m_connection);
-    }
     delete d;
 }
 
