@@ -21,8 +21,9 @@
 // Self
 #include "panelstyle.h"
 
-// Local
+// libunity-2d
 #include <debug_p.h>
+#include <gconnector.h>
 #include <gscopedpointer.h>
 
 // Qt
@@ -43,32 +44,6 @@ inline QColor colorFromContext(ColorGetter getter, GtkStyleContext* context, Gtk
     getter(context, state, &color);
     return QColor::fromRgbF(color.red, color.green, color.blue, color.alpha);
 }
-
-class GConnector
-{
-    struct Connection {
-        gpointer instance;
-        gulong id;
-    };
-public:
-    void connect(gpointer instance, const char* signal, GCallback handler, gpointer data)
-    {
-        Connection connection;
-        connection.instance = instance;
-        connection.id = g_signal_connect(instance, signal, handler, data);
-        m_connections << connection;
-    }
-
-    ~GConnector()
-    {
-        Q_FOREACH(const Connection& connection, m_connections) {
-            g_signal_handler_disconnect(connection.instance, connection.id);
-        }
-    }
-
-private:
-    QList<Connection> m_connections;
-};
 
 class PanelStylePrivate
 {
@@ -147,9 +122,9 @@ PanelStyle::PanelStyle(QObject* parent)
     gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
     gtk_widget_show_all(d->m_offScreenWindow);
 
-    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
+    d->m_gConnector.gconnect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
-    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-font-name",
+    d->m_gConnector.gconnect(gtk_settings_get_default(), "notify::gtk-font-name",
         G_CALLBACK(PanelStylePrivate::onFontChanged), d);
 
     d->updatePalette();
