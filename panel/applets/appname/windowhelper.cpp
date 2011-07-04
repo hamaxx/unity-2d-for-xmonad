@@ -98,13 +98,13 @@ void WindowHelper::update()
     uint xid = bamfWindow ? bamfWindow->xid() : 0;
 
     if (d->m_window) {
-        d->m_connector.gdisconnectAll();
+        d->m_connector.disconnectAll();
         d->m_window = 0;
     }
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
-        d->m_connector.gconnect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
-        d->m_connector.gconnect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
+        d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
+        d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
     stateChanged();
     nameChanged();

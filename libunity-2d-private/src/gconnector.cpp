@@ -26,17 +26,16 @@
 
 // Qt
 
-GConnector::GConnector(QObject* parent)
-: QObject(parent)
+GConnector::GConnector()
 {
 }
 
 GConnector::~GConnector()
 {
-    gdisconnectAll();
+    disconnectAll();
 }
 
-void GConnector::gconnect(gpointer instance, const char* signal, GCallback handler, gpointer data)
+void GConnector::connect(gpointer instance, const char* signal, GCallback handler, gpointer data)
 {
     gulong id = g_signal_connect(instance, signal, handler, data);
     auto it = m_connections.find(instance);
@@ -50,7 +49,7 @@ void GConnector::gconnect(gpointer instance, const char* signal, GCallback handl
     }
 }
 
-void GConnector::gdisconnectAll()
+void GConnector::disconnectAll()
 {
     auto it = m_connections.begin(), end = m_connections.end();
     for (; it != end; ++it) {
@@ -69,5 +68,3 @@ void GConnector::weakNotifyCB(GConnector* that, GObject* instance)
 {
     that->m_connections.remove(instance);
 }
-
-#include "gconnector.moc"

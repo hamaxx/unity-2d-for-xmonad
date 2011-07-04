@@ -122,9 +122,9 @@ PanelStyle::PanelStyle(QObject* parent)
     gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
     gtk_widget_show_all(d->m_offScreenWindow);
 
-    d->m_gConnector.gconnect(gtk_settings_get_default(), "notify::gtk-theme-name",
+    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
-    d->m_gConnector.gconnect(gtk_settings_get_default(), "notify::gtk-font-name",
+    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-font-name",
         G_CALLBACK(PanelStylePrivate::onFontChanged), d);
 
     d->updatePalette();
