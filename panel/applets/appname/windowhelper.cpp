@@ -26,6 +26,7 @@
 
 // unity-2d
 #include <debug_p.h>
+#include <gconnector.h>
 
 // Bamf
 #include <bamf-matcher.h>
@@ -45,6 +46,7 @@ extern "C" {
 struct WindowHelperPrivate
 {
     WnckWindow* m_window;
+    GConnector m_connector;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -96,14 +98,13 @@ void WindowHelper::update()
     uint xid = bamfWindow ? bamfWindow->xid() : 0;
 
     if (d->m_window) {
-        g_signal_handlers_disconnect_by_func(d->m_window, gpointer(stateChangedCB), this);
-        g_signal_handlers_disconnect_by_func(d->m_window, gpointer(nameChangedCB), this);
+        d->m_connector.gdisconnectAll();
         d->m_window = 0;
     }
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
-        g_signal_connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
-        g_signal_connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
+        d->m_connector.gconnect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
+        d->m_connector.gconnect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
     stateChanged();
     nameChanged();
