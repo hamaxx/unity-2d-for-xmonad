@@ -75,6 +75,20 @@ private Q_SLOTS:
 
         g_object_unref(object);
     }
+
+    void testDeletedInstance()
+    {
+        GCancellable* object = g_cancellable_new();
+
+        // Create a dummy connection
+        CallbackSpy spy;
+        GConnector connector;
+        connector.gconnect(object, "cancelled", G_CALLBACK(CallbackSpy::increase), &spy);
+        g_object_unref(object);
+
+        // Should not crash because connection should have been removed
+        connector.gdisconnectAll();
+    }
 };
 
 QTEST_MAIN(GConnectorTest)

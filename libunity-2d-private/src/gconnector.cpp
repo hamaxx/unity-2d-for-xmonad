@@ -22,6 +22,7 @@
 #include "gconnector.h"
 
 // Local
+#include <debug_p.h>
 
 // Qt
 
@@ -37,18 +38,36 @@ GConnector::~GConnector()
 
 void GConnector::gconnect(gpointer instance, const char* signal, GCallback handler, gpointer data)
 {
-    Connection connection;
-    connection.instance = instance;
-    connection.id = g_signal_connect(instance, signal, handler, data);
-    m_connections << connection;
+    gulong id = g_signal_connect(instance, signal, handler, data);
+    auto it = m_connections.find(instance);
+    if (it == m_connections.end()) {
+        g_object_weak_ref(G_OBJECT(instance),
+            GWeakNotify(weakNotifyCB),
+            reinterpret_cast<gpointer>(this));
+        m_connections.insert(instance, ConnectionIdList() << id);
+    } else {
+        it.value() << id;
+    }
 }
 
 void GConnector::gdisconnectAll()
 {
-    Q_FOREACH(const Connection& connection, m_connections) {
-        g_signal_handler_disconnect(connection.instance, connection.id);
+    auto it = m_connections.begin(), end = m_connections.end();
+    for (; it != end; ++it) {
+        gpointer instance = it.key();
+        Q_FOREACH(gulong id, it.value()) {
+            g_signal_handler_disconnect(instance, id);
+        }
+        g_object_weak_unref(G_OBJECT(instance),
+            GWeakNotify(weakNotifyCB),
+            reinterpret_cast<gpointer>(this));
     }
     m_connections.clear();
+}
+
+void GConnector::weakNotifyCB(GConnector* that, GObject* instance)
+{
+    that->m_connections.remove(instance);
 }
 
 #include "gconnector.moc"
