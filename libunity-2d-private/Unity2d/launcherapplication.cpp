@@ -257,7 +257,7 @@ LauncherApplication::setSticky(bool sticky)
     }
 
     m_sticky = sticky;
-    emit stickyChanged(sticky);
+    stickyChanged(sticky);
 }
 
 void
@@ -408,15 +408,15 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
 void
 LauncherApplication::updateBamfApplicationDependentProperties()
 {
-    emit activeChanged(active());
-    emit runningChanged(running());
-    emit urgentChanged(urgent());
-    emit nameChanged(name());
-    emit iconChanged(icon());
-    emit applicationTypeChanged(application_type());
-    emit desktopFileChanged(desktop_file());
+    activeChanged(active());
+    runningChanged(running());
+    urgentChanged(urgent());
+    nameChanged(name());
+    iconChanged(icon());
+    applicationTypeChanged(application_type());
+    desktopFileChanged(desktop_file());
     m_launching_timer.stop();
-    emit launchingChanged(launching());
+    launchingChanged(launching());
     updateHasVisibleWindow();
     updateWindowCount();
     fetchIndicatorMenus();
@@ -431,7 +431,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     m_application->disconnect(this);
     m_application = NULL;
     updateBamfApplicationDependentProperties();
-    emit closed();
+    closed();
 }
 
 void
@@ -449,10 +449,10 @@ LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
 
     m_snStartupSequence.reset(sequence);
 
-    emit nameChanged(name());
-    emit iconChanged(icon());
-    emit executableChanged(executable());
-    emit launchingChanged(launching());
+    nameChanged(name());
+    iconChanged(icon());
+    executableChanged(executable());
+    launchingChanged(launching());
 }
 
 void
@@ -510,7 +510,7 @@ LauncherApplication::updateHasVisibleWindow()
     }
 
     if (m_has_visible_window != prev) {
-        emit hasVisibleWindowChanged(m_has_visible_window);
+        hasVisibleWindowChanged(m_has_visible_window);
     }
 }
 
@@ -645,7 +645,7 @@ LauncherApplication::launch()
     /* 'launching' property becomes true for a few seconds and becomes
        false as soon as the application is launched */
     m_launching_timer.start();
-    emit launchingChanged(true);
+    launchingChanged(true);
 
     return true;
 }
@@ -653,7 +653,7 @@ LauncherApplication::launch()
 void
 LauncherApplication::onLaunchingTimeouted()
 {
-    emit launchingChanged(false);
+    launchingChanged(false);
 }
 
 void
