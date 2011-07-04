@@ -31,6 +31,9 @@
 #include <QPainter>
 #include <QWheelEvent>
 
+// GTK
+#include <gtk/gtk.h>
+
 // libc
 #include <time.h>
 
@@ -130,74 +133,74 @@ void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
 
     painter->setRenderHint(QPainter::Antialiasing);
 
-    fake_cairo_t cr(painter);
+    fcairo_t cr(painter);
 
-    cairo_move_to (cr, x+xos+radius, y+yos);
-    cairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
-    cairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+2);
-    cairo_line_to (cr, x+xos, y+yos+height()-yos*2+2);
-    cairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
+    fcairo_move_to (cr, x+xos+radius, y+yos);
+    fcairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
+    fcairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+2);
+    fcairo_line_to (cr, x+xos, y+yos+height()-yos*2+2);
+    fcairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
 
-    cairo_pattern_t * pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
-    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+    fcairo_pattern_t * pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
+    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
                                      bgtop.red,
                                      bgtop.green,
                                      bgtop.blue,
                                      1.0f - bgbot.red);
-    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
                                      bgbot.red,
                                      bgbot.green,
                                      bgbot.blue,
                                      1.0f - bgtop.red);
-    cairo_set_source (cr, pat);
-    cairo_fill_preserve (cr);
-    cairo_pattern_destroy (pat);
+    fcairo_set_source (cr, pat);
+    fcairo_fill_preserve (cr);
+    fcairo_pattern_destroy (pat);
 
     /*
-    pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
-    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+    pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
+    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
                                      line.red,
                                      line.green,
                                      line.blue,
                                      1.0f);
-    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
                                      line.red,
                                      line.green,
                                      line.blue,
                                      1.0f);
-    cairo_set_source (cr, pat);
+    fcairo_set_source (cr, pat);
     */
-    cairo_set_source_rgb (cr, line.red, line.green, line.blue);
-    cairo_stroke (cr);
-    //cairo_pattern_destroy (pat);
+    fcairo_set_source_rgb (cr, line.red, line.green, line.blue);
+    fcairo_stroke (cr);
+    //fcairo_pattern_destroy (pat);
 
     xos++;
     yos++;
 
     /* enlarging the area to not draw the lightborder at bottom, ugly trick :P */
-    cairo_move_to (cr, x+radius+xos, y+yos);
-    cairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
-    cairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+3);
-    cairo_line_to (cr, x+xos, y+yos+height()-yos*2+3);
-    cairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
+    fcairo_move_to (cr, x+radius+xos, y+yos);
+    fcairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
+    fcairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+3);
+    fcairo_line_to (cr, x+xos, y+yos+height()-yos*2+3);
+    fcairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
 
     /*
-    pat = cairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+3);
-    cairo_pattern_add_color_stop_rgba (pat, 0.0,
+    pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+3);
+    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
                                      bgbot.red,
                                      bgbot.green,
                                      bgbot.blue,
                                      1.0f);
-    cairo_pattern_add_color_stop_rgba (pat, 1.0,
+    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
                                      bgbot.red,
                                      bgbot.green,
                                      bgbot.blue,
                                      1.0f);
-    cairo_set_source (cr, pat);
+    fcairo_set_source (cr, pat);
     */
-    cairo_set_source_rgb (cr, bgbot.red, bgbot.green, bgbot.blue);
-    cairo_stroke (cr);
-    //cairo_pattern_destroy (pat);
+    fcairo_set_source_rgb (cr, bgbot.red, bgbot.green, bgbot.blue);
+    fcairo_stroke (cr);
+    //fcairo_pattern_destroy (pat);
 }
 
 void IndicatorEntryWidget::updatePix()
@@ -297,8 +300,7 @@ QPixmap IndicatorEntryWidget::decodeIcon()
 
     if (type == 0) {
         // No icon
-    } else if (type == 3) {
-        // GTK_IMAGE_PIXBUF
+    } else if (type == GTK_IMAGE_PIXBUF) {
         QByteArray data = QByteArray::fromBase64(m_entry->image_data().c_str());
         QImage image;
         bool ok = image.loadFromData(data);
@@ -307,14 +309,12 @@ QPixmap IndicatorEntryWidget::decodeIcon()
         } else {
             UQ_WARNING << "Failed to decode image";
         }
-    } else if (type == 7) {
-        // GTK_IMAGE_ICON_NAME
+    } else if (type == GTK_IMAGE_ICON_NAME) {
         QString name = QString::fromStdString(m_entry->image_data());
         QIcon icon = QIcon::fromTheme(name);
         pix = icon.pixmap(24, 24);
-    } else if (type == 8) {
-        // GTK_IMAGE_GICON
-        UQ_WARNING << "FIXME" << type;
+    } else if (type == GTK_IMAGE_GICON) {
+        UQ_WARNING << "FIXME: Implement support for GTK_IMAGE_GICON image type";
     } else {
         UQ_WARNING << "Unknown image type" << m_entry->image_type();
     }
@@ -323,15 +323,17 @@ QPixmap IndicatorEntryWidget::decodeIcon()
 
 void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
 {
+    UQ_VAR(this);
     if (m_entry->active()) {
         return;
     }
     UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
-    showMenu();
+    QMetaObject::invokeMethod(this, "showMenu", Qt::QueuedConnection);
 }
 
 void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
 {
+    UQ_VAR(this);
     update();
 }
 

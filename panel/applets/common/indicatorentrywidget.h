@@ -40,12 +40,14 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-    void showMenu();
     void setPadding(int);
 
     bool isEmpty() const;
 
     unity::indicator::Entry::Ptr entry() const;
+
+public Q_SLOTS:
+    void showMenu();
 
 Q_SIGNALS:
     void isEmptyChanged();

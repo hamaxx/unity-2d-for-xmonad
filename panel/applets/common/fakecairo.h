@@ -29,15 +29,15 @@
  * This module attempts to fake Cairo calls using QPainter, making it easier to
  * port Cairo paint operations to Qt
  */
-struct fake_cairo_t
+struct fcairo_t
 {
-    fake_cairo_t(QPainter* _painter)
+    fcairo_t(QPainter* _painter)
     : painter(_painter)
     {
         painter->save();
     }
 
-    ~fake_cairo_t()
+    ~fcairo_t()
     {
         painter->restore();
     }
@@ -46,7 +46,7 @@ struct fake_cairo_t
     QPainterPath path;
 };
 
-inline void cairo_arc(fake_cairo_t& cr, qreal xc, qreal yc, qreal radius, qreal angle1, qreal angle2)
+inline void fcairo_arc(fcairo_t& cr, qreal xc, qreal yc, qreal radius, qreal angle1, qreal angle2)
 {
     QRectF rect(xc - radius, yc - radius, radius * 2, radius * 2);
 
@@ -59,52 +59,52 @@ inline void cairo_arc(fake_cairo_t& cr, qreal xc, qreal yc, qreal radius, qreal 
     cr.path.arcTo(rect, start, stop - start);
 }
 
-inline void cairo_move_to(fake_cairo_t& cr, qreal x, qreal y)
+inline void fcairo_move_to(fcairo_t& cr, qreal x, qreal y)
 {
     cr.path.moveTo(x, y);
 }
 
-inline void cairo_line_to(fake_cairo_t& cr, qreal x, qreal y)
+inline void fcairo_line_to(fcairo_t& cr, qreal x, qreal y)
 {
     cr.path.lineTo(x, y);
 }
 
-inline void cairo_fill_preserve(fake_cairo_t& cr)
+inline void fcairo_fill_preserve(fcairo_t& cr)
 {
     cr.painter->fillPath(cr.path, cr.painter->brush());
 }
 
-inline void cairo_stroke(fake_cairo_t& cr)
+inline void fcairo_stroke(fcairo_t& cr)
 {
     QPen pen(cr.painter->brush().color(), 1);
     cr.painter->strokePath(cr.path, pen);
     cr.path = QPainterPath();
 }
 
-typedef QGradient cairo_pattern_t;
+typedef QGradient fcairo_pattern_t;
 
-inline cairo_pattern_t* cairo_pattern_create_linear (qreal x1, qreal y1, qreal x2, qreal y2)
+inline fcairo_pattern_t* fcairo_pattern_create_linear (qreal x1, qreal y1, qreal x2, qreal y2)
 {
     return new QLinearGradient(x1, y1, x2, y2);
 }
 
-inline void cairo_pattern_destroy(cairo_pattern_t* pattern)
+inline void fcairo_pattern_destroy(fcairo_pattern_t* pattern)
 {
     delete pattern;
 }
 
-inline void cairo_pattern_add_color_stop_rgba(cairo_pattern_t* pattern, qreal offset, qreal r, qreal g, qreal b, qreal a)
+inline void fcairo_pattern_add_color_stop_rgba(fcairo_pattern_t* pattern, qreal offset, qreal r, qreal g, qreal b, qreal a)
 {
     pattern->setColorAt(offset, QColor::fromRgbF(r, g, b, a));
 }
 
-inline void cairo_set_source(fake_cairo_t& cr, cairo_pattern_t* pattern)
+inline void fcairo_set_source(fcairo_t& cr, fcairo_pattern_t* pattern)
 {
     cr.painter->setPen(Qt::NoPen);
     cr.painter->setBrush(*pattern);
 }
 
-inline void cairo_set_source_rgb(fake_cairo_t& cr, qreal r, qreal g, qreal b)
+inline void fcairo_set_source_rgb(fcairo_t& cr, qreal r, qreal g, qreal b)
 {
     cr.painter->setBrush(QColor::fromRgbF(r, g, b));
 }
@@ -128,6 +128,6 @@ struct Color
 
     qreal red, green, blue, alpha;
 };
-}
+} // namespace nux
 
 #endif /* FAKECAIRO_H */
