@@ -39,13 +39,27 @@ public:
     GConnector();
     ~GConnector();
 
+    /**
+     * Connect a signal to a callback
+     */
     void connect(gpointer instance, const char* signal, GCallback handler, gpointer data);
+
+    /**
+     * Disconnect from all signals of instance
+     */
+    void disconnect(gpointer instance);
+
+    /**
+     * Disconnect from all signals we connected to
+     */
     void disconnectAll();
 
 private:
     typedef QList<gulong> ConnectionIdList;
     typedef QHash<gpointer, ConnectionIdList> Connections;
     Connections m_connections;
+
+    void disconnect(Connections::Iterator);
 
     static void weakNotifyCB(GConnector*, GObject*);
 };
