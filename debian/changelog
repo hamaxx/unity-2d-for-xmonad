@@ -11,6 +11,16 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
     - add pkg-config as a build dependency 
 
   [ Didier Roche ]
+  * New upstream release:
+    - FTBFS due to erroneous check on libwnck (LP: #800550)
+    - [dash] Search is slow and freezes (LP: #774569)
+    - Some community lenses do not display anything - UnityHorizontalRenderer
+      not implemented (LP: #790319)
+    - [underthehood] the ListAggregatorModel class is not unit tested
+      (LP: #794482)
+    - Missing a GConf schema file for the /desktop/unity-2d/… keys
+      (LP: #750303)
+    - [dash] home screen search hint should be 'Search' (LP: #797825)
   * debian/unity-2d.gconf-defaults,
     debian/20_ubuntu-2d-gconf-default:
     - transition some gconf keys from session-wide to system-wide
