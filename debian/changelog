@@ -17,6 +17,7 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
       (LP: #797672, #797676)
   * debian/control:
     - ensure we are still using gtk2 indicator for alpha2 (LP: #804938)
+    - bump standards-version
 
  -- Didier Roche <didrocks@ubuntu.com>  Mon, 04 Jul 2011 11:05:54 +0200
 

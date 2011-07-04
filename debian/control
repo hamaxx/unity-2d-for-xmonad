@@ -20,7 +20,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgtk2.0-dev,
                libutouch-geis-dev,
                libstartup-notification0-dev
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/trunk
 
 Package: unity-2d
