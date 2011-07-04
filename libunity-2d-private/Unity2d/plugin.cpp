@@ -46,6 +46,7 @@ extern "C" {
 #include "plugin.h"
 #include "cacheeffect.h"
 #include "unity2dtr.h"
+#include "giodefaultapplication.h"
 
 #include "mimedata.h"
 #include "dragdropevent.h"
@@ -124,6 +125,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
     qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
     qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
+
+    qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
