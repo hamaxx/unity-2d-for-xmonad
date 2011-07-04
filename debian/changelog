@@ -13,11 +13,12 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
   [ Didier Roche ]
   * debian/unity-2d.gconf-defaults,
     debian/20_ubuntu-2d-gconf-default:
-    - transition some gconf keys from session-wide to system-wide (LP: #797672)
+    - transition some gconf keys from session-wide to system-wide
+      (LP: #797672, #797676)
   * debian/control:
-    - ensure we are still using gtk2 indicator for alpha2
+    - ensure we are still using gtk2 indicator for alpha2 (LP: #804938)
 
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 01 Jul 2011 15:20:30 +0000
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 04 Jul 2011 11:05:54 +0200
 
 unity-2d (3.8.8-0ubuntu1) oneiric; urgency=low
 
