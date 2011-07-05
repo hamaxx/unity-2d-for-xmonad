@@ -111,7 +111,7 @@ void IndicatorsManager::onMenuPointerMoved(int posX, int posY)
     if (!entryWidget) {
         return;
     }
-    entryWidget->showMenu();
+    entryWidget->showMenu(Qt::NoButton);
 }
 
 void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
@@ -124,7 +124,7 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
         UQ_WARNING << "Could not find a widget for IndicatorEntry with id" << QString::fromStdString(entryId);
         return;
     }
-    widget->showMenu();
+    widget->showMenu(Qt::NoButton);
 }
 
 void IndicatorsManager::onSynced()

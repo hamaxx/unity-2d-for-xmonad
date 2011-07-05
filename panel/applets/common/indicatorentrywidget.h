@@ -46,8 +46,16 @@ public:
 
     unity::indicator::Entry::Ptr entry() const;
 
-public Q_SLOTS:
-    void showMenu();
+    /**
+     * Shows the menu.
+     *
+     * When this method is called because of a click, button
+     * must be set to Qt::LeftButton.
+     *
+     * When it is called because user previously clicked an indicator and moved the
+     * mouse to another indicator, button must be set to Qt::NoButton.
+     */
+    void showMenu(Qt::MouseButton button);
 
 Q_SIGNALS:
     void isEmptyChanged();

@@ -325,11 +325,8 @@ QPixmap IndicatorEntryWidget::decodeIcon()
 void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
 {
     UQ_VAR(this);
-    if (m_entry->active()) {
-        return;
-    }
     UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
-    QMetaObject::invokeMethod(this, "showMenu", Qt::QueuedConnection);
+    showMenu(Qt::LeftButton);
 }
 
 void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
@@ -343,12 +340,16 @@ void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)
     m_entry->Scroll(event->delta());
 }
 
-void IndicatorEntryWidget::showMenu()
+void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
 {
+    if (m_entry->active()) {
+        return;
+    }
+    int nuxButton = qtButton == Qt::NoButton ? 0 : 1;
     QPoint pos = mapToGlobal(rect().bottomLeft());
     m_entry->ShowMenu(pos.x(), pos.y(),
         time(NULL),
-        1 //nux::GetEventButton(button_flags)
+        nuxButton
         );
 }
 
