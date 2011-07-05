@@ -25,6 +25,7 @@
 // Qt
 #include <QFileSystemWatcher>
 #include <QDir>
+#include <QTimer>
 
 // gio
 #include <gio/gio.h>
@@ -40,8 +41,6 @@ GioDefaultApplication::GioDefaultApplication(QObject* parent)
 {
     /* Monitor file MIMEAPPS_FILE that is overwritten when default applications
        change. */
-    /* FIXME: g_app_info_get_default_for_type does not immediately return updated
-              results when a default application has changed */
     m_mimeappsWatcher->addPath(MIMEAPPS_FILE);
     connect(m_mimeappsWatcher, SIGNAL(fileChanged(const QString&)),
                                SLOT(onMimeappsFileChanged()));
@@ -50,7 +49,12 @@ GioDefaultApplication::GioDefaultApplication(QObject* parent)
 
 void GioDefaultApplication::onMimeappsFileChanged()
 {
-    updateDesktopFile();
+    /* FIXME: wait for 10 seconds before updating the desktop file because
+       of a bug in gio where g_app_info_get_default_for_type will not immediately
+       return the updated result.
+       Ref.: https://bugzilla.gnome.org/show_bug.cgi?id=653999
+    */
+    QTimer::singleShot(10000, this, SLOT(updateDesktopFile()));
     /* If the file is already being monitored, we shouldn’t need to do anything.
        However it seems that in some cases, a change to the file will stop
        emiting further fileChanged signals, despite the file still being in the
