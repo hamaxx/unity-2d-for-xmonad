@@ -46,11 +46,6 @@ void IndicatorWidget::onEntryAdded(const Entry::Ptr& entry)
 {
     IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
     m_indicatorsManager->addIndicatorEntryWidget(widget);
-    addIndicatorEntryWidget(widget);
-}
-
-void IndicatorWidget::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
-{
     m_layout->addWidget(widget);
 }
 

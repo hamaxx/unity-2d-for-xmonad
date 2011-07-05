@@ -40,11 +40,8 @@ Q_OBJECT
 public:
     IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator, IndicatorsManager* manager);
 
-protected:
-    QHBoxLayout* m_layout;
-    virtual void addIndicatorEntryWidget(IndicatorEntryWidget*);
-
 private:
+    QHBoxLayout* m_layout;
     IndicatorsManager* m_indicatorsManager;
     unity::indicator::Indicator::Ptr m_indicator;
 
