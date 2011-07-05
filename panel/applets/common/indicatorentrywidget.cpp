@@ -91,6 +91,7 @@ IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
+    updatePix();
 }
 
 QSize IndicatorEntryWidget::minimumSizeHint() const
