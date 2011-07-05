@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import gconf 1.0
+import QConf 1.0
 /* Necessary to access the blended image provider and CacheEffect */
 import Unity2d 1.0
 
@@ -32,19 +32,9 @@ Item {
     property bool cached: true
     effect: (cached) ? cacheEffect : null
 
-    GConfItem {
-        id: primary_color
-        key: "/desktop/gnome/background/primary_color"
-    }
-
-    GConfItem {
-        id: picture_filename
-        key: "/desktop/gnome/background/picture_filename"
-    }
-
-    GConfItem {
-        id: picture_options
-        key: "/desktop/gnome/background/picture_options"
+    QConf {
+        id: desktopBackground
+        schema: "org.gnome.desktop.background"
     }
 
     Rectangle {
@@ -55,13 +45,13 @@ Item {
         }
 
         anchors.fill: parent
-        color: primary_color.value
+        color: desktopBackground.primaryColor
     }
 
     Image {
         id: picture
 
-        visible: picture_filename.value
+        visible: desktopBackground.pictureUri
         source: {
             if (!visible) return ""
             
@@ -74,8 +64,8 @@ Item {
                https://bugs.launchpad.net/ubuntu/+source/ubuntu-wallpapers/+bug/296538
                http://bugreports.qt.nokia.com/browse/QTBUG-7276
             */
-            var filename = picture_filename.value
-            if(filename == "/usr/share/backgrounds/warty-final-ubuntu.png")
+            var filename = desktopBackground.pictureUri
+            if(filename == "file:///usr/share/backgrounds/warty-final-ubuntu.png")
                 filename = "/usr/share/unity-2d/warty-final-ubuntu.jpg"
 
             if(overlay_alpha > 0.0)
@@ -99,13 +89,13 @@ Item {
             - "spanned" (NOT IMPLEMENTED)
         */
         fillMode: {
-            if(picture_options.value == "wallpaper")
+            if(desktopBackground.pictureOptions== "wallpaper")
                 return Image.Tile
-            else if(picture_options.value == "scaled")
+            else if(desktopBackground.pictureOptions == "scaled")
                 return Image.PreserveAspectFit
-            else if(picture_options.value == "stretched")
+            else if(desktopBackground.pictureOptions == "stretched")
                 return Image.Stretch
-            else if(picture_options.value == "zoom")
+            else if(desktopBackground.pictureOptions == "zoom")
                 return Image.PreserveAspectCrop
             else return Image.PreserveAspectFit
         }
