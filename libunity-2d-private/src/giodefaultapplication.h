@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+class QFileSystemWatcher;
+
 class GioDefaultApplication : public QObject
 {
     Q_OBJECT
@@ -44,10 +46,12 @@ Q_SIGNALS:
     void contentTypeChanged();
 
 private:
-    void updateDesktopFile();
+    Q_SLOT void updateDesktopFile();
+    Q_SLOT void onMimeappsFileChanged();
 
     QString m_contentType;
     QString m_desktopFile;
+    QFileSystemWatcher* m_mimeappsWatcher;
 };
 
 #endif // GIODEFAULTAPPLICATION

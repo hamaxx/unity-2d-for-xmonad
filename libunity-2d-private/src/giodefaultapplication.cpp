@@ -22,17 +22,43 @@
 // libunity-2d
 #include <gscopedpointer.h>
 
+// Qt
+#include <QFileSystemWatcher>
+#include <QDir>
+
 // gio
 #include <gio/gio.h>
 #include <gio/gdesktopappinfo.h>
 
+static const QString MIMEAPPS_FILE = QDir::homePath() + QString("/.local/share/applications/mimeapps.list");
 
 GioDefaultApplication::GioDefaultApplication(QObject* parent)
     : QObject(parent),
       m_contentType(""),
-      m_desktopFile("")
+      m_desktopFile(""),
+      m_mimeappsWatcher(new QFileSystemWatcher(this))
 {
-    /* FIXME: implement change notification by monitoring ~/.local/share/applications/mimeapps.list */
+    /* Monitor file MIMEAPPS_FILE that is overwritten when default applications
+       change. */
+    /* FIXME: g_app_info_get_default_for_type does not immediately return updated
+              results when a default application has changed */
+    m_mimeappsWatcher->addPath(MIMEAPPS_FILE);
+    connect(m_mimeappsWatcher, SIGNAL(fileChanged(const QString&)),
+                               SLOT(onMimeappsFileChanged()));
+
+}
+
+void GioDefaultApplication::onMimeappsFileChanged()
+{
+    updateDesktopFile();
+    /* If the file is already being monitored, we shouldn’t need to do anything.
+       However it seems that in some cases, a change to the file will stop
+       emiting further fileChanged signals, despite the file still being in the
+       list of monitored files. This is the case when the desktop file is being
+       edited in gedit for example. This may be a bug in QT itself.
+       To work around this issue, remove the path and add it again. */
+    m_mimeappsWatcher->removePath(MIMEAPPS_FILE);
+    m_mimeappsWatcher->addPath(MIMEAPPS_FILE);
 }
 
 QString GioDefaultApplication::desktopFile() const
