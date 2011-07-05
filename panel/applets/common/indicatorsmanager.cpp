@@ -119,7 +119,12 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
     if (entryId.empty()) {
         return;
     }
-    IndicatorEntryWidget* widget = m_widgetForEntryId.value(entryId);
+    IndicatorEntryWidget* widget = 0;
+    Q_FOREACH(widget, m_widgetList) {
+        if (widget->entry()->id() == entryId) {
+            break;
+        }
+    }
     if (!widget) {
         UQ_WARNING << "Could not find a widget for IndicatorEntry with id" << QString::fromStdString(entryId);
         return;
@@ -134,7 +139,7 @@ void IndicatorsManager::onSynced()
 
 void IndicatorsManager::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
 {
-    m_widgetForEntryId.insert(widget->entry()->id(), widget);
+    m_widgetList.append(widget);
     widget->installEventFilter(this);
 }
 
@@ -156,7 +161,7 @@ bool IndicatorsManager::eventFilter(QObject*, QEvent* event)
 void IndicatorsManager::syncGeometries()
 {
     EntryLocationMap locations;
-    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetForEntryId) {
+    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList) {
         if (!widget->isVisible()) {
             continue;
         }

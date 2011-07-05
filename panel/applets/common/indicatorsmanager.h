@@ -58,7 +58,8 @@ private:
     unity::indicator::DBusIndicators::Ptr m_indicators;
     QTimer* m_geometrySyncTimer;
 
-    QMap<std::string, IndicatorEntryWidget*> m_widgetForEntryId;
+    typedef QList<IndicatorEntryWidget*> IndicatorEntryWidgetList;
+    IndicatorEntryWidgetList m_widgetList;
 
     void onSynced();
     void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
