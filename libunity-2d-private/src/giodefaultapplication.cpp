@@ -39,8 +39,10 @@ GioDefaultApplication::GioDefaultApplication(QObject* parent)
       m_desktopFile(""),
       m_mimeappsWatcher(new QFileSystemWatcher(this))
 {
-    /* Monitor file MIMEAPPS_FILE that is overwritten when default applications
-       change. */
+    /* GIO does not have any signal to inform us of changes in default
+       applications to handle a certain content type. Work around that
+       by monitoring file MIMEAPPS_FILE that is overwritten when default
+       applications change. */
     m_mimeappsWatcher->addPath(MIMEAPPS_FILE);
     connect(m_mimeappsWatcher, SIGNAL(fileChanged(const QString&)),
                                SLOT(onMimeappsFileChanged()));

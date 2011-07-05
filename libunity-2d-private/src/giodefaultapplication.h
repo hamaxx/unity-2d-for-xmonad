@@ -24,6 +24,10 @@
 
 class QFileSystemWatcher;
 
+/* Wrapper around GIO's g_app_info_get_default_for_type.
+   To use it, set the contentType property and the desktopFile will contain the
+   path to the desktop file of the application handling that kind of content.
+*/
 class GioDefaultApplication : public QObject
 {
     Q_OBJECT
