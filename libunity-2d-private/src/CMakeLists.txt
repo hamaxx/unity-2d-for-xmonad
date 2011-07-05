@@ -1,5 +1,6 @@
 # Sources
 set(libunity-2d-private_SRCS
+    debug.cpp
     gconnector.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp

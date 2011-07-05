@@ -17,7 +17,11 @@
 #ifndef DEBUG_P_H
 #define DEBUG_P_H
 
+// Qt
 #include <QDebug>
+
+// STL
+#include <string>
 
 #define _UQ_TRACE(level) (level().nospace() << __PRETTY_FUNCTION__ << ":").space()
 
@@ -62,5 +66,7 @@ private:
 
 #define UQ_DEBUG_BLOCK Unity2dDebugBlock __unity2dDebugBlock__(__PRETTY_FUNCTION__)
 
+// Support for outputing std::string with qDebug
+QDebug operator<<(QDebug& dbg, const std::string& str);
 
 #endif /* DEBUG_P_H */
