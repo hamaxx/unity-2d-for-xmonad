@@ -67,8 +67,14 @@ void Unity2DDeclarativeView::setupViewport()
         }
 
         setViewport(glWidget);
+        /* According to Qt's documentation: "This is the preferred update mode
+           for viewports that do not support partial updates, such as QGLWidget [...]"
+        */
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     } else {
         setViewport(0);
+        /* This is the default update mode */
+        setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
         if (m_transparentBackground) {
             viewport()->setAttribute(Qt::WA_TranslucentBackground, true);
