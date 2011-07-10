@@ -1,3 +1,12 @@
+unity-2d (3.8.10-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/control:
+    - rebuild with new indicator 0.4
+  * 01_build_with_new_indicator.patch:
+    - patch to build with the new indicator 0.4 stack
+
+ -- Didier Roche <didrocks@ubuntu.com>  Sun, 10 Jul 2011 21:28:59 +0200
+
 unity-2d (3.8.10-0ubuntu1) oneiric; urgency=low
 
   [ Florian Boucault ]
