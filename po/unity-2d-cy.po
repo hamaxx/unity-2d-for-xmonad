@@ -1,19 +1,23 @@
-#, fuzzy
+# Welsh translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-06-07 18:21+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2011-04-01 22:45+0000\n"
+"Last-Translator: danielt998 <daniel@fearnley.net>\n"
+"Language-Team: Welsh <cy@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n==2 ? 1 : (n != 8 && n != 11) ? "
+"2 : 3;\n"
 "X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
 "X-Generator: Launchpad (build 13388)\n"
-"Language: \n"
 
 #: places/GroupHeader.qml:88
 msgid "See one more result"
@@ -30,35 +34,35 @@ msgstr ""
 
 #: places/HomeShortcuts.qml:32
 msgid "Media Apps"
-msgstr ""
+msgstr "Rhaglenni Cyfryngau"
 
 #: places/HomeShortcuts.qml:38
 msgid "Internet Apps"
-msgstr ""
+msgstr "Rhaglenni Rhyngrwyd"
 
 #: places/HomeShortcuts.qml:44
 msgid "More Apps"
-msgstr ""
+msgstr "Mwy o Raglenni"
 
 #: places/HomeShortcuts.qml:50
 msgid "Find Files"
-msgstr ""
+msgstr "Darganfyddwch Ffeiliau"
 
 #: places/HomeShortcuts.qml:57
 msgid "Browse the Web"
-msgstr ""
+msgstr "Porwch yr We"
 
 #: places/HomeShortcuts.qml:62
 msgid "View Photos"
-msgstr ""
+msgstr "Gweld Lluniau"
 
 #: places/HomeShortcuts.qml:67
 msgid "Check Email"
-msgstr ""
+msgstr "Gwirio E-bost"
 
 #: places/HomeShortcuts.qml:72
 msgid "Listen to Music"
-msgstr ""
+msgstr "Gwrandewch i Cerddoriaeth"
 
 #: places/Home.qml:79
 msgid "Shortcuts"
@@ -70,15 +74,15 @@ msgstr ""
 
 #: places/SearchRefine.qml:84
 msgid "Type"
-msgstr ""
+msgstr "Math"
 
 #: libunity-2d-private/Unity2d/launcherdevice.cpp:238
 msgid "Eject"
-msgstr ""
+msgstr "Allfwrw"
 
 #: libunity-2d-private/Unity2d/trash.cpp:125
 msgid "Trash"
-msgstr ""
+msgstr "Sbwriel"
 
 #: libunity-2d-private/Unity2d/trash.cpp:255
 #, c-format, qt-plural-format
@@ -97,12 +101,12 @@ msgstr ""
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
 msgid "Keep In Launcher"
-msgstr ""
+msgstr "Cadwch mewn Lansiwr"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
 msgid "Remove From Launcher"
-msgstr ""
+msgstr "Tynnu O Lansiwr"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870
 msgid "Quit"
-msgstr ""
+msgstr "Gadael"

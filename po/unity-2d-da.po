@@ -1,108 +1,111 @@
-#, fuzzy
+# Danish translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-06-07 18:21+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2011-04-20 12:55+0000\n"
+"Last-Translator: AJenbo <anders@jenbo.dk>\n"
+"Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
 "X-Generator: Launchpad (build 13388)\n"
-"Language: \n"
 
 #: places/GroupHeader.qml:88
 msgid "See one more result"
-msgstr ""
+msgstr "Se et yderligere resultat"
 
 #: places/GroupHeader.qml:90
 #, qt-format
 msgid "See %1 more results"
-msgstr ""
+msgstr "Vis %1 yderligere resultater"
 
 #: places/GroupHeader.qml:93
 msgid "See fewer results"
-msgstr ""
+msgstr "Se færre resultater"
 
 #: places/HomeShortcuts.qml:32
 msgid "Media Apps"
-msgstr ""
+msgstr "Medieprogrammer"
 
 #: places/HomeShortcuts.qml:38
 msgid "Internet Apps"
-msgstr ""
+msgstr "Internetprogrammer"
 
 #: places/HomeShortcuts.qml:44
 msgid "More Apps"
-msgstr ""
+msgstr "Flere programmer"
 
 #: places/HomeShortcuts.qml:50
 msgid "Find Files"
-msgstr ""
+msgstr "Find filer"
 
 #: places/HomeShortcuts.qml:57
 msgid "Browse the Web"
-msgstr ""
+msgstr "Surf på nettet"
 
 #: places/HomeShortcuts.qml:62
 msgid "View Photos"
-msgstr ""
+msgstr "Se billeder"
 
 #: places/HomeShortcuts.qml:67
 msgid "Check Email"
-msgstr ""
+msgstr "Tjek e-mail"
 
 #: places/HomeShortcuts.qml:72
 msgid "Listen to Music"
-msgstr ""
+msgstr "Lyt til musik"
 
 #: places/Home.qml:79
 msgid "Shortcuts"
-msgstr ""
+msgstr "Genveje"
 
 #: places/SearchRefine.qml:61
 msgid "Refine search"
-msgstr ""
+msgstr "Tilpas søgning"
 
 #: places/SearchRefine.qml:84
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: libunity-2d-private/Unity2d/launcherdevice.cpp:238
 msgid "Eject"
-msgstr ""
+msgstr "Skub ud"
 
 #: libunity-2d-private/Unity2d/trash.cpp:125
 msgid "Trash"
-msgstr ""
+msgstr "Papirkurv"
 
 #: libunity-2d-private/Unity2d/trash.cpp:255
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%n emne i parpirkurven"
+msgstr[1] "%n emner i parpirkurven"
 
 #: libunity-2d-private/Unity2d/trash.cpp:262
 msgid "Empty Trash"
-msgstr ""
+msgstr "Tøm papirkurv"
 
 #: libunity-2d-private/Unity2d/workspaces.cpp:73
 msgid "Workspaces"
-msgstr ""
+msgstr "Arbejdsområder"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
 msgid "Keep In Launcher"
-msgstr ""
+msgstr "Behold i panelet"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
 msgid "Remove From Launcher"
-msgstr ""
+msgstr "Fjern fra panelet"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870
 msgid "Quit"
-msgstr ""
+msgstr "Afslut"
