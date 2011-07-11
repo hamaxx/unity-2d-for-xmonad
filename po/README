@@ -1,6 +1,7 @@
-There are intentionally no .po files in this dir. .po files come from
-Launchpad.
+.po files in this dir are maintained on Launchpad. They should be regularly
+imported by requesting a tarball from:
 
-To test, create a po file in the po/ directory with "msginit -l <lang>" where
-<lang> is a standard lang code. For example, for French: 'msginit -l fr", and
-for Chinese/Simplified 'msginit -l zh_CN'
+https://translations.launchpad.net/ubuntu/oneiric/+source/unity-2d/+pots/unity-2d
+
+Note that this url contains the name of the Ubuntu release, so the url itself
+needs to be updated when new versions of Ubuntu are released.
