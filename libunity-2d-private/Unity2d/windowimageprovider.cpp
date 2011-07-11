@@ -129,7 +129,17 @@ QImage WindowImageProvider::requestImage(const QString &id,
 
     if (!image.isNull()) {
         if (requestedSize.isValid()) {
-            image = image.scaled(requestedSize);
+            /* If the image's actual size is larger than the sourceSize, the
+               image is scaled down. If only one dimension of the size is set
+               to greater than 0, the other dimension is set in proportion to
+               preserve the source image's aspect ratio. */
+            if (requestedSize.width() == 0) {
+                image = image.scaledToHeight(requestedSize.height());
+            } else if (requestedSize.height() == 0) {
+                image = image.scaledToHeight(requestedSize.width());
+            } else {
+                image = image.scaled(requestedSize, Qt::KeepAspectRatio);
+            }
         }
         size->setWidth(image.width());
         size->setHeight(image.height());

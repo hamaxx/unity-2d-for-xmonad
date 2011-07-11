@@ -85,6 +85,12 @@ Item {
         }
         width: screen.geometry.width
         height: screen.geometry.height
+        /* Limit the size of the background thus:
+           - saving video memory when using the OpenGL backend
+           - making scaling cheaper in the spread when using the raster backend
+        */
+        sourceSize.width: 512
+        sourceSize.height: 0
 
         smooth: true
         x: screen.availableGeometry.x
