@@ -128,9 +128,10 @@ void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
     /* FIXME */
     double mpi = 3.14159265358979323846;
 
-    nux::Color bgtop = PanelStyle::instance()->backgroundTopColor();
-    nux::Color bgbot = PanelStyle::instance()->backgroundBottomColor();
-    nux::Color line = PanelStyle::instance()->lineColor();
+    PanelStyle* style = PanelStyle::instance();
+    nux::color::Color bgtop = nuxColorFromQColor(style->backgroundTopColor());
+    nux::color::Color bgbot = nuxColorFromQColor(style->backgroundBottomColor());
+    nux::color::Color line = nuxColorFromQColor(style->lineColor());
 
     painter->setRenderHint(QPainter::Antialiasing);
 

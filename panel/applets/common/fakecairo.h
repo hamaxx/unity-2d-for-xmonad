@@ -21,6 +21,9 @@
 #ifndef FAKECAIRO_H
 #define FAKECAIRO_H
 
+// NuxCore
+#include <NuxCore/Color.h>
+
 // Qt
 #include <QPainter>
 #include <QPainterPath>
@@ -109,25 +112,14 @@ inline void fcairo_set_source_rgb(fcairo_t& cr, qreal r, qreal g, qreal b)
     cr.painter->setBrush(QColor::fromRgbF(r, g, b));
 }
 
-namespace nux {
-struct Color
+inline nux::color::Color nuxColorFromQColor(const QColor& qColor)
 {
-    Color()
-    : red(0)
-    , green(0)
-    , blue(0)
-    , alpha(0)
-    {}
-
-    Color(const QColor& color)
-    : red(color.redF())
-    , green(color.greenF())
-    , blue(color.blueF())
-    , alpha(color.alphaF())
-    {}
-
-    qreal red, green, blue, alpha;
-};
-} // namespace nux
+    nux::color::Color color;
+    color.red = qColor.red();
+    color.green = qColor.green();
+    color.blue = qColor.blue();
+    color.alpha = qColor.alpha();
+    return color;
+}
 
 #endif /* FAKECAIRO_H */
