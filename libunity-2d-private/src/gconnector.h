@@ -26,7 +26,6 @@
 // Qt
 #include <QHash>
 #include <QList>
-#include <QObject>
 
 // GLib
 #include <glib-object.h>
@@ -34,15 +33,14 @@
 /**
  * An helper class to ensure GObject signals are correctly disconnected.
  */
-class GConnector : public QObject
+class GConnector
 {
-    Q_OBJECT
 public:
-    GConnector(QObject* parent=0);
+    GConnector();
     ~GConnector();
 
-    void gconnect(gpointer instance, const char* signal, GCallback handler, gpointer data);
-    void gdisconnectAll();
+    void connect(gpointer instance, const char* signal, GCallback handler, gpointer data);
+    void disconnectAll();
 
 private:
     typedef QList<gulong> ConnectionIdList;

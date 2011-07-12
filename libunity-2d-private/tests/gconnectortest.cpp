@@ -61,14 +61,14 @@ private Q_SLOTS:
 
         CallbackSpy spy;
         GConnector connector;
-        connector.gconnect(object, "cancelled", G_CALLBACK(CallbackSpy::increase), &spy);
+        connector.connect(object, "cancelled", G_CALLBACK(CallbackSpy::increase), &spy);
 
         // Emit signal, check callback gets called
         g_cancellable_cancel(object);
         QCOMPARE(spy.count, 1);
 
         // Disconnect and emit signal, check callback does *not* get called
-        connector.gdisconnectAll();
+        connector.disconnectAll();
         g_cancellable_reset(object);
         g_cancellable_cancel(object);
         QCOMPARE(spy.count, 1);
@@ -83,11 +83,11 @@ private Q_SLOTS:
         // Create a dummy connection
         CallbackSpy spy;
         GConnector connector;
-        connector.gconnect(object, "cancelled", G_CALLBACK(CallbackSpy::increase), &spy);
+        connector.connect(object, "cancelled", G_CALLBACK(CallbackSpy::increase), &spy);
         g_object_unref(object);
 
         // Should not crash because connection should have been removed
-        connector.gdisconnectAll();
+        connector.disconnectAll();
     }
 };
 
