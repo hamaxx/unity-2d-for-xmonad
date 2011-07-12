@@ -24,8 +24,9 @@
 #include <unity2dtr.h>
 #include <debug_p.h>
 
+#include <QHash>
+#include <QByteArray>
 #include <QStringList>
-#include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusServiceWatcher>
 #include <QDBusConnectionInterface>
@@ -44,6 +45,11 @@ Place::Place(QObject* parent) :
     m_dbusIface(NULL),
     m_querying(false)
 {
+    QHash<int, QByteArray> roles;
+    roles[RoleItem] = "item";
+    roles[RoleShowEntry] = "showEntry";
+    setRoleNames(roles);
+
     m_serviceWatcher = new QDBusServiceWatcher(this);
     m_serviceWatcher->setConnection(QDBusConnection::sessionBus());
     connect(m_serviceWatcher, SIGNAL(serviceRegistered(QString)),
@@ -177,13 +183,18 @@ Place::online() const
 QVariant
 Place::data(const QModelIndex& index, int role) const
 {
-    Q_UNUSED(role)
-
     if (!index.isValid()) {
         return QVariant();
     }
 
-    return QVariant::fromValue(m_entries.at(index.row()));
+    PlaceEntry* entry = m_entries.at(index.row());
+    if (role == Place::RoleItem) {
+        return QVariant::fromValue(entry);
+    } else if (role == Place::RoleShowEntry) {
+        return QVariant::fromValue(QString(entry->showEntry() ? "true" : "false"));
+    } else {
+        return QVariant();
+    }
 }
 
 int

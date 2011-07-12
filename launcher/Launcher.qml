@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
+import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 LauncherDropItem {
@@ -97,7 +97,7 @@ LauncherDropItem {
         model: places
         dynamicSortFilter: true
 
-        filterRole: LauncherPlacesList.RoleShowEntry
+        filterRole: Place.RoleShowEntry
         filterRegExp: RegExp("^true$")
     }
 

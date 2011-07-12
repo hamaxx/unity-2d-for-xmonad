@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
+import QtQuick 1.0
 
 /* A renderer is used to display a group of a place, that is a set of items from
    a place that share the same group id. Concretely speaking, it will be a section

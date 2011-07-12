@@ -6,8 +6,10 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
   * debian/libunity-2d-private0:
     - move symbolic link to /usr/share/backgrounds/warty-final-ubuntu.png from
       /usr/share/unity-2d/places/artwork to /usr/share/unity-2d 
+  * debian/control:
+    - add pkg-config as a build dependency 
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 10:32:44 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 23:17:12 +0200
 
 unity-2d (3.8.8-0ubuntu1) natty; urgency=low
 

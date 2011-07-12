@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
+import QtQuick 1.0
 
 /* Used to convey to the user that the current section is empty.
    The first row of the results model contains the message to the user in the
