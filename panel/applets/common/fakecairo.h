@@ -115,10 +115,10 @@ inline void fcairo_set_source_rgb(fcairo_t& cr, qreal r, qreal g, qreal b)
 inline nux::color::Color nuxColorFromQColor(const QColor& qColor)
 {
     nux::color::Color color;
-    color.red = qColor.red();
-    color.green = qColor.green();
-    color.blue = qColor.blue();
-    color.alpha = qColor.alpha();
+    color.red = qColor.redF();
+    color.green = qColor.greenF();
+    color.blue = qColor.blueF();
+    color.alpha = qColor.alphaF();
     return color;
 }
 
