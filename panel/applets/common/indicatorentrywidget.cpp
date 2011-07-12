@@ -325,7 +325,6 @@ QPixmap IndicatorEntryWidget::decodeIcon()
 
 void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
 {
-    UQ_VAR(this);
     UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
     showMenu(Qt::LeftButton);
 }
