@@ -24,6 +24,8 @@
 // Local
 
 // Qt
+#include <QHash>
+#include <QList>
 #include <QObject>
 
 // GLib
@@ -35,11 +37,6 @@
 class GConnector : public QObject
 {
     Q_OBJECT
-
-    struct Connection {
-        gpointer instance;
-        gulong id;
-    };
 public:
     GConnector(QObject* parent=0);
     ~GConnector();
@@ -48,7 +45,11 @@ public:
     void gdisconnectAll();
 
 private:
-    QList<Connection> m_connections;
+    typedef QList<gulong> ConnectionIdList;
+    typedef QHash<gpointer, ConnectionIdList> Connections;
+    Connections m_connections;
+
+    static void weakNotifyCB(GConnector*, GObject*);
 };
 
 #endif /* GCONNECTOR_H */
