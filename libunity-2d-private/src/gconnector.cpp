@@ -49,19 +49,30 @@ void GConnector::connect(gpointer instance, const char* signal, GCallback handle
     }
 }
 
+void GConnector::disconnect(gpointer instance)
+{
+    auto it = m_connections.find(instance);
+    UQ_RETURN_IF_FAIL(it != m_connections.end());
+    disconnect(it);
+}
+
 void GConnector::disconnectAll()
 {
-    auto it = m_connections.begin(), end = m_connections.end();
-    for (; it != end; ++it) {
-        gpointer instance = it.key();
-        Q_FOREACH(gulong id, it.value()) {
-            g_signal_handler_disconnect(instance, id);
-        }
-        g_object_weak_unref(G_OBJECT(instance),
-            GWeakNotify(weakNotifyCB),
-            reinterpret_cast<gpointer>(this));
+    while (!m_connections.isEmpty()) {
+        disconnect(m_connections.begin());
     }
-    m_connections.clear();
+}
+
+void GConnector::disconnect(Connections::Iterator it)
+{
+    gpointer instance = it.key();
+    Q_FOREACH(gulong id, it.value()) {
+        g_signal_handler_disconnect(instance, id);
+    }
+    g_object_weak_unref(G_OBJECT(instance),
+        GWeakNotify(weakNotifyCB),
+        reinterpret_cast<gpointer>(this));
+    m_connections.erase(it);
 }
 
 void GConnector::weakNotifyCB(GConnector* that, GObject* instance)
