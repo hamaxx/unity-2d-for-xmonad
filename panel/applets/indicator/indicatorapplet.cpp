@@ -36,8 +36,8 @@
 #include <QX11EmbedContainer>
 
 // Gtk
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkx.h>
 
 IndicatorApplet::IndicatorApplet()
 {
@@ -58,10 +58,6 @@ void IndicatorApplet::setupUi()
 
 void IndicatorApplet::createGtkIndicator()
 {
-    int* argc = 0;
-    char*** argv = 0;
-    gtk_init(argc, argv);
-
     m_container = new QX11EmbedContainer;
     layout()->addWidget(m_container);
 
@@ -78,9 +74,9 @@ void IndicatorApplet::createGtkIndicator()
 
 void IndicatorApplet::adjustGtkIndicatorSize()
 {
-    GtkRequisition requisition;
-    gtk_widget_size_request(m_gtkIndicator->menu, &requisition);
-    m_container->setFixedWidth(requisition.width);
+    GtkRequisition minimum, natural;
+    gtk_widget_get_preferred_size(m_gtkIndicator->menu, &minimum, &natural);
+    m_container->setFixedWidth(minimum.width);
 }
 
 void IndicatorApplet::loadIndicators()

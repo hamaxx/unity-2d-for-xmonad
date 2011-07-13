@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include <gtk/gtkx.h>
 #include <libindicator/indicator-object.h>
 
 #include "indicator.h"
@@ -424,7 +425,7 @@ indicator_new ()
   
   /* Build menu */
   indicator->menu = gtk_menu_bar_new();
-  GTK_WIDGET_SET_FLAGS (indicator->menu, GTK_WIDGET_FLAGS(indicator->menu) | GTK_CAN_FOCUS);
+  gtk_widget_set_can_focus(GTK_WIDGET (indicator->menu), TRUE);
   gtk_widget_set_name(GTK_WIDGET (indicator->menu), "indicator-applet-menubar");
   g_signal_connect(indicator->menu, "button-press-event", G_CALLBACK(on_menu_press), NULL);
   //g_signal_connect_after(indicator->menu, "expose-event", G_CALLBACK(menu_on_expose), menu);

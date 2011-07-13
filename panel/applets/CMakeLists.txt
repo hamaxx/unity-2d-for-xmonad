@@ -14,11 +14,11 @@ include(FindPkgConfig)
 
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(INDICATOR REQUIRED indicator3)
 
 # Get indicator dirs from pkgconfig
-read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
-read_pkg_variable(INDICATOR_ICONS_DIR indicator iconsdir)
+read_pkg_variable(INDICATOR_DIR       indicator3 indicatordir)
+read_pkg_variable(INDICATOR_ICONS_DIR indicator3 iconsdir)
 configure_file(indicator-config.h.in indicator-config.h)
 
 # Sources
@@ -32,11 +32,8 @@ set(uqapplets_SRCS
     common/applet.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
-    #indicator/abstractindicator.cpp
-    #indicator/datetimeindicator.cpp
-    #indicator/indicatorapplet.cpp
-    #indicator/indicatorservicemanager.cpp
-    #indicator/indicator.c
+    indicator/indicatorapplet.cpp
+    indicator/indicator.c
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
