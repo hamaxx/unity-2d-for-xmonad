@@ -1,3 +1,9 @@
+unity-2d (3.8.10-0ubuntu3) UNRELEASED; urgency=low
+
+  * Upstreamed patch 01_build_with_new_indicator.patch
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 13 Jul 2011 11:48:20 +0200
+
 unity-2d (3.8.10-0ubuntu2) oneiric; urgency=low
 
   * debian/control:

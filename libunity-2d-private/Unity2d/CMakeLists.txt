@@ -8,7 +8,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GDK REQUIRED gdk-2.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
-pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(INDICATOR REQUIRED indicator-0.4)
 
 find_package(X11 REQUIRED)
 
