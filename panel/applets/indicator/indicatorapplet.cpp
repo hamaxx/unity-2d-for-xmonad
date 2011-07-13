@@ -23,16 +23,12 @@
 #include "indicatorapplet.h"
 
 // Local
-#include "abstractindicator.h"
-#include "datetimeindicator.h"
 #include "debug_p.h"
 #include "indicator.h"
 
 // Qt
-#include <QAction>
-#include <QDBusConnection>
 #include <QHBoxLayout>
-#include <QMenu>
+#include <QTimer>
 #include <QX11EmbedContainer>
 
 // Gtk
@@ -42,7 +38,6 @@
 IndicatorApplet::IndicatorApplet()
 {
     setupUi();
-    loadIndicators();
 }
 
 void IndicatorApplet::setupUi()
@@ -78,33 +73,5 @@ void IndicatorApplet::adjustGtkIndicatorSize()
     gtk_widget_get_preferred_size(m_gtkIndicator->menu, &minimum, &natural);
     m_container->setFixedWidth(minimum.width);
 }
-
-void IndicatorApplet::loadIndicators()
-{
-#if 0
-    // FIXME: Using Qt plugins
-    QList<AbstractIndicator*> indicators = QList<AbstractIndicator*>()
-        << new DateTimeIndicator(this)
-        ;
-
-    Q_FOREACH(AbstractIndicator* indicator, indicators) {
-        connect(indicator, SIGNAL(actionAdded(QAction*)), SLOT(slotActionAdded(QAction*)));
-        connect(indicator, SIGNAL(actionRemoved(QAction*)), SLOT(slotActionRemoved(QAction*)));
-        indicator->init();
-    }
-#endif
-}
-
-void IndicatorApplet::slotActionAdded(QAction* action)
-{
-    UQ_VAR(action->text());
-    m_menuBar->addAction(action);
-}
-
-void IndicatorApplet::slotActionRemoved(QAction* action)
-{
-    m_menuBar->removeAction(action);
-}
-
 
 #include "indicatorapplet.moc"

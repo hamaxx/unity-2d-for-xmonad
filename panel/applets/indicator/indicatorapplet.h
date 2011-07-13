@@ -40,9 +40,6 @@ public:
     IndicatorApplet();
 
 private Q_SLOTS:
-    void loadIndicators();
-    void slotActionAdded(QAction*);
-    void slotActionRemoved(QAction*);
     void createGtkIndicator();
     void adjustGtkIndicatorSize();
 
