@@ -65,8 +65,6 @@ extern "C" {
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
 
-#undef signals
-
 #include <X11/Xlib.h>
 
 /* FIXME: This should be done more properly, it's just an hack this way.

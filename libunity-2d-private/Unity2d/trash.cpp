@@ -345,7 +345,7 @@ void
 Trash::fileChanged()
 {
     updateTrashIcon();
-    emit iconChanged(icon());
+    iconChanged(icon());
 }
 
 void

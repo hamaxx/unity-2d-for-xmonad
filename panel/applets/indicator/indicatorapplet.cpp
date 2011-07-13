@@ -36,7 +36,6 @@
 #include <QX11EmbedContainer>
 
 // Gtk
-#undef signals
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
