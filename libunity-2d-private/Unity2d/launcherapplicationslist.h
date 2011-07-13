@@ -102,6 +102,7 @@ private Q_SLOTS:
     void onApplicationStickyChanged(bool sticky);
     void onApplicationLaunchingChanged(bool launching);
     void onApplicationUrgentChanged(bool urgent);
+    void onApplicationUserVisibleChanged(bool user_visible);
     void onRemoteEntryUpdated(QString applicationURI,
                               QMap<QString, QVariant> properties);
 };
