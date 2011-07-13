@@ -4,7 +4,7 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(QTDEE REQUIRED libqtdee)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
-pkg_check_modules(INDICATOR REQUIRED indicator3)
+pkg_check_modules(INDICATOR REQUIRED indicator3-0.4)
 
 # Sources
 set(unity-2d-private-qml_SRCS
