@@ -92,18 +92,12 @@ void MenuBarWidget::setupRegistrar()
 
 void MenuBarWidget::setupMenuBar()
 {
-    QLabel* separatorLabel = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    separatorLabel->setPixmap(pix);
-    separatorLabel->setFixedSize(pix.size());
-
     m_menuBar = new QMenuBar;
     new MenuBarClosedHelper(this);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(separatorLabel);
     layout->addWidget(m_menuBar);
     m_menuBar->setNativeMenuBar(false);
 
