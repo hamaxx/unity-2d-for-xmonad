@@ -274,7 +274,27 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     } else {
         /* It might just be a desktop file name; let GIO look for the actual
            desktop file for us */
-        m_appInfo.reset((GAppInfo*)g_desktop_app_info_new(file));
+        /* The docs for g_desktop_app_info_new() says it respects "-" to "/"
+           substitution as per XDG Menu Spec, but it only seems to work for
+           exactly 1 substitution where as Wine programs often require many.
+           Bottom line: We must do some manual trial and error to find desktop
+           files in deeply nested directories.
+
+           Same workaround is implemented in Unity: plugins/unityshell/src/PlacesView.cpp:731
+           References:
+           https://bugzilla.gnome.org/show_bug.cgi?id=654566
+           https://bugs.launchpad.net/unity-2d/+bug/794471
+        */
+        int slash_index;
+        do {
+            m_appInfo.reset((GAppInfo*)g_desktop_app_info_new(file));
+            slash_index = byte_array.indexOf("-");
+            if (slash_index == -1) {
+                break;
+            }
+            byte_array.replace(slash_index, 1, "/");
+            file = byte_array.data();
+        } while (m_appInfo.isNull());
     }
 
     /* setDesktopFile(…) may be called with the same desktop file, when e.g. the
