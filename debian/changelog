@@ -1,8 +1,11 @@
 unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
 
   * Upstreamed patch 01_build_with_new_indicator.patch
+  * do not run pkgbinarymangler to convert images to 8bit since this breaks
+    the launcher icon background handling. (LP: #809205)
+    (QT upstream bug: http://bugreports.qt.nokia.com/browse/QTBUG-4459)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 13 Jul 2011 11:48:20 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Wed, 13 Jul 2011 12:11:05 +0200
 
 unity-2d (3.8.10-0ubuntu2) oneiric; urgency=low
 
