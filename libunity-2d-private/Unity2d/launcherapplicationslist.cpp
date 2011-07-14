@@ -227,8 +227,28 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
     application->deleteLater();
 }
 
+void
+LauncherApplicationsList::onApplicationUserVisibleChanged(bool user_visible)
+{
+    BamfApplication* bamf_application = qobject_cast<BamfApplication*>(sender());
+    if (user_visible) {
+        insertBamfApplication(bamf_application);
+    } else {
+        /* FIXME: this case has not been implemented yet but it has not been
+           affecting anybody so far. */
+    }
+}
+
 void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
+    /* Only insert BamfApplications for which the user_visible property is true.
+       Monitor that property so that they are inserted/removed dynamically when it changes.
+
+       Not doing it led to KDE3 applications not showing up in the launcher.
+       Ref.: https://bugs.launchpad.net/unity-2d/+bug/719983
+    */
+    QObject::connect(bamf_application, SIGNAL(UserVisibleChanged(bool)), this, SLOT(onApplicationUserVisibleChanged(bool)), Qt::UniqueConnection);
+
     if (!bamf_application->user_visible()) {
         return;
     }

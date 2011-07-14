@@ -1,0 +1,7 @@
+.po files in this dir are maintained on Launchpad. They should be regularly
+imported by requesting a tarball from:
+
+https://translations.launchpad.net/ubuntu/oneiric/+source/unity-2d/+pots/unity-2d
+
+Note that this url contains the name of the Ubuntu release, so the url itself
+needs to be updated when new versions of Ubuntu are released.
