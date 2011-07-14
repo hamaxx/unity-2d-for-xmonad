@@ -108,7 +108,7 @@ void X11EmbedPainter::performUpdates()
 {
     QMultiHash<QWidget*, X11EmbedContainer*> containersByParent;
 
-    foreach (X11EmbedContainer *container, d->containers) {
+    Q_FOREACH (X11EmbedContainer *container, d->containers) {
         QWidget *topWidget = container;
         while (topWidget->parentWidget()) {
             topWidget = topWidget->parentWidget();
@@ -117,13 +117,13 @@ void X11EmbedPainter::performUpdates()
         container->setUpdatesEnabled(false);
     }
 
-    foreach (QWidget *parent, containersByParent.uniqueKeys()) {
+    Q_FOREACH (QWidget *parent, containersByParent.uniqueKeys()) {
         QList<X11EmbedContainer*> containers = containersByParent.values(parent);
         containersByParent.remove(parent);
 
         QRegion paintRegion;
         QHash<X11EmbedContainer *, QRect> containerRects;
-        foreach (X11EmbedContainer *container, containers) {
+        Q_FOREACH (X11EmbedContainer *container, containers) {
             QRect rect = QRect(container->mapTo(parent, QPoint(0, 0)), container->size());
             containerRects.insert(container, rect);
             paintRegion = paintRegion.united(rect);
@@ -132,12 +132,12 @@ void X11EmbedPainter::performUpdates()
         QPixmap background = QPixmap(parent->size());
         parent->render(&background, paintRegion.boundingRect().topLeft(), paintRegion);
 
-        foreach (X11EmbedContainer *container, containers) {
+        Q_FOREACH (X11EmbedContainer *container, containers) {
             container->setBackgroundPixmap(background.copy(containerRects.value(container)));
         }
     }
 
-    foreach (X11EmbedContainer *container, d->containers) {
+    Q_FOREACH (X11EmbedContainer *container, d->containers) {
         container->setUpdatesEnabled(true);
         disconnect(container, SIGNAL(destroyed(QObject*)),
                    this, SLOT(removeContainer(QObject*)));

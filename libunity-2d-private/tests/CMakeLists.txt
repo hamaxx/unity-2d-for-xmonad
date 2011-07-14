@@ -5,6 +5,7 @@ include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     ${libunity-2d-private_SOURCE_DIR}/Unity2d
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${GLIB_INCLUDE_DIRS}
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
@@ -33,6 +34,7 @@ macro(libunity_2d_tests)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
+    gconnectortest
     keyboardmodifiersmonitortest
     paneltest
     unity2dtrtest
