@@ -23,7 +23,6 @@
 #include <gscopedpointer.h>
 
 // GIO
-#undef signals
 extern "C" {
     #include <gio/gdesktopappinfo.h>
 }
