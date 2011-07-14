@@ -108,7 +108,7 @@ LauncherDropItem {
         model: places
         dynamicSortFilter: true
 
-        filterRole: LauncherPlacesList.RoleShowEntry
+        filterRole: Place.RoleShowEntry
         filterRegExp: RegExp("^true$")
     }
 

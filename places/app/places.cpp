@@ -31,7 +31,6 @@
 
 #include <X11/Xlib.h>
 
-#undef signals
 #include <gtk/gtk.h>
 
 // unity-2d

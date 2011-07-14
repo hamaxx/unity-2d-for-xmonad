@@ -29,8 +29,8 @@ LauncherPlacesList::LauncherPlacesList(QObject* parent) :
     ListAggregatorModel(parent)
 {
     QHash<int, QByteArray> roles;
-    roles[RoleItem] = "item";
-    roles[RoleShowEntry] = "showEntry";
+    roles[Place::RoleItem] = "item";
+    roles[Place::RoleShowEntry] = "showEntry";
     setRoleNames(roles);
 
     QDir dir(PLACES_DIR);
@@ -136,22 +136,3 @@ LauncherPlacesList::startAllPlaceServices()
     }
 }
 
-QVariant
-LauncherPlacesList::data(const QModelIndex& index, int role) const
-{
-    QVariant item = ListAggregatorModel::data(index, Qt::DisplayRole);
-    if (role == RoleItem) {
-        return item;
-    } else if (role == RoleShowEntry) {
-        /* We attempt this cast because we are sure that this aggregator is only
-           aggregating Places, and Places have as items PlaceEntries */
-        PlaceEntry* entry = item.value<PlaceEntry*>();
-        if (entry == NULL) {
-            return QVariant();
-        } else {
-            return QVariant::fromValue(QString(entry->showEntry() ? "true" : "false"));
-        }
-    } else {
-        return QVariant();
-    }
-}

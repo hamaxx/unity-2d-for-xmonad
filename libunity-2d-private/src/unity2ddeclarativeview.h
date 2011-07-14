@@ -25,6 +25,9 @@ Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
 
+protected:
+    void setupViewport();
+
 private:
     bool m_useOpenGL;
     bool m_transparentBackground;
