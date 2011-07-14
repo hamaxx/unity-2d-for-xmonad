@@ -39,18 +39,6 @@
 		   <long>Use EWMH standard to reserve an area of the desktop (struts) so that no window can use the launcher's area</long>
 		</locale>
 	</schema>
-
-	<schema>
-		<key>/schemas/desktop/unity-2d/launcher/super_key_enable</key>
-		<applyto>/desktop/unity-2d/launcher/super_key_enable</applyto>
-		<owner>unity-2d</owner>
-		<type>bool</type>
-		<default>true</default>
-		<locale name="C">
-		   <short>Super key activation</short>
-		   <long>Whether or not the super (also called windows key) key is used</long>
-		</locale>
-	</schema>
 </schemalist>
 </gconfschemafile>
 

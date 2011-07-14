@@ -1,0 +1,9 @@
+<schemalist>
+  <schema path="/desktop/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
+    <key type="b" name="super-key-enable">
+      <default>true</default>
+      <summary>Super key activation.</summary>
+      <description>Whether or not the super (also called windows key) key is used.</description>
+    </key>
+  </schema>
+</schemalist>
