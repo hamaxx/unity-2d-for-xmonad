@@ -97,6 +97,11 @@ Item {
     }
 
     BorderImage {
+        /* Avoid redraw at rendering necessary to prevent high CPU usage.
+           Ref.: https://bugs.launchpad.net/unity-2d/+bug/806122
+        */
+        effect: CacheEffect {}
+
         anchors.fill: parent
         visible: dashView.dashMode == DashDeclarativeView.DesktopMode
         source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
