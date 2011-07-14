@@ -33,7 +33,7 @@ IconImageProvider::IconImageProvider() : QDeclarativeImageProvider(QDeclarativeI
 IconImageProvider::~IconImageProvider()
 {
     /* unreference cached themes */
-    foreach(void* theme, m_themes.values()) {
+    Q_FOREACH(void* theme, m_themes.values()) {
         g_object_unref((GtkIconTheme*)theme);
     }
 }

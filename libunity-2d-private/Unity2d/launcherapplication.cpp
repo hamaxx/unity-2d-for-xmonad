@@ -257,7 +257,7 @@ LauncherApplication::setSticky(bool sticky)
     }
 
     m_sticky = sticky;
-    emit stickyChanged(sticky);
+    stickyChanged(sticky);
 }
 
 void
@@ -274,7 +274,27 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
     } else {
         /* It might just be a desktop file name; let GIO look for the actual
            desktop file for us */
-        m_appInfo.reset((GAppInfo*)g_desktop_app_info_new(file));
+        /* The docs for g_desktop_app_info_new() says it respects "-" to "/"
+           substitution as per XDG Menu Spec, but it only seems to work for
+           exactly 1 substitution where as Wine programs often require many.
+           Bottom line: We must do some manual trial and error to find desktop
+           files in deeply nested directories.
+
+           Same workaround is implemented in Unity: plugins/unityshell/src/PlacesView.cpp:731
+           References:
+           https://bugzilla.gnome.org/show_bug.cgi?id=654566
+           https://bugs.launchpad.net/unity-2d/+bug/794471
+        */
+        int slash_index;
+        do {
+            m_appInfo.reset((GAppInfo*)g_desktop_app_info_new(file));
+            slash_index = byte_array.indexOf("-");
+            if (slash_index == -1) {
+                break;
+            }
+            byte_array.replace(slash_index, 1, "/");
+            file = byte_array.data();
+        } while (m_appInfo.isNull());
     }
 
     /* setDesktopFile(…) may be called with the same desktop file, when e.g. the
@@ -408,15 +428,15 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
 void
 LauncherApplication::updateBamfApplicationDependentProperties()
 {
-    emit activeChanged(active());
-    emit runningChanged(running());
-    emit urgentChanged(urgent());
-    emit nameChanged(name());
-    emit iconChanged(icon());
-    emit applicationTypeChanged(application_type());
-    emit desktopFileChanged(desktop_file());
+    activeChanged(active());
+    runningChanged(running());
+    urgentChanged(urgent());
+    nameChanged(name());
+    iconChanged(icon());
+    applicationTypeChanged(application_type());
+    desktopFileChanged(desktop_file());
     m_launching_timer.stop();
-    emit launchingChanged(launching());
+    launchingChanged(launching());
     updateHasVisibleWindow();
     updateWindowCount();
     fetchIndicatorMenus();
@@ -431,7 +451,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     m_application->disconnect(this);
     m_application = NULL;
     updateBamfApplicationDependentProperties();
-    emit closed();
+    closed();
 }
 
 void
@@ -449,10 +469,10 @@ LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
 
     m_snStartupSequence.reset(sequence);
 
-    emit nameChanged(name());
-    emit iconChanged(icon());
-    emit executableChanged(executable());
-    emit launchingChanged(launching());
+    nameChanged(name());
+    iconChanged(icon());
+    executableChanged(executable());
+    launchingChanged(launching());
 }
 
 void
@@ -510,7 +530,7 @@ LauncherApplication::updateHasVisibleWindow()
     }
 
     if (m_has_visible_window != prev) {
-        emit hasVisibleWindowChanged(m_has_visible_window);
+        hasVisibleWindowChanged(m_has_visible_window);
     }
 }
 
@@ -645,7 +665,7 @@ LauncherApplication::launch()
     /* 'launching' property becomes true for a few seconds and becomes
        false as soon as the application is launched */
     m_launching_timer.start();
-    emit launchingChanged(true);
+    launchingChanged(true);
 
     return true;
 }
@@ -653,7 +673,7 @@ LauncherApplication::launch()
 void
 LauncherApplication::onLaunchingTimeouted()
 {
-    emit launchingChanged(false);
+    launchingChanged(false);
 }
 
 void

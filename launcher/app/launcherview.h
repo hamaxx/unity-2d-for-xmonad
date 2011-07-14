@@ -40,7 +40,6 @@ class LauncherView : public Unity2DDeclarativeView
 
 public:
     explicit LauncherView(QWidget* parent = NULL);
-    Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 

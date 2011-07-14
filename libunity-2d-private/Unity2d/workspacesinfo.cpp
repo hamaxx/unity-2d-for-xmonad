@@ -3,7 +3,6 @@
 #include "signalwaiter.h"
 #include <debug_p.h>
 
-#undef signals
 extern "C" {
 #include <libwnck/screen.h>
 #include <libwnck/window.h>
