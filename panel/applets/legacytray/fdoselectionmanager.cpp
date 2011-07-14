@@ -316,7 +316,7 @@ void FdoSelectionManagerPrivate::handleRequestDock(const XClientMessageEvent &ev
     tasks[winId] = task;
     q->connect(task, SIGNAL(taskDeleted(WId)), q, SLOT(cleanupTask(WId)));
 
-    emit q->taskCreated(task);
+    q->taskCreated(task);
 }
 
 

@@ -26,7 +26,6 @@
 #include <QDebug>
 #include <QAction>
 
-#undef signals
 extern "C" {
     #include <gtk/gtk.h>
 }

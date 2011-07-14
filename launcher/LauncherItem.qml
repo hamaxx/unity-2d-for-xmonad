@@ -247,7 +247,7 @@ DropItem {
                 function updateColors() {
                     if (!item.backgroundFromIcon) return;
 
-                    var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                    var colors = iconUtilities.getColorsFromIcon(icon.source, icon.sourceSize)
                     if (colors && colors.length > 0) tileBackground.color = colors[0]
                 }
             }

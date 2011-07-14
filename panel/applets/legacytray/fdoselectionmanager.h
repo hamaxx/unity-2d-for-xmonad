@@ -47,14 +47,14 @@ public:
     void removeDamageWatch(QWidget *container);
     bool haveComposite() const;
 
-signals:
+Q_SIGNALS:
     void taskCreated(SystemTray::Task *task);
     void notificationCreated(SystemTray::Notification *notification);
 
 protected:
     bool x11Event(XEvent *event);
 
-private slots:
+private Q_SLOTS:
     void initSelection();
     void cleanupTask(WId winId);
 
