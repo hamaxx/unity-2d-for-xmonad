@@ -100,13 +100,14 @@ QSortFilterProxyModelQML::count()
     return rowCount();
 }
 
-bool
-QSortFilterProxyModelQML::filterAcceptsRow(int source_row, const QModelIndex & source_parent) const
+int
+QSortFilterProxyModelQML::rowCount(const QModelIndex &parent) const
 {
-    if (m_limit >= 0 && source_row >= m_limit) {
-        return false;
+    int count = QSortFilterProxyModel::rowCount(parent);
+    if (m_limit >= 0) {
+        return qMin(count, m_limit);
     } else {
-        return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+        return count;
     }
 }
 
@@ -121,7 +122,8 @@ QSortFilterProxyModelQML::setLimit(int limit)
 {
     if (limit != m_limit) {
         m_limit = limit;
-        invalidateFilter();
+        /* FIXME: should emit rowsInserted and rowsRemoved appropriately instead */
+        reset();
         Q_EMIT limitChanged();
     }
 }
