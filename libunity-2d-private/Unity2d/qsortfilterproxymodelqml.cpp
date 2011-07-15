@@ -22,10 +22,10 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
 {
 }
 
-void
-QSortFilterProxyModelQML::updateRoleNames()
+void QSortFilterProxyModelQML::setRoleNames(const QHash<int,QByteArray> &roleNames)
 {
-    setRoleNames(((QAbstractItemModel*)sourceModel())->roleNames());
+    QSortFilterProxyModel::setRoleNames(roleNames);
+    Q_EMIT roleNamesChanged(roleNames);
 }
 
 QObject*
@@ -51,10 +51,16 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
         sourceModel()->disconnect(this);
     }
 
-    setSourceModel(itemModel);
+    /* Workaround for bug http://bugreports.qt.nokia.com/browse/QTBUG-20405 */
+    /* Workaround for limitation of QAbstractProxyModel: if sourceModel's
+       roleNames changes, the QAbstractProxyModel's roleNames are not updated
+       to reflect that change.
+    */
+    /* FIXME: warning when connection fails */
+    connect(itemModel, SIGNAL(roleNamesChanged(QHash<int,QByteArray>)), SLOT(setRoleNames(QHash<int,QByteArray>)));
+    setRoleNames(itemModel->roleNames());
 
-    connect(itemModel, SIGNAL(modelAboutToBeReset()), SLOT(updateRoleNames()));
-    connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
+    setSourceModel(itemModel);
 }
 
 QVariantMap
