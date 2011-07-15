@@ -31,6 +31,7 @@ public:
 
     Q_INVOKABLE QVariantMap get(int row);
     Q_INVOKABLE int count();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
     /* getters */
     QObject* sourceModelQObject() const;
@@ -42,9 +43,6 @@ public:
 
 Q_SIGNALS:
     void limitChanged();
-
-protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 private Q_SLOTS:
     void updateRoleNames();
