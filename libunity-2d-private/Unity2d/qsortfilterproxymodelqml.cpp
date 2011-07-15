@@ -51,12 +51,11 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
         sourceModel()->disconnect(this);
     }
 
-    /* Workaround for bug http://bugreports.qt.nokia.com/browse/QTBUG-20405 */
     /* Workaround for limitation of QAbstractProxyModel: if sourceModel's
        roleNames changes, the QAbstractProxyModel's roleNames are not updated
        to reflect that change.
+       As a consequence it works around Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-20405
     */
-    /* FIXME: warning when connection fails */
     connect(itemModel, SIGNAL(roleNamesChanged(QHash<int,QByteArray>)), SLOT(setRoleNames(QHash<int,QByteArray>)));
     setRoleNames(itemModel->roleNames());
 
