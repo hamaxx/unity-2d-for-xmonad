@@ -20,6 +20,9 @@
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
     QSortFilterProxyModel(parent), m_limit(-1)
 {
+    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
 }
 
 void
@@ -60,10 +63,6 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
     connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
     connect(itemModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
     Q_EMIT totalCountChanged();
-
-    connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
-    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
-    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
     Q_EMIT countChanged();
 }
 
