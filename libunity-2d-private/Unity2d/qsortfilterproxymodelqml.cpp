@@ -56,7 +56,11 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
        to reflect that change.
        As a consequence it works around Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-20405
     */
-    connect(itemModel, SIGNAL(roleNamesChanged(QHash<int,QByteArray>)), SLOT(setRoleNames(QHash<int,QByteArray>)));
+    bool hasRoleNamesChangedSignal;
+    hasRoleNamesChangedSignal = connect(itemModel, SIGNAL(roleNamesChanged(QHash<int,QByteArray>)), SLOT(setRoleNames(QHash<int,QByteArray>)));
+    if (!hasRoleNamesChangedSignal) {
+        UQ_WARNING << "received a sourceModel that does not notify of changes of its roleNames";
+    }
     setRoleNames(itemModel->roleNames());
 
     setSourceModel(itemModel);
