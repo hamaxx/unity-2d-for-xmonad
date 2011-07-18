@@ -23,6 +23,11 @@ include(FindPkgConfig)
 find_package(Qt4 REQUIRED)
 find_package(X11 REQUIRED)
 find_package(Gettext REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(GDK REQUIRED gdk-2.0)
+pkg_check_modules(GTK REQUIRED gtk+-2.0)
+pkg_check_modules(GIO REQUIRED gio-2.0)
+
 
 include_directories(
     ${CMAKE_BINARY_DIR}
