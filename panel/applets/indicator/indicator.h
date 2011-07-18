@@ -18,7 +18,6 @@
 #ifndef __INDICATOR_H__
 #define __INDICATOR_H__
 
-#undef signals
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

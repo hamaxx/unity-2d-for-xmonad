@@ -92,7 +92,7 @@ void X11EmbedContainer::embedSystemTrayClient(WId clientId)
     Display *display = QX11Info::display();
 
     if (!XGetWindowAttributes(display, clientId, &d->attr)) {
-        emit error(QX11EmbedContainer::Unknown);
+        error(QX11EmbedContainer::Unknown);
         return;
     }
 
@@ -108,7 +108,7 @@ void X11EmbedContainer::embedSystemTrayClient(WId clientId)
 
     XWindowAttributes attr;
     if (!XGetWindowAttributes(display, winId, &attr)) {
-        emit error(QX11EmbedContainer::Unknown);
+        error(QX11EmbedContainer::Unknown);
         return;
     }
 
@@ -157,7 +157,7 @@ void X11EmbedContainer::embedSystemTrayClient(WId clientId)
     // if the close happens after this point? Should checks happen on a timer
     // until embedding completes perhaps?
     if (!XGetWindowAttributes(QX11Info::display(), clientId, &d->attr)) {
-        emit error(QX11EmbedContainer::Unknown);
+        error(QX11EmbedContainer::Unknown);
         return;
     }
 }
