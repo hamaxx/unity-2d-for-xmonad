@@ -39,6 +39,7 @@
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLinearGradient>
 #include <QMenuBar>
 #include <QPainter>
 #include <QApplication>
@@ -49,6 +50,8 @@ static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 12;
+
+static const int FADEOUT_WIDTH = 16;
 
 namespace Unity2d
 {
@@ -117,6 +120,33 @@ public:
     QSize minimumSizeHint() const
     {
         return QWidget::minimumSizeHint();
+    }
+
+protected:
+    void paintEvent(QPaintEvent* event)
+    {
+        QImage image(width(), height(), QImage::Format_ARGB32_Premultiplied);
+        {
+            QPainter painter(&image);
+            painter.initFrom(this);
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+            painter.fillRect(rect(), Qt::transparent);
+
+            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+            painter.drawText(contentsRect(), Qt::AlignLeft | Qt::AlignVCenter, text());
+
+            if (QLabel::minimumSizeHint().width() > contentsRect().width()) {
+                // Text does not fit, fade the end
+                painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+                QRect gradientRect(width() - FADEOUT_WIDTH, 0, FADEOUT_WIDTH, height());
+                QLinearGradient gradient(gradientRect.topLeft(), gradientRect.topRight());
+                gradient.setColorAt(0, Qt::white);
+                gradient.setColorAt(1, Qt::transparent);
+                painter.fillRect(gradientRect, gradient);
+            }
+        }
+        QPainter painter(this);
+        painter.drawImage(0, 0, image);
     }
 };
 
