@@ -89,6 +89,36 @@ private Q_SLOTS:
         qRegisterMetaType<QModelIndex>("QModelIndex");
     }
 
+    void testRoleNamesSetAfter()
+    {
+        QSortFilterProxyModelQML proxy;
+        MockListModel model;
+        QHash<int, QByteArray> roles;
+
+        proxy.setSourceModelQObject(&model);
+
+        roles.clear();
+        roles[0] = "role0";
+        roles[1] = "role1";
+        model.setRoleNames(roles);
+        QCOMPARE(model.roleNames(), proxy.roleNames());
+    }
+
+    void testRoleNamesSetBefore()
+    {
+        QSortFilterProxyModelQML proxy;
+        MockListModel model;
+        QHash<int, QByteArray> roles;
+
+        roles.clear();
+        roles[0] = "role0";
+        roles[1] = "role1";
+        model.setRoleNames(roles);
+
+        proxy.setSourceModelQObject(&model);
+        QCOMPARE(model.roleNames(), proxy.roleNames());
+    }
+
     void testCountSetAfter()
     {
         QSortFilterProxyModelQML proxy;
