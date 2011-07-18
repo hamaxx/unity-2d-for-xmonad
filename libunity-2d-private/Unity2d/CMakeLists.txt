@@ -1,5 +1,4 @@
 # Dependencies
-pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(QTDEE REQUIRED libqtdee)
