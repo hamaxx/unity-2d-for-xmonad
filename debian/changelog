@@ -8,6 +8,8 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
 
   [ Didier Roche ]
   * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
+  * Install the apport hook in the right directory so that it's not launched
+    unconditionally (LP: #712343)
 
  -- Didier Roche <didrocks@ubuntu.com>  Mon, 18 Jul 2011 11:02:17 +0200
 

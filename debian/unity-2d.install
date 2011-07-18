@@ -1,4 +1,4 @@
-debian/unity-2d.py /usr/share/apport/general-hooks
+debian/unity-2d.py /usr/share/apport/package-hooks
 debian/gconf/* /usr/share/gconf
 debian/20_ubuntu-2d-gconf-mandatory /usr/share/gconf/ubuntu-2d/mandatory
 debian/20_ubuntu-2d-gconf-default /usr/share/gconf/ubuntu-2d/default
