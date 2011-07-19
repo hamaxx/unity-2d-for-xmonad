@@ -31,6 +31,9 @@ Item {
     }
 
     function activatePage(page) {
+        /* Always give the focus to the search entry when switching pages */
+        search_entry.focus = true
+
         if (page == currentPage) {
             return
         }
@@ -40,12 +43,6 @@ Item {
         }
         currentPage = page
         currentPage.visible = true
-        /* FIXME: For some reason currentPage gets the focus when it becomes
-           visible. Reset the focus to the search_bar instead.
-           It could be due to Qt bug QTBUG-13380:
-           "Listview gets focus when it becomes visible"
-        */
-        search_entry.focus = true
     }
 
     function activatePlaceEntry(fileName, groupName, section) {
