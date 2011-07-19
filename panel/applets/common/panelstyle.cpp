@@ -75,6 +75,8 @@ public:
     void updatePalette()
     {
         GtkStyleContext* context = m_styleContext.data();
+        gtk_style_context_invalidate(context);
+
         m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
         m_textShadowColor       = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
         m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL).darker(130);
