@@ -49,7 +49,7 @@ class PanelStylePrivate
 {
 public:
     PanelStyle* q;
-    GtkWidget* m_offScreenWindow;
+    GObjectScopedPointer<GtkStyleContext> m_styleContext;
     GConnector m_gConnector;
 
     QColor m_textColor;
@@ -73,9 +73,7 @@ public:
 
     void updatePalette()
     {
-        GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
-        UQ_RETURN_IF_FAIL(context);
-
+        GtkStyleContext* context = m_styleContext.data();
         m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
         m_textShadowColor       = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
         m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL).darker(130);
@@ -115,11 +113,17 @@ PanelStyle::PanelStyle(QObject* parent)
 : d(new PanelStylePrivate)
 {
     d->q = this;
-    d->m_offScreenWindow = gtk_offscreen_window_new();
-    gtk_widget_set_name(d->m_offScreenWindow, "UnityPanelWidget");
-    gtk_widget_set_size_request(d->m_offScreenWindow, 100, 24);
-    gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
-    gtk_widget_show_all(d->m_offScreenWindow);
+    d->m_styleContext.reset(gtk_style_context_new());
+
+    GtkWidgetPath* widgetPath = gtk_widget_path_new ();
+    gtk_widget_path_iter_set_name(widgetPath, -1 , "UnityPanelWidget");
+    gtk_widget_path_append_type(widgetPath, GTK_TYPE_WINDOW);
+
+    gtk_style_context_set_path(d->m_styleContext.data(), widgetPath);
+    gtk_style_context_add_class(d->m_styleContext.data(), "gnome-panel-menu-bar");
+    gtk_style_context_add_class(d->m_styleContext.data(), "unity-panel");
+
+    gtk_widget_path_free (widgetPath);
 
     d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
@@ -132,7 +136,6 @@ PanelStyle::PanelStyle(QObject* parent)
 
 PanelStyle::~PanelStyle()
 {
-    gtk_widget_destroy(d->m_offScreenWindow);
     delete d;
 }
 
