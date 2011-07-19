@@ -22,6 +22,7 @@
 #include "panelstyle.h"
 
 // libunity-2d
+#include <cairoutils.h>
 #include <debug_p.h>
 #include <gconnector.h>
 #include <gscopedpointer.h>
@@ -81,12 +82,21 @@ public:
         m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
 
         QPalette pal;
-        pal.setColor(QPalette::Window, m_backgroundTopColor);
-        pal.setColor(QPalette::Button, m_backgroundTopColor);
+        pal.setBrush(QPalette::Window, generateBackgroundBrush());
         pal.setColor(QPalette::Text, m_textColor);
         pal.setColor(QPalette::WindowText, m_textColor);
         pal.setColor(QPalette::ButtonText, m_textColor);
         QApplication::setPalette(pal);
+    }
+
+    QBrush generateBackgroundBrush()
+    {
+        QImage image(100, 24, QImage::Format_ARGB32_Premultiplied); // FIXME: Hardcoded
+        image.fill(Qt::transparent);
+        CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(&image));
+        CairoUtils::Pointer cr(cairo_create(surface.data()));
+        gtk_render_background(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
+        return QBrush(image);
     }
 
     void updateFont()
