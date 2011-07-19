@@ -51,7 +51,6 @@ public:
     PanelStyle* q;
     GtkWidget* m_offScreenWindow;
     GConnector m_gConnector;
-    QList<gulong> m_connections;
 
     QColor m_textColor;
     QColor m_backgroundTopColor;
