@@ -169,6 +169,7 @@ Renderer {
                         item.mimetype = mimetype
                         item.displayName = displayName
                         item.comment = comment
+                        item.focus = true
                     }
                 }
             }
