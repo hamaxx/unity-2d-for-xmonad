@@ -72,6 +72,14 @@ public:
     }
 
 protected:
+    bool event(QEvent* ev)
+    {
+        if (ev->type() == QEvent::PaletteChange) {
+            loadPixmaps();
+        }
+        return QAbstractButton::event(ev);
+    }
+
     void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
