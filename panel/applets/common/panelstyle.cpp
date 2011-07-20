@@ -32,6 +32,7 @@
 #include <QColor>
 #include <QFont>
 #include <QPalette>
+#include <QStyle>
 
 // GTK
 #include <gtk/gtk.h>
@@ -127,6 +128,71 @@ public:
 
         QApplication::setFont(m_font);
     }
+
+    QPixmap windowButtonPixmapFromWMTheme(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+    {
+        QString dir = QString(METACITY_THEME_DIR).arg(m_themeName);
+
+        QString typeString, stateString;
+        switch (type) {
+        case PanelStyle::CloseWindowButton:
+            typeString = "close";
+            break;
+        case PanelStyle::MinimizeWindowButton:
+            typeString = "minimize";
+            break;
+        case PanelStyle::UnmaximizeWindowButton:
+            typeString = "unmaximize";
+            break;
+        }
+
+        switch (state) {
+        case PanelStyle::NormalState:
+            stateString = "";
+            break;
+        case PanelStyle::PrelightState:
+            stateString = "_focused_prelight";
+            break;
+        case PanelStyle::PressedState:
+            stateString = "_focused_pressed";
+            break;
+        }
+
+        QString path = QString("%1/%2%3.png")
+            .arg(dir)
+            .arg(typeString)
+            .arg(stateString);
+        return QPixmap(path);
+    }
+
+    QPixmap genericWindowButtonPixmap(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+    {
+        QStyle::StandardPixmap standardIcon;
+        switch (type) {
+        case PanelStyle::CloseWindowButton:
+            standardIcon = QStyle::SP_TitleBarCloseButton;
+            break;
+        case PanelStyle::MinimizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarMinButton;
+            break;
+        case PanelStyle::UnmaximizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarNormalButton;
+            break;
+        }
+
+        QIcon icon = QApplication::style()->standardIcon(standardIcon);
+        const int extent = 22;
+        switch (state) {
+        case PanelStyle::NormalState:
+            return icon.pixmap(extent);
+        case PanelStyle::PrelightState:
+            return icon.pixmap(extent, QIcon::Active);
+        case PanelStyle::PressedState:
+            return icon.pixmap(extent, QIcon::Active, QIcon::On);
+        }
+        // Silence compiler
+        return QPixmap();
+    }
 };
 
 PanelStyle::PanelStyle(QObject* parent)
@@ -202,38 +268,14 @@ GtkStyleContext* PanelStyle::styleContext() const
 
 QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
 {
-    QString dir = QString(METACITY_THEME_DIR).arg(d->m_themeName);
-
-    QString typeString, stateString;
-    switch (type) {
-    case CloseWindowButton:
-        typeString = "close";
-        break;
-    case MinimizeWindowButton:
-        typeString = "minimize";
-        break;
-    case UnmaximizeWindowButton:
-        typeString = "unmaximize";
-        break;
+    // According to Unity PanelStyle code, the buttons of some WM themes do not
+    // match well with the panel background. So except for themes we provide,
+    // fallback to generic button pixmaps.
+    if (d->m_themeName == "Ambiance" || d->m_themeName == "Radiance") {
+        return d->windowButtonPixmapFromWMTheme(type, state);
+    } else {
+        return d->genericWindowButtonPixmap(type, state);
     }
-
-    switch (state) {
-    case NormalState:
-        stateString = "";
-        break;
-    case PrelightState:
-        stateString = "_focused_prelight";
-        break;
-    case PressedState:
-        stateString = "_focused_pressed";
-        break;
-    }
-
-    QString path = QString("%1/%2%3.png")
-        .arg(dir)
-        .arg(typeString)
-        .arg(stateString);
-    return QPixmap(path);
 }
 
 #include "panelstyle.moc"
