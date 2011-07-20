@@ -187,4 +187,9 @@ QFont PanelStyle::font() const
     return d->m_font;
 }
 
+GtkStyleContext* PanelStyle::styleContext() const
+{
+    return d->m_styleContext.data();
+}
+
 #include "panelstyle.moc"

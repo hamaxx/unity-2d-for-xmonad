@@ -29,6 +29,8 @@
 class QColor;
 class QFont;
 
+struct _GtkStyleContext;
+
 class PanelStylePrivate;
 /**
  * Provides easy access to panel colors
@@ -49,6 +51,8 @@ public:
     QColor lineColor() const;
 
     QFont font() const;
+
+    struct _GtkStyleContext* styleContext() const;
 
 private:
     friend class PanelStylePrivate;
