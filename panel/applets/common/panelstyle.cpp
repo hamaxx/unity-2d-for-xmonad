@@ -128,8 +128,8 @@ PanelStyle::PanelStyle(QObject* parent)
     d->m_styleContext.reset(gtk_style_context_new());
 
     GtkWidgetPath* widgetPath = gtk_widget_path_new ();
-    gtk_widget_path_iter_set_name(widgetPath, -1 , "UnityPanelWidget");
     gtk_widget_path_append_type(widgetPath, GTK_TYPE_WINDOW);
+    gtk_widget_path_iter_set_name(widgetPath, -1 , "UnityPanelWidget");
 
     gtk_style_context_set_path(d->m_styleContext.data(), widgetPath);
     gtk_style_context_add_class(d->m_styleContext.data(), "gnome-panel-menu-bar");
