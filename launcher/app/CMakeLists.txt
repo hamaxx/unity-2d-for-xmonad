@@ -1,6 +1,5 @@
 # Dependencies
 pkg_check_modules(GEIS REQUIRED libutouch-geis)
-pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
 # Sources
 set(launcher_SRCS
