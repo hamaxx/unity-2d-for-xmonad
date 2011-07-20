@@ -12,6 +12,7 @@ set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
     appname/appnameapplet.cpp
+    appname/croppedlabel.cpp
     appname/menubarwidget.cpp
     appname/windowhelper.cpp
     common/applet.cpp
