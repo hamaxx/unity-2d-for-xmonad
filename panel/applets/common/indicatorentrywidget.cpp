@@ -259,7 +259,7 @@ void IndicatorEntryWidget::updatePix()
             if (disabled) {
                 painter.setOpacity(0.5);
             }
-            painter.drawPixmap(iconX, 0, iconPix);
+            painter.drawPixmap(iconX, (height() - iconPix.height()) / 2, iconPix);
             if (disabled) {
                 painter.setOpacity(1);
             }
