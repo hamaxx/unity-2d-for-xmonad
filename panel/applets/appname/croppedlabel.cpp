@@ -63,8 +63,17 @@ static void paintFadeoutGradient(QImage* image)
     painter.fillRect(gradientRect, gradient);
 }
 
+static QString getWindowTitleFontName()
+{
+    GConfItemQmlWrapper client;
+    client.setKey(WINDOW_TITLE_FONT_KEY);
+    return client.getValue().toString();
+}
+
 void CroppedLabel::paintEvent(QPaintEvent* event)
 {
+    // Create an image filled with background brush (to avoid subpixel hinting
+    // artefacts around text)
     QImage image(width(), height(), QImage::Format_ARGB32_Premultiplied);
     {
         QPainter painter(&image);
@@ -72,81 +81,58 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
         painter.eraseRect(rect());
     }
 
-    PangoLayout          *layout = NULL;
-    PangoFontDescription *desc = NULL;
-    GtkSettings          *settings = gtk_settings_get_default ();
-    QByteArray            font_description;
-    GdkScreen            *screen = gdk_screen_get_default ();
-    int                   dpi = 0;
+    // Create a pango layout
+    GObjectScopedPointer<PangoContext> pangoContext(gdk_pango_context_get());
+    GObjectScopedPointer<PangoLayout> layout(pango_layout_new(pangoContext.data()));
 
-    int  text_width = 0;
-    int  text_height = 0;
+    // Set font
+    QByteArray fontName = getWindowTitleFontName().toUtf8();
+    PangoFontDescription* desc = pango_font_description_from_string(fontName.data());
+    pango_layout_set_font_description(layout.data(), desc);
+    pango_font_description_free(desc);
 
-    GConfItemQmlWrapper client;
-    client.setKey(WINDOW_TITLE_FONT_KEY);
-    PangoContext *cxt;
-    PangoRectangle log_rect;
+    // Set text
+    QByteArray utf8Text = text().toUtf8();
+    pango_layout_set_text (layout.data(), utf8Text.data(), -1);
 
+    // Get text size
+    int textWidth = 0;
+    int textHeight = 0;
+    pango_layout_get_pixel_size(layout.data(), &textWidth, &textHeight);
+
+    // Draw text
     CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(&image));
     CairoUtils::Pointer cr(cairo_create(surface.data()));
 
-    g_object_get (settings,
-                  "gtk-xft-dpi", &dpi,
-                  NULL);
+    PanelStyle* style = PanelStyle::instance();
+    GtkStyleContext* style_context = style->styleContext();
 
-    font_description = client.getValue().toString().toUtf8();
-    desc = pango_font_description_from_string (font_description.data());
+    gtk_style_context_save(style_context);
 
-    layout = pango_cairo_create_layout (cr.data());
-    pango_layout_set_font_description (layout, desc);
-    QByteArray utf8Text = text().toUtf8();
-    pango_layout_set_text (layout, utf8Text.data(), -1);
+    GtkWidgetPath* widget_path = gtk_widget_path_new();
+    gtk_widget_path_append_type(widget_path, GTK_TYPE_MENU_BAR);
+    gtk_widget_path_append_type(widget_path, GTK_TYPE_MENU_ITEM);
+    gtk_widget_path_iter_set_name(widget_path, -1 , "UnityPanelWidget");
 
-    cxt = pango_layout_get_context (layout);
-    pango_cairo_context_set_font_options (cxt, gdk_screen_get_font_options (screen));
-    pango_cairo_context_set_resolution (cxt, (float)dpi/(float)PANGO_SCALE);
-    pango_layout_context_changed (layout);
+    gtk_style_context_set_path(style_context, widget_path);
+    gtk_style_context_add_class(style_context, GTK_STYLE_CLASS_MENUBAR);
+    gtk_style_context_add_class(style_context, GTK_STYLE_CLASS_MENUITEM);
 
-    pango_layout_get_extents (layout, NULL, &log_rect);
-    text_width = log_rect.width / PANGO_SCALE;
-    text_height = log_rect.height / PANGO_SCALE;
-
-    pango_font_description_free (desc);
-
-
-    cairo_set_operator (cr.data(), CAIRO_OPERATOR_OVER);
-
-    cairo_set_line_width (cr.data(), 1);
-
-    PanelStyle *style = PanelStyle::instance();
-    GtkStyleContext *style_context = style->styleContext();
-
-    gtk_style_context_save (style_context);
-
-    GtkWidgetPath *widget_path = gtk_widget_path_new ();
-    gtk_widget_path_append_type (widget_path, GTK_TYPE_MENU_BAR);
-    gtk_widget_path_append_type (widget_path, GTK_TYPE_MENU_ITEM);
-    gtk_widget_path_iter_set_name (widget_path, -1 , "UnityPanelWidget");
-
-    gtk_style_context_set_path (style_context, widget_path);
-    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_MENUBAR);
-    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_MENUITEM);
-
-    pango_cairo_update_layout (cr.data(), layout);
-
-    gtk_render_layout (style_context, cr.data(),
+    gtk_render_layout(style_context, cr.data(),
         contentsRect().left(),
-        contentsRect().top() + (height() - text_height) / 2,
-        layout);
+        contentsRect().top() + (height() - textHeight) / 2,
+        layout.data());
 
-    gtk_widget_path_free (widget_path);
+    gtk_widget_path_free(widget_path);
 
-    gtk_style_context_restore (style_context);
+    gtk_style_context_restore(style_context);
 
-    if (text_width > contentsRect().width()) {
+    // Fade if necessary
+    if (textWidth > contentsRect().width()) {
         paintFadeoutGradient(&image);
     }
 
+    // Paint on our widget
     QPainter painter(this);
     painter.drawImage(0, 0, image);
 }
