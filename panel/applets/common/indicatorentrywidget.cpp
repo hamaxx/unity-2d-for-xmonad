@@ -91,7 +91,6 @@ IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
-    updatePix();
 }
 
 QSize IndicatorEntryWidget::minimumSizeHint() const
@@ -102,6 +101,12 @@ QSize IndicatorEntryWidget::minimumSizeHint() const
 QSize IndicatorEntryWidget::sizeHint() const
 {
     return m_pix.size();
+}
+
+void IndicatorEntryWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    updatePix();
 }
 
 void IndicatorEntryWidget::paintEvent(QPaintEvent*)
@@ -245,7 +250,7 @@ void IndicatorEntryWidget::updatePix()
     if (!m_hasIcon && !m_hasLabel) {
         m_pix = QPixmap();
     } else {
-        m_pix = QPixmap(width, 24);
+        m_pix = QPixmap(width, height());
         m_pix.fill(Qt::transparent);
         QPainter painter(&m_pix);
         painter.initFrom(this);

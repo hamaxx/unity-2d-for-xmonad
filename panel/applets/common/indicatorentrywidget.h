@@ -61,6 +61,7 @@ Q_SIGNALS:
     void isEmptyChanged();
 
 protected:
+    void resizeEvent(QResizeEvent*);
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
