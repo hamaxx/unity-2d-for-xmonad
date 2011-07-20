@@ -37,6 +37,8 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 
+static const char* METACITY_THEME_DIR = "/usr/share/themes/%1/metacity-1";
+
 typedef void (*ColorGetter)(GtkStyleContext*, GtkStateFlags, GdkRGBA*);
 
 inline QColor colorFromContext(ColorGetter getter, GtkStyleContext* context, GtkStateFlags state)
@@ -59,6 +61,7 @@ public:
     QColor m_textShadowColor;
     QColor m_lineColor;
     QFont m_font;
+    QString m_themeName;
 
     static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
     {
@@ -74,6 +77,11 @@ public:
 
     void updatePalette()
     {
+        gchar* themeName = 0;
+        g_object_get(gtk_settings_get_default(), "gtk-theme-name", &themeName, NULL);
+        m_themeName = QString::fromUtf8(themeName);
+        g_free(themeName);
+
         GtkStyleContext* context = m_styleContext.data();
         gtk_style_context_invalidate(context);
 
@@ -190,6 +198,42 @@ QFont PanelStyle::font() const
 GtkStyleContext* PanelStyle::styleContext() const
 {
     return d->m_styleContext.data();
+}
+
+QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+{
+    QString dir = QString(METACITY_THEME_DIR).arg(d->m_themeName);
+
+    QString typeString, stateString;
+    switch (type) {
+    case CloseWindowButton:
+        typeString = "close";
+        break;
+    case MinimizeWindowButton:
+        typeString = "minimize";
+        break;
+    case UnmaximizeWindowButton:
+        typeString = "unmaximize";
+        break;
+    }
+
+    switch (state) {
+    case NormalState:
+        stateString = "";
+        break;
+    case PrelightState:
+        stateString = "_focused_prelight";
+        break;
+    case PressedState:
+        stateString = "_focused_pressed";
+        break;
+    }
+
+    QString path = QString("%1/%2%3.png")
+        .arg(dir)
+        .arg(typeString)
+        .arg(stateString);
+    return QPixmap(path);
 }
 
 #include "panelstyle.moc"

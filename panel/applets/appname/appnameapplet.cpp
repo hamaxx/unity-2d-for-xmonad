@@ -25,6 +25,7 @@
 // Local
 #include "croppedlabel.h"
 #include "menubarwidget.h"
+#include "panelstyle.h"
 #include "windowhelper.h"
 
 // Unity-2d
@@ -46,8 +47,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
-
 static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
@@ -58,13 +57,11 @@ namespace Unity2d
 class WindowButton : public QAbstractButton
 {
 public:
-    WindowButton(const QString& prefix, QWidget* parent = 0)
+    WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_prefix(prefix)
-    , m_normalPix(loadPix("normal"))
-    , m_hoverPix(loadPix("prelight"))
-    , m_downPix(loadPix("pressed"))
+    , m_buttonType(buttonType)
     {
+        loadPixmaps();
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         setAttribute(Qt::WA_Hover);
     }
@@ -90,18 +87,17 @@ protected:
     }
 
 private:
-    QString m_prefix;
+    PanelStyle::WindowButtonType m_buttonType;
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
 
-    QPixmap loadPix(const QString& name)
+    void loadPixmaps()
     {
-        QString path = QString("%1/%2_focused_%3.png")
-            .arg(METACITY_DIR)
-            .arg(m_prefix)
-            .arg(name);
-        return QPixmap(path);
+        PanelStyle* style = PanelStyle::instance();
+        m_normalPix = style->windowButtonPixmap(m_buttonType, PanelStyle::NormalState);
+        m_hoverPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PrelightState);
+        m_downPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PressedState);
     }
 };
 
@@ -135,9 +131,9 @@ struct AppNameAppletPrivate
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
         layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
         layout->setSpacing(0);
-        m_closeButton = new WindowButton("close");
-        m_minimizeButton = new WindowButton("minimize");
-        m_maximizeButton = new WindowButton("unmaximize");
+        m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
+        m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
+        m_maximizeButton = new WindowButton(PanelStyle::UnmaximizeWindowButton);
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);

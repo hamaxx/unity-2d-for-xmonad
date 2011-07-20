@@ -28,6 +28,7 @@
 
 class QColor;
 class QFont;
+class QPixmap;
 
 struct _GtkStyleContext;
 
@@ -42,6 +43,18 @@ public:
     PanelStyle(QObject* parent = 0);
     ~PanelStyle();
 
+    enum WindowButtonType {
+        CloseWindowButton,
+        MinimizeWindowButton,
+        UnmaximizeWindowButton
+    };
+
+    enum WindowButtonState {
+        NormalState,
+        PrelightState,
+        PressedState
+    };
+
     static PanelStyle* instance();
 
     QColor textColor() const;
@@ -53,6 +66,8 @@ public:
     QFont font() const;
 
     struct _GtkStyleContext* styleContext() const;
+
+    QPixmap windowButtonPixmap(WindowButtonType, WindowButtonState);
 
 private:
     friend class PanelStylePrivate;
