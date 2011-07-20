@@ -50,7 +50,7 @@ static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
 static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 
-static const int APPNAME_LABEL_LEFT_MARGIN = 12;
+static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 namespace Unity2d
 {

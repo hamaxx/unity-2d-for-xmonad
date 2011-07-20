@@ -43,6 +43,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${CMAKE_CURRENT_SOURCE_DIR}/unitycore
     ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
@@ -60,6 +61,7 @@ target_link_libraries(uqapplets
     ${QT_QTCORE_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
     ${GTK_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${X11_LIBRARIES}
