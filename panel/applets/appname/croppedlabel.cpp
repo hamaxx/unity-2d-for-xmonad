@@ -40,7 +40,7 @@
 
 static const int FADEOUT_WIDTH = 30;
 
-#define WINDOW_TITLE_FONT_KEY "/apps/metacity/general/titlebar_font"
+static const char* WINDOW_TITLE_FONT_KEY = "/apps/metacity/general/titlebar_font";
 
 CroppedLabel::CroppedLabel(QWidget* parent)
 : QLabel(parent)
