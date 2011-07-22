@@ -1,5 +1,5 @@
 <schemalist>
-  <schema path="/desktop/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
+  <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">
       <default>true</default>
       <summary>Super key activation.</summary>
