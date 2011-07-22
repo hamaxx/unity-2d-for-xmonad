@@ -9,8 +9,10 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
     - install GConf to GSettings conversion into usr/share/GConf/gsettings
   * debian/gconf/schemas/unity-2d.schemas:
     - remove GConf schema for /desktop/unity-2d/launcher/super_key_enable
+    - remove GConf schema for /desktop/unity-2d/launcher/favorites
   * debian/20_unity-2d-gconf-default:
     - remove default value for /desktop/unity-2d/launcher/super_key_enable
+    - remove default value for /desktop/unity-2d/launcher/favorites
   * debian/control:
     - add dependency on libdconf-qt-dev
 
@@ -19,7 +21,7 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
   * Install the apport hook in the right directory so that it's not launched
     unconditionally (LP: #712343)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 16:44:37 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 18:56:33 +0200
 
 unity-2d (3.8.10-0ubuntu1) natty; urgency=low
 
