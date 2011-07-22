@@ -5,3 +5,5 @@ session/2d-ubuntu.session /usr/share/gnome-session/sessions
 debian/20_unity-2d-gconf-mandatory /usr/share/gconf/unity-2d/mandatory
 debian/20_unity-2d-gconf-default /usr/share/gconf/unity-2d/default
 usr/share/locale/*/LC_MESSAGES/unity-2d.mo
+usr/share/glib-2.0/schemas/com.canonical.Unity2d.gschema.xml
+usr/share/GConf/gsettings
