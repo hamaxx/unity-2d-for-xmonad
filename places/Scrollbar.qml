@@ -77,7 +77,7 @@ Item {
                                                         targetFlickable.visibleArea.yPosition))
             return clampedYPosition * scrollbar.height
         }
-        height: Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height)
+        height: Math.min(scrollbar.height, Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height))
 
         Behavior on height {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 
