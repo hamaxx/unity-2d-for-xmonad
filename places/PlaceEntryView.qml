@@ -31,7 +31,7 @@ FocusScope {
            ('firstGroupModel') is used to filter the search results per group.
         */
         var placeEntry, i
-        for (i=0; i<placeEntryView.model.entryGroupsModel.count(); i=i+1) {
+        for (i=0; i<placeEntryView.model.entryGroupsModel.count; i=i+1) {
             firstGroupModel.groupId = i
             if (firstGroupModel.count() != 0) {
                 var firstResult = firstGroupModel.get(0)
