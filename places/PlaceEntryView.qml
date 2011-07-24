@@ -75,10 +75,10 @@ FocusScope {
            If groupRenderer == 'UnityShowcaseRenderer' then it will look for
            the file 'UnityShowcaseRenderer.qml' and use it to render the group.
         */
-        list.delegate: Loader {
-            property string groupRenderer: column_0
-            property string displayName: column_1
-            property string iconHint: column_2
+        bodyDelegate: Loader {
+            property string groupRenderer: model.column_0
+            property string displayName: model.column_1
+            property string iconHint: model.column_2
             property int groupId: index
 
             source: groupRenderer ? groupRenderer+".qml" : ""
@@ -87,12 +87,8 @@ FocusScope {
                     console.log("Failed to load renderer", groupRenderer)
             }
 
-            width: ListView.view.width
-
             /* Model that will be used by the group's delegate */
-            SortFilterProxyModel {
-                id: group_model
-
+            property variant group_model: SortFilterProxyModel {
                 model: placeEntryView.model.entryResultsModel
 
                 /* resultsModel contains data for all the groups of a given Place.
@@ -103,17 +99,37 @@ FocusScope {
                 filterRegExp: RegExp("^%1$".arg(groupId)) /* exact match */
             }
 
+            /* Required by ListViewWithHeaders when the loaded Renderer is a Flickable.
+               In that case the list view scrolls the Flickable appropriately.
+            */
+            property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
+            property int contentY
+            Binding { target: item; property: "contentY"; value: contentY }
+            enabled: group_model.count > 0
+
             onLoaded: {
-                item.parentListView = results.list
                 item.displayName = displayName
                 item.iconHint = iconHint
                 item.groupId = groupId
-                item.model = group_model
+                item.group_model = group_model
                 item.placeEntryModel = placeEntryView.model
                 item.focus = true
             }
         }
 
-        list.model: placeEntryView.model != undefined ? placeEntryView.model.entryGroupsModel : undefined
+        headerDelegate: GroupHeader {
+            visible: body.item.needHeader && body.enabled
+            height: visible ? 32 : 0
+
+            property bool foldable: body.item.folded != undefined
+            availableCount: foldable ? body.group_model.count - body.item.cellsPerRow : 0
+            folded: foldable ? body.item.folded : false
+            onClicked: if(foldable) body.item.folded = !body.item.folded
+
+            icon: body.iconHint
+            label: body.displayName
+        }
+
+        model: placeEntryView.model != undefined ? placeEntryView.model.entryGroupsModel : undefined
     }
 }

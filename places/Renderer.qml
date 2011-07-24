@@ -30,7 +30,7 @@ FocusScope {
     property string displayName /* Name of the group typically displayed in the header */
     property string iconHint /* Icon id of the group */
     property int groupId /* Index of the group */
-    property variant model /* List model containing the items to be displayed by the renderer */
+    property variant group_model /* List model containing the items to be displayed by the renderer */
     property variant placeEntryModel /* Reference to the place entry the group belongs to */
-    property variant parentListView /* Reference to the ListView the renderer is nested into */
+    property bool needHeader: false /* Whether or not the renderer requires a header to be displayed */
 }

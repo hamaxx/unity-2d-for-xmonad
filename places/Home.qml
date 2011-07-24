@@ -100,17 +100,28 @@ FocusScope {
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
-        list.model: dash.places
+        model: dash.places
 
-        list.delegate: UnityDefaultRenderer {
-            width: ListView.view.width
+        bodyDelegate: UnityDefaultRenderer {
+            placeEntryModel: model.item
+            displayName: model.item.name
+            iconHint: model.item.icon
 
-            parentListView: list
-            placeEntryModel: item
-            displayName: item.name
-            iconHint: item.icon
+            group_model: model.item.globalResultsModel
+            enabled: group_model != null ? group_model.count > 0 : false
+        }
 
-            model: item.globalResultsModel
+        headerDelegate: GroupHeader {
+            visible: body.needHeader && body.enabled
+            height: visible ? 32 : 0
+
+            property bool foldable: body.folded != undefined
+            availableCount: foldable && body.group_model != null ? body.group_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            onClicked: if(foldable) body.folded = !body.folded
+
+            icon: body.iconHint
+            label: body.displayName
         }
     }
 
