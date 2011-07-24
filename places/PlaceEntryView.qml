@@ -33,7 +33,7 @@ FocusScope {
         var placeEntry, i
         for (i=0; i<placeEntryView.model.entryGroupsModel.count; i=i+1) {
             firstGroupModel.groupId = i
-            if (firstGroupModel.count() != 0) {
+            if (firstGroupModel.count != 0) {
                 var firstResult = firstGroupModel.get(0)
                 /* Places give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
