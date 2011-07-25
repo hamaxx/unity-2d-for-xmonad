@@ -7,8 +7,6 @@ extern "C" {
 #include <libwnck/libwnck.h>
 }
 
-#include "gconfitem-qml-wrapper.h"
-
 #include <QAbstractEventDispatcher>
 #include <QX11Info>
 

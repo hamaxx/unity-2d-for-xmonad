@@ -23,6 +23,9 @@
 #include "bamf-application.h"
 #include "gconfitem-qml-wrapper.h"
 
+// libdconf-qt
+#include "qconf.h"
+
 // unity-2d
 #include <debug_p.h>
 
@@ -40,7 +43,8 @@ extern "C" {
 }
 
 
-#define FAVORITES_KEY QString("/desktop/unity-2d/launcher/favorites")
+#define LAUNCHER_DCONF_SCHEMA QString("com.canonical.Unity.Launcher")
+#define LAUNCHER_DCONF_PATH QString("/desktop/unity/launcher")
 #define DBUS_SERVICE_UNITY "com.canonical.Unity"
 #define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
 #define DBUS_SERVICE_LAUNCHER "com.canonical.Unity.Launcher"
@@ -52,8 +56,7 @@ static const QStringList EXECUTABLES_BLACKLIST = (QStringList() << "xdg-open");
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_favorites_list = new GConfItemQmlWrapper();
-    m_favorites_list->setKey(FAVORITES_KEY);
+    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
 
     QDBusConnection session = QDBusConnection::sessionBus();
     /* FIXME: libunity will send out the Update signal for LauncherEntries
@@ -171,7 +174,7 @@ LauncherApplicationsList::~LauncherApplicationsList()
     sn_display_unref(m_snDisplay);
 
     qDeleteAll(m_applications);
-    delete m_favorites_list;
+    delete m_dconf_launcher;
 }
 
 QString
@@ -366,9 +369,8 @@ void
 LauncherApplicationsList::load()
 {
     /* Insert favorites */
-    /* FIXME: migrate to GSettings, like unity. */
     QString desktop_file;
-    QStringList favorites = m_favorites_list->getValue().toStringList();
+    QStringList favorites = m_dconf_launcher->property("favorites").toStringList();
 
     Q_FOREACH(QString favorite, favorites) {
        insertFavoriteApplication(favorite);
@@ -453,9 +455,9 @@ LauncherApplicationsList::writeFavoritesToGConf()
         }
     }
 
-    m_favorites_list->blockSignals(true);
-    m_favorites_list->setValue(QVariant(favorites));
-    m_favorites_list->blockSignals(false);
+    m_dconf_launcher->blockSignals(true);
+    m_dconf_launcher->setProperty("favorites", QVariant(favorites));
+    m_dconf_launcher->blockSignals(false);
 }
 
 int
