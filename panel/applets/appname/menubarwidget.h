@@ -43,7 +43,7 @@ class MenuBarWidget;
 
 /**
  * An helper class which monitors the menubar and emits MenuBarWidget::menuBarClosed()
- * to indiciate if the menu was closed or updated.
+ * to indicate if the menu was closed or updated.
  */
 class MenuBarClosedHelper : public QObject
 {
