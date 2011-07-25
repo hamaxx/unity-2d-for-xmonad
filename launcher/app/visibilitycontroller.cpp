@@ -30,27 +30,25 @@
 #include <debug_p.h>
 #include <unity2dpanel.h>
 
-// libqtgconf
-#include <gconfitem-qml-wrapper.h>
+// libdconf-qt
+#include "qconf.h"
 
 // Qt
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
 
-static const char* GCONF_LAUNCHER_HIDEMODE_KEY = "/desktop/unity-2d/launcher/hide_mode";
+static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 VisibilityController::VisibilityController(Unity2dPanel* panel)
 : QObject(panel)
 , m_panel(panel)
-, m_hideModeKey(new GConfItemQmlWrapper(this))
+, m_dconf_launcher(new QConf(LAUNCHER_DCONF_SCHEMA))
 , m_dbusWatcher(new QDBusServiceWatcher(this))
 {
-    m_hideModeKey->setKey(GCONF_LAUNCHER_HIDEMODE_KEY);
-
     m_dbusWatcher->setConnection(QDBusConnection::sessionBus());
     m_dbusWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
 
-    connect(m_hideModeKey, SIGNAL(valueChanged()), SLOT(update()));
+    connect(m_dconf_launcher, SIGNAL(hideModeChanged(int)), SLOT(update()));
     connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
     connect(m_dbusWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
@@ -59,6 +57,7 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
 
 VisibilityController::~VisibilityController()
 {
+    delete m_dconf_launcher;
 }
 
 void VisibilityController::update()
@@ -66,7 +65,7 @@ void VisibilityController::update()
     if (!m_forceVisibleCountHash.isEmpty()) {
         return;
     }
-    AutoHideMode mode = AutoHideMode(m_hideModeKey->getValue().toInt());
+    AutoHideMode mode = AutoHideMode(m_dconf_launcher->property("hideMode").toInt());
 
     setBehavior(0);
 

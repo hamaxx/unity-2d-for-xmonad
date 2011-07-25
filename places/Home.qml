@@ -36,7 +36,7 @@ Item {
         var placeEntry, i
         for (i=0; i<dash.places.rowCount(); i=i+1) {
             placeEntry = dash.places.get(i)
-            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count() != 0) {
+            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count != 0) {
                 var firstResult = placeEntry.globalResultsModel.get(0)
                 /* Places give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
