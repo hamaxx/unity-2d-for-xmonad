@@ -21,6 +21,7 @@
 
 // Self
 #include "unity2dapplication.h"
+#include "config.h"
 
 // libunity-2d
 #include <debug_p.h>
@@ -83,6 +84,13 @@ void Unity2dApplication::earlySetup(int& argc, char** argv)
 Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 : QApplication(argc, argv)
 {
+    /* Allow developers to run Unity 2D uninstalled by telling dconf-qt
+       where to look for Unity 2D's schemas.
+       It relies on the fact that the schema is compiled when running cmake.
+    */
+    if (!isRunningInstalled()) {
+        qputenv("GSETTINGS_SCHEMA_DIR", unity2dDirectory().toLocal8Bit() + "/data");
+    }
 }
 
 Unity2dApplication::~Unity2dApplication()
