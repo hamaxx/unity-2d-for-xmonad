@@ -2,3 +2,6 @@
 super-key-enable = /desktop/unity-2d/launcher/super_key_enable
 hide-mode = /desktop/unity-2d/launcher/hide_mode
 use-strut = /desktop/unity-2d/launcher/use_strut
+
+[com.canonical.Unity.Launcher]
+favorites = /desktop/unity-2d/launcher/favorites
