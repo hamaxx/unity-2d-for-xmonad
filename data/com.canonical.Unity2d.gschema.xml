@@ -8,7 +8,7 @@
     <key name="hide-mode" type="i">
       <default>2</default>
       <summary>Hiding mode of the launcher</summary>
-      <description>Possible values: 0: never hide; the launcher is always visible. Always set /desktop/unity-2d/launcher/use_strut to true when using that mode 1: auto hide; the launcher will disappear after a short time if the user is not interacting with it 2: intellihide; the launcher will disappear if a window is placed on top of it and if the user is not interacting with it</description>
+      <description>Possible values: 0: never hide; the launcher is always visible. Always set /com/canonical/unity-2d/launcher/use-strut to true when using that mode 1: auto hide; the launcher will disappear after a short time if the user is not interacting with it 2: intellihide; the launcher will disappear if a window is placed on top of it and if the user is not interacting with it</description>
     </key>
     <key name="use-strut" type="b">
       <default>false</default>
