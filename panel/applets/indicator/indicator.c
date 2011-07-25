@@ -153,6 +153,20 @@ sensitive_cb (GObject * obj, GParamSpec * pspec, gpointer user_data)
 	return;
 }
 
+static gboolean
+entry_scrolled (GtkWidget *menuitem, GdkEventScroll *event, gpointer data)
+{
+	IndicatorObject *io = g_object_get_data (G_OBJECT (menuitem), MENU_DATA_INDICATOR_OBJECT);
+	IndicatorObjectEntry *entry = g_object_get_data (G_OBJECT (menuitem), MENU_DATA_INDICATOR_ENTRY);
+
+	g_return_val_if_fail(INDICATOR_IS_OBJECT(io), FALSE);
+
+	g_signal_emit_by_name (io, "scroll", 1, event->direction);
+	g_signal_emit_by_name (io, "scroll-entry", entry, 1, event->direction);
+
+	return FALSE;
+}
+
 static void
 entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * menubar)
 {
@@ -234,6 +248,7 @@ entry_added (IndicatorObject * io, IndicatorObjectEntry * entry, GtkWidget * men
 
 	g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_ENTRY,  entry);
 	g_object_set_data(G_OBJECT(menuitem), MENU_DATA_INDICATOR_OBJECT, io);
+	g_signal_connect(G_OBJECT (menuitem), "scroll-event", G_CALLBACK(entry_scrolled), NULL);
 
 	return;
 }
