@@ -27,17 +27,52 @@ FocusScope {
     property alias flickable: mouse
     property alias model: repeater.model
     property bool accordion: false
-    /* bodyDelegate must be a flickable that has a 'totalHeight' property */
+    /* bodyDelegate must be an item that has the following properties:
+        - 'contentY'
+        - 'totalHeight'
+        - 'currentItem'
+    */
     property Component bodyDelegate
     property Component headerDelegate
-    property int currentIndex: 0
+    property int currentIndex: -1
+    /* FIXME: Should be read-only but it is not possible to define a read-only property from QML.
+       Ref.: https://bugreports.qt.nokia.com//browse/QTBUG-15257
+    */
+    property variant currentItem: items.childFromIndex(currentIndex)
 
-    onCurrentIndexChanged: items.selectChild(currentIndex)
-    onActiveFocusChanged: items.selectChild(currentIndex)
 
     clip: true
 
-    Item {
+    /* updateMouseContentY() needs to be called when any of the variable
+       involved in the computation of the 'y' property of the currentSubItem changes.
+
+       if accordion is false:
+       - heightFirstChildren(index)
+       - headerLoader.height
+       - list.height
+
+       if accordion is true:
+       - heightFirstChildren(index)
+       - items.availableHeight
+       - heightFirstHeaders(index)
+
+       items.contentHeight seems to depend on all of those so it's enough to
+       depend only on it.
+    */
+    function updateMouseContentY() {
+        if (currentSubItem != undefined) {
+            mouse.contentY = Math.max(currentSubItem.mapToItem(mouse.contentItem, 0, 0).y -list.height/2, 0)
+        }
+    }
+    property variant currentSubItem: currentItem.bodyLoader.item.currentItem
+    onCurrentSubItemChanged: updateMouseContentY()
+
+    Connections {
+        target: items
+        onContentHeightChanged: updateMouseContentY()
+    }
+
+    FocusScope {
         id: items
 
         property int availableHeight: list.height - heightFirstHeaders(repeater.count)
@@ -77,13 +112,8 @@ FocusScope {
 
         /* Keyboard navigation */
         function isIndexValid(index) {
-            return index >= 0 && index < repeater.count
-        }
-
-        function selectChild(index) {
-            if (!isIndexValid(index)) return false
-            children[index].focus = true
-            return true
+            /* Assuming that children contains exactly one item that is not a child (repeater) */
+            return index >= 0 && index < children.length-1
         }
 
         focus: true
@@ -97,12 +127,24 @@ FocusScope {
             }
         }
 
+        function childFromIndex(index) {
+            var indexInChildren = 0
+            for(var i=0; i<children.length; i++) {
+                if (children[i] != repeater) {
+                    if (indexInChildren == index) return children[i]
+                    indexInChildren++
+                }
+            }
+
+            return undefined
+        }
+
         function selectNextEnabled() {
             var index = currentIndex
             do {
                 index += 1
                 if (!isIndexValid(index)) return false
-            } while(!children[index].enabled)
+            } while(!childFromIndex(index).focusable)
             currentIndex = index
             return true
         }
@@ -112,11 +154,28 @@ FocusScope {
             do {
                 index -= 1
                 if (!isIndexValid(index)) return false
-            } while(!children[index].enabled)
+            } while(!childFromIndex(index).focusable)
             currentIndex = index
             return true
         }
 
+        property bool needsFocus: false
+        onChildrenChanged: {
+            /* FIXME: this workarounds the fact that list.focus is set to false
+                      when the child with focus is destroyed
+            */
+            if (needsFocus) {
+                list.focus = true
+                needsFocus = false
+            }
+            /* Assuming that children contains exactly one item that is not a child (repeater) */
+            if(children.length <= 1) {
+                list.currentIndex = -1
+            } else {
+                list.currentIndex = -1
+                selectNextEnabled()
+            }
+        }
 
         Repeater {
             id: repeater
@@ -125,9 +184,12 @@ FocusScope {
                 property alias bodyLoader: bodyLoader
                 property alias headerLoader: headerLoader
 
+                focus: index == list.currentIndex
+                Component.onDestruction: items.needsFocus = true
+
                 width: list.width
                 height: headerLoader.height + bodyLoader.item.totalHeight
-                enabled: bodyLoader.item.enabled
+                property bool focusable: bodyLoader.item.focusable
 
                 property int pmin: pmax - (ymax - ymin)
                 property int pmax: items.heightFirstChildren(index) - ymin
