@@ -28,7 +28,7 @@
 #include <QObject>
 
 // libunity-core
-#include <UnityCore/UnityCore.h>
+#include <UnityCore/DBusIndicators.h>
 
 class QTimer;
 

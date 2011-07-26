@@ -30,9 +30,6 @@
 #include <QTimer>
 #include <QX11Info>
 
-// UnityCore
-#include <UnityCore/UnityCore.h>
-
 // X11
 #include <X11/Xlib.h>
 
