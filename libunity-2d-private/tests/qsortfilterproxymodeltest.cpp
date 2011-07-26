@@ -55,6 +55,7 @@ public:
 
     void setRoleNames(const QHash<int,QByteArray> &roleNames) {
         QAbstractListModel::setRoleNames(roleNames);
+        Q_EMIT roleNamesChanged(roleNames);
     }
 
     bool insertRows(int row, int count, const QModelIndex &parent=QModelIndex()) {
@@ -74,6 +75,9 @@ public:
         endInsertRows();
         return true;
     }
+
+Q_SIGNALS:
+    void roleNamesChanged(const QHash<int,QByteArray> &);
 
 private:
     QStringList m_list;
