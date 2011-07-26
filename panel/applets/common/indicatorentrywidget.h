@@ -24,7 +24,7 @@
 // Local
 
 // libunity-core
-#include <UnityCore/UnityCore.h>
+#include <UnityCore/IndicatorEntry.h>
 
 // Qt
 #include <QWidget>

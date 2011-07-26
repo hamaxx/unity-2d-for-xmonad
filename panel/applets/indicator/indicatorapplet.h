@@ -26,7 +26,7 @@
 #include <applet.h>
 
 // libunity-core
-#include <UnityCore/UnityCore.h>
+#include <UnityCore/Indicator.h>
 
 class IndicatorsManager;
 

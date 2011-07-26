@@ -26,7 +26,8 @@
 #include <QWidget>
 
 // libunity-core
-#include <UnityCore/UnityCore.h>
+#include <UnityCore/Indicator.h>
+#include <UnityCore/IndicatorEntry.h>
 
 class QHBoxLayout;
 
