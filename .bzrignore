@@ -78,3 +78,4 @@ debian/unity-qt-places
 debian/unity-qt-spread
 debian/libuqpanel-dev
 debian/libuqpanel0
+data/gschemas.compiled

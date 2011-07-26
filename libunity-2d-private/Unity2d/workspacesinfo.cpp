@@ -9,8 +9,6 @@ extern "C" {
 #include <libwnck/workspace.h>
 }
 
-#include "gconfitem-qml-wrapper.h"
-
 #include <QAbstractEventDispatcher>
 #include <QX11Info>
 

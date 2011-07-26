@@ -25,10 +25,10 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
     connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
 }
 
-void
-QSortFilterProxyModelQML::updateRoleNames()
+void QSortFilterProxyModelQML::setRoleNames(const QHash<int,QByteArray> &roleNames)
 {
-    setRoleNames(((QAbstractItemModel*)sourceModel())->roleNames());
+    QSortFilterProxyModel::setRoleNames(roleNames);
+    Q_EMIT roleNamesChanged(roleNames);
 }
 
 QObject*
@@ -54,10 +54,19 @@ QSortFilterProxyModelQML::setSourceModelQObject(QObject *model)
         sourceModel()->disconnect(this);
     }
 
-    setSourceModel(itemModel);
+    /* Workaround for limitation of QAbstractProxyModel: if sourceModel's
+       roleNames changes, the QAbstractProxyModel's roleNames are not updated
+       to reflect that change.
+       As a consequence it works around Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-20405
+    */
+    bool hasRoleNamesChangedSignal;
+    hasRoleNamesChangedSignal = connect(itemModel, SIGNAL(roleNamesChanged(QHash<int,QByteArray>)), SLOT(setRoleNames(QHash<int,QByteArray>)));
+    if (!hasRoleNamesChangedSignal) {
+        UQ_WARNING << "received a sourceModel that does not notify of changes of its roleNames";
+    }
+    setRoleNames(itemModel->roleNames());
 
-    connect(itemModel, SIGNAL(modelAboutToBeReset()), SLOT(updateRoleNames()));
-    connect(itemModel, SIGNAL(modelReset()), SLOT(updateRoleNames()));
+    setSourceModel(itemModel);
 
     connect(itemModel, SIGNAL(modelReset()), SIGNAL(totalCountChanged()));
     connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(totalCountChanged()));
