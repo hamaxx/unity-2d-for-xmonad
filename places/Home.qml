@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
 
-Item {
+FocusScope {
     property variant model: PageModel {
         /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
         onEntrySearchQueryChanged: {
@@ -36,7 +36,7 @@ Item {
         var placeEntry, i
         for (i=0; i<dash.places.rowCount(); i=i+1) {
             placeEntry = dash.places.get(i)
-            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count() != 0) {
+            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count != 0) {
                 var firstResult = placeEntry.globalResultsModel.get(0)
                 /* Places give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
@@ -102,42 +102,28 @@ Item {
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
-        list.model: dash.places
+        model: dash.places
 
-        list.delegate: UnityDefaultRenderer {
-            width: ListView.view.width
+        bodyDelegate: UnityDefaultRenderer {
+            placeEntryModel: model.item
+            displayName: model.item.name
+            iconHint: model.item.icon
 
-            focus: true
-            parentListView: list
-            placeEntryModel: item
-            displayName: item.name
-            iconHint: item.icon
+            group_model: model.item.globalResultsModel
+            property bool focusable: group_model != undefined && group_model.count > 0
+        }
 
-            /* Filter out results for which the corresponding group's renderer
-               is 'UnityEmptySearchRenderer'.
-               Each result has a column (the second one) containing the id of
-               the group it belongs to (groupId).
-            */
-            model:  SortFilterProxyModel {
-                model: item.globalResultsModel
+        headerDelegate: GroupHeader {
+            visible: body.needHeader && body.focusable
+            height: visible ? 32 : 0
 
-                /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'
-                   by hardcoding it instead of looking it up in the Place's
-                   groupsModel as Unity does.
+            property bool foldable: body.folded != undefined
+            availableCount: foldable && body.group_model != null ? body.group_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            onClicked: if(foldable) body.folded = !body.folded
 
-                   Two solutions could be envisioned:
-                   1) Actually looking for the row in the Place's groupsModel
-                      that has in its first column 'UnityEmptySearchRenderer'.
-                      That would require adding an API in libqtdee's DeeListModel.
-                   2) Changing the behaviour of the place daemons so that the
-                      Place's globalResultsModel is empty when there are no
-                      results. The applications place does that but not the
-                      files place.
-                */
-                property int ignoredGroupId: 5
-                filterRole: 2 /* groupId column */
-                filterRegExp: RegExp("^[^%1]$".arg(ignoredGroupId)) /* anything but the ignoredGroupId */
-            }
+            icon: body.iconHint
+            label: body.displayName
         }
     }
 

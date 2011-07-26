@@ -72,12 +72,18 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        y: {
-            var clampedYPosition = Math.max(0, Math.min(1-targetFlickable.visibleArea.heightRatio,
-                                                        targetFlickable.visibleArea.yPosition))
-            return clampedYPosition * scrollbar.height
+        Binding {
+            target: slider
+            property: "y"
+            value: {
+                var clampedYPosition = Math.max(0, Math.min(1-targetFlickable.visibleArea.heightRatio,
+                                                            targetFlickable.visibleArea.yPosition))
+                return clampedYPosition * scrollbar.height
+            }
+            when: !dragMouseArea.drag.active
         }
-        height: Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height)
+
+        height: Math.min(scrollbar.height, Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height))
 
         Behavior on height {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 

@@ -34,7 +34,6 @@ RendererGrid {
             property string comment
 
             Accessible.name: displayName
-            focus: true
 
             onClicked: {
                 dashView.active = false

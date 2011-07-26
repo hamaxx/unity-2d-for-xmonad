@@ -28,8 +28,6 @@ RendererGrid {
         Button {
             id: button
 
-            focus: true
-
             property url uri
             property string iconHint
             property string mimetype

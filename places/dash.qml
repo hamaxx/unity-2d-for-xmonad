@@ -33,6 +33,9 @@ Item {
     }
 
     function activatePage(page) {
+        /* Always give the focus to the search entry when switching pages */
+        search_entry.focus = true
+
         if (page == currentPage) {
             return
         }
@@ -42,12 +45,6 @@ Item {
         }
         currentPage = page
         currentPage.visible = true
-        /* FIXME: For some reason currentPage gets the focus when it becomes
-           visible. Reset the focus to the search_bar instead.
-           It could be due to Qt bug QTBUG-13380:
-           "Listview gets focus when it becomes visible"
-        */
-        search_entry.focus = true
     }
 
     function activatePlaceEntry(fileName, groupName, section) {
@@ -123,13 +120,16 @@ Item {
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
-        Keys.forwardTo: [search_entry]
+        //Keys.forwardTo: [search_entry]
 
 
         SearchEntry {
             id: search_entry
 
             focus: true
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
             KeyNavigation.right: refine_search.visible ? refine_search : search_entry
             KeyNavigation.down: pageLoader
 
@@ -165,6 +165,9 @@ Item {
             id: pageLoader
 
             Accessible.name: "loader"
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
             KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
             KeyNavigation.up: search_entry
 
@@ -175,6 +178,7 @@ Item {
             anchors.leftMargin: 20
             anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
             anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
+            onLoaded: item.focus = true
         }
     }
 
