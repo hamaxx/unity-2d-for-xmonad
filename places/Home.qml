@@ -108,11 +108,11 @@ FocusScope {
             iconHint: model.item.icon
 
             group_model: model.item.globalResultsModel
-            enabled: group_model != null ? group_model.count > 0 : false
+            property bool focusable: group_model != undefined && group_model.count > 0
         }
 
         headerDelegate: GroupHeader {
-            visible: body.needHeader && body.enabled
+            visible: body.needHeader && body.focusable
             height: visible ? 32 : 0
 
             property bool foldable: body.folded != undefined
