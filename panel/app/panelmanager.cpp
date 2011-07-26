@@ -94,6 +94,7 @@ PanelManager::PanelManager(QObject* parent)
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
         Unity2dPanel* panel = instantiatePanel(i);
+        panel->setAccessibleName("Top Panel");
         m_panels.append(panel);
         panel->show();
         panel->move(desktop->screenGeometry(i).topLeft());
