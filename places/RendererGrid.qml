@@ -49,6 +49,8 @@ Renderer {
     property int horizontalSpacing: 26
     property int verticalSpacing: 26
 
+    /* FIXME: using results_layout.anchors.topMargin in the following expression
+              causes QML to think they might be an anchor loop. */
     property int totalHeight: results.count > 0 ? results_layout.anchors.topMargin + results.totalHeight : 0
 
     Item {
