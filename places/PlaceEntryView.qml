@@ -106,6 +106,7 @@ FocusScope {
             property int contentY
             Binding { target: item; property: "contentY"; value: contentY }
             property bool focusable: group_model.count > 0
+            property variant currentItem: item.currentItem
 
             onLoaded: {
                 item.displayName = displayName

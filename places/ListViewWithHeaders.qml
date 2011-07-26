@@ -64,7 +64,7 @@ FocusScope {
             mouse.contentY = Math.max(currentSubItem.mapToItem(mouse.contentItem, 0, 0).y -list.height/2, 0)
         }
     }
-    property variant currentSubItem: currentItem.bodyLoader.item.currentItem
+    property variant currentSubItem: currentItem != undefined ? currentItem.bodyLoader.item.currentItem : undefined
     onCurrentSubItemChanged: updateMouseContentY()
 
     Connections {
