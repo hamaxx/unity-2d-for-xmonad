@@ -37,6 +37,7 @@ class LauncherApplication;
 class BamfApplication;
 class BamfView;
 class GConfItemQmlWrapper;
+class QConf;
 
 class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
 {
@@ -88,7 +89,7 @@ private:
        displayed (m_applications).
     */
     QHash<QString, LauncherApplication*> m_applicationForExecutable;
-    GConfItemQmlWrapper* m_favorites_list;
+    QConf* m_dconf_launcher;
 
     /* Startup notification support */
     SnDisplay *m_snDisplay;
@@ -102,6 +103,7 @@ private Q_SLOTS:
     void onApplicationStickyChanged(bool sticky);
     void onApplicationLaunchingChanged(bool launching);
     void onApplicationUrgentChanged(bool urgent);
+    void onApplicationUserVisibleChanged(bool user_visible);
     void onRemoteEntryUpdated(QString applicationURI,
                               QMap<QString, QVariant> properties);
 };

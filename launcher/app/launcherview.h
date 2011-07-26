@@ -24,13 +24,13 @@
 #include <QList>
 #include <QUrl>
 #include <QTimer>
-
-#include "gconfitem-qml-wrapper.h"
+#include <QVariant>
 
 #include <unity2ddeclarativeview.h>
 
 class DeclarativeDragDropEvent;
 class LauncherDBus;
+class QConf;
 
 class LauncherView : public Unity2DDeclarativeView
 {
@@ -40,7 +40,7 @@ class LauncherView : public Unity2DDeclarativeView
 
 public:
     explicit LauncherView(QWidget* parent = NULL);
-    Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
+    ~LauncherView();
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 
@@ -67,7 +67,7 @@ protected:
     void focusOutEvent(QFocusEvent* event);
 
 private:
-    GConfItemQmlWrapper m_enableSuperKey;
+    QConf* m_dconf_launcher;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
     QTimer m_superKeyHoldTimer;

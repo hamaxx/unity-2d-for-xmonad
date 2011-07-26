@@ -36,6 +36,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+// libdconf-qt
+#include "qconf.h"
+
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
@@ -55,6 +58,7 @@ static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
+static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
@@ -67,8 +71,8 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
-    connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
+    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
+    connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
     /* Alt+F1 gives the keyboard focus to the launcher. */
@@ -84,6 +88,11 @@ LauncherView::LauncherView(QWidget* parent) :
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
+}
+
+LauncherView::~LauncherView()
+{
+    delete m_dconf_launcher;
 }
 
 void
@@ -111,7 +120,7 @@ LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
 
-    QVariant value = m_enableSuperKey.getValue();
+    QVariant value = m_dconf_launcher->property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
@@ -226,57 +235,6 @@ LauncherView::toggleDash()
 
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
     }
-}
-
-/* Calculates both the background color and the glow color of a launcher tile
-   based on the colors in the specified icon (using the same algorithm as Unity).
-   The values are returned as list where the first item is the background color
-   and the second one is the glow color.
-*/
-QList<QVariant>
-LauncherView::getColorsFromIcon(QUrl source, QSize size) const
-{
-    QList<QVariant> colors;
-
-    // FIXME: we should find a way to avoid reloading the icon
-    QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
-    if (icon.width() == 0 || icon.height() == 0) {
-        UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
-        return colors;
-    }
-
-    long int rtotal = 0, gtotal = 0, btotal = 0;
-    float total = 0.0f;
-
-    for (int y = 0; y < icon.height(); ++y) {
-        for (int x = 0; x < icon.width(); ++x) {
-            QColor color = QColor::fromRgba(icon.pixel(x, y));
-
-            float saturation = (qMax (color.red(), qMax (color.green(), color.blue())) -
-                                qMin (color.red(), qMin (color.green(), color.blue()))) / 255.0f;
-            float relevance = .1 + .9 * (color.alpha() / 255.0f) * saturation;
-
-            rtotal += (unsigned char) (color.red() * relevance);
-            gtotal += (unsigned char) (color.green() * relevance);
-            btotal += (unsigned char) (color.blue() * relevance);
-
-            total += relevance * 255;
-        }
-    }
-
-    QColor hsv = QColor::fromRgbF(rtotal / total, gtotal / total, btotal / total).toHsv();
-
-    /* Background color is the base color with 0.90f HSV value */
-    hsv.setHsvF(hsv.hueF(),
-                (hsv.saturationF() > .15f) ? 0.65f : hsv.saturationF(),
-                0.90f);
-    colors.append(QVariant::fromValue(hsv.toRgb()));
-
-    /* Glow color is the base color with 1.0f HSV value */
-    hsv.setHsvF(hsv.hueF(), hsv.saturationF(), 1.0f);
-    colors.append(QVariant::fromValue(hsv.toRgb()));
-
-    return colors;
 }
 
 void
