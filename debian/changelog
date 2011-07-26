@@ -1,10 +1,27 @@
 unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
 
+  [ Florian Boucault ]
   * do not run pkgbinarymangler to convert images to 8bit since this breaks
     the launcher icon background handling. (LP: #809205)
     (QT upstream bug: http://bugreports.qt.nokia.com/browse/QTBUG-4459)
+  * debian/unity-2d.install:
+    - install GSettings schemas into usr/share/glib-2.0/schemas
+    - install GConf to GSettings conversion into usr/share/GConf/gsettings
+  * debian/gconf/schemas/unity-2d.schemas:
+    - remove GConf schema for /desktop/unity-2d/launcher/super_key_enable
+    - remove GConf schema for /desktop/unity-2d/launcher/favorites
+  * debian/20_unity-2d-gconf-default:
+    - remove default value for /desktop/unity-2d/launcher/super_key_enable
+    - remove default value for /desktop/unity-2d/launcher/favorites
+  * debian/control:
+    - add dependency on libdconf-qt-dev
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 13 Jul 2011 12:11:05 +0200
+  [ Didier Roche ]
+  * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
+  * Install the apport hook in the right directory so that it's not launched
+    unconditionally (LP: #712343)
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 18:56:33 +0200
 
 unity-2d (3.8.10-0ubuntu1) natty; urgency=low
 

@@ -41,11 +41,11 @@ public:
     void setSourceModelQObject(QObject *model);
     void setLimit(int limit);
 
+    Q_SLOT void setRoleNames(const QHash<int,QByteArray> &roleNames);
+
 Q_SIGNALS:
     void limitChanged();
-
-private Q_SLOTS:
-    void updateRoleNames();
+    void roleNamesChanged(const QHash<int,QByteArray> &);
 
 private:
     int m_limit;
