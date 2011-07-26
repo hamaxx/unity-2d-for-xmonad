@@ -21,6 +21,7 @@
 #define GIODEFAULTAPPLICATION_H
 
 #include <QObject>
+#include <QString>
 
 class QFileSystemWatcher;
 
