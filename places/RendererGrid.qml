@@ -31,6 +31,7 @@ Renderer {
     needHeader: true
     property alias cellsPerRow: results.cellsPerRow
     property alias contentY: results.contentY
+    property alias currentItem: results.currentItem
 
     property variant cellRenderer
     property bool folded
