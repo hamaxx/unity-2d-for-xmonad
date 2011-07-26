@@ -36,6 +36,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+// libdconf-qt
+#include "qconf.h"
+
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
@@ -55,6 +58,7 @@ static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
 static const char* COMMANDS_PLACE_ENTRY = "Runner";
+static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
@@ -67,8 +71,8 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
-    connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
+    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
+    connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
     /* Alt+F1 gives the keyboard focus to the launcher. */
@@ -84,6 +88,11 @@ LauncherView::LauncherView(QWidget* parent) :
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
+}
+
+LauncherView::~LauncherView()
+{
+    delete m_dconf_launcher;
 }
 
 void
@@ -111,7 +120,7 @@ LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
 
-    QVariant value = m_enableSuperKey.getValue();
+    QVariant value = m_dconf_launcher->property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),

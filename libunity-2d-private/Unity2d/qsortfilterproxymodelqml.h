@@ -37,8 +37,10 @@ public:
     /* setters */
     void setSourceModelQObject(QObject *model);
 
-private Q_SLOTS:
-    void updateRoleNames();
+    Q_SLOT void setRoleNames(const QHash<int,QByteArray> &roleNames);
+
+Q_SIGNALS:
+    void roleNamesChanged(const QHash<int,QByteArray> &);
 };
 
 #endif // QSORTFILTERPROXYMODELQML_H
