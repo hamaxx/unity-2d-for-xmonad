@@ -58,9 +58,9 @@ Flow {
         contentType: "x-scheme-handler/http"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("View Photos")
-        desktopFile: "shotwell.desktop"
+        contentType: "image/jpeg"
     }
 
     HomeButtonDefaultApplication {
@@ -68,9 +68,9 @@ Flow {
         contentType: "x-scheme-handler/mailto"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Listen to Music")
-        key: "/desktop/gnome/applications/media/exec"
+        contentType: "audio/x-vorbis+ogg"
     }
 }
 
