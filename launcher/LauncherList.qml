@@ -77,7 +77,16 @@ AutoScrollingListView {
     delegate: LauncherItem {
         id: launcherItem
 
-        Accessible.name: item.name
+        function accessibleDescription() {
+            if (running) {
+                var windows = u2d.tr("%1 window opened", "%1 windows opened", item.windowCount).arg(item.windowCount)
+                return "%1 %2".arg(item.name).arg(windows)
+            } else {
+                return "%1 %2".arg(item.name).arg(u2d.tr("not running"))
+            }
+        }
+
+        Accessible.name: accessibleDescription()
 
         width: list.width
         tileSize: list.tileSize
