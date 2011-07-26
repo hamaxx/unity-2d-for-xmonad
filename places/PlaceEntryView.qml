@@ -104,7 +104,7 @@ Item {
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
             property int contentY
             Binding { target: item; property: "contentY"; value: contentY }
-            enabled: group_model.count > 0
+            property bool focusable: group_model.count > 0
 
             onLoaded: {
                 item.displayName = displayName
@@ -116,7 +116,7 @@ Item {
         }
 
         headerDelegate: GroupHeader {
-            visible: body.item.needHeader && body.enabled
+            visible: body.item.needHeader && body.focusable
             height: visible ? 32 : 0
 
             property bool foldable: body.item.folded != undefined
