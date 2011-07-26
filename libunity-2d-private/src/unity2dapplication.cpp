@@ -24,6 +24,9 @@
 #include "config.h"
 
 // Qt
+#include <QAccessible>
+#include <QAccessibleWidget>
+#include <QWidget>
 
 AbstractX11EventFilter::~AbstractX11EventFilter()
 {
@@ -31,6 +34,17 @@ AbstractX11EventFilter::~AbstractX11EventFilter()
     if (application != NULL) {
         application->removeX11EventFilter(this);
     }
+}
+
+QAccessibleInterface *panelFactory(const QString &classname, QObject *object)
+{
+    QAccessibleInterface *interface = 0;
+
+    if (classname == "Unity2dPanel" && object && object->isWidgetType()) {
+        interface = new QAccessibleWidget(static_cast<QWidget *>(object), QAccessible::ToolBar);
+    }
+
+    return interface;
 }
 
 Unity2dApplication::Unity2dApplication(int& argc, char** argv)
@@ -43,6 +57,8 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
     if (!isRunningInstalled()) {
         qputenv("GSETTINGS_SCHEMA_DIR", unity2dDirectory().toLocal8Bit() + "/data");
     }
+
+    QAccessible::installFactory(panelFactory);
 }
 
 Unity2dApplication::~Unity2dApplication()
