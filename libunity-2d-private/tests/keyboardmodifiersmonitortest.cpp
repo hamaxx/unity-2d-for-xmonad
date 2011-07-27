@@ -39,6 +39,7 @@
 #define UQ_TEST_MAIN(TestObject) \
 int main(int argc, char *argv[]) \
 { \
+    Unity2dApplication::earlySetup(argc, argv); \
     Unity2dApplication app(argc, argv); \
     QTEST_DISABLE_KEYPAD_NAVIGATION \
     TestObject tc; \
