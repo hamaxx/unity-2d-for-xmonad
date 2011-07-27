@@ -1,6 +1,7 @@
 unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
 
   [ Florian Boucault ]
+  * Upstreamed patch 01_build_with_new_indicator.patch
   * do not run pkgbinarymangler to convert images to 8bit since this breaks
     the launcher icon background handling. (LP: #809205)
     (QT upstream bug: http://bugreports.qt.nokia.com/browse/QTBUG-4459)
@@ -23,7 +24,16 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
 
  -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 18:56:33 +0200
 
-unity-2d (3.8.10-0ubuntu1) natty; urgency=low
+unity-2d (3.8.10-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - rebuild with new indicator 0.4
+  * 01_build_with_new_indicator.patch:
+    - patch to build with the new indicator 0.4 stack
+
+ -- Didier Roche <didrocks@ubuntu.com>  Sun, 10 Jul 2011 23:48:01 +0200
+
+unity-2d (3.8.10-0ubuntu1) oneiric; urgency=low
 
   [ Florian Boucault ]
   * debian/unity-2d-launcher.install:
@@ -46,10 +56,17 @@ unity-2d (3.8.10-0ubuntu1) natty; urgency=low
     - Missing a GConf schema file for the /desktop/unity-2d/… keys
       (LP: #750303)
     - [dash] home screen search hint should be 'Search' (LP: #797825)
+  * debian/unity-2d.gconf-defaults,
+    debian/20_ubuntu-2d-gconf-default:
+    - transition some gconf keys from session-wide to system-wide
+      (LP: #797672, #797676)
+  * debian/control:
+    - ensure we are still using gtk2 indicator for alpha2 (LP: #804938)
+    - bump standards-version
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 13 Jul 2011 11:59:29 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 04 Jul 2011 11:05:54 +0200
 
-unity-2d (3.8.8-0ubuntu1) natty; urgency=low
+unity-2d (3.8.8-0ubuntu1) oneiric; urgency=low
 
   [ Didier Roche ]
   * new upstream release:
@@ -96,7 +113,21 @@ unity-2d (3.8.8-0ubuntu1) natty; urgency=low
 
  -- Didier Roche <didrocks@ubuntu.com>  Tue, 14 Jun 2011 16:14:18 +0200
 
-unity-2d (3.8.6-0ubuntu1) natty; urgency=low
+unity-2d (3.8.6-0ubuntu3~ppa1) oneiric; urgency=low
+
+  * Rebuild with new gcc
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 07 Jun 2011 15:00:32 +0200
+
+unity-2d (3.8.6-0ubuntu2) oneiric; urgency=low
+
+  * debian/unity-2d.postinst, debian/unity-2d.postrm:
+    - remove the magic to set unity-2d in oneiric as the default session in gdm
+      as it's now installed on the ubuntu CD.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 01 Jun 2011 09:42:21 +0200
+
+unity-2d (3.8.6-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
     - [launcher] Support static shortcuts in the quicklists. (LP: #669923)
@@ -140,6 +171,18 @@ unity-2d (3.8.6-0ubuntu1) natty; urgency=low
   * debian/libunity-2d-private0.post*
     - removed: ldconfig is generated directly by dh_makeshlibs as we don't pass
       -n anymore
+  * don't install unity-2d session as it's in gnome-session now
+  * debian/unity-2d.install
+    debian/20_ubuntu-2d-gconf-default
+    debian/20_ubuntu-2d-gconf-mandatory
+    debian/gconf/ubuntu-2d.default.path
+    debian/gconf/ubuntu-2d.mandatory.path:
+    - remove uneeded defaults and mandatory
+    - remove some deprecated keys
+    - the session is now called ubuntu-2d and not unity-2d anymore
+  * debian/unity-2d.preinst, debian/unity-2d.postinst
+    debian/unity-2d.postrm:
+    - take into account the natty -> oneiric migration with session name change
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 

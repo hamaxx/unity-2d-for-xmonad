@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  install|upgrade)
+    if dpkg --compare-versions "$2" le "3.8.6-0ubuntu1"; then
+        if [ -d /var/lib/gconf/unity-2d.mandatory ]; then
+          mv /var/lib/gconf/unity-2d.mandatory /var/lib/gconf/ubuntu-2d.mandatory || true
+          mv /var/lib/gconf/unity-2d.default /var/lib/gconf/ubuntu-2d.default || true
+        fi
+    fi
+  ;;
+esac
+
+#DEBHELPER#
+

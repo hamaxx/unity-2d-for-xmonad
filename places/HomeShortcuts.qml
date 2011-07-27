@@ -53,24 +53,24 @@ Flow {
     }
 
     /* FIXME: use user's preferred applications instead of hardcoding them */
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Browse the Web")
-        key: "/desktop/gnome/applications/browser/exec"
+        contentType: "x-scheme-handler/http"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("View Photos")
-        desktopFile: "shotwell.desktop"
+        contentType: "image/jpeg"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Check Email")
-        key: "/desktop/gnome/url-handlers/mailto/command"
+        contentType: "x-scheme-handler/mailto"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Listen to Music")
-        key: "/desktop/gnome/applications/media/exec"
+        contentType: "audio/x-vorbis+ogg"
     }
 }
 
