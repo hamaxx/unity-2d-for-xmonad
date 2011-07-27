@@ -40,7 +40,7 @@ Renderer {
         boundsBehavior: ListView.StopAtBounds
         orientation: ListView.Vertical
 
-        model: renderer.model
+        model: renderer.group_model
         delegate: Button {
             property string uri: column_0
             property string iconHint: column_1
