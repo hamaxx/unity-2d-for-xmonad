@@ -40,6 +40,7 @@ libunity_2d_tests(
     unity2dtrtest
     launchermenutest
     listaggregatormodeltest
+    qsortfilterproxymodeltest
     )
 
 add_custom_target(unity2dtr_po COMMAND
