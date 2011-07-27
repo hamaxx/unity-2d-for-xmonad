@@ -22,8 +22,9 @@
 #include "indicatorentrywidget.h"
 
 // Local
+#include <cairoutils.h>
 #include <debug_p.h>
-#include <fakecairo.h>
+#include <gscopedpointer.h>
 #include <panelstyle.h>
 
 // Qt
@@ -42,56 +43,25 @@ static const int PADDING = 3;
 
 using namespace unity::indicator;
 
-// Copied from libdbusmenu-qt
-static QString swapMnemonicChar(const QString &in, const char src, const char dst)
-{
-    QString out;
-    bool mnemonicFound = false;
-
-    for (int pos = 0; pos < in.length(); ) {
-        QChar ch = in[pos];
-        if (ch == src) {
-            if (pos == in.length() - 1) {
-                // 'src' at the end of string, skip it
-                ++pos;
-            } else {
-                if (in[pos + 1] == src) {
-                    // A real 'src'
-                    out += src;
-                    pos += 2;
-                } else if (!mnemonicFound) {
-                    // We found the mnemonic
-                    mnemonicFound = true;
-                    out += dst;
-                    ++pos;
-                } else {
-                    // We already have a mnemonic, just skip the char
-                    ++pos;
-                }
-            }
-        } else if (ch == dst) {
-            // Escape 'dst'
-            out += dst;
-            out += dst;
-            ++pos;
-        } else {
-            out += ch;
-            ++pos;
-        }
-    }
-
-    return out;
-}
-
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 : m_entry(entry)
 , m_padding(PADDING)
 , m_hasIcon(false)
 , m_hasLabel(false)
+, m_gtkWidgetPath(gtk_widget_path_new())
 {
+    gtk_widget_path_append_type(m_gtkWidgetPath, GTK_TYPE_WINDOW);
+    gtk_widget_path_iter_set_name(m_gtkWidgetPath, -1 , "UnityPanelWidget");
+    gtk_widget_path_append_type(m_gtkWidgetPath, GTK_TYPE_MENU_BAR);
+    gtk_widget_path_append_type(m_gtkWidgetPath, GTK_TYPE_MENU_ITEM);
+
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
-    updatePix();
+}
+
+IndicatorEntryWidget::~IndicatorEntryWidget()
+{
+    gtk_widget_path_free(m_gtkWidgetPath);
 }
 
 QSize IndicatorEntryWidget::minimumSizeHint() const
@@ -104,105 +74,47 @@ QSize IndicatorEntryWidget::sizeHint() const
     return m_pix.size();
 }
 
+void IndicatorEntryWidget::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    updatePix();
+}
+
 void IndicatorEntryWidget::paintEvent(QPaintEvent*)
 {
     if (!m_pix.isNull()) {
         QPainter painter(this);
-        if (m_entry->active()) {
-            paintActiveBackground(&painter);
-        }
         painter.drawPixmap(0, 0, m_pix);
     }
 }
 
 
-void IndicatorEntryWidget::paintActiveBackground(QPainter* painter)
+void IndicatorEntryWidget::paintActiveBackground(QImage* image)
 {
-    // This code should be kept in sync with the draw_menu_bg() function from
+    // This code should be kept in sync with corresponding unityshell code from
     // plugins/unityshell/src/PanelIndicatorObjectEntryView.cpp
-    int radius = 4;
-    double x = 0;
-    double y = 0;
-    double xos = 0.5;
-    double yos = 0.5;
-    /* FIXME */
-    double mpi = 3.14159265358979323846;
 
-    PanelStyle* style = PanelStyle::instance();
-    nux::color::Color bgtop = nuxColorFromQColor(style->backgroundTopColor());
-    nux::color::Color bgbot = nuxColorFromQColor(style->backgroundBottomColor());
-    nux::color::Color line = nuxColorFromQColor(style->lineColor());
+    // Get a surface and a context
+    CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(image));
+    CairoUtils::Pointer cr(cairo_create(surface.data()));
 
-    painter->setRenderHint(QPainter::Antialiasing);
+    // Init style
+    GtkStyleContext* styleContext = PanelStyle::instance()->styleContext();
 
-    fcairo_t cr(painter);
+    gtk_style_context_save(styleContext);
 
-    fcairo_move_to (cr, x+xos+radius, y+yos);
-    fcairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
-    fcairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+2);
-    fcairo_line_to (cr, x+xos, y+yos+height()-yos*2+2);
-    fcairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
+    gtk_style_context_set_path(styleContext, m_gtkWidgetPath);
+    gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUBAR);
+    gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUITEM);
+    gtk_style_context_set_state(styleContext, GTK_STATE_FLAG_PRELIGHT);
 
-    fcairo_pattern_t * pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
-    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
-                                     bgtop.red,
-                                     bgtop.green,
-                                     bgtop.blue,
-                                     1.0f - bgbot.red);
-    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
-                                     bgbot.red,
-                                     bgbot.green,
-                                     bgbot.blue,
-                                     1.0f - bgtop.red);
-    fcairo_set_source (cr, pat);
-    fcairo_fill_preserve (cr);
-    fcairo_pattern_destroy (pat);
+    // Draw
+    // FIXME(Cimi) probably some padding is needed here.
+    gtk_render_background(styleContext, cr.data(), 0, 0, width(), height());
+    gtk_render_frame(styleContext, cr.data(), 0, 0, width(), height());
 
-    /*
-    pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+2);
-    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
-                                     line.red,
-                                     line.green,
-                                     line.blue,
-                                     1.0f);
-    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
-                                     line.red,
-                                     line.green,
-                                     line.blue,
-                                     1.0f);
-    fcairo_set_source (cr, pat);
-    */
-    fcairo_set_source_rgb (cr, line.red, line.green, line.blue);
-    fcairo_stroke (cr);
-    //fcairo_pattern_destroy (pat);
-
-    xos++;
-    yos++;
-
-    /* enlarging the area to not draw the lightborder at bottom, ugly trick :P */
-    fcairo_move_to (cr, x+radius+xos, y+yos);
-    fcairo_arc (cr, x+xos+width()-xos*2-radius, y+yos+radius, radius, mpi*1.5, mpi*2);
-    fcairo_line_to (cr, x+xos+width()-xos*2, y+yos+height()-yos*2+3);
-    fcairo_line_to (cr, x+xos, y+yos+height()-yos*2+3);
-    fcairo_arc (cr, x+xos+radius, y+yos+radius, radius, mpi, mpi*1.5);
-
-    /*
-    pat = fcairo_pattern_create_linear (x+xos, y, x+xos, y+height()-yos*2+3);
-    fcairo_pattern_add_color_stop_rgba (pat, 0.0,
-                                     bgbot.red,
-                                     bgbot.green,
-                                     bgbot.blue,
-                                     1.0f);
-    fcairo_pattern_add_color_stop_rgba (pat, 1.0,
-                                     bgbot.red,
-                                     bgbot.green,
-                                     bgbot.blue,
-                                     1.0f);
-    fcairo_set_source (cr, pat);
-    */
-    fcairo_set_source_rgb (cr, bgbot.red, bgbot.green, bgbot.blue);
-    fcairo_stroke (cr);
-    //fcairo_pattern_destroy (pat);
+    // Clean up
+    gtk_style_context_restore(styleContext);
 }
 
 void IndicatorEntryWidget::updatePix()
@@ -212,6 +124,8 @@ void IndicatorEntryWidget::updatePix()
     int width = m_padding;
     int iconX = m_padding;
     int labelX = 0;
+
+    GObjectScopedPointer<PangoLayout> pangoLayout;
 
     // Compute width, labelX and update m_has{Icon,Label}
     QPixmap iconPix;
@@ -225,17 +139,18 @@ void IndicatorEntryWidget::updatePix()
         width += iconPix.width();
     }
 
-    QString label = QString::fromUtf8(m_entry->label().c_str());
-    label = swapMnemonicChar(label, '_', '&');
-    m_hasLabel = !label.isEmpty() && m_entry->label_visible();
+    m_hasLabel = !m_entry->label().empty() && m_entry->label_visible();
     if (m_hasLabel) {
         if (m_hasIcon) {
             width += SPACING;
         }
         labelX = width;
-        QString visibleLabel = label;
-        visibleLabel.remove('&');
-        width += fontMetrics().width(visibleLabel);
+        pangoLayout.reset(createPangoLayout());
+        int labelWidth;
+        int labelHeight;
+        pango_layout_get_pixel_size(pangoLayout.data(), &labelWidth, &labelHeight);
+
+        width += labelWidth;
     }
 
     width += m_padding;
@@ -245,38 +160,27 @@ void IndicatorEntryWidget::updatePix()
     if (!m_hasIcon && !m_hasLabel) {
         m_pix = QPixmap();
     } else {
-        m_pix = QPixmap(width, 24);
-        m_pix.fill(Qt::transparent);
-        QPainter painter(&m_pix);
+        QImage img(width, height(), QImage::Format_ARGB32_Premultiplied);
+        QPainter painter(&img);
         painter.initFrom(this);
+        painter.eraseRect(img.rect());
+        if (m_entry->active()) {
+            paintActiveBackground(&img);
+        }
         if (m_hasIcon) {
             bool disabled = !m_entry->image_sensitive();
             if (disabled) {
                 painter.setOpacity(0.5);
             }
-            painter.drawPixmap(iconX, 0, iconPix);
+            painter.drawPixmap(iconX, (height() - iconPix.height()) / 2, iconPix);
             if (disabled) {
                 painter.setOpacity(1);
             }
         }
         if (m_hasLabel) {
-            PanelStyle* style = PanelStyle::instance();
-
-            int flags = Qt::AlignLeft | Qt::AlignVCenter;
-            flags |= m_entry->show_now() ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
-
-            // Shadow
-            QColor color = style->textShadowColor();
-            color.setAlphaF(1. - color.redF());
-            painter.setPen(color);
-            painter.drawText(labelX, 1, width - labelX, m_pix.height(), flags, label);
-
-            // Text
-            color = style->textColor();
-            color.setAlphaF(m_entry->label_sensitive() ? 1. : .5);
-            painter.setPen(color);
-            painter.drawText(labelX, 0, width - labelX, m_pix.height(), flags, label);
+            paintLabel(&img, pangoLayout.data(), labelX);
         }
+        m_pix = QPixmap::fromImage(img);
     }
 
     // Notify others we changed, but only trigger a layout update if necessary
@@ -292,6 +196,80 @@ void IndicatorEntryWidget::updatePix()
         // to a sigc++ signal.
         QMetaObject::invokeMethod(this, "isEmptyChanged", Qt::QueuedConnection);
     }
+}
+
+PangoLayout* IndicatorEntryWidget::createPangoLayout()
+{
+    // Parse
+    PangoAttrList* attrs = NULL;
+    if (m_entry->show_now()) {
+        if (!pango_parse_markup(m_entry->label().c_str(),
+                                 -1,
+                                 '_',
+                                 &attrs,
+                                 NULL,
+                                 NULL,
+                                 NULL))
+        {
+            UQ_WARNING << "pango_parse_markup failed";
+        }
+    }
+
+    // Create layout
+    GObjectScopedPointer<PangoContext> pangoContext(gdk_pango_context_get());
+    PangoLayout* layout = pango_layout_new(pangoContext.data());
+
+    if (attrs) {
+        pango_layout_set_attributes(layout, attrs);
+        pango_attr_list_unref(attrs);
+    }
+
+    // Set font
+    char* font_description = NULL;
+    GtkSettings *settings = gtk_settings_get_default();
+    g_object_get(settings,
+                  "gtk-font-name", &font_description,
+                  NULL);
+    PangoFontDescription* desc = pango_font_description_from_string(font_description);
+    pango_font_description_set_weight(desc, PANGO_WEIGHT_NORMAL);
+    pango_layout_set_font_description(layout, desc);
+    pango_font_description_free(desc);
+    g_free(font_description);
+
+    // Set text
+    QString label = QString::fromUtf8(m_entry->label().c_str());
+    label.replace('_', QString());
+    QByteArray utf8Label = label.toUtf8();
+    pango_layout_set_text(layout, utf8Label.data(), -1);
+
+    return layout;
+}
+
+void IndicatorEntryWidget::paintLabel(QImage* image, PangoLayout* layout, int labelX)
+{
+    // This code should be kept in sync with corresponding unityshell code from
+    // plugins/unityshell/src/PanelIndicatorObjectEntryView.cpp
+    int labelWidth, labelHeight;
+    pango_layout_get_pixel_size(layout, &labelWidth, &labelHeight);
+    CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(image));
+    CairoUtils::Pointer cr(cairo_create(surface.data()));
+    pango_cairo_update_layout(cr.data(), layout);
+
+    PanelStyle* style = PanelStyle::instance();
+    GtkStyleContext* styleContext = style->styleContext();
+
+    gtk_style_context_save(styleContext);
+
+    gtk_style_context_set_path(styleContext, m_gtkWidgetPath);
+    gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUBAR);
+    gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUITEM);
+
+    if (m_entry->active()) {
+        gtk_style_context_set_state(styleContext, GTK_STATE_FLAG_PRELIGHT);
+    }
+
+    gtk_render_layout(styleContext, cr.data(), labelX, (image->height() - labelHeight) / 2, layout);
+    gtk_style_context_restore(styleContext);
 }
 
 QPixmap IndicatorEntryWidget::decodeIcon()

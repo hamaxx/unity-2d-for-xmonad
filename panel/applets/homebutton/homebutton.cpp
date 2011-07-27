@@ -40,8 +40,10 @@ HomeButton::HomeButton(QWidget *parent)
     setStyleSheet(
             "QToolButton { border: none; margin: 0; padding: 0; width: 61 }"
             "QToolButton:checked, QToolButton:pressed {"
-            // Use border-image here, not background-image, because bfb_bg_active.png is 56px wide
-            "     border-image: url(theme:/bfb_bg_active.png);"
+            "   padding-top: 1px;"
+            "   padding-left: 1px;"
+            "   padding-right: -1px;"
+            "   padding-bottom: -1px;"
             "}"
     );
 }

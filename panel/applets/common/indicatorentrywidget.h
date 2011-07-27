@@ -29,6 +29,9 @@
 // Qt
 #include <QWidget>
 
+struct _GtkWidgetPath;
+struct _PangoLayout;
+
 class QPainter;
 
 class IndicatorEntryWidget : public QWidget, public sigc::trackable
@@ -36,6 +39,7 @@ class IndicatorEntryWidget : public QWidget, public sigc::trackable
 Q_OBJECT
 public:
     IndicatorEntryWidget(const unity::indicator::Entry::Ptr& entry);
+    ~IndicatorEntryWidget();
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -61,6 +65,7 @@ Q_SIGNALS:
     void isEmptyChanged();
 
 protected:
+    void resizeEvent(QResizeEvent*);
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
@@ -73,9 +78,13 @@ private:
     int m_padding;
     bool m_hasIcon;
     bool m_hasLabel;
+    struct _GtkWidgetPath* m_gtkWidgetPath;
     void updatePix();
     QPixmap decodeIcon();
-    void paintActiveBackground(QPainter*);
+    void paintActiveBackground(QImage*);
+
+    struct _PangoLayout* createPangoLayout();
+    void paintLabel(QImage*, struct _PangoLayout*, int labelX);
 };
 
 #endif /* INDICATORENTRYWIDGET_H */

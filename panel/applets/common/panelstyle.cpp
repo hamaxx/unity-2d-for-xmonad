@@ -22,42 +22,24 @@
 #include "panelstyle.h"
 
 // libunity-2d
+#include <cairoutils.h>
 #include <debug_p.h>
 #include <gconnector.h>
 #include <gscopedpointer.h>
 
 // Qt
 #include <QApplication>
-#include <QColor>
-#include <QFont>
 #include <QPalette>
 
 // GTK
 #include <gtk/gtk.h>
-#include <pango/pango.h>
-
-typedef void (*ColorGetter)(GtkStyleContext*, GtkStateFlags, GdkRGBA*);
-
-inline QColor colorFromContext(ColorGetter getter, GtkStyleContext* context, GtkStateFlags state)
-{
-    GdkRGBA color;
-    getter(context, state, &color);
-    return QColor::fromRgbF(color.red, color.green, color.blue, color.alpha);
-}
 
 class PanelStylePrivate
 {
 public:
     PanelStyle* q;
-    GtkWidget* m_offScreenWindow;
+    GObjectScopedPointer<GtkStyleContext> m_styleContext;
     GConnector m_gConnector;
-
-    QColor m_textColor;
-    QColor m_backgroundTopColor;
-    QColor m_backgroundBottomColor;
-    QColor m_textShadowColor;
-    QColor m_lineColor;
-    QFont m_font;
 
     static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
     {
@@ -65,49 +47,29 @@ public:
         priv->updatePalette();
     }
 
-    static void onFontChanged(GObject*, GParamSpec*, gpointer data)
-    {
-        PanelStylePrivate* priv = reinterpret_cast<PanelStylePrivate*>(data);
-        priv->updateFont();
-    }
-
     void updatePalette()
     {
-        GtkStyleContext* context = gtk_widget_get_style_context(m_offScreenWindow);
-        UQ_RETURN_IF_FAIL(context);
+        GtkStyleContext* context = m_styleContext.data();
+        gtk_style_context_invalidate(context);
 
-        m_textColor             = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_NORMAL);
-        m_textShadowColor       = colorFromContext(gtk_style_context_get_color, context, GTK_STATE_FLAG_SELECTED);
-        m_lineColor             = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL).darker(130);
-        m_backgroundTopColor    = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_ACTIVE);
-        m_backgroundBottomColor = colorFromContext(gtk_style_context_get_background_color, context, GTK_STATE_FLAG_NORMAL);
+        // Without this line, it seems the GtkStyleContext is not correctly
+        // initialized and we get some uninitialized pixels in the background
+        // brush.
+        gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
         QPalette pal;
-        pal.setColor(QPalette::Window, m_backgroundTopColor);
-        pal.setColor(QPalette::Button, m_backgroundTopColor);
-        pal.setColor(QPalette::Text, m_textColor);
-        pal.setColor(QPalette::WindowText, m_textColor);
-        pal.setColor(QPalette::ButtonText, m_textColor);
+        pal.setBrush(QPalette::Window, generateBackgroundBrush());
         QApplication::setPalette(pal);
     }
 
-    void updateFont()
+    QBrush generateBackgroundBrush()
     {
-        gchar* fontName = 0;
-        g_object_get(gtk_settings_get_default(), "gtk-font-name", &fontName, NULL);
-        GScopedPointer<PangoFontDescription, pango_font_description_free> fontDescription(
-            pango_font_description_from_string(fontName)
-            );
-        g_free(fontName);
-
-        int size = pango_font_description_get_size(fontDescription.data());
-
-        m_font = QFont(
-            pango_font_description_get_family(fontDescription.data()),
-            size / PANGO_SCALE
-            );
-
-        QApplication::setFont(m_font);
+        QImage image(100, 24, QImage::Format_ARGB32_Premultiplied); // FIXME: Hardcoded
+        image.fill(Qt::transparent);
+        CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(&image));
+        CairoUtils::Pointer cr(cairo_create(surface.data()));
+        gtk_render_background(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
+        return QBrush(image);
     }
 };
 
@@ -115,24 +77,26 @@ PanelStyle::PanelStyle(QObject* parent)
 : d(new PanelStylePrivate)
 {
     d->q = this;
-    d->m_offScreenWindow = gtk_offscreen_window_new();
-    gtk_widget_set_name(d->m_offScreenWindow, "UnityPanelWidget");
-    gtk_widget_set_size_request(d->m_offScreenWindow, 100, 24);
-    gtk_style_context_add_class(gtk_widget_get_style_context(d->m_offScreenWindow), "menubar");
-    gtk_widget_show_all(d->m_offScreenWindow);
+    d->m_styleContext.reset(gtk_style_context_new());
+
+    GtkWidgetPath* widgetPath = gtk_widget_path_new ();
+    gtk_widget_path_append_type(widgetPath, GTK_TYPE_WINDOW);
+    gtk_widget_path_iter_set_name(widgetPath, -1 , "UnityPanelWidget");
+
+    gtk_style_context_set_path(d->m_styleContext.data(), widgetPath);
+    gtk_style_context_add_class(d->m_styleContext.data(), "gnome-panel-menu-bar");
+    gtk_style_context_add_class(d->m_styleContext.data(), "unity-panel");
+
+    gtk_widget_path_free (widgetPath);
 
     d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
-    d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-font-name",
-        G_CALLBACK(PanelStylePrivate::onFontChanged), d);
 
     d->updatePalette();
-    d->updateFont();
 }
 
 PanelStyle::~PanelStyle()
 {
-    gtk_widget_destroy(d->m_offScreenWindow);
     delete d;
 }
 
@@ -142,34 +106,9 @@ PanelStyle* PanelStyle::instance()
     return &style;
 }
 
-QColor PanelStyle::textColor() const
+GtkStyleContext* PanelStyle::styleContext() const
 {
-    return d->m_textColor;
-}
-
-QColor PanelStyle::backgroundTopColor() const
-{
-    return d->m_backgroundTopColor;
-}
-
-QColor PanelStyle::backgroundBottomColor() const
-{
-    return d->m_backgroundBottomColor;
-}
-
-QColor PanelStyle::textShadowColor() const
-{
-    return d->m_textShadowColor;
-}
-
-QColor PanelStyle::lineColor() const
-{
-    return d->m_lineColor;
-}
-
-QFont PanelStyle::font() const
-{
-    return d->m_font;
+    return d->m_styleContext.data();
 }
 
 #include "panelstyle.moc"

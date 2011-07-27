@@ -18,39 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PANELSTYLE_H
-#define PANELSTYLE_H
+// Self
+#include "cairoutils.h"
 
 // Local
 
 // Qt
-#include <QObject>
+#include <QImage>
 
-struct _GtkStyleContext;
+namespace CairoUtils {
 
-class PanelStylePrivate;
-/**
- * Provides easy access to panel style context and track platform theme to
- * ensure we have the correct background brush.
- *
- * FIXME: This class does not have a very clear focus and has side-effects
- * (background brush handling). It should be refactored.
- */
-class PanelStyle : public QObject
+cairo_surface_t* createSurfaceForQImage(QImage* image)
 {
-    Q_OBJECT
-public:
-    PanelStyle(QObject* parent = 0);
-    ~PanelStyle();
+    return cairo_image_surface_create_for_data(
+        image->bits(),
+        CAIRO_FORMAT_ARGB32,
+        image->width(),
+        image->height(),
+        image->bytesPerLine()
+        );
+}
 
-    static PanelStyle* instance();
-
-    struct _GtkStyleContext* styleContext() const;
-
-private:
-    friend class PanelStylePrivate;
-    // Use a pimpl to avoid the need for gtk includes here
-    PanelStylePrivate* const d;
-};
-
-#endif /* PANELSTYLE_H */
+} // namespace

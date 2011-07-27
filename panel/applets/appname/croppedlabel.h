@@ -18,39 +18,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PANELSTYLE_H
-#define PANELSTYLE_H
+#ifndef CROPPEDLABEL_H
+#define CROPPEDLABEL_H
 
 // Local
 
 // Qt
-#include <QObject>
+#include <QLabel>
 
-struct _GtkStyleContext;
-
-class PanelStylePrivate;
 /**
- * Provides easy access to panel style context and track platform theme to
- * ensure we have the correct background brush.
- *
- * FIXME: This class does not have a very clear focus and has side-effects
- * (background brush handling). It should be refactored.
+ * This label makes sure minimumSizeHint() is not set. This ensures the applet
+ * does not get wider if a window title is very long
  */
-class PanelStyle : public QObject
+class CroppedLabel : public QLabel
 {
     Q_OBJECT
 public:
-    PanelStyle(QObject* parent = 0);
-    ~PanelStyle();
+    CroppedLabel(QWidget* parent = 0);
 
-    static PanelStyle* instance();
+    QSize minimumSizeHint() const;
 
-    struct _GtkStyleContext* styleContext() const;
-
-private:
-    friend class PanelStylePrivate;
-    // Use a pimpl to avoid the need for gtk includes here
-    PanelStylePrivate* const d;
+protected:
+    void paintEvent(QPaintEvent*);
 };
 
-#endif /* PANELSTYLE_H */
+#endif /* CROPPEDLABEL_H */

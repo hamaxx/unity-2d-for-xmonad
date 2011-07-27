@@ -12,12 +12,14 @@ set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
     appname/appnameapplet.cpp
+    appname/croppedlabel.cpp
     appname/menubarwidget.cpp
     appname/windowhelper.cpp
     common/applet.cpp
     common/indicatorentrywidget.cpp
     common/indicatorsmanager.cpp
     common/indicatorwidget.cpp
+    common/cairoutils.cpp
     common/panelstyle.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
@@ -41,6 +43,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${CMAKE_CURRENT_SOURCE_DIR}/unitycore
     ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
@@ -58,6 +61,7 @@ target_link_libraries(uqapplets
     ${QT_QTCORE_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
     ${GTK_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${X11_LIBRARIES}
