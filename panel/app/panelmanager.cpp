@@ -54,7 +54,6 @@ static QWidget* createSeparator()
 
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
-, m_indicatorsManager(new IndicatorsManager(this))
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
@@ -77,18 +76,20 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     panel->setEdge(Unity2dPanel::TopEdge);
     panel->setFixedHeight(24);
 
+    IndicatorsManager* indicatorsManager = new IndicatorsManager(panel);
+
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
     if (screen == leftmost) {
         panel->addWidget(new HomeButtonApplet);
         panel->addWidget(createSeparator());
     }
-    panel->addWidget(new AppNameApplet(m_indicatorsManager));
+    panel->addWidget(new AppNameApplet(indicatorsManager));
     if (screen == leftmost) {
         /* It doesn’t make sense to have more than one instance of the systray,
            XEmbed’ed windows can be displayed only once anyway. */
         panel->addWidget(new LegacyTrayApplet);
     }
-    panel->addWidget(new IndicatorApplet(m_indicatorsManager));
+    panel->addWidget(new IndicatorApplet(indicatorsManager));
     return panel;
 }
 
