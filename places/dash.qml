@@ -30,6 +30,12 @@ Item {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
+    /* Unload the current page when closing the dash */
+    Connections {
+        target: dashView
+        onActiveChanged: if (!dashView.active) pageLoader.source = ""
+    }
+
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
         search_entry.focus = true
