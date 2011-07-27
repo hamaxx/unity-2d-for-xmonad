@@ -47,18 +47,18 @@ Renderer {
     /* Using results.contentHeight produces binding loop warnings and potential
        rendering issues. We compute the height manually.
     */
-    /* FIXME: tricking the system by making the delegate of height 0 and with
-              an invisible header is no good: the item in the model still
-              exists and some things such as keyboard selection break.
+    /* FIXME: tricking the system by making the delegate of height 0 and invisible
+              is no good: the item in the model still exists and some things
+              such as keyboard selection break.
     */
-    height: results.count > 0 ? header.height + results_layout.anchors.topMargin + results.totalHeight : 0
+    visible: results.model.totalCount > 0
+    height: visible ? header.height + results_layout.anchors.topMargin + results.totalHeight : 0
     //Behavior on height {NumberAnimation {duration: 200}}
 
     GroupHeader {
         id: header
 
-        visible: results.count > 0
-        availableCount: results.count - results.cellsPerRow
+        availableCount: results.model.totalCount - results.cellsPerRow
         folded: parent.folded
         anchors.top: parent.top
         anchors.left: parent.left
@@ -124,9 +124,7 @@ Renderer {
             width: flickable.width
             height: Math.min(totalHeight, flickable.height)
 
-            /* Only display one line of items when folded */
-            property int displayedCount: folded ? cellsPerRow : count
-            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerRow)
+            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerRow)
 
             minHorizontalSpacing: renderer.horizontalSpacing
             minVerticalSpacing: renderer.verticalSpacing
@@ -168,7 +166,11 @@ Renderer {
                 }
             }
 
-            model: renderer.model
+            /* Only display one line of items when folded */
+            model: SortFilterProxyModel {
+                model: renderer.model != undefined ? renderer.model : null
+                limit: folded ? results.cellsPerRow : -1
+            }
         }
     }
 }
