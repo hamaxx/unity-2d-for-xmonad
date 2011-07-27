@@ -74,7 +74,7 @@ Renderer {
             delegateWidth: renderer.cellWidth
             delegateHeight: renderer.cellHeight
 
-//            interactive: false
+            interactive: false
             clip: true
 
             delegate: FocusScope {
