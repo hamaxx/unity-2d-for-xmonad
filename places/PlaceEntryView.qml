@@ -108,14 +108,13 @@ FocusScope {
             property bool focusable: group_model.count > 0
             property variant currentItem: item.currentItem
 
-            onLoaded: {
-                item.displayName = displayName
-                item.iconHint = iconHint
-                item.groupId = groupId
-                item.group_model = group_model
-                item.placeEntryModel = placeEntryView.model
-                item.focus = true
-            }
+            Binding { target: item; property: "displayName"; value: displayName }
+            Binding { target: item; property: "iconHint"; value: iconHint }
+            Binding { target: item; property: "groupId"; value: groupId }
+            Binding { target: item; property: "group_model"; value: group_model }
+            Binding { target: item; property: "placeEntryModel"; value: placeEntryView.model }
+
+            onLoaded: item.focus = true
         }
 
         headerDelegate: GroupHeader {

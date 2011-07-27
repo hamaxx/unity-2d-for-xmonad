@@ -26,6 +26,9 @@ FocusScope {
     property int headerHeight
     property variant placeEntryModel
 
+    /* Give the focus to header when folded */
+    onFoldedChanged: if (folded) header.focus = true
+
     AbstractButton {
         id: header
 
@@ -51,7 +54,8 @@ FocusScope {
 
         focus: true
 
-        KeyNavigation.down: options
+        /* Do not navigate down to the options if they are folded */
+        KeyNavigation.down: !searchRefine.folded ? options : header
 
         anchors.left: parent.left
         anchors.right: parent.right
