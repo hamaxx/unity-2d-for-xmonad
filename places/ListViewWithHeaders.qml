@@ -19,7 +19,27 @@
 import QtQuick 1.0
 
 /*
-  Ref.: http://bugreports.qt.nokia.com/browse/QTBUG-12880
+  List item that behaves similarly to a ListView but supports adding headers
+  before every delegate.
+  It works around the lack of flexibility in section headers positioning of
+  ListView (cf. http://bugreports.qt.nokia.com/browse/QTBUG-12880). It also
+  supports delegates that are flickable by flicking their content properly
+  depending on where you are in the list.
+
+  To use it the following properties need to be set:
+  - bodyDelegate: Component used as a template for each item of the model; it
+    must have the following properties:
+     - 'contentY': same definition as a Flickable's
+     - 'totalHeight': the total height of the content of the body
+     - 'currentItem': a reference to the item of the body (e.g. a delegate of
+                      a ListView) currently focused by the body
+  - headerDelegate: Component used as a template for the header preceding each body
+
+  Two behaviours are available for the headers positioning:
+  - normal: the headers are always positioned just before the body
+  - accordion: the headers are stacked at the top and bottom of the list
+
+  Currently, it only works in a vertical layout.
 */
 FocusScope {
     id: list
