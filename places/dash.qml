@@ -118,6 +118,7 @@ Item {
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
+        /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
 
 
