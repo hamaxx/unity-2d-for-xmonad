@@ -22,8 +22,8 @@ AbstractButton {
     id: tickBox
 
     property string text
-    property bool ticked: false
-    property bool canUntick: true
+    property bool checked: false
+    property bool canUncheck: true
 
     width: childrenRect.width
     height: childrenRect.height
@@ -43,7 +43,7 @@ AbstractButton {
     Image {
         id: box
 
-        opacity: !canUntick && ticked ? 0 : 1
+        opacity: !canUncheck && checked ? 0 : 1
         anchors.top: parent.top
         anchors.left: parent.left
         source: "artwork/tick_box.png"
@@ -58,7 +58,7 @@ AbstractButton {
         anchors.topMargin: 2
         anchors.left: box.left
         anchors.leftMargin: 3
-        opacity: ticked ? 1.0 : parent.state == "selected" ? 0.4 : 0.0
+        opacity: checked ? 1.0 : parent.state == "selected" ? 0.4 : 0.0
         source: "artwork/tick.png"
         width: sourceSize.width
         height: sourceSize.height

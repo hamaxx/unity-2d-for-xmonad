@@ -1,17 +1,11 @@
 # Dependencies
-pkg_check_modules(WNCK REQUIRED libwnck-1.0)
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(QTDEE REQUIRED libqtdee)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GDK REQUIRED gdk-2.0)
-pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
 pkg_check_modules(INDICATOR REQUIRED indicator-0.4)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
-
-find_package(X11 REQUIRED)
 
 # Sources
 set(unity-2d-private-qml_SRCS

@@ -23,13 +23,43 @@
 #include "unity2dapplication.h"
 #include "config.h"
 
+// libunity-2d
+#include <debug_p.h>
+#include <unity2ddebug.h>
+
 // Qt
+#include <QWindowsStyle>
+
+// GTK
+#include <gtk/gtk.h>
 
 AbstractX11EventFilter::~AbstractX11EventFilter()
 {
     Unity2dApplication* application = Unity2dApplication::instance();
     if (application != NULL) {
         application->removeX11EventFilter(this);
+    }
+}
+
+void Unity2dApplication::earlySetup(int& argc, char** argv)
+{
+    // Parts of unity-2d uses GTK so it needs to be initialized
+    gtk_init(&argc, &argv);
+
+    Unity2dDebug::installHandlers();
+
+    /* When the environment variable QT_GRAPHICSSYSTEM is not set, force
+     * graphics system to 'raster' instead of the default 'native' which on X11
+     * is 'XRender'.  'XRender' defaults to using a TrueColor visual. We do
+     * _not_ mimick that behaviour with 'raster' by calling
+     * QApplication::setColorSpec because of bugs where some pixmaps become
+     * blueish or black rectangular artifacts were appearing randomly:
+     *
+     *  https://bugs.launchpad.net/unity-2d/+bug/689877
+     *  https://bugs.launchpad.net/unity-2d/+bug/734143
+     */
+    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
+        QApplication::setGraphicsSystem("raster");
     }
 }
 
