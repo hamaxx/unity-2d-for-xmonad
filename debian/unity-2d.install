@@ -1,9 +1,7 @@
 debian/unity-2d.py /usr/share/apport/package-hooks
 debian/gconf/* /usr/share/gconf
-session/unity-2d.desktop /usr/share/xsessions
-session/2d-ubuntu.session /usr/share/gnome-session/sessions
-debian/20_unity-2d-gconf-mandatory /usr/share/gconf/unity-2d/mandatory
-debian/20_unity-2d-gconf-default /usr/share/gconf/unity-2d/default
+debian/20_ubuntu-2d-gconf-mandatory /usr/share/gconf/ubuntu-2d/mandatory
+debian/20_ubuntu-2d-gconf-default /usr/share/gconf/ubuntu-2d/default
 usr/share/locale/*/LC_MESSAGES/unity-2d.mo
 usr/share/glib-2.0/schemas/com.canonical.Unity2d.gschema.xml
 usr/share/GConf/gsettings
