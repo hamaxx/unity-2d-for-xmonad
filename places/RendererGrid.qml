@@ -28,6 +28,11 @@ import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons */
 Renderer {
     id: renderer
 
+    needHeader: true
+    property alias cellsPerRow: results.cellsPerRow
+    property alias contentY: results.contentY
+    property alias currentItem: results.currentItem
+
     property variant cellRenderer
     property bool folded
     folded: {
@@ -44,89 +49,25 @@ Renderer {
     property int horizontalSpacing: 26
     property int verticalSpacing: 26
 
-    /* Using results.contentHeight produces binding loop warnings and potential
-       rendering issues. We compute the height manually.
-    */
-    /* FIXME: tricking the system by making the delegate of height 0 and with
-              an invisible header is no good: the item in the model still
-              exists and some things such as keyboard selection break.
-    */
-    height: results.count > 0 ? header.height + results_layout.anchors.topMargin + results.totalHeight : 0
-    //Behavior on height {NumberAnimation {duration: 200}}
-
-    GroupHeader {
-        id: header
-
-        visible: results.count > 0
-        availableCount: results.count - results.cellsPerRow
-        folded: parent.folded
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 32
-        icon: parent.iconHint
-        label: parent.displayName
-
-        onClicked: parent.folded = !parent.folded
-    }
+    /* FIXME: using results_layout.anchors.topMargin in the following expression
+              causes QML to think they might be an anchor loop. */
+    property int totalHeight: results.count > 0 ? results_layout.anchors.topMargin + results.totalHeight : 0
 
     Item {
         id: results_layout
 
-        anchors.top: header.bottom
-        anchors.topMargin: 22
-        anchors.left: parent.left
+        anchors.fill: parent
+        anchors.topMargin: 12
         anchors.leftMargin: 2
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
 
         CenteredGridView {
             id: results
 
-            /* FIXME: this is a gross hack compensating for the lack of sections
-               in GridView (see ListView.section).
+            focus: true
 
-               We nest GridViews inside a ListView and add headers manually
-               (GroupHeader). The total height of each Group is computed
-               manually and given back to the ListView. However that size cannot
-               be used by the individual GridViews because it would make them
-               load all of their delegates at once using far too much memory and
-               processing power. Instead we constrain the height of the GridViews
-               and compute their position manually to compensate for the position
-               changes when flicking the ListView.
+            anchors.fill: parent
 
-               We assume that renderer.parentListView is the ListView we nest our
-               GridView into.
-            */
-            property variant flickable: renderer.parentListView.contentItem
-
-            /* flickable.contentY*0 is equal to 0 but is necessary in order to
-               have the entire expression being evaluated at the right moment.
-            */
-            property int inFlickableY: flickable.contentY*0+parent.mapToItem(flickable, 0, 0).y
-            /* note: testing for flickable.height < 0 is probably useless since it is
-               unlikely flickable.height will ever be negative.
-            */
-            property int compensateY: inFlickableY > 0 || flickable.height < 0 || totalHeight < flickable.height ? 0 : -inFlickableY
-
-            /* Synchronise the position and content's position of the GridView
-               with the current position of flickable's visibleArea */
-            function synchronisePosition() {
-                y = compensateY
-                contentY = compensateY
-            }
-
-            onCompensateYChanged: synchronisePosition()
-            /* Any change in content needs to trigger a synchronisation */
-            onCountChanged: synchronisePosition()
-            onModelChanged: synchronisePosition()
-
-            width: flickable.width
-            height: Math.min(totalHeight, flickable.height)
-
-            /* Only display one line of items when folded */
-            property int displayedCount: folded ? cellsPerRow : count
-            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerRow)
+            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerRow)
 
             minHorizontalSpacing: renderer.horizontalSpacing
             minVerticalSpacing: renderer.verticalSpacing
@@ -136,7 +77,7 @@ Renderer {
             interactive: false
             clip: true
 
-            delegate: Item {
+            delegate: FocusScope {
 
                 width: results.cellWidth
                 height: results.cellHeight
@@ -157,6 +98,7 @@ Renderer {
                     height: results.delegateHeight
                     anchors.horizontalCenter: parent.horizontalCenter
 
+                    focus: true
                     sourceComponent: cellRenderer
                     onLoaded: {
                         item.uri = uri
@@ -164,11 +106,16 @@ Renderer {
                         item.mimetype = mimetype
                         item.displayName = displayName
                         item.comment = comment
+                        item.focus = true
                     }
                 }
             }
 
-            model: renderer.model
+            /* Only display one line of items when folded */
+            model: SortFilterProxyModel {
+                model: renderer.group_model != undefined ? renderer.group_model : null
+                limit: folded ? results.cellsPerRow : -1
+            }
         }
     }
 }

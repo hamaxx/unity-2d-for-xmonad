@@ -83,7 +83,7 @@ Item {
             when: !dragMouseArea.drag.active
         }
 
-        height: Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height)
+        height: Math.min(scrollbar.height, Math.max(minimalHeight, targetFlickable.visibleArea.heightRatio * scrollbar.height))
 
         Behavior on height {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 
