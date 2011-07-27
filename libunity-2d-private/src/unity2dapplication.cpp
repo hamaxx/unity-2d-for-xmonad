@@ -25,14 +25,59 @@
 
 // libunity-2d
 #include <debug_p.h>
+#include <gconnector.h>
+#include <gscopedpointer.h>
 #include <unity2ddebug.h>
 
 // Qt
+#include <QFont>
 #include <QWindowsStyle>
 
 // GTK
 #include <gtk/gtk.h>
+#include <pango/pango.h>
 
+///////////////////////////////
+class PlatformFontTracker
+{
+public:
+    PlatformFontTracker()
+    {
+        m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-font-name",
+            G_CALLBACK(PlatformFontTracker::onFontChanged), this);
+
+        updateFont();
+    }
+
+private:
+    void updateFont()
+    {
+        gchar* fontName = 0;
+        g_object_get(gtk_settings_get_default(), "gtk-font-name", &fontName, NULL);
+        GScopedPointer<PangoFontDescription, pango_font_description_free> fontDescription(
+            pango_font_description_from_string(fontName)
+            );
+        g_free(fontName);
+
+        int size = pango_font_description_get_size(fontDescription.data());
+
+        QFont font = QFont(
+            pango_font_description_get_family(fontDescription.data()),
+            size / PANGO_SCALE
+            );
+
+        QApplication::setFont(font);
+    }
+
+    static void onFontChanged(GObject*, GParamSpec*, PlatformFontTracker* obj)
+    {
+        obj->updateFont();
+    }
+
+    GConnector m_gConnector;
+};
+
+///////////////////////////////
 AbstractX11EventFilter::~AbstractX11EventFilter()
 {
     Unity2dApplication* application = Unity2dApplication::instance();
@@ -41,6 +86,7 @@ AbstractX11EventFilter::~AbstractX11EventFilter()
     }
 }
 
+///////////////////////////////
 static bool arrayContains(char** begin, char** end, const char* string)
 {
     for (char** ptr = begin; ptr != end; ++ptr) {
@@ -83,6 +129,7 @@ void Unity2dApplication::earlySetup(int& argc, char** argv)
 
 Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 : QApplication(argc, argv)
+, m_platformFontTracker(new PlatformFontTracker)
 {
     /* Allow developers to run Unity 2D uninstalled by telling dconf-qt
        where to look for Unity 2D's schemas.
@@ -96,6 +143,7 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 Unity2dApplication::~Unity2dApplication()
 {
     qDeleteAll(m_x11EventFilters);
+    delete m_platformFontTracker;
 }
 
 Unity2dApplication* Unity2dApplication::instance()

@@ -26,14 +26,15 @@
 // Qt
 #include <QObject>
 
-class QColor;
-class QFont;
-
 struct _GtkStyleContext;
 
 class PanelStylePrivate;
 /**
- * Provides easy access to panel colors
+ * Provides easy access to panel style context and track platform theme to
+ * ensure we have the correct background brush.
+ *
+ * FIXME: This class does not have a very clear focus and has side-effects
+ * (background brush handling). It should be refactored.
  */
 class PanelStyle : public QObject
 {
@@ -43,14 +44,6 @@ public:
     ~PanelStyle();
 
     static PanelStyle* instance();
-
-    QColor textColor() const;
-    QColor backgroundTopColor() const;
-    QColor backgroundBottomColor() const;
-    QColor textShadowColor() const;
-    QColor lineColor() const;
-
-    QFont font() const;
 
     struct _GtkStyleContext* styleContext() const;
 
