@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gtk/gtk.h>
-
 // unity-2d
 #include <gnomesessionclient.h>
 #include <launcherclient.h>
@@ -43,6 +41,9 @@
 #include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
+
+// libc
+#include <stdlib.h>
 
 static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
@@ -75,24 +76,7 @@ static QmlJsDebuggingEnabler enableDebuggingHelper;
 
 int main(int argc, char *argv[])
 {
-    /* Unity2d plugin uses GTK APIs to retrieve theme icons
-       (gtk_icon_theme_get_default) and requires a call to gtk_init */
-    gtk_init(&argc, &argv);
-
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where black rectangular artifacts were appearing randomly:
-
-       https://bugs.launchpad.net/unity-2d/+bug/734143
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
+    Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
@@ -150,7 +134,7 @@ int main(int argc, char *argv[])
        the launcher itself was autostarted (which is the common case when
        running installed).
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
-    g_unsetenv("DESKTOP_AUTOSTART_ID");
+    unsetenv("DESKTOP_AUTOSTART_ID");
 
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */

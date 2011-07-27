@@ -1,7 +1,3 @@
-# Dependencies
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(WNCK REQUIRED libwnck-1.0)
-
 # Sources
 set(libunity-2d-private_SRCS
     gconnector.cpp
