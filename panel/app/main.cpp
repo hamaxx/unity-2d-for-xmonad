@@ -22,12 +22,12 @@
 // Local
 #include <config.h>
 #include <panelmanager.h>
+#include <panelstyle.h>
 
 // Unity
 #include <gnomesessionclient.h>
 #include <unity2ddebug.h>
 #include <unity2dapplication.h>
-#include <unity2dstyle.h>
 #include <unity2dtr.h>
 
 // Qt
@@ -54,7 +54,9 @@ int main(int argc, char** argv)
     ThemeEngineHandler handler;
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication app(argc, argv);
-    QApplication::setStyle(new Unity2dStyle);
+
+    // Instantiate a PanelStyle so that it configures QApplication
+    PanelStyle::instance();
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");
     client.connectToSessionManager();

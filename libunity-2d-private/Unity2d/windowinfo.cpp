@@ -14,9 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <libwnck/screen.h>
-#include <libwnck/window.h>
-#include <libwnck/workspace.h>
+#include <libwnck/libwnck.h>
 
 #include <glib-2.0/glib.h>
 

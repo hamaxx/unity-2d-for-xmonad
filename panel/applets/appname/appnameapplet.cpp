@@ -200,10 +200,10 @@ struct AppNameAppletPrivate
             q, SLOT(updateWidgets()));
     }
 
-    void setupMenuBarWidget()
+    void setupMenuBarWidget(IndicatorsManager* manager)
     {
-        m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
-        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
+        m_menuBarWidget = new MenuBarWidget(manager);
+        QObject::connect(m_menuBarWidget, SIGNAL(isOpenedChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));
@@ -216,21 +216,16 @@ struct AppNameAppletPrivate
     }
 };
 
-AppNameApplet::AppNameApplet()
+AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
-    QPalette palette;
-    palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::ButtonText, Qt::white);
-    setPalette(palette);
-
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMenuBarWidget();
+    d->setupMenuBarWidget(indicatorsManager);
     d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);

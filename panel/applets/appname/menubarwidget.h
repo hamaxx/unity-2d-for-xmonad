@@ -23,86 +23,45 @@
 #define MENUBARWIDGET_H
 
 // Qt
-#include <QHash>
 #include <QWidget>
 
-class BamfWindow;
+// libunity-core
+#include <UnityCore/Indicator.h>
+#include <UnityCore/IndicatorEntry.h>
 
-class QActionEvent;
-class QDBusObjectPath;
-class QMenu;
-class QMenuBar;
-class QTimer;
+class QHBoxLayout;
 
-class MyDBusMenuImporter;
-class Registrar;
+class IndicatorEntryWidget;
+class IndicatorsManager;
 
-typedef QHash<WId, MyDBusMenuImporter*> ImporterForWId;
-
-class MenuBarWidget;
-
-/**
- * An helper class which monitors the menubar and emits MenuBarWidget::menuBarClosed()
- * when necessary
- */
-class MenuBarClosedHelper : public QObject
+class MenuBarWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:
-    MenuBarClosedHelper(MenuBarWidget*);
-
-protected:
-    bool eventFilter(QObject*, QEvent*); //reimp
-
-private Q_SLOTS:
-    void emitMenuBarClosed();
-
-private:
-    MenuBarWidget* m_widget;
-    void menuBarActionEvent(QActionEvent*);
-};
-
-class MenuBarWidget : public QWidget
-{
-Q_OBJECT
-public:
-    MenuBarWidget(QMenu* windowMenu, QWidget* parent = 0);
+    MenuBarWidget(IndicatorsManager*, QWidget* parent = 0);
 
     bool isEmpty() const;
     bool isOpened() const;
 
 Q_SIGNALS:
-    void menuBarClosed();
+    void isOpenedChanged();
     void isEmptyChanged();
 
-protected:
-    bool eventFilter(QObject*, QEvent*); // reimp
-
 private Q_SLOTS:
-    void slotActiveWindowChanged(BamfWindow*, BamfWindow*);
-    void slotViewOpened();
-    void slotWindowRegistered(WId, const QString& service, const QDBusObjectPath& menuObjectPath);
-    void slotWindowUnregistered(WId);
-    void slotMenuUpdated();
-    void slotActionActivationRequested(QAction* action);
-    void updateMenuBar();
+    void updateIsEmpty();
 
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
-    QMenuBar* m_menuBar;
-    Registrar* m_registrar;
-    ImporterForWId m_importers;
-    WId m_activeWinId;
-    QMenu* m_windowMenu;
-    QTimer* m_updateMenuBarTimer;
+    IndicatorsManager* m_indicatorsManager;
+    QHBoxLayout* m_layout;
+    bool m_isEmpty;
+    bool m_isOpened;
+    QList<IndicatorEntryWidget*> m_widgetList;
 
-    void setupRegistrar();
-    void setupMenuBar();
-    QMenu* menuForWinId(WId) const;
-    void updateActiveWinId(BamfWindow*);
-
-    friend class MenuBarClosedHelper;
+    void onObjectAdded(const unity::indicator::Indicator::Ptr&);
+    void onEntryAdded(const unity::indicator::Entry::Ptr&);
+    void onEntryActivated(const std::string&);
 };
 
 #endif /* MENUBARWIDGET_H */

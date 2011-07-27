@@ -1,25 +1,11 @@
 project(uqapplets)
 
-macro(read_pkg_variable cmake_var pkg pkg_var)
-    execute_process(
-        COMMAND pkg-config --variable=${pkg_var} ${pkg}
-        OUTPUT_VARIABLE tmp
-        )
-    # Remove trailing newline from ${tmp}
-    string(STRIP "${tmp}" ${cmake_var})
-endmacro(read_pkg_variable)
-
 # Dependencies
 include(FindPkgConfig)
 
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(INDICATOR REQUIRED indicator-0.4)
-
-# Get indicator dirs from pkgconfig
-read_pkg_variable(INDICATOR_DIR       indicator-0.4 indicatordir)
-read_pkg_variable(INDICATOR_ICONS_DIR indicator-0.4 iconsdir)
-configure_file(indicator-config.h.in indicator-config.h)
+pkg_check_modules(PANGO REQUIRED pango)
 
 # Sources
 set(uqapplets_SRCS
@@ -27,26 +13,21 @@ set(uqapplets_SRCS
     appindicator/sniitem.cpp
     appname/appnameapplet.cpp
     appname/menubarwidget.cpp
-    appname/registrar.cpp
     appname/windowhelper.cpp
     common/applet.cpp
+    common/indicatorentrywidget.cpp
+    common/indicatorsmanager.cpp
+    common/indicatorwidget.cpp
+    common/panelstyle.cpp
     homebutton/homebuttonapplet.cpp
     homebutton/homebutton.cpp
-    indicator/abstractindicator.cpp
-    indicator/datetimeindicator.cpp
     indicator/indicatorapplet.cpp
-    indicator/indicatorservicemanager.cpp
-    indicator/indicator.c
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
     legacytray/fdotask.cpp
     legacytray/x11embedcontainer.cpp
     legacytray/x11embeddelegate.cpp
     legacytray/x11embedpainter.cpp
-    )
-
-qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
-    registrar.h Registrar
     )
 
 qt4_automoc(${uqapplets_SRCS})
@@ -58,13 +39,15 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
+    ${CMAKE_CURRENT_SOURCE_DIR}/unitycore
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
-    ${INDICATOR_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
+    ${UNITYCORE_INCLUDE_DIRS}
+    ${PANGO_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -76,12 +59,13 @@ target_link_libraries(uqapplets
     ${DBUSMENUQT_LDFLAGS}
     ${QTBAMF_LDFLAGS}
     ${GTK_LDFLAGS}
-    ${INDICATOR_LDFLAGS}
     ${WNCK_LDFLAGS}
     ${X11_LIBRARIES}
     ${X11_Xrender_LIB}
     ${X11_Xcomposite_LIB}
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
+    ${UNITYCORE_LDFLAGS}
+    ${PANGO_LDFLAGS}
     unity-2d-private
     )

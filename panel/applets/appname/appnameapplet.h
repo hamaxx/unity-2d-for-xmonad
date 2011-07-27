@@ -29,6 +29,8 @@
 
 class QEvent;
 
+class IndicatorsManager;
+
 namespace Unity2d
 {
 
@@ -37,7 +39,7 @@ class AppNameApplet : public Applet
 {
 Q_OBJECT
 public:
-    AppNameApplet();
+    AppNameApplet(IndicatorsManager*);
     ~AppNameApplet();
 
 protected:

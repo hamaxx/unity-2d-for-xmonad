@@ -24,6 +24,8 @@
 
 // Local
 #include <config.h>
+#include <panelstyle.h>
+#include <indicatorsmanager.h>
 
 // Applets
 #include <appindicator/appindicatorapplet.h>
@@ -42,54 +44,16 @@
 
 using namespace Unity2d;
 
-static QPalette getPalette()
+static QWidget* createSeparator()
 {
-    QPalette palette;
-
-    /* Should use the panel's background provided by Unity but it turns
-       out not to be good. It would look like:
-
-         QBrush bg(QPixmap("theme:/panel_background.png"));
-    */
-    QBrush bg(QPixmap(unity2dDirectory() + "/panel/artwork/background.png"));
-    palette.setBrush(QPalette::Window, bg);
-    palette.setBrush(QPalette::Button, bg);
-    return palette;
-}
-
-static QLabel* createSeparator()
-{
-    QLabel* label = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    label->setPixmap(pix);
-    label->setFixedSize(pix.size());
-    return label;
-}
-
-static Unity2dPanel* instantiatePanel(int screen)
-{
-    Unity2dPanel* panel = new Unity2dPanel;
-    panel->setEdge(Unity2dPanel::TopEdge);
-    panel->setPalette(getPalette());
-    panel->setFixedHeight(24);
-
-    int leftmost = QApplication::desktop()->screenNumber(QPoint());
-    if (screen == leftmost) {
-        panel->addWidget(new HomeButtonApplet);
-        panel->addWidget(createSeparator());
-    }
-    panel->addWidget(new AppNameApplet);
-    if (screen == leftmost) {
-        /* It doesn’t make sense to have more than one instance of the systray,
-           XEmbed’ed windows can be displayed only once anyway. */
-        panel->addWidget(new LegacyTrayApplet);
-    }
-    panel->addWidget(new IndicatorApplet);
-    return panel;
+    // Just a quick-hack: homebutton is going away anyway
+    QWidget* widget = new QWidget;
+    widget->setFixedWidth(6);
+    return widget;
 }
 
 PanelManager::PanelManager(QObject* parent)
-    : QObject(parent)
+: QObject(parent)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
@@ -104,6 +68,29 @@ PanelManager::PanelManager(QObject* parent)
 PanelManager::~PanelManager()
 {
     qDeleteAll(m_panels);
+}
+
+Unity2dPanel* PanelManager::instantiatePanel(int screen)
+{
+    Unity2dPanel* panel = new Unity2dPanel;
+    panel->setEdge(Unity2dPanel::TopEdge);
+    panel->setFixedHeight(24);
+
+    IndicatorsManager* indicatorsManager = new IndicatorsManager(panel);
+
+    int leftmost = QApplication::desktop()->screenNumber(QPoint());
+    if (screen == leftmost) {
+        panel->addWidget(new HomeButtonApplet);
+        panel->addWidget(createSeparator());
+    }
+    panel->addWidget(new AppNameApplet(indicatorsManager));
+    if (screen == leftmost) {
+        /* It doesn’t make sense to have more than one instance of the systray,
+           XEmbed’ed windows can be displayed only once anyway. */
+        panel->addWidget(new LegacyTrayApplet);
+    }
+    panel->addWidget(new IndicatorApplet(indicatorsManager));
+    return panel;
 }
 
 void

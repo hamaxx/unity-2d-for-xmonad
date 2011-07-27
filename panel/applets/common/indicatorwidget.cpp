@@ -19,40 +19,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 // Self
-#include "indicatorapplet.h"
+#include "indicatorwidget.h"
 
 // Local
 #include <debug_p.h>
+#include <indicatorentrywidget.h>
 #include <indicatorsmanager.h>
-#include <indicatorwidget.h>
 
 // Qt
 #include <QHBoxLayout>
 
 using namespace unity::indicator;
 
-IndicatorApplet::IndicatorApplet(IndicatorsManager* manager)
-: m_indicatorsManager(manager)
+IndicatorWidget::IndicatorWidget(const Indicator::Ptr& indicator, IndicatorsManager* manager)
+: m_layout(new QHBoxLayout(this))
+, m_indicatorsManager(manager)
+, m_indicator(indicator)
 {
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    m_layout->setMargin(0);
+    m_layout->setSpacing(0);
 
-    m_indicatorsManager->indicators()->on_object_added.connect(
-        sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
-        );
+    m_indicator->on_entry_added.connect(sigc::mem_fun(this, &IndicatorWidget::onEntryAdded));
 }
 
-void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
+void IndicatorWidget::onEntryAdded(const Entry::Ptr& entry)
 {
-    QString name = QString::fromStdString(indicator->name());
-    if (name == "libappmenu.so") {
-        // appmenu indicator is handled by AppNameApplet
-        return;
-    }
-    IndicatorWidget* widget = new IndicatorWidget(indicator, m_indicatorsManager);
-    layout()->addWidget(widget);
+    IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
+    m_indicatorsManager->addIndicatorEntryWidget(widget);
+    m_layout->addWidget(widget);
 }
 
-#include "indicatorapplet.moc"
+
+#include "indicatorwidget.moc"

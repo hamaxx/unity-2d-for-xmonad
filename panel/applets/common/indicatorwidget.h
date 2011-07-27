@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -18,36 +18,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef DATETIMEINDICATOR_H
-#define DATETIMEINDICATOR_H
+#ifndef INDICATORWIDGET_H
+#define INDICATORWIDGET_H
 
 // Local
-#include "abstractindicator.h"
+
+// libunity-core
+#include <UnityCore/Indicator.h>
+#include <UnityCore/IndicatorEntry.h>
 
 // Qt
-#include <QTimer>
+#include <QWidget>
 
-class DateTimeIndicator : public AbstractIndicator
+class QHBoxLayout;
+
+class IndicatorEntryWidget;
+class IndicatorsManager;
+
+class IndicatorWidget : public QWidget, public sigc::trackable
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-    DateTimeIndicator(QObject* parent=0);
+    IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator, IndicatorsManager* manager);
 
-    virtual void init();
-
-private Q_SLOTS:
-    void updateText();
 private:
-    Q_DISABLE_COPY(DateTimeIndicator)
-    QAction* m_action;
-    QTimer* m_timer;
-    QString m_format;
+    QHBoxLayout* m_layout;
+    IndicatorsManager* m_indicatorsManager;
+    unity::indicator::Indicator::Ptr m_indicator;
 
-    void setupTimer();
-    void setupMenu();
-    void readConfig();
-    void updateTimer();
+    void onEntryAdded(const unity::indicator::Entry::Ptr& entry);
 };
 
-#endif /* DATETIMEINDICATOR_H */
+#endif /* INDICATORWIDGET_H */

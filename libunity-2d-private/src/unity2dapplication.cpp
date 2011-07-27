@@ -41,6 +41,16 @@ AbstractX11EventFilter::~AbstractX11EventFilter()
     }
 }
 
+static bool arrayContains(char** begin, char** end, const char* string)
+{
+    for (char** ptr = begin; ptr != end; ++ptr) {
+        if (strcmp(*ptr, string) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Unity2dApplication::earlySetup(int& argc, char** argv)
 {
     // Parts of unity-2d uses GTK so it needs to be initialized
@@ -60,6 +70,14 @@ void Unity2dApplication::earlySetup(int& argc, char** argv)
      */
     if(getenv("QT_GRAPHICSSYSTEM") == 0) {
         QApplication::setGraphicsSystem("raster");
+    }
+
+    /* Unless style has been specified in args, set default Qt style to
+     * QWindowStyle to avoid loading QGtkStyle. We don't want to load QGtkStyle
+     * because it uses libgtk2, which causes conflicts with our gtk3 code.
+     */
+    if (!arrayContains(argv, argv + argc, "-style")) {
+        QApplication::setStyle(new QWindowsStyle);
     }
 }
 

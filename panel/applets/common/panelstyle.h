@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -18,36 +18,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef ABSTRACTINDICATOR_H
-#define ABSTRACTINDICATOR_H
+#ifndef PANELSTYLE_H
+#define PANELSTYLE_H
 
 // Local
 
 // Qt
 #include <QObject>
 
-class QAction;
+class QColor;
+class QFont;
 
-class AbstractIndicator : public QObject
+class PanelStylePrivate;
+/**
+ * Provides easy access to panel colors
+ */
+class PanelStyle : public QObject
 {
     Q_OBJECT
 public:
-    AbstractIndicator(QObject* parent=0);
-    ~AbstractIndicator();
+    PanelStyle(QObject* parent = 0);
+    ~PanelStyle();
 
-    /**
-     * Called when the indicator has been constructed and its owner is connected to signals.
-     * It's the right place to emit actionAdded()
-     */
-    virtual void init();
+    static PanelStyle* instance();
 
-Q_SIGNALS:
-    void actionAdded(QAction*);
-    void actionRemoved(QAction*);
+    QColor textColor() const;
+    QColor backgroundTopColor() const;
+    QColor backgroundBottomColor() const;
+    QColor textShadowColor() const;
+    QColor lineColor() const;
+
+    QFont font() const;
 
 private:
-    Q_DISABLE_COPY(AbstractIndicator)
+    friend class PanelStylePrivate;
+    // Use a pimpl to avoid the need for gtk includes here
+    PanelStylePrivate* const d;
 };
 
-#endif /* ABSTRACTINDICATOR_H */
+#endif /* PANELSTYLE_H */

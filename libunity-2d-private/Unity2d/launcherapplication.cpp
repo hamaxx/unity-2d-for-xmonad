@@ -14,10 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Those have to be included before any QObject-style header to avoid
-   compilation errors. */
-#include <gdk/gdk.h>
-
 /* Note regarding the use of wnck: it is critically important that the client
    type be set to pager because wnck will pass that type over to the window
    manager through XEvents.
@@ -59,6 +55,7 @@
 #include <QX11Info>
 
 extern "C" {
+#include <gdk/gdk.h>
 #include <libsn/sn.h>
 }
 
@@ -649,7 +646,8 @@ LauncherApplication::launch()
     GTimeVal timeval;
 
     g_get_current_time (&timeval);
-    GObjectScopedPointer<GdkAppLaunchContext> context(gdk_app_launch_context_new());
+    GdkDisplay* display = gdk_display_get_default();
+    GObjectScopedPointer<GdkAppLaunchContext> context(gdk_display_get_app_launch_context(display));
     /* Using GDK_CURRENT_TIME doesn’t seem to work, launched windows
        sometimes don’t get focus (see https://launchpad.net/bugs/643616). */
     gdk_app_launch_context_set_timestamp(context.data(), timeval.tv_sec);

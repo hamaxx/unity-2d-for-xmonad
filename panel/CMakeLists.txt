@@ -1,5 +1,8 @@
 project(unity-2d-panel)
 
+# Dependencies
+pkg_check_modules(UNITYCORE REQUIRED unity-core-4.0)
+
 # Source
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
@@ -8,8 +11,3 @@ include_directories(
 add_subdirectory(applets)
 add_subdirectory(app)
 add_subdirectory(tests)
-
-# Install
-install(DIRECTORY artwork
-    DESTINATION ${UNITY_2D_DIR}/panel
-    )
