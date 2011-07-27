@@ -43,6 +43,7 @@
 #include "cacheeffect.h"
 #include "iconutilities.h"
 #include "unity2dtr.h"
+#include "giodefaultapplication.h"
 
 #include "mimedata.h"
 #include "dragdropevent.h"
@@ -123,6 +124,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
 
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
+
+    qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

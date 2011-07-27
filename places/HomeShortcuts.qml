@@ -53,9 +53,9 @@ Flow {
     }
 
     /* FIXME: use user's preferred applications instead of hardcoding them */
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Browse the Web")
-        key: "/desktop/gnome/applications/browser/exec"
+        contentType: "x-scheme-handler/http"
     }
 
     HomeButtonApplication {
@@ -63,9 +63,9 @@ Flow {
         desktopFile: "shotwell.desktop"
     }
 
-    HomeButtonApplication {
+    HomeButtonDefaultApplication {
         label: u2d.tr("Check Email")
-        key: "/desktop/gnome/url-handlers/mailto/command"
+        contentType: "x-scheme-handler/mailto"
     }
 
     HomeButtonApplication {
