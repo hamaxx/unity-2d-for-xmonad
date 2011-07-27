@@ -31,9 +31,8 @@
 
 #include <X11/Xlib.h>
 
-#include <gtk/gtk.h>
-
 // unity-2d
+#include <unity2dapplication.h>
 #include <unity2ddebug.h>
 
 #include "dashdeclarativeview.h"
@@ -41,23 +40,8 @@
 
 int main(int argc, char *argv[])
 {
-    /* gtk needs to be inited, otherwise we get an assert failure in gdk */
-    gtk_init(&argc, &argv);
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where some pixmaps become blueish:
-
-       https://bugs.launchpad.net/unity-2d/+bug/689877
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
-    QApplication application(argc, argv);
+    Unity2dApplication::earlySetup(argc, argv);
+    Unity2dApplication application(argc, argv);
     application.setApplicationName("Unity 2D Dash");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 

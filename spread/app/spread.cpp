@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gtk/gtk.h>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
@@ -28,31 +27,14 @@
 #include "spreadcontrol.h"
 #include "launcherclient.h"
 
-#include <unity2ddebug.h>
+#include <unity2dapplication.h>
 
 #include "config.h"
 
 int main(int argc, char *argv[])
 {
-    /* Unity2d plugin uses GTK APIs to retrieve theme icons
-       (gtk_icon_theme_get_default) and requires a call to gtk_init */
-    gtk_init(&argc, &argv);
-
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where some pixmaps become blueish:
-
-       https://bugs.launchpad.net/unity-2d/+bug/689877
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
-    QApplication application(argc, argv);
+    Unity2dApplication::earlySetup(argc, argv);
+    Unity2dApplication application(argc, argv);
     application.setApplicationName("Unity 2D Workspace Switcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
