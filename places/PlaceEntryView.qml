@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
 
-Item {
+FocusScope {
     id: placeEntryView
 
     /* An instance of PlaceEntryModel */
@@ -33,7 +33,7 @@ Item {
         var placeEntry, i
         for (i=0; i<placeEntryView.model.entryGroupsModel.count; i=i+1) {
             firstGroupModel.groupId = i
-            if (firstGroupModel.count() != 0) {
+            if (firstGroupModel.count != 0) {
                 var firstResult = firstGroupModel.get(0)
                 /* Places give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
@@ -62,6 +62,7 @@ Item {
     ListViewWithScrollbar {
         id: results
 
+        focus: true
         anchors.fill: parent
 
         /* The group's delegate is chosen dynamically depending on what
@@ -112,6 +113,8 @@ Item {
             Binding { target: item; property: "groupId"; value: groupId }
             Binding { target: item; property: "group_model"; value: group_model }
             Binding { target: item; property: "placeEntryModel"; value: placeEntryView.model }
+
+            onLoaded: item.focus = true
         }
 
         headerDelegate: GroupHeader {

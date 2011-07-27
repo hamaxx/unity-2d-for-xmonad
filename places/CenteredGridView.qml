@@ -24,6 +24,32 @@ GridView {
     property int delegateWidth: 100
     property int delegateHeight: 100
 
+    /* Manually handle key presses so that when the 'interactive' property is
+       set to false the keyboard navigation still works.
+
+       Ref.: https://bugreports.qt.nokia.com/browse/QTBUG-17051
+    */
+    function selectChild(index) {
+        if (index < 0 || index >= count) return false
+        currentIndex = index
+        return true
+    }
+
+    Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
+    function handleKeyPress(key) {
+        switch (key) {
+        case Qt.Key_Right:
+            return selectChild(currentIndex+1)
+        case Qt.Key_Left:
+            return selectChild(currentIndex-1)
+        case Qt.Key_Up:
+            return selectChild(currentIndex-cellsPerRow)
+        case Qt.Key_Down:
+            return selectChild(currentIndex+cellsPerRow)
+        }
+        return false
+    }
+
     /* Compute the number of cells per row and column so that:
         - the items are always centered horizontally within the grid (= same
           margins on the right and left sides of the grid) when flow is set

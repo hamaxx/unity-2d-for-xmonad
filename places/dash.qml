@@ -37,6 +37,9 @@ Item {
     }
 
     function activatePage(page) {
+        /* Always give the focus to the search entry when switching pages */
+        search_entry.focus = true
+
         if (page == currentPage) {
             return
         }
@@ -46,12 +49,6 @@ Item {
         }
         currentPage = page
         currentPage.visible = true
-        /* FIXME: For some reason currentPage gets the focus when it becomes
-           visible. Reset the focus to the search_bar instead.
-           It could be due to Qt bug QTBUG-13380:
-           "Listview gets focus when it becomes visible"
-        */
-        search_entry.focus = true
     }
 
     function activatePlaceEntry(fileName, groupName, section) {
@@ -127,13 +124,19 @@ Item {
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
            necessarily focusing the search bar first. */
-        Keys.forwardTo: [search_entry]
+        /* FIXME: deactivated because it makes the user lose the focus very often */
+        //Keys.forwardTo: [search_entry]
 
 
         SearchEntry {
             id: search_entry
 
             focus: true
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
+            KeyNavigation.right: refine_search.visible ? refine_search : search_entry
+            KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
             anchors.topMargin: 10
@@ -147,6 +150,8 @@ Item {
 
         SearchRefine {
             id: refine_search
+
+            KeyNavigation.left: search_entry
 
             /* SearchRefine is only to be displayed for places, not in the home page */
             visible: dashView.activePlaceEntry != ""
@@ -164,6 +169,12 @@ Item {
         Loader {
             id: pageLoader
 
+            /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
+                      ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
+            */
+            KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
+            KeyNavigation.up: search_entry
+
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
             anchors.bottom: parent.bottom
@@ -171,6 +182,7 @@ Item {
             anchors.leftMargin: 20
             anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
             anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
+            onLoaded: item.focus = true
         }
     }
 

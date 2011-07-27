@@ -77,7 +77,7 @@ Renderer {
             interactive: false
             clip: true
 
-            delegate: Item {
+            delegate: FocusScope {
 
                 width: results.cellWidth
                 height: results.cellHeight
@@ -98,6 +98,7 @@ Renderer {
                     height: results.delegateHeight
                     anchors.horizontalCenter: parent.horizontalCenter
 
+                    focus: true
                     sourceComponent: cellRenderer
                     onLoaded: {
                         item.uri = uri
@@ -105,6 +106,7 @@ Renderer {
                         item.mimetype = mimetype
                         item.displayName = displayName
                         item.comment = comment
+                        item.focus = true
                     }
                 }
             }

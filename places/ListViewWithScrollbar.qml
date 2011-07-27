@@ -18,7 +18,7 @@
 
 import QtQuick 1.0
 
-Item {
+FocusScope {
     property alias scrollbar: scrollbar
     property alias model: list.model
     property alias bodyDelegate: list.bodyDelegate
@@ -27,6 +27,7 @@ Item {
     ListViewWithHeaders {
         id: list
 
+        focus: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
