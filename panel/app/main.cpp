@@ -54,6 +54,7 @@ int main(int argc, char** argv)
     ThemeEngineHandler handler;
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication app(argc, argv);
+    app.setApplicationName("Unity 2D Panel");
 
     // Instantiate a PanelStyle so that it configures QApplication
     PanelStyle::instance();

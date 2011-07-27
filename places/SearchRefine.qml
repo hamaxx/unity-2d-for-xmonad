@@ -32,6 +32,8 @@ FocusScope {
     AbstractButton {
         id: header
 
+        Accessible.name: title.text
+
         effect: DropShadow {
                     blurRadius: {
                         switch (header.state) {

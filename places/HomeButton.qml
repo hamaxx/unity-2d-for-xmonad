@@ -23,6 +23,8 @@ Button {
     property alias label: label.text
     property alias iconSourceSize: icon.sourceSize
 
+    Accessible.name: label.text
+
     width: 160
     height: 172
 

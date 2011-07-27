@@ -30,6 +30,8 @@ FocusScope {
 
     signal clicked
 
+    Accessible.role: Accessible.PushButton
+
     MouseArea {
         id: mouse_area
 

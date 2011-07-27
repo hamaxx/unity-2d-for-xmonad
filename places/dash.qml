@@ -22,6 +22,8 @@ import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
 Item {
     id: dash
 
+    Accessible.name: "root"
+
     property variant currentPage
 
     Binding {
@@ -169,6 +171,7 @@ Item {
         Loader {
             id: pageLoader
 
+            Accessible.name: "loader"
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
@@ -188,6 +191,9 @@ Item {
 
     Button {
         id: fullScreenButton
+
+        Accessible.name: "Full Screen"
+
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.rightMargin: 15

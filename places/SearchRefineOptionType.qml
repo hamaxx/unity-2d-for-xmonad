@@ -24,6 +24,8 @@ SearchRefineOption {
     Item {
         id: header
 
+        Accessible.name: searchRefineOption.title
+
         KeyNavigation.down: filters
 
         focus: true

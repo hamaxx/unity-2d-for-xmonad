@@ -22,6 +22,8 @@ import Effects 1.0
 AbstractButton {
     property string searchQuery
 
+    Accessible.name: "Search Entry"
+
     /* Cancels current search when the dash becomes invisible */
     Connections {
         target: dashView
@@ -70,6 +72,9 @@ AbstractButton {
         MouseArea {
             id: clear_button
 
+            Accessible.name: "Clear"
+            Accessible.role: Accessible.PushButton
+
             anchors.fill: search_icon
 
             onClicked: {
@@ -80,6 +85,9 @@ AbstractButton {
 
         TextInput {
             id: search_input
+
+            Accessible.name: search_instructions.text
+            Accessible.role: Accessible.EditableText
 
             effect: DropShadow {
                     id: glow

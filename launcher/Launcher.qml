@@ -22,7 +22,10 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 LauncherDropItem {
     id: launcher
 
+    Accessible.name: "root"
+
     GnomeBackground {
+        Accessible.name: "background"
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.66
@@ -30,6 +33,7 @@ LauncherDropItem {
     }
 
     Rectangle {
+        Accessible.name: "background"
         anchors.fill: parent
         color: "black"
         opacity: 0.66
@@ -37,6 +41,7 @@ LauncherDropItem {
     }
     
     Image {
+        Accessible.name: "border"
         id: border
 
         width: 1
@@ -50,12 +55,16 @@ LauncherDropItem {
     onWebpageUrlDropped: applications.insertWebFavorite(url)
 
     FocusScope {
+        Accessible.name: "content"
+
         focus: true
         anchors.fill: parent
         z: 1 /* ensure the lists are always strictly on top of the background */
 
         LauncherList {
             id: main
+            Accessible.name: "main"
+
             anchors.top: parent.top
             anchors.bottom: shelf.top
             anchors.bottomMargin: itemPadding
@@ -75,6 +84,8 @@ LauncherDropItem {
 
         LauncherList {
             id: shelf
+            Accessible.name: "shelf"
+
             anchors.bottom: parent.bottom
             anchors.bottomMargin: main.anchors.bottomMargin
             height: (tileSize + itemPadding) * count

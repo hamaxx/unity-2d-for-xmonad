@@ -42,10 +42,12 @@ int main(int argc, char *argv[])
 {
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Dash");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
+    view.setAccessibleName("Dash");
     view.setUseOpenGL(arguments.contains("-opengl"));
 
     if (!view.connectToBus()) {
