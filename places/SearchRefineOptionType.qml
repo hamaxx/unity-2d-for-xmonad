@@ -70,7 +70,7 @@ SearchRefineOption {
             /* Not checking for placeEntryModel != undefined leads to a segfault
                when switching places */
             text: placeEntryModel != undefined ? column_0 : ""
-            ticked: dash.currentPage.model.activeSection == model.index
+            checked: dash.currentPage.model.activeSection == model.index
 
             onClicked: placeEntryModel.activeSection = model.index
         }

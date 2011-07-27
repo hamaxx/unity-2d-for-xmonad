@@ -1,6 +1,4 @@
 # Dependencies
-pkg_check_modules(GTK REQUIRED gtk+-2.0)
-pkg_check_modules(X11 REQUIRED x11)
 pkg_check_modules(GEIS REQUIRED libutouch-geis)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
