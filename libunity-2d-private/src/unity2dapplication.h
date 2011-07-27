@@ -27,6 +27,8 @@
 
 class Unity2dApplication;
 
+class PlatformFontTracker;
+
 class AbstractX11EventFilter
 {
 public:
@@ -65,6 +67,7 @@ protected:
 
 private:
     QList<AbstractX11EventFilter*> m_x11EventFilters;
+    PlatformFontTracker* m_platformFontTracker;
 };
 
 #endif // UNITY2DAPPLICATION_H

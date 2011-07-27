@@ -1,0 +1,5 @@
+/apps/metacity/general/show_maximized_titlebars false
+/apps/metacity/general/auto_maximize_windows true
+/apps/metacity/general/capture_before_unmap true
+/apps/metacity/general/compositing_manager true
+/apps/metacity/general/compositor_effects false

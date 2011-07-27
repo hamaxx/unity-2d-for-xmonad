@@ -58,7 +58,6 @@ bool MenuBarWidget::isEmpty() const
 
 bool MenuBarWidget::isOpened() const
 {
-    // FIXME
     return m_isOpened;
 }
 

@@ -21,6 +21,7 @@ set(libunity-2d-private_SRCS
     edgehitdetector.cpp
     forcevisiblebehavior.cpp
     intellihidebehavior.cpp
+    giodefaultapplication.cpp
     )
 
 # Build
@@ -30,6 +31,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GLIB_INCLUDE_DIRS}
+    ${GTK_INCLUDE_DIRS}
+    ${PANGO_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
     )
 
@@ -47,6 +50,8 @@ target_link_libraries(unity-2d-private
     ${QT_QTOPENGL_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
+    ${GTK_LDFLAGS}
+    ${PANGO_LDFLAGS}
     ${WNCK_LDFLAGS}
     )
 
