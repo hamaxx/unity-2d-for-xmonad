@@ -62,7 +62,6 @@ private:
 MenuBarWidget::MenuBarWidget(QMenu* windowMenu, QWidget* parent)
 : QWidget(parent)
 , m_windowMenu(windowMenu)
-, m_isMenuOpen(false)
 {
     m_activeWinId = 0;
     setupRegistrar();
@@ -94,7 +93,7 @@ void MenuBarWidget::setupRegistrar()
 void MenuBarWidget::setupMenuBar()
 {
     m_menuBar = new QMenuBar;
-    m_menuBarMonitor = new MenuBarClosedHelper(this);
+    new MenuBarClosedHelper(this);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -112,9 +111,6 @@ void MenuBarWidget::setupMenuBar()
     // is drawn or not
     connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
         m_menuBar, SLOT(update()));
-
-    // Watch when the menubar's menus close so that it can be hidden
-    connect(m_menuBarMonitor, SIGNAL(menuBarClosed()), SLOT(slotMenuBarClosed()));
 }
 
 void MenuBarWidget::slotActiveWindowChanged(BamfWindow* /*former*/, BamfWindow* current)
@@ -173,16 +169,8 @@ void MenuBarWidget::slotActionActivationRequested(QAction* action)
     DBusMenuImporter* importer = static_cast<DBusMenuImporter*>(sender());
 
     if (m_importers.value(m_activeWinId) == importer) {
-        m_isMenuOpen = true;
-        Q_EMIT menuBarChanged();
         m_menuBar->setActiveAction(action);
     }
-}
-
-void MenuBarWidget::slotMenuBarClosed()
-{
-    m_isMenuOpen = false;
-    Q_EMIT menuBarChanged();
 }
 
 QMenu* MenuBarWidget::menuForWinId(WId wid) const
@@ -257,7 +245,7 @@ bool MenuBarWidget::isEmpty() const
 
 bool MenuBarWidget::isOpened() const
 {
-    return m_isMenuOpen;
+    return m_menuBar->activeAction();
 }
 
 // MenuBarClosedHelper ----------------------------------------
@@ -295,9 +283,8 @@ bool MenuBarClosedHelper::eventFilter(QObject* object, QEvent* event)
 
 void MenuBarClosedHelper::emitMenuBarClosed()
 {
-    //If there is still no menu action active, then menu must be closed.
     if (!m_widget->m_menuBar->activeAction()) {
-        Q_EMIT menuBarClosed();
+        QMetaObject::invokeMethod(m_widget, "menuBarClosed");
     }
 }
 

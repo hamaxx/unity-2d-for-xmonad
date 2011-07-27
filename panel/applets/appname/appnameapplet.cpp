@@ -203,7 +203,7 @@ struct AppNameAppletPrivate
     void setupMenuBarWidget()
     {
         m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
-        QObject::connect(m_menuBarWidget, SIGNAL(menuBarChanged()),
+        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));

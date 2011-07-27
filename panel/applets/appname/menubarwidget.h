@@ -43,16 +43,13 @@ class MenuBarWidget;
 
 /**
  * An helper class which monitors the menubar and emits MenuBarWidget::menuBarClosed()
- * to indicate if the menu was closed or updated.
+ * when necessary
  */
 class MenuBarClosedHelper : public QObject
 {
 Q_OBJECT
 public:
     MenuBarClosedHelper(MenuBarWidget*);
-
-Q_SIGNALS:
-    void menuBarClosed();
 
 protected:
     bool eventFilter(QObject*, QEvent*); //reimp
@@ -75,7 +72,7 @@ public:
     bool isOpened() const;
 
 Q_SIGNALS:
-    void menuBarChanged();
+    void menuBarClosed();
     void isEmptyChanged();
 
 protected:
@@ -88,20 +85,17 @@ private Q_SLOTS:
     void slotWindowUnregistered(WId);
     void slotMenuUpdated();
     void slotActionActivationRequested(QAction* action);
-    void slotMenuBarClosed();
     void updateMenuBar();
 
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
     QMenuBar* m_menuBar;
-    MenuBarClosedHelper* m_menuBarMonitor;
     Registrar* m_registrar;
     ImporterForWId m_importers;
     WId m_activeWinId;
     QMenu* m_windowMenu;
     QTimer* m_updateMenuBarTimer;
-    bool m_isMenuOpen;
 
     void setupRegistrar();
     void setupMenuBar();
