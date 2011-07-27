@@ -20,6 +20,7 @@ set(libunity-2d-private_SRCS
     edgehitdetector.cpp
     forcevisiblebehavior.cpp
     intellihidebehavior.cpp
+    giodefaultapplication.cpp
     )
 
 # Build

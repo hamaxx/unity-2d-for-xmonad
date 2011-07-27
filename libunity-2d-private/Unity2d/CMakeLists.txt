@@ -5,6 +5,7 @@ pkg_check_modules(QTDEE REQUIRED libqtdee)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(STARTUPNOTIFICATION REQUIRED libstartup-notification-1.0)
 pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
 # Sources
 set(unity-2d-private-qml_SRCS
@@ -94,6 +95,7 @@ include_directories(
     ${STARTUPNOTIFICATION_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
+    ${DCONFQT_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -113,6 +115,7 @@ target_link_libraries(unity-2d-private-qml
     ${GIO_LDFLAGS}
     ${STARTUPNOTIFICATION_LDFLAGS}
     ${INDICATOR_LDFLAGS}
+    ${DCONFQT_LDFLAGS}
     ${X11_Xcomposite_LIB}
     unity-2d-private
     )
