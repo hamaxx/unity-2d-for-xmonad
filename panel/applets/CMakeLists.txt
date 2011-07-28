@@ -50,6 +50,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
     ${UNITYCORE_INCLUDE_DIRS}
+    ${NUXCORE_INCLUDE_DIRS}
     ${PANGO_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -70,6 +71,7 @@ target_link_libraries(uqapplets
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
     ${UNITYCORE_LDFLAGS}
+    ${NUXCORE_LDFLAGS}
     ${PANGO_LDFLAGS}
     unity-2d-private
     )
