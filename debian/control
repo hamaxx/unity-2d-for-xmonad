@@ -22,6 +22,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libutouch-geis-dev,
                libstartup-notification0-dev,
                libunity-core-4.0-dev,
+               libnux-1.0-dev,
 Standards-Version: 3.9.2
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/oneiric
 
