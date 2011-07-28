@@ -28,7 +28,8 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
     - dep on versionned libnux-1.0-dev
     - dep on versionned libunity-core-4.0-dev
   * debian/control, debian/rules, debian/libunity-2d-private-dev:
-    - add new -dev project
+    - add new -dev project (LP: #814709)
+    - add an upstream pc file
 
  -- Florian Boucault <florian.boucault@canonical.com>  Thu, 28 Jul 2011 09:30:33 +0200
 
