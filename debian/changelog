@@ -22,6 +22,8 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
   * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
   * Install the apport hook in the right directory so that it's not launched
     unconditionally (LP: #712343)
+  * debian/control:
+    - dep on latest libqtdee-dev
 
  -- Florian Boucault <florian.boucault@canonical.com>  Thu, 28 Jul 2011 09:30:33 +0200
 
