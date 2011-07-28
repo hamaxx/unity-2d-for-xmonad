@@ -27,6 +27,8 @@ AbstractButton {
     property bool folded: true
     property int availableCount
 
+    Accessible.name: "%1 %2 %3".arg(title.text).arg(label.text).arg(folded ? u2d.tr("not expanded") : u2d.tr("expanded"))
+
     effect: DropShadow {
                 blurRadius: 6
                 offset.x: 0

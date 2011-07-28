@@ -1,4 +1,4 @@
-unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (3.8.12-0ubuntu1) oneiric; urgency=low
 
   [ Florian Boucault ]
   * Upstreamed patch 01_build_with_new_indicator.patch
@@ -16,13 +16,58 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
     - remove default value for /desktop/unity-2d/launcher/favorites
   * debian/control:
     - add dependency on libdconf-qt-dev
+    - add dependency on libnux-1.0-dev
 
   [ Didier Roche ]
+  * New upstream release:
+    - [dash] preferred applications are not stored in GConf anylonger
+      (LP: #805063)
+    - [launcher] Tiles background is white/grey instead of the color of the
+      icon (oneiric only) (LP: #809205)
+    - [dash] Keyboard navigation not implemented as specified (LP: #608132)
+    - Unity 2D should use dconf instead of gconf (LP: #692965)
+    - [launcher] KDE3 Applications do not appear in launcher (LP: #719983)
+    - ubuntu-bug showing that I am running unity-2D, when reporting from
+      Compiz Unity interface (LP: #712343)
+    - Apps pinned in launcher not retained between 2D and 3D Unity versions
+      (LP: #746823)
+    - [dash] Cannot have KDE4 applications as shortcuts on home screen
+      (LP: #750081)
+    - [panel] F10 shortcut does not navigate from application menu to
+      indicators (LP: #772061)
+    - [panel] F10 shortcut does not show application menu (LP: #777993)
+    - [dash] Wine applications are not launched (LP: #794471)
+    - [spread] GnomeBackground needs to use dconf to retrieve image path
+      (LP: #805393)
+    - [dash] transparency broken and graphical artifacts when using opengl
+      backend (LP: #806019)
+    - [dash] Enter no longer launches first item (LP: #811673)
+    - [panel] navigation between application menus temporarily gives focus
+      back to the application (LP: #717682)
+    - [panel] Empathy's emotes not visible in panel menus (LP: #742822)
+    - pgadmin3 not handled by unity-2d (LP: #800710)
+    - [dash] slow rendering of background with opengl engine (LP: #806122)
+    - [spread] Wallpaper is shifted by the width of the launcher (LP: #808712)
+    - [launcher] Migrate gconf key /desktop/unity-2d/launcher/super_key_enable
+      to dconf (LP: #810509)
+    - [panel] application name cut when menu bar visible should use a fade
+      (LP: #704615)
+    - [panel] Window title could use a little fade (LP: #694924)
+    - [launcher] Codeblocks doesn't appear in the list of applications
+      (LP: #716524)
   * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
   * Install the apport hook in the right directory so that it's not launched
     unconditionally (LP: #712343)
+  * debian/control:
+    - dep on latest libqtdee-dev
+    - dep now on gtk3 indicator version
+    - dep on versionned libnux-1.0-dev
+    - dep on versionned libunity-core-4.0-dev
+  * debian/control, debian/rules, debian/libunity-2d-private-dev:
+    - add new -dev project (LP: #814709)
+    - add an upstream pc file
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 18:56:33 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 28 Jul 2011 12:05:38 +0200
 
 unity-2d (3.8.10-0ubuntu2) oneiric; urgency=low
 

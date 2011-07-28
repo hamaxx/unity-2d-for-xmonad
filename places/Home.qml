@@ -19,7 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
 
-Item {
+FocusScope {
     property variant model: PageModel {
         /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
         onEntrySearchQueryChanged: {
@@ -59,6 +59,8 @@ Item {
     Button {
         id: openShortcutsButton
 
+        Accessible.name: "Open Shortcuts"
+
         anchors.bottom: parent.top
         anchors.right: parent.right
         anchors.rightMargin: 50
@@ -96,26 +98,39 @@ Item {
     ListViewWithScrollbar {
         id: globalSearch
 
+        focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
 
-        list.model: dash.places
+        model: dash.places
 
-        list.delegate: UnityDefaultRenderer {
-            width: ListView.view.width
+        bodyDelegate: UnityDefaultRenderer {
+            placeEntryModel: model.item
+            displayName: model.item.name
+            iconHint: model.item.icon
 
-            parentListView: list
-            placeEntryModel: item
-            displayName: item.name
-            iconHint: item.icon
+            group_model: model.item.globalResultsModel
+            property bool focusable: group_model != undefined && group_model.count > 0
+        }
 
-            model: item.globalResultsModel
+        headerDelegate: GroupHeader {
+            visible: body.needHeader && body.focusable
+            height: visible ? 32 : 0
+
+            property bool foldable: body.folded != undefined
+            availableCount: foldable && body.group_model != null ? body.group_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            onClicked: if(foldable) body.folded = !body.folded
+
+            icon: body.iconHint
+            label: body.displayName
         }
     }
 
-    Rectangle {
+    FocusScope {
         id: shortcuts
 
+        focus: !globalSearchActive
         opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -123,11 +138,14 @@ Item {
         width: 888
         height: 466
 
-        radius: 5
-        border.width: 1
-        /* FIXME: wrong colors */
-        border.color: Qt.rgba(1, 1, 1, 0.2)
-        color: Qt.rgba(0, 0, 0, 0.3)
+        Rectangle {
+            anchors.fill: parent
+            radius: 5
+            border.width: 1
+            /* FIXME: wrong colors */
+            border.color: Qt.rgba(1, 1, 1, 0.2)
+            color: Qt.rgba(0, 0, 0, 0.3)
+        }
 
         Button {
             id: closeShortcutsButton
@@ -158,11 +176,13 @@ Item {
            on the default version if a custom one doesn’t exist. */
         Loader {
             id: customShortcutsLoader
+            focus: status == Loader.Ready
             anchors.fill: parent
             source: "HomeShortcutsCustomized.qml"
         }
         Loader {
             id: defaultShortcutsLoader
+            focus: !customShortcutsLoader.focus
             anchors.fill: parent
             source: (customShortcutsLoader.status == Loader.Error) ? "HomeShortcuts.qml" : ""
         }

@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
 {
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Launcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-launcher.desktop");
@@ -91,6 +92,7 @@ int main(int argc, char *argv[])
     Unity2dPanel panel(true);
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
+    panel.setAccessibleName("Launcher");
 
     VisibilityController* visibilityController = new VisibilityController(&panel);
 

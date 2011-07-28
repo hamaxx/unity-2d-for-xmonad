@@ -96,6 +96,7 @@ LauncherContextualMenu::title() const
 void
 LauncherContextualMenu::setTitle(const QString& title)
 {
+    setAccessibleName(title);
     m_title = title;
     /* Escaping ampersands so that they are not considered as keyboard
        accelerators. */

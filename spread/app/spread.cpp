@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 {
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Workspace Switcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;

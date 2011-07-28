@@ -30,6 +30,8 @@ pkg_check_modules(GTK REQUIRED gtk+-3.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-3.0)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+pkg_check_modules(NUXCORE REQUIRED nux-core-1.0)
+pkg_check_modules(PANGO REQUIRED pango)
 
 
 # GSettings schemas

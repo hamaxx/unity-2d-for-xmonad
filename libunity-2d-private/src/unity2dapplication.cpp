@@ -32,6 +32,9 @@
 // Qt
 #include <QFont>
 #include <QWindowsStyle>
+#include <QAccessible>
+#include <QAccessibleWidget>
+#include <QWidget>
 
 // GTK
 #include <gtk/gtk.h>
@@ -97,6 +100,17 @@ static bool arrayContains(char** begin, char** end, const char* string)
     return false;
 }
 
+QAccessibleInterface *panelFactory(const QString &classname, QObject *object)
+{
+    QAccessibleInterface *interface = 0;
+
+    if (classname == "Unity2dPanel" && object && object->isWidgetType()) {
+        interface = new QAccessibleWidget(static_cast<QWidget *>(object), QAccessible::ToolBar);
+    }
+
+    return interface;
+}
+
 void Unity2dApplication::earlySetup(int& argc, char** argv)
 {
     // Parts of unity-2d uses GTK so it needs to be initialized
@@ -138,6 +152,8 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
     if (!isRunningInstalled()) {
         qputenv("GSETTINGS_SCHEMA_DIR", unity2dDirectory().toLocal8Bit() + "/data");
     }
+
+    QAccessible::installFactory(panelFactory);
 }
 
 Unity2dApplication::~Unity2dApplication()

@@ -19,8 +19,10 @@
 import QtQuick 1.0
 import Effects 1.0
 
-FocusScope {
+AbstractButton {
     property string searchQuery
+
+    Accessible.name: "Search Entry"
 
     /* Cancels current search when the dash becomes invisible */
     Connections {
@@ -36,6 +38,8 @@ FocusScope {
 
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
+
+    opacity: state == "selected" ? 1.0 : 0.7
 
     BorderImage {
         anchors.fill: parent
@@ -68,6 +72,9 @@ FocusScope {
         MouseArea {
             id: clear_button
 
+            Accessible.name: "Clear"
+            Accessible.role: Accessible.PushButton
+
             anchors.fill: search_icon
 
             onClicked: {
@@ -78,6 +85,9 @@ FocusScope {
 
         TextInput {
             id: search_input
+
+            Accessible.name: search_instructions.text
+            Accessible.role: Accessible.EditableText
 
             effect: DropShadow {
                     id: glow

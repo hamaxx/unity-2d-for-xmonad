@@ -48,6 +48,8 @@ import Unity2d 1.0
 DropItem {
     id: item
 
+    Accessible.role: Accessible.PushButton
+
     anchors.horizontalCenter: parent.horizontalCenter
 
     property int padding
