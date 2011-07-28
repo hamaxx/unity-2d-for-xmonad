@@ -17,7 +17,6 @@ macro(panel_tests)
 endmacro(panel_tests)
 
 include_directories(
-    ${uqapplets_SOURCE_DIR}/homebutton
     ${uqapplets_SOURCE_DIR}/common
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
@@ -25,6 +24,5 @@ include_directories(
 
 enable_testing()
 
-panel_tests(
-    homebuttonapplettest
-    )
+#panel_tests(
+#    )

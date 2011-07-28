@@ -22,7 +22,6 @@ panel/applets/indicator-config.h
 panel/applets/registraradaptor.*
 panel/lib/libuqpanel.so*
 panel/tests/Testing
-panel/tests/homebuttonapplettest
 
 libunity-2d-private/src/libunity-2d-private.so.*
 libunity-2d-private/tests/Testing

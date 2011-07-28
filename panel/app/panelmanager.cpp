@@ -30,7 +30,6 @@
 // Applets
 #include <appindicator/appindicatorapplet.h>
 #include <appname/appnameapplet.h>
-#include <homebutton/homebuttonapplet.h>
 #include <indicator/indicatorapplet.h>
 #include <legacytray/legacytrayapplet.h>
 
@@ -43,14 +42,6 @@
 #include <QLabel>
 
 using namespace Unity2d;
-
-static QWidget* createSeparator()
-{
-    // Just a quick-hack: homebutton is going away anyway
-    QWidget* widget = new QWidget;
-    widget->setFixedWidth(6);
-    return widget;
-}
 
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
@@ -79,12 +70,8 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
 
     IndicatorsManager* indicatorsManager = new IndicatorsManager(panel);
 
-    int leftmost = QApplication::desktop()->screenNumber(QPoint());
-    if (screen == leftmost) {
-        panel->addWidget(new HomeButtonApplet);
-        panel->addWidget(createSeparator());
-    }
     panel->addWidget(new AppNameApplet(indicatorsManager));
+    int leftmost = QApplication::desktop()->screenNumber(QPoint());
     if (screen == leftmost) {
         /* It doesn’t make sense to have more than one instance of the systray,
            XEmbed’ed windows can be displayed only once anyway. */
