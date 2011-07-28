@@ -20,8 +20,11 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
   * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
   * Install the apport hook in the right directory so that it's not launched
     unconditionally (LP: #712343)
+  * debian/control, debian/rules, debian/libunity-2d-private-dev:
+    - add new -dev project (LP: #814709)
+    - add an upstream pc file
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 22 Jul 2011 18:56:33 +0200
+ -- Florian Boucault <florian.boucault@canonical.com>  Thu, 28 Jul 2011 12:05:05 +0200
 
 unity-2d (3.8.10-0ubuntu1) natty; urgency=low
 

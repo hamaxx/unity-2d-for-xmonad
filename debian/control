@@ -50,6 +50,22 @@ Description: Unity 2D shared library
  It is only used internally, there is no use case for it outside of the unity-2d
  project.
 
+Package: libunity-2d-private-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libunity-2d-private0 (= ${binary:Version}),
+         libgtk2.0-dev,
+         libwnck-dev,
+         libglib2.0-dev,
+Description: Unity 2D shared library - development files
+ This library is used to host common code used by several Unity 2D components
+ It is only used internally, there is no use case for it outside of the unity-2d
+ project.
+ .
+ This package contains the development header files.
+
 Package: unity-2d-launcher
 Architecture: any
 Depends: ${shlibs:Depends},
