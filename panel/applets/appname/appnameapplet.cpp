@@ -25,6 +25,7 @@
 // Local
 #include "croppedlabel.h"
 #include "menubarwidget.h"
+#include "panelstyle.h"
 #include "windowhelper.h"
 
 // Unity-2d
@@ -47,8 +48,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
-
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 namespace Unity2d
@@ -57,16 +56,16 @@ namespace Unity2d
 class WindowButton : public QAbstractButton
 {
 public:
-    WindowButton(const QString& prefix, Qt::Alignment alignment, QWidget* parent = 0)
+    WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_prefix(prefix)
-    , m_alignment(alignment)
-    , m_normalPix(loadPix("normal"))
-    , m_hoverPix(loadPix("prelight"))
-    , m_downPix(loadPix("pressed"))
+    , m_buttonType(buttonType)
     {
-        setSizePolicy((m_alignment & Qt::AlignHCenter) ? QSizePolicy::Fixed : QSizePolicy::Minimum,
-            QSizePolicy::Minimum);
+        loadPixmaps();
+        if (buttonType == PanelStyle::MinimizeWindowButton) {
+            setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        } else {
+            setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        }
         setAttribute(Qt::WA_Hover);
     }
 
@@ -76,6 +75,14 @@ public:
     }
 
 protected:
+    bool event(QEvent* ev)
+    {
+        if (ev->type() == QEvent::PaletteChange) {
+            loadPixmaps();
+        }
+        return QAbstractButton::event(ev);
+    }
+
     void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
@@ -88,7 +95,7 @@ protected:
             pix = m_normalPix;
         }
         int posX;
-        if (m_alignment & Qt::AlignRight) {
+        if (m_buttonType == PanelStyle::CloseWindowButton) {
             posX = width() - pix.width();
         } else {
             posX = 0;
@@ -97,19 +104,17 @@ protected:
     }
 
 private:
-    QString m_prefix;
-    Qt::Alignment m_alignment;
+    PanelStyle::WindowButtonType m_buttonType;
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
 
-    QPixmap loadPix(const QString& name)
+    void loadPixmaps()
     {
-        QString path = QString("%1/%2_focused_%3.png")
-            .arg(METACITY_DIR)
-            .arg(m_prefix)
-            .arg(name);
-        return QPixmap(path);
+        PanelStyle* style = PanelStyle::instance();
+        m_normalPix = style->windowButtonPixmap(m_buttonType, PanelStyle::NormalState);
+        m_hoverPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PrelightState);
+        m_downPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PressedState);
     }
 };
 
@@ -143,9 +148,9 @@ struct AppNameAppletPrivate
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
         layout->setMargin(0);
         layout->setSpacing(0);
-        m_closeButton = new WindowButton("close", Qt::AlignRight);
-        m_minimizeButton = new WindowButton("minimize", Qt::AlignCenter);
-        m_maximizeButton = new WindowButton("unmaximize", Qt::AlignLeft);
+        m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
+        m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
+        m_maximizeButton = new WindowButton(PanelStyle::UnmaximizeWindowButton);
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
