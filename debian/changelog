@@ -25,6 +25,8 @@ unity-2d (3.8.12-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - dep on latest libqtdee-dev
     - dep now on gtk3 indicator version
+    - dep on versionned libnux-1.0-dev
+    - dep on versionned libunity-core-4.0-dev
 
  -- Florian Boucault <florian.boucault@canonical.com>  Thu, 28 Jul 2011 09:30:33 +0200
 
