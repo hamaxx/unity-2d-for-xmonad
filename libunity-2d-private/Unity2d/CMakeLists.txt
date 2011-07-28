@@ -40,6 +40,7 @@ set(unity-2d-private-qml_SRCS
     workspaces.cpp
     launcherdropitem.cpp
     iconutilities.cpp
+    bfb.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
@@ -71,6 +72,7 @@ set(unity-2d-private-qml_MOC_HDRS
     workspaces.h
     launcherdropitem.h
     iconutilities.h
+    bfb.h
     )
 
 file(GLOB unity-2d-private-qml_QML *.qml)
