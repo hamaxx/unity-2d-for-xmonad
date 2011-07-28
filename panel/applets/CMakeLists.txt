@@ -5,7 +5,6 @@ include(FindPkgConfig)
 
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(PANGO REQUIRED pango)
 
 # Sources
 set(uqapplets_SRCS
