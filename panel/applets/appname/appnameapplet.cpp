@@ -30,6 +30,7 @@
 // Unity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
+#include <launcherclient.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -48,8 +49,6 @@
 
 static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
 
-static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
-
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 namespace Unity2d
@@ -58,14 +57,16 @@ namespace Unity2d
 class WindowButton : public QAbstractButton
 {
 public:
-    WindowButton(const QString& prefix, QWidget* parent = 0)
+    WindowButton(const QString& prefix, Qt::Alignment alignment, QWidget* parent = 0)
     : QAbstractButton(parent)
     , m_prefix(prefix)
+    , m_alignment(alignment)
     , m_normalPix(loadPix("normal"))
     , m_hoverPix(loadPix("prelight"))
     , m_downPix(loadPix("pressed"))
     {
-        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        setSizePolicy((m_alignment & Qt::AlignHCenter) ? QSizePolicy::Fixed : QSizePolicy::Minimum,
+            QSizePolicy::Minimum);
         setAttribute(Qt::WA_Hover);
     }
 
@@ -86,11 +87,18 @@ protected:
         } else {
             pix = m_normalPix;
         }
-        painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
+        int posX;
+        if (m_alignment & Qt::AlignRight) {
+            posX = width() - pix.width();
+        } else {
+            posX = 0;
+        }
+        painter.drawPixmap(posX, (height() - pix.height()) / 2, pix);
     }
 
 private:
     QString m_prefix;
+    Qt::Alignment m_alignment;
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
@@ -133,14 +141,15 @@ struct AppNameAppletPrivate
         m_windowButtonWidget = new QWidget;
         m_windowButtonWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
-        layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
+        layout->setMargin(0);
         layout->setSpacing(0);
-        m_closeButton = new WindowButton("close");
-        m_minimizeButton = new WindowButton("minimize");
-        m_maximizeButton = new WindowButton("unmaximize");
+        m_closeButton = new WindowButton("close", Qt::AlignRight);
+        m_minimizeButton = new WindowButton("minimize", Qt::AlignCenter);
+        m_maximizeButton = new WindowButton("unmaximize", Qt::AlignLeft);
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
+        m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
         QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
@@ -186,7 +195,7 @@ AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(d->m_windowButtonWidget, 0, Qt::AlignLeft);
+    layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
@@ -234,7 +243,7 @@ void AppNameApplet::updateWidgets()
 
         // Define width
         if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(d->m_windowButtonWidget->sizeHint().width());
+            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }
