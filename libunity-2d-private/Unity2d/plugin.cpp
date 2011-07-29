@@ -57,6 +57,9 @@
 #include "intellihidebehavior.h"
 #include "forcevisiblebehavior.h"
 
+#include "lenses.h"
+#include "lens.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -126,6 +129,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 
     qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
+
+    qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
+    qmlRegisterType<Lens>(uri, 1, 0, "Lens");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

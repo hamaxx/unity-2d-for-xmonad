@@ -54,6 +54,8 @@ set(lib${LIB_NAME}_SRCS
     workspaces.cpp
     launcherdropitem.cpp
     iconutilities.cpp
+    lenses.cpp
+    lens.cpp
     )
 
 # Build
@@ -78,6 +80,8 @@ include_directories(
     ${INDICATOR_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
     ${DCONFQT_INCLUDE_DIRS}
+    ${UNITYCORE_INCLUDE_DIRS}
+    ${NUXCORE_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS})
@@ -109,6 +113,8 @@ target_link_libraries(${LIB_NAME}
     ${STARTUPNOTIFICATION_LDFLAGS}
     ${INDICATOR_LDFLAGS}
     ${DCONFQT_LDFLAGS}
+    ${UNITYCORE_LDFLAGS}
+    ${NUXCORE_LDFLAGS}
     )
 
 # Install
