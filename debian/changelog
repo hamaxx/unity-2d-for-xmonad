@@ -1,4 +1,4 @@
-unity-2d (3.8.12-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (3.8.12-0ubuntu2) oneiric; urgency=low
 
   * debian/control:
     - enforcing latest libunity-private0 to be installed for each local
@@ -7,7 +7,7 @@ unity-2d (3.8.12-0ubuntu2) UNRELEASED; urgency=low
   * debian/libunity-2d-private0.lintian-overrides:
     - remove a qml-related exported symbol warning wrongly detected
 
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 29 Jul 2011 08:01:51 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 29 Jul 2011 15:19:11 +0200
 
 unity-2d (3.8.12-0ubuntu1) oneiric; urgency=low
 
