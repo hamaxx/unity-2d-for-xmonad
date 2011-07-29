@@ -212,7 +212,7 @@ AutoScrollingListView {
             target: item.menu
             /* The menu had the keyboard focus because the launcher had
                activated it. Restore it. */
-            onDismissedByKeyEvent: launcherView.activateWindow()
+            onDismissedByKeyEvent: launcherView.forceActivateWindow()
         }
 
         Connections {

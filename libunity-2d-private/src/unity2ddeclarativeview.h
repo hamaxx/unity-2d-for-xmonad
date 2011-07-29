@@ -28,6 +28,9 @@ Q_SIGNALS:
 protected:
     void setupViewport();
 
+protected Q_SLOTS:
+    void forceActivateWindow();
+
 private:
     bool m_useOpenGL;
     bool m_transparentBackground;

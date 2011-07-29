@@ -59,9 +59,6 @@ private Q_SLOTS:
     void toggleDash();
     void showCommandsPlace();
 
-public Q_SLOTS:
-    void activateWindow();
-
 protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
