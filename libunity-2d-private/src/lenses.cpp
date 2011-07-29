@@ -32,7 +32,7 @@ Lenses::Lenses(QObject *parent) :
     QAbstractListModel(parent)
 {
     m_unityLenses = new unity::dash::FilesystemLenses("/home/ubuntu/dev/unity/tests/data/lenses");
-    // FIXME: should connect to 'count' changed signal
+    m_unityLenses->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
 }
 
 Lenses::~Lenses()
@@ -58,6 +58,12 @@ QVariant Lenses::data(const QModelIndex& index, int role) const
     lens->setUnityLens(unityLens);
 
     return QVariant::fromValue(lens);
+}
+
+void Lenses::onLensAdded(unity::dash::Lens::Ptr& lens)
+{
+    beginInsertRows(QModelIndex(), m_unityLenses->count()-1, m_unityLenses->count()-1);
+    endInsertRows();
 }
 
 #include "lenses.moc"

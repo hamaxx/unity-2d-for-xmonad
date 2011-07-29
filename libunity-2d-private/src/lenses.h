@@ -23,6 +23,9 @@
 // Qt
 #include <QAbstractListModel>
 
+// libunity-core
+#include <UnityCore/Lens.h>
+
 namespace unity
 {
 namespace dash
@@ -40,6 +43,9 @@ public:
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
+
+private Q_SLOTS:
+    void onLensAdded(unity::dash::Lens::Ptr& lens);
 
 private:
     unity::dash::Lenses* m_unityLenses;
