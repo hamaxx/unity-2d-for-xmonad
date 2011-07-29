@@ -3,6 +3,7 @@ unity-2d (3.8.12-0ubuntu2) UNRELEASED; urgency=low
   * debian/control:
     - enforcing latest libunity-private0 to be installed for each local
       consumer
+    - don't recommends indicator-me, it's deprecated
   * debian/libunity-2d-private0.lintian-overrides:
     - remove a qml-related exported symbol warning wrongly detected
 

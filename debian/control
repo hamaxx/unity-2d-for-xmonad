@@ -94,7 +94,6 @@ Provides: indicator-renderer
 Recommends: indicator-application,
             indicator-appmenu,
             indicator-datetime,
-            indicator-me,
             indicator-messages,
             indicator-session,
             indicator-sound,
