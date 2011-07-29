@@ -315,3 +315,4 @@ LauncherContextualMenu::insertSeparatorBeforeTitle()
     return insertSeparator(m_titleAction);
 }
 
+#include "launchermenu.moc"

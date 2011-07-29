@@ -241,3 +241,4 @@ WebFavorite::computeUrlHash(const QUrl& url)
     return QCryptographicHash::hash(url.toEncoded(), QCryptographicHash::Md5).toHex().constData();
 }
 
+#include "webfavorite.moc"
