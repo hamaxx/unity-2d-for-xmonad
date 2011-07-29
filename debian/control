@@ -75,7 +75,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          unity-asset-pool,
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg,
 Recommends: unity-place-files,
             unity-place-applications
@@ -89,7 +89,7 @@ Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0
+         libunity-2d-private0 (= ${binary:Version}),
 Provides: indicator-renderer
 Recommends: indicator-application,
             indicator-appmenu,
@@ -107,7 +107,7 @@ Package: unity-2d-places
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
@@ -118,7 +118,7 @@ Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open
