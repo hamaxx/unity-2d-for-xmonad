@@ -82,3 +82,5 @@ IconUtilities::getColorsFromIcon(QUrl source, QSize size) const
 
     return colors;
 }
+
+#include "iconutilities.moc"

@@ -285,3 +285,5 @@ void WindowInfo::updateWorkspace()
 {
     Q_EMIT workspaceChanged(workspace());
 }
+
+#include "windowinfo.moc"

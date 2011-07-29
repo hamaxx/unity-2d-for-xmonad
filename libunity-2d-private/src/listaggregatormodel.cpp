@@ -267,3 +267,5 @@ ListAggregatorModel::removeRows(int row, int count, const QModelIndex& parent)
 
     return true;
 }
+
+#include "listaggregatormodel.moc"

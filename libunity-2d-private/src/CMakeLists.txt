@@ -23,16 +23,58 @@ set(lib${LIB_NAME}_SRCS
     forcevisiblebehavior.cpp
     intellihidebehavior.cpp
     giodefaultapplication.cpp
+    qsortfilterproxymodelqml.cpp
+    blendedimageprovider.cpp
+    windowimageprovider.cpp
+    windowinfo.cpp
+    windowslist.cpp
+    screeninfo.cpp
+    cacheeffect.cpp
+    workspacesinfo.cpp
+    signalwaiter.cpp
+    dragitem.cpp
+    dragitemwithurl.cpp
+    dropitem.cpp
+    iconimageprovider.cpp
+    listaggregatormodel.cpp
+    launcheritem.cpp
+    launcherapplication.cpp
+    launcherapplicationslist.cpp
+    launcherapplicationslistdbus.cpp
+    launcherdevice.cpp
+    launcherdeviceslist.cpp
+    launcherutility.cpp
+    placeentry.cpp
+    place.cpp
+    launcherplaceslist.cpp
+    trash.cpp
+    launchermenu.cpp
+    webfavorite.cpp
+    workspaces.cpp
+    launcherdropitem.cpp
+    iconutilities.cpp
     )
 
 # Build
 qt4_automoc(${libunity-2d-private_SRCS})
+
+add_definitions(-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DSN_API_NOT_YET_FROZEN)
 
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GLIB_INCLUDE_DIRS}
     ${WNCK_INCLUDE_DIRS}
+    ${QTBAMF_INCLUDE_DIRS}
+    ${QTGCONF_INCLUDE_DIRS}
+    ${QTDEE_INCLUDE_DIRS}
+    ${DBUSMENUQT_INCLUDE_DIRS}
+    ${GDK_INCLUDE_DIRS}
+    ${GIO_INCLUDE_DIRS}
+    ${STARTUPNOTIFICATION_INCLUDE_DIRS}
+    ${INDICATOR_INCLUDE_DIRS}
+    ${X11_INCLUDE_DIR}
+    ${DCONFQT_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS})
@@ -47,9 +89,21 @@ target_link_libraries(${LIB_NAME}
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QT_QTOPENGL_LIBRARIES}
+    ${QT_QTGUI_LIBRARIES}
+    ${QT_QTNETWORK_LIBRARIES}
     ${X11_LIBRARIES}
     ${GLIB_LDFLAGS}
     ${WNCK_LDFLAGS}
+    ${GDK_LDFLAGS}
+    ${GIO_LDFLAGS}
+    ${X11_Xcomposite_LIB}
+    ${QTBAMF_LDFLAGS}
+    ${QTGCONF_LDFLAGS}
+    ${QTDEE_LDFLAGS}
+    ${DBUSMENUQT_LDFLAGS}
+    ${STARTUPNOTIFICATION_LDFLAGS}
+    ${INDICATOR_LDFLAGS}
+    ${DCONFQT_LDFLAGS}
     )
 
 # Install

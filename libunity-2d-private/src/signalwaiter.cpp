@@ -45,3 +45,5 @@ void SignalWaiter::fail()
 {
     m_loop.exit(1);
 }
+
+#include "signalwaiter.moc"
