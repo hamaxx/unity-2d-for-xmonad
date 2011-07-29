@@ -32,6 +32,7 @@ include_directories(
     ${DCONFQT_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${NUXCORE_INCLUDE_DIRS}
+    ${DEE_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
