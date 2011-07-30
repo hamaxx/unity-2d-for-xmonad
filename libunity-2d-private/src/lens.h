@@ -28,6 +28,9 @@
 // libunity-core
 #include <UnityCore/Lens.h>
 
+// dee-qt
+#include "deelistmodel.h"
+
 
 class Lens : public QObject
 {
@@ -44,12 +47,9 @@ class Lens : public QObject
     Q_PROPERTY(bool searchInGlobal READ searchInGlobal NOTIFY searchInGlobalChanged)
     Q_PROPERTY(QString shortcut READ shortcut NOTIFY shortcutChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
-//    nux::RWProperty<Results::Ptr> results;
-//    nux::RWProperty<Results::Ptr> global_results;
-//    nux::RWProperty<Categories::Ptr> categories;
-//    Q_PROPERTY(Results* results READ results NOTIFY resultsChanged)
-//    Q_PROPERTY(Results* globalResults READ globalResults NOTIFY globalResultsChanged)
-//    Q_PROPERTY(Categories* categories READ categories NOTIFY categoriesChanged)
+    Q_PROPERTY(DeeListModel* results READ results NOTIFY resultsChanged)
+    Q_PROPERTY(DeeListModel* globalResults READ globalResults NOTIFY globalResultsChanged)
+    Q_PROPERTY(DeeListModel* categories READ categories NOTIFY categoriesChanged)
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
 
 public:
@@ -67,10 +67,13 @@ public:
     bool searchInGlobal() const;
     QString shortcut() const;
     bool connected() const;
+    DeeListModel* results() const;
+    DeeListModel* globalResults() const;
+    DeeListModel* categories() const;
     bool active() const;
 
-    void globalSearch(QString search_string);
-    void search(QString search_string);
+    void globalSearch(const QString& search_string);
+    void search(const QString& search_string);
     void setUnityLens(unity::dash::Lens::Ptr lens);
 
 Q_SIGNALS:
@@ -85,12 +88,25 @@ Q_SIGNALS:
     void searchInGlobalChanged(bool);
     void shortcutChanged(std::string);
     void connectedChanged(bool);
+    void resultsChanged();
+    void globalResultsChanged();
+    void categoriesChanged();
     void activeChanged(bool);
     void searchFinished(std::string const&);
     void globalSearchFinished(std::string const&);
 
 private:
+    void onResultsSwarmNameChanged(std::string);
+    void onResultsChanged(unity::dash::Results::Ptr);
+    void onGlobalResultsSwarmNameChanged(std::string);
+    void onGlobalResultsChanged(unity::dash::Results::Ptr);
+    void onCategoriesSwarmNameChanged(std::string);
+    void onCategoriesChanged(unity::dash::Categories::Ptr);
+
     unity::dash::Lens::Ptr m_unityLens;
+    DeeListModel* m_results;
+    DeeListModel* m_globalResults;
+    DeeListModel* m_categories;
 };
 
 Q_DECLARE_METATYPE(Lens*)
