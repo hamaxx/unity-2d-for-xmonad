@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Laneko areak"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Mantendu abiarazlean"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Kendu abiarazletik"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

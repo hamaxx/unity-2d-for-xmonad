@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "Աշխատատարածքներ"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Գամել գործարկչին"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Հեռացնել գործարկչից"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

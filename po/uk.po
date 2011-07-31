@@ -101,11 +101,11 @@ msgid "Workspaces"
 msgstr "Робочі області"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Залишити на панелі запуску"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Вилучити з панелі запуску"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "Vùng làm việc"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Giữ trong Bộ khởi chạy"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Loại khỏi Bộ khởi chạy"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

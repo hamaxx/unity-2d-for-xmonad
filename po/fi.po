@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Työtilat"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Pidä käynnistimessä"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Poista käynnistimestä"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

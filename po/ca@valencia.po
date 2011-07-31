@@ -1,4 +1,4 @@
-# Catalan translation for unity-2d
+## Catalan translation for unity-2d
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the unity-2d package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Espais de treball"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Mantén al llançador"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Suprimeix del llançador"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

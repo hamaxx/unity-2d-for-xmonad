@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "ワークスペースの切り替え"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "ランチャーに常に表示"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "ランチャーから削除する"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870
