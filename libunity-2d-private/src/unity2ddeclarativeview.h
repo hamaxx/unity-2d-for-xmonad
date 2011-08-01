@@ -30,10 +30,15 @@ protected:
 
 protected Q_SLOTS:
     void forceActivateWindow();
+    void forceDeactivateWindow();
 
 private:
+    void saveActiveWindow();
+    void forceActivateThisWindow(WId);
+
     bool m_useOpenGL;
     bool m_transparentBackground;
+    WId m_last_focused_window;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)

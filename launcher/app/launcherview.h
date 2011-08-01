@@ -44,10 +44,6 @@ public:
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 
-public Q_SLOTS:
-    void hideLauncher();
-    void showLauncher();
-
 Q_SIGNALS:
     void keyboardShortcutPressed(int itemIndex);
     void superKeyHeldChanged(bool superKeyHeld);

@@ -123,7 +123,7 @@ LauncherDropItem {
 
     Keys.onPressed: {
         if( event.key == Qt.Key_Escape ){
-            launcherView.hideLauncher()
+            launcherView.forceDeactivateWindow()
             event.accepted = true
         }
     }

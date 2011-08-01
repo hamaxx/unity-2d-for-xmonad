@@ -1,12 +1,15 @@
 #include "unity2ddeclarativeview.h"
+#include <QDebug>
 #include <QGLWidget>
 #include <QX11Info>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include <debug_p.h>
+
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
-    QDeclarativeView(parent), m_useOpenGL(false), m_transparentBackground(false)
+    QDeclarativeView(parent), m_useOpenGL(false), m_transparentBackground(false), m_last_focused_window(None)
 {
     setupViewport();
 }
@@ -97,6 +100,41 @@ void Unity2DDeclarativeView::setupViewport()
 
 void Unity2DDeclarativeView::forceActivateWindow()
 {
+    // Save reference to window with current keyboard focus
+    if( m_last_focused_window == None ){
+        saveActiveWindow();
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateThisWindow(this->effectiveWinId());
+}
+
+void Unity2DDeclarativeView::forceDeactivateWindow()
+{
+    if( m_last_focused_window == None ){
+        UQ_WARNING << "No previously focused window found, use mouse to select window.";
+        //don't restore keyboard focus
+        return;
+    }
+
+    // What if window closed while we were in launcher? Check if window
+    // exists by seeing if it has attributes.
+    int status;
+    XWindowAttributes attributes;
+    status = XGetWindowAttributes(QX11Info::display(), m_last_focused_window, &attributes);
+    if ( status == BadWindow ){
+        UQ_WARNING << "Previously focused window has gone, use mouse to select window.";
+        return;
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateThisWindow(m_last_focused_window);
+
+    m_last_focused_window = None;
+}
+
+void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
+{
     /* Workaround focus stealing prevention implemented by some window
        managers such as Compiz. This is the exact same code you will find in
        libwnck::wnck_window_activate().
@@ -110,7 +148,7 @@ void Unity2DDeclarativeView::forceActivateWindow()
     xev.xclient.type = ClientMessage;
     xev.xclient.send_event = True;
     xev.xclient.display = display;
-    xev.xclient.window = this->effectiveWinId();
+    xev.xclient.window = window;
     xev.xclient.message_type = net_wm_active_window;
     xev.xclient.format = 32;
     xev.xclient.data.l[0] = 2;
@@ -122,5 +160,19 @@ void Unity2DDeclarativeView::forceActivateWindow()
     XSendEvent(display, QX11Info::appRootWindow(), False,
                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
+
+/* Save WId of window with keyboard focus to m_last_focused_window */
+void Unity2DDeclarativeView::saveActiveWindow()
+{
+    Display* display = QX11Info::display();
+    WId active_window;
+    int current_focus_state;
+
+    XGetInputFocus(display, &active_window, &current_focus_state);
+    if( active_window != this->effectiveWinId()){
+        m_last_focused_window = active_window;
+    }
+}
+
 
 #include <unity2ddeclarativeview.moc>

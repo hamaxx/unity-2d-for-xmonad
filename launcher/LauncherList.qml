@@ -185,12 +185,9 @@ AutoScrollingListView {
                 item.menu.setFocus()
                 event.accepted = true
             }
-            else if (event.key == Qt.Key_Left ) {
+            else if (event.key == Qt.Key_Left) {
                 item.menu.hide()
                 event.accepted = true
-            }
-            else if (event.key == Qt.Key_Escape) {
-                item.menu.hide()
             }
         }
 

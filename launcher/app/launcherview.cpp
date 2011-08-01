@@ -77,7 +77,7 @@ LauncherView::LauncherView(QWidget* parent) :
 
     /* Alt+F1 gives the keyboard focus to the launcher. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(showLauncher()));
+    connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
 
     /* Alt+F2 shows the dash with the commands place entry activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
@@ -107,17 +107,6 @@ LauncherView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
     Q_EMIT focusChanged(false);
-}
-
-void
-LauncherView::showLauncher(){
-    Unity2DDeclarativeView::setFocus();
-    forceActivateWindow();
-}
-
-void
-LauncherView::hideLauncher(){
-    Unity2DDeclarativeView::clearFocus();
 }
 
 void
