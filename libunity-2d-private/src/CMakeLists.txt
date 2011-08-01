@@ -4,6 +4,7 @@ set (LIB_NAME "unity-2d-private")
 set(lib${LIB_NAME}_SRCS
     debug.cpp
     gconnector.cpp
+    gimageutils.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp
