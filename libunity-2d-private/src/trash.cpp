@@ -368,3 +368,5 @@ Trash::updateTrashIcon(void)
     else {
         m_iconName = "unity-icon-theme/user-trash-full"; }
 }
+
+#include "trash.moc"

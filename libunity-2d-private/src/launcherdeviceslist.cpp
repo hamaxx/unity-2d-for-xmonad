@@ -195,3 +195,5 @@ LauncherDevicesList::onMountUnmounted(GMount* mount)
         ++i;
     }
 }
+
+#include "launcherdeviceslist.moc"

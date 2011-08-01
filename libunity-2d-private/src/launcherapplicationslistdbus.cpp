@@ -28,3 +28,5 @@ LauncherApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString 
         }
     }
 }
+
+#include "launcherapplicationslistdbus.moc"

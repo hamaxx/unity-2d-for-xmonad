@@ -45,3 +45,5 @@ void DeclarativeDropItem::dropEvent(QGraphicsSceneDragDropEvent *event)
     DeclarativeDragDropEvent dragDropEvent(event, this);
     Q_EMIT drop(&dragDropEvent);
 }
+
+#include "dropitem.moc"

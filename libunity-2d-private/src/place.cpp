@@ -452,3 +452,5 @@ Place::activate(QString uri)
     /* Try our luck */
     QDesktopServices::openUrl(url);
 }
+
+#include "place.moc"

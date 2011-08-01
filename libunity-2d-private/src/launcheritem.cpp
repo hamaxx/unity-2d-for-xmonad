@@ -122,3 +122,4 @@ LauncherItem::emblem() const
     return QString();
 }
 
+#include "launcheritem.moc"

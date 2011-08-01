@@ -221,3 +221,5 @@ unsigned long * WorkspacesInfo::getX11IntProperty(Atom property, long length)
 
     return NULL;
 }
+
+#include "workspacesinfo.moc"

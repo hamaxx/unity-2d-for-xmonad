@@ -157,3 +157,4 @@ DeclarativeDragItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     Q_EMIT released();
 }
 
+#include "dragitem.moc"
