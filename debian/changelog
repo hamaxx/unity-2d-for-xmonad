@@ -2,6 +2,8 @@ unity-2d (3.8.14-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release:
     - [launcher] Need to press Alt+F1 twice to show launcher (LP: #812787)
+  * debian/control:
+    - build on latest libunity-core-4.0-dev and latest libnux-1.0-dev
 
  -- Didier Roche <didrocks@ubuntu.com>  Mon, 01 Aug 2011 18:54:53 +0200
 
