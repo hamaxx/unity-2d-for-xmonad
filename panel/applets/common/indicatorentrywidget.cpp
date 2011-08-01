@@ -25,6 +25,7 @@
 #include <cairoutils.h>
 #include <debug_p.h>
 #include <gscopedpointer.h>
+#include <gimageutils.h>
 #include <panelstyle.h>
 
 // Qt
@@ -294,7 +295,13 @@ QPixmap IndicatorEntryWidget::decodeIcon()
         QIcon icon = QIcon::fromTheme(name);
         pix = icon.pixmap(24, 24);
     } else if (type == GTK_IMAGE_GICON) {
-        UQ_WARNING << "FIXME: Implement support for GTK_IMAGE_GICON image type";
+        QString name = QString::fromStdString(m_entry->image_data());
+        QImage image = GImageUtils::imageForIconString(name, 22);
+        if (image.isNull()) {
+            UQ_WARNING << "Failed to load icon from" << name;
+            return QPixmap();
+        }
+        return QPixmap::fromImage(image);
     } else {
         UQ_WARNING << "Unknown image type" << m_entry->image_type();
     }
