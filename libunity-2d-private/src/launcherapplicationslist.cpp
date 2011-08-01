@@ -496,3 +496,5 @@ LauncherApplicationsList::move(int from, int to)
         writeFavoritesToGConf();
     }
 }
+
+#include "launcherapplicationslist.moc"

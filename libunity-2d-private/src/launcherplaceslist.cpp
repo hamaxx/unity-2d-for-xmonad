@@ -136,3 +136,4 @@ LauncherPlacesList::startAllPlaceServices()
     }
 }
 
+#include "launcherplaceslist.moc"

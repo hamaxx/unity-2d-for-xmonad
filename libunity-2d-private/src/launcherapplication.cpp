@@ -1032,3 +1032,4 @@ LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& 
     setDynamicQuicklistImporter(newOwner);
 }
 
+#include "launcherapplication.moc"

@@ -997,3 +997,4 @@ PlaceEntry::onRendererInfoChanged(const RendererInfoStruct& r)
     Q_EMIT rendererInfoChanged();
 }
 
+#include "placeentry.moc"

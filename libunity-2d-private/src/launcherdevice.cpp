@@ -246,3 +246,4 @@ LauncherDevice::onEjectTriggered()
     eject();
 }
 
+#include "launcherdevice.moc"

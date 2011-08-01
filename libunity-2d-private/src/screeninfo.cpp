@@ -97,3 +97,5 @@ bool ScreenInfo::isCompositingManagerRunning() const
 {
     return QX11Info::isCompositingManagerRunning();
 }
+
+#include "screeninfo.moc"
