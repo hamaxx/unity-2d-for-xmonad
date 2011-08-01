@@ -1,8 +1,9 @@
 unity-2d (3.8.14-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * New upstream release:
+    - [launcher] Need to press Alt+F1 twice to show launcher (LP: #812787)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 29 Jul 2011 16:05:25 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 01 Aug 2011 18:54:53 +0200
 
 unity-2d (3.8.12-0ubuntu2) oneiric; urgency=low
 
