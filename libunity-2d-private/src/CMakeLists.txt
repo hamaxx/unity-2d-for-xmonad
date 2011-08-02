@@ -56,6 +56,8 @@ set(lib${LIB_NAME}_SRCS
     iconutilities.cpp
     lenses.cpp
     lens.cpp
+    filter.cpp
+    ratingsfilter.cpp
     )
 
 # Build
