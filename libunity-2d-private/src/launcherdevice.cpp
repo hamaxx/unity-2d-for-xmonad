@@ -186,34 +186,61 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 }
 
 void
+LauncherDevice::unmount(GMountOperation* mountOperation)
+{
+    GMount* mount = g_volume_get_mount(m_volume);
+
+    if (mount == NULL) {
+	return;
+    }
+
+    if (g_mount_can_unmount(mount)) {
+        g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+                                       (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
+                                       NULL);
+    } else {
+        g_object_unref(mount);
+    }
+}
+
+void
 LauncherDevice::eject()
 {
     if (m_volume == NULL) {
         return;
     }
 
-    GMountOperation *mountOperation;
-    mountOperation = gtk_mount_operation_new(NULL);
+    GMountOperation* mountOperation = gtk_mount_operation_new(NULL);
 
     if (g_volume_can_eject(m_volume)) {
-        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mountOperation,
-            NULL, (GAsyncReadyCallback) LauncherDevice::onVolumeEjected, NULL);
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+                                      (GAsyncReadyCallback) LauncherDevice::onVolumeEjected,
+                                      NULL);
     } else {
-        GMount* mount = g_volume_get_mount(m_volume);
-
-        if (mount == NULL) {
-            return;
-        }
-
-        if (g_mount_can_unmount(mount)) {
-            g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mountOperation,
-                NULL, (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
-                NULL);
-        } else {
-            g_object_unref(mount);
-        }
+        unmount(mountOperation);
     }
 
+    g_object_unref(mountOperation);
+}
+
+void
+LauncherDevice::stop()
+{
+    if (m_volume == NULL) {
+        return;
+    }
+
+    GMountOperation* mountOperation = gtk_mount_operation_new(NULL);
+    GDrive* drive = g_volume_get_drive(m_volume);
+
+    if (g_drive_can_stop(drive)) {
+        g_drive_stop(drive, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+                     (GAsyncReadyCallback) LauncherDevice::onDriveStopped, NULL);
+    } else {
+        unmount(mountOperation);
+    }
+
+    g_object_unref(drive);
     g_object_unref(mountOperation);
 }
 
@@ -221,6 +248,12 @@ void
 LauncherDevice::onVolumeEjected(GVolume* volume, GAsyncResult* res)
 {
     g_volume_eject_with_operation_finish(volume, res, NULL);
+}
+
+void
+LauncherDevice::onDriveStopped(GDrive* drive, GAsyncResult* res)
+{
+    g_drive_stop_finish(drive, res, NULL);
 }
 
 void
@@ -237,6 +270,11 @@ LauncherDevice::createMenuActions()
     eject->setText(u2dTr("Eject"));
     m_menu->addAction(eject);
     QObject::connect(eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
+
+    QAction* stop = new QAction(m_menu);
+    stop->setText(u2dTr("Safely remove"));
+    m_menu->addAction(stop);
+    QObject::connect(stop, SIGNAL(triggered()), this, SLOT(onStopTriggered()));
 }
 
 void
@@ -244,6 +282,13 @@ LauncherDevice::onEjectTriggered()
 {
     m_menu->hide();
     eject();
+}
+
+void
+LauncherDevice::onStopTriggered()
+{
+    m_menu->hide();
+    stop();
 }
 
 #include "launcherdevice.moc"
