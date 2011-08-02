@@ -1,3 +1,12 @@
+unity-2d (3.8.14.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * Few upstream fixes:
+    - unity-2d-places crashed with SIGSEGV in
+      QDeclarativePropertyPrivate::initProperty() (LP: #817896)
+    - update resets unity launcher favorites (LP: #817954)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 02 Aug 2011 13:40:51 +0200
+
 unity-2d (3.8.14-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
