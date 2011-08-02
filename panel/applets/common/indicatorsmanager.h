@@ -52,19 +52,21 @@ protected:
 
 private Q_SLOTS:
     void syncGeometries();
+    void checkMousePosition();
 
 private:
     Q_DISABLE_COPY(IndicatorsManager)
     unity::indicator::DBusIndicators::Ptr m_indicators;
     QTimer* m_geometrySyncTimer;
+    QTimer* m_mouseTrackerTimer;
 
     typedef QList<IndicatorEntryWidget*> IndicatorEntryWidgetList;
     IndicatorEntryWidgetList m_widgetList;
 
     void onSynced();
     void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
-    void onMenuPointerMoved(int x, int y);
     void onEntryActivateRequest(const std::string& entryId);
+    void onEntryActivated(const std::string& entryId);
 };
 
 #endif /* INDICATORSMANAGER_H */
