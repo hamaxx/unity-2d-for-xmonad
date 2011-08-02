@@ -33,7 +33,19 @@ Item {
     /* Unload the current page when closing the dash */
     Connections {
         target: dashView
-        onActiveChanged: if (!dashView.active) pageLoader.source = ""
+        onActiveChanged: {
+            if (!dashView.active) {
+                /* FIXME: currentPage needs to stop pointing to pageLoader.item
+                          that is about to be invalidated otherwise a crash
+                          occurs because SearchEntry has a binding that refers
+                          to currentPage and tries to access it.
+                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
+                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
+                */
+                currentPage = undefined
+                pageLoader.source = ""
+            }
+        }
     }
 
     function activatePage(page) {
