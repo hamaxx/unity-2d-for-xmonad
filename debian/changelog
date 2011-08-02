@@ -1,8 +1,20 @@
-unity-2d (3.8.14-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (3.8.14.1-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * Few upstream fixes:
+    - unity-2d-places crashed with SIGSEGV in
+      QDeclarativePropertyPrivate::initProperty() (LP: #817896)
+    - update resets unity launcher favorites (LP: #817954)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Fri, 29 Jul 2011 16:05:25 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 02 Aug 2011 13:40:51 +0200
+
+unity-2d (3.8.14-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [launcher] Need to press Alt+F1 twice to show launcher (LP: #812787)
+  * debian/control:
+    - build on latest libunity-core-4.0-dev and latest libnux-1.0-dev
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 01 Aug 2011 19:53:40 +0200
 
 unity-2d (3.8.12-0ubuntu2) oneiric; urgency=low
 
