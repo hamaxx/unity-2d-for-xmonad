@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "작업 공간"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "실행기에 고정"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "시작 관리자에서 제거"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

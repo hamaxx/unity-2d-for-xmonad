@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Espaços de trabalho"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Manter no lançador"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Remover do lançador"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

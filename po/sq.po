@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Hapësirat e Punës"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Mbaj në Lëshues"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Hiq nga lëshuesi"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

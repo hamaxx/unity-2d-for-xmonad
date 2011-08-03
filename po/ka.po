@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "სამუშაო არეები"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "გამშვებზე მიმაგრება"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "გამშვებიდან ამოღება"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

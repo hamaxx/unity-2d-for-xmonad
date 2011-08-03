@@ -101,11 +101,11 @@ msgid "Workspaces"
 msgstr "Munkaterületek"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Indítóban tartás"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Eltávolítás az Indítóból"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

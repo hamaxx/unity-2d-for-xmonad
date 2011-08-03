@@ -1,4 +1,4 @@
-# Bosnian translation for unity-2d
+### Bosnian translation for unity-2d
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the unity-2d package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
@@ -101,11 +101,11 @@ msgid "Workspaces"
 msgstr "Radni prostori"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Čuvaj u pokretaču"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Ukloni iz pokretača"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870
