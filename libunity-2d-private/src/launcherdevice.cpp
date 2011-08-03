@@ -188,6 +188,10 @@ LauncherDevice::onVolumeMounted(GVolume* volume, GAsyncResult* res)
 void
 LauncherDevice::unmount(GMountOperation* mountOperation)
 {
+    if (m_volume == NULL) {
+        return;
+    }
+
     GMount* mount = g_volume_get_mount(m_volume);
 
     if (mount == NULL) {
