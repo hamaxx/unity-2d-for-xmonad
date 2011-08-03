@@ -192,19 +192,17 @@ LauncherDevice::unmount(GMountOperation* mountOperation)
         return;
     }
 
-    GMount* mount = g_volume_get_mount(m_volume);
+    GObjectScopedPointer<GMount> mount(g_volume_get_mount(m_volume));
 
-    if (mount == NULL) {
+    if (mount.isNull()) {
         return;
     }
 
-    if (g_mount_can_unmount(mount)) {
-        g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+    if (g_mount_can_unmount(mount.data())) {
+        g_mount_unmount_with_operation(mount.data(), G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
                                        (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
                                        NULL);
     }
-
-    g_object_unref(mount);
 }
 
 void
@@ -214,17 +212,16 @@ LauncherDevice::eject()
         return;
     }
 
-    GMountOperation* mountOperation = gtk_mount_operation_new(NULL);
+    GObjectScopedPointer<GMountOperation> mountOperation(gtk_mount_operation_new(NULL));
 
     if (g_volume_can_eject(m_volume)) {
-        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+        g_volume_eject_with_operation(m_volume, G_MOUNT_UNMOUNT_NONE, mountOperation.data(),
+                                      NULL,
                                       (GAsyncReadyCallback) LauncherDevice::onVolumeEjected,
                                       NULL);
     } else {
-        unmount(mountOperation);
+        unmount(mountOperation.data());
     }
-
-    g_object_unref(mountOperation);
 }
 
 void
@@ -234,22 +231,20 @@ LauncherDevice::stop()
         return;
     }
 
-    GMountOperation* mountOperation = gtk_mount_operation_new(NULL);
-    GDrive* drive = g_volume_get_drive(m_volume);
+    GObjectScopedPointer<GDrive> drive(g_volume_get_drive(m_volume));
 
-    if (drive == NULL) {
+    if (drive.isNull()) {
         return;
     }
 
-    if (g_drive_can_stop(drive)) {
-        g_drive_stop(drive, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
+    GObjectScopedPointer<GMountOperation> mountOperation(gtk_mount_operation_new(NULL));
+
+    if (g_drive_can_stop(drive.data())) {
+        g_drive_stop(drive.data(), G_MOUNT_UNMOUNT_NONE, mountOperation.data(), NULL,
                      (GAsyncReadyCallback) LauncherDevice::onDriveStopped, NULL);
     } else {
-        unmount(mountOperation);
+        unmount(mountOperation.data());
     }
-
-    g_object_unref(drive);
-    g_object_unref(mountOperation);
 }
 
 void
