@@ -191,16 +191,16 @@ LauncherDevice::unmount(GMountOperation* mountOperation)
     GMount* mount = g_volume_get_mount(m_volume);
 
     if (mount == NULL) {
-	return;
+        return;
     }
 
     if (g_mount_can_unmount(mount)) {
         g_mount_unmount_with_operation(mount, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
                                        (GAsyncReadyCallback) LauncherDevice::onMountUnmounted,
                                        NULL);
-    } else {
-        g_object_unref(mount);
     }
+
+    g_object_unref(mount);
 }
 
 void
@@ -232,6 +232,10 @@ LauncherDevice::stop()
 
     GMountOperation* mountOperation = gtk_mount_operation_new(NULL);
     GDrive* drive = g_volume_get_drive(m_volume);
+
+    if (drive == NULL) {
+        return;
+    }
 
     if (g_drive_can_stop(drive)) {
         g_drive_stop(drive, G_MOUNT_UNMOUNT_NONE, mountOperation, NULL,
