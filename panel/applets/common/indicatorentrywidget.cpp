@@ -41,6 +41,7 @@
 
 static const int SPACING = 3;
 static const int PADDING = 3;
+static const int ICON_SIZE = 22;
 
 using namespace unity::indicator;
 
@@ -293,10 +294,10 @@ QPixmap IndicatorEntryWidget::decodeIcon()
     } else if (type == GTK_IMAGE_ICON_NAME) {
         QString name = QString::fromStdString(m_entry->image_data());
         QIcon icon = QIcon::fromTheme(name);
-        pix = icon.pixmap(24, 24);
+        pix = icon.pixmap(ICON_SIZE, ICON_SIZE);
     } else if (type == GTK_IMAGE_GICON) {
         QString name = QString::fromStdString(m_entry->image_data());
-        QImage image = GImageUtils::imageForIconString(name, 22);
+        QImage image = GImageUtils::imageForIconString(name, ICON_SIZE);
         if (image.isNull()) {
             UQ_WARNING << "Failed to load icon from" << name;
             return QPixmap();
