@@ -274,10 +274,14 @@ LauncherDevice::createMenuActions()
     m_menu->addAction(eject);
     QObject::connect(eject, SIGNAL(triggered()), this, SLOT(onEjectTriggered()));
 
-    QAction* stop = new QAction(m_menu);
-    stop->setText(u2dTr("Safely remove"));
-    m_menu->addAction(stop);
-    QObject::connect(stop, SIGNAL(triggered()), this, SLOT(onStopTriggered()));
+    GObjectScopedPointer<GDrive> drive(g_volume_get_drive(m_volume));
+
+    if (!drive.isNull() && g_drive_can_stop(drive.data())) {
+        QAction* stop = new QAction(m_menu);
+        stop->setText(u2dTr("Safely remove"));
+        m_menu->addAction(stop);
+        QObject::connect(stop, SIGNAL(triggered()), this, SLOT(onStopTriggered()));
+    }
 }
 
 void
