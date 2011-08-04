@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Werkbladen"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "In starter vastzetten"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Uit starter verwijderen"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

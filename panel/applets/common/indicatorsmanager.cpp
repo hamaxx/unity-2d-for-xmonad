@@ -39,21 +39,40 @@ IndicatorsManager::IndicatorsManager(QObject* parent)
 : QObject(parent)
 , m_indicators(new DBusIndicators)
 , m_geometrySyncTimer(new QTimer(this))
+, m_mouseTrackerTimer(new QTimer(this))
 {
     m_geometrySyncTimer->setInterval(0);
     m_geometrySyncTimer->setSingleShot(true);
     connect(m_geometrySyncTimer, SIGNAL(timeout()), SLOT(syncGeometries()));
 
+    // m_mouseTrackerTimer is inspired from
+    // plugins/unityshell/src/PanelView.cpp in OnEntryActivated()
+    //
+    // Rationale copied from Unity source code:
+    // """
+    // Track menus being scrubbed at 60Hz (about every 16 millisec)
+    // It might sound ugly, but it's far nicer (and more responsive) than the
+    // code it replaces which used to capture motion events in another process
+    // (unity-panel-service) and send them to us over dbus.
+    // NOTE: The reason why we have to use a timer instead of tracking motion
+    // events is because the motion events will never be delivered to this
+    // process. All the motion events will go to unity-panel-service while
+    // scrubbing because the active panel menu has (needs) the pointer grab.
+    // """
+    m_mouseTrackerTimer->setInterval(16);
+    m_mouseTrackerTimer->setSingleShot(false);
+    connect(m_mouseTrackerTimer, SIGNAL(timeout()), SLOT(checkMousePosition()));
+
     m_indicators->on_entry_show_menu.connect(
         sigc::mem_fun(this, &IndicatorsManager::onEntryShowMenu)
         );
 
-    m_indicators->on_menu_pointer_moved.connect(
-        sigc::mem_fun(this, &IndicatorsManager::onMenuPointerMoved)
-        );
-
     m_indicators->on_entry_activate_request.connect(
         sigc::mem_fun(this, &IndicatorsManager::onEntryActivateRequest)
+        );
+
+    m_indicators->on_entry_activated.connect(
+        sigc::mem_fun(this, &IndicatorsManager::onEntryActivated)
         );
 
     m_indicators->on_synced.connect(
@@ -101,9 +120,11 @@ void IndicatorsManager::onEntryShowMenu(const std::string& /*entryId*/, int posX
     qApp->x11ProcessEvent(reinterpret_cast<XEvent*>(&event));
 }
 
-void IndicatorsManager::onMenuPointerMoved(int posX, int posY)
+void IndicatorsManager::checkMousePosition()
 {
-    QWidget* widget = QApplication::widgetAt(posX, posY);
+    // Called by m_mouseTrackerTimer to implement mouse scrubbing
+    // (Assuming item A menu is opened, move mouse over item B => item B menu opens)
+    QWidget* widget = QApplication::widgetAt(QCursor::pos());
     IndicatorEntryWidget* entryWidget = qobject_cast<IndicatorEntryWidget*>(widget);
     if (!entryWidget) {
         return;
@@ -127,6 +148,15 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
         return;
     }
     widget->showMenu(Qt::NoButton);
+}
+
+void IndicatorsManager::onEntryActivated(const std::string& entryId)
+{
+    if (entryId.empty()) {
+        m_mouseTrackerTimer->stop();
+    } else {
+        m_mouseTrackerTimer->start();
+    }
 }
 
 void IndicatorsManager::onSynced()

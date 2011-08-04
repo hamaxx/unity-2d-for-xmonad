@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "工作区"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "固定在启动器上"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "从启动器上移除"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870
