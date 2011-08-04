@@ -101,7 +101,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         application->installX11EventFilter(this);
     }
 
-    /* Get the system applications data dirs and be flexible if / or not at the
+    /* Get the system applications data dirs and be flexible if / is not at the
        end of each path. */
     QString xdg_string = QFile::decodeName(getenv("XDG_DATA_DIRS"));
     if (xdg_string.isEmpty())
