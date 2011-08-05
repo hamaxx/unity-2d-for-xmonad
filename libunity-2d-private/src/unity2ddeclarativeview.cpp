@@ -98,6 +98,27 @@ void Unity2DDeclarativeView::setupViewport()
     }
 }
 
+/* Obtaining & Discarding Keyboard Focus for Window on Demand
+ *
+ * In the X world, activating a window means to give it the input (keyboard)
+ * focus. When a new window opens, X usually makes it active immediately.
+ * Clicking on a window makes it active too.
+ *
+ * Qt does not have the capability to explicitly ask the window manager to
+ * make an existing window active - setFocus() only forwards input focus to
+ * whatever QWidget you specify.
+ *
+ * De-Activating a window is not possible with X (and hence with Qt). So
+ * we work-around this by remembering which application is active prior to
+ * stealing focus, and then Re-Activating it when we're finished. This is
+ * not guaranteed to succeed, as previous window may have closed.
+ *
+ * The following methods deal with these tasks. Note that when the window
+ * has been activated (deactivated), Qt will realise it has obtained (lost)
+ * focus and act appropriately.
+ */
+
+/* Ask Window Manager to activate this window and hence get keyboard focus */
 void Unity2DDeclarativeView::forceActivateWindow()
 {
     // Save reference to window with current keyboard focus
@@ -109,15 +130,15 @@ void Unity2DDeclarativeView::forceActivateWindow()
     forceActivateThisWindow(this->effectiveWinId());
 }
 
+/* Ask Window Manager to deactivate this window - not guaranteed to succeed. */
 void Unity2DDeclarativeView::forceDeactivateWindow()
 {
     if( m_last_focused_window == None ){
         UQ_WARNING << "No previously focused window found, use mouse to select window.";
-        //don't restore keyboard focus
         return;
     }
 
-    // What if window closed while we were in launcher? Check if window
+    // What if previously focused window closed while we we had focus? Check if window
     // exists by seeing if it has attributes.
     int status;
     XWindowAttributes attributes;
@@ -173,6 +194,5 @@ void Unity2DDeclarativeView::saveActiveWindow()
         m_last_focused_window = active_window;
     }
 }
-
 
 #include <unity2ddeclarativeview.moc>
