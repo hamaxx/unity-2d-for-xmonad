@@ -1,12 +1,15 @@
 #include "unity2ddeclarativeview.h"
+#include <QDebug>
 #include <QGLWidget>
 #include <QX11Info>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include <debug_p.h>
+
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
-    QDeclarativeView(parent), m_useOpenGL(false), m_transparentBackground(false)
+    QDeclarativeView(parent), m_useOpenGL(false), m_transparentBackground(false), m_last_focused_window(None)
 {
     setupViewport();
 }
@@ -95,7 +98,63 @@ void Unity2DDeclarativeView::setupViewport()
     }
 }
 
+/* Obtaining & Discarding Keyboard Focus for Window on Demand
+ *
+ * In the X world, activating a window means to give it the input (keyboard)
+ * focus. When a new window opens, X usually makes it active immediately.
+ * Clicking on a window makes it active too.
+ *
+ * Qt does not have the capability to explicitly ask the window manager to
+ * make an existing window active - setFocus() only forwards input focus to
+ * whatever QWidget you specify.
+ *
+ * De-Activating a window is not possible with X (and hence with Qt). So
+ * we work-around this by remembering which application is active prior to
+ * stealing focus, and then Re-Activating it when we're finished. This is
+ * not guaranteed to succeed, as previous window may have closed.
+ *
+ * The following methods deal with these tasks. Note that when the window
+ * has been activated (deactivated), Qt will realise it has obtained (lost)
+ * focus and act appropriately.
+ */
+
+/* Ask Window Manager to activate this window and hence get keyboard focus */
 void Unity2DDeclarativeView::forceActivateWindow()
+{
+    // Save reference to window with current keyboard focus
+    if( m_last_focused_window == None ){
+        saveActiveWindow();
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateThisWindow(this->effectiveWinId());
+}
+
+/* Ask Window Manager to deactivate this window - not guaranteed to succeed. */
+void Unity2DDeclarativeView::forceDeactivateWindow()
+{
+    if( m_last_focused_window == None ){
+        UQ_WARNING << "No previously focused window found, use mouse to select window.";
+        return;
+    }
+
+    // What if previously focused window closed while we we had focus? Check if window
+    // exists by seeing if it has attributes.
+    int status;
+    XWindowAttributes attributes;
+    status = XGetWindowAttributes(QX11Info::display(), m_last_focused_window, &attributes);
+    if ( status == BadWindow ){
+        UQ_WARNING << "Previously focused window has gone, use mouse to select window.";
+        return;
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateThisWindow(m_last_focused_window);
+
+    m_last_focused_window = None;
+}
+
+void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
 {
     /* Workaround focus stealing prevention implemented by some window
        managers such as Compiz. This is the exact same code you will find in
@@ -110,7 +169,7 @@ void Unity2DDeclarativeView::forceActivateWindow()
     xev.xclient.type = ClientMessage;
     xev.xclient.send_event = True;
     xev.xclient.display = display;
-    xev.xclient.window = this->effectiveWinId();
+    xev.xclient.window = window;
     xev.xclient.message_type = net_wm_active_window;
     xev.xclient.format = 32;
     xev.xclient.data.l[0] = 2;
@@ -121,6 +180,19 @@ void Unity2DDeclarativeView::forceActivateWindow()
 
     XSendEvent(display, QX11Info::appRootWindow(), False,
                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+}
+
+/* Save WId of window with keyboard focus to m_last_focused_window */
+void Unity2DDeclarativeView::saveActiveWindow()
+{
+    Display* display = QX11Info::display();
+    WId active_window;
+    int current_focus_state;
+
+    XGetInputFocus(display, &active_window, &current_focus_state);
+    if( active_window != this->effectiveWinId()){
+        m_last_focused_window = active_window;
+    }
 }
 
 #include <unity2ddeclarativeview.moc>
