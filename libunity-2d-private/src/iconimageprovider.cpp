@@ -23,6 +23,7 @@
 #include <QFile>
 
 #include <debug_p.h>
+#include <gimageutils.h>
 
 static const char* UNITY_RES_PATH = "/usr/share/unity/";
 
@@ -114,62 +115,9 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         icon_name.chop(4);
     }
 
-    /* Load the icon by creating a GIcon from the string icon_name.
-       icon_name can contain more than a simple icon name but possibly
-       a string as returned by g_icon_to_string().
-    */
-    QByteArray byte_array = icon_name.toUtf8();
-    gchar *g_icon_name = byte_array.data();
-
-    GIcon *g_icon = g_icon_new_for_string(g_icon_name, NULL);
-    GtkIconInfo *icon_info = gtk_icon_theme_lookup_by_gicon(theme, g_icon,
-                                                            requestedSize.width(),
-                                                            (GtkIconLookupFlags)0);
-    g_object_unref(g_icon);
-
-    if (icon_info == NULL) {
-        UQ_WARNING << "Failed to find icon:" << icon_name;
-        return QImage();
-    }
-
-    GdkPixbuf *pixbuf = gtk_icon_info_load_icon(icon_info, NULL);
-    gtk_icon_info_free(icon_info);
-
-    if (pixbuf == NULL) {
-        UQ_WARNING << "Failed to load icon:" << icon_name;
-        return QImage();
-    }
-
-    QImage image(gdk_pixbuf_get_pixels(pixbuf),
-                   gdk_pixbuf_get_width(pixbuf),
-                   gdk_pixbuf_get_height(pixbuf),
-                   gdk_pixbuf_get_rowstride(pixbuf),
-                   QImage::Format_ARGB32);
-
-#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-    /* ABGR → ARGB */
-    QImage swappedImage = image.rgbSwapped();
-#else
-    /* ABGR → BGRA */
-    /* Reference: https://bugs.launchpad.net/unity-2d/+bug/758782 */
-    QImage swappedImage(image.size(), image.format());
-    for (int i = 0; i < swappedImage.height(); ++i) {
-        QRgb* p = (QRgb*) image.constScanLine(i);
-        QRgb* q = (QRgb*) swappedImage.scanLine(i);
-        QRgb* end = p + image.width();
-        while (p < end) {
-            *q = qRgba(qAlpha(*p), qRed(*p), qGreen(*p), qBlue(*p));
-            p++;
-            q++;
-        }
-    }
-#endif
-
-    g_object_unref(pixbuf);
-
+    QImage image = GImageUtils::imageForIconString(icon_name, requestedSize.width(), theme);
     if (size) {
-        *size = swappedImage.size();
+        *size = image.size();
     }
-
-    return swappedImage;
+    return image;
 }
