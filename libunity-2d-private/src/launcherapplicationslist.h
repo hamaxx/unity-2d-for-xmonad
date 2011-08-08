@@ -71,7 +71,7 @@ private:
     void insertApplication(LauncherApplication* application);
     void removeApplication(LauncherApplication* application);
 
-    QString favoriteFromDesktopFilePath(QString desktop_file);
+    QString favoriteFromDesktopFilePath(const QString& desktop_file) const;
 
     void writeFavoritesToGConf();
 
@@ -90,7 +90,7 @@ private:
     */
     QHash<QString, LauncherApplication*> m_applicationForExecutable;
     QConf* m_dconf_launcher;
-    QStringList m_xdg_data_dirs;
+    QStringList m_xdgApplicationDirs;
 
     /* Startup notification support */
     SnDisplay *m_snDisplay;
