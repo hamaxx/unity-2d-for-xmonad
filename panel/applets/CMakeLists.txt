@@ -17,7 +17,7 @@ set(uqapplets_SRCS
     common/applet.cpp
     common/indicatorentrywidget.cpp
     common/indicatorsmanager.cpp
-    common/indicatorwidget.cpp
+    common/indicatorswidget.cpp
     common/cairoutils.cpp
     common/panelstyle.cpp
     homebutton/homebuttonapplet.cpp

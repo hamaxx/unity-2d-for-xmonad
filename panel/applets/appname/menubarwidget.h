@@ -61,6 +61,7 @@ private:
 
     void onObjectAdded(const unity::indicator::Indicator::Ptr&);
     void onEntryAdded(const unity::indicator::Entry::Ptr&);
+    void onEntryRemoved(const std::string&);
     void onEntryActivated(const std::string&);
 };
 
