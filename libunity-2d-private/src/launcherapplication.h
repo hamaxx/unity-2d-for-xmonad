@@ -123,6 +123,7 @@ private Q_SLOTS:
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
     void updateWindowCount();
+    void updateCounterVisible();
 
     bool launch();
     void show();
@@ -164,7 +165,6 @@ private:
     bool m_forceUrgent;
 
     void updateBamfApplicationDependentProperties();
-    void hideCounter();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
     void createDynamicMenuActions();
