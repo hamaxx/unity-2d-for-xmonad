@@ -37,7 +37,7 @@ AbstractButton {
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
 
-    opacity: state == "selected" ? 1.0 : 0.7
+    opacity: ( state == "selected" || state == "mouseOver" ) ? 1.0 : 0.7
 
     BorderImage {
         anchors.fill: parent

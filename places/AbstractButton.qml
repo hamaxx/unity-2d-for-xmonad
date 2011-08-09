@@ -55,7 +55,7 @@ FocusScope {
         if(pressed || mouse_area.pressed)
             return "pressed"
         else if(mouse_area.containsMouse)
-            return "selected"
+            return "mouseOver"
         else if(activeFocus)
             return "selected"
         else

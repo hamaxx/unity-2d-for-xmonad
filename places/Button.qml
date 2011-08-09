@@ -23,7 +23,8 @@ AbstractButton {
         anchors.fill: parent
         anchors.bottomMargin: 1
         anchors.rightMargin: 1
-        opacity: parent.state == "selected" || parent.state == "pressed" ? 1.0 : 0.0
+        opacity: ( parent.state == "selected" || parent.state == "pressed"
+                  || parent.state == "mouseOver" ) ? 1.0 : 0.0
 
         color: parent.state == "pressed" ? "#ffffffff" : "#00000000"
         border.color: "#cccccc"

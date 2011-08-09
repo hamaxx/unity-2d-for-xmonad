@@ -41,7 +41,7 @@ SearchRefineOption {
             text: searchRefineOption.title
             font.pixelSize: 16
             font.bold: true
-            font.underline: parent.state == "selected"
+            font.underline: ( parent.state == "selected" || parent.state == "mouseOver" )
         }
     }
 
