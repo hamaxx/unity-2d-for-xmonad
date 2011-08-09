@@ -174,15 +174,15 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
-        show();
-        raise();
-        // We need a delay, otherwise the window may not be visible when we try to activate it
-        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
             resizeToDesktopModeSize();
         }
+        show();
+        raise();
+        // We need a delay, otherwise the window may not be visible when we try to activate it
+        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (oldMode == HiddenMode) {
             // Check old mode to ensure we do not call BeginForceVisible twice
             // if we go from desktop to fullscreen mode
