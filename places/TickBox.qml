@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import Effects 1.0
 
 AbstractButton {
     id: tickBox
@@ -28,39 +29,35 @@ AbstractButton {
     width: childrenRect.width
     height: childrenRect.height
 
-    TextCustom {
-        id: label
-
-        anchors.left: box.right
-        anchors.leftMargin: 8
-        anchors.right: tickBox.right
-        anchors.top: parent.top
-        font.pixelSize: 16
-        text: tickBox.text
-        elide: Text.ElideRight
+    effect: DropShadow {
+         blurRadius: 8
+         color: "white"
+         offset.x: 0
+         offset.y: 0
+         enabled: ( tickBox.state == "selected" )
     }
 
-    Image {
-        id: box
+    Rectangle {
+        id: container
+        width: parent.width //should be 144
+        height: parent.height //should be 29
+        border.color: ( checked || parent.state == "selected" ) ? "#C3ffffff" : "#78ffffff"
+        border.width: 1
+        color: ( checked ) ? "#C3ffffff" : "#00000000"
+        radius: 5
 
-        opacity: !canUncheck && checked ? 0 : 1
-        anchors.top: parent.top
-        anchors.left: parent.left
-        source: "artwork/tick_box.png"
-        width: sourceSize.width
-        height: sourceSize.height
-    }
 
-    Image {
-        id: tick
-
-        anchors.top: box.top
-        anchors.topMargin: 2
-        anchors.left: box.left
-        anchors.leftMargin: 3
-        opacity: checked ? 1.0 : ( parent.state == "selected" || parent.state == "mouseOver" ) ? 0.4 : 0.0
-        source: "artwork/tick.png"
-        width: sourceSize.width
-        height: sourceSize.height
+        TextCustom {
+            id: label
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
+            anchors.verticalCenterOffset: 1
+            anchors.verticalCenter: container.verticalCenter
+            font.pixelSize: 15
+            color: ( checked ) ? "black" : "white"
+            text: tickBox.text
+            elide: Text.ElideRight
+            opacity: ( !canUncheck ) ? 0 : 1
+        }
     }
 }

@@ -173,7 +173,7 @@ Item {
             anchors.topMargin: search_entry.anchors.topMargin
             height: parent.height
             headerHeight: search_entry.height
-            width: 295
+            width: 310
             anchors.right: parent.right
             anchors.rightMargin: 19
         }
