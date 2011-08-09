@@ -136,15 +136,6 @@ FocusScope {
         width: 888
         height: 466
 
-        Rectangle {
-            anchors.fill: parent
-            radius: 5
-            border.width: 1
-            /* FIXME: wrong colors */
-            border.color: Qt.rgba(1, 1, 1, 0.2)
-            color: Qt.rgba(0, 0, 0, 0.3)
-        }
-
         Button {
             id: closeShortcutsButton
 

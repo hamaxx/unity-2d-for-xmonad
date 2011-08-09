@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
+import Effects 1.0
 
 Item {
     id: dash
@@ -96,34 +97,68 @@ Item {
         Component.onCompleted: startAllPlaceServices()
     }
 
-    /* Backgrounds */
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0.89
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !screen.isCompositingManagerRunning
-    }
+    Item {
+        id: background
 
-    Rectangle {
         anchors.fill: parent
-        color: "black"
-        opacity: 0.89
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && screen.isCompositingManagerRunning
-    }
 
-    BorderImage {
-        /* Avoid redraw at rendering necessary to prevent high CPU usage.
-           Ref.: https://bugs.launchpad.net/unity-2d/+bug/806122
-        */
+        /* Avoid redraw at rendering */
         effect: CacheEffect {}
 
-        anchors.fill: parent
-        visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-        source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+        Item {
+            anchors.fill: parent
+            anchors.bottomMargin: content.anchors.bottomMargin
+            anchors.rightMargin: content.anchors.rightMargin
+            clip: true
+
+            Image {
+                id: blurredBackground
+
+                effect: Blur {blurRadius: 12}
+
+                /* 'source' needs to be set when the dash becomes visible, that
+                   is when declarativeView.active becomes true, so that a
+                   screenshot of the windows behind the dash is taken at that
+                   point.
+                   'source' also needs to change so that the screenshot is
+                   re-taken as opposed to pulled from QML's image cache.
+                   This workarounds the fact that the image cache cannot be
+                   disabled. A new API to deal with this was introduced in Qt Quick 1.1.
+
+                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
+                */
+                property variant timeAtActivation
+                Connections {
+                    target: declarativeView
+                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+                }
+
+                /* Use an image of the root window which essentially is a
+                   capture of the entire screen */
+                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+
+                fillMode: Image.PreserveAspectCrop
+                x: -declarativeView.globalPosition.x
+                y: -declarativeView.globalPosition.y
+            }
+
+            Image {
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                source: "artwork/background_sheen.png"
+            }
+        }
+
+        BorderImage {
+            anchors.fill: parent
+            visible: dashView.dashMode == DashDeclarativeView.DesktopMode
+            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+        }
     }
-    /* /Backgrounds */
 
     Item {
+        id: content
+
         anchors.fill: parent
         /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
