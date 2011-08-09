@@ -87,7 +87,7 @@ Item {
         height: screen.geometry.height
 
         smooth: true
-        x: screen.availableGeometry.x - launcherMaximumWidth
+        x: screen.availableGeometry.x - declarativeView.globalPosition.x
         y: -screen.availableGeometry.y
 
         /* Possible modes are:
