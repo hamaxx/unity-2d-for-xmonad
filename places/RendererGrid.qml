@@ -83,7 +83,7 @@ Renderer {
                 height: results.cellHeight
                 /* When hovered the item needs to be on top of every other item
                    in order for its label to not be covered */
-                z: ( loader.item.state == "selected" || loader.item.state == "mouseOver" ) ? 1 : 0
+                z: ( loader.item.state == "selected" || loader.item.state == "hovered" ) ? 1 : 0
 
                 Loader {
                     id: loader
