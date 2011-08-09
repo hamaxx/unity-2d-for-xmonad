@@ -26,6 +26,8 @@
 // Qt
 #include <QObject>
 
+class QPixmap;
+
 struct _GtkStyleContext;
 
 class PanelStylePrivate;
@@ -43,9 +45,23 @@ public:
     PanelStyle(QObject* parent = 0);
     ~PanelStyle();
 
+    enum WindowButtonType {
+        CloseWindowButton,
+        MinimizeWindowButton,
+        UnmaximizeWindowButton
+    };
+
+    enum WindowButtonState {
+        NormalState,
+        PrelightState,
+        PressedState
+    };
+
     static PanelStyle* instance();
 
     struct _GtkStyleContext* styleContext() const;
+
+    QPixmap windowButtonPixmap(WindowButtonType, WindowButtonState);
 
 private:
     friend class PanelStylePrivate;

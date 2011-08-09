@@ -30,9 +30,12 @@
 // Qt
 #include <QApplication>
 #include <QPalette>
+#include <QStyle>
 
 // GTK
 #include <gtk/gtk.h>
+
+static const char* METACITY_THEME_DIR = "/usr/share/themes/%1/metacity-1";
 
 class PanelStylePrivate
 {
@@ -40,6 +43,8 @@ public:
     PanelStyle* q;
     GObjectScopedPointer<GtkStyleContext> m_styleContext;
     GConnector m_gConnector;
+
+    QString m_themeName;
 
     static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
     {
@@ -49,6 +54,11 @@ public:
 
     void updatePalette()
     {
+        gchar* themeName = 0;
+        g_object_get(gtk_settings_get_default(), "gtk-theme-name", &themeName, NULL);
+        m_themeName = QString::fromUtf8(themeName);
+        g_free(themeName);
+
         GtkStyleContext* context = m_styleContext.data();
         gtk_style_context_invalidate(context);
 
@@ -70,6 +80,71 @@ public:
         CairoUtils::Pointer cr(cairo_create(surface.data()));
         gtk_render_background(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
         return QBrush(image);
+    }
+
+    QPixmap windowButtonPixmapFromWMTheme(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+    {
+        QString dir = QString(METACITY_THEME_DIR).arg(m_themeName);
+
+        QString typeString, stateString;
+        switch (type) {
+        case PanelStyle::CloseWindowButton:
+            typeString = "close";
+            break;
+        case PanelStyle::MinimizeWindowButton:
+            typeString = "minimize";
+            break;
+        case PanelStyle::UnmaximizeWindowButton:
+            typeString = "unmaximize";
+            break;
+        }
+
+        switch (state) {
+        case PanelStyle::NormalState:
+            stateString = "";
+            break;
+        case PanelStyle::PrelightState:
+            stateString = "_focused_prelight";
+            break;
+        case PanelStyle::PressedState:
+            stateString = "_focused_pressed";
+            break;
+        }
+
+        QString path = QString("%1/%2%3.png")
+            .arg(dir)
+            .arg(typeString)
+            .arg(stateString);
+        return QPixmap(path);
+    }
+
+    QPixmap genericWindowButtonPixmap(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+    {
+        QStyle::StandardPixmap standardIcon;
+        switch (type) {
+        case PanelStyle::CloseWindowButton:
+            standardIcon = QStyle::SP_TitleBarCloseButton;
+            break;
+        case PanelStyle::MinimizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarMinButton;
+            break;
+        case PanelStyle::UnmaximizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarNormalButton;
+            break;
+        }
+
+        QIcon icon = QApplication::style()->standardIcon(standardIcon);
+        const int extent = 22;
+        switch (state) {
+        case PanelStyle::NormalState:
+            return icon.pixmap(extent);
+        case PanelStyle::PrelightState:
+            return icon.pixmap(extent, QIcon::Active);
+        case PanelStyle::PressedState:
+            return icon.pixmap(extent, QIcon::Active, QIcon::On);
+        }
+        // Silence compiler
+        return QPixmap();
     }
 };
 
@@ -109,6 +184,18 @@ PanelStyle* PanelStyle::instance()
 GtkStyleContext* PanelStyle::styleContext() const
 {
     return d->m_styleContext.data();
+}
+
+QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
+{
+    // According to Unity PanelStyle code, the buttons of some WM themes do not
+    // match well with the panel background. So except for themes we provide,
+    // fallback to generic button pixmaps.
+    if (d->m_themeName == "Ambiance" || d->m_themeName == "Radiance") {
+        return d->windowButtonPixmapFromWMTheme(type, state);
+    } else {
+        return d->genericWindowButtonPixmap(type, state);
+    }
 }
 
 #include "panelstyle.moc"
