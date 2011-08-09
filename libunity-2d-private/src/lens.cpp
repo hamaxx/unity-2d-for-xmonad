@@ -103,14 +103,37 @@ bool Lens::active() const
     return m_unityLens->active();
 }
 
-void Lens::globalSearch(const QString& search_string)
+QString Lens::searchQuery() const
 {
-    m_unityLens->GlobalSearch(search_string.toStdString());
+    return m_searchQuery;
 }
 
-void Lens::search(const QString& search_string)
+QString Lens::globalSearchQuery() const
 {
-    m_unityLens->Search(search_string.toStdString());
+    return m_globalSearchQuery;
+}
+
+void Lens::setSearchQuery(const QString& search_query)
+{
+    if (search_query != m_searchQuery) {
+        m_searchQuery = search_query;
+        m_unityLens->Search(search_query.toStdString());
+        Q_EMIT searchQueryChanged();
+    }
+}
+
+void Lens::setGlobalSearchQuery(const QString& search_query)
+{
+    if (search_query != m_globalSearchQuery) {
+        m_globalSearchQuery = search_query;
+        m_unityLens->GlobalSearch(search_query.toStdString());
+        Q_EMIT globalSearchQueryChanged();
+    }
+}
+
+void Lens::activate(const QString& uri)
+{
+    m_unityLens->Activate(uri.toStdString());
 }
 
 void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
@@ -124,6 +147,8 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     m_unityLens = lens;
 
     m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
+    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
+    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
 
     /* Property change signals */
     m_unityLens->id.changed.connect(sigc::mem_fun(this, &Lens::idChanged));

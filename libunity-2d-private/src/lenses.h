@@ -42,7 +42,10 @@ public:
     ~Lenses();
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    Q_INVOKABLE int rowCount(const QModelIndex& parent = QModelIndex()) const;
+
+    Q_INVOKABLE QVariant get(int row) const;
+    Q_INVOKABLE QVariant get(const QString& lens_id) const;
 
 private Q_SLOTS:
     void onLensAdded(unity::dash::Lens::Ptr& lens);

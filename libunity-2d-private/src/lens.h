@@ -52,6 +52,9 @@ class Lens : public QObject
     Q_PROPERTY(DeeListModel* categories READ categories NOTIFY categoriesChanged)
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
 
+    Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
+    Q_PROPERTY(QString globalSearchQuery READ globalSearchQuery WRITE setGlobalSearchQuery NOTIFY globalSearchQueryChanged)
+
 public:
     explicit Lens(QObject *parent = 0);
 
@@ -71,9 +74,14 @@ public:
     DeeListModel* globalResults() const;
     DeeListModel* categories() const;
     bool active() const;
+    QString searchQuery() const;
+    QString globalSearchQuery() const;
 
-    void globalSearch(const QString& search_string);
-    void search(const QString& search_string);
+    /* setters */
+    void setSearchQuery(const QString& search_query);
+    void setGlobalSearchQuery(const QString& search_query);
+
+    Q_INVOKABLE void activate(const QString& uri);
     void setUnityLens(unity::dash::Lens::Ptr lens);
 
 Q_SIGNALS:
@@ -94,6 +102,8 @@ Q_SIGNALS:
     void activeChanged(bool);
     void searchFinished(std::string const&);
     void globalSearchFinished(std::string const&);
+    void searchQueryChanged();
+    void globalSearchQueryChanged();
 
 private:
     void onResultsSwarmNameChanged(std::string);
@@ -107,6 +117,8 @@ private:
     DeeListModel* m_results;
     DeeListModel* m_globalResults;
     DeeListModel* m_categories;
+    QString m_searchQuery;
+    QString m_globalSearchQuery;
 };
 
 Q_DECLARE_METATYPE(Lens*)

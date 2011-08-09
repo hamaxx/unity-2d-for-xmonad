@@ -31,7 +31,11 @@
 Lenses::Lenses(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_unityLenses = new unity::dash::FilesystemLenses("/home/ubuntu/dev/unity/tests/data/lenses");
+    QHash<int, QByteArray> roles;
+    roles[0] = "item";
+    setRoleNames(roles);
+
+    m_unityLenses = new unity::dash::FilesystemLenses("/usr/share/unity/lenses");
     m_unityLenses->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
 }
 
@@ -49,11 +53,27 @@ int Lenses::rowCount(const QModelIndex& parent) const
 
 QVariant Lenses::data(const QModelIndex& index, int role) const
 {
+    Q_UNUSED(role)
+
     if (!index.isValid()) {
         return QVariant();
     }
 
     unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLensAtIndex(index.row());
+    Lens* lens = new Lens();
+    lens->setUnityLens(unityLens);
+
+    return QVariant::fromValue(lens);
+}
+
+QVariant Lenses::get(int row) const
+{
+    return data(QAbstractListModel::index(row), 0);
+}
+
+QVariant Lenses::get(const QString& lens_id) const
+{
+    unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLens(lens_id.toStdString());
     Lens* lens = new Lens();
     lens->setUnityLens(unityLens);
 
