@@ -101,6 +101,16 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         application->installX11EventFilter(this);
     }
 
+    /* Get the system applications data dirs and be flexible if / is not at the
+       end of each path. */
+    QString xdgDataDir = QFile::decodeName(getenv("XDG_DATA_DIRS"));
+    if (xdgDataDir.isEmpty()) {
+        xdgDataDir = "/usr/local/share/:/usr/share/";
+    }
+    Q_FOREACH(const QString& dirName, xdgDataDir.split(':')) {
+      m_xdgApplicationDirs << QDir::cleanPath(dirName + "/applications") + "/";
+    }
+
     load();
 }
 
@@ -178,9 +188,17 @@ LauncherApplicationsList::~LauncherApplicationsList()
 }
 
 QString
-LauncherApplicationsList::favoriteFromDesktopFilePath(QString desktop_file)
+LauncherApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFile) const
 {
-    return QDir(desktop_file).dirName();
+    QString desktopFile(_desktopFile);
+    Q_FOREACH(const QString& applicationDir, m_xdgApplicationDirs) {
+        if (_desktopFile.startsWith(applicationDir)) {
+            desktopFile.remove(applicationDir);
+            desktopFile.replace("/", "-");
+            break;
+        }
+    }
+    return desktopFile;
 }
 
 void
