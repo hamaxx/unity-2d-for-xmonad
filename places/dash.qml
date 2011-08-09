@@ -175,7 +175,7 @@ Item {
             headerHeight: search_entry.height
             width: 310
             anchors.right: parent.right
-            anchors.rightMargin: 19
+            anchors.rightMargin: 3
         }
 
         Loader {
