@@ -104,8 +104,9 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     /* Get the system applications data dirs and be flexible if / is not at the
        end of each path. */
     QString xdgDataDir = QFile::decodeName(getenv("XDG_DATA_DIRS"));
-    if (xdgDataDir.isEmpty())
+    if (xdgDataDir.isEmpty()) {
         xdgDataDir = "/usr/local/share/:/usr/share/";
+    }
     Q_FOREACH(const QString& dirName, xdgDataDir.split(':')) {
       m_xdgApplicationDirs << QDir::cleanPath(dirName + "/applications") + "/";
     }
@@ -187,18 +188,17 @@ LauncherApplicationsList::~LauncherApplicationsList()
 }
 
 QString
-LauncherApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFileName) const
+LauncherApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFile) const
 {
-    QString desktopFileName(_desktopFileName);
+    QString desktopFile(_desktopFile);
     Q_FOREACH(const QString& applicationDir, m_xdgApplicationDirs) {
-        if (_desktopFileName.startsWith(applicationDir))
-        {
-            desktopFileName.remove(applicationDir);
-            desktopFileName.replace("/", "-");
+        if (_desktopFile.startsWith(applicationDir)) {
+            desktopFile.remove(applicationDir);
+            desktopFile.replace("/", "-");
             break;
         }
     }
-    return desktopFileName;
+    return desktopFile;
 }
 
 void
