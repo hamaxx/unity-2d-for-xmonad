@@ -41,23 +41,25 @@ AbstractButton {
         id: container
         width: parent.width //should be 144
         height: parent.height //should be 29
-        border.color: ( checked || parent.state == "selected" ) ? "#C3ffffff" : "#78ffffff"
+        border.color: "white"
         border.width: 1
-        color: ( checked ) ? "#C3ffffff" : "#00000000"
+        color: ( checked ) ? "white" : "#00000000"
+        opacity: if (checked) return 0.8
+                 else if (parent.state == "selected") return 1
+                 else return 0.5
         radius: 5
+    }
 
-
-        TextCustom {
-            id: label
-            width: parent.width
-            horizontalAlignment: Text.AlignHCenter
-            anchors.verticalCenterOffset: 1
-            anchors.verticalCenter: container.verticalCenter
-            font.pixelSize: 15
-            color: ( checked ) ? "black" : "white"
-            text: tickBox.text
-            elide: Text.ElideRight
-            opacity: ( !canUncheck ) ? 0 : 1
-        }
+    TextCustom {
+        id: label
+        anchors.fill: container
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        font.pixelSize: 15
+        color: ( checked ) ? "black" : "white"
+        text: tickBox.text
+        elide: Text.ElideRight
+        opacity: ( !canUncheck ) ? 0 : 1
     }
 }
