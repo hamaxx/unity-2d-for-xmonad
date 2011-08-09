@@ -58,7 +58,7 @@ AbstractButton {
         anchors.topMargin: 2
         anchors.left: box.left
         anchors.leftMargin: 3
-        opacity: checked ? 1.0 : parent.state == "selected" ? 0.4 : 0.0
+        opacity: checked ? 1.0 : ( parent.state == "selected" || parent.state == "hovered" ) ? 0.4 : 0.0
         source: "artwork/tick.png"
         width: sourceSize.width
         height: sourceSize.height
