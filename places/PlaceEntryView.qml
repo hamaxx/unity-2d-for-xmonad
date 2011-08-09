@@ -64,6 +64,7 @@ FocusScope {
 
         focus: true
         anchors.fill: parent
+        anchors.leftMargin: 20
 
         /* The group's delegate is chosen dynamically depending on what
            groupRenderer is returned by the GroupsModel.

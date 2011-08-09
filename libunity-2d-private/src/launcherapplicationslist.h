@@ -36,7 +36,6 @@ struct SnStartupSequence;
 class LauncherApplication;
 class BamfApplication;
 class BamfView;
-class GConfItemQmlWrapper;
 class QConf;
 
 class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
