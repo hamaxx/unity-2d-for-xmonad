@@ -164,6 +164,7 @@ private:
     bool m_forceUrgent;
 
     void updateBamfApplicationDependentProperties();
+    void hideCounter();
     void monitorDesktopFile(const QString&);
     void fetchIndicatorMenus();
     void createDynamicMenuActions();

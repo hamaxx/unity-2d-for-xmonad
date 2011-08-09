@@ -443,6 +443,20 @@ LauncherApplication::updateBamfApplicationDependentProperties()
 }
 
 void
+LauncherApplication::hideCounter()
+{
+    if (m_counterVisible) {
+        m_counterVisible = false;
+        Q_EMIT counterVisibleChanged(m_counterVisible);
+    }
+
+    if (m_counter != 0) {
+        m_counter = 0;
+        Q_EMIT counterChanged(m_counter);
+    }
+}
+
+void
 LauncherApplication::onBamfApplicationClosed(bool running)
 {
     if(running)
@@ -451,6 +465,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
     m_application->disconnect(this);
     m_application = NULL;
     updateBamfApplicationDependentProperties();
+    hideCounter();
     closed();
 }
 
