@@ -187,8 +187,8 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
             // Check old mode to ensure we do not call BeginForceVisible twice
             // if we go from desktop to fullscreen mode
             m_launcherClient->beginForceVisible();
+            activeChanged(true);
         }
-        activeChanged(true);
     }
     dashModeChanged(m_mode);
 }
