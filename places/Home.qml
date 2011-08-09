@@ -99,6 +99,7 @@ FocusScope {
         focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
+        anchors.leftMargin: 20
 
         model: dash.places
 
