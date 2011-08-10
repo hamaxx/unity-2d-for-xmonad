@@ -51,7 +51,6 @@ Grid {
         }
     }
 
-    /* FIXME: dummy icons need to be replaced by design's */
     HomeButton {
         focus: true
         label: u2d.tr("Media Apps")
