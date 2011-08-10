@@ -46,29 +46,27 @@ FocusScope {
         id: lensContainer
 
         anchors.horizontalCenter: background.horizontalCenter
-        anchors.horizontalCenterOffset: 2
         anchors.top: background.top
         anchors.bottom: background.bottom
-        spacing: iconSpacing
+        spacing: 28
+
+        Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
 
         /* The Home lens is unfortunately not supplied by the "lenses" list
            This causes the keyboard navigation logic to be messy */
         property int currentIndex: 0
 
         function selectChild(index) {
-            if (index < 0 || index > lenses.count) return false
-            if (index == 0){
-                homeLens.focus = true
+            var child = lensContainer.childFromIndex(index)
+            if (child != undefined) {
+                child.focus = true
+                currentIndex = index
+                return true
+            } else {
+                return false
             }
-            else{
-                if(currentIndex == 0) lensList.focus = true
-                lensList.currentIndex = index-1
-            }
-            currentIndex = index
-            return true
         }
 
-        Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
         function handleKeyPress(key) {
             switch (key) {
             case Qt.Key_Right:
@@ -76,6 +74,17 @@ FocusScope {
             case Qt.Key_Left:
                 return selectChild(currentIndex-1)
             }
+        }
+
+        function childFromIndex(index) {
+            var indexInChildren = 0
+            for(var i=0; i<children.length; i++) {
+                if (children[i] != repeater) {
+                    if (indexInChildren == index) return children[i]
+                    indexInChildren++
+                }
+            }
+            return undefined
         }
 
         /* Need to manually include the Home lens */
@@ -89,26 +98,15 @@ FocusScope {
         }
 
         /* Now fetch all other lenses and display */
-        Component {
-            id: lensDelegate
+        Repeater{
+            id: repeater
 
-            LensButton {
+            model: lenses
+            delegate: LensButton {
                 icon: item.icon
                 active: item.active
                 onClicked: activatePlaceEntry(item)
             }
-        }
-
-        ListView {
-            id: lensList
-
-            height: background.height
-            width: lenses.count*iconWidth + (lenses.count-1)*iconSpacing
-            model: lenses
-            delegate: lensDelegate
-            orientation: ListView.Horizontal
-            spacing: iconSpacing
-            interactive: false
         }
     }
 }

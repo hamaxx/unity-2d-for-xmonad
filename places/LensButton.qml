@@ -28,6 +28,7 @@ AbstractButton {
 
     id: lensButton
 
+    width: 32
     anchors.top: parent.top
     anchors.bottom: parent.bottom
 
@@ -40,7 +41,7 @@ AbstractButton {
     }
 
     Rectangle {
-        width: 32
+        width: parent.width
         height: parent.height
 
         anchors.top: parent.top
@@ -75,10 +76,10 @@ AbstractButton {
         id: indicator
         source: "artwork/arrow.png"
 
-        width: 5
-        height: 9
-        y: 37
-
+        width: sourceSize.width
+        height: sourceSize.height
+        anchors.bottomMargin: (width-height)/2 /* Correct for rotation */
+        anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
 
         rotation: -90
