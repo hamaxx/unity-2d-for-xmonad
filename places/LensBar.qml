@@ -24,21 +24,6 @@ FocusScope {
     property int iconWidth: 32
     property int iconSpacing: 28
 
-    function activateLens( place ) {
-        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
-           PlaceEntry.SetActive in order for it to have an effect.
-           This is likely a bug in the place daemons.
-        */
-        place.active = true
-        //place.activeSection = section
-        pageLoader.source = "PlaceEntryView.qml"
-        /* Take advantage of the fact that the loaded qml is local and setting
-           the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = place
-        activatePage(pageLoader.item)
-        dashView.activePlaceEntry = place.dbusObjectPath
-    }
-
     property variant lenses: SortFilterProxyModel {
         id: visiblePlaces
         model: places
@@ -110,7 +95,7 @@ FocusScope {
             LensButton {
                 icon: item.icon
                 active: item.active
-                onClicked: activateLens(item)
+                onClicked: activatePlaceEntry(item)
             }
         }
 

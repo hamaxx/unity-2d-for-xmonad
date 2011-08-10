@@ -55,25 +55,25 @@ Grid {
         focus: true
         label: u2d.tr("Media Apps")
         icon: "artwork/find_media_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 9)
+        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/applications.place", "Files", 9)
     }
 
     HomeButton {
         label: u2d.tr("Internet Apps")
         icon: "artwork/find_internet_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 8)
+        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/applications.place", "Files", 8)
     }
 
     HomeButton {
         label: u2d.tr("More Apps")
         icon: "artwork/find_more_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
+        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/applications.place", "Files", 0)
     }
 
     HomeButton {
         label: u2d.tr("Find Files")
         icon: "artwork/find_files.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
+        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/files.place", "Files", 0)
     }
 
     /* FIXME: use user's preferred applications instead of hardcoding them */

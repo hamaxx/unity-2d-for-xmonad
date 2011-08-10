@@ -64,25 +64,28 @@ Item {
         currentPage.visible = true
     }
 
-    function activatePlaceEntry(fileName, groupName, section) {
+    function activatePlaceEntryFromFile(fileName, groupName, section) {
         var placeEntryModel = places.findPlaceEntry(fileName, groupName)
         if (placeEntryModel == null) {
             console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
             return
         }
 
+        activatePlaceEntry( placeEntryModel, section)
+    }
+
+    function activatePlaceEntry( place, section ) {
         /* FIXME: PlaceEntry.SetActiveSection needs to be called after
            PlaceEntry.SetActive in order for it to have an effect.
-           This is likely a bug in the place daemons.
-        */
-        placeEntryModel.active = true
-        placeEntryModel.activeSection = section
+           This is likely a bug in the place daemons. */
+        place.active = true
+        place.activeSection = ( section != undefined ) ? section : 0
         pageLoader.source = "PlaceEntryView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = placeEntryModel
+        pageLoader.item.model = place
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = placeEntryModel.dbusObjectPath
+        dashView.activePlaceEntry = place.dbusObjectPath
     }
 
     function activateHome() {

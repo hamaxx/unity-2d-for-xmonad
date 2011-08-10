@@ -828,7 +828,7 @@ PlaceEntry::activateEntry(const int section)
     }
 
     QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    iface.asyncCall(QLatin1String("activatePlaceEntry"), m_fileName, m_groupName, section);
+    iface.asyncCall(QLatin1String("activatePlaceEntryFromFile"), m_fileName, m_groupName, section);
 }
 
 void
