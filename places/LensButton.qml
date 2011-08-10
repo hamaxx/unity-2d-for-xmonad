@@ -24,13 +24,9 @@ import Effects 1.0
  */
 AbstractButton {
     property alias icon: icon.source
-    property alias iconSourceSize: icon.sourceSize
     property bool active: false
 
     id: lensButton
-
-    width: iconWidth
-    height: lensBar.height
 
     anchors.top: parent.top
     anchors.bottom: parent.bottom
@@ -59,8 +55,8 @@ AbstractButton {
         visible: ( parent.state == "selected" )
     }
 
-    // Lens icon supplied is of size 48x48. This is too much for the 44pixels high
-    // lensBar. However much of the icon is transparent so we effectively crop it to 32x32.
+    /* Lens icon supplied is of size 48x48. This is too much for the 44pixels high
+       lensBar. However much of the icon is transparent so we effectively crop it to 32x32. */
     Image {
         id: icon
 
@@ -74,7 +70,7 @@ AbstractButton {
         opacity: ( parent.state == "mouseOver" || parent.state == "pressed" || active ) ? 1.0 : 0.57
     }
 
-    // Indicator arrow to show Lens active
+    /* Indicator arrow to show Lens active */
     Image {
         id: indicator
         source: "artwork/arrow.png"

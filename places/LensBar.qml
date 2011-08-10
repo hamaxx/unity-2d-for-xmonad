@@ -20,7 +20,7 @@ import QtQuick 1.0
 import Unity2d 1.0
 
 FocusScope {
-    //declare width & spacing of icons as required for layout calculations
+    /* declare width & spacing of icons as required for layout calculations */
     property int iconWidth: 32
     property int iconSpacing: 28
 
@@ -48,13 +48,10 @@ FocusScope {
         filterRegExp: RegExp("^true$")
     }
 
-    /* Lens Bar rectangle */
     Rectangle {
-        id: lensBar
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: parent.width
+        id: background
+
+        anchors.fill: parent
         color: "black"
         opacity: 0.22
     }
@@ -62,14 +59,15 @@ FocusScope {
     /* LensBar contains a row of LensButtons */
     Row {
         id: lensContainer
-        anchors.horizontalCenter: lensBar.horizontalCenter
+
+        anchors.horizontalCenter: background.horizontalCenter
         anchors.horizontalCenterOffset: 2
-        anchors.top: lensBar.top
-        anchors.bottom: lensBar.bottom
+        anchors.top: background.top
+        anchors.bottom: background.bottom
         spacing: iconSpacing
 
-        // The Home lens is unfortunately not supplied by the "lenses" list
-        // This causes the keyboard navigation logic to be messy
+        /* The Home lens is unfortunately not supplied by the "lenses" list
+           This causes the keyboard navigation logic to be messy */
         property int currentIndex: 0
 
         function selectChild(index) {
@@ -95,16 +93,17 @@ FocusScope {
             }
         }
 
-        //Need to manually include the Home lens
+        /* Need to manually include the Home lens */
         LensButton {
             id: homeLens
+
             focus: true
             icon: "artwork/home.png"
             onClicked: activateHome()
             active: ( dashView.activePlaceEntry == "" )
         }
 
-        //Now fetch all other lenses and display
+        /* Now fetch all other lenses and display */
         Component {
             id: lensDelegate
 
@@ -117,11 +116,12 @@ FocusScope {
 
         ListView {
             id: lensList
-            height: lensBar.height
+
+            height: background.height
             width: lenses.count*iconWidth + (lenses.count-1)*iconSpacing
             model: lenses
             delegate: lensDelegate
-            orientation: "Horizontal"
+            orientation: ListView.Horizontal
             spacing: iconSpacing
             interactive: false
         }
