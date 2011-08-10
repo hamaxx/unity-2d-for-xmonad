@@ -25,10 +25,6 @@ configure_file(indicator-config.h.in indicator-config.h)
 set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
-    appname/appnameapplet.cpp
-    appname/menubarwidget.cpp
-    appname/registrar.cpp
-    appname/windowhelper.cpp
     common/applet.cpp
     indicator/abstractindicator.cpp
     indicator/datetimeindicator.cpp
@@ -43,14 +39,9 @@ set(uqapplets_SRCS
     legacytray/x11embedpainter.cpp
     )
 
-qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
-    registrar.h Registrar
-    )
-
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
-    ${CMAKE_CURRENT_SOURCE_DIR}/appname
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${QTBAMF_INCLUDE_DIRS}
@@ -87,3 +78,4 @@ target_link_libraries(uqapplets
     )
 
 add_subdirectory(homebutton)
+add_subdirectory(appname)
