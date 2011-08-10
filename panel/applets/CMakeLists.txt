@@ -79,3 +79,4 @@ target_link_libraries(uqapplets
 
 add_subdirectory(homebutton)
 add_subdirectory(appname)
+add_subdirectory(legacytray)
