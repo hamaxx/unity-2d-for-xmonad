@@ -35,6 +35,9 @@ BfbItem::BfbItem()
 : m_dashInterface(new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE))
 {
     m_dashInterface->setParent(this);
+    QDBusConnection::sessionBus().connect(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
+        "activeChanged", "b", this, SLOT(activeChanged(bool))
+        );
 }
 
 BfbItem::~BfbItem()
