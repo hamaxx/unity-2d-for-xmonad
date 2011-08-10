@@ -9,6 +9,7 @@ set(uqapplets_SRCS
 
 # Build
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 

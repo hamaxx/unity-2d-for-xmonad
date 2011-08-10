@@ -1,5 +1,5 @@
 #include "plugin.h"
-#include "homebutton.h"
+#include "homebuttonapplet.h"
 
 #include <QtPlugin>
 
@@ -10,7 +10,7 @@ QString HomeButtonPlugin::getAppletName() const
 
 QWidget* HomeButtonPlugin::getApplet() const
 {
-    return new HomeButton();
+    return new HomeButtonApplet();
 }
 
 Q_EXPORT_PLUGIN2(panelplugin-homebutton, HomeButtonPlugin)
