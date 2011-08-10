@@ -65,6 +65,9 @@ include_directories(
 
 qt4_automoc(${uqapplets_SRCS})
 add_library(uqapplets ${uqapplets_SRCS})
+
+# This is necessary otherwise the plugins (which are shared libraries)
+# can't statically link to it. The alternative is to make uqapplets shared too.
 SET_TARGET_PROPERTIES(uqapplets PROPERTIES COMPILE_FLAGS -fPIC)
 
 target_link_libraries(uqapplets
