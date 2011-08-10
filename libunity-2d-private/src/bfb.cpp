@@ -115,3 +115,5 @@ QVariant BfbModel::data(const QModelIndex& index, int /*role*/) const
 
     return QVariant::fromValue(m_bfbItem);
 }
+
+#include <bfb.moc>

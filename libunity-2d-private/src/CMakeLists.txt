@@ -2,6 +2,7 @@ set (LIB_NAME "unity-2d-private")
 
 # Sources
 set(lib${LIB_NAME}_SRCS
+    bfb.cpp
     debug.cpp
     gconnector.cpp
     gimageutils.cpp

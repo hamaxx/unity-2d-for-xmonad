@@ -1,12 +1,10 @@
 # Sources
 set(unity-2d-private-qml_SRCS
     plugin.cpp
-    bfb.cpp
     )
 
 set(unity-2d-private-qml_MOC_HDRS
     plugin.h
-    bfb.h
     )
 
 file(GLOB unity-2d-private-qml_QML *.qml)
