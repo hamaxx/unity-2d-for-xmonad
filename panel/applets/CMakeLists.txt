@@ -30,8 +30,6 @@ set(uqapplets_SRCS
     appname/registrar.cpp
     appname/windowhelper.cpp
     common/applet.cpp
-    homebutton/homebuttonapplet.cpp
-    homebutton/homebutton.cpp
     indicator/abstractindicator.cpp
     indicator/datetimeindicator.cpp
     indicator/indicatorapplet.cpp
@@ -49,14 +47,11 @@ qt4_add_dbus_adaptor(uqapplets_SRCS appname/com.canonical.AppMenu.Registrar.xml
     registrar.h Registrar
     )
 
-qt4_automoc(${uqapplets_SRCS})
-
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
     ${CMAKE_CURRENT_SOURCE_DIR}/appname
     ${CMAKE_CURRENT_SOURCE_DIR}/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
@@ -68,7 +63,9 @@ include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
+qt4_automoc(${uqapplets_SRCS})
 add_library(uqapplets ${uqapplets_SRCS})
+SET_TARGET_PROPERTIES(uqapplets PROPERTIES COMPILE_FLAGS -fPIC)
 
 target_link_libraries(uqapplets
     ${QT_QTGUI_LIBRARIES}
@@ -85,3 +82,5 @@ target_link_libraries(uqapplets
     ${X11_Xfixes_LIB}
     unity-2d-private
     )
+
+add_subdirectory(homebutton)

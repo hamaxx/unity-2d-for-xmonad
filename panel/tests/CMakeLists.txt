@@ -7,6 +7,7 @@ macro(panel_tests)
         target_link_libraries(${_test}
             ${QT_QTTEST_LIBRARIES}
             uqapplets
+            panelplugin-homebutton
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
