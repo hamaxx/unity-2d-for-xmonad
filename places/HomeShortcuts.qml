@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
+import Unity2d 1.0
 
 Grid {
     anchors.fill: parent

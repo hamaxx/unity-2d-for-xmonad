@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons */
+import Unity2d 1.0
 
 /* Renderers typically use a grid layout to render the model. The RendererGrid
    component provides a standard implementation of such a layout where the

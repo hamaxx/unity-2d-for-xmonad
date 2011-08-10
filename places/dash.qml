@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
+import Unity2d 1.0
 import Effects 1.0
 
 Item {
