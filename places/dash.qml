@@ -221,14 +221,28 @@ Item {
             */
             KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
             KeyNavigation.up: search_entry
+            KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
-            anchors.bottom: parent.bottom
+            anchors.bottom: lensBar.top
             anchors.left: parent.left
             anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
             anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
             onLoaded: item.focus = true
+        }
+
+        LensBar {
+            id: lensBar
+
+            KeyNavigation.up: pageLoader
+
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            width: parent.width
+            height: 44
+            visible: dashView.expanded
         }
     }
 

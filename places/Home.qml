@@ -135,7 +135,7 @@ FocusScope {
         anchors.verticalCenter: parent.verticalCenter
 
         width: 888
-        height: 466
+        height: 436
 
         Rectangle {
             anchors.fill: parent
