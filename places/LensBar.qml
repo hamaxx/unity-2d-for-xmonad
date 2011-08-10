@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Qt 4.7
-import Unity2d 1.0 /* required for drag’n’drop handling */
+import QtQuick 1.0
+import Unity2d 1.0
 
 FocusScope {
     //declare width & spacing of icons as required for layout calculations
