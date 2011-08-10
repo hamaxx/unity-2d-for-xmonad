@@ -235,7 +235,7 @@ void
 LauncherView::showCommandsPlace()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    dashInterface.asyncCall("activatePlaceEntryFromFile",
+    dashInterface.asyncCall("activatePlaceEntry",
                             APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
 }
 
