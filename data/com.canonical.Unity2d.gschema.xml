@@ -16,4 +16,11 @@
       <description>Use EWMH standard to reserve an area of the desktop (struts) so that no window can use the launcher's area</description>
     </key>
   </schema>
+  <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
+    <key type="as" name="applets">
+      <default>["homebutton", "appname", "legacytray", "indicator", "appindicator"]</default>
+      <summary>Applets to display in the panel</summary>
+      <description>List of panel applets that should be displayed, in order, in the panel.</description>
+    </key>
+  </schema>
 </schemalist>

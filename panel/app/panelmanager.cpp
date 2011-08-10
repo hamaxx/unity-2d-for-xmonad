@@ -34,13 +34,27 @@
 
 // Unity
 #include <unity2dpanel.h>
+#include <appletproviderinterface.h>
+
+// QConf
+#include <qconf.h>
 
 // Qt
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QLabel>
+#include <QProcessEnvironment>
+#include <QFileInfo>
+#include <QDir>
+#include <QHash>
+#include <QPluginLoader>
+#include <QDebug>
 
 using namespace Unity2d;
+
+static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
+static const char* PANEL_PLUGINS_DEV_DIR_ENV = "DEV_PLUGIN_PATH";
 
 static QPalette getPalette()
 {
@@ -66,6 +80,47 @@ static QLabel* createSeparator()
     return label;
 }
 
+static QHash<QString, AppletProviderInterface*> loadPlugins()
+{
+    QHash<QString, AppletProviderInterface*> plugins;
+
+    QString panelPluginsDefaultDir = unity2dPluginsPath() + "/panel";
+    if (!isRunningInstalled()) panelPluginsDefaultDir += "/applets";
+    QString pluginPath = QProcessEnvironment::systemEnvironment().value(PANEL_PLUGINS_DEV_DIR_ENV,
+                                                                        panelPluginsDefaultDir);
+    QFileInfo pluginFileInfo = QFileInfo(pluginPath);
+    if (!pluginFileInfo.exists() || !pluginFileInfo.isDir()) {
+        qWarning() << "Panel plugin path does not exist or it is not a directory:" << pluginPath;
+        return plugins;
+    }
+
+    qDebug() << "Scanning plugin directory" << pluginFileInfo.absoluteFilePath();
+    QDir pluginDir = QDir(pluginFileInfo.absoluteFilePath());
+    QStringList filters;
+    filters << "*.so";
+    pluginDir.setNameFilters(filters);
+    Q_FOREACH(QString fileEntry, pluginDir.entryList()) {
+        QString pluginFilePath = pluginDir.absoluteFilePath(fileEntry);
+        qDebug() << "Loading plugin:" << pluginFilePath;
+        QPluginLoader loader(pluginFilePath);
+        if (loader.load()) {
+            AppletProviderInterface* provider;
+            provider = qobject_cast<AppletProviderInterface*>(loader.instance());
+            if (provider == NULL) {
+                qWarning() << "Plugin loaded from" << pluginFilePath
+                           << "does not implement the interface AppletProviderInterface";
+            } else {
+               plugins.insert(provider->getAppletName(), provider);
+            }
+        } else {
+            qWarning() << "Failed to load panel plugin from" << pluginFilePath
+                       << "with error" << loader.errorString();
+        }
+    }
+
+    return plugins;
+}
+
 static Unity2dPanel* instantiatePanel(int screen)
 {
     Unity2dPanel* panel = new Unity2dPanel;
@@ -73,18 +128,40 @@ static Unity2dPanel* instantiatePanel(int screen)
     panel->setPalette(getPalette());
     panel->setFixedHeight(24);
 
-    int leftmost = QApplication::desktop()->screenNumber(QPoint());
-    if (screen == leftmost) {
-        panel->addWidget(new HomeButtonApplet);
-        panel->addWidget(createSeparator());
+    QHash<QString, AppletProviderInterface*> plugins = loadPlugins();
+    QConf panelConfig(PANEL_DCONF_SCHEMA);
+    QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
+    if (!appletsConfig.isValid()) {
+        qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
+                   << "the property" << PANEL_DCONF_PROPERTY_APPLETS
+                   << "in schema" << PANEL_DCONF_SCHEMA;
+    } else {
+        QStringList appletsList = appletsConfig.toStringList();
+        qDebug() << "Configured plugins list is:" << appletsList;
+        Q_FOREACH(QString appletName, appletsList) {
+            AppletProviderInterface* provider = plugins.value(appletName, NULL);
+            if (provider == NULL) {
+                qWarning() << "Panel applet" << appletName << "was requested but there's no"
+                           << "installed plugin providing it.";
+            } else {
+                panel->addWidget(provider->getApplet());
+            }
+        }
     }
-    panel->addWidget(new AppNameApplet);
-    if (screen == leftmost) {
-        /* It doesn’t make sense to have more than one instance of the systray,
-           XEmbed’ed windows can be displayed only once anyway. */
-        panel->addWidget(new LegacyTrayApplet);
-    }
-    panel->addWidget(new IndicatorApplet);
+
+//    int leftmost = QApplication::desktop()->screenNumber(QPoint());
+//    if (screen == leftmost) {
+//        panel->addWidget(new HomeButtonApplet);
+//        panel->addWidget(createSeparator());
+//    }
+//    panel->addWidget(new AppNameApplet);
+//    if (screen == leftmost) {
+//        /* It doesn’t make sense to have more than one instance of the systray,
+//           XEmbed’ed windows can be displayed only once anyway. */
+//        panel->addWidget(new LegacyTrayApplet);
+//    }
+//    panel->addWidget(new IndicatorApplet);
+
     return panel;
 }
 
