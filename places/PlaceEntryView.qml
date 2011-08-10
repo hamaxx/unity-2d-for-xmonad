@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
+import Unity2d 1.0
 
 FocusScope {
     id: placeEntryView

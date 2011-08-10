@@ -309,16 +309,20 @@ QPixmap IndicatorEntryWidget::decodeIcon()
     return pix;
 }
 
-void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
+void IndicatorEntryWidget::mousePressEvent(QMouseEvent* event)
 {
     UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
-    showMenu(Qt::LeftButton);
+    if (event->button() != Qt::MiddleButton)
+	    showMenu(Qt::LeftButton);
 }
 
-void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
+void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     UQ_VAR(this);
     update();
+
+    if (event->button() == Qt::MiddleButton && rect().contains(event->pos(), false))
+    	m_entry->SecondaryActivate(time(NULL));
 }
 
 void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)
