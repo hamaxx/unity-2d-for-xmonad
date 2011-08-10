@@ -243,7 +243,6 @@ Item {
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            width: parent.width
             height: 44
             visible: dashView.expanded
         }
