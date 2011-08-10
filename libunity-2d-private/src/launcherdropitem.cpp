@@ -77,3 +77,5 @@ LauncherDropItem::getEventUrls(QGraphicsSceneDragDropEvent* event)
     }
     return QList<QUrl>();
 }
+
+#include "launcherdropitem.moc"

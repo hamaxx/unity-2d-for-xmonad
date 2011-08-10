@@ -79,3 +79,4 @@ QUrl DeclarativeDragItemWithUrl::decodeUri(const QString& uri)
     }
 }
 
+#include "dragitemwithurl.moc"

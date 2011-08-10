@@ -102,11 +102,11 @@ msgid "Workspaces"
 msgstr "Delovne površine"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Obdrži v zaganjalniku"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Odstrani iz zaganjalnika"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

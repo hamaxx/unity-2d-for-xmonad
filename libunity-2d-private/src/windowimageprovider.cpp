@@ -112,6 +112,11 @@ QImage WindowImageProvider::requestImage(const QString &id,
     Window frameId = ((atPos == -1) ? windowIds : windowIds.left(atPos)).toULong();
     Window contentId = ((atPos == -1) ? windowIds : windowIds.mid(atPos + 1)).toULong();
 
+    /* Use form image://window/root to specify you want an image of the root window */
+    if (atPos == -1 && windowIds == "root") {
+        frameId = QX11Info::appRootWindow();
+    }
+
     QImage image;
     QPixmap pixmap = getWindowPixmap(frameId, contentId);
     if (!pixmap.isNull()) {

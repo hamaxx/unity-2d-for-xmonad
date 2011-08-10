@@ -25,6 +25,7 @@
 #include <cairoutils.h>
 #include <debug_p.h>
 #include <gscopedpointer.h>
+#include <gimageutils.h>
 #include <panelstyle.h>
 
 // Qt
@@ -40,6 +41,7 @@
 
 static const int SPACING = 3;
 static const int PADDING = 3;
+static const int ICON_SIZE = 22;
 
 using namespace unity::indicator;
 
@@ -292,25 +294,35 @@ QPixmap IndicatorEntryWidget::decodeIcon()
     } else if (type == GTK_IMAGE_ICON_NAME) {
         QString name = QString::fromStdString(m_entry->image_data());
         QIcon icon = QIcon::fromTheme(name);
-        pix = icon.pixmap(24, 24);
+        pix = icon.pixmap(ICON_SIZE, ICON_SIZE);
     } else if (type == GTK_IMAGE_GICON) {
-        UQ_WARNING << "FIXME: Implement support for GTK_IMAGE_GICON image type";
+        QString name = QString::fromStdString(m_entry->image_data());
+        QImage image = GImageUtils::imageForIconString(name, ICON_SIZE);
+        if (image.isNull()) {
+            UQ_WARNING << "Failed to load icon from" << name;
+            return QPixmap();
+        }
+        return QPixmap::fromImage(image);
     } else {
         UQ_WARNING << "Unknown image type" << m_entry->image_type();
     }
     return pix;
 }
 
-void IndicatorEntryWidget::mousePressEvent(QMouseEvent*)
+void IndicatorEntryWidget::mousePressEvent(QMouseEvent* event)
 {
     UQ_RETURN_IF_FAIL(m_hasIcon || m_hasLabel);
-    showMenu(Qt::LeftButton);
+    if (event->button() != Qt::MiddleButton)
+	    showMenu(Qt::LeftButton);
 }
 
-void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent*)
+void IndicatorEntryWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     UQ_VAR(this);
     update();
+
+    if (event->button() == Qt::MiddleButton && rect().contains(event->pos(), false))
+    	m_entry->SecondaryActivate(time(NULL));
 }
 
 void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)

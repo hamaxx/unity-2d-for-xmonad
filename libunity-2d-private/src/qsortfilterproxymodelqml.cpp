@@ -188,3 +188,5 @@ QSortFilterProxyModelQML::setLimit(int limit)
         Q_EMIT limitChanged();
     }
 }
+
+#include "qsortfilterproxymodelqml.moc"

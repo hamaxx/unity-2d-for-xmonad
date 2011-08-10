@@ -100,11 +100,11 @@ msgid "Workspaces"
 msgstr "Rùmannan-obrach"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Glèidh anns a Lòinsear"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Gluais bhon a Lòinsear"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

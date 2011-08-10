@@ -102,11 +102,11 @@ msgid "Workspaces"
 msgstr "Darbvirsmas"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Paturēt palaidējā"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Izņemt no palaidēja"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

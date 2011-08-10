@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "Ruang kerja"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Kekalkan didalam Pelancar"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Buang Dari Pelancar"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

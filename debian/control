@@ -22,8 +22,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgtk-3-dev,
                libutouch-geis-dev,
                libstartup-notification0-dev,
-               libunity-core-4.0-dev (>= 4.4.0),
-               libnux-1.0-dev (>= 1.0.6),
+               libunity-core-4.0-dev (>= 4.6.0),
+               libnux-1.0-dev (>= 1.0.8),
 Standards-Version: 3.9.2
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/oneiric
 
@@ -75,7 +75,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          unity-asset-pool,
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg,
 Recommends: unity-place-files,
             unity-place-applications
@@ -89,12 +89,11 @@ Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0
+         libunity-2d-private0 (= ${binary:Version}),
 Provides: indicator-renderer
 Recommends: indicator-application,
             indicator-appmenu,
             indicator-datetime,
-            indicator-me,
             indicator-messages,
             indicator-session,
             indicator-sound,
@@ -107,7 +106,7 @@ Package: unity-2d-places
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
@@ -118,7 +117,7 @@ Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         libunity-2d-private0,
+         libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Spread
  The Unity 2D spread allows you to display a quick thumbnailed view of open

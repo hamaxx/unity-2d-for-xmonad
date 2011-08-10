@@ -38,6 +38,7 @@ FocusScope {
                     blurRadius: {
                         switch (header.state) {
                             case "selected":
+                            case "hovered":
                                 return 4
                             case "pressed":
                                 return 8

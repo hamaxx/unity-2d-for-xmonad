@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
         launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }
 
+    launcherView->rootContext()->setContextProperty("declarativeView", launcherView);
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
     launcherView->rootContext()->setContextProperty("panel", &panel);
     launcherView->rootContext()->setContextProperty("visibilityController", visibilityController);

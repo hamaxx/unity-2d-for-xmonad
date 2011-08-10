@@ -174,21 +174,21 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
-        show();
-        raise();
-        // We need a delay, otherwise the window may not be visible when we try to activate it
-        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
             resizeToDesktopModeSize();
         }
+        show();
+        raise();
+        // We need a delay, otherwise the window may not be visible when we try to activate it
+        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (oldMode == HiddenMode) {
             // Check old mode to ensure we do not call BeginForceVisible twice
             // if we go from desktop to fullscreen mode
             m_launcherClient->beginForceVisible();
+            activeChanged(true);
         }
-        activeChanged(true);
     }
     dashModeChanged(m_mode);
 }
@@ -232,35 +232,6 @@ const QString&
 DashDeclarativeView::activePlaceEntry() const
 {
     return m_activePlaceEntry;
-}
-
-void
-DashDeclarativeView::forceActivateWindow()
-{
-    /* Workaround focus stealing prevention implemented by some window
-       managers such as Compiz. This is the exact same code you will find in
-       libwnck::wnck_window_activate().
-
-       ref.: http://permalink.gmane.org/gmane.comp.lib.qt.general/4733
-    */
-    Display* display = QX11Info::display();
-    Atom net_wm_active_window = XInternAtom(display, "_NET_ACTIVE_WINDOW",
-                                            False);
-    XEvent xev;
-    xev.xclient.type = ClientMessage;
-    xev.xclient.send_event = True;
-    xev.xclient.display = display;
-    xev.xclient.window = this->effectiveWinId();
-    xev.xclient.message_type = net_wm_active_window;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = 2;
-    xev.xclient.data.l[1] = CurrentTime;
-    xev.xclient.data.l[2] = 0;
-    xev.xclient.data.l[3] = 0;
-    xev.xclient.data.l[4] = 0;
-
-    XSendEvent(display, QX11Info::appRootWindow(), False,
-               SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
 void

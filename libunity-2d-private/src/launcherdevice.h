@@ -51,18 +51,22 @@ public:
     Q_INVOKABLE GVolume* getVolume();
     Q_INVOKABLE void setVolume(GVolume* volume);
     Q_INVOKABLE void open();
+    Q_INVOKABLE void unmount(GMountOperation* mountOperation);
     Q_INVOKABLE void eject();
+    Q_INVOKABLE void stop();
 
     Q_INVOKABLE virtual void createMenuActions();
 
 private Q_SLOTS:
     void onEjectTriggered();
+    void onStopTriggered();
 
 private:
     GVolume* m_volume;
 
     static void onVolumeMounted(GVolume* volume, GAsyncResult* res);
     static void onVolumeEjected(GVolume* volume, GAsyncResult* res);
+    static void onDriveStopped(GDrive* drive, GAsyncResult* res);
     static void onMountUnmounted(GMount* mount, GAsyncResult* res);
 };
 

@@ -1,3 +1,32 @@
+unity-2d (3.8.14.1-0ubuntu1) oneiric; urgency=low
+
+  * Few upstream fixes:
+    - unity-2d-places crashed with SIGSEGV in
+      QDeclarativePropertyPrivate::initProperty() (LP: #817896)
+    - update resets unity launcher favorites (LP: #817954)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 02 Aug 2011 16:08:27 +0200
+
+unity-2d (3.8.14-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [launcher] Need to press Alt+F1 twice to show launcher (LP: #812787)
+  * debian/control:
+    - build on latest libunity-core-4.0-dev and latest libnux-1.0-dev
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 01 Aug 2011 19:53:40 +0200
+
+unity-2d (3.8.12-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - enforcing latest libunity-private0 to be installed for each local
+      consumer
+    - don't recommends indicator-me, it's deprecated
+  * debian/libunity-2d-private0.lintian-overrides:
+    - remove a qml-related exported symbol warning wrongly detected
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 29 Jul 2011 15:19:11 +0200
+
 unity-2d (3.8.12-0ubuntu1) oneiric; urgency=low
 
   [ Florian Boucault ]

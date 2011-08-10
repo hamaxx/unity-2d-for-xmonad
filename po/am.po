@@ -99,11 +99,11 @@ msgid "Workspaces"
 msgstr "የስራ ቦታዎች"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "ማስነሻው ውስጥ ይቀመጥ"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "ከማስነሻው ውስጥ ማስወገጃ"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

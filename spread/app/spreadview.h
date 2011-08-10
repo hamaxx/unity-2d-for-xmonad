@@ -36,9 +36,6 @@ public Q_SLOTS:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
     void fitToAvailableSpace(int screen);
 
-    /* FIXME: copied from places/app/dashdeclarativeview.h */
-    void forceActivateWindow();
-
 protected:
     virtual void focusInEvent( QFocusEvent * event );
     virtual void focusOutEvent( QFocusEvent * event );

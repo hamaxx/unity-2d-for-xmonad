@@ -98,11 +98,11 @@ msgid "Workspaces"
 msgstr "Жұмыс орындары"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Бағдарламаларды ашу бағдарлама панеліне түйреу"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Бағдарламаларды ашу бағдарлама панелінен алып тастау"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

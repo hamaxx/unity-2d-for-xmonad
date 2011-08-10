@@ -17,10 +17,6 @@
  */
 
 import QtQuick 1.0
-/* Necessary for:
-   - ImageProvider serving image://icons/theme_name/icon_name
-   - LauncherApplication
-*/
 import Unity2d 1.0
 import gconf 1.0
 

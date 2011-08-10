@@ -100,11 +100,11 @@ msgid "Workspaces"
 msgstr "Pracovní plochy"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep In Launcher"
+msgid "Keep in launcher"
 msgstr "Ponechat ve spouštěči"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove From Launcher"
+msgid "Remove from launcher"
 msgstr "Odstranit ze spouštěče"
 
 #: libunity-2d-private/Unity2d/launcherapplication.cpp:870

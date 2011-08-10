@@ -3,6 +3,9 @@
  *
  * Copyright 2011 Canonical Ltd.
  *
+ * Authors:
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
@@ -15,30 +18,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef GIMAGEUTILS_H
+#define GIMAGEUTILS_H
 
-import QtQuick 1.0
-import Unity2d 1.0
+// Local
 
-HomeButton {
-    property alias contentType: defaultApplication.contentType
+// Qt
 
-    GioDefaultApplication {
-        id: defaultApplication
-    }
+class QImage;
+class QString;
 
-    LauncherApplication {
-        id: application
-        desktop_file: defaultApplication.desktopFile
-    }
+struct _GdkPixbuf;
+struct _GtkIconTheme;
 
-    visible: application.desktop_file != ""
+/**
+ * Helper methods to deal with GTK images
+ */
+namespace GImageUtils
+{
 
-    onClicked: {
-        dashView.active = false
-        application.activate()
-    }
+QImage imageForIconString(const QString& name, int size, struct _GtkIconTheme* theme = 0);
 
-    icon: "image://icons/" + application.icon
-    iconSourceSize.width: 128
-    iconSourceSize.height: 128
-}
+QImage imageForPixbuf(const struct _GdkPixbuf* pixbuf);
+
+} // namespace
+
+#endif /* GIMAGEUTILS_H */
