@@ -21,11 +21,11 @@ import Unity2d 1.0
 
 Grid {
     anchors.fill: parent
-    anchors.topMargin: 26
+    anchors.topMargin: 21
     anchors.bottomMargin: 35
-    anchors.leftMargin: 32
+    anchors.leftMargin: 46
     anchors.rightMargin: 32
-    spacing: 61
+    spacing: 51
     columns: 4
     rows: 2
 
