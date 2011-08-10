@@ -28,7 +28,6 @@ AbstractButton {
 
     id: lensButton
 
-    width: 32
     anchors.top: parent.top
     anchors.bottom: parent.bottom
 
@@ -41,11 +40,7 @@ AbstractButton {
     }
 
     Rectangle {
-        width: parent.width
-        height: parent.height
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
         anchors.topMargin: 7
         anchors.bottomMargin: 7
 

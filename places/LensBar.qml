@@ -48,7 +48,7 @@ FocusScope {
         anchors.horizontalCenter: background.horizontalCenter
         anchors.top: background.top
         anchors.bottom: background.bottom
-        spacing: 28
+        spacing: iconSpacing
 
         Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
 
@@ -95,6 +95,7 @@ FocusScope {
             icon: "artwork/home.png"
             onClicked: activateHome()
             active: ( dashView.activePlaceEntry == "" )
+            width: iconWidth
         }
 
         /* Now fetch all other lenses and display */
@@ -106,6 +107,7 @@ FocusScope {
                 icon: item.icon
                 active: item.active
                 onClicked: activatePlaceEntry(item)
+                width: iconWidth
             }
         }
     }
