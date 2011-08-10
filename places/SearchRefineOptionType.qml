@@ -43,7 +43,7 @@ SearchRefineOption {
             text: searchRefineOption.title
             font.pixelSize: 16
             font.bold: true
-            font.underline: parent.state == "selected"
+            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
         }
     }
 
@@ -53,8 +53,8 @@ SearchRefineOption {
         property int columns: 2
         property int rowsPerColumn: Math.ceil(count/columns)
 
-        cellHeight: 35
-        cellWidth: width/columns
+        cellHeight: 42 //30px for button + 12px for vertical padding
+        cellWidth: width/columns //145px for button + 10px for horizonal padding
 
         anchors.top: header.bottom
         anchors.topMargin: 15
@@ -71,8 +71,8 @@ SearchRefineOption {
         KeyNavigation.up: header
 
         delegate: TickBox {
-            height: filters.cellHeight
-            width: filters.cellWidth-5
+            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (10) - fix (3)
+            width: filters.cellWidth-13 //144 = filters.cellWidth - horizontal padding (12) - fix (1)
             /* Not checking for placeEntryModel != undefined leads to a segfault
                when switching places */
             text: placeEntryModel != undefined ? column_0 : ""

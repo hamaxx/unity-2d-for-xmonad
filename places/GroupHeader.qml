@@ -71,7 +71,8 @@ AbstractButton {
         anchors.leftMargin: 11
         anchors.baseline: title.baseline
 
-        opacity: groupHeader.state == "selected" || groupHeader.state == "pressed" ? 1.0 : 0.5
+        opacity: ( groupHeader.state == "selected" || groupHeader.state == "pressed"
+                  || groupHeader.state == "hovered" ) ? 1.0 : 0.5
         Behavior on opacity {NumberAnimation { duration: 100 }}
 
         effect: DropShadow {

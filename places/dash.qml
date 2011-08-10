@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
+import Unity2d 1.0
 import Effects 1.0
 
 Item {
@@ -210,9 +210,9 @@ Item {
             anchors.topMargin: search_entry.anchors.topMargin
             height: parent.height
             headerHeight: search_entry.height
-            width: 295
+            width: 310
             anchors.right: parent.right
-            anchors.rightMargin: 19
+            anchors.rightMargin: 3
         }
 
         Loader {
