@@ -20,24 +20,17 @@
 #include "bfb.h"
 
 // libunity-2d
-#include <unity2dtr.h>
+#include <dashclient.h>
 #include <debug_p.h>
+#include <unity2dtr.h>
 
 // Qt
-#include <QDBusInterface>
-#include <QDBusPendingCall>
-
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_PATH = "/Dash";
-static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
 BfbItem::BfbItem()
-: m_dashInterface(new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE))
+: m_active(false)
 {
-    m_dashInterface->setParent(this);
-    QDBusConnection::sessionBus().connect(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
-        "activeChanged", "b", this, SLOT(activeChanged(bool))
-        );
+    connect(DashClient::instance(), SIGNAL(activePageChanged(const QString&)),
+        SLOT(slotActivePageChanged(const QString&)));
 }
 
 BfbItem::~BfbItem()
@@ -46,7 +39,16 @@ BfbItem::~BfbItem()
 
 bool BfbItem::active() const
 {
-    return m_dashInterface->property("active").toBool();
+    return m_active;
+}
+
+void BfbItem::slotActivePageChanged(const QString& page)
+{
+    bool active = page == "home";
+    if (m_active != active) {
+        m_active = active;
+        activeChanged(m_active);
+    }
 }
 
 bool BfbItem::running() const
@@ -81,11 +83,7 @@ bool BfbItem::launching() const
 
 void BfbItem::activate()
 {
-    if (active()) {
-        m_dashInterface->setProperty("active", false);
-    } else {
-        m_dashInterface->asyncCall("activateHome");
-    }
+    DashClient::instance()->setActivePage(m_active ? "" : "home");
 }
 
 void BfbItem::createMenuActions()

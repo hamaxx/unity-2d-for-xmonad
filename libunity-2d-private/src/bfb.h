@@ -26,8 +26,6 @@
 #include <QAbstractListModel>
 #include <QMetaType>
 
-class QDBusInterface;
-
 class BfbItem : public LauncherItem
 {
     Q_OBJECT
@@ -48,9 +46,12 @@ public:
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE virtual void createMenuActions();
 
+private Q_SLOTS:
+    void slotActivePageChanged(const QString&);
+
 private:
     Q_DISABLE_COPY(BfbItem)
-    QDBusInterface* m_dashInterface;
+    bool m_active;
 };
 
 Q_DECLARE_METATYPE(BfbItem*)
