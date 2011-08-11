@@ -1,5 +1,22 @@
-unity-2d (3.8.14.1-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (4.0.0-0ubuntu1) UNRELEASED; urgency=low
 
+  * New upstream release:
+    - [launcher] Impossible to keep KDE Apps in Launcher (LP: #741129)
+    - [dash] Background should be blurred (LP: #823326)
+    - No 'safely remove' option is present in the unity menu when a usb disk
+      is inserted (LP: #660010)
+    - Quicklist item "Keep In Launcher" should be "Keep in launcher" as design
+      (LP: #795422)
+    - [launcher] ESC doesn't dismiss launcher when activated with Alt+F1
+      (LP: #812792)
+    - [dash] Background wallpaper shifted when using a non compositing window
+      manager (LP: #823295)
+    - [launcher] Bottom gradient appears too early (LP: #823877)
+    - mute/unmute sound when user clicks on sound applet using scroll button
+      or middle mouse button (LP: #609860)
+    - Secondary activate (i.e. middle click) support for indicators advanced
+      usage (LP: #812933)
+    - Unused GConfItemQmlWrapper dep found (LP: #821880)
   * debian/control:
     - bump libunity-core-4.0-dev, libnux-1.0-dev
     - recommends lenses and not places anymore. Adding music lens
