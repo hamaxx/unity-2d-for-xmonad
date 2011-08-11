@@ -30,6 +30,8 @@ set(indicator_SRCS
 
 # Build
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
@@ -48,7 +50,6 @@ target_link_libraries(panelplugin-indicator
     ${GTK_LDFLAGS}
     ${INDICATOR_LDFLAGS}
     unity-2d-private
-    uqapplets
     )
 
 install(TARGETS panelplugin-indicator

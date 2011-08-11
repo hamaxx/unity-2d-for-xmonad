@@ -22,9 +22,6 @@
 #ifndef INDICATORAPPLET_H
 #define INDICATORAPPLET_H
 
-// Local
-#include <applet.h>
-
 // Qt
 #include <QDBusInterface>
 #include <QMenuBar>
@@ -33,7 +30,7 @@ class QX11EmbedContainer;
 
 struct _IndicatorPlugin;
 
-class IndicatorApplet : public Unity2d::Applet
+class IndicatorApplet : public QWidget
 {
 Q_OBJECT
 public:

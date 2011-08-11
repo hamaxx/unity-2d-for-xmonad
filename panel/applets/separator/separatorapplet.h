@@ -22,11 +22,9 @@
 #ifndef SEPARATORAPPLET_H
 #define SEPARATORAPPLET_H
 
-#include <applet.h>
-
 #include <QLabel>
 
-class SeparatorApplet : public Unity2d::Applet
+class SeparatorApplet : public QWidget
 {
 Q_OBJECT
 public:

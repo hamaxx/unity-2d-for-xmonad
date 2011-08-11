@@ -7,7 +7,7 @@ include_directories(
 
 add_subdirectory(applets)
 add_subdirectory(app)
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 # Install
 install(DIRECTORY artwork

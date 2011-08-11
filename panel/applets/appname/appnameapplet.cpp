@@ -36,7 +36,6 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLinearGradient>

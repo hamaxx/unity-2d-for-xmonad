@@ -23,13 +23,12 @@
 #define HOMEBUTTONAPPLET_H
 
 // Local
-#include <applet.h>
 #include "homebutton.h"
 
 class QDBusInterface;
 class LauncherClient;
 
-class HomeButtonApplet : public Unity2d::Applet
+class HomeButtonApplet : public QWidget
 {
 Q_OBJECT
 public:

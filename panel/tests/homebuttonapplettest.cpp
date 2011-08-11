@@ -25,11 +25,10 @@
 // Qt
 #include <QtTestGui>
 
-using namespace Unity2d;
-
 class HomeButtonAppletTest : public QObject
 {
     Q_OBJECT
+
 private Q_SLOTS:
     void testCreateButton()
     {

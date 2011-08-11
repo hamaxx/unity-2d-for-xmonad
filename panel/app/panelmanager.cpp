@@ -25,13 +25,6 @@
 // Local
 #include <config.h>
 
-// Applets
-#include <appindicator/appindicatorapplet.h>
-#include <appname/appnameapplet.h>
-#include <homebutton/homebuttonapplet.h>
-#include <indicator/indicatorapplet.h>
-#include <legacytray/legacytrayapplet.h>
-
 // Unity
 #include <unity2dpanel.h>
 #include <appletproviderinterface.h>
@@ -48,8 +41,7 @@
 #include <QHash>
 #include <QPluginLoader>
 #include <QDebug>
-
-using namespace Unity2d;
+#include <QVariant>
 
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";

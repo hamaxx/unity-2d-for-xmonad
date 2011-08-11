@@ -20,6 +20,7 @@ qt4_add_dbus_adaptor(appname_SRCS com.canonical.AppMenu.Registrar.xml
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
@@ -39,7 +40,6 @@ target_link_libraries(panelplugin-appname
     ${WNCK_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     unity-2d-private
-    uqapplets
     )
 
 install(TARGETS panelplugin-appname

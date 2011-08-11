@@ -14,6 +14,7 @@ set(legacytray_SRCS
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${X11_INCLUDE_DIR}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -31,7 +32,6 @@ target_link_libraries(panelplugin-legacytray
     ${X11_Xdamage_LIB}
     ${X11_Xfixes_LIB}
     unity-2d-private
-    uqapplets
     )
 
 install(TARGETS panelplugin-legacytray
