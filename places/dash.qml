@@ -45,6 +45,7 @@ Item {
                    Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
                          https://bugreports.qt.nokia.com/browse/QTBUG-20692
                 */
+                deactivateActiveLens()
                 currentPage = undefined
                 pageLoader.source = ""
             }
@@ -66,11 +67,19 @@ Item {
         currentPage.visible = true
     }
 
+    function deactivateActiveLens() {
+        if (dashView.activeLens != "") {
+            var lens = lenses.get(dashView.activeLens)
+            lens.active = false
+        }
+    }
+
     function activateLens(lensId) {
         if (lensId == dashView.activeLens) {
             return
         }
 
+        deactivateActiveLens()
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
@@ -87,6 +96,7 @@ Item {
     }
 
     function activateHome() {
+        deactivateActiveLens()
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
