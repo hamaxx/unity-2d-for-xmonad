@@ -2,6 +2,7 @@ unity-2d (3.8.14.1-0ubuntu2) UNRELEASED; urgency=low
 
   * debian/control:
     - bump libunity-core-4.0-dev, libnux-1.0-dev
+    - recommends lenses and not places anymore. Adding music lens
 
  -- Didier Roche <didrocks@ubuntu.com>  Thu, 11 Aug 2011 20:02:39 +0200
 
