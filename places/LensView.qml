@@ -48,7 +48,7 @@ FocusScope {
         id: firstCategoryModel
 
         property int categoryId
-        model: lensView.model.results
+        model: lensView.model != undefined ? lensView.model.results : null
 
         /* lensView.model.entryResultsModel contains data for all
            the categories of a given Lens.
