@@ -84,9 +84,8 @@ void BfbItem::activate()
     if (active()) {
         m_dashInterface->setProperty("active", false);
     } else {
-        m_dashInterface->call(QDBus::Block, "activateHome");
+        m_dashInterface->asyncCall("activateHome");
     }
-    activeChanged(active());
 }
 
 void BfbItem::createMenuActions()
