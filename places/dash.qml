@@ -67,6 +67,10 @@ Item {
     }
 
     function activateLens(lensId) {
+        if (lensId == dashView.activeLens) {
+            return
+        }
+
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
