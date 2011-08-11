@@ -82,11 +82,13 @@ QVariant Lenses::get(int row) const
 
 QVariant Lenses::get(const QString& lens_id) const
 {
-    unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLens(lens_id.toStdString());
-    Lens* lens = new Lens();
-    lens->setUnityLens(unityLens);
+    Q_FOREACH(Lens* lens, m_lenses) {
+        if (lens->id() == lens_id) {
+            return QVariant::fromValue(lens);
+        }
+    }
 
-    return QVariant::fromValue(lens);
+    return QVariant();
 }
 
 void Lenses::onLensAdded(unity::dash::Lens::Ptr& lens)
