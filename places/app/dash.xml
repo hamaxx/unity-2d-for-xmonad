@@ -12,16 +12,10 @@
         <method name="activateHome">
             <dox:d>Activates the Dash and shows the home section</dox:d>
         </method>
-        <method name="activatePlaceEntry">
-            <dox:d>Activates the Dash and shows the specified place entry</dox:d>
-            <arg name="file" type="s" direction="in">
-                    <dox:d>The .place file for the place containing the entry that should be activated</dox:d>
-            </arg>
-            <arg name="entry" type="s" direction="in">
-                    <dox:d>The place entry that should be activated</dox:d>
-            </arg>
-            <arg name="section" type="i" direction="in">
-                    <dox:d>The section of the place entry that should be activated</dox:d>
+        <method name="activateLens">
+            <dox:d>Activates the Dash and shows the specified lens</dox:d>
+            <arg name="lensId" type="s" direction="in">
+                    <dox:d>The id of the lens that should be activated</dox:d>
             </arg>
         </method>
         <property name="active" type="b" access="readwrite">

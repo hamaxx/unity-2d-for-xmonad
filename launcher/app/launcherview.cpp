@@ -56,8 +56,7 @@ static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
-static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
-static const char* COMMANDS_PLACE_ENTRY = "Runner";
+static const char* COMMANDS_LENS_ID = "commands.lens";
 static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 LauncherView::LauncherView(QWidget* parent) :
@@ -81,7 +80,7 @@ LauncherView::LauncherView(QWidget* parent) :
 
     /* Alt+F2 shows the dash with the commands place entry activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
-    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
+    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
 
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
@@ -232,10 +231,9 @@ LauncherView::toggleDash()
 }
 
 void
-LauncherView::showCommandsPlace()
+LauncherView::showCommandsLens()
 {
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    dashInterface.asyncCall("activatePlaceEntry",
-                            APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
+    dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
 }
 

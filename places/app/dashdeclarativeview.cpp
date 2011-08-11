@@ -235,13 +235,11 @@ DashDeclarativeView::activePlaceEntry() const
 }
 
 void
-DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
+DashDeclarativeView::activateLens(const QString& lensId)
 {
     QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activatePlaceEntryFromFile", Qt::AutoConnection,
-                              Q_ARG(QVariant, QVariant::fromValue(file)),
-                              Q_ARG(QVariant, QVariant::fromValue(entry)),
-                              Q_ARG(QVariant, QVariant::fromValue(section)));
+    QMetaObject::invokeMethod(dash, "activateLens", Qt::AutoConnection,
+                              Q_ARG(QVariant, QVariant::fromValue(lensId)));
     setActive(true);
 }
 

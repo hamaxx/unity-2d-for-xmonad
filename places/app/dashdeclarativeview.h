@@ -58,7 +58,7 @@ public:
     Q_INVOKABLE void setExpanded(bool);
 
     /* methods */
-    Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
+    Q_INVOKABLE void activateLens(const QString& lensId);
     Q_SLOT void activateHome();
     bool connectToBus();
 
