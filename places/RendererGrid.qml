@@ -35,14 +35,6 @@ Renderer {
 
     property variant cellRenderer
     property bool folded
-    folded: {
-        /* Look for the groupId as a complete word inside the list of expanded groups.
-           Examples of ExpandedGroups hint: "2", "1 3 7", "1 2", etc.
-         */
-        var re = RegExp("\\b%1\\b".arg(renderer.groupId))
-        var expandedGroups = placeEntryModel.entryRendererHints["ExpandedGroups"]
-        return !re.test(expandedGroups)
-    }
 
     property int cellWidth: 158
     property int cellHeight: 76
@@ -89,10 +81,11 @@ Renderer {
                     id: loader
                     property string uri: column_0
                     property string iconHint: column_1
-                    property string groupId: column_2
+                    property string categoryId: column_2 // FIXME: rename to categoryIndex
                     property string mimetype: column_3
-                    property string displayName: column_4
+                    property string displayName: column_4 // FIXME: rename to name
                     property string comment: column_5
+                    property string dndUri: column_6
 
                     width: results.delegateWidth
                     height: results.delegateHeight
@@ -113,7 +106,7 @@ Renderer {
 
             /* Only display one line of items when folded */
             model: SortFilterProxyModel {
-                model: renderer.group_model != undefined ? renderer.group_model : null
+                model: renderer.category_model != undefined ? renderer.category_model : null
                 limit: folded ? results.cellsPerRow : -1
             }
         }

@@ -32,7 +32,7 @@ AbstractButton {
 
     Binding {
         target: dash.currentPage != undefined ? dash.currentPage.model : null
-        property: "entrySearchQuery"
+        property: "searchQuery"
         value: searchQuery
     }
 

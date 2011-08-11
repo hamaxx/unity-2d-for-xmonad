@@ -18,10 +18,5 @@
 
 import QtQuick 1.0
 
-FocusScope {
-    property string title
-    property variant lens
-
-    width: parent.width
-    height: childrenRect.height
+UnityDefaultRenderer {
 }

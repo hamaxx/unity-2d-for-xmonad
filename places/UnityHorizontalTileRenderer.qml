@@ -37,7 +37,7 @@ RendererGrid {
 
             onClicked: {
                 dashView.active = false
-                placeEntryModel.place.activate(decodeURIComponent(uri))
+                lens.activate(decodeURIComponent(uri))
             }
 
             DragItemWithUrl {

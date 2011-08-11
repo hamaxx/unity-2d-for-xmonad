@@ -90,6 +90,18 @@ Item {
         dashView.activePlaceEntry = place.dbusObjectPath
     }
 
+    function activateLens(lensId) {
+        var lens = lenses.get(lensId)
+        if (lens == null) {
+            console.log("No match for lens: %1".arg(lensId))
+            return
+        }
+
+        pageLoader.source = "LensView.qml"
+        pageLoader.item.model = lens
+        dashView.activePlaceEntry = lens.dbusPath
+    }
+
     function activateHome() {
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
@@ -98,9 +110,7 @@ Item {
         dashView.activePlaceEntry = ""
     }
 
-    property variant places: LauncherPlacesList {
-        Component.onCompleted: startAllPlaceServices()
-    }
+    property variant lenses: Lenses {}
 
     Item {
         id: background
@@ -205,9 +215,9 @@ Item {
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for places, not in the home page */
+            /* SearchRefine is only to be displayed for lenses, not in the home page */
             visible: dashView.activePlaceEntry != ""
-            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+            lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin

@@ -73,14 +73,14 @@ SearchRefineOption {
         delegate: TickBox {
             height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (10) - fix (3)
             width: filters.cellWidth-13 //144 = filters.cellWidth - horizontal padding (12) - fix (1)
-            /* Not checking for placeEntryModel != undefined leads to a segfault
-               when switching places */
-            text: placeEntryModel != undefined ? column_0 : ""
+            /* Not checking for lens != undefined leads to a segfault
+               when switching lenses */
+            text: lens != undefined ? column_0 : ""
             checked: dash.currentPage.model.activeSection == model.index
 
-            onClicked: placeEntryModel.activeSection = model.index
+            onClicked: lens.activeSection = model.index
         }
 
-        model: placeEntryModel != undefined ? placeEntryModel.sections : undefined
+        model: lens != undefined ? lens.sections : undefined
     }
 }
