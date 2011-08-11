@@ -28,3 +28,6 @@ target_link_libraries(panelplugin-appindicator
     uqapplets
     )
 
+install(TARGETS panelplugin-appindicator
+        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+       )

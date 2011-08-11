@@ -23,3 +23,6 @@ target_link_libraries(panelplugin-separator
     uqapplets
     )
 
+install(TARGETS panelplugin-separator
+        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+       )

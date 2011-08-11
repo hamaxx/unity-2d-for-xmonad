@@ -10,8 +10,6 @@ macro(read_pkg_variable cmake_var pkg pkg_var)
 endmacro(read_pkg_variable)
 
 # Dependencies
-include(FindPkgConfig)
-
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(INDICATOR REQUIRED indicator)
 
@@ -53,3 +51,6 @@ target_link_libraries(panelplugin-indicator
     uqapplets
     )
 
+install(TARGETS panelplugin-indicator
+        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+       )

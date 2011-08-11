@@ -42,3 +42,6 @@ target_link_libraries(panelplugin-appname
     uqapplets
     )
 
+install(TARGETS panelplugin-appname
+        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+       )

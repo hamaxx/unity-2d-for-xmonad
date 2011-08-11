@@ -34,3 +34,6 @@ target_link_libraries(panelplugin-legacytray
     uqapplets
     )
 
+install(TARGETS panelplugin-legacytray
+        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+       )
