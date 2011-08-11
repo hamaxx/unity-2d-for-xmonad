@@ -78,7 +78,7 @@ Item {
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = lens
         activatePage(pageLoader.item)
-        dashView.activeLens = lens.dbusPath
+        dashView.activeLens = lens.id
     }
 
     function activateHome() {
