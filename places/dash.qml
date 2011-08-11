@@ -77,6 +77,7 @@ Item {
             return
         }
 
+        lens.active = true
         pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */

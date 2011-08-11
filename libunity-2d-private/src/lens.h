@@ -50,7 +50,7 @@ class Lens : public QObject
     Q_PROPERTY(DeeListModel* results READ results NOTIFY resultsChanged)
     Q_PROPERTY(DeeListModel* globalResults READ globalResults NOTIFY globalResultsChanged)
     Q_PROPERTY(DeeListModel* categories READ categories NOTIFY categoriesChanged)
-    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
     Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
     Q_PROPERTY(QString globalSearchQuery READ globalSearchQuery WRITE setGlobalSearchQuery NOTIFY globalSearchQueryChanged)
@@ -78,6 +78,7 @@ public:
     QString globalSearchQuery() const;
 
     /* setters */
+    void setActive(bool active);
     void setSearchQuery(const QString& search_query);
     void setGlobalSearchQuery(const QString& search_query);
 

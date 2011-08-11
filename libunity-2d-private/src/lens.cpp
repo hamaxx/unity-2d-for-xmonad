@@ -113,6 +113,11 @@ QString Lens::globalSearchQuery() const
     return m_globalSearchQuery;
 }
 
+void Lens::setActive(bool active)
+{
+    m_unityLens->active = active;
+}
+
 void Lens::setSearchQuery(const QString& search_query)
 {
     if (search_query != m_searchQuery) {
