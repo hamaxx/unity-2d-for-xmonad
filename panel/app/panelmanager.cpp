@@ -79,7 +79,10 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
 
     IndicatorsManager* indicatorsManager = new IndicatorsManager(panel);
 
-    int leftmost = QApplication::desktop()->screenNumber(QPoint());
+    QPoint p;
+    if (QApplication::isRightToLeft())
+        p = QPoint(QApplication::desktop()->width(), 0);
+    int leftmost = QApplication::desktop()->screenNumber(p);
     if (screen == leftmost) {
         panel->addWidget(new HomeButtonApplet);
         panel->addWidget(createSeparator());

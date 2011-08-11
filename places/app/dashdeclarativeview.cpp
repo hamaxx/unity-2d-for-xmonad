@@ -86,10 +86,14 @@ void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
     QRect rect = availableGeometry();
+    int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
     rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
                         rect.height()));
+
+    if (QApplication::isRightToLeft())
+        rect.moveRight(screenRight);
 
     move(rect.topLeft());
     setFixedSize(rect.size());
@@ -266,12 +270,15 @@ DashDeclarativeView::availableGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(this);
     QRect availableRect = QApplication::desktop()->availableGeometry(this);
 
-    return QRect(
+    QRect availableGeometry(
         LauncherClient::MaximumWidth,
         availableRect.top(),
         screenRect.width() - LauncherClient::MaximumWidth,
         availableRect.height()
         );
+    if (QApplication::isRightToLeft())
+        availableGeometry.moveLeft(0);
+    return availableGeometry;
 }
 
 void

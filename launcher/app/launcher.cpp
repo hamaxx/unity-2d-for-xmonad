@@ -22,6 +22,7 @@
 #include <launcherclient.h>
 #include <unity2dapplication.h>
 #include <propertybinder.h>
+#include <unity2dtr.h>
 
 // libdconf-qt
 #include "qconf.h"
@@ -90,6 +91,11 @@ int main(int argc, char *argv[])
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel(true);
+
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+    if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL")
+	QApplication::setLayoutDirection(Qt::RightToLeft);
+
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
     panel.setAccessibleName("Launcher");
