@@ -32,10 +32,15 @@ Lenses::Lenses(QObject *parent) :
     QAbstractListModel(parent)
 {
     QHash<int, QByteArray> roles;
-    roles[0] = "item";
+    roles[Lenses::RoleItem] = "item";
+    roles[Lenses::RoleVisible] = "visible";
     setRoleNames(roles);
 
     m_unityLenses = new unity::dash::FilesystemLenses("/usr/share/unity/lenses");
+    for (unsigned int i=0; i<m_unityLenses->count(); i++) {
+        unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLensAtIndex(i);
+        addUnityLens(unityLens, i);
+    }
     m_unityLenses->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
 }
 
@@ -59,11 +64,15 @@ QVariant Lenses::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLensAtIndex(index.row());
-    Lens* lens = new Lens();
-    lens->setUnityLens(unityLens);
+    Lens* lens = m_lenses.at(index.row());
 
-    return QVariant::fromValue(lens);
+    if (role == Lenses::RoleItem) {
+        return QVariant::fromValue(lens);
+    } else if (role == Lenses::RoleVisible) {
+        return QVariant::fromValue(lens->visible());
+    } else {
+        return QVariant();
+    }
 }
 
 QVariant Lenses::get(int row) const
@@ -82,8 +91,31 @@ QVariant Lenses::get(const QString& lens_id) const
 
 void Lenses::onLensAdded(unity::dash::Lens::Ptr& lens)
 {
-    beginInsertRows(QModelIndex(), m_unityLenses->count()-1, m_unityLenses->count()-1);
+    int index = m_unityLenses->count()-1;
+    beginInsertRows(QModelIndex(), index, index);
+    addUnityLens(lens, index);
     endInsertRows();
+}
+
+void Lenses::onLensPropertyChanged()
+{
+    QModelIndex lensIndex = index(m_lenses.indexOf(qobject_cast<Lens*>(sender())));
+    Q_EMIT dataChanged(lensIndex, lensIndex);
+}
+
+void Lenses::addUnityLens(unity::dash::Lens::Ptr unity_lens, int index)
+{
+    Lens* lens = new Lens();
+    lens->setUnityLens(unity_lens);
+    /* DOCME */
+    QObject::connect(lens, SIGNAL(visibleChanged(bool)), this, SLOT(onLensPropertyChanged()));
+    m_lenses.insert(index, lens);
+}
+
+void Lenses::removeUnityLens(int index)
+{
+    Lens* lens = m_lenses.takeAt(index);
+    delete lens;
 }
 
 #include "lenses.moc"

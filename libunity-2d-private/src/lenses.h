@@ -22,6 +22,7 @@
 
 // Qt
 #include <QAbstractListModel>
+#include <QList>
 
 // libunity-core
 #include <UnityCore/Lens.h>
@@ -34,12 +35,22 @@ class Lenses;
 }
 }
 
+class Lens;
+
 class Lenses : public QAbstractListModel
 {
     Q_OBJECT
+
+    Q_ENUMS(Roles)
+
 public:
     explicit Lenses(QObject *parent = 0);
     ~Lenses();
+
+    enum Roles {
+        RoleItem,
+        RoleVisible
+    };
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     Q_INVOKABLE int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -49,9 +60,14 @@ public:
 
 private Q_SLOTS:
     void onLensAdded(unity::dash::Lens::Ptr& lens);
+    void onLensPropertyChanged();
 
 private:
     unity::dash::Lenses* m_unityLenses;
+    QList<Lens*> m_lenses;
+
+    void addUnityLens(unity::dash::Lens::Ptr unity_lens, int index);
+    void removeUnityLens(int index);
 };
 
 #endif // LENSES_H
