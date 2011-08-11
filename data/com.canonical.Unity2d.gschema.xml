@@ -18,7 +18,7 @@
   </schema>
   <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
     <key type="as" name="applets">
-      <default>["homebutton", "appname", "legacytray", "appindicator", "indicator"]</default>
+      <default>["homebutton", "separator", "appname", "legacytray", "indicator"]</default>
       <summary>Applets to display in the panel</summary>
       <description>List of panel applets that should be displayed, in order, in the panel.</description>
     </key>

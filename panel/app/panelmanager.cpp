@@ -42,7 +42,6 @@
 // Qt
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QLabel>
 #include <QProcessEnvironment>
 #include <QFileInfo>
 #include <QDir>
@@ -69,15 +68,6 @@ static QPalette getPalette()
     palette.setBrush(QPalette::Window, bg);
     palette.setBrush(QPalette::Button, bg);
     return palette;
-}
-
-static QLabel* createSeparator()
-{
-    QLabel* label = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    label->setPixmap(pix);
-    label->setFixedSize(pix.size());
-    return label;
 }
 
 static QHash<QString, AppletProviderInterface*> loadPlugins()
