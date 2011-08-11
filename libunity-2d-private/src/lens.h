@@ -114,6 +114,9 @@ private:
     void onCategoriesSwarmNameChanged(std::string);
     void onCategoriesChanged(unity::dash::Categories::Ptr);
 
+    void onActivated(std::string const& uri, unity::dash::HandledType type, unity::dash::Lens::Hints const&);
+    void fallbackActivate(const QString& uri);
+
     unity::dash::Lens::Ptr m_unityLens;
     DeeListModel* m_results;
     DeeListModel* m_globalResults;

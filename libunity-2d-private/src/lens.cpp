@@ -20,6 +20,14 @@
 // Self
 #include "lens.h"
 
+// libunity-2d
+#include <debug_p.h>
+#include "launcherapplication.h"
+
+// Qt
+#include <QUrl>
+#include <QDesktopServices>
+
 Lens::Lens(QObject *parent) :
     QObject(parent)
 {
@@ -141,6 +149,54 @@ void Lens::activate(const QString& uri)
     m_unityLens->Activate(uri.toStdString());
 }
 
+void Lens::onActivated(std::string const& uri, unity::dash::HandledType type, unity::dash::Lens::Hints const&)
+{
+    if (type == unity::dash::NOT_HANDLED) {
+        fallbackActivate(QString::fromStdString(uri));
+    }
+}
+
+void Lens::fallbackActivate(const QString& uri)
+{
+    /* FIXME: stripping all content before the first column because for some
+              reason the lenses give uri with junk content at their beginning.
+    */
+    QString tweakedUri = uri;
+    int firstColumnAt = tweakedUri.indexOf(":");
+    tweakedUri.remove(0, firstColumnAt+1);
+
+    /* Tries various methods to trigger a sensible action for the given 'uri'.
+       If it has no understanding of the given scheme it falls back on asking
+       Qt to open the uri.
+    */
+    QUrl url(tweakedUri);
+    if (url.scheme() == "file") {
+        /* Override the files place's default URI handler: we want the file
+           manager to handle opening folders, not the dash.
+
+           Ref: https://bugs.launchpad.net/upicek/+bug/689667
+        */
+        QDesktopServices::openUrl(url);
+        return;
+    }
+    if (url.scheme() == "application") {
+        LauncherApplication application;
+        /* Cannot set the desktop file to url.host(), because the QUrl constructor
+           converts the host name to lower case to conform to the Nameprep
+           RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
+           Ref: https://bugs.launchpad.net/unity-place-applications/+bug/784478 */
+        QString desktopFile = tweakedUri.mid(tweakedUri.indexOf("://") + 3);
+        application.setDesktopFile(desktopFile);
+        application.activate();
+        return;
+    }
+
+    UQ_WARNING << "FIXME: Possibly no handler for scheme: " << url.scheme();
+    UQ_WARNING << "Trying to open" << tweakedUri;
+    /* Try our luck */
+    QDesktopServices::openUrl(url);
+}
+
 void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 {
     if (m_unityLens != NULL) {
@@ -178,6 +234,9 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     /* Signals forwarding */
     m_unityLens->search_finished.connect(sigc::mem_fun(this, &Lens::searchFinished));
     m_unityLens->global_search_finished.connect(sigc::mem_fun(this, &Lens::globalSearchFinished));
+
+    /* FIXME: signal should be forwarded instead of calling the handler directly */
+    m_unityLens->activated.connect(sigc::mem_fun(this, &Lens::onActivated));
 }
 
 void Lens::onResultsSwarmNameChanged(std::string swarm_name)
