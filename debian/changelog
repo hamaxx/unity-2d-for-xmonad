@@ -1,4 +1,4 @@
-unity-2d (4.0.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (4.0.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
     - [launcher] Impossible to keep KDE Apps in Launcher (LP: #741129)
@@ -21,7 +21,7 @@ unity-2d (4.0.0-0ubuntu1) UNRELEASED; urgency=low
     - bump libunity-core-4.0-dev, libnux-1.0-dev
     - recommends lenses and not places anymore. Adding music lens
 
- -- Didier Roche <didrocks@ubuntu.com>  Thu, 11 Aug 2011 20:02:39 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 11 Aug 2011 21:22:18 +0200
 
 unity-2d (3.8.14.1-0ubuntu1) oneiric; urgency=low
 
