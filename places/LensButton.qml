@@ -28,9 +28,6 @@ AbstractButton {
 
     id: lensButton
 
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-
     effect: DropShadow {
          blurRadius: 8
          color: "white"

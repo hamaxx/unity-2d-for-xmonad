@@ -95,6 +95,8 @@ FocusScope {
             onClicked: dash.activateHome()
             active: ( dashView.activeLens == "" )
             width: iconWidth
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
 
         /* Now fetch all other lenses and display */
@@ -107,6 +109,8 @@ FocusScope {
                 active: item.active
                 onClicked: dash.activateLens(item.id)
                 width: iconWidth
+                anchors.top: parent != undefined ? parent.top : undefined
+                anchors.bottom: parent != undefined ? parent.bottom : undefined
             }
         }
     }
