@@ -24,12 +24,11 @@ FocusScope {
     property int iconWidth: 32
     property int iconSpacing: 28
 
-    property variant lenses: SortFilterProxyModel {
-        id: visiblePlaces
-        model: places
+    property variant visibleLenses: SortFilterProxyModel {
+        model: dash.lenses
         dynamicSortFilter: true
 
-        filterRole: Place.RoleShowEntry
+        filterRole: Lenses.RoleVisible
         filterRegExp: RegExp("^true$")
     }
 
@@ -93,7 +92,7 @@ FocusScope {
 
             focus: true
             icon: "artwork/home.png"
-            onClicked: activateHome()
+            onClicked: dash.activateHome()
             active: ( dashView.activePlaceEntry == "" )
             width: iconWidth
         }
@@ -102,11 +101,11 @@ FocusScope {
         Repeater{
             id: repeater
 
-            model: lenses
+            model: visibleLenses
             delegate: LensButton {
-                icon: item.icon
+                icon: item.iconHint
                 active: item.active
-                onClicked: activatePlaceEntry(item)
+                onClicked: dash.activateLens(item.id)
                 width: iconWidth
             }
         }

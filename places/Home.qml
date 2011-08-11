@@ -108,7 +108,7 @@ FocusScope {
         bodyDelegate: UnityDefaultRenderer {
             lens: model.item
             name: model.item.name
-            iconHint: model.item.icon
+            iconHint: model.item.iconHint
 
             category_model: model.item.globalResults
             property bool focusable: category_model != undefined && category_model.count > 0
