@@ -200,7 +200,12 @@ Item {
             KeyNavigation.left: search_entry
 
             /* SearchRefine is only to be displayed for lenses, not in the home page */
-            visible: dashView.activeLens != ""
+            /* FIXME: deactivated for now as the Qt bindings for the filters
+                      backend are not ready. Code should be:
+
+                      visible: dashView.activeLens != ""
+            */
+            visible: false
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
