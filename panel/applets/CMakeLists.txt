@@ -9,14 +9,11 @@ include(FindPkgConfig)
 
 # Sources
 set(uqapplets_SRCS
-    appindicator/appindicatorapplet.cpp
-    appindicator/sniitem.cpp
     common/applet.cpp
     )
 
 # Build
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
@@ -55,3 +52,4 @@ add_subdirectory(homebutton)
 add_subdirectory(appname)
 add_subdirectory(legacytray)
 add_subdirectory(indicator)
+add_subdirectory(appindicator)
