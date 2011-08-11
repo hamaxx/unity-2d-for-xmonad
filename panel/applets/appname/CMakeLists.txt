@@ -1,8 +1,6 @@
 project(panelplugin-appname)
 
 # Dependencies
-include(FindPkgConfig)
-
 pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 
@@ -24,6 +22,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
+    ${GTK_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -35,6 +35,8 @@ set_target_properties(panelplugin-appname PROPERTIES LIBRARY_OUTPUT_DIRECTORY ".
 target_link_libraries(panelplugin-appname
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
+    ${GTK_LIBRARIES}
+    ${WNCK_LIBRARIES}
     ${DBUSMENUQT_LDFLAGS}
     unity-2d-private
     uqapplets
