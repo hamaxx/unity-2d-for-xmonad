@@ -27,7 +27,7 @@ inline QString unity2dImportPath() {
 
 inline QString unity2dPluginsPath() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/unity-2d/plugins");
+        return QString(INSTALL_PREFIX "/lib/unity-2d/plugins");
     } else {
         return unity2dDirectory();
     }
