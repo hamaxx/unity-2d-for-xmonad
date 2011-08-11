@@ -238,7 +238,7 @@ void
 DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
 {
     QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activatePlaceEntry", Qt::AutoConnection,
+    QMetaObject::invokeMethod(dash, "activatePlaceEntryFromFile", Qt::AutoConnection,
                               Q_ARG(QVariant, QVariant::fromValue(file)),
                               Q_ARG(QVariant, QVariant::fromValue(entry)),
                               Q_ARG(QVariant, QVariant::fromValue(section)));

@@ -116,10 +116,6 @@ LauncherDropItem {
         id: applications
     }
 
-    LauncherPlacesList {
-        id: places
-    }
-
     LauncherDevicesList {
         id: devices
     }
