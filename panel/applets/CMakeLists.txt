@@ -1,49 +1,23 @@
 project(uqapplets)
 
-macro(read_pkg_variable cmake_var pkg pkg_var)
-    execute_process(
-        COMMAND pkg-config --variable=${pkg_var} ${pkg}
-        OUTPUT_VARIABLE tmp
-        )
-    # Remove trailing newline from ${tmp}
-    string(STRIP "${tmp}" ${cmake_var})
-endmacro(read_pkg_variable)
-
 # Dependencies
 include(FindPkgConfig)
 
-pkg_check_modules(QTBAMF REQUIRED libqtbamf)
-pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
-pkg_check_modules(INDICATOR REQUIRED indicator)
-
-# Get indicator dirs from pkgconfig
-read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
-read_pkg_variable(INDICATOR_ICONS_DIR indicator iconsdir)
-configure_file(indicator-config.h.in indicator-config.h)
+#pkg_check_modules(QTBAMF REQUIRED libqtbamf)
+#pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
+#pkg_check_modules(INDICATOR REQUIRED indicator)
 
 # Sources
 set(uqapplets_SRCS
     appindicator/appindicatorapplet.cpp
     appindicator/sniitem.cpp
     common/applet.cpp
-    indicator/abstractindicator.cpp
-    indicator/datetimeindicator.cpp
-    indicator/indicatorapplet.cpp
-    indicator/indicatorservicemanager.cpp
-    indicator/indicator.c
-    legacytray/legacytrayapplet.cpp
-    legacytray/fdoselectionmanager.cpp
-    legacytray/fdotask.cpp
-    legacytray/x11embedcontainer.cpp
-    legacytray/x11embeddelegate.cpp
-    legacytray/x11embedpainter.cpp
     )
 
 # Build
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
     ${CMAKE_CURRENT_SOURCE_DIR}/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${QTBAMF_INCLUDE_DIRS}
     ${DBUSMENUQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
@@ -80,3 +54,4 @@ target_link_libraries(uqapplets
 add_subdirectory(homebutton)
 add_subdirectory(appname)
 add_subdirectory(legacytray)
+add_subdirectory(indicator)
