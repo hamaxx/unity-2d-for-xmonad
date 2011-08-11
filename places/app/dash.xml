@@ -21,8 +21,8 @@
         <property name="active" type="b" access="readwrite">
             <dox:d>True if the Dash is active</dox:d>
         </property>
-        <property name="activePlaceEntry" type="s" access="readwrite">
-            <dox:d>The currently active place entry</dox:d>
+        <property name="activeLens" type="s" access="readwrite">
+            <dox:d>The currently active lens</dox:d>
         </property>
         <signal name="activeChanged">
                 <dox:d>Signals when the active status of the Dash changes</dox:d>
@@ -30,10 +30,10 @@
                         <dox:d>True if the Dash is active</dox:d>
                 </arg>
         </signal>
-        <signal name="activePlaceEntryChanged">
-                <dox:d>Signals when the currently active place entry in the Dash changes</dox:d>
-                <arg name="activePlaceEntry" type="s" direction="out">
-                        <dox:d>The currently active place entry</dox:d>
+        <signal name="activeLensChanged">
+                <dox:d>Signals when the currently lens in the Dash changes</dox:d>
+                <arg name="activeLens" type="s" direction="out">
+                        <dox:d>The currently active lens</dox:d>
                 </arg>
         </signal>
     </interface>

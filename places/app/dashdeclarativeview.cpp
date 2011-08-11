@@ -220,18 +220,18 @@ DashDeclarativeView::expanded() const
 }
 
 void
-DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
+DashDeclarativeView::setActiveLens(const QString& activeLens)
 {
-    if (activePlaceEntry != m_activePlaceEntry) {
-        m_activePlaceEntry = activePlaceEntry;
-        Q_EMIT activePlaceEntryChanged(activePlaceEntry);
+    if (activeLens != m_activeLens) {
+        m_activeLens = activeLens;
+        Q_EMIT activeLensChanged(activeLens);
     }
 }
 
 const QString&
-DashDeclarativeView::activePlaceEntry() const
+DashDeclarativeView::activeLens() const
 {
-    return m_activePlaceEntry;
+    return m_activeLens;
 }
 
 void

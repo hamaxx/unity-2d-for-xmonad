@@ -78,7 +78,7 @@ Item {
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = lens
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = lens.dbusPath
+        dashView.activeLens = lens.dbusPath
     }
 
     function activateHome() {
@@ -86,7 +86,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = ""
+        dashView.activeLens = ""
     }
 
     property variant lenses: Lenses {}
@@ -195,7 +195,7 @@ Item {
             KeyNavigation.left: search_entry
 
             /* SearchRefine is only to be displayed for lenses, not in the home page */
-            visible: dashView.activePlaceEntry != ""
+            visible: dashView.activeLens != ""
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
