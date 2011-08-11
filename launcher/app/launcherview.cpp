@@ -78,7 +78,7 @@ LauncherView::LauncherView(QWidget* parent) :
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
     connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
 
-    /* Alt+F2 shows the dash with the commands place entry activated. */
+    /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
 
