@@ -1,0 +1,83 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010-2011 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import QtQuick 1.0
+import Effects 1.0
+
+/* This component represents a single "lens" in the dash and an active
+ * indicator icon positioned above it if necessary.
+ */
+AbstractButton {
+    property alias icon: icon.source
+    property bool active: false
+
+    id: lensButton
+
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+
+    effect: DropShadow {
+         blurRadius: 8
+         color: "white"
+         offset.x: 0
+         offset.y: 0
+         enabled: ( lensButton.state == "selected" || active )
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        anchors.topMargin: 7
+        anchors.bottomMargin: 7
+
+        border.color: "white"
+        border.width: 1
+        color: "transparent"
+        radius: 2
+        visible: ( parent.state == "selected" )
+    }
+
+    /* Lens icon supplied is of size 48x48. This is too much for the 44pixels high
+       lensBar. However much of the icon is transparent so we effectively crop it to 32x32. */
+    Image {
+        id: icon
+
+        height: iconWidth
+        fillMode: Image.PreserveAspectCrop
+        clip: true
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.centerIn: parent
+
+        opacity: ( parent.state == "mouseOver" || parent.state == "pressed" || active ) ? 1.0 : 0.57
+    }
+
+    /* Indicator arrow to show Lens active */
+    Image {
+        id: indicator
+        source: "artwork/arrow.png"
+
+        width: sourceSize.width
+        height: sourceSize.height
+        anchors.bottomMargin: (width-height)/2 /* Correct for rotation */
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        rotation: -90
+        visible: active
+    }
+}
