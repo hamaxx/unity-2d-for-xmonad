@@ -56,6 +56,7 @@
 #include "autohidebehavior.h"
 #include "intellihidebehavior.h"
 #include "forcevisiblebehavior.h"
+#include "bfb.h"
 
 #include "lenses.h"
 #include "lens.h"
@@ -103,6 +104,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<LauncherDropItem>(uri, 0, 1, "LauncherDropItem");
 
     qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
+
+    qmlRegisterType<BfbModel>(uri, 0, 1, "BfbModel");
+    qmlRegisterType<BfbItem>(uri, 0, 1, "BfbItem");
 
     qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");

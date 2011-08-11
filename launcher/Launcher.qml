@@ -112,6 +112,10 @@ LauncherDropItem {
         filterRegExp: RegExp("^true$")
     }
 
+    BfbModel {
+        id: bfbModel
+    }
+
     LauncherApplicationsList {
         id: applications
     }
@@ -136,6 +140,7 @@ LauncherDropItem {
     }
 
     Component.onCompleted: {
+        items.appendModel(bfbModel);
         items.appendModel(applications);
         items.appendModel(workspaces);
         items.appendModel(visiblePlaces);
