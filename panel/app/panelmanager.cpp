@@ -84,6 +84,13 @@ static QHash<QString, AppletProviderInterface*> loadPlugins()
 {
     QHash<QString, AppletProviderInterface*> plugins;
 
+    /* When running uninstalled the plugins will be loaded from the source tree
+       under panel/applets.
+       When running installed the plugins will be typically in /usr/lib/unity-2d/plugins/panel
+       In both cases it's still possible to override these default locations by setting an
+       environment variable with the path where the plugins are located.
+    */
+
     QString panelPluginsDefaultDir = unity2dPluginsPath() + "/panel";
     if (!isRunningInstalled()) panelPluginsDefaultDir += "/applets";
     QString pluginPath = QProcessEnvironment::systemEnvironment().value(PANEL_PLUGINS_DEV_DIR_ENV,
@@ -94,14 +101,17 @@ static QHash<QString, AppletProviderInterface*> loadPlugins()
         return plugins;
     }
 
-    qDebug() << "Scanning plugin directory" << pluginFileInfo.absoluteFilePath();
+    qDebug() << "Scanning panel plugin directory" << pluginFileInfo.absoluteFilePath();
+
     QDir pluginDir = QDir(pluginFileInfo.absoluteFilePath());
     QStringList filters;
     filters << "*.so";
     pluginDir.setNameFilters(filters);
+
     Q_FOREACH(QString fileEntry, pluginDir.entryList()) {
         QString pluginFilePath = pluginDir.absoluteFilePath(fileEntry);
-        qDebug() << "Loading plugin:" << pluginFilePath;
+        qDebug() << "Loading panel plugin:" << pluginFilePath;
+
         QPluginLoader loader(pluginFilePath);
         if (loader.load()) {
             AppletProviderInterface* provider;
@@ -121,6 +131,22 @@ static QHash<QString, AppletProviderInterface*> loadPlugins()
     return plugins;
 }
 
+static QStringList loadPanelConfiguration()
+{
+    QConf panelConfig(PANEL_DCONF_SCHEMA);
+    QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
+    if (!appletsConfig.isValid()) {
+        qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
+                   << "the property" << PANEL_DCONF_PROPERTY_APPLETS
+                   << "in schema" << PANEL_DCONF_SCHEMA;
+        return QStringList();
+    }
+
+    QStringList appletsList = appletsConfig.toStringList();
+    qDebug() << "Configured plugins list is:" << appletsList;
+    return appletsList;
+}
+
 static Unity2dPanel* instantiatePanel(int screen)
 {
     Unity2dPanel* panel = new Unity2dPanel;
@@ -129,23 +155,15 @@ static Unity2dPanel* instantiatePanel(int screen)
     panel->setFixedHeight(24);
 
     QHash<QString, AppletProviderInterface*> plugins = loadPlugins();
-    QConf panelConfig(PANEL_DCONF_SCHEMA);
-    QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
-    if (!appletsConfig.isValid()) {
-        qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
-                   << "the property" << PANEL_DCONF_PROPERTY_APPLETS
-                   << "in schema" << PANEL_DCONF_SCHEMA;
-    } else {
-        QStringList appletsList = appletsConfig.toStringList();
-        qDebug() << "Configured plugins list is:" << appletsList;
-        Q_FOREACH(QString appletName, appletsList) {
-            AppletProviderInterface* provider = plugins.value(appletName, NULL);
-            if (provider == NULL) {
-                qWarning() << "Panel applet" << appletName << "was requested but there's no"
-                           << "installed plugin providing it.";
-            } else {
-                panel->addWidget(provider->getApplet());
-            }
+    QStringList panelConfiguration = loadPanelConfiguration();
+
+    Q_FOREACH(QString appletName, panelConfiguration) {
+        AppletProviderInterface* provider = plugins.value(appletName, NULL);
+        if (provider == NULL) {
+            qWarning() << "Panel applet" << appletName << "was requested but there's no"
+                       << "installed plugin providing it.";
+        } else {
+            panel->addWidget(provider->getApplet());
         }
     }
 
