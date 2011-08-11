@@ -71,8 +71,8 @@ void DashClient::connectToDash()
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotDashActiveChanged(bool)));
-    connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
-            SLOT(slotDashActivePlaceEntryChanged(const QString&)));
+    connect(m_dashDbusIface, SIGNAL(activeLensChanged(const QString&)),
+            SLOT(slotDashActiveLensChanged(const QString&)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
@@ -80,11 +80,11 @@ void DashClient::connectToDash()
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
-    value = m_dashDbusIface->property("activePlaceEntry");
+    value = m_dashDbusIface->property("activeLens");
     if (value.isValid()) {
-        m_dashActivePlaceEntry = value.toString();
+        m_dashActiveLens = value.toString();
     } else {
-        UQ_WARNING << "Fetching Dash.activePlaceEntry property failed";
+        UQ_WARNING << "Fetching Dash.activeLens property failed";
     }
 
     updateActivePage();
@@ -104,10 +104,10 @@ void DashClient::slotDashActiveChanged(bool value)
     }
 }
 
-void DashClient::slotDashActivePlaceEntryChanged(const QString& entry)
+void DashClient::slotDashActiveLensChanged(const QString& lens)
 {
-    if (m_dashActivePlaceEntry != entry) {
-        m_dashActivePlaceEntry = entry;
+    if (m_dashActiveLens != lens) {
+        m_dashActiveLens = lens;
         updateActivePage();
     }
 }
@@ -117,7 +117,7 @@ QString DashClient::activePage() const
     return m_activePage;
 }
 
-void DashClient::setActivePage(const QString& page, const QString& fileName, const QString& groupName, int section)
+void DashClient::setActivePage(const QString& page, const QString& lensId)
 {
     if (m_activePage == page) {
         return;
@@ -135,7 +135,7 @@ void DashClient::setActivePage(const QString& page, const QString& fileName, con
     if (page == "home") {
         iface.asyncCall("activateHome");
     } else {
-        iface.asyncCall("activatePlaceEntry", fileName, groupName, section);
+        iface.asyncCall("activateLens", lensId);
     }
 }
 
@@ -143,7 +143,7 @@ void DashClient::updateActivePage()
 {
     QString activePage;
     if (m_dashActive) {
-        activePage = m_dashActivePlaceEntry.isEmpty() ? "home" : m_dashActivePlaceEntry;
+        activePage = m_dashActiveLens.isEmpty() ? "home" : m_dashActiveLens;
     }
 
     if (m_activePage != activePage) {
