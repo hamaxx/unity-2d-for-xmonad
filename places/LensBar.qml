@@ -93,7 +93,7 @@ FocusScope {
             focus: true
             icon: "artwork/home.png"
             onClicked: dash.activateHome()
-            active: ( dashView.activePlaceEntry == "" )
+            active: ( dashView.activeLens == "" )
             width: iconWidth
         }
 
