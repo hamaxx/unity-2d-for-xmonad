@@ -21,27 +21,27 @@ import Unity2d 1.0
 
 FocusScope {
     property variant model: PageModel {
-        /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
-        onEntrySearchQueryChanged: {
-            for (var i = 0; i < dash.places.rowCount(); i++) {
-                dash.places.get(i).globalSearchQuery = entrySearchQuery
+        /* model.searchQuery is copied over to all lenses globalSearchQuery property */
+        onSearchQueryChanged: {
+            for (var i = 0; i < dash.lenses.rowCount(); i++) {
+                dash.lenses.get(i).globalSearchQuery = searchQuery
             }
         }
     }
 
     function activateFirstResult() {
-        /* Going through the list of place entries and selecting the first one
+        /* Going through the list of lenses and selecting the first one
            that has results for the global search, that is items in its
-           globalResultsModel */
-        var placeEntry, i
-        for (i=0; i<dash.places.rowCount(); i=i+1) {
-            placeEntry = dash.places.get(i)
-            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count != 0) {
-                var firstResult = placeEntry.globalResultsModel.get(0)
-                /* Places give back the uri of the item in 'column_0' per specification */
+           globalResults */
+        var lens, i
+        for (i=0; i<dash.lenses.rowCount(); i=i+1) {
+            lens = dash.lenses.get(i)
+            if (lens.globalResults != null && lens.globalResults.count != 0) {
+                var firstResult = lens.globalResults.get(0)
+                /* Lenses give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
                 dashView.active = false
-                placeEntry.place.activate(decodeURIComponent(uri))
+                lens.activate(decodeURIComponent(uri))
                 return;
             }
         }
@@ -51,7 +51,7 @@ FocusScope {
     property bool shortcutsActive: true
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
-    property bool globalSearchActive: model.entrySearchQuery != ""
+    property bool globalSearchActive: model.searchQuery != ""
     
     /* Used by dash.qml to bind to dashView "expanded" property */
     property bool expanded: globalSearchActive || shortcutsActive
@@ -103,28 +103,28 @@ FocusScope {
         anchors.fill: parent
         anchors.leftMargin: 20
 
-        model: dash.places
+        model: dash.lenses
 
         bodyDelegate: UnityDefaultRenderer {
-            placeEntryModel: model.item
-            displayName: model.item.name
-            iconHint: model.item.icon
+            lens: model.item
+            name: model.item.name
+            iconHint: model.item.iconHint
 
-            group_model: model.item.globalResultsModel
-            property bool focusable: group_model != undefined && group_model.count > 0
+            category_model: model.item.globalResults
+            property bool focusable: category_model != undefined && category_model.count > 0
         }
 
-        headerDelegate: GroupHeader {
+        headerDelegate: CategoryHeader {
             visible: body.needHeader && body.focusable
             height: visible ? 32 : 0
 
             property bool foldable: body.folded != undefined
-            availableCount: foldable && body.group_model != null ? body.group_model.count - body.cellsPerRow : 0
+            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
             folded: foldable ? body.folded : false
             onClicked: if(foldable) body.folded = !body.folded
 
             icon: body.iconHint
-            label: body.displayName
+            label: body.name
         }
     }
 

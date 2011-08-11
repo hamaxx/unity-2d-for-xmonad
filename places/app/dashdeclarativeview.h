@@ -30,7 +30,7 @@ class DashDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
-    Q_PROPERTY(QString activePlaceEntry READ activePlaceEntry WRITE setActivePlaceEntry NOTIFY activePlaceEntryChanged)
+    Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
     Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
 
@@ -45,7 +45,7 @@ public:
     /* getters */
     bool active() const;
     DashMode dashMode() const;
-    const QString& activePlaceEntry() const;
+    const QString& activeLens() const;
     const QRect screenGeometry() const;
     QRect availableGeometry() const;
     bool expanded() const;
@@ -53,11 +53,11 @@ public:
     /* setters */
     Q_SLOT void setActive(bool active);
     Q_INVOKABLE void setDashMode(DashMode);
-    Q_INVOKABLE void setActivePlaceEntry(const QString& activePlaceEntry);
+    Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
 
     /* methods */
-    Q_INVOKABLE void activatePlaceEntry(const QString& file, const QString& entry, const int section = 0);
+    Q_INVOKABLE void activateLens(const QString& lensId);
     Q_SLOT void activateHome();
     bool connectToBus();
 
@@ -65,7 +65,7 @@ Q_SIGNALS:
     void activeChanged(bool);
     void dashModeChanged(DashMode);
     void expandedChanged(bool);
-    void activePlaceEntryChanged(const QString&);
+    void activeLensChanged(const QString&);
 
     void screenGeometryChanged();
     void availableGeometryChanged();
@@ -88,7 +88,7 @@ private:
     LauncherClient* m_launcherClient;
     DashMode m_mode;
     bool m_expanded;
-    QString m_activePlaceEntry; /* D-Bus object path of the place entry */
+    QString m_activeLens; /* Lens id of the active lens */
 };
 
 Q_DECLARE_METATYPE(DashDeclarativeView*)

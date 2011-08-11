@@ -45,6 +45,7 @@ Item {
                    Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
                          https://bugreports.qt.nokia.com/browse/QTBUG-20692
                 */
+                deactivateActiveLens()
                 currentPage = undefined
                 pageLoader.source = ""
             }
@@ -66,41 +67,44 @@ Item {
         currentPage.visible = true
     }
 
-    function activatePlaceEntryFromFile(fileName, groupName, section) {
-        var placeEntryModel = places.findPlaceEntry(fileName, groupName)
-        if (placeEntryModel == null) {
-            console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
+    function deactivateActiveLens() {
+        if (dashView.activeLens != "") {
+            var lens = lenses.get(dashView.activeLens)
+            lens.active = false
+        }
+    }
+
+    function activateLens(lensId) {
+        if (lensId == dashView.activeLens) {
             return
         }
 
-        activatePlaceEntry( placeEntryModel, section)
-    }
+        deactivateActiveLens()
+        var lens = lenses.get(lensId)
+        if (lens == null) {
+            console.log("No match for lens: %1".arg(lensId))
+            return
+        }
 
-    function activatePlaceEntry( place, section ) {
-        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
-           PlaceEntry.SetActive in order for it to have an effect.
-           This is likely a bug in the place daemons. */
-        place.active = true
-        place.activeSection = ( section != undefined ) ? section : 0
-        pageLoader.source = "PlaceEntryView.qml"
+        lens.active = true
+        pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = place
+        pageLoader.item.model = lens
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = place.dbusObjectPath
+        dashView.activeLens = lens.id
     }
 
     function activateHome() {
+        deactivateActiveLens()
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = ""
+        dashView.activeLens = ""
     }
 
-    property variant places: LauncherPlacesList {
-        Component.onCompleted: startAllPlaceServices()
-    }
+    property variant lenses: Lenses {}
 
     Item {
         id: background
@@ -205,9 +209,14 @@ Item {
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for places, not in the home page */
-            visible: dashView.activePlaceEntry != ""
-            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+            /* SearchRefine is only to be displayed for lenses, not in the home page */
+            /* FIXME: deactivated for now as the Qt bindings for the filters
+                      backend are not ready. Code should be:
+
+                      visible: dashView.activeLens != ""
+            */
+            visible: false
+            lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin

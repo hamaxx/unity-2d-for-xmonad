@@ -39,13 +39,13 @@ public:
 
     /**
      * Returns the active page. This is either:
-     * - The object path of the active place entry
+     * - The lens id of the active lens
      * - "home" if the home is visible
      * - "" if the dash is not visible
      */
     QString activePage() const;
 
-    void setActivePage(const QString& page, const QString& fileName=QString(), const QString& groupName=QString(), int section=0);
+    void setActivePage(const QString& page, const QString& lensId=QString());
 
 Q_SIGNALS:
     void activePageChanged(const QString&);
@@ -53,7 +53,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void connectToDash();
     void slotDashActiveChanged(bool);
-    void slotDashActivePlaceEntryChanged(const QString&);
+    void slotDashActiveLensChanged(const QString&);
 
 private:
     DashClient(QObject* parent=0);
@@ -61,7 +61,7 @@ private:
 
     QDBusInterface* m_dashDbusIface;
     bool m_dashActive;
-    QString m_dashActivePlaceEntry;
+    QString m_dashActiveLens;
     QString m_activePage;
 };
 

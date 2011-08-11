@@ -44,7 +44,7 @@ bool BfbItem::active() const
 
 void BfbItem::slotActivePageChanged(const QString& page)
 {
-    bool active = page == "home";
+    bool active = !page.isEmpty();
     if (m_active != active) {
         m_active = active;
         activeChanged(m_active);

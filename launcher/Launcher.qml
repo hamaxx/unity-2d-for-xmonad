@@ -103,15 +103,6 @@ LauncherDropItem {
         }
     }
 
-    SortFilterProxyModel {
-        id: visiblePlaces
-        model: places
-        dynamicSortFilter: true
-
-        filterRole: Place.RoleShowEntry
-        filterRegExp: RegExp("^true$")
-    }
-
     BfbModel {
         id: bfbModel
     }
@@ -143,7 +134,6 @@ LauncherDropItem {
         items.appendModel(bfbModel);
         items.appendModel(applications);
         items.appendModel(workspaces);
-        items.appendModel(visiblePlaces);
         items.appendModel(devices);
         shelfItems.appendModel(trashes);
     }

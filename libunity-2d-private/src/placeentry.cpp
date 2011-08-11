@@ -760,7 +760,8 @@ PlaceEntry::activateEntry(const int section)
     if (m_active) {
         DashClient::instance()->setActivePage(QString());
     } else {
-        DashClient::instance()->setActivePage(m_dbusObjectPath, m_fileName, m_groupName, section);
+        /* FIXME: DashClient::setActivePage has changed but PlaceEntry is deprecated anyway */
+        //DashClient::instance()->setActivePage(m_dbusObjectPath, m_fileName, m_groupName, section);
     }
 }
 

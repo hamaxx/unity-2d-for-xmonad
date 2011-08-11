@@ -57,7 +57,7 @@ private Q_SLOTS:
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void toggleDash();
-    void showCommandsPlace();
+    void showCommandsLens();
 
 protected:
     void focusInEvent(QFocusEvent* event);
