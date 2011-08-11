@@ -144,31 +144,27 @@ static Unity2dPanel* instantiatePanel(int screen)
     panel->setPalette(getPalette());
     panel->setFixedHeight(24);
 
+    int leftmost = QApplication::desktop()->screenNumber(QPoint());
+
     QHash<QString, AppletProviderInterface*> plugins = loadPlugins();
     QStringList panelConfiguration = loadPanelConfiguration();
 
     Q_FOREACH(QString appletName, panelConfiguration) {
+        bool onlyLeftmost = appletName.startsWith('!');
+        if (onlyLeftmost) {
+            appletName = appletName.mid(1);
+        }
+
         AppletProviderInterface* provider = plugins.value(appletName, NULL);
         if (provider == NULL) {
             qWarning() << "Panel applet" << appletName << "was requested but there's no"
                        << "installed plugin providing it.";
         } else {
-            panel->addWidget(provider->getApplet());
+            if (!(onlyLeftmost && screen != leftmost)) {
+                panel->addWidget(provider->getApplet());
+            }
         }
     }
-
-//    int leftmost = QApplication::desktop()->screenNumber(QPoint());
-//    if (screen == leftmost) {
-//        panel->addWidget(new HomeButtonApplet);
-//        panel->addWidget(createSeparator());
-//    }
-//    panel->addWidget(new AppNameApplet);
-//    if (screen == leftmost) {
-//        /* It doesn’t make sense to have more than one instance of the systray,
-//           XEmbed’ed windows can be displayed only once anyway. */
-//        panel->addWidget(new LegacyTrayApplet);
-//    }
-//    panel->addWidget(new IndicatorApplet);
 
     return panel;
 }
