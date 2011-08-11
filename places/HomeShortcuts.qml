@@ -55,14 +55,16 @@ Grid {
         focus: true
         label: u2d.tr("Media Apps")
         icon: "artwork/find_media_apps.png"
-//        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/applications.place", "Files", 9)
+        /* FIXME: this should not only activate the applications lens but also
+                  activate the types filter. */
         onClicked: activateLens("applications.lens")
     }
 
     HomeButton {
         label: u2d.tr("Internet Apps")
         icon: "artwork/find_internet_apps.png"
-//        onClicked: activatePlaceEntryFromFile("/usr/share/unity/places/applications.place", "Files", 8)
+        /* FIXME: this should not only activate the applications lens but also
+                  activate the types filter. */
         onClicked: activateLens("applications.lens")
     }
 
