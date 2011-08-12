@@ -21,8 +21,8 @@ import Unity2d 1.0
 
 FocusScope {
     /* declare width & spacing of icons as required for layout calculations */
-    property int iconWidth: 32
-    property int iconSpacing: 28
+    property int iconWidth: 24
+    property int iconSpacing: 36
 
     property variant visibleLenses: SortFilterProxyModel {
         model: dash.lenses
@@ -91,7 +91,7 @@ FocusScope {
             id: homeLens
 
             focus: true
-            icon: "artwork/home.png"
+            icon: "artwork/lens-nav-home.svg"
             onClicked: dash.activateHome()
             active: ( dashView.activeLens == "" )
             width: iconWidth

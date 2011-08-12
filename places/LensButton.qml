@@ -48,13 +48,13 @@ AbstractButton {
         visible: ( parent.state == "selected" )
     }
 
-    /* Lens icon supplied is of size 48x48. This is too much for the 44pixels high
-       lensBar. However much of the icon is transparent so we effectively crop it to 32x32. */
     Image {
         id: icon
 
-        height: iconWidth
-        fillMode: Image.PreserveAspectCrop
+        sourceSize.width: iconWidth
+        sourceSize.height: iconWidth
+        width: sourceSize.width
+        height: sourceSize.height
         clip: true
 
         anchors.horizontalCenter: parent.horizontalCenter
