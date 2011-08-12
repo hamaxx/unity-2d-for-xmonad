@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import Effects 1.0
 
 AbstractButton {
     id: tickBox
@@ -28,39 +29,37 @@ AbstractButton {
     width: childrenRect.width
     height: childrenRect.height
 
+    effect: DropShadow {
+         blurRadius: 8
+         color: "white"
+         offset.x: 0
+         offset.y: 0
+         enabled: ( tickBox.state == "selected" )
+    }
+
+    Rectangle {
+        id: container
+        width: parent.width //should be 144
+        height: parent.height //should be 29
+        border.color: "white"
+        border.width: 1
+        color: ( checked ) ? "white" : "#00000000"
+        opacity: if (checked) return 0.8
+                 else if (parent.state == "selected") return 1
+                 else return 0.5
+        radius: 5
+    }
+
     TextCustom {
         id: label
-
-        anchors.left: box.right
-        anchors.leftMargin: 8
-        anchors.right: tickBox.right
-        anchors.top: parent.top
-        font.pixelSize: 16
+        anchors.fill: container
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        font.pixelSize: 15
+        color: ( checked ) ? "black" : "white"
         text: tickBox.text
         elide: Text.ElideRight
-    }
-
-    Image {
-        id: box
-
-        opacity: !canUncheck && checked ? 0 : 1
-        anchors.top: parent.top
-        anchors.left: parent.left
-        source: "artwork/tick_box.png"
-        width: sourceSize.width
-        height: sourceSize.height
-    }
-
-    Image {
-        id: tick
-
-        anchors.top: box.top
-        anchors.topMargin: 2
-        anchors.left: box.left
-        anchors.leftMargin: 3
-        opacity: checked ? 1.0 : parent.state == "selected" ? 0.4 : 0.0
-        source: "artwork/tick.png"
-        width: sourceSize.width
-        height: sourceSize.height
+        opacity: ( !canUncheck ) ? 0 : 1
     }
 }

@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for SortFilterProxyModel */
+import Unity2d 1.0
 
 FocusScope {
     id: placeEntryView
@@ -64,6 +64,7 @@ FocusScope {
 
         focus: true
         anchors.fill: parent
+        anchors.leftMargin: 20
 
         /* The group's delegate is chosen dynamically depending on what
            groupRenderer is returned by the GroupsModel.

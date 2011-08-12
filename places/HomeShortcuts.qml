@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
+import Unity2d 1.0
 
 Grid {
     anchors.fill: parent
@@ -51,7 +51,6 @@ Grid {
         }
     }
 
-    /* FIXME: dummy icons need to be replaced by design's */
     HomeButton {
         focus: true
         label: u2d.tr("Media Apps")

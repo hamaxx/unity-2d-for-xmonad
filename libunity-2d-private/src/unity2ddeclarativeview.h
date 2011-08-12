@@ -9,6 +9,7 @@ class Unity2DDeclarativeView : public QDeclarativeView
 
     Q_PROPERTY(bool useOpenGL READ useOpenGL WRITE setUseOpenGL NOTIFY useOpenGLChanged)
     Q_PROPERTY(bool transparentBackground READ transparentBackground WRITE setTransparentBackground NOTIFY transparentBackgroundChanged)
+    Q_PROPERTY(QPoint globalPosition READ globalPosition NOTIFY globalPositionChanged)
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
@@ -16,6 +17,7 @@ public:
     // getters
     bool useOpenGL() const;
     bool transparentBackground() const;
+    QPoint globalPosition() const;
 
     // setters
     void setUseOpenGL(bool);
@@ -24,9 +26,11 @@ public:
 Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
+    void globalPositionChanged(QPoint);
 
 protected:
     void setupViewport();
+    virtual void moveEvent(QMoveEvent* event);
 
 protected Q_SLOTS:
     void forceActivateWindow();

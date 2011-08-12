@@ -48,6 +48,11 @@ void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground
     Q_EMIT transparentBackgroundChanged(transparentBackground);
 }
 
+QPoint Unity2DDeclarativeView::globalPosition() const
+{
+    return mapToGlobal(QPoint(0,0));
+}
+
 void Unity2DDeclarativeView::setupViewport()
 {
     if (m_useOpenGL) {
@@ -97,6 +102,12 @@ void Unity2DDeclarativeView::setupViewport()
         }
     }
 }
+
+void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
+{
+    Q_EMIT globalPositionChanged(globalPosition());
+}
+
 
 /* Obtaining & Discarding Keyboard Focus for Window on Demand
  *

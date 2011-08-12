@@ -18,7 +18,7 @@
 
 import QtQuick 1.0
 import "utils.js" as Utils
-import Unity2d 1.0 /* Necessary for GnomeBackground */
+import Unity2d 1.0
 
 FocusScope {
     id: workspace

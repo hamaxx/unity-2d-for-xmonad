@@ -149,8 +149,8 @@ GridView {
                             target: spreadWindow
                             /* Note that we subtract the availableGeometry x and y since window.location is
                             expressed in global screen coordinates. */
-                            x: window.position.x - launcherMaximumWidth
-                            y: window.position.y - screen.availableGeometry.y
+                            x: window.position.x - declarativeView.globalPosition.x
+                            y: window.position.y - declarativeView.globalPosition.y
                             width: window.size.width
                             height: window.size.height
                             animateFollow: false

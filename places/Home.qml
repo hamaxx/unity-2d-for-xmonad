@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
+import Unity2d 1.0
 
 FocusScope {
     property variant model: PageModel {
@@ -99,6 +99,7 @@ FocusScope {
         focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
+        anchors.leftMargin: 20
 
         model: dash.places
 
