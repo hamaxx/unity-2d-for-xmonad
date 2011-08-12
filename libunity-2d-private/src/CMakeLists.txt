@@ -87,6 +87,7 @@ include_directories(
     ${DCONFQT_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${NUXCORE_INCLUDE_DIRS}
+    ${DEE_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS})
@@ -120,6 +121,7 @@ target_link_libraries(${LIB_NAME}
     ${DCONFQT_LDFLAGS}
     ${UNITYCORE_LDFLAGS}
     ${NUXCORE_LDFLAGS}
+    ${DEE_LDFLAGS}
     )
 
 # Install
