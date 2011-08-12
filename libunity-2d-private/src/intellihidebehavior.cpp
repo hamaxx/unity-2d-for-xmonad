@@ -133,17 +133,14 @@ void IntelliHideBehavior::updateVisibility()
     // Compute launcherRect, adjust "left" to the position where the launcher
     // is fully visible.
     QRect launcherRect = m_panel->geometry();
-    switch (static_cast<Unity2dPanel*>(panel())->edge()) {
-    case Unity2dPanel::LeftEdge:
-        if (QApplication::isLeftToRight()) {
-            launcherRect.moveLeft(0);
-        }
-        else {
-            QDesktopWidget* desktop = QApplication::desktop();
-            const QRect screen = desktop->screenGeometry(m_panel);
-            launcherRect.moveRight(screen.right());
-        }
-        break;
+    // FIXME: the following code assumes that the launcher is on the left edge
+    // of the screen
+    if (QApplication::isLeftToRight()) {
+        launcherRect.moveLeft(0);
+    } else {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const QRect screen = desktop->screenGeometry(m_panel);
+        launcherRect.moveRight(screen.right());
     }
 
     WnckScreen* screen = wnck_screen_get_default();
