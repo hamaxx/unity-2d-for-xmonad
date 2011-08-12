@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
     if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL")
-	QApplication::setLayoutDirection(Qt::RightToLeft);
+        QApplication::setLayoutDirection(Qt::RightToLeft);
 
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
