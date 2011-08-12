@@ -20,7 +20,11 @@ include_directories(
 
 qt4_automoc(${appindicator_SRCS})
 add_library(panelplugin-appindicator SHARED ${appindicator_SRCS})
-set_target_properties(panelplugin-appindicator PROPERTIES LIBRARY_OUTPUT_DIRECTORY "..")
+set_target_properties(panelplugin-appindicator PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ".."
+    VERSION 0
+    SOVERSION 0.0
+    )
 
 target_link_libraries(panelplugin-appindicator
     ${QT_QTGUI_LIBRARIES}

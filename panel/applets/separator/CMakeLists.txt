@@ -15,7 +15,11 @@ include_directories(
 
 qt4_automoc(${separator_SRCS})
 add_library(panelplugin-separator SHARED ${separator_SRCS})
-set_target_properties(panelplugin-separator PROPERTIES LIBRARY_OUTPUT_DIRECTORY "..")
+set_target_properties(panelplugin-separator PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ".."
+    VERSION 0
+    SOVERSION 0.0
+    )
 
 target_link_libraries(panelplugin-separator
     ${QT_QTGUI_LIBRARIES}

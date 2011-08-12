@@ -21,7 +21,11 @@ include_directories(
 
 qt4_automoc(${legacytray_SRCS})
 add_library(panelplugin-legacytray SHARED ${legacytray_SRCS})
-set_target_properties(panelplugin-legacytray PROPERTIES LIBRARY_OUTPUT_DIRECTORY "..")
+set_target_properties(panelplugin-legacytray PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ".."
+    VERSION 0
+    SOVERSION 0.0
+    )
 
 target_link_libraries(panelplugin-legacytray
     ${QT_QTGUI_LIBRARIES}

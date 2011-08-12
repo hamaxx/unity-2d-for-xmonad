@@ -16,7 +16,11 @@ include_directories(
 
 qt4_automoc(${homebutton_SRCS})
 add_library(panelplugin-homebutton SHARED ${homebutton_SRCS})
-set_target_properties(panelplugin-homebutton PROPERTIES LIBRARY_OUTPUT_DIRECTORY "..")
+set_target_properties(panelplugin-homebutton PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ".."
+    VERSION 0
+    SOVERSION 0.0
+    )
 
 target_link_libraries(panelplugin-homebutton
     ${QT_QTGUI_LIBRARIES}
