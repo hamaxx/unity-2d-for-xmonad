@@ -69,8 +69,7 @@ struct Unity2dPanelPrivate
                 struts[0] = q->width();
                 struts[4] = available.top();
                 struts[5] = available.y() + available.height();
-            }
-            else {
+            } else {
                 struts[1] = q->width();
                 struts[6] = available.top();
                 struts[7] = available.y() + available.height();
@@ -105,8 +104,7 @@ struct Unity2dPanelPrivate
             if (QApplication::isLeftToRight()) {
                 rect = QRect(screen.left(), available.top(), q->width(), available.height());
                 rect.moveLeft(m_delta);
-            }
-            else {
+            } else {
                 rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
                 rect.moveRight(screen.right() - m_delta);
             }
