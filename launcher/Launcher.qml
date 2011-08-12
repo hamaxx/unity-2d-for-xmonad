@@ -103,21 +103,12 @@ LauncherDropItem {
         }
     }
 
-    SortFilterProxyModel {
-        id: visiblePlaces
-        model: places
-        dynamicSortFilter: true
-
-        filterRole: Place.RoleShowEntry
-        filterRegExp: RegExp("^true$")
+    BfbModel {
+        id: bfbModel
     }
 
     LauncherApplicationsList {
         id: applications
-    }
-
-    LauncherPlacesList {
-        id: places
     }
 
     LauncherDevicesList {
@@ -140,9 +131,9 @@ LauncherDropItem {
     }
 
     Component.onCompleted: {
+        items.appendModel(bfbModel);
         items.appendModel(applications);
         items.appendModel(workspaces);
-        items.appendModel(visiblePlaces);
         items.appendModel(devices);
         shelfItems.appendModel(trashes);
     }

@@ -24,7 +24,7 @@ FocusScope {
 
     property bool folded: true
     property int headerHeight
-    property variant placeEntryModel
+    property variant lens
 
     /* Give the focus to header when folded */
     onFoldedChanged: if (folded) header.focus = true
@@ -38,6 +38,7 @@ FocusScope {
                     blurRadius: {
                         switch (header.state) {
                             case "selected":
+                            case "hovered":
                                 return 4
                             case "pressed":
                                 return 8
@@ -91,7 +92,7 @@ FocusScope {
 
         SearchRefineOptionType {
             title: u2d.tr("Type")
-            placeEntryModel: searchRefine.placeEntryModel
+            lens: searchRefine.lens
         }
     }
 

@@ -17,15 +17,15 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons/theme_name/icon_name */
+import Unity2d 1.0
 
 Grid {
     anchors.fill: parent
-    anchors.topMargin: 26
+    anchors.topMargin: 21
     anchors.bottomMargin: 35
-    anchors.leftMargin: 32
+    anchors.leftMargin: 46
     anchors.rightMargin: 32
-    spacing: 61
+    spacing: 51
     columns: 4
     rows: 2
 
@@ -51,30 +51,33 @@ Grid {
         }
     }
 
-    /* FIXME: dummy icons need to be replaced by design's */
     HomeButton {
         focus: true
         label: u2d.tr("Media Apps")
         icon: "artwork/find_media_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 9)
+        /* FIXME: this should not only activate the applications lens but also
+                  activate the types filter. */
+        onClicked: activateLens("applications.lens")
     }
 
     HomeButton {
         label: u2d.tr("Internet Apps")
         icon: "artwork/find_internet_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 8)
+        /* FIXME: this should not only activate the applications lens but also
+                  activate the types filter. */
+        onClicked: activateLens("applications.lens")
     }
 
     HomeButton {
         label: u2d.tr("More Apps")
         icon: "artwork/find_more_apps.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/applications.place", "Files", 0)
+        onClicked: activateLens("applications.lens")
     }
 
     HomeButton {
         label: u2d.tr("Find Files")
         icon: "artwork/find_files.png"
-        onClicked: activatePlaceEntry("/usr/share/unity/places/files.place", "Files", 0)
+        onClicked: activateLens("files.lens")
     }
 
     /* FIXME: use user's preferred applications instead of hardcoding them */

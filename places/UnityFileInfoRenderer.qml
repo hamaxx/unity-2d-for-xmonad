@@ -50,7 +50,7 @@ RendererGrid {
 
             Accessible.name: displayName
 
-            onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
+            onClicked: lens.activate(decodeURIComponent(uri.toString()))
 
             Image {
                 id: icon

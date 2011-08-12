@@ -40,11 +40,11 @@ Renderer {
         boundsBehavior: ListView.StopAtBounds
         orientation: ListView.Vertical
 
-        model: renderer.group_model
+        model: renderer.category_model
         delegate: Button {
             property string uri: column_0
             property string iconHint: column_1
-            property string groupId: column_2
+            property string categoryId: column_2
             property string mimetype: column_3
             property string displayName: column_4
             property string comment: column_5
@@ -58,7 +58,7 @@ Renderer {
             enabled: uri != ""
             onClicked: {
                 dashView.active = false
-                placeEntryModel.place.activate(uri)
+                lens.activate(uri)
             }
 
             TextCustom {

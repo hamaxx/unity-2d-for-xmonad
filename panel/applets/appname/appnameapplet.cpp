@@ -31,6 +31,7 @@
 // Unity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
+#include <launcherclient.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -47,8 +48,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
-
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 namespace Unity2d
@@ -62,7 +61,11 @@ public:
     , m_buttonType(buttonType)
     {
         loadPixmaps();
-        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        if (buttonType == PanelStyle::MinimizeWindowButton) {
+            setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        } else {
+            setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        }
         setAttribute(Qt::WA_Hover);
     }
 
@@ -91,7 +94,13 @@ protected:
         } else {
             pix = m_normalPix;
         }
-        painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
+        int posX;
+        if (m_buttonType == PanelStyle::CloseWindowButton) {
+            posX = width() - pix.width();
+        } else {
+            posX = 0;
+        }
+        painter.drawPixmap(posX, (height() - pix.height()) / 2, pix);
     }
 
 private:
@@ -140,7 +149,7 @@ struct AppNameAppletPrivate
         m_windowButtonWidget = new QWidget;
         m_windowButtonWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
-        layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
+        layout->setMargin(0);
         layout->setSpacing(0);
         m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
         m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
@@ -148,6 +157,7 @@ struct AppNameAppletPrivate
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
+        m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
         QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
@@ -193,7 +203,7 @@ AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(d->m_windowButtonWidget, 0, Qt::AlignLeft);
+    layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
@@ -212,14 +222,15 @@ void AppNameApplet::updateWidgets()
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
+    bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
     bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
-        && (rect().contains(mapFromGlobal(QCursor::pos()))
+        && (isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
-    d->m_windowButtonWidget->setVisible(isOnSameScreen && isMaximized);
+    d->m_windowButtonWidget->setVisible(isOnSameScreen && isMaximized && isUnderMouse);
 
     d->m_label->setVisible(showLabel);
     if (showLabel) {
@@ -241,7 +252,7 @@ void AppNameApplet::updateWidgets()
 
         // Define width
         if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(d->m_windowButtonWidget->sizeHint().width());
+            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }

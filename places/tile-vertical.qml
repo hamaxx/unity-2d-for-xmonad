@@ -1,10 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2011 Canonical Ltd.
- *
- * Authors:
- * - Alberto Mardegan <mardy@users.sourceforge.net>
+ * Copyright 2010-2011 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,25 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOMEBUTTON_H
-#define HOMEBUTTON_H
+import QtQuick 1.0
 
-// Qt
-#include <QTime>
-#include <QToolButton>
-
-class HomeButton : public QToolButton
-{
-Q_OBJECT
-public:
-    HomeButton(QWidget *parent = 0);
-
-protected:
-    void mousePressEvent(QMouseEvent*);
-
-private:
-    Q_DISABLE_COPY(HomeButton)
-    QTime lastClickTime;
-};
-
-#endif /* HOMEBUTTON_H */
+UnityDefaultRenderer {
+}

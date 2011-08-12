@@ -20,7 +20,7 @@ import QtQuick 1.0
 
 FocusScope {
     property string title
-    property variant placeEntryModel
+    property variant lens
 
     width: parent.width
     height: childrenRect.height

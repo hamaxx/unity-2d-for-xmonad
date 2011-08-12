@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
+import Unity2d 1.0
 import Effects 1.0
 
 Item {
@@ -65,6 +65,7 @@ Item {
                    Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
                          https://bugreports.qt.nokia.com/browse/QTBUG-20692
                 */
+                deactivateActiveLens()
                 currentPage = undefined
                 pageLoader.source = ""
             }
@@ -86,38 +87,44 @@ Item {
         currentPage.visible = true
     }
 
-    function activatePlaceEntry(fileName, groupName, section) {
-        var placeEntryModel = places.findPlaceEntry(fileName, groupName)
-        if (placeEntryModel == null) {
-            console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
+    function deactivateActiveLens() {
+        if (dashView.activeLens != "") {
+            var lens = lenses.get(dashView.activeLens)
+            lens.active = false
+        }
+    }
+
+    function activateLens(lensId) {
+        if (lensId == dashView.activeLens) {
             return
         }
 
-        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
-           PlaceEntry.SetActive in order for it to have an effect.
-           This is likely a bug in the place daemons.
-        */
-        placeEntryModel.active = true
-        placeEntryModel.activeSection = section
-        pageLoader.source = "PlaceEntryView.qml"
+        deactivateActiveLens()
+        var lens = lenses.get(lensId)
+        if (lens == null) {
+            console.log("No match for lens: %1".arg(lensId))
+            return
+        }
+
+        lens.active = true
+        pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = placeEntryModel
+        pageLoader.item.model = lens
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = placeEntryModel.dbusObjectPath
+        dashView.activeLens = lens.id
     }
 
     function activateHome() {
+        deactivateActiveLens()
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = ""
+        dashView.activeLens = ""
     }
 
-    property variant places: LauncherPlacesList {
-        Component.onCompleted: startAllPlaceServices()
-    }
+    property variant lenses: Lenses {}
 
     Item {
         id: background
@@ -238,19 +245,24 @@ Item {
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for places, not in the home page */
-            visible: dashView.activePlaceEntry != ""
-            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+            /* SearchRefine is only to be displayed for lenses, not in the home page */
+            /* FIXME: deactivated for now as the Qt bindings for the filters
+                      backend are not ready. Code should be:
+
+                      visible: dashView.activeLens != ""
+            */
+            visible: false
+            lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin
             height: parent.height
             headerHeight: search_entry.height
-            width: 295
+            width: 310
             anchors.right: leftRight(parent.right)
             anchors.left:  rightLeft(parent.left)
-            anchors.rightMargin: leftRight(19, 0)
-            anchors.leftMargin:  rightLeft(19, 0)
+            anchors.rightMargin: leftRight(3, 0)
+            anchors.leftMargin:  rightLeft(3, 0)
         }
 
         Loader {
@@ -262,10 +274,11 @@ Item {
             */
             KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
             KeyNavigation.up: search_entry
+            KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
-            anchors.bottom: parent.bottom
+            anchors.bottom: lensBar.top
             anchors.left: leftRight(parent.left, 
                 !refine_search.visible || refine_search.folded ? parent.left : refine_search.right)
             anchors.leftMargin: leftRight(0,
@@ -273,8 +286,20 @@ Item {
             anchors.right: leftRight(!refine_search.visible || refine_search.folded ? parent.right : refine_search.left,
                 parent.right)
             anchors.rightMargin: leftRight(!refine_search.visible || refine_search.folded ? 0 : 15,
-                20)
+                0)
             onLoaded: item.focus = true
+        }
+
+        LensBar {
+            id: lensBar
+
+            KeyNavigation.up: pageLoader
+
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 44
+            visible: dashView.expanded
         }
     }
 

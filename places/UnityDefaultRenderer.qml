@@ -37,7 +37,7 @@ RendererGrid {
 
             onClicked: {
                 dashView.active = false
-                placeEntryModel.place.activate(decodeURIComponent(uri))
+                lens.activate(decodeURIComponent(uri))
             }
 
             DragItemWithUrl {
@@ -91,7 +91,7 @@ RendererGrid {
 
                 text: displayName
                 color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
-                state: parent.state == "selected" ? "expanded" : ""
+                state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
                 horizontalAlignment: Text.AlignHCenter
                 anchors.top: icon.bottom
                 anchors.bottom: parent.bottom

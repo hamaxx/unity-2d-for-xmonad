@@ -20,7 +20,7 @@ import QtQuick 1.0
 import Effects 1.0
 
 AbstractButton {
-    id: groupHeader
+    id: categoryHeader
 
     property string icon
     property alias label: title.text
@@ -34,7 +34,7 @@ AbstractButton {
                 offset.x: 0
                 offset.y: 0
                 color: "white"
-                enabled: groupHeader.state == "pressed"
+                enabled: categoryHeader.state == "pressed"
             }
 
     Image {
@@ -77,7 +77,8 @@ AbstractButton {
         anchors.rightMargin: rightLeft(11,0)
         anchors.baseline: title.baseline
 
-        opacity: groupHeader.state == "selected" || groupHeader.state == "pressed" ? 1.0 : 0.5
+        opacity: ( categoryHeader.state == "selected" || categoryHeader.state == "pressed"
+                  || categoryHeader.state == "hovered" ) ? 1.0 : 0.5
         Behavior on opacity {NumberAnimation { duration: 100 }}
 
         effect: DropShadow {
@@ -91,7 +92,7 @@ AbstractButton {
         TextCustom {
             id: label
 
-            text: if(groupHeader.folded) {
+            text: if(categoryHeader.folded) {
                       if(availableCount == 1) {
                           return u2d.tr("See one more result")
                       } else {
@@ -109,7 +110,7 @@ AbstractButton {
         FoldingArrow {
             id: arrow
 
-            folded: groupHeader.folded
+            folded: categoryHeader.folded
             anchors.left: leftRight(label.right)
             anchors.right: rightLeft(label.left)
             anchors.leftMargin: leftRight(10,0)
@@ -122,7 +123,7 @@ AbstractButton {
         id: underline
 
         color: "white"
-        opacity: groupHeader.state == "pressed" ? 0.45 : 0.3
+        opacity: categoryHeader.state == "pressed" ? 0.45 : 0.3
 
         height: 1
         anchors.bottom: parent.bottom

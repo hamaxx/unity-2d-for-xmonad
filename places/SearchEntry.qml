@@ -32,14 +32,14 @@ AbstractButton {
 
     Binding {
         target: dash.currentPage != undefined ? dash.currentPage.model : null
-        property: "entrySearchQuery"
+        property: "searchQuery"
         value: searchQuery
     }
 
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
 
-    opacity: state == "selected" ? 1.0 : 0.7
+    opacity: ( state == "selected" || state == "hovered" ) ? 1.0 : 0.7
 
     BorderImage {
         anchors.fill: parent

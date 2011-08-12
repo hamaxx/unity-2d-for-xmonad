@@ -19,5 +19,5 @@
 import QtQuick 1.0
 
 QtObject {
-    property string entrySearchQuery
+    property string searchQuery
 }

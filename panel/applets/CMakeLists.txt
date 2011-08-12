@@ -20,8 +20,6 @@ set(uqapplets_SRCS
     common/indicatorwidget.cpp
     common/cairoutils.cpp
     common/panelstyle.cpp
-    homebutton/homebuttonapplet.cpp
-    homebutton/homebutton.cpp
     indicator/indicatorapplet.cpp
     legacytray/legacytrayapplet.cpp
     legacytray/fdoselectionmanager.cpp
@@ -38,7 +36,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/appindicator
     ${CMAKE_CURRENT_SOURCE_DIR}/appname
     ${CMAKE_CURRENT_SOURCE_DIR}/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/homebutton
     ${CMAKE_CURRENT_SOURCE_DIR}/indicator
     ${CMAKE_CURRENT_SOURCE_DIR}/unitycore
     ${QTBAMF_INCLUDE_DIRS}
