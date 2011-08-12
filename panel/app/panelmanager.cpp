@@ -45,6 +45,7 @@
 
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
+static const char* PANEL_DCONF_PROPERTY_EXPAND = "expanding";
 static const char* PANEL_PLUGINS_DEV_DIR_ENV = "DEV_PLUGIN_PATH";
 
 static QPalette getPalette()
@@ -113,20 +114,25 @@ static QHash<QString, AppletProviderInterface*> loadPlugins()
     return plugins;
 }
 
-static QStringList loadPanelConfiguration()
+static bool loadPanelConfiguration(QStringList& applets, QString& expanding)
 {
     QConf panelConfig(PANEL_DCONF_SCHEMA);
+
     QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
     if (!appletsConfig.isValid()) {
         qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
                    << "the property" << PANEL_DCONF_PROPERTY_APPLETS
                    << "in schema" << PANEL_DCONF_SCHEMA;
-        return QStringList();
+        return false;
     }
 
-    QStringList appletsList = appletsConfig.toStringList();
-    qDebug() << "Configured plugins list is:" << appletsList;
-    return appletsList;
+    applets.append(appletsConfig.toStringList());
+    qDebug() << "Configured plugins list is:" << applets;
+
+    expanding = panelConfig.property(PANEL_DCONF_PROPERTY_EXPAND).toString();
+    qDebug() << "Expanding applet is:" << expanding;
+
+    return true;
 }
 
 static Unity2dPanel* instantiatePanel(int screen)
@@ -139,7 +145,10 @@ static Unity2dPanel* instantiatePanel(int screen)
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
 
     QHash<QString, AppletProviderInterface*> plugins = loadPlugins();
-    QStringList panelConfiguration = loadPanelConfiguration();
+
+    QString expandingApplet;
+    QStringList panelConfiguration;
+    loadPanelConfiguration(panelConfiguration, expandingApplet);
 
     Q_FOREACH(QString appletName, panelConfiguration) {
         bool onlyLeftmost = appletName.startsWith('!');
@@ -153,7 +162,13 @@ static Unity2dPanel* instantiatePanel(int screen)
                        << "installed plugin providing it.";
         } else {
             if (!(onlyLeftmost && screen != leftmost)) {
-                panel->addWidget(provider->getApplet());
+                QWidget *applet = provider->getApplet();
+                if (appletName == expandingApplet) {
+                    applet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+                } else {
+                    applet->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+                }
+                panel->addWidget(applet);
             }
         }
     }
