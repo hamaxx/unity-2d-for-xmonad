@@ -336,7 +336,8 @@ void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
         return;
     }
     int nuxButton = qtButton == Qt::NoButton ? 0 : 1;
-    QPoint pos = mapToGlobal(rect().bottomLeft());
+    QPoint pos = mapToGlobal(layoutDirection() == Qt::LeftToRight ?
+        rect().bottomLeft() : rect().bottomRight());
     m_entry->ShowMenu(pos.x(), pos.y(),
         time(NULL),
         nuxButton
