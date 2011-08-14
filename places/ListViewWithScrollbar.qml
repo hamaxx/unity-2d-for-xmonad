@@ -30,8 +30,8 @@ FocusScope {
         focus: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: scrollbar.left
+        anchors.left:  leftRight(parent.left, scrollbar.right)
+        anchors.right: leftRight(scrollbar.left, parent.right)
         anchors.rightMargin: 15
     }
 
@@ -42,7 +42,8 @@ FocusScope {
         anchors.topMargin: 15
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
-        anchors.right: parent.right
+        anchors.right: leftRight(parent.right)
+        anchors.left:  rightLeft(parent.left)
 
         targetFlickable: list.flickable
 
