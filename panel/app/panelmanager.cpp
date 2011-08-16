@@ -79,8 +79,8 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
     QString pluginPath = QProcessEnvironment::systemEnvironment().value(PANEL_PLUGINS_DEV_DIR_ENV,
                                                                         panelPluginsDefaultDir);
     QFileInfo pluginFileInfo = QFileInfo(pluginPath);
-    if (!pluginFileInfo.exists() || !pluginFileInfo.isDir()) {
-        qWarning() << "Panel plugin path does not exist or it is not a directory:" << pluginPath;
+    if (!pluginFileInfo.isDir()) {
+        qWarning() << "Panel plugin directory does not exist:" << pluginPath;
         return plugins;
     }
 
@@ -99,7 +99,7 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
         if (loader.load()) {
             PanelAppletProviderInterface* provider;
             provider = qobject_cast<PanelAppletProviderInterface*>(loader.instance());
-            if (provider == NULL) {
+            if (provider == 0) {
                 qWarning() << "Plugin loaded from" << pluginFilePath
                            << "does not implement the interface AppletProviderInterface";
             } else {
@@ -157,11 +157,11 @@ static Unity2dPanel* instantiatePanel(int screen)
         }
 
         PanelAppletProviderInterface* provider = plugins.value(appletName, NULL);
-        if (provider == NULL) {
+        if (provider == 0) {
             qWarning() << "Panel applet" << appletName << "was requested but there's no"
                        << "installed plugin providing it.";
         } else {
-            if (!(onlyLeftmost && screen != leftmost)) {
+            if (screen == leftmost || !onlyLeftmost) {
                 QWidget *applet = provider->getApplet();
                 if (appletName == expandingApplet) {
                     applet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
