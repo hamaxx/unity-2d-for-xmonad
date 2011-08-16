@@ -34,13 +34,13 @@
 
 // Qt
 #include <QApplication>
+#include <QDebug>
 #include <QDesktopWidget>
-#include <QProcessEnvironment>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
 #include <QHash>
 #include <QPluginLoader>
-#include <QDebug>
+#include <QProcessEnvironment>
 #include <QVariant>
 
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
