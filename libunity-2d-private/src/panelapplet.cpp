@@ -1,6 +1,6 @@
 #include "panelapplet.h"
 
-PanelApplet::PanelApplet(QWidget *parent) :
+PanelApplet::PanelApplet(QWidget* parent) :
     QWidget(parent)
 {
 }

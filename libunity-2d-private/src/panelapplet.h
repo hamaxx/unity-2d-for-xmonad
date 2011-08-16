@@ -30,7 +30,7 @@ class PanelApplet : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PanelApplet(QWidget *parent = 0);
+    explicit PanelApplet(QWidget* parent = 0);
 
 private:
     Q_DISABLE_COPY(PanelApplet)
