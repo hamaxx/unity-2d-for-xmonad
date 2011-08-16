@@ -19,19 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef APPLETPROVIDERINTERFACE_H
-#define APPLETPROVIDERINTERFACE_H
+#ifndef PANELAPPLETPROVIDERINTERFACE_H
+#define PANELAPPLETPROVIDERINTERFACE_H
 
 class QWidget;
 
-class AppletProviderInterface
+class PanelAppletProviderInterface
 {
 public:
     virtual QString getAppletName() const = 0;
     virtual QWidget* getApplet() const = 0;
 };
 
-Q_DECLARE_INTERFACE(AppletProviderInterface,
-                    "com.canonical.Unity2d.AppletProviderInterface/1.0")
+Q_DECLARE_INTERFACE(PanelAppletProviderInterface,
+                    "com.canonical.Unity2d.PanelAppletProviderInterface/1.0")
 
-#endif // APPLETPROVIDERINTERFACE_H
+#endif // PANELAPPLETPROVIDERINTERFACE_H

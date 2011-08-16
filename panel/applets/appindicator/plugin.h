@@ -24,12 +24,12 @@
 
 #include <QString>
 #include <QWidget>
-#include <appletproviderinterface.h>
+#include <panelappletproviderinterface.h>
 
-class AppIndicatorPlugin : public QObject, AppletProviderInterface
+class AppIndicatorPlugin : public QObject, PanelAppletProviderInterface
 {
     Q_OBJECT
-    Q_INTERFACES(AppletProviderInterface)
+    Q_INTERFACES(PanelAppletProviderInterface)
 
 public:
     QString getAppletName() const;

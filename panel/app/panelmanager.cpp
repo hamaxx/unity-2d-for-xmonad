@@ -27,7 +27,7 @@
 
 // Unity
 #include <unity2dpanel.h>
-#include <appletproviderinterface.h>
+#include <panelappletproviderinterface.h>
 
 // QConf
 #include <qconf.h>
@@ -63,9 +63,9 @@ static QPalette getPalette()
     return palette;
 }
 
-static QHash<QString, AppletProviderInterface*> loadPlugins()
+static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
 {
-    QHash<QString, AppletProviderInterface*> plugins;
+    QHash<QString, PanelAppletProviderInterface*> plugins;
 
     /* When running uninstalled the plugins will be loaded from the source tree
        under panel/applets.
@@ -97,8 +97,8 @@ static QHash<QString, AppletProviderInterface*> loadPlugins()
 
         QPluginLoader loader(pluginFilePath);
         if (loader.load()) {
-            AppletProviderInterface* provider;
-            provider = qobject_cast<AppletProviderInterface*>(loader.instance());
+            PanelAppletProviderInterface* provider;
+            provider = qobject_cast<PanelAppletProviderInterface*>(loader.instance());
             if (provider == NULL) {
                 qWarning() << "Plugin loaded from" << pluginFilePath
                            << "does not implement the interface AppletProviderInterface";
@@ -144,7 +144,7 @@ static Unity2dPanel* instantiatePanel(int screen)
 
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
 
-    QHash<QString, AppletProviderInterface*> plugins = loadPlugins();
+    QHash<QString, PanelAppletProviderInterface*> plugins = loadPlugins();
 
     QString expandingApplet;
     QStringList panelConfiguration;
@@ -156,7 +156,7 @@ static Unity2dPanel* instantiatePanel(int screen)
             appletName = appletName.mid(1);
         }
 
-        AppletProviderInterface* provider = plugins.value(appletName, NULL);
+        PanelAppletProviderInterface* provider = plugins.value(appletName, NULL);
         if (provider == NULL) {
             qWarning() << "Panel applet" << appletName << "was requested but there's no"
                        << "installed plugin providing it.";
