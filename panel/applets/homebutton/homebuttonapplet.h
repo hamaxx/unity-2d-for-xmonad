@@ -25,10 +25,13 @@
 // Local
 #include "homebutton.h"
 
+// Unity-2d
+#include <panelapplet.h>
+
 class QDBusInterface;
 class LauncherClient;
 
-class HomeButtonApplet : public QWidget
+class HomeButtonApplet : public PanelApplet
 {
 Q_OBJECT
 public:

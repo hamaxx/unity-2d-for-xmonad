@@ -23,7 +23,6 @@
 #define HOMEBUTTON_PLUGIN_H
 
 #include <QString>
-#include <QWidget>
 #include <panelappletproviderinterface.h>
 
 class HomeButtonPlugin : public QObject, PanelAppletProviderInterface
@@ -33,7 +32,7 @@ class HomeButtonPlugin : public QObject, PanelAppletProviderInterface
 
 public:
     QString getAppletName() const;
-    QWidget* getApplet() const;
+    PanelApplet* getApplet() const;
 };
 
 #endif // HOMEBUTTON_PLUGIN_H

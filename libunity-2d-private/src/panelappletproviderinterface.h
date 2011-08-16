@@ -22,13 +22,13 @@
 #ifndef PANELAPPLETPROVIDERINTERFACE_H
 #define PANELAPPLETPROVIDERINTERFACE_H
 
-class QWidget;
+#include "panelapplet.h"
 
 class PanelAppletProviderInterface
 {
 public:
     virtual QString getAppletName() const = 0;
-    virtual QWidget* getApplet() const = 0;
+    virtual PanelApplet* getApplet() const = 0;
 };
 
 Q_DECLARE_INTERFACE(PanelAppletProviderInterface,

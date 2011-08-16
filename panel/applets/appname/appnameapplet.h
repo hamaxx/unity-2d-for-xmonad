@@ -22,14 +22,17 @@
 #ifndef APPNAMEAPPLET_H
 #define APPNAMEAPPLET_H
 
-#include <QWidget>
+// Qt
 #include <QEvent>
+
+// Unity-2d
+#include <panelapplet.h>
 
 namespace Unity2d
 {
 
 struct AppNameAppletPrivate;
-class AppNameApplet : public QWidget
+class AppNameApplet : public PanelApplet
 {
 Q_OBJECT
 public:

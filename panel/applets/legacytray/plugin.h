@@ -23,7 +23,6 @@
 #define LEGACYTRAY_PLUGIN_H
 
 #include <QString>
-#include <QWidget>
 #include <panelappletproviderinterface.h>
 
 class LegacyTrayPlugin : public QObject, PanelAppletProviderInterface
@@ -33,7 +32,7 @@ class LegacyTrayPlugin : public QObject, PanelAppletProviderInterface
 
 public:
     QString getAppletName() const;
-    QWidget* getApplet() const;
+    PanelApplet* getApplet() const;
 };
 
 #endif // LEGACYTRAY_PLUGIN_H

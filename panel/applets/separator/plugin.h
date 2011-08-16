@@ -23,7 +23,6 @@
 #define SEPARATOR_PLUGIN_H
 
 #include <QString>
-#include <QWidget>
 #include <panelappletproviderinterface.h>
 
 class SeparatorPlugin : public QObject, PanelAppletProviderInterface
@@ -33,7 +32,7 @@ class SeparatorPlugin : public QObject, PanelAppletProviderInterface
 
 public:
     QString getAppletName() const;
-    QWidget* getApplet() const;
+    PanelApplet* getApplet() const;
 };
 
 #endif // SEPARATOR_PLUGIN_H

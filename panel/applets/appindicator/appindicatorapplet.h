@@ -26,7 +26,10 @@
 #include <QDBusInterface>
 #include <QMenuBar>
 
-class AppIndicatorApplet : public QWidget
+// Unity-2d
+#include <panelapplet.h>
+
+class AppIndicatorApplet : public PanelApplet
 {
 Q_OBJECT
 public:

@@ -22,8 +22,8 @@
 #ifndef LEGACYTRAYAPPLET_H
 #define LEGACYTRAYAPPLET_H
 
-// Qt
-#include <QWidget>
+// Unity-2d
+#include <panelapplet.h>
 
 namespace SystemTray
 {
@@ -31,7 +31,7 @@ class FdoSelectionManager;
 class Task;
 }
 
-class LegacyTrayApplet : public QWidget
+class LegacyTrayApplet : public PanelApplet
 {
 Q_OBJECT
 public:

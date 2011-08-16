@@ -219,7 +219,6 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::white);

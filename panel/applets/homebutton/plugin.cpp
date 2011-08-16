@@ -29,7 +29,7 @@ QString HomeButtonPlugin::getAppletName() const
     return QString("homebutton");
 }
 
-QWidget* HomeButtonPlugin::getApplet() const
+PanelApplet* HomeButtonPlugin::getApplet() const
 {
     return new HomeButtonApplet();
 }

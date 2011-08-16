@@ -29,7 +29,7 @@ QString AppNamePlugin::getAppletName() const
     return QString("appname");
 }
 
-QWidget* AppNamePlugin::getApplet() const
+PanelApplet* AppNamePlugin::getApplet() const
 {
     return new Unity2d::AppNameApplet();
 }

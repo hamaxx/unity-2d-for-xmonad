@@ -23,7 +23,6 @@
 #define APPNAME_PLUGIN_H
 
 #include <QString>
-#include <QWidget>
 #include <panelappletproviderinterface.h>
 
 class AppNamePlugin : public QObject, PanelAppletProviderInterface
@@ -33,7 +32,7 @@ class AppNamePlugin : public QObject, PanelAppletProviderInterface
 
 public:
     QString getAppletName() const;
-    QWidget* getApplet() const;
+    PanelApplet* getApplet() const;
 };
 
 #endif // APPNAME_PLUGIN_H

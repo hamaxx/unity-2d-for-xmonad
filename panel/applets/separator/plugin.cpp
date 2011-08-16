@@ -29,7 +29,7 @@ QString SeparatorPlugin::getAppletName() const
     return QString("separator");
 }
 
-QWidget* SeparatorPlugin::getApplet() const
+PanelApplet* SeparatorPlugin::getApplet() const
 {
     return new SeparatorApplet();
 }

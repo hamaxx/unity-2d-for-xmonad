@@ -23,7 +23,6 @@
 #define INDICATOR_PLUGIN_H
 
 #include <QString>
-#include <QWidget>
 #include <panelappletproviderinterface.h>
 
 class IndicatorPlugin : public QObject, PanelAppletProviderInterface
@@ -33,7 +32,7 @@ class IndicatorPlugin : public QObject, PanelAppletProviderInterface
 
 public:
     QString getAppletName() const;
-    QWidget* getApplet() const;
+    PanelApplet* getApplet() const;
 };
 
 #endif // INDICATOR_PLUGIN_H

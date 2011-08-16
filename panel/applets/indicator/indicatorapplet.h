@@ -26,11 +26,14 @@
 #include <QDBusInterface>
 #include <QMenuBar>
 
+// Unity-2d
+#include <panelapplet.h>
+
 class QX11EmbedContainer;
 
 struct _IndicatorPlugin;
 
-class IndicatorApplet : public QWidget
+class IndicatorApplet : public PanelApplet
 {
 Q_OBJECT
 public:

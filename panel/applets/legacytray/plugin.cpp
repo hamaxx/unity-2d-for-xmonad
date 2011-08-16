@@ -29,7 +29,7 @@ QString LegacyTrayPlugin::getAppletName() const
     return QString("legacytray");
 }
 
-QWidget* LegacyTrayPlugin::getApplet() const
+PanelApplet* LegacyTrayPlugin::getApplet() const
 {
     return new LegacyTrayApplet();
 }

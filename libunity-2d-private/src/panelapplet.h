@@ -1,14 +1,15 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2011 Canonical Ltd.
+ * Copyright 2010 Canonical Ltd.
  *
  * Authors:
+ * - Aurélien Gâteau <aurelien.gateau@canonical.com>
  * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 3.
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,24 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SEPARATORAPPLET_H
-#define SEPARATORAPPLET_H
+#ifndef PANELAPPLET_H
+#define PANELAPPLET_H
 
 // Qt
-#include <QLabel>
+#include <QWidget>
 
-// Unity-2d
-#include <panelapplet.h>
-
-class SeparatorApplet : public PanelApplet
+class PanelApplet : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    SeparatorApplet();
+    explicit PanelApplet(QWidget *parent = 0);
 
 private:
-    Q_DISABLE_COPY(SeparatorApplet)
-    QLabel* m_separator;
+    Q_DISABLE_COPY(PanelApplet)
 };
 
-#endif /* SEPARATORAPPLET_H */
+#endif // PANELAPPLET_H

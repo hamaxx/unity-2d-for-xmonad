@@ -29,7 +29,7 @@ QString IndicatorPlugin::getAppletName() const
     return QString("indicator");
 }
 
-QWidget* IndicatorPlugin::getApplet() const
+PanelApplet* IndicatorPlugin::getApplet() const
 {
     return new IndicatorApplet();
 }
