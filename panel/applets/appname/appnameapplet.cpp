@@ -36,7 +36,6 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLinearGradient>
@@ -52,9 +51,6 @@ static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
 static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
 static const int FADEOUT_WIDTH = 16;
-
-namespace Unity2d
-{
 
 class WindowButton : public QAbstractButton
 {
@@ -220,7 +216,6 @@ AppNameApplet::AppNameApplet()
 : d(new AppNameAppletPrivate)
 {
     d->q = this;
-    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::white);
@@ -300,7 +295,5 @@ void AppNameApplet::enterEvent(QEvent*) {
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
-
-} // namespace
 
 #include "appnameapplet.moc"

@@ -22,14 +22,14 @@
 #ifndef APPINDICATORAPPLET_H
 #define APPINDICATORAPPLET_H
 
-// Local
-#include <applet.h>
-
 // Qt
 #include <QDBusInterface>
 #include <QMenuBar>
 
-class AppIndicatorApplet : public Unity2d::Applet
+// Unity-2d
+#include <panelapplet.h>
+
+class AppIndicatorApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

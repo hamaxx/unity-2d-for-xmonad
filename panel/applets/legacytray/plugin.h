@@ -1,10 +1,10 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +16,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-// Local
-#include <homebuttonapplet.h>
+#ifndef LEGACYTRAY_PLUGIN_H
+#define LEGACYTRAY_PLUGIN_H
 
-// Qt
-#include <QtTestGui>
+#include <QString>
+#include <panelappletproviderinterface.h>
 
-class HomeButtonAppletTest : public QObject
+using namespace Unity2d;
+
+class LegacyTrayPlugin : public QObject, PanelAppletProviderInterface
 {
     Q_OBJECT
+    Q_INTERFACES(Unity2d::PanelAppletProviderInterface)
 
-private Q_SLOTS:
-    void testCreateButton()
-    {
-        HomeButtonApplet applet;
-    }
+public:
+    QString appletName() const;
+    PanelApplet* createApplet() const;
 };
 
-QTEST_MAIN(HomeButtonAppletTest)
-
-#include "homebuttonapplettest.moc"
+#endif // LEGACYTRAY_PLUGIN_H

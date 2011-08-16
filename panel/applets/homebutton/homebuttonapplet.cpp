@@ -98,13 +98,13 @@ void HomeButtonApplet::toggleDash()
 
 void HomeButtonApplet::enterEvent(QEvent* event)
 {
-    Unity2d::Applet::enterEvent(event);
+    QWidget::enterEvent(event);
     m_launcherClient->beginForceVisible();
 }
 
 void HomeButtonApplet::leaveEvent(QEvent* event)
 {
-    Unity2d::Applet::leaveEvent(event);
+    QWidget::leaveEvent(event);
     m_launcherClient->endForceVisible();
 }
 

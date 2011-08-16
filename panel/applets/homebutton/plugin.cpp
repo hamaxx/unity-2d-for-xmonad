@@ -1,10 +1,10 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +16,24 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-// Local
-#include <homebuttonapplet.h>
+#include "plugin.h"
+#include "homebuttonapplet.h"
 
-// Qt
-#include <QtTestGui>
+#include <QtPlugin>
 
-class HomeButtonAppletTest : public QObject
+QString HomeButtonPlugin::appletName() const
 {
-    Q_OBJECT
+    return QString("homebutton");
+}
 
-private Q_SLOTS:
-    void testCreateButton()
-    {
-        HomeButtonApplet applet;
-    }
-};
+PanelApplet* HomeButtonPlugin::createApplet() const
+{
+    return new HomeButtonApplet();
+}
 
-QTEST_MAIN(HomeButtonAppletTest)
+Q_EXPORT_PLUGIN2(panelplugin-homebutton, HomeButtonPlugin)
 
-#include "homebuttonapplettest.moc"
+#include "plugin.moc"

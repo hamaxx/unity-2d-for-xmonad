@@ -53,6 +53,7 @@ set(lib${LIB_NAME}_SRCS
     workspaces.cpp
     launcherdropitem.cpp
     iconutilities.cpp
+    panelapplet.cpp
     )
 
 # Build

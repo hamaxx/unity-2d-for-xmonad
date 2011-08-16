@@ -25,22 +25,30 @@
 // Local
 #include <config.h>
 
-// Applets
-#include <appindicator/appindicatorapplet.h>
-#include <appname/appnameapplet.h>
-#include <homebutton/homebuttonapplet.h>
-#include <indicator/indicatorapplet.h>
-#include <legacytray/legacytrayapplet.h>
-
 // Unity
 #include <unity2dpanel.h>
+#include <panelappletproviderinterface.h>
+
+// QConf
+#include <qconf.h>
 
 // Qt
 #include <QApplication>
+#include <QDebug>
 #include <QDesktopWidget>
-#include <QLabel>
+#include <QDir>
+#include <QFileInfo>
+#include <QHash>
+#include <QPluginLoader>
+#include <QProcessEnvironment>
+#include <QVariant>
 
 using namespace Unity2d;
+
+static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
+static const char* PANEL_DCONF_PROPERTY_EXPAND = "expanding";
+static const char* PANEL_PLUGINS_DEV_DIR_ENV = "DEV_PLUGIN_PATH";
 
 static QPalette getPalette()
 {
@@ -57,13 +65,76 @@ static QPalette getPalette()
     return palette;
 }
 
-static QLabel* createSeparator()
+static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
 {
-    QLabel* label = new QLabel;
-    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
-    label->setPixmap(pix);
-    label->setFixedSize(pix.size());
-    return label;
+    QHash<QString, PanelAppletProviderInterface*> plugins;
+
+    /* When running uninstalled the plugins will be loaded from the source tree
+       under panel/applets.
+       When running installed the plugins will be typically in /usr/lib/unity-2d/plugins/panel
+       In both cases it's still possible to override these default locations by setting an
+       environment variable with the path where the plugins are located.
+    */
+
+    QString panelPluginsDefaultDir = unity2dPluginsPath() + "/panel";
+    if (!isRunningInstalled()) panelPluginsDefaultDir += "/applets";
+    QString pluginPath = QProcessEnvironment::systemEnvironment().value(PANEL_PLUGINS_DEV_DIR_ENV,
+                                                                        panelPluginsDefaultDir);
+    QFileInfo pluginFileInfo = QFileInfo(pluginPath);
+    if (!pluginFileInfo.isDir()) {
+        qWarning() << "Panel plugin directory does not exist:" << pluginPath;
+        return plugins;
+    }
+
+    qDebug() << "Scanning panel plugin directory" << pluginFileInfo.absoluteFilePath();
+
+    QDir pluginDir = QDir(pluginFileInfo.absoluteFilePath());
+    QStringList filters;
+    filters << "*.so";
+    pluginDir.setNameFilters(filters);
+
+    Q_FOREACH(QString fileEntry, pluginDir.entryList()) {
+        QString pluginFilePath = pluginDir.absoluteFilePath(fileEntry);
+        qDebug() << "Loading panel plugin:" << pluginFilePath;
+
+        QPluginLoader loader(pluginFilePath);
+        if (loader.load()) {
+            PanelAppletProviderInterface* provider;
+            provider = qobject_cast<PanelAppletProviderInterface*>(loader.instance());
+            if (provider == 0) {
+                qWarning() << "Plugin loaded from" << pluginFilePath
+                           << "does not implement the interface PanelAppletProviderInterface";
+            } else {
+               plugins.insert(provider->appletName(), provider);
+            }
+        } else {
+            qWarning() << "Failed to load panel plugin from" << pluginFilePath
+                       << "with error" << loader.errorString();
+        }
+    }
+
+    return plugins;
+}
+
+static bool loadPanelConfiguration(QStringList& applets, QString& expanding)
+{
+    QConf panelConfig(PANEL_DCONF_SCHEMA);
+
+    QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
+    if (!appletsConfig.isValid()) {
+        qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
+                   << "the property" << PANEL_DCONF_PROPERTY_APPLETS
+                   << "in schema" << PANEL_DCONF_SCHEMA;
+        return false;
+    }
+
+    applets.append(appletsConfig.toStringList());
+    qDebug() << "Configured plugins list is:" << applets;
+
+    expanding = panelConfig.property(PANEL_DCONF_PROPERTY_EXPAND).toString();
+    qDebug() << "Expanding applet is:" << expanding;
+
+    return true;
 }
 
 static Unity2dPanel* instantiatePanel(int screen)
@@ -74,17 +145,36 @@ static Unity2dPanel* instantiatePanel(int screen)
     panel->setFixedHeight(24);
 
     int leftmost = QApplication::desktop()->screenNumber(QPoint());
-    if (screen == leftmost) {
-        panel->addWidget(new HomeButtonApplet);
-        panel->addWidget(createSeparator());
+
+    QHash<QString, PanelAppletProviderInterface*> plugins = loadPlugins();
+
+    QString expandingApplet;
+    QStringList panelConfiguration;
+    loadPanelConfiguration(panelConfiguration, expandingApplet);
+
+    Q_FOREACH(QString appletName, panelConfiguration) {
+        bool onlyLeftmost = appletName.startsWith('!');
+        if (onlyLeftmost) {
+            appletName = appletName.mid(1);
+        }
+
+        PanelAppletProviderInterface* provider = plugins.value(appletName, NULL);
+        if (provider == 0) {
+            qWarning() << "Panel applet" << appletName << "was requested but there's no"
+                       << "installed plugin providing it.";
+        } else {
+            if (screen == leftmost || !onlyLeftmost) {
+                QWidget *applet = provider->createApplet();
+                if (appletName == expandingApplet) {
+                    applet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+                } else {
+                    applet->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+                }
+                panel->addWidget(applet);
+            }
+        }
     }
-    panel->addWidget(new AppNameApplet);
-    if (screen == leftmost) {
-        /* It doesn’t make sense to have more than one instance of the systray,
-           XEmbed’ed windows can be displayed only once anyway. */
-        panel->addWidget(new LegacyTrayApplet);
-    }
-    panel->addWidget(new IndicatorApplet);
+
     return panel;
 }
 

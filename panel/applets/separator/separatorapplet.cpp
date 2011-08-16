@@ -1,10 +1,10 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,23 +19,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Self
+#include "separatorapplet.h"
+
 // Local
-#include <homebuttonapplet.h>
+#include <config.h>
 
-// Qt
-#include <QtTestGui>
+// QT
+#include <QPixmap>
+#include <QHBoxLayout>
 
-class HomeButtonAppletTest : public QObject
+SeparatorApplet::SeparatorApplet()
+    : m_separator(new QLabel())
 {
-    Q_OBJECT
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
+    m_separator->setPixmap(pix);
+    m_separator->setFixedSize(pix.size());
 
-private Q_SLOTS:
-    void testCreateButton()
-    {
-        HomeButtonApplet applet;
-    }
-};
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->addWidget(m_separator);
+}
 
-QTEST_MAIN(HomeButtonAppletTest)
-
-#include "homebuttonapplettest.moc"
+#include "separatorapplet.moc"

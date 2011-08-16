@@ -5,9 +5,10 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published 
+ * it under the terms of the GNU General Public License as published
  * by the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
@@ -19,10 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef APPLET_H
-#define APPLET_H
-
-// Local
+#ifndef PANELAPPLET_H
+#define PANELAPPLET_H
 
 // Qt
 #include <QWidget>
@@ -30,19 +29,16 @@
 namespace Unity2d
 {
 
-struct AppletPrivate;
-class Applet : public QWidget
+class PanelApplet : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    Applet();
-    ~Applet();
+    explicit PanelApplet(QWidget* parent = 0);
 
 private:
-    Q_DISABLE_COPY(Applet)
-    AppletPrivate* const d;
+    Q_DISABLE_COPY(PanelApplet)
 };
 
-} // namespace
+} // namespace Unity2d
 
-#endif /* APPLET_H */
+#endif // PANELAPPLET_H

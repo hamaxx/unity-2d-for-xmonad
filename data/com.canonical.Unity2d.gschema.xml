@@ -16,4 +16,24 @@
       <description>Use EWMH standard to reserve an area of the desktop (struts) so that no window can use the launcher's area</description>
     </key>
   </schema>
+  <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
+    <key type="as" name="applets">
+      <default>["!homebutton", "!separator", "appname", "!legacytray", "indicator"]</default>
+      <summary>Applets to display in the panel</summary>
+      <description>
+        List of panel applets that should be displayed, in order, in the panel.
+        Each applet name can be annotated with the prefix "!" to force that applet to be displayed
+        only on the panel living in the leftmost screen.
+      </description>
+    </key>
+    <key type="s" name="expanding">
+      <default>"appname"</default>
+      <summary>Applet that should expand to fill all unused space</summary>
+      <description>
+        If this property names a valid applet from the list in the applets property, then this
+        applet will be setup so that it tries to use all the panel space that remains empty after
+        the other applets have resized themselves to display their content.
+      </description>
+    </key>
+  </schema>
 </schemalist>
