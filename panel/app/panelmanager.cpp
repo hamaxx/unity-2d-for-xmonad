@@ -103,7 +103,7 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
                 qWarning() << "Plugin loaded from" << pluginFilePath
                            << "does not implement the interface AppletProviderInterface";
             } else {
-               plugins.insert(provider->getAppletName(), provider);
+               plugins.insert(provider->appletName(), provider);
             }
         } else {
             qWarning() << "Failed to load panel plugin from" << pluginFilePath
@@ -162,7 +162,7 @@ static Unity2dPanel* instantiatePanel(int screen)
                        << "installed plugin providing it.";
         } else {
             if (screen == leftmost || !onlyLeftmost) {
-                QWidget *applet = provider->getApplet();
+                QWidget *applet = provider->createApplet();
                 if (appletName == expandingApplet) {
                     applet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
                 } else {
