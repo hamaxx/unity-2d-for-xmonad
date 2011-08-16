@@ -24,12 +24,12 @@
 
 #include <QtPlugin>
 
-QString HomeButtonPlugin::getAppletName() const
+QString HomeButtonPlugin::appletName() const
 {
     return QString("homebutton");
 }
 
-PanelApplet* HomeButtonPlugin::getApplet() const
+PanelApplet* HomeButtonPlugin::createApplet() const
 {
     return new HomeButtonApplet();
 }

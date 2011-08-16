@@ -31,8 +31,8 @@ class AppIndicatorPlugin : public QObject, PanelAppletProviderInterface
     Q_INTERFACES(PanelAppletProviderInterface)
 
 public:
-    QString getAppletName() const;
-    PanelApplet* getApplet() const;
+    QString appletName() const;
+    PanelApplet* createApplet() const;
 };
 
 #endif // APPINDICATOR_PLUGIN_H

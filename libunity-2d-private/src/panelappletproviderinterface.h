@@ -27,8 +27,8 @@
 class PanelAppletProviderInterface
 {
 public:
-    virtual QString getAppletName() const = 0;
-    virtual PanelApplet* getApplet() const = 0;
+    virtual QString appletName() const = 0;
+    virtual PanelApplet* createApplet() const = 0;
 };
 
 Q_DECLARE_INTERFACE(PanelAppletProviderInterface,

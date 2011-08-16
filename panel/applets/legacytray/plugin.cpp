@@ -24,12 +24,12 @@
 
 #include <QtPlugin>
 
-QString LegacyTrayPlugin::getAppletName() const
+QString LegacyTrayPlugin::appletName() const
 {
     return QString("legacytray");
 }
 
-PanelApplet* LegacyTrayPlugin::getApplet() const
+PanelApplet* LegacyTrayPlugin::createApplet() const
 {
     return new LegacyTrayApplet();
 }

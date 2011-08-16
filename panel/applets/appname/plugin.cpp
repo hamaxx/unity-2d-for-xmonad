@@ -24,12 +24,12 @@
 
 #include <QtPlugin>
 
-QString AppNamePlugin::getAppletName() const
+QString AppNamePlugin::appletName() const
 {
     return QString("appname");
 }
 
-PanelApplet* AppNamePlugin::getApplet() const
+PanelApplet* AppNamePlugin::createApplet() const
 {
     return new Unity2d::AppNameApplet();
 }

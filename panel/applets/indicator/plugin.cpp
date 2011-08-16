@@ -24,12 +24,12 @@
 
 #include <QtPlugin>
 
-QString IndicatorPlugin::getAppletName() const
+QString IndicatorPlugin::appletName() const
 {
     return QString("indicator");
 }
 
-PanelApplet* IndicatorPlugin::getApplet() const
+PanelApplet* IndicatorPlugin::createApplet() const
 {
     return new IndicatorApplet();
 }

@@ -24,12 +24,12 @@
 
 #include <QtPlugin>
 
-QString SeparatorPlugin::getAppletName() const
+QString SeparatorPlugin::appletName() const
 {
     return QString("separator");
 }
 
-PanelApplet* SeparatorPlugin::getApplet() const
+PanelApplet* SeparatorPlugin::createApplet() const
 {
     return new SeparatorApplet();
 }
