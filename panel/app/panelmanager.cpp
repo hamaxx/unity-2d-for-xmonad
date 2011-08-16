@@ -101,7 +101,7 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
             provider = qobject_cast<PanelAppletProviderInterface*>(loader.instance());
             if (provider == 0) {
                 qWarning() << "Plugin loaded from" << pluginFilePath
-                           << "does not implement the interface AppletProviderInterface";
+                           << "does not implement the interface PanelAppletProviderInterface";
             } else {
                plugins.insert(provider->appletName(), provider);
             }
