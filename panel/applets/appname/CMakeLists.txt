@@ -31,7 +31,11 @@ include_directories(
 qt4_automoc(${appname_SRCS})
 add_library(panelplugin-appname SHARED ${appname_SRCS})
 
-set_target_properties(panelplugin-appname PROPERTIES LIBRARY_OUTPUT_DIRECTORY "..")
+set_target_properties(panelplugin-appname PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ".."
+    VERSION 0
+    SOVERSION 0.0
+    )
 
 target_link_libraries(panelplugin-appname
     ${QT_QTGUI_LIBRARIES}
