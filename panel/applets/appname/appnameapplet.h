@@ -28,9 +28,6 @@
 // Unity-2d
 #include <panelapplet.h>
 
-namespace Unity2d
-{
-
 struct AppNameAppletPrivate;
 class AppNameApplet : public PanelApplet
 {
@@ -50,8 +47,6 @@ private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
 };
-
-} // namespace
 
 #endif /* APPNAMEAPPLET_H */
 

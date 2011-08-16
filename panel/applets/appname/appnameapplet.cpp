@@ -52,9 +52,6 @@ static const int APPNAME_LABEL_LEFT_MARGIN = 12;
 
 static const int FADEOUT_WIDTH = 16;
 
-namespace Unity2d
-{
-
 class WindowButton : public QAbstractButton
 {
 public:
@@ -298,7 +295,5 @@ void AppNameApplet::enterEvent(QEvent*) {
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
-
-} // namespace
 
 #include "appnameapplet.moc"

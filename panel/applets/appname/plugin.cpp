@@ -31,7 +31,7 @@ QString AppNamePlugin::appletName() const
 
 PanelApplet* AppNamePlugin::createApplet() const
 {
-    return new Unity2d::AppNameApplet();
+    return new AppNameApplet();
 }
 
 Q_EXPORT_PLUGIN2(panelplugin-appname, AppNamePlugin)
