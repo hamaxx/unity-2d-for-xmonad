@@ -43,6 +43,8 @@
 #include <QProcessEnvironment>
 #include <QVariant>
 
+using namespace Unity2d;
+
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
 static const char* PANEL_DCONF_PROPERTY_EXPAND = "expanding";

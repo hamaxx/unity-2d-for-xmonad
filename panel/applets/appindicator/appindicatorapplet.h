@@ -29,7 +29,7 @@
 // Unity-2d
 #include <panelapplet.h>
 
-class AppIndicatorApplet : public PanelApplet
+class AppIndicatorApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

@@ -33,7 +33,7 @@ class QX11EmbedContainer;
 
 struct _IndicatorPlugin;
 
-class IndicatorApplet : public PanelApplet
+class IndicatorApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

@@ -25,10 +25,12 @@
 #include <QString>
 #include <panelappletproviderinterface.h>
 
+using namespace Unity2d;
+
 class LegacyTrayPlugin : public QObject, PanelAppletProviderInterface
 {
     Q_OBJECT
-    Q_INTERFACES(PanelAppletProviderInterface)
+    Q_INTERFACES(Unity2d::PanelAppletProviderInterface)
 
 public:
     QString appletName() const;

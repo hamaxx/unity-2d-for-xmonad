@@ -31,7 +31,7 @@
 class QDBusInterface;
 class LauncherClient;
 
-class HomeButtonApplet : public PanelApplet
+class HomeButtonApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

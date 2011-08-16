@@ -26,6 +26,9 @@
 // Qt
 #include <QWidget>
 
+namespace Unity2d
+{
+
 class PanelApplet : public QWidget
 {
     Q_OBJECT
@@ -35,5 +38,7 @@ public:
 private:
     Q_DISABLE_COPY(PanelApplet)
 };
+
+} // namespace Unity2d
 
 #endif // PANELAPPLET_H

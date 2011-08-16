@@ -31,7 +31,7 @@ class FdoSelectionManager;
 class Task;
 }
 
-class LegacyTrayApplet : public PanelApplet
+class LegacyTrayApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

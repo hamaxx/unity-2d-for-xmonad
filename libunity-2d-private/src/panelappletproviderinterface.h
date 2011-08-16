@@ -24,6 +24,9 @@
 
 #include "panelapplet.h"
 
+namespace Unity2d
+{
+
 class PanelAppletProviderInterface
 {
 public:
@@ -31,7 +34,9 @@ public:
     virtual PanelApplet* createApplet() const = 0;
 };
 
-Q_DECLARE_INTERFACE(PanelAppletProviderInterface,
+} // namespace Unity2d
+
+Q_DECLARE_INTERFACE(Unity2d::PanelAppletProviderInterface,
                     "com.canonical.Unity2d.PanelAppletProviderInterface/1.0")
 
 #endif // PANELAPPLETPROVIDERINTERFACE_H

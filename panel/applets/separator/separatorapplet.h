@@ -28,7 +28,9 @@
 // Unity-2d
 #include <panelapplet.h>
 
-class SeparatorApplet : public PanelApplet
+using namespace Unity2d;
+
+class SeparatorApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:

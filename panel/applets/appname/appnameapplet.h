@@ -29,7 +29,7 @@
 #include <panelapplet.h>
 
 struct AppNameAppletPrivate;
-class AppNameApplet : public PanelApplet
+class AppNameApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:
