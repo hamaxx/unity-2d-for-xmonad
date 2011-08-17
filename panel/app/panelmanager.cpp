@@ -47,7 +47,6 @@ using namespace Unity2d;
 
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
-static const char* PANEL_DCONF_PROPERTY_EXPAND = "expanding";
 static const char* PANEL_PLUGINS_DEV_DIR_ENV = "DEV_PLUGIN_PATH";
 
 static QPalette getPalette()
@@ -116,7 +115,7 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
     return plugins;
 }
 
-static bool loadPanelConfiguration(QStringList& applets, QString& expanding)
+static QStringList loadPanelConfiguration()
 {
     QConf panelConfig(PANEL_DCONF_SCHEMA);
 
@@ -125,16 +124,10 @@ static bool loadPanelConfiguration(QStringList& applets, QString& expanding)
         qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
                    << "the property" << PANEL_DCONF_PROPERTY_APPLETS
                    << "in schema" << PANEL_DCONF_SCHEMA;
-        return false;
+        return QStringList();
     }
 
-    applets.append(appletsConfig.toStringList());
-    qDebug() << "Configured plugins list is:" << applets;
-
-    expanding = panelConfig.property(PANEL_DCONF_PROPERTY_EXPAND).toString();
-    qDebug() << "Expanding applet is:" << expanding;
-
-    return true;
+    return appletsConfig.toStringList();
 }
 
 static Unity2dPanel* instantiatePanel(int screen)
@@ -148,9 +141,8 @@ static Unity2dPanel* instantiatePanel(int screen)
 
     QHash<QString, PanelAppletProviderInterface*> plugins = loadPlugins();
 
-    QString expandingApplet;
-    QStringList panelConfiguration;
-    loadPanelConfiguration(panelConfiguration, expandingApplet);
+    QStringList panelConfiguration = loadPanelConfiguration();
+    qDebug() << "Configured plugins list is:" << panelConfiguration;
 
     Q_FOREACH(QString appletName, panelConfiguration) {
         bool onlyLeftmost = appletName.startsWith('!');
@@ -165,11 +157,6 @@ static Unity2dPanel* instantiatePanel(int screen)
         } else {
             if (screen == leftmost || !onlyLeftmost) {
                 QWidget *applet = provider->createApplet();
-                if (appletName == expandingApplet) {
-                    applet->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-                } else {
-                    applet->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-                }
                 panel->addWidget(applet);
             }
         }

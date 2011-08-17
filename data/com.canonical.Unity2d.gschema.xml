@@ -26,14 +26,5 @@
         only on the panel living in the leftmost screen.
       </description>
     </key>
-    <key type="s" name="expanding">
-      <default>"appname"</default>
-      <summary>Applet that should expand to fill all unused space</summary>
-      <description>
-        If this property names a valid applet from the list in the applets property, then this
-        applet will be setup so that it tries to use all the panel space that remains empty after
-        the other applets have resized themselves to display their content.
-      </description>
-    </key>
   </schema>
 </schemalist>
