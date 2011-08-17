@@ -14,7 +14,8 @@ extern "C" {
 #include <QDesktopWidget>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_activeWindow(0)
 {
     WnckScreen *screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed",
