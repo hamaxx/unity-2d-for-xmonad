@@ -157,7 +157,12 @@ static Unity2dPanel* instantiatePanel(int screen)
         } else {
             if (screen == leftmost || !onlyLeftmost) {
                 QWidget *applet = provider->createApplet();
-                panel->addWidget(applet);
+                if (applet == 0) {
+                    qWarning() << "The panel applet plugin for" << appletName
+                               << "did not return a valid plugin.";
+                } else {
+                    panel->addWidget(applet);
+                }
             }
         }
     }
