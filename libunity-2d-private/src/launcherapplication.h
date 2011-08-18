@@ -123,6 +123,7 @@ private Q_SLOTS:
     void onLaunchingTimeouted();
     void updateHasVisibleWindow();
     void updateWindowCount();
+    void updateCounterVisible();
 
     bool launch();
     void show();
