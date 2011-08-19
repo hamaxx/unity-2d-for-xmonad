@@ -34,13 +34,16 @@ class RatingsFilter : public Filter
 {
     Q_OBJECT
 
-    Q_PROPERTY(float rating READ rating NOTIFY ratingChanged)
+    Q_PROPERTY(float rating READ rating WRITE setRating NOTIFY ratingChanged)
 
 public:
     explicit RatingsFilter(QObject *parent = 0);
 
     /* getters */
     float rating() const;
+
+    /* setters */
+    void setRating(float rating);
 
     virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
