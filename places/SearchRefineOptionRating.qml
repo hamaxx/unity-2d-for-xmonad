@@ -24,12 +24,11 @@ SearchRefineOption {
     Item {
         id: header
 
-        Accessible.name: searchRefineOption.title
-
-        KeyNavigation.down: filters
+        KeyNavigation.down: rating
 
         focus: true
         anchors.top: parent.top
+        anchors.topMargin: 12
         anchors.left: parent.left
         anchors.right: parent.right
         height: childrenRect.height
@@ -47,38 +46,27 @@ SearchRefineOption {
         }
     }
 
-    GridView {
-        id: filters
-
-        property int columns: 2
-        property int rowsPerColumn: Math.ceil(count/columns)
-
-        cellHeight: 42 //30px for button + 12px for vertical padding
-        cellWidth: width/columns //145px for button + 10px for horizonal padding
+    RatingStars {
+        id: rating
 
         anchors.top: header.bottom
         anchors.topMargin: 15
-        height: cellHeight * rowsPerColumn
-        boundsBehavior: Flickable.StopAtBounds
+        height: childrenRect.height
 
         anchors.left: parent.left
         anchors.right: parent.right
 
-        flow: GridView.TopToBottom
-
-        /* Make sure the first item is selected when getting the focus for the first time */
-        currentIndex: 0
         KeyNavigation.up: header
 
-        delegate: TickBox {
-            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (10) - fix (3)
-            width: filters.cellWidth-13 //144 = filters.cellWidth - horizontal padding (12) - fix (1)
-            text: item.name
-            checked: item.active
-
-            onClicked: item.active = !item.active
+        size: 5
+        spacing: 7
+        rating: searchRefineOption.filterModel.rating
+        Binding {
+            target: searchRefineOption.filterModel
+            property: "rating"
+            value: rating.rating
         }
 
-        model: searchRefineOption.filterModel.options
+        enabled: true
     }
 }

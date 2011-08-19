@@ -126,7 +126,7 @@ FocusScope {
         delegate: SearchRefineOptionType {
             title: u2d.tr(filter.name)
             lens: searchRefine.lens
-            filterModel: filter.options
+            filterModel: filter
             /* FIXME: add an "all" button
                filter.filtering is a bool indicating its state
                filter.clear() is the method that should be used when clicking on it */
