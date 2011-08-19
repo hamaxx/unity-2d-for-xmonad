@@ -61,6 +61,13 @@
 #include "lenses.h"
 #include "lens.h"
 
+#include "filter.h"
+#include "filters.h"
+#include "ratingsfilter.h"
+#include "radiooptionfilter.h"
+#include "checkoptionfilter.h"
+#include "multirangefilter.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -136,6 +143,15 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
     qmlRegisterType<Lens>(uri, 1, 0, "Lens");
+
+    qmlRegisterType<Filter>();
+    qmlRegisterType<Filters>();
+    qmlRegisterType<RatingsFilter>();
+    qmlRegisterType<RadioOptionFilter>();
+    qmlRegisterType<CheckOptionFilter>();
+    qmlRegisterType<MultiRangeFilter>();
+    qmlRegisterType<FilterOption>();
+    qmlRegisterType<FilterOptions>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
