@@ -87,15 +87,6 @@ FocusScope {
         }
     }
 
-    VisualItemModel {
-        id: optionsModel
-
-        SearchRefineOptionType {
-            title: u2d.tr("Type")
-            lens: searchRefine.lens
-        }
-    }
-
     ListView {
         id: options
 
@@ -124,6 +115,21 @@ FocusScope {
         /* Non-draggable when all items are visible */
         boundsBehavior: Flickable.StopAtBounds
 
-        model: optionsModel
+        model: searchRefine.lens.filters
+        /* FIXME: use a Loader to dynamically load the right QML depending on filter.rendererName
+
+           CheckOptionFilter: filter-checkoption
+           MultiRangeFilter: filter-multirange
+           RadioOptionFilter: filter-radiooption
+           RatingsFilter: filter-ratings
+        */
+        delegate: SearchRefineOptionType {
+            title: u2d.tr(filter.name)
+            lens: searchRefine.lens
+            filterModel: filter.options
+            /* FIXME: add an "all" button
+               filter.filtering is a bool indicating its state
+               filter.clear() is the method that should be used when clicking on it */
+        }
     }
 }
