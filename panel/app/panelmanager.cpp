@@ -47,7 +47,7 @@ using namespace Unity2d;
 
 static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
-static const char* PANEL_PLUGINS_DEV_DIR_ENV = "DEV_PLUGIN_PATH";
+static const char* PANEL_PLUGINS_DEV_DIR_ENV = "UNITY2D_PANEL_PLUGINS_PATH";
 
 static QPalette getPalette()
 {
