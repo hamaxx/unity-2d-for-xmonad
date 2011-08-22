@@ -22,22 +22,29 @@ Item {
     }
 
     function incrementRating() {
-        if ( rating % 1 > 0){ /* if non-integer, round up */
-            rating = Math.ceil(rating)
+        /* Make math easier since half rating accepted */
+        var double_rating = rating * 2
+
+        if ( double_rating % 1 > 0){ /* if non-integer, round up */
+            double_rating = Math.ceil(double_rating)
         }
         else {
-            rating = clamp(rating+1, 0, size)
+            double_rating = clamp(double_rating+1, 0, size * 2)
         }
+        rating = double_rating / 2
         return true
     }
 
     function decrementRating() {
-        if ( rating % 1 > 0){ /* if non-integer, round down */
-            rating = Math.floor(rating)
+        var double_rating = rating * 2
+
+        if ( double_rating % 1 > 0){ /* if non-integer, round down */
+            double_rating = Math.ceil(double_rating)
         }
         else {
-            rating = clamp(rating-1, 0, size)
+            double_rating = clamp(double_rating-1, 0, size * 2)
         }
+        rating = double_rating / 2
         return true
     }
 
@@ -79,20 +86,20 @@ Item {
         property int unitWidth: starIconSize + stars.spacing
 
         function calculateRating( posX ){
+            /* Small left-hand edge to set zero rating */
+            if( posX < 4 ) return 0
+
             /* Mouse X coordinate over one unit, relative to that unit's left edge*/
             var posXOverUnit = posX % unitWidth
 
-            /* What unit is the mouse over? */
-            var mouseOverUnitNumber = (posX - posXOverUnit) / unitWidth
+            /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
+            var rating = (posX - posXOverUnit) / unitWidth + 1
 
-            /* If mouse is over the star icon part of the unit */
-            if ( posXOverUnit <= starIconSize ){
-                return clamp ( (posX - mouseOverUnitNumber*stars.spacing)/starIconSize , 0, size)
+            /* If posX under half the star's width, remove 0.5 from the rating */
+            if( posXOverUnit <= (starIconSize/2) ){
+                rating = rating - 0.5
             }
-            /* Else mouse is over gap */
-            else{
-                return mouseOverUnitNumber+1
-            }
+            return clamp( rating, 0, size )
         }
 
         property bool mouseDown: false
