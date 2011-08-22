@@ -116,17 +116,41 @@ FocusScope {
         boundsBehavior: Flickable.StopAtBounds
 
         model: searchRefine.lens.filters
-        /* FIXME: use a Loader to dynamically load the right QML depending on filter.rendererName
+        /* Use a Loader to dynamically load the right QML depending on filter.rendererName
 
            CheckOptionFilter: filter-checkoption
-           MultiRangeFilter: filter-multirange
+           MultiRangeFilter: filter-multirange     TODO
            RadioOptionFilter: filter-radiooption
            RatingsFilter: filter-ratings
         */
-        delegate: SearchRefineOptionType {
-            title: u2d.tr(filter.name)
-            lens: searchRefine.lens
-            filterModel: filter
+        delegate: Loader {
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            focus: true
+
+            property string title: u2d.tr(filter.name)
+            property variant lens: searchRefine.lens
+            property variant filterModel: filter
+            source: {
+                switch (filter.rendererName) {
+                        case "filter-checkoption":
+                        case "filter-radiooption":
+                        case "filter-multirange": /* FIXME: implement the multi-range filter*/
+                            return "SearchRefineOptionType.qml"
+                        case "filter-ratings":
+                            return "SearchRefineOptionRating.qml"
+                        default:
+                            console.log("Unknown filter render name:", filter.rendererName)
+                            return ""
+                    }
+            }
+
+            onLoaded: {
+                item.title = title
+                item.lens = lens
+                item.filterModel = filterModel
+
             /* FIXME: add an "all" button
                filter.filtering is a bool indicating its state
                filter.clear() is the method that should be used when clicking on it */
