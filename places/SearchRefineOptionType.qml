@@ -21,6 +21,8 @@ import QtQuick 1.0
 SearchRefineOption {
     id: searchRefineOption
 
+    property int columns: 2
+
     Item {
         id: header
 
@@ -50,11 +52,10 @@ SearchRefineOption {
     GridView {
         id: filters
 
-        property int columns: 2
-        property int rowsPerColumn: Math.ceil(count/columns)
+        property int rowsPerColumn: Math.ceil(count/parent.columns)
 
         cellHeight: 42 //30px for button + 12px for vertical padding
-        cellWidth: width/columns //145px for button + 10px for horizonal padding
+        cellWidth: width/parent.columns //145px for button + 10px for horizonal padding
 
         anchors.top: header.bottom
         anchors.topMargin: 15
