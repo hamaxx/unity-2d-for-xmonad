@@ -23,18 +23,18 @@
 #define INDICATORAPPLET_H
 
 // Local
-#include <panelapplet.h>
+#include <applet.h>
 
 // libunity-core
 #include <UnityCore/Indicator.h>
 
 class IndicatorsManager;
 
-class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
+class IndicatorApplet : public Unity2d::Applet, public sigc::trackable
 {
 Q_OBJECT
 public:
-    IndicatorApplet(Unity2dPanel* panel);
+    IndicatorApplet(IndicatorsManager* manager);
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)
