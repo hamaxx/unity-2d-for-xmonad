@@ -69,8 +69,8 @@ SearchRefineOption {
         KeyNavigation.up: header
 
         delegate: TickBox {
-            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (10) - fix (3)
-            width: filters.cellWidth-13 //144 = filters.cellWidth - horizontal padding (12) - fix (1)
+            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (12) - fix (1)
+            width: filters.cellWidth-11 //144 = filters.cellWidth - horizontal padding (10) - fix (1)
             /* Not checking for placeEntryModel != undefined leads to a segfault
                when switching places */
             text: placeEntryModel != undefined ? column_0 : ""
