@@ -1,3 +1,10 @@
+unity-2d (4.0.0-0ubuntu2) oneiric; urgency=low
+
+  * No change rebuild for the nux update abi break
+  * debian/control: update the nux requirement to be sure to pick the new one
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 19 Aug 2011 11:25:56 +0200
+
 unity-2d (4.0.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
