@@ -42,7 +42,7 @@ struct Unity2dPanelPrivate
 {
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
-    mutable IndicatorsManager *m_indicatorsManager;
+    mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     QPropertyAnimation* m_slideInAnimation;
     QPropertyAnimation* m_slideOutAnimation;

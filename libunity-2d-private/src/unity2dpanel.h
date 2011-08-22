@@ -61,7 +61,7 @@ public:
 
     void addSpacer();
 
-    IndicatorsManager *indicatorsManager() const;
+    IndicatorsManager* indicatorsManager() const;
 
     /**
      * Whether the panel should reserve space on the edge, preventing maximized

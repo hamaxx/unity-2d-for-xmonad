@@ -43,7 +43,7 @@ public:
 
 private:
     Q_DISABLE_COPY(PanelApplet)
-    PanelAppletPrivate *d_ptr;
+    PanelAppletPrivate* d_ptr;
     Q_DECLARE_PRIVATE(PanelApplet)
 };
 

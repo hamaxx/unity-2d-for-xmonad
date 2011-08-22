@@ -7,7 +7,7 @@ class PanelAppletPrivate
 {
     Unity2dPanel* m_panel;
 
-    PanelApplet *q_ptr;
+    PanelApplet* q_ptr;
     Q_DECLARE_PUBLIC(PanelApplet)
 };
 
