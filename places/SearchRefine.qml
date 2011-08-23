@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Effects 1.0
+import "utils.js" as Utils
 
 FocusScope {
     id: searchRefine
@@ -132,7 +133,7 @@ FocusScope {
             property string title: u2d.tr(filter.name)
             property variant lens: searchRefine.lens
             property variant filterModel: filter
-            source: dash.convertToCamelCase(filter.rendererName) + ".qml"
+            source: Utils.convertToCamelCase(filter.rendererName) + ".qml"
 
             onLoaded: {
                 item.title = title
