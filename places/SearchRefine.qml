@@ -150,6 +150,7 @@ FocusScope {
                 item.title = title
                 item.lens = lens
                 item.filterModel = filterModel
+            }
 
             /* FIXME: add an "all" button
                filter.filtering is a bool indicating its state
