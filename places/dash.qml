@@ -260,7 +260,7 @@ Item {
         }
     }
 
-    Button {
+    AbstractButton {
         id: fullScreenButton
 
         Accessible.name: "Full Screen"
