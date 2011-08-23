@@ -18,5 +18,44 @@
 
 import QtQuick 1.0
 
-FilterCheckoption {
+SearchRefineOption {
+    id: searchRefineOption
+
+    Item {
+        id: header
+
+        Accessible.name: searchRefineOption.title
+
+        KeyNavigation.down: filters
+
+        focus: true
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: childrenRect.height
+
+        TextCustom {
+            id: title
+
+            anchors.top: parent.top
+            anchors.left: parent.left
+
+            text: searchRefineOption.title
+            font.pixelSize: 16
+            font.bold: true
+            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
+        }
+    }
+
+    MultiRangeView {
+        id: filters
+
+        anchors.top: header.bottom
+        anchors.topMargin: 15
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 30
+
+        model: searchRefineOption.filterModel.options
+    }
 }
