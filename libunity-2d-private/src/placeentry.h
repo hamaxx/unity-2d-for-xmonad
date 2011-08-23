@@ -22,7 +22,8 @@
 
 #include "launcheritem.h"
 
-#include "deelistmodel.h"
+// QtDee
+class DeeListModel;
 
 #include <QMetaType>
 #include <QDBusInterface>
