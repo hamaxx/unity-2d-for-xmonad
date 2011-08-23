@@ -4,7 +4,7 @@
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-#ifndef INDICATORAPPLET_H
-#define INDICATORAPPLET_H
+#ifndef SEPARATOR_PLUGIN_H
+#define SEPARATOR_PLUGIN_H
 
-// Local
-#include <panelapplet.h>
+#include <QString>
+#include <panelappletproviderinterface.h>
 
-// libunity-core
-#include <UnityCore/Indicator.h>
+using namespace Unity2d;
 
-class IndicatorsManager;
-
-class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
+class SeparatorPlugin : public QObject, PanelAppletProviderInterface
 {
-Q_OBJECT
-public:
-    IndicatorApplet(Unity2dPanel* panel);
+    Q_OBJECT
+    Q_INTERFACES(Unity2d::PanelAppletProviderInterface)
 
-private:
-    Q_DISABLE_COPY(IndicatorApplet)
-    IndicatorsManager* m_indicatorsManager;
-    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+public:
+    QString appletName() const;
+    PanelApplet* createApplet(Unity2dPanel* panel) const;
 };
 
-#endif /* INDICATORAPPLET_H */
+#endif // SEPARATOR_PLUGIN_H

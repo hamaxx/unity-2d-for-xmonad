@@ -4,7 +4,7 @@
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,27 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INDICATORAPPLET_H
-#define INDICATORAPPLET_H
+// Self
+#include "separatorapplet.h"
 
 // Local
-#include <panelapplet.h>
+#include <config.h>
 
-// libunity-core
-#include <UnityCore/Indicator.h>
+// QT
+#include <QPixmap>
+#include <QHBoxLayout>
 
-class IndicatorsManager;
-
-class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
+SeparatorApplet::SeparatorApplet(Unity2dPanel* panel) :
+    Unity2d::PanelApplet(panel),
+    m_separator(new QLabel())
 {
-Q_OBJECT
-public:
-    IndicatorApplet(Unity2dPanel* panel);
+    QPixmap pix(unity2dDirectory() + "/panel/artwork/divider.png");
+    m_separator->setPixmap(pix);
+    m_separator->setFixedSize(pix.size());
 
-private:
-    Q_DISABLE_COPY(IndicatorApplet)
-    IndicatorsManager* m_indicatorsManager;
-    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
-};
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    layout->setMargin(0);
+    layout->addWidget(m_separator);
+}
 
-#endif /* INDICATORAPPLET_H */
+#include "separatorapplet.moc"

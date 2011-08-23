@@ -4,7 +4,7 @@
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Alberto Mardegan <mardy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,27 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INDICATORAPPLET_H
-#define INDICATORAPPLET_H
+#ifndef HOMEBUTTON_H
+#define HOMEBUTTON_H
 
-// Local
-#include <panelapplet.h>
+// Qt
+#include <QTime>
+#include <QToolButton>
 
-// libunity-core
-#include <UnityCore/Indicator.h>
-
-class IndicatorsManager;
-
-class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
+class HomeButton : public QToolButton
 {
 Q_OBJECT
 public:
-    IndicatorApplet(Unity2dPanel* panel);
+    HomeButton(QWidget *parent = 0);
+
+protected:
+    void mousePressEvent(QMouseEvent*);
 
 private:
-    Q_DISABLE_COPY(IndicatorApplet)
-    IndicatorsManager* m_indicatorsManager;
-    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+    Q_DISABLE_COPY(HomeButton)
+    QTime lastClickTime;
 };
 
-#endif /* INDICATORAPPLET_H */
+#endif /* HOMEBUTTON_H */
