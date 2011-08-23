@@ -18,13 +18,13 @@
 
 import QtQuick 1.0
 
-SearchRefineOption {
-    id: searchRefineOption
+Filter {
+    id: filterView
 
     Item {
         id: header
 
-        Accessible.name: searchRefineOption.title
+        Accessible.name: filterView.title
 
         KeyNavigation.down: filters
 
@@ -40,7 +40,7 @@ SearchRefineOption {
             anchors.top: parent.top
             anchors.left: parent.left
 
-            text: searchRefineOption.title
+            text: filterView.title
             font.pixelSize: 16
             font.bold: true
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
@@ -60,6 +60,6 @@ SearchRefineOption {
         anchors.right: parent.right
         height: 30
 
-        model: searchRefineOption.filterModel.options
+        model: filterView.filterModel.options
     }
 }

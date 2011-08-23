@@ -18,8 +18,8 @@
 
 import QtQuick 1.0
 
-SearchRefineOption {
-    id: searchRefineOption
+Filter {
+    id: filterView
 
     Item {
         id: header
@@ -39,7 +39,7 @@ SearchRefineOption {
             anchors.top: parent.top
             anchors.left: parent.left
 
-            text: searchRefineOption.title
+            text: filterView.title
             font.pixelSize: 16
             font.bold: true
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
@@ -60,9 +60,9 @@ SearchRefineOption {
 
         size: 5
         spacing: 7
-        rating: searchRefineOption.filterModel.rating
+        rating: filterView.filterModel.rating
         Binding {
-            target: searchRefineOption.filterModel
+            target: filterView.filterModel
             property: "rating"
             value: rating.rating
         }
