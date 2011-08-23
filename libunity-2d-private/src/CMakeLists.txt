@@ -61,6 +61,12 @@ set(lib${LIB_NAME}_SRCS
     lens.cpp
     filter.cpp
     ratingsfilter.cpp
+    cairoutils.cpp
+    indicatorentrywidget.cpp
+    indicatorsmanager.cpp
+    indicatorwidget.cpp
+    panelapplet.cpp
+    panelstyle.cpp
     )
 
 # Build

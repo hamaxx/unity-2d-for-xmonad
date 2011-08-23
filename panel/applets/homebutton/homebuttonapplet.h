@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2011 Canonical Ltd.
+ * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -19,27 +19,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INDICATORAPPLET_H
-#define INDICATORAPPLET_H
+#ifndef HOMEBUTTONAPPLET_H
+#define HOMEBUTTONAPPLET_H
 
 // Local
+#include "homebutton.h"
+
+// Unity-2d
 #include <panelapplet.h>
 
-// libunity-core
-#include <UnityCore/Indicator.h>
+class QDBusInterface;
+class LauncherClient;
 
-class IndicatorsManager;
-
-class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
+class HomeButtonApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:
-    IndicatorApplet(Unity2dPanel* panel);
+    HomeButtonApplet(Unity2dPanel* panel);
+
+protected:
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
+
+private Q_SLOTS:
+    void toggleDash();
+    void connectToDash();
 
 private:
-    Q_DISABLE_COPY(IndicatorApplet)
-    IndicatorsManager* m_indicatorsManager;
-    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+    Q_DISABLE_COPY(HomeButtonApplet)
+    HomeButton* m_button;
+    QDBusInterface* m_dashInterface;
+    LauncherClient* m_launcherClient;
 };
 
-#endif /* INDICATORAPPLET_H */
+#endif /* HOMEBUTTONAPPLET_H */

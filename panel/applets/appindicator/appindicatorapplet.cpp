@@ -37,7 +37,8 @@ static const char* WATCHER_SERVICE = "org.kde.StatusNotifierWatcher";
 static const char* WATCHER_PATH = "/StatusNotifierWatcher";
 static const char* WATCHER_IFACE = "org.kde.StatusNotifierWatcher";
 
-AppIndicatorApplet::AppIndicatorApplet()
+AppIndicatorApplet::AppIndicatorApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
 {
     setupDBus();
     setupUi();

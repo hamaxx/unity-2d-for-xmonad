@@ -26,6 +26,7 @@
 #include "croppedlabel.h"
 #include "menubarwidget.h"
 #include "panelstyle.h"
+#include "unity2dpanel.h"
 #include "windowhelper.h"
 
 // Unity-2d
@@ -39,7 +40,6 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLinearGradient>
@@ -49,9 +49,6 @@
 #include <QDesktopWidget>
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
-
-namespace Unity2d
-{
 
 class WindowButton : public QAbstractButton
 {
@@ -185,8 +182,9 @@ struct AppNameAppletPrivate
     }
 };
 
-AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
-: d(new AppNameAppletPrivate)
+AppNameApplet::AppNameApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, d(new AppNameAppletPrivate)
 {
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
@@ -194,7 +192,7 @@ AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMenuBarWidget(indicatorsManager);
+    d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
@@ -265,7 +263,5 @@ void AppNameApplet::enterEvent(QEvent*) {
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
-
-} // namespace
 
 #include "appnameapplet.moc"
