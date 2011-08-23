@@ -60,7 +60,6 @@ Button {
         anchors.rightMargin: 5
         anchors.leftMargin: 7
         height: 40
-        font.underline: parent.activeFocus
         font.bold: true
         font.pixelSize: 16
     }

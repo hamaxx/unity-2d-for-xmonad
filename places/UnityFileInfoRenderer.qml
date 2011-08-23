@@ -54,8 +54,8 @@ RendererGrid {
                 id: icon
 
                 source: iconHint != "" ? "image://icons/"+iconHint : ""
-                width: 64
-                height: 64
+                width: 48
+                height: 48
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 3
