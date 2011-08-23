@@ -67,6 +67,9 @@
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
 
+// QtDee
+#include "deelistmodel.h"
+
 #include <X11/Xlib.h>
 
 /* FIXME: This should be done more properly, it's just an hack this way.

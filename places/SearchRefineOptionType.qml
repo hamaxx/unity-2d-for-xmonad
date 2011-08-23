@@ -47,38 +47,43 @@ SearchRefineOption {
         }
     }
 
-    GridView {
+    GridViewWithSpacing {
         id: filters
 
-        property int columns: 2
-        property int rowsPerColumn: Math.ceil(count/columns)
+        columns: 2
+        rows: Math.ceil(count/columns)
 
-        cellHeight: 42 //30px for button + 12px for vertical padding
-        cellWidth: width/columns //145px for button + 10px for horizonal padding
+        horizontalSpacing: 10
+        verticalSpacing: 12
+
+        cellWidth: width/columns
+        delegateHeight: 30
 
         anchors.top: header.bottom
         anchors.topMargin: 15
-        height: cellHeight * rowsPerColumn
+        height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
         anchors.left: parent.left
         anchors.right: parent.right
 
-        flow: GridView.TopToBottom
-
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
         KeyNavigation.up: header
 
-        delegate: TickBox {
-            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (12) - fix (1)
-            width: filters.cellWidth-11 //144 = filters.cellWidth - horizontal padding (10) - fix (1)
-            /* Not checking for lens != undefined leads to a segfault
-               when switching lenses */
-            text: lens != undefined ? column_0 : ""
-            checked: dash.currentPage.model.activeSection == model.index
+        delegate: FocusScope {
+            TickBox {
+                focus: true
+                width: filters.delegateWidth
+                height: filters.delegateHeight
+                x: filters.delegateX(model.index % filters.columns)
+                       /* Not checking for lens != undefined leads to a segfault
+                          when switching lenses */
+                       text: lens != undefined ? column_0 : ""
+                       checked: dash.currentPage.model.activeSection == model.index
 
-            onClicked: lens.activeSection = model.index
+                       onClicked: lens.activeSection = model.index
+            }
         }
 
         model: lens != undefined ? lens.sections : undefined

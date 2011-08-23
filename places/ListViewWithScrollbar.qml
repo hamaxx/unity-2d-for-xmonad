@@ -31,7 +31,7 @@ FocusScope {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.right: scrollbar.left
+        anchors.right: parent.right
         anchors.rightMargin: 15
     }
 
