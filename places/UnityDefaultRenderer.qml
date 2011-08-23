@@ -20,10 +20,10 @@ import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
-    cellWidth: 136
+    cellWidth: 100
     cellHeight: 108
-    horizontalSpacing: 10
-    verticalSpacing: 10
+    horizontalSpacing: 46
+    verticalSpacing: 20
 
     cellRenderer: Component {
         Button {
@@ -70,11 +70,10 @@ RendererGrid {
                 id: icon
 
                 source: iconHint != "" ? "image://icons/"+iconHint : ""
-                width: 48
-                height: 48
+                width: 64
+                height: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 10
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -96,10 +95,8 @@ RendererGrid {
                 anchors.right: parent.right
                 anchors.left: parent.left
                 anchors.topMargin: 10
-                anchors.bottomMargin: 5
                 anchors.rightMargin: 3
                 anchors.leftMargin: 3
-                font.underline: parent.activeFocus
             }
         }
     }
