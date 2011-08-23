@@ -50,11 +50,15 @@ SearchRefineOption {
     GridView {
         id: filters
 
-        property int columns: 2
+        /* FIXME: Ugly hack to lay out certain Options in 3 column grid instead of usual 2.
+           This information is not supplied by the back-end. */
+        property int columns: ( searchRefineOption.filterModel.id == "genre"
+                                || searchRefineOption.filterModel.id == "modified" ) ? 3 : 2
+
         property int rowsPerColumn: Math.ceil(count/columns)
 
-        cellHeight: 42 //30px for button + 12px for vertical padding
-        cellWidth: width/columns //145px for button + 10px for horizonal padding
+        cellHeight: 42
+        cellWidth: width/columns
 
         anchors.top: header.bottom
         anchors.topMargin: 15
@@ -71,8 +75,8 @@ SearchRefineOption {
         KeyNavigation.up: header
 
         delegate: TickBox {
-            height: filters.cellHeight-13 //29 = filters.cellHeight - vertical padding (12) - fix (1)
-            width: filters.cellWidth-11 //144 = filters.cellWidth - horizontal padding (10) - fix (1)
+            height: filters.cellHeight-13
+            width: filters.cellWidth-11
             text: item.name
             checked: item.active
             onClicked: item.active = !item.active
