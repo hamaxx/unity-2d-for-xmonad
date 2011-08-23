@@ -59,19 +59,19 @@ FocusScope {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 10
         height: headerHeight - anchors.topMargin
 
         TextCustom {
             id: title
 
-            text: u2d.tr("Refine search")
+            text: u2d.tr("Filter results")
             font.bold: true
             font.pixelSize: 16
             font.underline: parent.state == "selected"
 
-            anchors.top: parent.top
-            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: arrow.left
+            anchors.rightMargin: 10
         }
 
         FoldingArrow {
@@ -80,8 +80,7 @@ FocusScope {
             folded: searchRefine.folded
 
             anchors.verticalCenter: title.verticalCenter
-            anchors.left: title.right
-            anchors.leftMargin: 10
+            anchors.right: parent.right
         }
     }
 
