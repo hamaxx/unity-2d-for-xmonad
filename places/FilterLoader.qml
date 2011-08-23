@@ -28,7 +28,7 @@ FocusScope {
 
     height: childrenRect.height
 
-    Item {
+    FocusScope {
         id: header
 
         Accessible.name: u2d.tr(filterModel.name)
@@ -56,7 +56,7 @@ FocusScope {
         TextCustom {
             id: title
 
-            anchors.top: parent.top
+            anchors.verticalCenter: clearButton.verticalCenter
             anchors.topMargin: isFirst ? 0 : 13
             anchors.left: parent.left
 
@@ -66,9 +66,21 @@ FocusScope {
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
         }
 
-        /* FIXME: add an "all" button
-           filter.filtering is a bool indicating its state
-           filter.clear() is the method that should be used when clicking on it */
+        TickBox {
+            id: clearButton
+
+            focus: true
+
+            width: 55
+            height: 30
+            anchors.top: parent.top
+            anchors.topMargin: isFirst ? 0 : 13
+            anchors.right: parent.right
+
+            text: u2d.tr("All")
+            checked: !filterModel.filtering
+            onClicked: filterModel.clear()
+        }
     }
 
     Loader {
