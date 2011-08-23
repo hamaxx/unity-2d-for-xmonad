@@ -151,11 +151,6 @@ FocusScope {
                 item.lens = lens
                 item.filterModel = filterModel
 
-                /* FIXME: Ugly hack to lay out certain Options in 3 column grid instead of usual 2.
-                   This information is not supplied by the back-end. */
-                if ( filter.id == "genre" || filter.id == "modified" ) item.columns = 3
-            }
-
             /* FIXME: add an "all" button
                filter.filtering is a bool indicating its state
                filter.clear() is the method that should be used when clicking on it */
