@@ -24,10 +24,10 @@ Filter {
     MultiRangeView {
         id: filters
 
-        anchors.top: header.bottom
-        anchors.topMargin: 15
+        focus: true
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
         height: 30
 
         model: filterView.filterModel.options

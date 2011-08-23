@@ -19,41 +19,10 @@
 import QtQuick 1.0
 
 FocusScope {
-    property string title
+    id: filterView
+
     property variant lens
     property variant filterModel
-    property variant header: header // FIXME
 
     height: childrenRect.height
-
-    Item {
-        id: header
-
-        Accessible.name: filterView.title
-
-        KeyNavigation.down: filters
-
-        focus: true
-        anchors.top: parent.top
-//        anchors.topMargin: 12
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: childrenRect.height
-
-        TextCustom {
-            id: title
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-
-            text: filterView.title
-            font.pixelSize: 16
-            font.bold: true
-            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
-        }
-
-        /* FIXME: add an "all" button
-           filter.filtering is a bool indicating its state
-           filter.clear() is the method that should be used when clicking on it */
-    }
 }

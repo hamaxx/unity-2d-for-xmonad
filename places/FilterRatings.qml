@@ -24,14 +24,12 @@ Filter {
     RatingStars {
         id: rating
 
-        anchors.top: header.bottom
-        anchors.topMargin: 15
         height: childrenRect.height
 
+        focus: true
         anchors.left: parent.left
         anchors.right: parent.right
-
-        KeyNavigation.up: header
+        anchors.top: parent.top
 
         size: 5
         spacing: 7

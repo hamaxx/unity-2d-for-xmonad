@@ -18,7 +18,6 @@
 
 import QtQuick 1.0
 import Effects 1.0
-import "utils.js" as Utils
 
 FocusScope {
     id: filterPane
@@ -102,6 +101,7 @@ FocusScope {
         anchors.topMargin: 7
         anchors.bottom: parent.bottom
         orientation: ListView.Vertical
+        spacing: 12
 
         /* Make sure the first section is selected when getting the focus */
         currentIndex: 0
@@ -121,22 +121,10 @@ FocusScope {
            For example, if filter.rendererName == "filter-checkoption" then
            load "FilterCheckoption.qml".
         */
-        delegate: Loader {
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            source: Utils.convertToCamelCase(filter.rendererName) + ".qml"
-            onStatusChanged: {
-                if (status == Loader.Error) {
-                    console.log("Failed to load filter renderer", filter.rendererName)
-                }
-            }
-
-            Binding { target: item; property: "title"; value: u2d.tr(filter.name) }
-            Binding { target: item; property: "lens"; value: filterPane.lens }
-            Binding { target: item; property: "filterModel"; value: filter }
-
-            onLoaded: item.focus = true
+        delegate: FilterLoader {
+            width: ListView.view.width
+            lens: filterPane.lens
+            filterModel: filter
         }
     }
 }

@@ -34,17 +34,16 @@ Filter {
         cellWidth: width/columns
         delegateHeight: 30
 
-        anchors.top: filterView.header.bottom
-        anchors.topMargin: 15
         height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
+        focus: true
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
 
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
-        KeyNavigation.up: header
 
         delegate: FocusScope {
             TickBox {
