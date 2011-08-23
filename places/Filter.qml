@@ -23,6 +23,5 @@ FocusScope {
     property variant lens
     property variant filterModel
 
-    width: parent.width
     height: childrenRect.height
 }
