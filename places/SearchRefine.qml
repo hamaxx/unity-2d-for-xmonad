@@ -89,6 +89,7 @@ FocusScope {
     ListView {
         id: options
 
+        clip: true
         opacity: folded ? 0.0 : 1.0
         Behavior on opacity {NumberAnimation {duration: 100; easing.type: Easing.InOutQuad}}
 

@@ -215,7 +215,7 @@ Item {
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin
-            height: parent.height
+            anchors.bottom: lensBar.top
             headerHeight: search_entry.height
             width: 310
             anchors.right: parent.right
