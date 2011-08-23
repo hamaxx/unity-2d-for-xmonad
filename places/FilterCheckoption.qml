@@ -47,39 +47,40 @@ SearchRefineOption {
         }
     }
 
-    GridView {
+    GridViewWithSpacing {
         id: filters
 
-        /* FIXME: Ugly hack to lay out certain Options in 3 column grid instead of usual 2.
-           This information is not supplied by the back-end. */
-        property int columns: ( searchRefineOption.filterModel.id == "genre"
-                                || searchRefineOption.filterModel.id == "modified" ) ? 3 : 2
+        columns: ( searchRefineOption.filterModel.id == "genre"
+                  || searchRefineOption.filterModel.id == "modified" ) ? 3 : 2
+        rows: Math.ceil(count/columns)
 
-        property int rowsPerColumn: Math.ceil(count/columns)
+        horizontalSpacing: 10
+        verticalSpacing: 12
 
-        cellHeight: 42
         cellWidth: width/columns
+        delegateHeight: 30
 
         anchors.top: header.bottom
         anchors.topMargin: 15
-        height: cellHeight * rowsPerColumn
+        height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
         anchors.left: parent.left
         anchors.right: parent.right
 
-        flow: GridView.TopToBottom
-
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
         KeyNavigation.up: header
 
-        delegate: TickBox {
-            height: filters.cellHeight-13
-            width: filters.cellWidth-11
-            text: item.name
-            checked: item.active
-            onClicked: item.active = !item.active
+        delegate: FocusScope {
+            TickBox {
+                focus: true
+                width: filters.delegateWidth
+                height: filters.delegateHeight
+                text: item.name
+                checked: item.active
+                onClicked: item.active = !item.active
+            }
         }
 
         model: searchRefineOption.filterModel.options

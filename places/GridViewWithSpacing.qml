@@ -18,26 +18,21 @@
 
 import QtQuick 1.0
 
-AbstractButton {
-    Rectangle {
-        anchors.fill: parent
-        anchors.bottomMargin: 1
-        anchors.rightMargin: 1
-        opacity: ( parent.state == "selected" || parent.state == "pressed"
-                  || parent.state == "hovered" ) ? 1.0 : 0.0
+GridView {
+    property int horizontalSpacing: 0
+    property int verticalSpacing: 0
+    property int columns: 2
+    property int rows: 2
 
-        color: parent.state == "pressed" ? "#ffffffff" : "#00000000"
-        border.color: "#cccccc"
-        border.width: 1
-        radius: 3
-
-        Behavior on opacity {NumberAnimation {duration: 100}}
-
-        Image {
-            fillMode: Image.Tile
-            anchors.fill: parent
-            source: "artwork/button_background.png"
-            smooth: false
-        }
+    function delegateX(column) {
+        return column * horizontalSpacing / columns
     }
+    function delegateY(row) {
+        return row * verticalSpacing / rows
+    }
+
+    property int delegateWidth: cellWidth - horizontalSpacing + horizontalSpacing / columns
+    property int delegateHeight: cellHeight - verticalSpacing + verticalSpacing / rows
+    cellWidth: delegateWidth + horizontalSpacing - horizontalSpacing / rows
+    cellHeight: delegateHeight + verticalSpacing - verticalSpacing / rows
 }
