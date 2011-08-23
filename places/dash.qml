@@ -219,7 +219,7 @@ Item {
             headerHeight: search_entry.height
             width: 310
             anchors.right: parent.right
-            anchors.rightMargin: 3
+            anchors.rightMargin: 15
         }
 
         Loader {
@@ -255,7 +255,7 @@ Item {
         }
     }
 
-    Button {
+    AbstractButton {
         id: fullScreenButton
 
         Accessible.name: "Full Screen"

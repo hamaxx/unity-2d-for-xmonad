@@ -20,13 +20,15 @@ import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
-    cellWidth: 136
-    cellHeight: 108
-    horizontalSpacing: 10
-    verticalSpacing: 10
+    cellWidth: 100
+    cellHeight: 112
+    horizontalSpacing: 42
+    verticalSpacing: 20
 
     cellRenderer: Component {
-        Button {
+        AbstractButton {
+            id: button
+
             property string uri
             property string iconHint
             property string mimetype
@@ -68,15 +70,21 @@ RendererGrid {
                 onDrop: parent.pressed = false
             }
 
+            ButtonBackground {
+                anchors.fill: icon
+                anchors.margins: -4
+                state: button.state
+            }
+
             Image {
                 id: icon
 
                 source: iconHint != "" ? "image://icons/"+iconHint : ""
-                width: 48
-                height: 48
+                width: 64
+                height: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 10
+                anchors.topMargin: 4
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -90,7 +98,7 @@ RendererGrid {
                 id: label
 
                 text: displayName
-                color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
+                color: "#ffffff"
                 state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
                 horizontalAlignment: Text.AlignHCenter
                 anchors.top: icon.bottom
@@ -98,10 +106,8 @@ RendererGrid {
                 anchors.right: parent.right
                 anchors.left: parent.left
                 anchors.topMargin: 10
-                anchors.bottomMargin: 5
                 anchors.rightMargin: 3
                 anchors.leftMargin: 3
-                font.underline: parent.activeFocus
             }
         }
     }

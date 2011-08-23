@@ -25,6 +25,9 @@
 #include <dashclient.h>
 #include <debug_p.h>
 
+// QtDee
+#include "deelistmodel.h"
+
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>

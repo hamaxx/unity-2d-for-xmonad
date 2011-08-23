@@ -41,7 +41,9 @@ Renderer {
         orientation: ListView.Vertical
 
         model: renderer.category_model
-        delegate: Button {
+        delegate: AbstractButton {
+            id: button
+
             property string uri: column_0
             property string iconHint: column_1
             property string categoryId: column_2
@@ -59,6 +61,11 @@ Renderer {
             onClicked: {
                 dashView.active = false
                 lens.activate(uri)
+            }
+
+            ButtonBackground {
+                anchors.fill: parent
+                state: button.state
             }
 
             TextCustom {
