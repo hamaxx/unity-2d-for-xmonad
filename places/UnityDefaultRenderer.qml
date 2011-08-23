@@ -22,7 +22,7 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 RendererGrid {
     cellWidth: 100
     cellHeight: 108
-    horizontalSpacing: 46
+    horizontalSpacing: 42
     verticalSpacing: 20
 
     cellRenderer: Component {
