@@ -24,6 +24,7 @@ FocusScope {
 
     property variant lens
     property variant filterModel
+    property bool isFirst
 
     height: childrenRect.height
 
@@ -40,10 +41,23 @@ FocusScope {
         anchors.right: parent.right
         height: childrenRect.height
 
+        Rectangle {
+            id: separatorLine
+
+            color: "#21ffffff"
+
+            height: 1
+            visible: !isFirst
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+
         TextCustom {
             id: title
 
             anchors.top: parent.top
+            anchors.topMargin: isFirst ? 0 : 13
             anchors.left: parent.left
 
             text: u2d.tr(filterModel.name)

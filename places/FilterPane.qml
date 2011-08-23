@@ -125,6 +125,7 @@ FocusScope {
             width: ListView.view.width
             lens: filterPane.lens
             filterModel: filter
+            isFirst: index == 0
         }
     }
 }
