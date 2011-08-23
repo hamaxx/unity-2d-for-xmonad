@@ -31,7 +31,15 @@ FocusScope {
     FocusScope {
         id: header
 
-        Accessible.name: u2d.tr(filterModel.name)
+        function accessibleDescription() {
+            if (filterModel.filtering) {
+                return u2d.tr("Filter %1 active").arg(filterModel.name)
+            } else {
+                return u2d.tr("Filter %1 inactive").arg(filterModel.name)
+            }
+        }
+
+        Accessible.name: accessibleDescription()
 
         KeyNavigation.down: filterView
 
