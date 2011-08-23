@@ -1,3 +1,5 @@
+pkg_check_modules(DCONFQT REQUIRED dconf-qt)
+
 set(panel_SRCS
     main.cpp
     panelmanager.cpp
@@ -10,9 +12,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GTK_INCLUDE_DIRS}
-    ${uqapplets_SOURCE_DIR}
-    ${uqapplets_SOURCE_DIR}/common
     ${UNITYCORE_INCLUDE_DIRS}
+    ${DCONFQT_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -20,7 +21,7 @@ target_link_libraries(unity-2d-panel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
     ${GTK_LDFLAGS}
-    uqapplets
+    ${DCONFQT_LIBRARIES}
     unity-2d-private
     )
 

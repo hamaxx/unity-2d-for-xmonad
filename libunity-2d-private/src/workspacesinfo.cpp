@@ -21,7 +21,13 @@ Atom _NET_NUMBER_OF_DESKTOPS;
 Atom _NET_CURRENT_DESKTOP;
 
 WorkspacesInfo::WorkspacesInfo(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_count(0),
+    m_current(0),
+    m_rows(0),
+    m_columns(0),
+    m_orientation(OrientationHorizontal),
+    m_startingCorner(CornerTopLeft)
 {
     WorkspacesInfo::internX11Atoms();
 

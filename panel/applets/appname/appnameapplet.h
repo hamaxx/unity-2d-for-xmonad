@@ -22,24 +22,19 @@
 #ifndef APPNAMEAPPLET_H
 #define APPNAMEAPPLET_H
 
-// Local
-#include <applet.h>
-
-// Qt
-
 class QEvent;
 
 class IndicatorsManager;
 
-namespace Unity2d
-{
+// Unity-2d
+#include <panelapplet.h>
 
 struct AppNameAppletPrivate;
-class AppNameApplet : public Applet
+class AppNameApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:
-    AppNameApplet(IndicatorsManager*);
+    AppNameApplet(Unity2dPanel* panel);
     ~AppNameApplet();
 
 protected:
@@ -53,8 +48,6 @@ private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
 };
-
-} // namespace
 
 #endif /* APPNAMEAPPLET_H */
 
