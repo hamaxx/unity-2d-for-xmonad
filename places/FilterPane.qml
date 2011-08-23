@@ -21,7 +21,7 @@ import Effects 1.0
 import "utils.js" as Utils
 
 FocusScope {
-    id: searchRefine
+    id: filterPane
 
     property bool folded: true
     property int headerHeight
@@ -52,12 +52,12 @@ FocusScope {
                     color: "white"
                 }
 
-        onClicked: searchRefine.folded = !searchRefine.folded
+        onClicked: filterPane.folded = !filterPane.folded
 
         focus: true
 
         /* Do not navigate down to the options if they are folded */
-        KeyNavigation.down: !searchRefine.folded ? options : header
+        KeyNavigation.down: !filterPane.folded ? options : header
 
         anchors.left: parent.left
         anchors.right: parent.right
@@ -80,7 +80,7 @@ FocusScope {
         FoldingArrow {
             id: arrow
 
-            folded: searchRefine.folded
+            folded: filterPane.folded
 
             anchors.verticalCenter: title.verticalCenter
             anchors.right: parent.right
@@ -116,7 +116,7 @@ FocusScope {
         /* Non-draggable when all items are visible */
         boundsBehavior: Flickable.StopAtBounds
 
-        model: searchRefine.lens.filters
+        model: filterPane.lens.filters
         /* Dynamically load the QML file corresponding to filter.rendererName.
            For example, if filter.rendererName == "filter-checkoption" then
            load "FilterCheckoption.qml".
@@ -133,7 +133,7 @@ FocusScope {
             }
 
             Binding { target: item; property: "title"; value: u2d.tr(filter.name) }
-            Binding { target: item; property: "lens"; value: searchRefine.lens }
+            Binding { target: item; property: "lens"; value: filterPane.lens }
             Binding { target: item; property: "filterModel"; value: filter }
 
             onLoaded: item.focus = true

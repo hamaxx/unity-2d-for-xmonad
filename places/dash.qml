@@ -191,25 +191,25 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible ? refine_search : search_entry
+            KeyNavigation.right: filterPane.visible ? filterPane : search_entry
             KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
             anchors.topMargin: 10
             anchors.left: parent.left
             anchors.leftMargin: 16
-            anchors.right: refine_search.left
+            anchors.right: filterPane.left
             anchors.rightMargin: 10
 
             height: 53
         }
 
-        SearchRefine {
-            id: refine_search
+        FilterPane {
+            id: filterPane
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for lenses, not in the home page */
+            /* FilterPane is only to be displayed for lenses, not in the home page */
             visible: dashView.activeLens != ""
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
@@ -229,7 +229,7 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
+            KeyNavigation.right: filterPane.visible && !filterPane.folded ? filterPane : pageLoader
             KeyNavigation.up: search_entry
             KeyNavigation.down: lensBar
 
@@ -237,8 +237,8 @@ Item {
             anchors.topMargin: 2
             anchors.bottom: lensBar.top
             anchors.left: parent.left
-            anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
-            anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
+            anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
+            anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
             onLoaded: item.focus = true
         }
 
