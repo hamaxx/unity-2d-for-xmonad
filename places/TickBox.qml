@@ -39,14 +39,13 @@ AbstractButton {
 
     Rectangle {
         id: container
-        width: parent.width //should be 144
-        height: parent.height //should be 29
-        border.color: "white"
-        border.width: 1
-        color: ( checked ) ? "white" : "#00000000"
-        opacity: if (checked) return 0.8
-                 else if (parent.state == "selected") return 1
-                 else return 0.5
+        width: parent.width
+        height: parent.height
+        border.color: if ( parent.state == "selected") return "white"
+                      else if ( checked ) return "#cdffffff" // 13% opaque
+                      else return "#21ffffff" // 80% opaque
+        border.width: ( checked ) ? 2 : 1
+        color: ( checked ) ? "#21ffffff" : "transparent"
         radius: 5
     }
 
@@ -57,7 +56,7 @@ AbstractButton {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 15
-        color: ( checked ) ? "black" : "white"
+        color: "white"
         text: tickBox.text
         elide: Text.ElideRight
         opacity: ( !canUncheck ) ? 0 : 1
