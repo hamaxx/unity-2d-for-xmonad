@@ -56,7 +56,7 @@ FocusScope {
     /* Used by dash.qml to bind to dashView "expanded" property */
     property bool expanded: globalSearchActive || shortcutsActive
 
-    Button {
+    AbstractButton {
         id: openShortcutsButton
 
         anchors.bottom: parent.top
@@ -146,7 +146,7 @@ FocusScope {
             color: Qt.rgba(0, 0, 0, 0.3)
         }
 
-        Button {
+        AbstractButton {
             id: closeShortcutsButton
 
             anchors.left: parent.left

@@ -232,7 +232,7 @@ Item {
         }
     }
 
-    Button {
+    AbstractButton {
         id: fullScreenButton
         anchors.bottom: parent.bottom
         anchors.right: parent.right
