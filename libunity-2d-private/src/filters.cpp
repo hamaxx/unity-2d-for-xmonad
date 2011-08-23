@@ -112,6 +112,8 @@ void Filters::removeFilter(int index)
 
 int Filters::indexForFilter(unity::dash::Filter::Ptr unityFilter)
 {
+    if (unityFilter == NULL) return -1;
+
     int index;
     for (index=0; index<m_filters.count(); index++) {
         if (m_filters[index]->hasUnityFilter(unityFilter)) {

@@ -50,7 +50,8 @@ SearchRefineOption {
     GridViewWithSpacing {
         id: filters
 
-        columns: 2
+        columns: ( searchRefineOption.filterModel.id == "genre"
+                  || searchRefineOption.filterModel.id == "modified" ) ? 3 : 2
         rows: Math.ceil(count/columns)
 
         horizontalSpacing: 10
