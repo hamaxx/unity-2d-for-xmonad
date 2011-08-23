@@ -104,6 +104,15 @@ Item {
         dashView.activeLens = ""
     }
 
+    /* Convert strings like "one-two-three" to "OneTwoThree" */
+    function convertToCamelCase( name ) {
+        var chunksArray = name.split('-')
+        for (var i=0; i<chunksArray.length; i++){
+            chunksArray[i] = chunksArray[i].charAt(0).toUpperCase() + chunksArray[i].slice(1);
+        }
+        return chunksArray.join('')
+    }
+
     property variant lenses: Lenses {}
 
     Item {
