@@ -132,19 +132,7 @@ FocusScope {
             property string title: u2d.tr(filter.name)
             property variant lens: searchRefine.lens
             property variant filterModel: filter
-            source: {
-                switch (filter.rendererName) {
-                        case "filter-checkoption":
-                        case "filter-radiooption":
-                        case "filter-multirange": /* FIXME: implement the multi-range filter*/
-                            return "SearchRefineOptionType.qml"
-                        case "filter-ratings":
-                            return "SearchRefineOptionRating.qml"
-                        default:
-                            console.log("Unknown filter render name:", filter.rendererName)
-                            return ""
-                    }
-            }
+            source: dash.convertToCamelCase(filter.rendererName) + ".qml"
 
             onLoaded: {
                 item.title = title
