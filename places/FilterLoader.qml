@@ -71,6 +71,8 @@ FocusScope {
 
             focus: true
 
+            /* FIXME: should be 48px wide in English but made bigger to
+                      accomodate for more verbose languages */
             width: 55
             height: 30
             anchors.top: parent.top
