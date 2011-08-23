@@ -45,6 +45,10 @@ SearchRefineOption {
             font.bold: true
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
         }
+
+        /* FIXME: add an "all" button
+           filter.filtering is a bool indicating its state
+           filter.clear() is the method that should be used when clicking on it */
     }
 
     GridViewWithSpacing {

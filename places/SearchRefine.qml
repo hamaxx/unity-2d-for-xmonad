@@ -117,33 +117,26 @@ FocusScope {
         boundsBehavior: Flickable.StopAtBounds
 
         model: searchRefine.lens.filters
-        /* Use a Loader to dynamically load the right QML depending on filter.rendererName
-
-           CheckOptionFilter: filter-checkoption
-           MultiRangeFilter: filter-multirange     TODO
-           RadioOptionFilter: filter-radiooption
-           RatingsFilter: filter-ratings
+        /* Dynamically load the QML file corresponding to filter.rendererName.
+           For example, if filter.rendererName == "filter-checkoption" then
+           load "FilterCheckoption.qml".
         */
         delegate: Loader {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            focus: true
-
-            property string title: u2d.tr(filter.name)
-            property variant lens: searchRefine.lens
-            property variant filterModel: filter
             source: Utils.convertToCamelCase(filter.rendererName) + ".qml"
-
-            onLoaded: {
-                item.title = title
-                item.lens = lens
-                item.filterModel = filterModel
+            onStatusChanged: {
+                if (status == Loader.Error) {
+                    console.log("Failed to load filter renderer", filter.rendererName)
+                }
             }
 
-            /* FIXME: add an "all" button
-               filter.filtering is a bool indicating its state
-               filter.clear() is the method that should be used when clicking on it */
+            Binding { target: item; property: "title"; value: u2d.tr(filter.name) }
+            Binding { target: item; property: "lens"; value: searchRefine.lens }
+            Binding { target: item; property: "filterModel"; value: filter }
+
+            onLoaded: item.focus = true
         }
     }
 }
