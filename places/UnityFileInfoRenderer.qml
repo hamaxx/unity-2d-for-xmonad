@@ -25,7 +25,7 @@ RendererGrid {
     verticalSpacing: 26
 
     cellRenderer: Component {
-        Button {
+        AbstractButton {
             id: button
 
             property url uri
@@ -49,6 +49,11 @@ RendererGrid {
             }
 
             onClicked: placeEntryModel.place.activate(decodeURIComponent(uri.toString()))
+
+            ButtonBackground {
+                anchors.fill: parent
+                state: button.state
+            }
 
             Image {
                 id: icon

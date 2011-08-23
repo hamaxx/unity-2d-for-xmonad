@@ -21,12 +21,14 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
     cellWidth: 100
-    cellHeight: 108
+    cellHeight: 112
     horizontalSpacing: 42
     verticalSpacing: 20
 
     cellRenderer: Component {
-        Button {
+        AbstractButton {
+            id: button
+
             property string uri
             property string iconHint
             property string mimetype
@@ -66,6 +68,12 @@ RendererGrid {
                 onDrop: parent.pressed = false
             }
 
+            ButtonBackground {
+                anchors.fill: icon
+                anchors.margins: -4
+                state: button.state
+            }
+
             Image {
                 id: icon
 
@@ -74,6 +82,7 @@ RendererGrid {
                 height: 64
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
+                anchors.topMargin: 4
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -87,7 +96,7 @@ RendererGrid {
                 id: label
 
                 text: displayName
-                color: parent.state == "pressed" ? "#5e5e5e" : "#ffffff"
+                color: "#ffffff"
                 state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
                 horizontalAlignment: Text.AlignHCenter
                 anchors.top: icon.bottom

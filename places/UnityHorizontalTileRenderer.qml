@@ -26,7 +26,7 @@ RendererGrid {
     verticalSpacing: 10
 
     cellRenderer: Component {
-        Button {
+        AbstractButton {
             id: button
 
             property string uri
@@ -66,6 +66,11 @@ RendererGrid {
                     parent.clicked()
                 }
                 onDrop: parent.pressed = false
+            }
+
+            ButtonBackground {
+                anchors.fill: parent
+                state: button.state
             }
 
             Image {
