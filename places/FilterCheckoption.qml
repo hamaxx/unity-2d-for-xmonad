@@ -21,36 +21,6 @@ import QtQuick 1.0
 Filter {
     id: filterView
 
-    Item {
-        id: header
-
-        Accessible.name: filterView.title
-
-        KeyNavigation.down: filters
-
-        focus: true
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: childrenRect.height
-
-        TextCustom {
-            id: title
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-
-            text: filterView.title
-            font.pixelSize: 16
-            font.bold: true
-            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
-        }
-
-        /* FIXME: add an "all" button
-           filter.filtering is a bool indicating its state
-           filter.clear() is the method that should be used when clicking on it */
-    }
-
     GridViewWithSpacing {
         id: filters
 
@@ -64,7 +34,7 @@ Filter {
         cellWidth: width/columns
         delegateHeight: 30
 
-        anchors.top: header.bottom
+        anchors.top: filterView.header.bottom
         anchors.topMargin: 15
         height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds

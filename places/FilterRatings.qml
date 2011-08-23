@@ -21,31 +21,6 @@ import QtQuick 1.0
 Filter {
     id: filterView
 
-    Item {
-        id: header
-
-        KeyNavigation.down: rating
-
-        focus: true
-        anchors.top: parent.top
-        anchors.topMargin: 12
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: childrenRect.height
-
-        TextCustom {
-            id: title
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-
-            text: filterView.title
-            font.pixelSize: 16
-            font.bold: true
-            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
-        }
-    }
-
     RatingStars {
         id: rating
 
