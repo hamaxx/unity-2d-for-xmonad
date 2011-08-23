@@ -84,6 +84,7 @@ RendererGrid {
                     text: displayName
                     color: button.state == "pressed" ? "#5e5e5e" : "#ffffff"
                     elide: Text.ElideMiddle
+                    fontSize: "small"
 
                     width: parent.width
                     height: paintedHeight
@@ -93,6 +94,7 @@ RendererGrid {
                     text: parentDirectory
                     color: button.state == "pressed" ? "#7e7e7e" : "#c8c8c8"
                     elide: Text.ElideMiddle
+                    fontSize: "small"
 
                     width: parent.width
                     height: paintedHeight
@@ -102,6 +104,7 @@ RendererGrid {
                     text: comment
                     color: button.state == "pressed" ? "#5e5e5e" : "#ffffff"
                     elide: Text.ElideMiddle
+                    fontSize: "small"
 
                     width: parent.width
                     height: paintedHeight

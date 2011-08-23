@@ -61,6 +61,6 @@ Button {
         anchors.leftMargin: 7
         height: 40
         font.bold: true
-        font.pixelSize: 16
+        fontSize: "large"
     }
 }

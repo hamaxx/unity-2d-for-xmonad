@@ -39,7 +39,7 @@ SearchRefineOption {
             anchors.left: parent.left
 
             text: searchRefineOption.title
-            font.pixelSize: 16
+            fontSize: "large"
             font.bold: true
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
         }

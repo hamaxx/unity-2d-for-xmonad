@@ -55,7 +55,7 @@ AbstractButton {
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 15
+        fontSize: "medium"
         color: "white"
         text: tickBox.text
         elide: Text.ElideRight

@@ -97,6 +97,7 @@ RendererGrid {
                 anchors.topMargin: 10
                 anchors.rightMargin: 3
                 anchors.leftMargin: 3
+                fontSize: "small"
             }
         }
     }
