@@ -111,8 +111,7 @@ AbstractButton {
     Rectangle {
         id: underline
 
-        color: "white"
-        opacity: groupHeader.state == "pressed" ? 0.45 : 0.3
+        color: "#21ffffff"
 
         height: 1
         anchors.bottom: parent.bottom
