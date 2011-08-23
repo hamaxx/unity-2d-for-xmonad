@@ -77,6 +77,7 @@ SearchRefineOption {
                 focus: true
                 width: filters.delegateWidth
                 height: filters.delegateHeight
+                x: filters.delegateX(model.index % filters.columns)
                 text: item.name
                 checked: item.active
                 onClicked: item.active = !item.active
