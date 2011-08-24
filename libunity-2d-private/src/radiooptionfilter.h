@@ -43,8 +43,6 @@ public:
     /* getters */
     FilterOptions* options() const;
 
-    Q_INVOKABLE void clear();
-
     virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
 Q_SIGNALS:
