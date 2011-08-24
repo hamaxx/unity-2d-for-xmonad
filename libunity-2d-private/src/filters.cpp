@@ -99,7 +99,6 @@ void Filters::onFilterChanged(unity::dash::Filter::Ptr unityFilter)
 
 void Filters::onFilterRemoved(unity::dash::Filter::Ptr unityFilter)
 {
-    if (unityFilter)
     removeFilter(indexForFilter(unityFilter));
 }
 
