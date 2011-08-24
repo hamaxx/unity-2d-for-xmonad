@@ -78,6 +78,10 @@ QVariant Filters::data(const QModelIndex& index, int role) const
 
 void Filters::onFilterAdded(unity::dash::Filter::Ptr unityFilter)
 {
+    if (unityFilter == NULL) {
+        return;
+    }
+
     /* FIXME: figure out actual index of unityFilter; for now filters are appended */
     int index = m_filters.count();
     addFilter(unityFilter, index);
@@ -85,6 +89,10 @@ void Filters::onFilterAdded(unity::dash::Filter::Ptr unityFilter)
 
 void Filters::onFilterChanged(unity::dash::Filter::Ptr unityFilter)
 {
+    if (unityFilter == NULL) {
+        return;
+    }
+
     QModelIndex filterIndex = index(indexForFilter(unityFilter));
     Q_EMIT dataChanged(filterIndex, filterIndex);
 }
@@ -112,8 +120,6 @@ void Filters::removeFilter(int index)
 
 int Filters::indexForFilter(unity::dash::Filter::Ptr unityFilter)
 {
-    if (unityFilter == NULL) return -1;
-
     int index;
     for (index=0; index<m_filters.count(); index++) {
         if (m_filters[index]->hasUnityFilter(unityFilter)) {

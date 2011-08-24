@@ -19,10 +19,10 @@
 import QtQuick 1.0
 
 FocusScope {
-    property string title
+    id: filterView
+
     property variant lens
     property variant filterModel
 
-    width: parent.width
     height: childrenRect.height
 }

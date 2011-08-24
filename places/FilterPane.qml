@@ -20,7 +20,7 @@ import QtQuick 1.0
 import Effects 1.0
 
 FocusScope {
-    id: searchRefine
+    id: filterPane
 
     property bool folded: true
     property int headerHeight
@@ -51,12 +51,12 @@ FocusScope {
                     color: "white"
                 }
 
-        onClicked: searchRefine.folded = !searchRefine.folded
+        onClicked: filterPane.folded = !filterPane.folded
 
         focus: true
 
         /* Do not navigate down to the options if they are folded */
-        KeyNavigation.down: !searchRefine.folded ? options : header
+        KeyNavigation.down: !filterPane.folded ? options : header
 
         anchors.left: parent.left
         anchors.right: parent.right
@@ -79,7 +79,7 @@ FocusScope {
         FoldingArrow {
             id: arrow
 
-            folded: searchRefine.folded
+            folded: filterPane.folded
 
             anchors.verticalCenter: title.verticalCenter
             anchors.right: parent.right
@@ -89,6 +89,7 @@ FocusScope {
     ListView {
         id: options
 
+        clip: true
         opacity: folded ? 0.0 : 1.0
         Behavior on opacity {NumberAnimation {duration: 100; easing.type: Easing.InOutQuad}}
 
@@ -100,6 +101,7 @@ FocusScope {
         anchors.topMargin: 7
         anchors.bottom: parent.bottom
         orientation: ListView.Vertical
+        spacing: 12
 
         /* Make sure the first section is selected when getting the focus */
         currentIndex: 0
@@ -114,34 +116,16 @@ FocusScope {
         /* Non-draggable when all items are visible */
         boundsBehavior: Flickable.StopAtBounds
 
-        model: searchRefine.lens.filters
-        /* Use a Loader to dynamically load the right QML depending on filter.rendererName
-
-           CheckOptionFilter: filter-checkoption
-           MultiRangeFilter: filter-multirange     TODO
-           RadioOptionFilter: filter-radiooption
-           RatingsFilter: filter-ratings
+        model: filterPane.lens.filters
+        /* Dynamically load the QML file corresponding to filter.rendererName.
+           For example, if filter.rendererName == "filter-checkoption" then
+           load "FilterCheckoption.qml".
         */
-        delegate: Loader {
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            focus: true
-
-            property string title: u2d.tr(filter.name)
-            property variant lens: searchRefine.lens
-            property variant filterModel: filter
-            source: dash.convertToCamelCase(filter.rendererName) + ".qml"
-
-            onLoaded: {
-                item.title = title
-                item.lens = lens
-                item.filterModel = filterModel
-            }
-
-            /* FIXME: add an "all" button
-               filter.filtering is a bool indicating its state
-               filter.clear() is the method that should be used when clicking on it */
+        delegate: FilterLoader {
+            width: ListView.view.width
+            lens: filterPane.lens
+            filterModel: filter
+            isFirst: index == 0
         }
     }
 }

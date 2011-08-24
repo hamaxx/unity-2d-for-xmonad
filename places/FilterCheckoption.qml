@@ -18,40 +18,14 @@
 
 import QtQuick 1.0
 
-SearchRefineOption {
-    id: searchRefineOption
-
-    Item {
-        id: header
-
-        Accessible.name: searchRefineOption.title
-
-        KeyNavigation.down: filters
-
-        focus: true
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: childrenRect.height
-
-        TextCustom {
-            id: title
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-
-            text: searchRefineOption.title
-            font.pixelSize: 16
-            font.bold: true
-            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
-        }
-    }
+Filter {
+    id: filterView
 
     GridViewWithSpacing {
         id: filters
 
-        columns: ( searchRefineOption.filterModel.id == "genre"
-                  || searchRefineOption.filterModel.id == "modified" ) ? 3 : 2
+        columns: ( filterView.filterModel.id == "genre"
+                  || filterView.filterModel.id == "modified" ) ? 3 : 2
         rows: Math.ceil(count/columns)
 
         horizontalSpacing: 10
@@ -60,17 +34,16 @@ SearchRefineOption {
         cellWidth: width/columns
         delegateHeight: 30
 
-        anchors.top: header.bottom
-        anchors.topMargin: 15
         height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
+        focus: true
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
 
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
-        KeyNavigation.up: header
 
         delegate: FocusScope {
             TickBox {
@@ -84,6 +57,6 @@ SearchRefineOption {
             }
         }
 
-        model: searchRefineOption.filterModel.options
+        model: filterView.filterModel.options
     }
 }
