@@ -124,7 +124,30 @@ void IndicatorsManager::checkMousePosition()
 {
     // Called by m_mouseTrackerTimer to implement mouse scrubbing
     // (Assuming item A menu is opened, move mouse over item B => item B menu opens)
-    QWidget* widget = QApplication::widgetAt(QCursor::pos());
+    // Also, delivers motion events to Qt, which will generate correct
+    // enter/leave events for IndicatorEntry widgets.
+    QPoint pos = QCursor::pos();
+    QWidget* widget = QApplication::widgetAt(pos);
+    Display* display = QX11Info::display();
+
+    QPoint relPos = widget != 0 ? widget->mapFromGlobal(pos) : pos;
+    XMotionEvent event = {
+        MotionNotify,
+        0,
+        False,
+        display,
+        widget != 0 ? widget->effectiveWinId() : 0,
+        widget != 0 ? RootWindow(display, widget->x11Info().screen()) : 0,
+        0,
+        CurrentTime,
+        pos.x(), pos.y(),
+        relPos.x(), relPos.y(),
+        0,
+        False,
+        True
+    };
+    qApp->x11ProcessEvent(reinterpret_cast<XEvent*>(&event));
+
     IndicatorEntryWidget* entryWidget = qobject_cast<IndicatorEntryWidget*>(widget);
     if (!entryWidget) {
         return;
