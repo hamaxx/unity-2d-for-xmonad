@@ -46,8 +46,10 @@ AbstractButton {
         height: 22
         anchors.bottom: underline.top
         anchors.bottomMargin: 5
-        anchors.left: parent.left
-        anchors.leftMargin: 8
+        anchors.left: leftRight(parent.left)
+        anchors.right: rightLeft(parent.right)
+        anchors.leftMargin: leftRight(8,0)
+        anchors.rightMargin: rightLeft(8,0)
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -59,16 +61,20 @@ AbstractButton {
         font.pixelSize: 16
         anchors.baseline: underline.top
         anchors.baselineOffset: -10
-        anchors.left: iconImage.right
-        anchors.leftMargin: 8
+        anchors.left: leftRight(iconImage.right)
+        anchors.right: rightLeft(iconImage.left)
+        anchors.leftMargin: leftRight(8,0)
+        anchors.rightMargin: rightLeft(8,0)
     }
 
     Item {
         id: moreResults
 
         visible: availableCount > 0
-        anchors.left: title.right
-        anchors.leftMargin: 11
+        anchors.left: leftRight(title.right)
+        anchors.right: rightLeft(title.left)
+        anchors.leftMargin: leftRight(11,0)
+        anchors.rightMargin: rightLeft(11,0)
         anchors.baseline: title.baseline
 
         opacity: ( categoryHeader.state == "selected" || categoryHeader.state == "pressed"
@@ -96,7 +102,8 @@ AbstractButton {
                       return u2d.tr("See fewer results")
                   }
 
-            anchors.left: parent.left
+            anchors.left: leftRight(parent.left)
+            anchors.right: rightLeft(parent.right)
             anchors.baseline: parent.baseline
         }
 
@@ -104,8 +111,10 @@ AbstractButton {
             id: arrow
 
             folded: categoryHeader.folded
-            anchors.left: label.right
-            anchors.leftMargin: 10
+            anchors.left: leftRight(label.right)
+            anchors.right: rightLeft(label.left)
+            anchors.leftMargin: leftRight(10,0)
+            anchors.rightMargin: rightLeft(10,0)
             anchors.verticalCenter: label.verticalCenter
         }
     }
