@@ -44,10 +44,10 @@ FocusScope {
         else{
             selectionBar.isFirst = (left==0)
             selectionBar.isLast = (right==count-1)
-            selectionBar.leftPos = left*cellWidth
+            selectionBar.leftPos = (left==0) ? 0 : left*cellWidth-2
             /* Hack: Rounding errors can mean the right of the selectionBar fails
-               to wholly cover the container Rectangle */
-            selectionBar.rightPos = (right==count-1) ? container.width : (right+1)*cellWidth
+               to wholly cover the container Rectangle (and its border) */
+            selectionBar.rightPos = (right==count-1) ? parent.width : (right+1)*cellWidth+3
             selectionBar.visible = true
         }
     }
@@ -74,8 +74,8 @@ FocusScope {
 
         anchors.fill: container
         orientation: ListView.Horizontal
-        interactive: false
         focus: true
+        boundsBehavior: Flickable.StopAtBounds
 
         delegate: MultiRangeButton {
             height: 30

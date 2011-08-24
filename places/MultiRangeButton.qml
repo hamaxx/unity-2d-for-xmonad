@@ -17,16 +17,14 @@
  */
 
 import QtQuick 1.0
+import Effects 1.0
 
 AbstractButton {
     id: multiRangeButton
 
     property string text
     property bool checked: false
-    property bool canUncheck: true
     property bool isLast: false
-
-    focus: true
 
     Accessible.name: text
     Accessible.role: Accessible.Slider
@@ -36,14 +34,22 @@ AbstractButton {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
+        anchors.leftMargin: 1
         width: parent.width-1
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: (multiRangeButton.state == "selected") ? 10 : 12
-        color: (checked) ? "red" : "white"
+        font.pixelSize: 13
+        color: "white"
         text: multiRangeButton.text
         elide: Text.ElideRight
-        opacity: ( !canUncheck ) ? 0 : 1
+
+        effect: DropShadow {
+             blurRadius: 8
+             color: "white"
+             offset.x: 0
+             offset.y: 0
+             enabled: ( multiRangeButton.state == "selected" )
+        }
     }
 
     Rectangle {
