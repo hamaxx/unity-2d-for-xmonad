@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-08-25 15:51+0200\n"
+"POT-Creation-Date: 2011-08-25 16:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,15 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Language: \n"
 
-#: launcher/LauncherList.qml:82
-#, qt-format
-msgid "%1 window opened"
-msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+#: places/FilterPane.qml:69
+msgid "Filter results"
+msgstr ""
 
-#: launcher/LauncherList.qml:85
-msgid "not running"
+#: places/SearchEntry.qml:173
+msgid "Search"
 msgstr ""
 
 #: places/HomeShortcuts.qml:56
@@ -56,6 +53,10 @@ msgstr ""
 msgid "Listen to Music"
 msgstr ""
 
+#: places/Home.qml:80
+msgid "Shortcuts"
+msgstr ""
+
 #: places/CategoryHeader.qml:30
 msgid "not expanded"
 msgstr ""
@@ -77,28 +78,29 @@ msgstr ""
 msgid "See fewer results"
 msgstr ""
 
-#: places/Home.qml:80
-msgid "Shortcuts"
+#: places/FilterLoader.qml:36
+#, qt-format
+msgid "Filter %1 active"
 msgstr ""
 
-#: places/SearchEntry.qml:173
-msgid "Search"
+#: places/FilterLoader.qml:38
+#, qt-format
+msgid "Filter %1 inactive"
 msgstr ""
 
-#: places/SearchRefine.qml:69
-msgid "Filter results"
+#: places/FilterLoader.qml:90
+msgid "All"
 msgstr ""
 
-#: places/SearchRefine.qml:93
-msgid "Type"
-msgstr ""
+#: launcher/LauncherList.qml:82
+#, qt-format
+msgid "%1 window opened"
+msgid_plural "%1 windows opened"
+msgstr[0] ""
+msgstr[1] ""
 
-#: libunity-2d-private/src/launcherdevice.cpp:273
-msgid "Eject"
-msgstr ""
-
-#: libunity-2d-private/src/launcherdevice.cpp:281
-msgid "Safely remove"
+#: launcher/LauncherList.qml:85
+msgid "not running"
 msgstr ""
 
 #: libunity-2d-private/src/trash.cpp:125
@@ -118,6 +120,14 @@ msgstr ""
 
 #: libunity-2d-private/src/workspaces.cpp:73
 msgid "Workspaces"
+msgstr ""
+
+#: libunity-2d-private/src/launcherdevice.cpp:273
+msgid "Eject"
+msgstr ""
+
+#: libunity-2d-private/src/launcherdevice.cpp:281
+msgid "Safely remove"
 msgstr ""
 
 #: libunity-2d-private/src/launcherapplication.cpp:894
