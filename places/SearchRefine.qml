@@ -66,7 +66,7 @@ FocusScope {
 
             text: u2d.tr("Filter results")
             font.bold: true
-            font.pixelSize: 16
+            fontSize: "large"
             font.underline: parent.state == "selected"
 
             anchors.verticalCenter: parent.verticalCenter

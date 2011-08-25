@@ -68,7 +68,7 @@ Renderer {
 
             TextCustom {
                 text: displayName
-                font.pixelSize: 16
+                fontSize: "large"
                 anchors.left: parent.left
                 anchors.leftMargin: 8
                 anchors.right: parent.right
