@@ -23,7 +23,7 @@ FocusScope {
 
     property alias model: list.model
     property alias count: list.count
-    property int cellWidth: Math.ceil(width / count)
+    property int cellWidth: Math.floor(width / count)
 
     /* Keep track of active cells with array, from which determine index
         of leftmost and rightmost active cells.*/
