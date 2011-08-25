@@ -80,11 +80,10 @@ Item {
     Row {
         id: stars
 
-        property real currentRating: rating
         Repeater {
             model: size
             Star {
-                fill: clamp(stars.currentRating - index, 0, 1)
+                fill: clamp(rating - index, 0, 1)
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
             }
@@ -122,10 +121,9 @@ Item {
 
         anchors.fill: stars
 
-        onPressed: stars.currentRating = calculateRating(mouseX)
+        onPressed: rating = calculateRating(mouseX)
         onPositionChanged: {
-            if (pressed) stars.currentRating = calculateRating(mouseX)
+            if (pressed) rating = calculateRating(mouseX)
         }
-        onReleased: rating = stars.currentRating
     }
 }
