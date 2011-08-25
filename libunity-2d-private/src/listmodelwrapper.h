@@ -52,6 +52,7 @@ private:
     void onItemChanged(ItemClass item);
 
     QList<WrapperItem*> m_list;
+    QMap<ItemClass, int> m_indexes;
 
     void addItem(ItemClass item, int index);
     void removeItem(ItemClass item, int index);
@@ -79,6 +80,7 @@ ListModelWrapper<WrapperItem, ItemClass>::ListModelWrapper(const std::vector<Ite
 template <class WrapperItem, class ItemClass>
 ListModelWrapper<WrapperItem, ItemClass>::~ListModelWrapper()
 {
+    m_indexes.clear();
     while (!m_list.isEmpty()) {
         delete m_list.takeFirst();
     }
@@ -121,8 +123,7 @@ void ListModelWrapper<WrapperItem, ItemClass>::onItemAdded(ItemClass item)
 template <class WrapperItem, class ItemClass>
 void ListModelWrapper<WrapperItem, ItemClass>::onItemRemoved(ItemClass item)
 {
-    // FIXME: lookup the actual index of item
-    int index = m_list.count() - 1;
+    int index = m_indexes[item];
     beginInsertRows(QModelIndex(), index, index);
     removeItem(item, index);
     endInsertRows();
@@ -131,20 +132,21 @@ void ListModelWrapper<WrapperItem, ItemClass>::onItemRemoved(ItemClass item)
 template <class WrapperItem, class ItemClass>
 void ListModelWrapper<WrapperItem, ItemClass>::onItemChanged(ItemClass item)
 {
-    /* FIXME: broken */
-//    QModelIndex itemIndex = index(m_list.indexOf(qobject_cast<Filter*>(sender())));
-//    Q_EMIT dataChanged(itemIndex, itemIndex);
+    QModelIndex itemIndex = index(m_indexes[item]);
+    Q_EMIT dataChanged(itemIndex, itemIndex);
 }
 
 template <class WrapperItem, class ItemClass>
 void ListModelWrapper<WrapperItem, ItemClass>::addItem(ItemClass item, int index)
 {
+    m_indexes.insert(item, index);
     m_list.insert(index, new WrapperItem(item));
 }
 
 template <class WrapperItem, class ItemClass>
 void ListModelWrapper<WrapperItem, ItemClass>::removeItem(ItemClass item, int index)
 {
+    m_indexes.remove(item);
     delete m_list.takeAt(index);
 }
 
