@@ -60,7 +60,12 @@ set(lib${LIB_NAME}_SRCS
     lenses.cpp
     lens.cpp
     filter.cpp
+    filteroption.cpp
     ratingsfilter.cpp
+    radiooptionfilter.cpp
+    checkoptionfilter.cpp
+    multirangefilter.cpp
+    filters.cpp
     cairoutils.cpp
     indicatorentrywidget.cpp
     indicatorsmanager.cpp
@@ -96,7 +101,7 @@ include_directories(
     ${DEE_INCLUDE_DIRS}
     )
 
-add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS})
+add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS} listmodelwrapper.h)
 set_target_properties(${LIB_NAME} PROPERTIES
     VERSION ${libunity-2d-private_VERSION}
     SOVERSION ${libunity-2d-private_SOVERSION}

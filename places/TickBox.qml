@@ -42,8 +42,17 @@ AbstractButton {
 
     Rectangle {
         id: container
-        width: parent.width
-        height: parent.height
+
+        /* FIXME: Rectangle's borders grow half inside and half outside of the
+           rectangle. In order to avoid it being clipped, we adjust its size
+           and position depending on its border's width.
+
+           Ref.: http://lists.qt.nokia.com/pipermail/qt-qml/2010-May/000264.html
+        */
+        x: Math.floor(border.width / 2)
+        y: Math.floor(border.width / 2)
+        width: parent.width - border.width
+        height: parent.height - border.width
         border.color: if ( parent.state == "selected") return "white"
                       else if ( checked ) return "#cdffffff" // 13% opaque
                       else return "#21ffffff" // 80% opaque
@@ -54,7 +63,7 @@ AbstractButton {
 
     TextCustom {
         id: label
-        anchors.fill: container
+        anchors.fill: parent
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

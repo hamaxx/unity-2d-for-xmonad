@@ -18,39 +18,16 @@
 
 import QtQuick 1.0
 
-SearchRefineOption {
-    id: searchRefineOption
+Filter {
+    id: filterView
 
-    Item {
-        id: header
-
-        Accessible.name: searchRefineOption.title
-
-        KeyNavigation.down: filters
-
-        focus: true
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: childrenRect.height
-
-        TextCustom {
-            id: title
-
-            anchors.top: parent.top
-            anchors.left: parent.left
-
-            text: searchRefineOption.title
-            fontSize: "large"
-            font.bold: true
-            font.underline: ( parent.state == "selected" || parent.state == "hovered" )
-        }
-    }
+    height: filters.height
 
     GridViewWithSpacing {
         id: filters
 
-        columns: 2
+        columns: ( filterView.filterModel.id == "genre"
+                  || filterView.filterModel.id == "modified" ) ? 3 : 2
         rows: Math.ceil(count/columns)
 
         horizontalSpacing: 10
@@ -59,17 +36,16 @@ SearchRefineOption {
         cellWidth: width/columns
         delegateHeight: 30
 
-        anchors.top: header.bottom
-        anchors.topMargin: 15
         height: cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
+        focus: true
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
 
         /* Make sure the first item is selected when getting the focus for the first time */
         currentIndex: 0
-        KeyNavigation.up: header
 
         delegate: FocusScope {
             TickBox {
@@ -77,15 +53,12 @@ SearchRefineOption {
                 width: filters.delegateWidth
                 height: filters.delegateHeight
                 x: filters.delegateX(model.index % filters.columns)
-                       /* Not checking for lens != undefined leads to a segfault
-                          when switching lenses */
-                       text: lens != undefined ? column_0 : ""
-                       checked: dash.currentPage.model.activeSection == model.index
-
-                       onClicked: lens.activeSection = model.index
+                text: item.name
+                checked: item.active
+                onClicked: item.active = !item.active
             }
         }
 
-        model: lens != undefined ? lens.sections : undefined
+        model: filterView.filterModel.options
     }
 }

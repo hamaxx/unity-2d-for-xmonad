@@ -21,13 +21,18 @@
 #include "ratingsfilter.h"
 
 RatingsFilter::RatingsFilter(QObject *parent) :
-    Filter(parent)
+    Filter(parent), m_unityRatingsFilter(NULL)
 {
 }
 
 float RatingsFilter::rating() const
 {
     return m_unityRatingsFilter->rating();
+}
+
+void RatingsFilter::setRating(float rating)
+{
+    m_unityRatingsFilter->rating = rating;
 }
 
 void RatingsFilter::setUnityFilter(unity::dash::Filter::Ptr filter)

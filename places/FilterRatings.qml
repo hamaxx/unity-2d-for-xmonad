@@ -18,32 +18,30 @@
 
 import QtQuick 1.0
 
-Item {
-    id: background
+Filter {
+    id: filterView
 
-    property string state
+    height: rating.height
 
-    opacity: ( state == "selected" || state == "pressed"
-              || state == "hovered" ) ? 1.0 : 0.0
-    Behavior on opacity {NumberAnimation {duration: 100}}
+    RatingStars {
+        id: rating
 
-    Rectangle {
+        height: childrenRect.height
 
-        /* FIXME: */
-        anchors.fill: parent
-        anchors.bottomMargin: 1
-        anchors.rightMargin: 1
+        focus: true
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
 
-        color: background.state == "pressed" ? "#ffffffff" : "#00000000"
-        border.color: "#cccccc"
-        border.width: 1
-        radius: 3
-
-        Image {
-            fillMode: Image.Tile
-            anchors.fill: parent
-            source: "artwork/button_background.png"
-            smooth: false
+        size: 5
+        spacing: 7
+        rating: filterView.filterModel.rating
+        Binding {
+            target: filterView.filterModel
+            property: "rating"
+            value: rating.rating
         }
+
+        enabled: true
     }
 }

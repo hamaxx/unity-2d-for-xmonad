@@ -18,10 +18,20 @@
 
 import QtQuick 1.0
 
-FocusScope {
-    property string title
-    property variant lens
+Filter {
+    id: filterView
 
-    width: parent.width
-    height: childrenRect.height
+    height: filters.height
+
+    MultiRangeView {
+        id: filters
+
+        focus: true
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: 30
+
+        model: filterView.filterModel.options
+    }
 }

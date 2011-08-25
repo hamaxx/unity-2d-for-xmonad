@@ -17,44 +17,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RATINGSFILTER_H
-#define RATINGSFILTER_H
+#ifndef CHECKOPTIONFILTER_H
+#define CHECKOPTIONFILTER_H
 
 // Qt
 #include <QObject>
 #include <QMetaType>
 
 // libunity-core
-#include <UnityCore/RatingsFilter.h>
+#include <UnityCore/CheckOptionFilter.h>
 
 // Local
 #include "filter.h"
+#include "filteroption.h"
 
-class RatingsFilter : public Filter
+class CheckOptionFilter : public Filter
 {
     Q_OBJECT
 
-    Q_PROPERTY(float rating READ rating WRITE setRating NOTIFY ratingChanged)
+    Q_PROPERTY(FilterOptions* options READ options NOTIFY optionsChanged)
 
 public:
-    explicit RatingsFilter(QObject *parent = 0);
+    explicit CheckOptionFilter(QObject *parent = 0);
 
     /* getters */
-    float rating() const;
-
-    /* setters */
-    void setRating(float rating);
+    FilterOptions* options() const;
 
 Q_SIGNALS:
-    void ratingChanged(float);
+    void optionsChanged();
 
 protected:
     virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
 private:
-    unity::dash::RatingsFilter::Ptr m_unityRatingsFilter;
+    unity::dash::CheckOptionFilter::Ptr m_unityCheckOptionFilter;
+    FilterOptions* m_options;
+
+    void onOptionsChanged(unity::dash::CheckOptionFilter::CheckOptions);
 };
 
-Q_DECLARE_METATYPE(RatingsFilter*)
+Q_DECLARE_METATYPE(CheckOptionFilter*)
 
-#endif // RATINGSFILTER_H
+#endif // CHECKOPTIONFILTER_H

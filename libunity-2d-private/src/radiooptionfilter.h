@@ -17,44 +17,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RATINGSFILTER_H
-#define RATINGSFILTER_H
+#ifndef RADIOOPTIONFILTER_H
+#define RADIOOPTIONFILTER_H
 
 // Qt
 #include <QObject>
 #include <QMetaType>
 
 // libunity-core
-#include <UnityCore/RatingsFilter.h>
+#include <UnityCore/RadioOptionFilter.h>
 
 // Local
 #include "filter.h"
+#include "filteroption.h"
 
-class RatingsFilter : public Filter
+class RadioOptionFilter : public Filter
 {
     Q_OBJECT
 
-    Q_PROPERTY(float rating READ rating WRITE setRating NOTIFY ratingChanged)
+    Q_PROPERTY(FilterOptions* options READ options NOTIFY optionsChanged)
 
 public:
-    explicit RatingsFilter(QObject *parent = 0);
+    explicit RadioOptionFilter(QObject *parent = 0);
 
     /* getters */
-    float rating() const;
-
-    /* setters */
-    void setRating(float rating);
+    FilterOptions* options() const;
 
 Q_SIGNALS:
-    void ratingChanged(float);
+    void optionsChanged();
 
 protected:
     virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
 private:
-    unity::dash::RatingsFilter::Ptr m_unityRatingsFilter;
+    unity::dash::RadioOptionFilter::Ptr m_unityRadioOptionFilter;
+    FilterOptions* m_options;
+
+    void onOptionsChanged(unity::dash::RadioOptionFilter::RadioOptions);
 };
 
-Q_DECLARE_METATYPE(RatingsFilter*)
+Q_DECLARE_METATYPE(RadioOptionFilter*)
 
-#endif // RATINGSFILTER_H
+#endif // RADIOOPTIONFILTER_H

@@ -20,6 +20,22 @@
 // Self
 #include "filter.h"
 
+// local
+#include "ratingsfilter.h"
+#include "radiooptionfilter.h"
+#include "checkoptionfilter.h"
+#include "multirangefilter.h"
+
+// libunity-core
+#include <UnityCore/Filter.h>
+#include <UnityCore/RatingsFilter.h>
+#include <UnityCore/RadioOptionFilter.h>
+#include <UnityCore/CheckOptionFilter.h>
+#include <UnityCore/MultiRangeFilter.h>
+
+// Qt
+#include <QDebug>
+
 Filter::Filter(QObject *parent) :
     QObject(parent)
 {
@@ -67,13 +83,13 @@ void Filter::clear()
 }
 
 
-void Filter::setUnityFilter(unity::dash::Filter::Ptr filter)
+void Filter::setUnityFilter(unity::dash::Filter::Ptr unityFilter)
 {
     if (m_unityFilter != NULL) {
         // FIXME: should disconnect from m_unityFilter's signals
     }
 
-    m_unityFilter = filter;
+    m_unityFilter = unityFilter;
 
     /* Property change signals */
     m_unityFilter->id.changed.connect(sigc::mem_fun(this, &Filter::idChanged));
@@ -88,5 +104,30 @@ void Filter::setUnityFilter(unity::dash::Filter::Ptr filter)
     m_unityFilter->removed.connect(sigc::mem_fun(this, &Filter::removed));
 }
 
+Filter* Filter::newFromUnityFilter(unity::dash::Filter::Ptr unityFilter)
+{
+    Filter* filter;
+
+    if (typeid(*unityFilter) == typeid(unity::dash::RatingsFilter)) {
+        filter = new RatingsFilter;
+    } else if (typeid(*unityFilter) == typeid(unity::dash::CheckOptionFilter)) {
+        filter = new CheckOptionFilter;
+    } else if (typeid(*unityFilter) == typeid(unity::dash::RadioOptionFilter)) {
+        filter = new RadioOptionFilter;
+    } else if (typeid(*unityFilter) == typeid(unity::dash::MultiRangeFilter)) {
+        filter = new MultiRangeFilter;
+    } else {
+        qWarning() << "Filter of unknown type: " << typeid(*unityFilter).name();
+        filter = new Filter;
+    }
+
+    filter->setUnityFilter(unityFilter);
+    return filter;
+}
+
+bool Filter::hasUnityFilter(unity::dash::Filter::Ptr unityFilter) const
+{
+    return m_unityFilter == unityFilter;
+}
 
 #include "filter.moc"

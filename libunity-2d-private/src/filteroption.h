@@ -17,8 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILTER_H
-#define FILTER_H
+#ifndef FILTEROPTION_H
+#define FILTEROPTION_H
+
+// Local
+#include "listmodelwrapper.h"
 
 // Qt
 #include <QObject>
@@ -27,51 +30,42 @@
 // libunity-core
 #include <UnityCore/Filter.h>
 
-class Filter : public QObject
+class FilterOption : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString id READ id NOTIFY idChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString iconHint READ iconHint NOTIFY iconHintChanged)
-    Q_PROPERTY(QString rendererName READ rendererName NOTIFY rendererNameChanged)
-    Q_PROPERTY(bool visible READ visible NOTIFY visibleChanged)
-    Q_PROPERTY(bool collapsed READ collapsed NOTIFY collapsedChanged)
-    Q_PROPERTY(bool filtering READ filtering NOTIFY filteringChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
 public:
-    explicit Filter(QObject *parent = 0);
+    explicit FilterOption(unity::dash::FilterOption::Ptr unityFilterOption, QObject *parent = 0);
 
     /* getters */
     QString id() const;
     QString name() const;
     QString iconHint() const;
-    QString rendererName() const;
-    bool visible() const;
-    bool collapsed() const;
-    bool filtering() const;
+    bool active() const;
 
-    Q_INVOKABLE void clear();
-
-    static Filter* newFromUnityFilter(unity::dash::Filter::Ptr unityFilter);
-    bool hasUnityFilter(unity::dash::Filter::Ptr unityFilter) const;
+    /* setters */
+    void setActive(bool active);
 
 Q_SIGNALS:
     void idChanged(std::string);
     void nameChanged(std::string);
     void iconHintChanged(std::string);
-    void rendererNameChanged(std::string);
-    void visibleChanged(bool);
-    void collapsedChanged(bool);
-    void filteringChanged(bool);
+    void activeChanged(bool);
 
-    void removed();
+private:
+    void setUnityFilterOption(unity::dash::FilterOption::Ptr unityFilterOption);
 
-protected:
-    unity::dash::Filter::Ptr m_unityFilter;
-    virtual void setUnityFilter(unity::dash::Filter::Ptr unityFilter);
+    unity::dash::FilterOption::Ptr m_unityFilterOption;
 };
 
-Q_DECLARE_METATYPE(Filter*)
+Q_DECLARE_METATYPE(FilterOption*)
 
-#endif // FILTER_H
+typedef ListModelWrapper<FilterOption, unity::dash::FilterOption::Ptr> FilterOptions;
+Q_DECLARE_METATYPE(FilterOptions*)
+
+#endif // FILTEROPTION_H

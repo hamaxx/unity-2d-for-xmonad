@@ -23,6 +23,7 @@
 // libunity-2d
 #include <debug_p.h>
 #include "launcherapplication.h"
+#include "filters.h"
 
 // Qt
 #include <QUrl>
@@ -31,9 +32,9 @@
 Lens::Lens(QObject *parent) :
     QObject(parent)
 {
-    m_results = new DeeListModel;
-    m_globalResults = new DeeListModel;
-    m_categories = new DeeListModel;
+    m_results = new DeeListModel(this);
+    m_globalResults = new DeeListModel(this);
+    m_categories = new DeeListModel(this);
 }
 
 QString Lens::id() const
@@ -109,6 +110,11 @@ DeeListModel* Lens::categories() const
 bool Lens::active() const
 {
     return m_unityLens->active();
+}
+
+Filters* Lens::filters() const
+{
+    return m_filters;
 }
 
 QString Lens::searchQuery() const
@@ -201,11 +207,14 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 {
     if (m_unityLens != NULL) {
         // FIXME: should disconnect from m_unityLens's signals
+        delete m_filters;
     }
 
     // FIXME: should emit change notification signals for all properties
 
     m_unityLens = lens;
+
+    m_filters = new Filters(m_unityLens->filters, this);
 
     m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
     m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
