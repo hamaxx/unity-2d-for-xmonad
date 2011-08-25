@@ -58,6 +58,12 @@ FocusScope {
     Rectangle {
         id: container
 
+        /* FIXME: Rectangle's borders grow half inside and half outside of the
+           rectangle. In order to avoid it being clipped, we adjust its size
+           and position depending on its border's width.
+
+           Ref.: http://lists.qt.nokia.com/pipermail/qt-qml/2010-May/000264.html
+        */
         x: Math.floor(border.width / 2)
         y: Math.floor(border.width / 2)
         width: parent.width - border.width
