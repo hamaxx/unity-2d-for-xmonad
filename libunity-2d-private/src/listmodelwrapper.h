@@ -54,7 +54,7 @@ private:
     QList<WrapperItem*> m_list;
 
     void addItem(ItemClass item, int index);
-    void removeItem(int index);
+    void removeItem(ItemClass item, int index);
 };
 
 
@@ -111,7 +111,7 @@ QVariant ListModelWrapper<WrapperItem, ItemClass>::data(const QModelIndex& index
 template <class WrapperItem, class ItemClass>
 void ListModelWrapper<WrapperItem, ItemClass>::onItemAdded(ItemClass item)
 {
-    // FIXME: lookup the actual index of item
+    /* FIXME: figure out actual index of item; for now items are appended */
     int index = m_list.count();
     beginInsertRows(QModelIndex(), index, index);
     addItem(item, index);
@@ -124,7 +124,7 @@ void ListModelWrapper<WrapperItem, ItemClass>::onItemRemoved(ItemClass item)
     // FIXME: lookup the actual index of item
     int index = m_list.count() - 1;
     beginInsertRows(QModelIndex(), index, index);
-    addItem(item, index);
+    removeItem(item, index);
     endInsertRows();
 }
 
@@ -143,7 +143,7 @@ void ListModelWrapper<WrapperItem, ItemClass>::addItem(ItemClass item, int index
 }
 
 template <class WrapperItem, class ItemClass>
-void ListModelWrapper<WrapperItem, ItemClass>::removeItem(int index)
+void ListModelWrapper<WrapperItem, ItemClass>::removeItem(ItemClass item, int index)
 {
     delete m_list.takeAt(index);
 }
