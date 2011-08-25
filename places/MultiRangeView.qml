@@ -52,9 +52,6 @@ FocusScope {
         }
     }
 
-    focus: true
-
-
     Rectangle {
         id: container
 
