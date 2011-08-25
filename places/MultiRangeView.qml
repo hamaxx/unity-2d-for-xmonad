@@ -22,11 +22,46 @@ FocusScope {
     id: multiRangeView
 
     property alias model: list.model
+    property alias count: list.count
+    property int cellWidth: Math.floor(container.width / count)
+
+    property variant activeCells: Array(count)
+
+    function cellActivationChanged(cellId, state) {
+        var tmp = activeCells
+        tmp[cellId] = state
+        activeCells = tmp
+        setSelectionBarPosition()
+    }
+
+    function setSelectionBarPosition() {
+        var left = activeCells.indexOf(true)
+        var right = activeCells.lastIndexOf(true)
+
+        if (left == -1 || right == -1){
+            selectionBar.visible = false
+        }
+        else{
+            selectionBar.isFirst = (left==0)
+            selectionBar.isLast = (right==count-1)
+            selectionBar.leftPos = (left==0) ? 0 : left*cellWidth-2
+            /* Hack: Rounding errors can mean the right of the selectionBar fails
+               to wholly cover the container Rectangle (and its border) */
+            selectionBar.rightPos = (right==count-1) ? parent.width : (right+1)*cellWidth+3
+            selectionBar.visible = true
+        }
+    }
+
+    focus: true
+
 
     Rectangle {
         id: container
 
-        anchors.fill: parent
+        x: Math.floor(border.width / 2)
+        y: Math.floor(border.width / 2)
+        width: parent.width - border.width
+        height: parent.height - border.width
 
         border.color: "#21ffffff" // 80% opaque white
         border.width: 1
@@ -39,14 +74,24 @@ FocusScope {
 
         anchors.fill: container
         orientation: ListView.Horizontal
+        focus: true
+        boundsBehavior: Flickable.StopAtBounds
 
         delegate: MultiRangeButton {
-            width: 45
             height: 30
+            width: cellWidth
             text: item.name
             checked: item.active
             onClicked: item.active = !item.active
+            onCheckedChanged: cellActivationChanged(model.index, checked)
+            isLast: ( model.index == count-1 )
+            Component.onCompleted: cellActivationChanged(model.index, checked)
         }
     }
-}
 
+    MultiRangeSelectionBar {
+        id: selectionBar
+        anchors.top: container.top
+        anchors.bottom: container.bottom
+    }
+}

@@ -24,43 +24,43 @@ AbstractButton {
 
     property string text
     property bool checked: false
-    property bool canUncheck: true
+    property bool isLast: false
 
     Accessible.name: text
     Accessible.role: Accessible.Slider
 
-    width: childrenRect.width
-    height: childrenRect.height
-
-    effect: DropShadow {
-         blurRadius: 8
-         color: "white"
-         offset.x: 0
-         offset.y: 0
-         enabled: ( multiRangeButton.state == "selected" )
-    }
-
-    Rectangle {
-        id: container
-        width: parent.width
-        height: parent.height
-        border.color: if ( parent.state == "selected") return "white"
-                      else if ( checked ) return "#cdffffff" // 13% opaque
-                      else return "#21ffffff" // 80% opaque
-        border.width: ( checked ) ? 2 : -1
-        color: ( checked ) ? "#21ffffff" : "transparent"
-        //radius: 5
-    }
-
     TextCustom {
         id: label
-        anchors.fill: container
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: 1
+        width: parent.width-1
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 12
+        font.pixelSize: 13
         color: "white"
         text: multiRangeButton.text
         elide: Text.ElideRight
-        opacity: ( !canUncheck ) ? 0 : 1
+
+        effect: DropShadow {
+             blurRadius: 8
+             color: "white"
+             offset.x: 0
+             offset.y: 0
+             enabled: ( multiRangeButton.state == "selected" )
+        }
+    }
+
+    Rectangle {
+        id: separatorLine
+
+        color: "#21ffffff"
+
+        width: 1
+        visible: ( !isLast )
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.right
     }
 }
