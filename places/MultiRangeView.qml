@@ -78,7 +78,7 @@ FocusScope {
     ListView {
         id: list
 
-        anchors.fill: container
+        anchors.fill: parent
         orientation: ListView.Horizontal
         focus: true
         boundsBehavior: Flickable.StopAtBounds
