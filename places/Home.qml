@@ -82,7 +82,7 @@ FocusScope {
             anchors.leftMargin: 3
             width: paintedWidth
             height: icon.height
-            font.pixelSize: 16
+            fontSize: "large"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

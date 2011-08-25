@@ -22,5 +22,14 @@ import QtQuick 1.0
 Text {
     color: "#ffffff"
 //    font.family: "UbuntuBeta"
-//    font.pointSize: 10
+    property string fontSize: "medium"
+    font.pixelSize: {
+        switch (fontSize) {
+            case "small": return 13
+            case "medium": return 15
+            case "large": return 16
+            case "x-large": return 20
+            default: return 14
+        }
+    }
 }
