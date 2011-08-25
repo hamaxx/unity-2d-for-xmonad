@@ -1,8 +1,31 @@
 unity-2d (4.2.0-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * New upstream release:
+    - [panel] application menus do not appear on first hover after dismissal
+      (lp: #825262)
+    - [dash] Lens icons badly scaled (lp: #825368)
+    - [panel] indicators are shifted offscreen to the right (lp: #827673)
+    - [panel] scrubbing from system indicators to menubar should be possible
+      (lp: #706903)
+    - [launcher] Closed applications don't get their launcher counts cleared
+      (lp: #767367)
+    - [dash] selected item should not be underlined but use the same 
+      treatment as unity (lp: #817456)
+    - [dash] categories should be collapsed by default (lp: #827214)
+    - [dash] Ratings filter (lp: #831855)
+    - [dash] Multirange filter (lp: #831856)
+    - [dash] ToggleButton filter (lp: #831857)
+    - [dash] Icon size must be bigger to match the mockups (lp: #831858)
+    - [dash] "Refine search" right margin should be 15 pixels (lp: #832058)
+    - [dash] "Refine search" should be "Filter results" (lp: #832060)
+    - [dash] Font sizes should match new design (lp: #832114)
+    - [panel] Glitch: application menu appearing when pressing the BFB 
+      (lp: #825060)
+    - [panel] Glitch: application menus are quickly opened after a drag gesture
+      (lp: #825267)
+    - [dash] File thumbnails aspect ratio is not respected (lp: #832204)
 
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 25 Aug 2011 16:32:52 +0200
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 25 Aug 2011 18:01:31 +0200
 
 unity-2d (4.0.0-0ubuntu2) oneiric; urgency=low
 
