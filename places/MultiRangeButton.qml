@@ -27,7 +27,6 @@ AbstractButton {
     property bool isLast: false
 
     Accessible.name: text
-    Accessible.role: Accessible.Slider
 
     TextCustom {
         id: label
