@@ -23,9 +23,13 @@ FocusScope {
 
     property alias model: list.model
     property alias count: list.count
-    property int cellWidth: Math.floor(container.width / count)
+    property int cellWidth: Math.ceil(width / count)
 
+    /* Keep track of active cells with array, from which determine index
+        of leftmost and rightmost active cells.*/
     property variant activeCells: Array(count)
+    property int leftActiveCell: -1
+    property int rightActiveCell: -1
 
     function cellActivationChanged(cellId, state) {
         var tmp = activeCells
@@ -35,21 +39,8 @@ FocusScope {
     }
 
     function setSelectionBarPosition() {
-        var left = activeCells.indexOf(true)
-        var right = activeCells.lastIndexOf(true)
-
-        if (left == -1 || right == -1){
-            selectionBar.visible = false
-        }
-        else{
-            selectionBar.isFirst = (left==0)
-            selectionBar.isLast = (right==count-1)
-            selectionBar.leftPos = (left==0) ? 0 : left*cellWidth-2
-            /* Hack: Rounding errors can mean the right of the selectionBar fails
-               to wholly cover the container Rectangle (and its border) */
-            selectionBar.rightPos = (right==count-1) ? parent.width : (right+1)*cellWidth+3
-            selectionBar.visible = true
-        }
+        leftActiveCell = activeCells.indexOf(true)
+        rightActiveCell = activeCells.lastIndexOf(true);
     }
 
     Rectangle {
@@ -88,11 +79,19 @@ FocusScope {
             onClicked: item.active = !item.active
             onCheckedChanged: cellActivationChanged(model.index, checked)
             isLast: ( model.index == count-1 )
-            Component.onCompleted: cellActivationChanged(model.index, checked)
+            Component.onCompleted: cellActivationChanged(model.index, item.active)
         }
     }
 
     MultiRangeSelectionBar {
         id: selectionBar
+
+        visible: ( leftActiveCell != -1 && rightActiveCell != -1 )
+        isFirst: ( leftActiveCell == 0 )
+        isLast: ( rightActiveCell == count-1 )
+        leftPos: ( leftActiveCell == 0 ) ? 0 : leftActiveCell*cellWidth-2
+        /* Hack: Rounding errors can mean the right of the selectionBar fails
+           to wholly cover the container Rectangle (and its border) */
+        rightPos: ( rightActiveCell == count-1 ) ? parent.width : (rightActiveCell+1)*cellWidth+3
     }
 }
