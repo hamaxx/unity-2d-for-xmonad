@@ -52,7 +52,6 @@ public:
     bool filtering() const;
 
     Q_INVOKABLE void clear();
-    virtual void setUnityFilter(unity::dash::Filter::Ptr unityFilter);
 
     static Filter* newFromUnityFilter(unity::dash::Filter::Ptr unityFilter);
     bool hasUnityFilter(unity::dash::Filter::Ptr unityFilter) const;
@@ -70,6 +69,7 @@ Q_SIGNALS:
 
 protected:
     unity::dash::Filter::Ptr m_unityFilter;
+    virtual void setUnityFilter(unity::dash::Filter::Ptr unityFilter);
 };
 
 Q_DECLARE_METATYPE(Filter*)

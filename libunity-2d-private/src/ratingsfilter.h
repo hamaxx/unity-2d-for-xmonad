@@ -45,10 +45,11 @@ public:
     /* setters */
     void setRating(float rating);
 
-    virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
-
 Q_SIGNALS:
     void ratingChanged(float);
+
+protected:
+    virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
 private:
     unity::dash::RatingsFilter::Ptr m_unityRatingsFilter;

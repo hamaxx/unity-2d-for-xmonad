@@ -43,12 +43,11 @@ public:
     /* getters */
     FilterOptions* options() const;
 
-    Q_INVOKABLE void clear();
-
-    virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
-
 Q_SIGNALS:
     void optionsChanged();
+
+protected:
+    virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
 
 private:
     unity::dash::RadioOptionFilter::Ptr m_unityRadioOptionFilter;

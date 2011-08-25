@@ -105,7 +105,7 @@ FocusScope {
 
         model: dash.lenses
 
-        bodyDelegate: UnityDefaultRenderer {
+        bodyDelegate: TileVertical {
             lens: model.item
             name: model.item.name
             iconHint: model.item.iconHint

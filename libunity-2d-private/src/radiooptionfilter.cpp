@@ -30,11 +30,6 @@ FilterOptions* RadioOptionFilter::options() const
     return m_options;
 }
 
-void RadioOptionFilter::clear()
-{
-    m_unityRadioOptionFilter->Clear();
-}
-
 void RadioOptionFilter::setUnityFilter(unity::dash::Filter::Ptr filter)
 {
     Filter::setUnityFilter(filter);
