@@ -116,7 +116,7 @@ FocusScope {
         /* Non-draggable when all items are visible */
         boundsBehavior: Flickable.StopAtBounds
 
-        model: filterPane.lens.filters
+        model: filterPane.lens != undefined ? filterPane.lens.filters : undefined
         /* Dynamically load the QML file corresponding to filter.rendererName.
            For example, if filter.rendererName == "filter-checkoption" then
            load "FilterCheckoption.qml".
