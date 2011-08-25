@@ -120,19 +120,12 @@ Item {
             return clamp( rating, 0, size )
         }
 
-        property bool mouseDown: false
         anchors.fill: stars
 
-        onPressed: {
-            mouseDown = true;
-            stars.currentRating = calculateRating(mouseX)
-        }
+        onPressed: stars.currentRating = calculateRating(mouseX)
         onPositionChanged: {
-            if (mouseDown) stars.currentRating = calculateRating(mouseX)
+            if (pressed) stars.currentRating = calculateRating(mouseX)
         }
-        onReleased: {
-            mouseDown = false;
-            rating = stars.currentRating
-        }
+        onReleased: rating = stars.currentRating
     }
 }
