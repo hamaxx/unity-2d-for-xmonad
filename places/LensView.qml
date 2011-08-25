@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import "utils.js" as Utils
 
 FocusScope {
     id: lensView
@@ -82,7 +83,7 @@ FocusScope {
             property string rendererName: model.column_2
             property int categoryId: index
 
-            source: rendererName ? rendererName+".qml" : ""
+            source: rendererName ? Utils.convertToCamelCase(rendererName) + ".qml" : ""
             onStatusChanged: {
                 if (status == Loader.Error)
                     console.log("Failed to load renderer", rendererName)

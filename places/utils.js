@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010-2011 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+.pragma library
 
-UnityEmptySearchRenderer {
+/* Convert strings like "one-two-three" to "OneTwoThree" */
+function convertToCamelCase( name ) {
+    var chunksArray = name.split('-')
+    var camelName = ''
+    for (var i=0; i<chunksArray.length; i++){
+        camelName = camelName + chunksArray[i].charAt(0).toUpperCase() + chunksArray[i].slice(1);
+    }
+    return camelName
 }
