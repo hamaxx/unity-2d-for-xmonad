@@ -1,3 +1,9 @@
+unity-2d (4.2.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * 
+
+ -- Florian Boucault <florian.boucault@canonical.com>  Thu, 25 Aug 2011 16:32:52 +0200
+
 unity-2d (4.0.0-0ubuntu2) oneiric; urgency=low
 
   * No change rebuild for the nux update abi break
