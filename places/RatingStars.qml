@@ -80,11 +80,10 @@ Item {
     Row {
         id: stars
 
-        property real currentRating: rating
         Repeater {
             model: size
             Star {
-                fill: clamp(stars.currentRating - index, 0, 1)
+                fill: clamp(rating - index, 0, 1)
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
             }
@@ -105,27 +104,27 @@ Item {
 
         function calculateRating( posX ){
             /* Small left-hand edge to set zero rating */
-            if( posX < 4 ) return 0
+            if( posX < 4 ){
+                rating = 0
+                return
+            }
 
             /* Mouse X coordinate over one unit, relative to that unit's left edge*/
             var posXOverUnit = posX % unitWidth
 
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
-            var rating = (posX - posXOverUnit) / unitWidth + 1
+            var m_rating = (posX - posXOverUnit) / unitWidth + 1
 
             /* If posX under half the star's width, remove 0.5 from the rating */
             if( posXOverUnit <= (starIconSize/2) ){
-                rating = rating - 0.5
+                m_rating = m_rating - 0.5
             }
-            return clamp( rating, 0, size )
+            rating = clamp( m_rating, 0, size )
         }
 
         anchors.fill: stars
 
-        onPressed: stars.currentRating = calculateRating(mouseX)
-        onPositionChanged: {
-            if (pressed) stars.currentRating = calculateRating(mouseX)
-        }
-        onReleased: rating = stars.currentRating
+        onPressed: calculateRating(mouseX)
+        onPositionChanged: if( pressed ) calculateRating(mouseX)
     }
 }
