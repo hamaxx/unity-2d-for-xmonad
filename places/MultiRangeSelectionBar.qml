@@ -28,6 +28,7 @@ Item {
 
     x: leftPos
     width: rightPos - leftPos
+    height: childrenRect.height
 
     Image {
         id: leftBorder
