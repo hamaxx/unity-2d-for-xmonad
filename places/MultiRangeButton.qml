@@ -37,7 +37,7 @@ AbstractButton {
         width: parent.width-1
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 13
+        fontSize: "small"
         color: "white"
         text: multiRangeButton.text
         elide: Text.ElideRight
