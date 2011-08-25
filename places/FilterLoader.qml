@@ -69,7 +69,7 @@ FocusScope {
             anchors.left: parent.left
 
             text: u2d.tr(filterModel.name)
-            font.pixelSize: 16
+            fontSize: "large"
             font.bold: true
             font.underline: ( parent.state == "selected" || parent.state == "hovered" )
         }

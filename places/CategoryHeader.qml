@@ -56,7 +56,7 @@ AbstractButton {
     TextCustom {
         id: title
 
-        font.pixelSize: 16
+        fontSize: "large"
         anchors.baseline: underline.top
         anchors.baselineOffset: -10
         anchors.left: iconImage.right
@@ -86,6 +86,7 @@ AbstractButton {
         TextCustom {
             id: label
 
+            fontSize: "small"
             text: if(categoryHeader.folded) {
                       if(availableCount == 1) {
                           return u2d.tr("See one more result")

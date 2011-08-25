@@ -153,7 +153,7 @@ AbstractButton {
                 }
             }
 
-            Text {
+            TextCustom {
                 id: search_instructions
 
                 anchors.left: parent.left
@@ -162,7 +162,7 @@ AbstractButton {
 
                 color: "white"
                 opacity: 0.5
-                font.pixelSize: 20
+                fontSize: "x-large"
                 font.italic: true
                 text: {
                     if(search_input.text)

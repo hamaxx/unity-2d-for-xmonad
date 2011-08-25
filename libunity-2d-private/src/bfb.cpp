@@ -68,7 +68,7 @@ bool BfbItem::urgent() const
 
 QString BfbItem::name() const
 {
-    return u2dTr("Dash");
+    return u2dTr("Dash home");
 }
 
 QString BfbItem::icon() const
