@@ -50,7 +50,6 @@ Item {
             double_rating = clamp(double_rating+1, 0, size * 2)
         }
         rating = double_rating / 2
-        return true
     }
 
     function decrementRating() {
@@ -63,16 +62,17 @@ Item {
             double_rating = clamp(double_rating-1, 0, size * 2)
         }
         rating = double_rating / 2
-        return true
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
         switch (key) {
         case Qt.Key_Right:
-            return incrementRating()
+            incrementRating()
+            return true
         case Qt.Key_Left:
-            return decrementRating()
+            decrementRating()
+            return true
         }
         return false
     }
