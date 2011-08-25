@@ -91,7 +91,5 @@ FocusScope {
 
     MultiRangeSelectionBar {
         id: selectionBar
-        anchors.top: container.top
-        anchors.bottom: container.bottom
     }
 }
