@@ -1,3 +1,21 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010-2011 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import QtQuick 1.0
 
 Item {
@@ -32,7 +50,6 @@ Item {
             double_rating = clamp(double_rating+1, 0, size * 2)
         }
         rating = double_rating / 2
-        return true
     }
 
     function decrementRating() {
@@ -45,16 +62,17 @@ Item {
             double_rating = clamp(double_rating-1, 0, size * 2)
         }
         rating = double_rating / 2
-        return true
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
         switch (key) {
         case Qt.Key_Right:
-            return incrementRating()
+            incrementRating()
+            return true
         case Qt.Key_Left:
-            return decrementRating()
+            decrementRating()
+            return true
         }
         return false
     }
@@ -62,11 +80,10 @@ Item {
     Row {
         id: stars
 
-        property real currentRating: rating
         Repeater {
             model: size
             Star {
-                fill: clamp(stars.currentRating - index, 0, 1)
+                fill: clamp(rating - index, 0, 1)
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
             }
@@ -87,34 +104,27 @@ Item {
 
         function calculateRating( posX ){
             /* Small left-hand edge to set zero rating */
-            if( posX < 4 ) return 0
+            if( posX < 4 ){
+                rating = 0
+                return
+            }
 
             /* Mouse X coordinate over one unit, relative to that unit's left edge*/
             var posXOverUnit = posX % unitWidth
 
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
-            var rating = (posX - posXOverUnit) / unitWidth + 1
+            var m_rating = (posX - posXOverUnit) / unitWidth + 1
 
             /* If posX under half the star's width, remove 0.5 from the rating */
             if( posXOverUnit <= (starIconSize/2) ){
-                rating = rating - 0.5
+                m_rating = m_rating - 0.5
             }
-            return clamp( rating, 0, size )
+            rating = clamp( m_rating, 0, size )
         }
 
-        property bool mouseDown: false
         anchors.fill: stars
 
-        onPressed: {
-            mouseDown = true;
-            stars.currentRating = calculateRating(mouseX)
-        }
-        onPositionChanged: {
-            if (mouseDown) stars.currentRating = calculateRating(mouseX)
-        }
-        onReleased: {
-            mouseDown = false;
-            rating = stars.currentRating
-        }
+        onPressed: calculateRating(mouseX)
+        onPositionChanged: if( pressed ) calculateRating(mouseX)
     }
 }
