@@ -84,7 +84,7 @@ FocusScope {
         boundsBehavior: Flickable.StopAtBounds
 
         delegate: MultiRangeButton {
-            height: 30
+            height: ListView.view.height
             width: cellWidth
             text: item.name
             checked: item.active
