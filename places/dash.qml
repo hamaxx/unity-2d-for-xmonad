@@ -28,7 +28,7 @@ Item {
     property variant currentPage
 
     function isLeftToRight() {
-        return dashView.layoutDirection == Qt.LeftToRight;
+        return dash.layoutDirection == Qt.LeftToRight;
     }
 
     function isRightToLeft() { return ! isLeftToRight(); }
@@ -182,20 +182,20 @@ Item {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
             source: getBorderImage()
-        }
 
-        function getBorderImage() {
-            var dir = dashView.layoutDirection;
-            if (dir == Qt.LeftToRight) {
-                if (screen.isCompositingManagerRunning)
-                    return "artwork/desktop_dash_background.sci";
-                else
-                    return "artwork/desktop_dash_background_no_transparency.sci";
-            } else { // Qt.RightToLeft
-                if (screen.isCompositingManagerRunning)
-                    return "artwork/desktop_dash_background_rtl.sci";
-                else
-                    return "artwork/desktop_dash_background_no_transparency_rtl.sci";
+            function getBorderImage() {
+                var dir = dash.layoutDirection;
+                if (dir == Qt.LeftToRight) {
+                    if (screen.isCompositingManagerRunning)
+                        return "artwork/desktop_dash_background.sci";
+                    else
+                        return "artwork/desktop_dash_background_no_transparency.sci";
+                } else { // Qt.RightToLeft
+                    if (screen.isCompositingManagerRunning)
+                        return "artwork/desktop_dash_background_rtl.sci";
+                    else
+                        return "artwork/desktop_dash_background_no_transparency_rtl.sci";
+                }
             }
         }
     }
