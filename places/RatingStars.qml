@@ -25,6 +25,7 @@ Item {
     property int size: 5 /* Number of stars */
     property alias enabled: starsMouseArea.enabled
     property alias spacing: stars.spacing
+    property bool hide_rating: false
 
     /* Configure icon size to use. Requires icon files named:
        - artwork/star_empty-${starIconSize}.png
@@ -83,7 +84,7 @@ Item {
         Repeater {
             model: size
             Star {
-                fill: clamp(rating - index, 0, 1)
+                fill: ( hide_rating ) ? 0 : clamp(rating - index, 0, 1)
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
             }
