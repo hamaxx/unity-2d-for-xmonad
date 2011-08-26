@@ -84,7 +84,7 @@ DropItem {
 
     property int pips: 0
     property string pipSource: "artwork/launcher_" +
-                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
+                               ((pips <= 1) ? "arrow" : "pip") + "_" + leftRight("ltr", "rtl") + ".png"
     function getPipOffset(index) {
         /* Pips need to always be centered, regardless if they are an even or odd
            number. The following simple conditional code works and is less
@@ -93,6 +93,18 @@ DropItem {
         if (pips == 1) return 0
         if (pips == 2) return (index == 0) ? -2 : +2
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
+    }
+
+    function isLeftToRight() {
+        return item.layoutDirection == Qt.LeftToRight;
+    }
+
+    function leftRight(ltr, rtl) {
+        return isLeftToRight() ? ltr : rtl;
+    }
+
+    function rightLeft(rtl, ltr) {
+        return isLeftToRight() ? ltr : rtl;
     }
 
     signal clicked(variant mouse)
@@ -125,11 +137,12 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
-            anchors.right: parent.right
+            anchors.right: leftRight(parent.right)
+            anchors.left: rightLeft(parent.left)
             y: item.height - item.tileSize / 2 - height / 2
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("artwork/launcher_arrow_rtl.png")
+                  .arg("artwork/launcher_arrow_" + leftRight("rtl","ltr") + ".png")
                   .arg("lightgrey")
                   .arg(1.0)
 
@@ -149,7 +162,8 @@ DropItem {
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
-                anchors.left: (parent) ? parent.left : undefined
+                anchors.left: leftRight((parent) ? parent.left : undefined)
+                anchors.right: rightLeft((parent) ? parent.right : undefined)
                 y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
 
                 source: "image://blended/%1color=%2alpha=%3"
