@@ -87,8 +87,7 @@ void MenuBarWidget::onEntryRemoved(const std::string& entry_id)
 {
     Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList)
     {
-        if (widget->entry()->id() == entry_id)
-        {
+        if (widget->entry()->id() == entry_id) {
             disconnect(widget, SIGNAL(isEmptyChanged()));
             widget->hide();
             m_layout->removeWidget(widget);

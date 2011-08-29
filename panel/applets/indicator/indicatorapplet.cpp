@@ -58,7 +58,7 @@ void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
         // appmenu indicator is handled by AppNameApplet
         return;
     }
-    m_indicatorsWidget->AddIndicator(indicator);
+    m_indicatorsWidget->addIndicator(indicator);
 }
 
 #include "indicatorapplet.moc"

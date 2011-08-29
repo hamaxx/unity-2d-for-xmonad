@@ -40,7 +40,7 @@ IndicatorsWidget::IndicatorsWidget(IndicatorsManager* manager)
     m_layout->setSpacing(0);
 }
 
-void IndicatorsWidget::AddIndicator(const unity::indicator::Indicator::Ptr& indicator)
+void IndicatorsWidget::addIndicator(const unity::indicator::Indicator::Ptr& indicator)
 {
     m_indicators.append(indicator);
     indicator->on_entry_added.connect(sigc::mem_fun(this, &IndicatorsWidget::onEntryAdded));
@@ -52,8 +52,7 @@ void IndicatorsWidget::onEntryAdded(const Entry::Ptr& entry)
     int indicator_pos = 0;
     IndicatorEntryWidget* widget = new IndicatorEntryWidget(entry);
 
-    if (entry->priority() > -1)
-    {
+    if (entry->priority() > -1) {
         Q_FOREACH(IndicatorEntryWidget *w, m_entries)
         {
             if (w->entry()->priority() >= entry->priority())
@@ -72,8 +71,7 @@ void IndicatorsWidget::onEntryRemoved(const std::string& entry_id)
 {
     Q_FOREACH(IndicatorEntryWidget* widget, m_entries)
     {
-        if (widget->entry()->id() == entry_id)
-        {
+        if (widget->entry()->id() == entry_id) {
             widget->hide();
             m_layout->removeWidget(widget);
             m_indicatorsManager->removeIndicatorEntryWidget(widget);

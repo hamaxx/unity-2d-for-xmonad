@@ -42,7 +42,7 @@ Q_OBJECT
 public:
     IndicatorsWidget(IndicatorsManager* manager);
 
-    void AddIndicator(const unity::indicator::Indicator::Ptr& indicator);
+    void addIndicator(const unity::indicator::Indicator::Ptr& indicator);
 
 private:
     QHBoxLayout* m_layout;
