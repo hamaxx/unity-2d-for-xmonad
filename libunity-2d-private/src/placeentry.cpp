@@ -22,14 +22,15 @@
 #include "launchermenu.h"
 
 // libunity-2d
+#include <dashclient.h>
 #include <debug_p.h>
+
+// QtDee
+#include "deelistmodel.h"
 
 #include <QDBusMetaType>
 #include <QAction>
 #include <QDebug>
-#include <QDBusServiceWatcher>
-#include <QDBusConnectionInterface>
-#include <QDBusReply>
 
 // Marshall the RendererInfoStruct data into a D-Bus argument
 QDBusArgument &operator<<(QDBusArgument &argument, const RendererInfoStruct &r)
@@ -146,10 +147,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PlaceEntryInfoStr
 static const char* UNITY_PLACE_ENTRY_INTERFACE = "com.canonical.Unity.PlaceEntry";
 static const char* SECTION_PROPERTY = "section";
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_PATH = "/Dash";
-static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
-
 PlaceEntry::PlaceEntry(QObject* parent) :
     LauncherItem(parent),
     m_position(0),
@@ -163,32 +160,15 @@ PlaceEntry::PlaceEntry(QObject* parent) :
     m_entryResultsModel(NULL),
     m_globalGroupsModel(NULL),
     m_globalResultsModel(NULL),
-    m_dbusIface(NULL),
-    m_dashDbusIface(NULL),
-    m_dashActive(false)
+    m_dbusIface(NULL)
 {
     qDBusRegisterMetaType<RendererInfoStruct>();
     qDBusRegisterMetaType<PlaceEntryInfoStruct>();
     qDBusRegisterMetaType<QList<PlaceEntryInfoStruct> >();
     qDBusRegisterMetaType<QHash<QString, QString>>();
 
-    /* Check if the dash is already up and running by asking the bus instead of
-       trying to create an instance of the interface. Creating an instance would
-       cause D-Bus to activate the dash and we don’t want this to happen, the
-       dash should be started on demand only. */
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DASH_DBUS_SERVICE);
-    if (reply.isValid() && reply.value()) {
-        connectToDash();
-    } else {
-        /* The dash is not running: monitor its registration on the bus so we
-           can connect to it when it comes up. */
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(DASH_DBUS_SERVICE,
-                                                               QDBusConnection::sessionBus(),
-                                                               QDBusServiceWatcher::WatchForRegistration,
-                                                               this);
-        connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
-    }
+    connect(DashClient::instance(), SIGNAL(activePageChanged(const QString&)),
+        SLOT(slotActivePageChanged(const QString&)));
 }
 
 PlaceEntry::PlaceEntry(const PlaceEntry& other) :
@@ -752,59 +732,12 @@ PlaceEntry::setGlobalRendererHints(QMap<QString, QVariant> globalRendererHints)
     Q_EMIT globalRendererHintsChanged();
 }
 
-void
-PlaceEntry::connectToDash()
-{
-    if (m_dashDbusIface != NULL) {
-        return;
-    }
-
-    m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
-                                         QDBusConnection::sessionBus(), this);
-    connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
-            SLOT(slotDashActiveChanged(bool)));
-    connect(m_dashDbusIface, SIGNAL(activePlaceEntryChanged(const QString&)),
-            SLOT(slotDashActivePlaceEntryChanged(const QString&)));
-
-    QVariant value = m_dashDbusIface->property("active");
-    if (value.isValid()) {
-        m_dashActive = value.toBool();
-    } else {
-        UQ_WARNING << "Fetching Dash.active property failed";
-    }
-    value = m_dashDbusIface->property("activePlaceEntry");
-    if (value.isValid()) {
-        m_dashActivePlaceEntry = value.toString();
-    } else {
-        UQ_WARNING << "Fetching Dash.activePlaceEntry property failed";
-    }
-
-    updateActiveState();
-}
 
 void
-PlaceEntry::slotDashActiveChanged(bool value)
-{
-    if (m_dashActive != value) {
-        m_dashActive = value;
-        updateActiveState();
-    }
-}
-
-void
-PlaceEntry::slotDashActivePlaceEntryChanged(const QString& entry)
-{
-    if (m_dashActivePlaceEntry != entry) {
-        m_dashActivePlaceEntry = entry;
-        updateActiveState();
-    }
-}
-
-void
-PlaceEntry::updateActiveState()
+PlaceEntry::slotActivePageChanged(const QString& page)
 {
     bool active = false;
-    if (m_dashActive && !m_dbusObjectPath.isEmpty() && (m_dashActivePlaceEntry == m_dbusObjectPath)) {
+    if (!m_dbusObjectPath.isEmpty() && page == m_dbusObjectPath) {
         active = true;
     }
 
@@ -827,8 +760,12 @@ PlaceEntry::activateEntry(const int section)
         startRemotePlaceOnDemand();
     }
 
-    QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    iface.asyncCall(QLatin1String("activatePlaceEntry"), m_fileName, m_groupName, section);
+    if (m_active) {
+        DashClient::instance()->setActivePage(QString());
+    } else {
+        /* FIXME: DashClient::setActivePage has changed but PlaceEntry is deprecated anyway */
+        //DashClient::instance()->setActivePage(m_dbusObjectPath, m_fileName, m_groupName, section);
+    }
 }
 
 void

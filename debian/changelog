@@ -1,3 +1,65 @@
+unity-2d (4.2.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [panel] application menus do not appear on first hover after dismissal
+      (lp: #825262)
+    - [dash] Lens icons badly scaled (lp: #825368)
+    - [panel] indicators are shifted offscreen to the right (lp: #827673)
+    - [panel] scrubbing from system indicators to menubar should be possible
+      (lp: #706903)
+    - [launcher] Closed applications don't get their launcher counts cleared
+      (lp: #767367)
+    - [dash] selected item should not be underlined but use the same 
+      treatment as unity (lp: #817456)
+    - [dash] categories should be collapsed by default (lp: #827214)
+    - [dash] Ratings filter (lp: #831855)
+    - [dash] Multirange filter (lp: #831856)
+    - [dash] ToggleButton filter (lp: #831857)
+    - [dash] Icon size must be bigger to match the mockups (lp: #831858)
+    - [dash] "Refine search" right margin should be 15 pixels (lp: #832058)
+    - [dash] "Refine search" should be "Filter results" (lp: #832060)
+    - [dash] Font sizes should match new design (lp: #832114)
+    - [panel] Glitch: application menu appearing when pressing the BFB 
+      (lp: #825060)
+    - [panel] Glitch: application menus are quickly opened after a drag gesture
+      (lp: #825267)
+    - [dash] File thumbnails aspect ratio is not respected (lp: #832204)
+  * debian/control: require current the current versions of nux and unity
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 25 Aug 2011 18:16:57 +0200
+
+unity-2d (4.0.0-0ubuntu2) oneiric; urgency=low
+
+  * No change rebuild for the nux update abi break
+  * debian/control: update the nux requirement to be sure to pick the new one
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 19 Aug 2011 11:25:56 +0200
+
+unity-2d (4.0.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [launcher] Impossible to keep KDE Apps in Launcher (LP: #741129)
+    - [dash] Background should be blurred (LP: #823326)
+    - No 'safely remove' option is present in the unity menu when a usb disk
+      is inserted (LP: #660010)
+    - Quicklist item "Keep In Launcher" should be "Keep in launcher" as design
+      (LP: #795422)
+    - [launcher] ESC doesn't dismiss launcher when activated with Alt+F1
+      (LP: #812792)
+    - [dash] Background wallpaper shifted when using a non compositing window
+      manager (LP: #823295)
+    - [launcher] Bottom gradient appears too early (LP: #823877)
+    - mute/unmute sound when user clicks on sound applet using scroll button
+      or middle mouse button (LP: #609860)
+    - Secondary activate (i.e. middle click) support for indicators advanced
+      usage (LP: #812933)
+    - Unused GConfItemQmlWrapper dep found (LP: #821880)
+  * debian/control:
+    - bump libunity-core-4.0-dev, libnux-1.0-dev
+    - recommends lenses and not places anymore. Adding music lens
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 11 Aug 2011 21:22:18 +0200
+
 unity-2d (3.8.14.1-0ubuntu1) oneiric; urgency=low
 
   * Few upstream fixes:

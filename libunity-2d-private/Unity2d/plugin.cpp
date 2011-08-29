@@ -56,12 +56,26 @@
 #include "autohidebehavior.h"
 #include "intellihidebehavior.h"
 #include "forcevisiblebehavior.h"
+#include "bfb.h"
+
+#include "lenses.h"
+#include "lens.h"
+
+#include "filter.h"
+#include "filters.h"
+#include "ratingsfilter.h"
+#include "radiooptionfilter.h"
+#include "checkoptionfilter.h"
+#include "multirangefilter.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
+
+// QtDee
+#include "deelistmodel.h"
 
 #include <X11/Xlib.h>
 
@@ -101,6 +115,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
 
+    qmlRegisterType<BfbModel>(uri, 0, 1, "BfbModel");
+    qmlRegisterType<BfbItem>(uri, 0, 1, "BfbItem");
+
     qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
 
@@ -126,6 +143,18 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 
     qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
+
+    qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
+    qmlRegisterType<Lens>(uri, 1, 0, "Lens");
+
+    qmlRegisterType<Filter>();
+    qmlRegisterType<Filters>();
+    qmlRegisterType<RatingsFilter>();
+    qmlRegisterType<RadioOptionFilter>();
+    qmlRegisterType<CheckOptionFilter>();
+    qmlRegisterType<MultiRangeFilter>();
+    qmlRegisterType<FilterOption>();
+    qmlRegisterType<FilterOptions>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

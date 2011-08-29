@@ -38,8 +38,9 @@ static const char* DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DBUS_PATH = "/Dash";
 static const char* DBUS_IFACE = "com.canonical.Unity2d.Dash";
 
-HomeButtonApplet::HomeButtonApplet()
-: m_button(new HomeButton)
+HomeButtonApplet::HomeButtonApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, m_button(new HomeButton)
 , m_dashInterface(NULL)
 , m_launcherClient(new LauncherClient(this))
 {
@@ -98,13 +99,13 @@ void HomeButtonApplet::toggleDash()
 
 void HomeButtonApplet::enterEvent(QEvent* event)
 {
-    Unity2d::Applet::enterEvent(event);
+    QWidget::enterEvent(event);
     m_launcherClient->beginForceVisible();
 }
 
 void HomeButtonApplet::leaveEvent(QEvent* event)
 {
-    Unity2d::Applet::leaveEvent(event);
+    QWidget::leaveEvent(event);
     m_launcherClient->endForceVisible();
 }
 

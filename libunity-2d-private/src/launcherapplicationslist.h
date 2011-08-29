@@ -36,7 +36,6 @@ struct SnStartupSequence;
 class LauncherApplication;
 class BamfApplication;
 class BamfView;
-class GConfItemQmlWrapper;
 class QConf;
 
 class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
@@ -71,7 +70,7 @@ private:
     void insertApplication(LauncherApplication* application);
     void removeApplication(LauncherApplication* application);
 
-    static QString favoriteFromDesktopFilePath(QString desktop_file);
+    QString favoriteFromDesktopFilePath(const QString& desktop_file) const;
 
     void writeFavoritesToGConf();
 
@@ -90,6 +89,7 @@ private:
     */
     QHash<QString, LauncherApplication*> m_applicationForExecutable;
     QConf* m_dconf_launcher;
+    QStringList m_xdgApplicationDirs;
 
     /* Startup notification support */
     SnDisplay *m_snDisplay;

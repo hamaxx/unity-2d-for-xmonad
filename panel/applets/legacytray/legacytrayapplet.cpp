@@ -33,8 +33,9 @@
 #include <QApplication>
 #include <QHBoxLayout>
 
-LegacyTrayApplet::LegacyTrayApplet()
-: m_selectionManager(new SystemTray::FdoSelectionManager)
+LegacyTrayApplet::LegacyTrayApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, m_selectionManager(new SystemTray::FdoSelectionManager)
 {
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 

@@ -22,7 +22,8 @@
 
 #include "launcheritem.h"
 
-#include "deelistmodel.h"
+// QtDee
+class DeeListModel;
 
 #include <QMetaType>
 #include <QDBusInterface>
@@ -261,9 +262,6 @@ private:
     QMap<QString, QVariant> m_globalRendererHints;
 
     QDBusInterface* m_dbusIface;
-    QDBusInterface* m_dashDbusIface;
-    bool m_dashActive;
-    QString m_dashActivePlaceEntry;
 
     void setSection(const QString&);
     void activateEntry(const int section);
@@ -273,14 +271,11 @@ private:
 private Q_SLOTS:
     void onRendererInfoChanged(const RendererInfoStruct&);
 
-    void connectToDash();
-    void updateActiveState();
-    void slotDashActiveChanged(bool);
-    void slotDashActivePlaceEntryChanged(const QString&);
-
     void startMonitoringSections();
     void stopMonitoringSections();
     void slotSectionsChanged();
+
+    void slotActivePageChanged(const QString& page);
 
     /* Contextual menu callbacks */
     void onSectionTriggered();

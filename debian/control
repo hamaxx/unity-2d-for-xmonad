@@ -22,8 +22,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgtk-3-dev,
                libutouch-geis-dev,
                libstartup-notification0-dev,
-               libunity-core-4.0-dev (>= 4.6.0),
-               libnux-1.0-dev (>= 1.0.8),
+               libunity-core-4.0-dev (>= 4.10.0),
+               libnux-1.0-dev (>= 1.4),
 Standards-Version: 3.9.2
 Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/oneiric
 
@@ -77,8 +77,9 @@ Depends: ${shlibs:Depends},
          unity-asset-pool,
          libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg,
-Recommends: unity-place-files,
-            unity-place-applications
+Recommends: unity-lens-files,
+            unity-lens-applications,
+            unity-lens-music,
 Description: Unity 2D Launcher
  The Unity 2D launcher displays a list of running applications as well as a
  list of favorite applications in a panel at the left of the screen.

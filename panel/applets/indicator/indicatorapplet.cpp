@@ -26,19 +26,22 @@
 #include <debug_p.h>
 #include <indicatorsmanager.h>
 #include <indicatorswidget.h>
+#include <unity2dpanel.h>
 
 // Qt
 #include <QHBoxLayout>
 
 using namespace unity::indicator;
 
-IndicatorApplet::IndicatorApplet(IndicatorsManager* manager)
-: m_indicatorsManager(manager)
+IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+    m_indicatorsManager = panel->indicatorsManager();
 
     m_indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)

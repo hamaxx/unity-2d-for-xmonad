@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons */
+import Unity2d 1.0
 
 /* Renderers typically use a grid layout to render the model. The RendererGrid
    component provides a standard implementation of such a layout where the
@@ -34,15 +34,7 @@ Renderer {
     property alias currentItem: results.currentItem
 
     property variant cellRenderer
-    property bool folded
-    folded: {
-        /* Look for the groupId as a complete word inside the list of expanded groups.
-           Examples of ExpandedGroups hint: "2", "1 3 7", "1 2", etc.
-         */
-        var re = RegExp("\\b%1\\b".arg(renderer.groupId))
-        var expandedGroups = placeEntryModel.entryRendererHints["ExpandedGroups"]
-        return !re.test(expandedGroups)
-    }
+    property bool folded: true
 
     property int cellWidth: 158
     property int cellHeight: 76
@@ -83,16 +75,17 @@ Renderer {
                 height: results.cellHeight
                 /* When hovered the item needs to be on top of every other item
                    in order for its label to not be covered */
-                z: loader.item.state == "selected" ? 1 : 0
+                z: ( loader.item.state == "selected" || loader.item.state == "hovered" ) ? 1 : 0
 
                 Loader {
                     id: loader
                     property string uri: column_0
                     property string iconHint: column_1
-                    property string groupId: column_2
+                    property string categoryId: column_2 // FIXME: rename to categoryIndex
                     property string mimetype: column_3
-                    property string displayName: column_4
+                    property string displayName: column_4 // FIXME: rename to name
                     property string comment: column_5
+                    property string dndUri: column_6
 
                     width: results.delegateWidth
                     height: results.delegateHeight
@@ -113,7 +106,7 @@ Renderer {
 
             /* Only display one line of items when folded */
             model: SortFilterProxyModel {
-                model: renderer.group_model != undefined ? renderer.group_model : null
+                model: renderer.category_model != undefined ? renderer.category_model : null
                 limit: folded ? results.cellsPerRow : -1
             }
         }

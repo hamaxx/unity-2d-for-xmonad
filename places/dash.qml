@@ -17,7 +17,8 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for GnomeBackground and LauncherPlacesList*/
+import Unity2d 1.0
+import Effects 1.0
 
 Item {
     id: dash
@@ -44,6 +45,7 @@ Item {
                    Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
                          https://bugreports.qt.nokia.com/browse/QTBUG-20692
                 */
+                deactivateActiveLens()
                 currentPage = undefined
                 pageLoader.source = ""
             }
@@ -65,67 +67,107 @@ Item {
         currentPage.visible = true
     }
 
-    function activatePlaceEntry(fileName, groupName, section) {
-        var placeEntryModel = places.findPlaceEntry(fileName, groupName)
-        if (placeEntryModel == null) {
-            console.log("No match for place: %1 [Entry:%2]".arg(fileName).arg(groupName))
+    function deactivateActiveLens() {
+        if (dashView.activeLens != "") {
+            var lens = lenses.get(dashView.activeLens)
+            lens.active = false
+        }
+    }
+
+    function activateLens(lensId) {
+        if (lensId == dashView.activeLens) {
             return
         }
 
-        /* FIXME: PlaceEntry.SetActiveSection needs to be called after
-           PlaceEntry.SetActive in order for it to have an effect.
-           This is likely a bug in the place daemons.
-        */
-        placeEntryModel.active = true
-        placeEntryModel.activeSection = section
-        pageLoader.source = "PlaceEntryView.qml"
+        deactivateActiveLens()
+        var lens = lenses.get(lensId)
+        if (lens == null) {
+            console.log("No match for lens: %1".arg(lensId))
+            return
+        }
+
+        lens.active = true
+        pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = placeEntryModel
+        pageLoader.item.model = lens
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = placeEntryModel.dbusObjectPath
+        dashView.activeLens = lens.id
     }
 
     function activateHome() {
+        deactivateActiveLens()
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        dashView.activePlaceEntry = ""
+        dashView.activeLens = ""
     }
 
-    property variant places: LauncherPlacesList {
-        Component.onCompleted: startAllPlaceServices()
-    }
-
-    /* Backgrounds */
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0.89
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && !screen.isCompositingManagerRunning
-    }
-
-    Rectangle {
-        anchors.fill: parent
-        color: "black"
-        opacity: 0.89
-        visible: dashView.dashMode == DashDeclarativeView.FullScreenMode && screen.isCompositingManagerRunning
-    }
-
-    BorderImage {
-        /* Avoid redraw at rendering necessary to prevent high CPU usage.
-           Ref.: https://bugs.launchpad.net/unity-2d/+bug/806122
-        */
-        effect: CacheEffect {}
-
-        anchors.fill: parent
-        visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-        source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
-    }
-    /* /Backgrounds */
+    property variant lenses: Lenses {}
 
     Item {
+        id: background
+
+        anchors.fill: parent
+
+        /* Avoid redraw at rendering */
+        effect: CacheEffect {}
+
+        Item {
+            anchors.fill: parent
+            anchors.bottomMargin: content.anchors.bottomMargin
+            anchors.rightMargin: content.anchors.rightMargin
+            clip: true
+
+            Image {
+                id: blurredBackground
+
+                effect: Blur {blurRadius: 12}
+
+                /* 'source' needs to be set when the dash becomes visible, that
+                   is when declarativeView.active becomes true, so that a
+                   screenshot of the windows behind the dash is taken at that
+                   point.
+                   'source' also needs to change so that the screenshot is
+                   re-taken as opposed to pulled from QML's image cache.
+                   This workarounds the fact that the image cache cannot be
+                   disabled. A new API to deal with this was introduced in Qt Quick 1.1.
+
+                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
+                */
+                property variant timeAtActivation
+                Connections {
+                    target: declarativeView
+                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+                }
+
+                /* Use an image of the root window which essentially is a
+                   capture of the entire screen */
+                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+
+                fillMode: Image.PreserveAspectCrop
+                x: -declarativeView.globalPosition.x
+                y: -declarativeView.globalPosition.y
+            }
+
+            Image {
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                source: "artwork/background_sheen.png"
+            }
+        }
+
+        BorderImage {
+            anchors.fill: parent
+            visible: dashView.dashMode == DashDeclarativeView.DesktopMode
+            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+        }
+    }
+
+    Item {
+        id: content
+
         anchors.fill: parent
         /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
@@ -149,35 +191,35 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible ? refine_search : search_entry
+            KeyNavigation.right: filterPane.visible ? filterPane : search_entry
             KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
             anchors.topMargin: 10
             anchors.left: parent.left
             anchors.leftMargin: 16
-            anchors.right: refine_search.left
+            anchors.right: filterPane.left
             anchors.rightMargin: 10
 
             height: 53
         }
 
-        SearchRefine {
-            id: refine_search
+        FilterPane {
+            id: filterPane
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for places, not in the home page */
-            visible: dashView.activePlaceEntry != ""
-            placeEntryModel: visible && currentPage != undefined ? currentPage.model : undefined
+            /* FilterPane is only to be displayed for lenses, not in the home page */
+            visible: dashView.activeLens != ""
+            lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin
-            height: parent.height
+            anchors.bottom: lensBar.top
             headerHeight: search_entry.height
-            width: 295
+            width: 310
             anchors.right: parent.right
-            anchors.rightMargin: 19
+            anchors.rightMargin: 15
         }
 
         Loader {
@@ -187,21 +229,33 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
+            KeyNavigation.right: filterPane.visible && !filterPane.folded ? filterPane : pageLoader
             KeyNavigation.up: search_entry
+            KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
+            anchors.bottom: lensBar.top
+            anchors.left: parent.left
+            anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
+            anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
+            onLoaded: item.focus = true
+        }
+
+        LensBar {
+            id: lensBar
+
+            KeyNavigation.up: pageLoader
+
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.right: !refine_search.visible || refine_search.folded ? parent.right : refine_search.left
-            anchors.rightMargin: !refine_search.visible || refine_search.folded ? 0 : 15
-            onLoaded: item.focus = true
+            anchors.right: parent.right
+            height: 44
+            visible: dashView.expanded
         }
     }
 
-    Button {
+    AbstractButton {
         id: fullScreenButton
 
         Accessible.name: "Full Screen"

@@ -402,6 +402,7 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
 
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
+    QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SLOT(updateCounterVisible()));
     /* FIXME: a bug somewhere makes connecting to the Closed() signal not work even though
               the emit Closed() in bamf-view.cpp is reached. */
     /* Connect first the onBamfApplicationClosed slot, then the runningChanged
@@ -420,6 +421,7 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
     connect(application, SIGNAL(WindowAdded(BamfWindow*)), SLOT(onWindowAdded(BamfWindow*)));
 
     updateBamfApplicationDependentProperties();
+    updateCounterVisible();
 }
 
 void
@@ -535,6 +537,17 @@ void
 LauncherApplication::updateWindowCount()
 {
     Q_EMIT windowCountChanged(windowCount());
+}
+
+void
+LauncherApplication::updateCounterVisible()
+{
+    bool counterVisible = running() && m_counter > 0;
+
+    if (m_counterVisible != counterVisible) {
+        m_counterVisible = counterVisible;
+        Q_EMIT counterVisibleChanged(m_counterVisible);
+    }
 }
 
 bool

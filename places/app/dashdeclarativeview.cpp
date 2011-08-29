@@ -174,21 +174,21 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         m_launcherClient->endForceVisible();
         activeChanged(false);
     } else {
-        show();
-        raise();
-        // We need a delay, otherwise the window may not be visible when we try to activate it
-        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (m_mode == FullScreenMode) {
             fitToAvailableSpace();
         } else {
             resizeToDesktopModeSize();
         }
+        show();
+        raise();
+        // We need a delay, otherwise the window may not be visible when we try to activate it
+        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         if (oldMode == HiddenMode) {
             // Check old mode to ensure we do not call BeginForceVisible twice
             // if we go from desktop to fullscreen mode
             m_launcherClient->beginForceVisible();
+            activeChanged(true);
         }
-        activeChanged(true);
     }
     dashModeChanged(m_mode);
 }
@@ -220,28 +220,26 @@ DashDeclarativeView::expanded() const
 }
 
 void
-DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
+DashDeclarativeView::setActiveLens(const QString& activeLens)
 {
-    if (activePlaceEntry != m_activePlaceEntry) {
-        m_activePlaceEntry = activePlaceEntry;
-        Q_EMIT activePlaceEntryChanged(activePlaceEntry);
+    if (activeLens != m_activeLens) {
+        m_activeLens = activeLens;
+        Q_EMIT activeLensChanged(activeLens);
     }
 }
 
 const QString&
-DashDeclarativeView::activePlaceEntry() const
+DashDeclarativeView::activeLens() const
 {
-    return m_activePlaceEntry;
+    return m_activeLens;
 }
 
 void
-DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
+DashDeclarativeView::activateLens(const QString& lensId)
 {
     QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activatePlaceEntry", Qt::AutoConnection,
-                              Q_ARG(QVariant, QVariant::fromValue(file)),
-                              Q_ARG(QVariant, QVariant::fromValue(entry)),
-                              Q_ARG(QVariant, QVariant::fromValue(section)));
+    QMetaObject::invokeMethod(dash, "activateLens", Qt::AutoConnection,
+                              Q_ARG(QVariant, QVariant::fromValue(lensId)));
     setActive(true);
 }
 

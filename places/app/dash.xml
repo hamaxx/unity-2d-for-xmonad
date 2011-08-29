@@ -12,23 +12,17 @@
         <method name="activateHome">
             <dox:d>Activates the Dash and shows the home section</dox:d>
         </method>
-        <method name="activatePlaceEntry">
-            <dox:d>Activates the Dash and shows the specified place entry</dox:d>
-            <arg name="file" type="s" direction="in">
-                    <dox:d>The .place file for the place containing the entry that should be activated</dox:d>
-            </arg>
-            <arg name="entry" type="s" direction="in">
-                    <dox:d>The place entry that should be activated</dox:d>
-            </arg>
-            <arg name="section" type="i" direction="in">
-                    <dox:d>The section of the place entry that should be activated</dox:d>
+        <method name="activateLens">
+            <dox:d>Activates the Dash and shows the specified lens</dox:d>
+            <arg name="lensId" type="s" direction="in">
+                    <dox:d>The id of the lens that should be activated</dox:d>
             </arg>
         </method>
         <property name="active" type="b" access="readwrite">
             <dox:d>True if the Dash is active</dox:d>
         </property>
-        <property name="activePlaceEntry" type="s" access="readwrite">
-            <dox:d>The currently active place entry</dox:d>
+        <property name="activeLens" type="s" access="readwrite">
+            <dox:d>The currently active lens</dox:d>
         </property>
         <signal name="activeChanged">
                 <dox:d>Signals when the active status of the Dash changes</dox:d>
@@ -36,10 +30,10 @@
                         <dox:d>True if the Dash is active</dox:d>
                 </arg>
         </signal>
-        <signal name="activePlaceEntryChanged">
-                <dox:d>Signals when the currently active place entry in the Dash changes</dox:d>
-                <arg name="activePlaceEntry" type="s" direction="out">
-                        <dox:d>The currently active place entry</dox:d>
+        <signal name="activeLensChanged">
+                <dox:d>Signals when the currently lens in the Dash changes</dox:d>
+                <arg name="activeLens" type="s" direction="out">
+                        <dox:d>The currently active lens</dox:d>
                 </arg>
         </signal>
     </interface>

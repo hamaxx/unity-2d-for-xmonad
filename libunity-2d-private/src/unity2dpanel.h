@@ -23,6 +23,7 @@
 #define UNITY2DPANEL_H
 
 // Local
+class IndicatorsManager;
 
 // Qt
 #include <QWidget>
@@ -59,6 +60,8 @@ public:
     void addWidget(QWidget*);
 
     void addSpacer();
+
+    IndicatorsManager* indicatorsManager() const;
 
     /**
      * Whether the panel should reserve space on the edge, preventing maximized
