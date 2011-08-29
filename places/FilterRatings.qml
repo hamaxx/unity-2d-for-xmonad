@@ -36,7 +36,7 @@ Filter {
         size: 5
         spacing: 7
         rating: filterView.filterModel.rating
-        hide_rating: !filterView.filterModel.filtering
+        hideRating: !filterView.filterModel.filtering
         Binding {
             target: filterView.filterModel
             property: "rating"
