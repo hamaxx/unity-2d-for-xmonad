@@ -87,7 +87,7 @@ Item {
                 fill: clamp(rating - index, 0, 1)
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
-                ratingVisible: ratingStars.ratingVisible
+                ratingVisible: ( ratingStars.ratingVisible )
             }
         }
     }
