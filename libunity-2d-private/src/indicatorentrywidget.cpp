@@ -40,7 +40,7 @@
 #include <time.h>
 
 static const int SPACING = 3;
-static const int PADDING = 3;
+static const int PADDING = 5;
 static const int ICON_SIZE = 22;
 
 using namespace unity::indicator;
