@@ -21,6 +21,7 @@
 #include "filter.h"
 
 // local
+#include "global.h"
 #include "ratingsfilter.h"
 #include "radiooptionfilter.h"
 #include "checkoptionfilter.h"
@@ -36,6 +37,8 @@
 // Qt
 #include <QDebug>
 
+using namespace Unity2d;
+
 Filter::Filter(QObject *parent) :
     QObject(parent)
 {
@@ -44,22 +47,22 @@ Filter::Filter(QObject *parent) :
 
 QString Filter::id() const
 {
-    return QString::fromStdString(m_unityFilter->id());
+    return QStringFromUtf8StdString(m_unityFilter->id());
 }
 
 QString Filter::name() const
 {
-    return QString::fromStdString(m_unityFilter->name());
+    return QStringFromUtf8StdString(m_unityFilter->name());
 }
 
 QString Filter::iconHint() const
 {
-    return QString::fromStdString(m_unityFilter->icon_hint());
+    return QStringFromUtf8StdString(m_unityFilter->icon_hint());
 }
 
 QString Filter::rendererName() const
 {
-    return QString::fromStdString(m_unityFilter->renderer_name());
+    return QStringFromUtf8StdString(m_unityFilter->renderer_name());
 }
 
 bool Filter::visible() const
