@@ -23,6 +23,7 @@
 
 // Local
 #include <debug_p.h>
+#include <global.h>
 #include <indicatorsmanager.h>
 #include <indicatorwidget.h>
 #include <unity2dpanel.h>
@@ -31,6 +32,7 @@
 #include <QHBoxLayout>
 
 using namespace unity::indicator;
+using namespace Unity2d;
 
 IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
 : Unity2d::PanelApplet(panel)
@@ -49,7 +51,7 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
 
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
-    QString name = QString::fromStdString(indicator->name());
+    QString name = QStringFromUtf8StdString(indicator->name());
     if (name == "libappmenu.so") {
         // appmenu indicator is handled by AppNameApplet
         return;
