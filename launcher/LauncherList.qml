@@ -93,7 +93,7 @@ AutoScrollingListView {
         padding: list.itemPadding
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
-        icon: "image://icons/" + item.icon
+        icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
         running: item.running
         active: item.active
         urgent: item.urgent
