@@ -34,6 +34,7 @@ RendererGrid {
             property string mimetype
             property string displayName
             property string comment
+            property string dndUri
 
             Accessible.name: displayName
 
@@ -44,7 +45,7 @@ RendererGrid {
 
             DragItemWithUrl {
                 anchors.fill: parent
-                url: decodeURIComponent(uri)
+                url: decodeURIComponent(dndUri)
                 defaultAction: {
                     if (!url.indexOf("application://")) return Qt.CopyAction
                     else if (!url.indexOf("unity-install://")) return Qt.IgnoreAction

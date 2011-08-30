@@ -100,6 +100,7 @@ Renderer {
                         item.displayName = displayName
                         item.comment = comment
                         item.focus = true
+                        item.dndUri = dndUri
                     }
                 }
             }
