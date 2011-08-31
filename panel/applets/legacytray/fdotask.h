@@ -42,6 +42,7 @@ public:
     {}
 
     virtual void createWidget() = 0;
+    virtual QString name() = 0;
 };
 
 class FdoTask : public Task
@@ -52,6 +53,7 @@ public:
     ~FdoTask();
 
     virtual void createWidget();
+    virtual QString name();
 
 Q_SIGNALS:
     void taskDeleted(WId);
