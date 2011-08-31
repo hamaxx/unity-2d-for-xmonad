@@ -89,7 +89,7 @@ AbstractButton {
             fontSize: "small"
             text: if(categoryHeader.folded) {
                       if(availableCount == 1) {
-                          return u2d.tr("See one more result")
+                          return u2d.tr("See 1 more result")
                       } else {
                           return u2d.tr("See %1 more results").arg(availableCount)
                       }
