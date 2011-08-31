@@ -104,6 +104,23 @@ Item {
         dashView.activeLens = ""
     }
 
+    function activateLensWithOptionFilter(lensId, filterId, optionId) {
+        var lens = lenses.get(lensId)
+        var filter = lens.filters.getFilter(filterId)
+        var option = filter.getOption(optionId)
+        filter.clear()
+        option.active = true
+        filterPane.folded = false
+        activateLens(lensId)
+    }
+
+    function activateLensAndClearFilter(lensId, filterId) {
+        var lens = lenses.get(lensId)
+        var filter = lens.filters.getFilter(filterId)
+        filter.clear()
+        activateLens(lensId)
+    }
+
     property variant lenses: Lenses {}
 
     Item {
