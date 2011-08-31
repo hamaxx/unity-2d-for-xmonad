@@ -245,6 +245,7 @@ DropItem {
                 onWidthChanged: updateColors()
                 onHeightChanged: updateColors()
                 onSourceChanged: updateColors()
+                onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
 
                 function updateColors() {
                     if (!item.backgroundFromIcon) return;
