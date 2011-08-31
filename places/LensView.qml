@@ -85,8 +85,10 @@ FocusScope {
 
             source: rendererName ? Utils.convertToCamelCase(rendererName) + ".qml" : ""
             onStatusChanged: {
-                if (status == Loader.Error)
-                    console.log("Failed to load renderer", rendererName)
+                if (status == Loader.Error) {
+                    console.log("Failed to load renderer %1. Using default renderer instead.".arg(rendererName))
+                    source = "TileVertical.qml"
+                }
             }
 
             /* Model that will be used by the category's delegate */
