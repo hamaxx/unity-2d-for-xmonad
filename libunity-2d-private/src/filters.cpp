@@ -76,6 +76,16 @@ QVariant Filters::data(const QModelIndex& index, int role) const
     }
 }
 
+Filter* Filters::getFilter(const QString& id) const
+{
+    Q_FOREACH (Filter* filter, m_filters) {
+        if (filter->id() == id) {
+            return filter;
+        }
+    }
+    return NULL;
+}
+
 void Filters::onFilterAdded(unity::dash::Filter::Ptr unityFilter)
 {
     if (unityFilter == NULL) {

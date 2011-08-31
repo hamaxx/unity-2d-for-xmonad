@@ -55,23 +55,19 @@ Grid {
         focus: true
         label: u2d.tr("Media Apps")
         icon: "artwork/find_media_apps.png"
-        /* FIXME: this should not only activate the applications lens but also
-                  activate the types filter. */
-        onClicked: activateLens("applications.lens")
+        onClicked: activateLensWithOptionFilter("applications.lens", "type", "media")
     }
 
     HomeButton {
         label: u2d.tr("Internet Apps")
         icon: "artwork/find_internet_apps.png"
-        /* FIXME: this should not only activate the applications lens but also
-                  activate the types filter. */
-        onClicked: activateLens("applications.lens")
+        onClicked: activateLensWithOptionFilter("applications.lens", "type", "internet")
     }
 
     HomeButton {
         label: u2d.tr("More Apps")
         icon: "artwork/find_more_apps.png"
-        onClicked: activateLens("applications.lens")
+        onClicked: activateLensAndClearFilter("applications.lens", "type")
     }
 
     HomeButton {
