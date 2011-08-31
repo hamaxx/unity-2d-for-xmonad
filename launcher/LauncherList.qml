@@ -108,11 +108,11 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         shortcutVisible: launcherView.superKeyHeld &&
-                         ((item.toString().indexOf("LauncherApplication") == 0 && index <= 9) ||
+                         ((item.toString().indexOf("LauncherApplication") == 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
             if (item.toString().indexOf("LauncherApplication") == 0) {
-                return (index + 1) % 10
+                return index % 10
             } else {
                 return String.fromCharCode(item.shortcutKey).toLowerCase()
             }

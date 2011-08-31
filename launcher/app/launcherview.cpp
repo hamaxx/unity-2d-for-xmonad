@@ -177,13 +177,17 @@ LauncherView::forwardNumericHotkey()
     Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey != NULL) {
         /* Shortcuts from 1 to 9 should activate the items with index
-           from 0 to 8. Shortcut for 0 should activate item with index 9.
+           from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
+           Shortcut for 0 should activate item with index 10.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
         Qt::Key key = hotkey->key();
-        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
-            int index = (key - Qt::Key_0 + 9) % 10;
+        if (key >= Qt::Key_1 && key <= Qt::Key_9) {
+            int index = key - Qt::Key_0;
             Q_EMIT keyboardShortcutPressed(index);
+        }
+        else if (key == Qt::Key_0){
+            Q_EMIT keyboardShortcutPressed(10);
         }
     }
 }
