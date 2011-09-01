@@ -31,6 +31,8 @@ class FdoSelectionManager;
 class Task;
 }
 
+class QConf;
+
 class LegacyTrayApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
@@ -46,6 +48,8 @@ private:
     Q_DISABLE_COPY(LegacyTrayApplet)
     
     SystemTray::FdoSelectionManager* m_selectionManager;
+    QConf* m_dconfPanel;
+    QStringList m_whitelist;
 };
 
 #endif /* LEGACYTRAYAPPLET_H */
