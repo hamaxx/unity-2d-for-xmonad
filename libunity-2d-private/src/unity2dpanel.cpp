@@ -67,9 +67,15 @@ struct Unity2dPanelPrivate
         ulong struts[12] = {};
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            struts[0] = q->width();
-            struts[4] = available.top();
-            struts[5] = available.y() + available.height();
+            if (QApplication::isLeftToRight()) {
+                struts[0] = q->width();
+                struts[4] = available.top();
+                struts[5] = available.y() + available.height();
+            } else {
+                struts[1] = q->width();
+                struts[6] = available.top();
+                struts[7] = available.y() + available.height();
+            }
             break;
         case Unity2dPanel::TopEdge:
             struts[2] = q->height();
@@ -97,8 +103,13 @@ struct Unity2dPanelPrivate
         QRect rect;
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            rect = QRect(screen.left(), available.top(), q->width(), available.height());
-            rect.moveLeft(m_delta);
+            if (QApplication::isLeftToRight()) {
+                rect = QRect(screen.left(), available.top(), q->width(), available.height());
+                rect.moveLeft(m_delta);
+            } else {
+                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
+                rect.moveRight(screen.right() - m_delta);
+            }
             break;
         case Unity2dPanel::TopEdge:
             rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
@@ -114,7 +125,7 @@ struct Unity2dPanelPrivate
         QBoxLayout::Direction direction;
         switch(m_edge) {
         case Unity2dPanel::TopEdge:
-            direction = QApplication::isRightToLeft() ? QBoxLayout::RightToLeft : QBoxLayout::LeftToRight;
+            direction = QBoxLayout::LeftToRight;
             break;
         case Unity2dPanel::LeftEdge:
             direction = QBoxLayout::TopToBottom;

@@ -62,8 +62,10 @@ FocusScope {
         Accessible.name: "Open Shortcuts"
 
         anchors.bottom: parent.top
-        anchors.right: parent.right
-        anchors.rightMargin: 50
+        anchors.right: leftRight(parent.right)
+        anchors.left: rightLeft(parent.left)
+        anchors.rightMargin: leftRight(50, 0)
+        anchors.leftMargin: rightLeft(50, 0)
         anchors.bottomMargin: 10
         width: childrenRect.width
         height: childrenRect.height
@@ -73,13 +75,16 @@ FocusScope {
             source: "artwork/open_shortcuts.png"
             width: sourceSize.width
             height: sourceSize.height
-            anchors.left: parent.left
+            anchors.left: leftRight(parent.left)
+            anchors.right: rightLeft(parent.right)
         }
 
         TextCustom {
             text: u2d.tr("Shortcuts")
-            anchors.left: icon.right
-            anchors.leftMargin: 3
+            anchors.left: leftRight(icon.right)
+            anchors.right: rightLeft(icon.left)
+            anchors.leftMargin: leftRight(3, 0)
+            anchors.rightMargin: rightLeft(3, 0)
             width: paintedWidth
             height: icon.height
             fontSize: "large"
@@ -151,9 +156,11 @@ FocusScope {
         AbstractButton {
             id: closeShortcutsButton
 
-            anchors.left: parent.left
+            anchors.left: leftRight(parent.left)
+            anchors.right: rightLeft(parent.right)
             anchors.top: parent.top
-            anchors.leftMargin: -width/2
+            anchors.leftMargin: leftRight(-width/2, 0)
+            anchors.rightMargin: rightLeft(-width/2, 0)
 
             width: childrenRect.width
             height: childrenRect.height

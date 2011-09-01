@@ -32,6 +32,7 @@
 #include <gconfitem-qml-wrapper.h>
 
 // Qt
+#include <QApplication>
 #include <QImage>
 #include <QPainter>
 
@@ -56,10 +57,12 @@ static void paintFadeoutGradient(QImage* image)
 {
     QPainter painter(image);
     painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    QRect gradientRect(image->width() - FADEOUT_WIDTH, 0, FADEOUT_WIDTH, image->height());
+    bool isLeftToRight = QApplication::isLeftToRight();
+    QRect gradientRect(isLeftToRight ? image->width() - FADEOUT_WIDTH : 0, 0,
+                       FADEOUT_WIDTH, image->height());
     QLinearGradient gradient(gradientRect.topLeft(), gradientRect.topRight());
-    gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::transparent);
+    gradient.setColorAt(0, isLeftToRight ? Qt::white : Qt::transparent);
+    gradient.setColorAt(1, isLeftToRight ? Qt::transparent : Qt::white);
     painter.fillRect(gradientRect, gradient);
 }
 
@@ -119,7 +122,9 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
     gtk_style_context_add_class(style_context, GTK_STYLE_CLASS_MENUITEM);
 
     gtk_render_layout(style_context, cr.data(),
-        contentsRect().left(),
+        QApplication::isLeftToRight() ?
+            contentsRect().left() :
+            contentsRect().right() - textWidth,
         contentsRect().top() + (height() - textHeight) / 2,
         layout.data());
 
