@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010-2011 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
-    cellWidth: 100
-    cellHeight: 112
-    horizontalSpacing: 42
-    verticalSpacing: 20
+    cellWidth: 280
+    cellHeight: 75
+    horizontalSpacing: 10
+    verticalSpacing: 10
 
     cellRenderer: Component {
         AbstractButton {
@@ -72,21 +72,20 @@ RendererGrid {
             }
 
             ButtonBackground {
-                anchors.fill: icon
-                anchors.margins: -4
+                anchors.fill: parent
                 state: button.state
             }
 
             Image {
                 id: icon
 
-                source: iconHint != "" ? "image://icons/"+iconHint : "image://icons/unknown"
-                onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
-                width: 64
-                height: 64
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: 4
+                /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
+                source: iconHint != "" && iconHint.indexOf("/") == -1 ? "image://icons/" + iconHint : iconHint
+                width: 48
+                height: 48
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 3
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -96,21 +95,46 @@ RendererGrid {
                 Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
             }
 
-            TextMultiLine {
-                id: label
+            Item {
+                id: labels
 
-                text: displayName
-                color: "#ffffff"
-                state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
-                horizontalAlignment: Text.AlignHCenter
-                anchors.top: icon.bottom
+                anchors.top: parent.top
+                anchors.topMargin: 3
                 anchors.bottom: parent.bottom
+                anchors.bottomMargin: 3
+                anchors.left: icon.right
+                anchors.leftMargin: 15
                 anchors.right: parent.right
-                anchors.left: parent.left
-                anchors.topMargin: 10
                 anchors.rightMargin: 3
-                anchors.leftMargin: 3
-                fontSize: "small"
+
+                TextCustom {
+                    id: firstLine
+
+                    text: displayName
+                    color: button.state == "pressed" ? "#5e5e5e" : "#ffffff"
+                    elide: Text.ElideMiddle
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: paintedHeight
+                }
+
+                TextCustom {
+                    id: secondLine
+
+                    text: comment
+                    color: button.state == "pressed" ? "#888888" : "#cccccc"
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: firstLine.bottom
+                    anchors.bottom: parent.bottom
+
+                    clip: true
+                    wrapMode: Text.Wrap
+                    verticalAlignment: Text.AlignTop
+                }
             }
         }
     }

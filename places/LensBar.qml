@@ -113,7 +113,8 @@ FocusScope {
 
             model: visibleLenses
             delegate: LensButton {
-                icon: item.iconHint
+                /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
+                icon: item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint
                 active: item.active
                 onClicked: dash.activateLens(item.id)
                 iconWidth: lensBar.iconWidth

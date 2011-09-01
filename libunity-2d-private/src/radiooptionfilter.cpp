@@ -30,6 +30,16 @@ FilterOptions* RadioOptionFilter::options() const
     return m_options;
 }
 
+FilterOption* RadioOptionFilter::getOption(const QString& id) const
+{
+    Q_FOREACH (FilterOption* option, m_options->rawList()) {
+        if (option->id() == id) {
+            return option;
+        }
+    }
+    return NULL;
+}
+
 void RadioOptionFilter::setUnityFilter(unity::dash::Filter::Ptr filter)
 {
     Filter::setUnityFilter(filter);

@@ -31,9 +31,6 @@
 #include <unity2dpanel.h>
 #include <panelappletproviderinterface.h>
 
-// QConf
-#include <qconf.h>
-
 // Qt
 #include <QApplication>
 #include <QDebug>
@@ -102,11 +99,9 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
     return plugins;
 }
 
-static QStringList loadPanelConfiguration()
+QStringList PanelManager::loadPanelConfiguration() const
 {
-    QConf panelConfig(PANEL_DCONF_SCHEMA);
-
-    QVariant appletsConfig = panelConfig.property(PANEL_DCONF_PROPERTY_APPLETS);
+    QVariant appletsConfig = m_conf.property(PANEL_DCONF_PROPERTY_APPLETS);
     if (!appletsConfig.isValid()) {
         qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
                    << "the property" << PANEL_DCONF_PROPERTY_APPLETS
@@ -119,6 +114,7 @@ static QStringList loadPanelConfiguration()
 
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
+, m_conf(PANEL_DCONF_SCHEMA)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
