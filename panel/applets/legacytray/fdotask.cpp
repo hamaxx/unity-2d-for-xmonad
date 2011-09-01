@@ -34,7 +34,6 @@
 #include <QX11Info>
 
 // Others
-#include <libwnck/libwnck.h>
 #include <X11/Xutil.h>
 
 namespace SystemTray
