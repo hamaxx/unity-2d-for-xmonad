@@ -37,6 +37,7 @@ GioDefaultApplication::GioDefaultApplication(QObject* parent)
     : QObject(parent),
       m_contentType(""),
       m_desktopFile(""),
+      m_defaultDesktopFile(""),
       m_mimeappsWatcher(new QFileSystemWatcher(this))
 {
     /* GIO does not have any signal to inform us of changes in default
@@ -77,6 +78,11 @@ QString GioDefaultApplication::contentType() const
     return m_contentType;
 }
 
+QString GioDefaultApplication::defaultDesktopFile() const
+{
+    return m_defaultDesktopFile;
+}
+
 void GioDefaultApplication::setContentType(const QString& contentType)
 {
     if (contentType == m_contentType) {
@@ -88,13 +94,34 @@ void GioDefaultApplication::setContentType(const QString& contentType)
     updateDesktopFile();
 }
 
+void GioDefaultApplication::setDefaultDesktopFile(
+    const QString& defaultDesktopFile)
+{
+    if (defaultDesktopFile == m_defaultDesktopFile) {
+        return;
+    }
+
+    m_defaultDesktopFile = defaultDesktopFile;
+    Q_EMIT defaultDesktopFileChanged();
+    updateDesktopFile();
+}
+
 void GioDefaultApplication::updateDesktopFile()
 {
     GObjectScopedPointer<GAppInfo> app_info;
-    QByteArray byte_array = m_contentType.toUtf8();
-    gchar *content_type = byte_array.data();
 
-    app_info.reset(g_app_info_get_default_for_type(content_type, false));
+    if (!m_defaultDesktopFile.isEmpty()) {
+        QByteArray byte_array = m_defaultDesktopFile.toUtf8();
+        gchar *desktopFile = byte_array.data();
+        app_info.reset((GAppInfo*)g_desktop_app_info_new(desktopFile));
+    }
+
+    if (app_info.isNull()) {
+        QByteArray byte_array = m_contentType.toUtf8();
+        gchar *content_type = byte_array.data();
+        app_info.reset(g_app_info_get_default_for_type(content_type, false));
+    }
+
     if (!app_info.isNull()) {
         m_desktopFile = QString::fromUtf8(g_desktop_app_info_get_filename((GDesktopAppInfo*)app_info.data()));
     } else {
