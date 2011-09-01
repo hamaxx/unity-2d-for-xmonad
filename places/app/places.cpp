@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("dashView", &view);
+    view.rootContext()->setContextProperty("QtLayoutDirection",
+                                           QApplication::layoutDirection());
     view.setSource(QUrl("./dash.qml"));
 
     /* When spawned via DBus activation, the current working directory is

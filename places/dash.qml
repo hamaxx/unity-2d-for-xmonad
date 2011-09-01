@@ -28,7 +28,7 @@ Item {
     property variant currentPage
 
     function isLeftToRight() {
-        return dashView.layoutDirection == Qt.LeftToRight;
+        return QtLayoutDirection == Qt.LeftToRight;
     }
 
     function isRightToLeft() { return ! isLeftToRight(); }
@@ -201,7 +201,7 @@ Item {
             source: getBorderImage()
 
             function getBorderImage() {
-                var dir = dashView.layoutDirection;
+                var dir = QtLayoutDirection;
                 if (dir == Qt.LeftToRight) {
                     if (screen.isCompositingManagerRunning)
                         return "artwork/desktop_dash_background.sci";
