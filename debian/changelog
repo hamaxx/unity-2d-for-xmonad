@@ -1,6 +1,33 @@
 unity-2d (4.4.0-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release:
+    - unity-2d-panel crashed with SIGSEGV in QConfSchema::findKey()
+      (LP: #834045)
+    - unity-2d-panel crashed with SIGSEGV in QConf::notify() (LP: #834001)
+    - [panel] Implement whitelisting for legacy tray applet (LP: #707354)
+    - [launcher] stops automatically hiding after some time using it
+      (LP: #821180)
+    - [panel] Empathy displays icon in deprecated systray (LP: #830017)
+    - [dash] Invalid UTF-8 in the dash (LP: #836587)
+    - [dash] Home buttons 'Media' and 'Internet' apps should not only take you
+      to the apps lens but also activate the right filter (LP: #837360)
+    - [dash] Drag&drop application from dash to launcher is broken
+      (LP: #837361)
+    - [launcher] contextual menu's corner has a blue line (LP: #828386)
+    - [dash] Lens bar graphical layout glitches (LP: #833805)
+    - [dash] Rating Filter: All button not clearing star highlighting
+      (LP: #834640)
+    - [dash] should be falling back to the default renderer if the renderer
+      requested by the lens is not found (LP: #837356)
+    - [dash] Gwibber lens icon doesn't show up in 2d unity (LP: #830728)
+    - [dash] Lacks horizontal renderer used by lenses such as Gwibber
+      (LP: #837712)
+    - [dash] See %1 more result inconsistency (LP: #834226)
+    - [launcher] When application has no icon, a question mark icon should be
+      displayed (LP: #837351)
+    - unity places should return a default icon when no matching icon is found
+      (LP: #711200)
+    - spacing between indicators should be 5 pixels (LP: #734010)
   * debian/control:
     - require current nux and unity
 
