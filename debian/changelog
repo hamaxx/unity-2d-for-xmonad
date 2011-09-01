@@ -1,8 +1,10 @@
 unity-2d (4.4.0-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * New upstream release:
+  * debian/control:
+    - require current nux and unity
 
- -- Florian Boucault <florian.boucault@canonical.com>  Thu, 01 Sep 2011 14:28:18 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 01 Sep 2011 17:24:36 +0200
 
 unity-2d (4.2.0-0ubuntu1) oneiric; urgency=low
 
