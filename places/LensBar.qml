@@ -20,6 +20,8 @@ import QtQuick 1.0
 import Unity2d 1.0
 
 FocusScope {
+    id: lensBar
+
     /* declare width & spacing of icons as required for layout calculations */
     property int iconWidth: 24
     property int iconSpacing: 36
@@ -41,13 +43,18 @@ FocusScope {
     }
 
     /* LensBar contains a row of LensButtons */
+
+    /* Ugly Hack: the DropShadow effect on the Home lensButton causes visual artifacts as
+       the list of lenses is being populated, when the inter-lensButton spacing is non-zero.
+       A previously painted DropShadow remains in the (transparent) inter-lensButton space.
+       Can work around this by removing spacing and instead add padding to each lensButton.
+       DropShadow not officially supported until Qt4.8, when hopefully this will be fixed. */
     Row {
         id: lensContainer
 
         anchors.horizontalCenter: background.horizontalCenter
         anchors.top: background.top
         anchors.bottom: background.bottom
-        spacing: iconSpacing
 
         Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
 
@@ -94,9 +101,10 @@ FocusScope {
             icon: "artwork/lens-nav-home.svg"
             onClicked: dash.activateHome()
             active: ( dashView.activeLens == "" )
-            width: iconWidth
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            iconWidth: lensBar.iconWidth
+            iconSpacing: lensBar.iconSpacing
+            width: iconWidth+iconSpacing
+            height: lensContainer.height
         }
 
         /* Now fetch all other lenses and display */
@@ -108,9 +116,10 @@ FocusScope {
                 icon: item.iconHint
                 active: item.active
                 onClicked: dash.activateLens(item.id)
-                width: iconWidth
-                anchors.top: parent != undefined ? parent.top : undefined
-                anchors.bottom: parent != undefined ? parent.bottom : undefined
+                iconWidth: lensBar.iconWidth
+                iconSpacing: lensBar.iconSpacing
+                width: iconWidth+iconSpacing
+                height: lensContainer.height
             }
         }
     }
