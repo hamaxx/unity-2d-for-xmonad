@@ -73,7 +73,7 @@ QString BfbItem::name() const
 
 QString BfbItem::icon() const
 {
-    return "unity-icon-theme/distributor-logo";
+    return "/usr/share/unity/4/launcher_bfb.png";
 }
 
 bool BfbItem::launching() const
