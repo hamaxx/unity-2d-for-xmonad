@@ -39,6 +39,7 @@ extern "C" {
 #include "iconimageprovider.h"
 #include "blendedimageprovider.h"
 #include "qsortfilterproxymodelqml.h"
+#include "excludesortfilterproxymodelqml.h"
 #include "windowimageprovider.h"
 #include "windowinfo.h"
 #include "windowslist.h"
@@ -88,6 +89,7 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
+    qmlRegisterType<ExcludeSortFilterProxyModelQML>(uri, 0, 1, "ExcludeSortFilterProxyModel");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
