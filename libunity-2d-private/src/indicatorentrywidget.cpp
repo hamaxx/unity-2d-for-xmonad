@@ -24,7 +24,6 @@
 // Local
 #include <cairoutils.h>
 #include <debug_p.h>
-#include <global.h>
 #include <gscopedpointer.h>
 #include <gimageutils.h>
 #include <panelstyle.h>
@@ -45,7 +44,6 @@ static const int PADDING = 5;
 static const int ICON_SIZE = 22;
 
 using namespace unity::indicator;
-using namespace Unity2d;
 
 IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 : m_entry(entry)
@@ -294,11 +292,11 @@ QPixmap IndicatorEntryWidget::decodeIcon()
             UQ_WARNING << "Failed to decode image";
         }
     } else if (type == GTK_IMAGE_ICON_NAME) {
-        QString name = QStringFromUtf8StdString(m_entry->image_data());
+        QString name = QString::fromStdString(m_entry->image_data());
         QIcon icon = QIcon::fromTheme(name);
         pix = icon.pixmap(ICON_SIZE, ICON_SIZE);
     } else if (type == GTK_IMAGE_GICON) {
-        QString name = QStringFromUtf8StdString(m_entry->image_data());
+        QString name = QString::fromStdString(m_entry->image_data());
         QImage image = GImageUtils::imageForIconString(name, ICON_SIZE);
         if (image.isNull()) {
             UQ_WARNING << "Failed to load icon from" << name;

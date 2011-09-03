@@ -23,7 +23,6 @@
 
 // Local
 #include <debug_p.h>
-#include <global.h>
 #include <indicatorentrywidget.h>
 
 // Qt
@@ -35,7 +34,6 @@
 #include <X11/Xlib.h>
 
 using namespace unity::indicator;
-using namespace Unity2d;
 
 IndicatorsManager::IndicatorsManager(QObject* parent)
 : QObject(parent)
@@ -169,8 +167,7 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
         }
     }
     if (!widget) {
-        UQ_WARNING << "Could not find a widget for IndicatorEntry with id" <<
-            QStringFromUtf8StdString(entryId);
+        UQ_WARNING << "Could not find a widget for IndicatorEntry with id" << QString::fromStdString(entryId);
         return;
     }
     widget->showMenu(Qt::NoButton);
