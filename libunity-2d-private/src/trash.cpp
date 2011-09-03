@@ -41,7 +41,7 @@ Trash::Trash()
     setShortcutKey(Qt::Key_T);
     updateTrashIcon();
     startMonitoringTrash();
-    nautilusIface = new QDBusInterface("org.gnome.Nautilus", "/org/gnome/Nautilus", "org.gnome.Nautilus.FileOperations", QDBusConnection::sessionBus());
+    m_nautilusIface = new QDBusInterface("org.gnome.Nautilus", "/org/gnome/Nautilus", "org.gnome.Nautilus.FileOperations", QDBusConnection::sessionBus());
 }
 
 Trash::Trash(const Trash& other)
@@ -171,7 +171,7 @@ Trash::open() const
 void
 Trash::empty() const
 {
-    nautilusIface->call("EmptyTrash");
+    m_nautilusIface->call("EmptyTrash");
 }
 
 int

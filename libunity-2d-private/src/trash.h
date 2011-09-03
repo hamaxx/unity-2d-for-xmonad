@@ -83,7 +83,7 @@ private:
     QString m_iconName;
     GFile* m_trash;
     GFileMonitor* m_monitor;
-    QDBusInterface *nautilusIface;
+    QDBusInterface* m_nautilusIface;
 };
 
 Q_DECLARE_METATYPE(Trash*)
