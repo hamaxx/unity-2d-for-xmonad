@@ -24,13 +24,10 @@
 #include <debug_p.h>
 #include "launcherapplication.h"
 #include "filters.h"
-#include "global.h"
 
 // Qt
 #include <QUrl>
 #include <QDesktopServices>
-
-using namespace Unity2d;
 
 Lens::Lens(QObject *parent) :
     QObject(parent)
@@ -42,37 +39,37 @@ Lens::Lens(QObject *parent) :
 
 QString Lens::id() const
 {
-    return QStringFromUtf8StdString(m_unityLens->id());
+    return QString::fromStdString(m_unityLens->id());
 }
 
 QString Lens::dbusName() const
 {
-    return QStringFromUtf8StdString(m_unityLens->dbus_name());
+    return QString::fromStdString(m_unityLens->dbus_name());
 }
 
 QString Lens::dbusPath() const
 {
-    return QStringFromUtf8StdString(m_unityLens->dbus_path());
+    return QString::fromStdString(m_unityLens->dbus_path());
 }
 
 QString Lens::name() const
 {
-    return QStringFromUtf8StdString(m_unityLens->name());
+    return QString::fromStdString(m_unityLens->name());
 }
 
 QString Lens::iconHint() const
 {
-    return QStringFromUtf8StdString(m_unityLens->icon_hint());
+    return QString::fromStdString(m_unityLens->icon_hint());
 }
 
 QString Lens::description() const
 {
-    return QStringFromUtf8StdString(m_unityLens->description());
+    return QString::fromStdString(m_unityLens->description());
 }
 
 QString Lens::searchHint() const
 {
-    return QStringFromUtf8StdString(m_unityLens->search_hint());
+    return QString::fromStdString(m_unityLens->search_hint());
 }
 
 bool Lens::visible() const
@@ -87,7 +84,7 @@ bool Lens::searchInGlobal() const
 
 QString Lens::shortcut() const
 {
-    return QStringFromUtf8StdString(m_unityLens->shortcut());
+    return QString::fromStdString(m_unityLens->shortcut());
 }
 
 bool Lens::connected() const
@@ -161,7 +158,7 @@ void Lens::activate(const QString& uri)
 void Lens::onActivated(std::string const& uri, unity::dash::HandledType type, unity::dash::Lens::Hints const&)
 {
     if (type == unity::dash::NOT_HANDLED) {
-        fallbackActivate(QStringFromUtf8StdString(uri));
+        fallbackActivate(QString::fromStdString(uri));
     }
 }
 
@@ -219,9 +216,9 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 
     m_filters = new Filters(m_unityLens->filters, this);
 
-    m_results->setName(QStringFromUtf8StdString(m_unityLens->results()->swarm_name));
-    m_globalResults->setName(QStringFromUtf8StdString(m_unityLens->global_results()->swarm_name));
-    m_categories->setName(QStringFromUtf8StdString(m_unityLens->categories()->swarm_name));
+    m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
+    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
+    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
 
     /* Property change signals */
     m_unityLens->id.changed.connect(sigc::mem_fun(this, &Lens::idChanged));
@@ -257,32 +254,32 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 
 void Lens::onResultsSwarmNameChanged(std::string swarm_name)
 {
-    m_results->setName(QStringFromUtf8StdString(m_unityLens->results()->swarm_name));
+    m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
 }
 
 void Lens::onResultsChanged(unity::dash::Results::Ptr results)
 {
-    m_results->setName(QStringFromUtf8StdString(m_unityLens->results()->swarm_name));
+    m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
 }
 
 void Lens::onGlobalResultsSwarmNameChanged(std::string swarm_name)
 {
-    m_globalResults->setName(QStringFromUtf8StdString(m_unityLens->global_results()->swarm_name));
+    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
 }
 
 void Lens::onGlobalResultsChanged(unity::dash::Results::Ptr global_results)
 {
-    m_globalResults->setName(QStringFromUtf8StdString(m_unityLens->global_results()->swarm_name));
+    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
 }
 
 void Lens::onCategoriesSwarmNameChanged(std::string swarm_name)
 {
-    m_categories->setName(QStringFromUtf8StdString(m_unityLens->categories()->swarm_name));
+    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
 }
 
 void Lens::onCategoriesChanged(unity::dash::Categories::Ptr categories)
 {
-    m_categories->setName(QStringFromUtf8StdString(m_unityLens->categories()->swarm_name));
+    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
 }
 
 #include "lens.moc"

@@ -7,7 +7,6 @@ set(lib${LIB_NAME}_SRCS
     debug.cpp
     gconnector.cpp
     gimageutils.cpp
-    global.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp

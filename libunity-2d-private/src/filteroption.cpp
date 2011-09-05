@@ -20,13 +20,8 @@
 // Self
 #include "filteroption.h"
 
-// libunity-2d-private
-#include "global.h"
-
 // libunity-core
 #include <UnityCore/Filter.h>
-
-using namespace Unity2d;
 
 FilterOption::FilterOption(unity::dash::FilterOption::Ptr unityFilterOption, QObject *parent) :
     QObject(parent), m_unityFilterOption(NULL)
@@ -36,17 +31,17 @@ FilterOption::FilterOption(unity::dash::FilterOption::Ptr unityFilterOption, QOb
 
 QString FilterOption::id() const
 {
-    return QStringFromUtf8StdString(m_unityFilterOption->id());
+    return QString::fromStdString(m_unityFilterOption->id());
 }
 
 QString FilterOption::name() const
 {
-    return QStringFromUtf8StdString(m_unityFilterOption->name());
+    return QString::fromStdString(m_unityFilterOption->name());
 }
 
 QString FilterOption::iconHint() const
 {
-    return QStringFromUtf8StdString(m_unityFilterOption->icon_hint());
+    return QString::fromStdString(m_unityFilterOption->icon_hint());
 }
 
 bool FilterOption::active() const

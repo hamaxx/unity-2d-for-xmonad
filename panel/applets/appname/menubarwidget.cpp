@@ -24,14 +24,11 @@
 
 // Local
 #include <debug_p.h>
-#include <global.h>
 #include <indicatorentrywidget.h>
 #include <indicatorsmanager.h>
 
 // Qt
 #include <QHBoxLayout>
-
-using namespace Unity2d;
 
 static const int MENU_ITEM_PADDING = 6;
 
@@ -66,7 +63,7 @@ bool MenuBarWidget::isOpened() const
 
 void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indicator)
 {
-    QString name = QStringFromUtf8StdString(indicator->name());
+    QString name = QString::fromStdString(indicator->name());
     if (name == "libappmenu.so") {
         indicator->on_entry_added.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryAdded));
     }
