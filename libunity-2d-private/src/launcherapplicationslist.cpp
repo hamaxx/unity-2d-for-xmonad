@@ -390,7 +390,7 @@ void
 LauncherApplicationsList::load()
 {
     /* Migrate the favorites if needed and ignore errors */
-    QString latest_migration = m_dconf_launcher->property("favorite-migration").toString();
+    QString latest_migration = m_dconf_launcher->property("favoriteMigration").toString();
     if (latest_migration < LATEST_SETTINGS_MIGRATION) {
         if(QProcess::execute(INSTALL_PREFIX "/lib/unity/migrate_favorites.py") != 0) {
             UQ_WARNING << "Unable to run the migrate favorites tool successfully";
