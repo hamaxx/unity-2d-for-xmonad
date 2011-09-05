@@ -106,7 +106,7 @@ DropItem {
         width: item.width
         height: item.height
         x: item.x
-        y: -ListView.view.contentY + item.y
+        y: -item.ListView.view.contentY + item.y
         /* The item is above the list's contentItem.
            Top and bottom gradients, ListViewDragAndDrop and autoscroll areas
            are above the item */
@@ -402,8 +402,8 @@ DropItem {
                      /* do not animate during insertion/removal */
                      && (looseItem.scale == 1)
                      /* do not animate while flicking the list */
-                     && !ListView.view.moving
-                     && !ListView.view.autoScrolling
+                     && !item.ListView.view.moving
+                     && !item.ListView.view.autoScrolling
             NumberAnimation {
                 duration: 250
                 easing.type: Easing.OutBack
