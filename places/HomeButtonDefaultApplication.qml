@@ -21,6 +21,10 @@ import Unity2d 1.0
 
 HomeButton {
     property alias contentType: defaultApplication.contentType
+    /* If the desktopFile property is set and points to an existing
+     * application, the contentType property is ignored.
+     */
+    property alias desktopFile: defaultApplication.defaultDesktopFile
 
     GioDefaultApplication {
         id: defaultApplication

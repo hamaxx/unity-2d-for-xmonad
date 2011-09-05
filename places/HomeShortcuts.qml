@@ -85,6 +85,7 @@ Grid {
     HomeButtonDefaultApplication {
         label: u2d.tr("View Photos")
         contentType: "image/jpeg"
+        desktopFile: "shotwell-viewer.desktop"
     }
 
     HomeButtonDefaultApplication {
