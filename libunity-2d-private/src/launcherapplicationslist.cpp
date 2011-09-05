@@ -54,7 +54,7 @@ extern "C" {
 
 /* List of executables that are too generic to be matched against a single application. */
 static const QStringList EXECUTABLES_BLACKLIST = (QStringList() << "xdg-open");
-static const QString LATEST_SETTINGS_MIGRATION = "3.2.10";
+static const QByteArray LATEST_SETTINGS_MIGRATION = "3.2.10";
 
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
@@ -390,7 +390,7 @@ void
 LauncherApplicationsList::load()
 {
     /* Migrate the favorites if needed and ignore errors */
-    QString latest_migration = m_dconf_launcher->property("favoriteMigration").toString();
+    QByteArray latest_migration = m_dconf_launcher->property("favoriteMigration").toString().toAscii();
     if (latest_migration < LATEST_SETTINGS_MIGRATION) {
         if(QProcess::execute(INSTALL_PREFIX "/lib/unity/migrate_favorites.py") != 0) {
             UQ_WARNING << "Unable to run the migrate favorites tool successfully";
