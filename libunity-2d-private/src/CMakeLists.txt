@@ -24,7 +24,6 @@ set(lib${LIB_NAME}_SRCS
     intellihidebehavior.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp
-    excludesortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
     windowimageprovider.cpp
     windowinfo.cpp

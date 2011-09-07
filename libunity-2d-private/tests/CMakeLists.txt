@@ -41,7 +41,6 @@ libunity_2d_tests(
     launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest
-    excludesortfilterproxymodeltest
     )
 
 add_custom_target(unity2dtr_po COMMAND

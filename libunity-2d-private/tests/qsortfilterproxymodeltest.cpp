@@ -67,6 +67,13 @@ public:
         return true;
     }
 
+    bool appendRows(QStringList &rows, const QModelIndex &parent=QModelIndex()) {
+        beginInsertRows(parent, rowCount(), rowCount() + rows.count() - 1);
+        m_list.append(rows);
+        endInsertRows();
+        return true;
+    }
+
     bool removeRows(int row, int count, const QModelIndex &parent=QModelIndex()) {
         beginRemoveRows(parent, row, row+count-1);
         for (int i=0; i<count; i++) {
@@ -375,6 +382,48 @@ private Q_SLOTS:
         //QCOMPARE(spyOnRowsRemoved.count(), 0);
         //QCOMPARE(spyOnRowsInserted.count(), 0);
         //QCOMPARE(spyOnCountChanged.count(), 0);
+    }
+
+    void testInvertMatch() {
+        QSortFilterProxyModelQML proxy;
+        MockListModel model;
+
+        proxy.setSourceModelQObject(&model);
+        proxy.setDynamicSortFilter(true);
+
+        QStringList rows;
+        rows << "a/foobar/b" << "foobar" << "foobarbaz" << "hello";
+        model.appendRows(rows);
+
+        // Check that without a filterRegExp all rows are accepted regardless of invertMatch
+        QCOMPARE(model.rowCount(), rows.count());
+        QCOMPARE(proxy.rowCount(), rows.count());
+        for (int i=0; i<rows.count(); i++) {
+            QCOMPARE(proxy.index(i, 0).data().toString(), model.index(i, 0).data().toString());
+        }
+        proxy.setInvertMatch(true);
+        QCOMPARE(model.rowCount(), rows.count());
+        QCOMPARE(proxy.rowCount(), rows.count());
+        for (int i=0; i<rows.count(); i++) {
+            QCOMPARE(proxy.index(i, 0).data().toString(), model.index(i, 0).data().toString());
+        }
+
+
+        // Test non-anchored regexp with invertMatch active
+        proxy.setFilterRegExp("foobar");
+        QCOMPARE(proxy.rowCount(), 1);
+        QCOMPARE(proxy.index(0, 0).data().toString(), rows.last());
+
+        // Test anchored regexp with invertMatch active
+        proxy.setFilterRegExp("^foobar$");
+        QCOMPARE(proxy.rowCount(), 3);
+        QCOMPARE(proxy.index(0, 0).data().toString(), rows.at(0));
+        QCOMPARE(proxy.index(1, 0).data().toString(), rows.at(2));
+        QCOMPARE(proxy.index(2, 0).data().toString(), rows.at(3));
+
+        // Test regexp with OR and invertMatch active
+        proxy.setFilterRegExp("foobar|hello");
+        QCOMPARE(proxy.count(), 0);
     }
 };
 
