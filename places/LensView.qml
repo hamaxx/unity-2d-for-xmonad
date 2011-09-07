@@ -129,6 +129,7 @@ FocusScope {
             availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
             folded: foldable ? body.item.folded : false
             onClicked: if(foldable) body.item.folded = !body.item.folded
+            moving: flickerMoving
 
             icon: body.iconHint
             label: body.name
