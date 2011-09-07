@@ -32,6 +32,7 @@ extern "C" {
 
 #include <QAbstractListModel>
 #include <QMetaType>
+#include <QtDBus/QtDBus>
 
 class Trash : public LauncherItem
 {
@@ -76,13 +77,13 @@ private:
     QList<WnckWindow*> trashWindows() const;
     bool isTrashWindow(WnckWindow* window) const;
 
-    static void recursiveDelete(GFile* dir);
     void startMonitoringTrash();
     void updateTrashIcon();
 
     QString m_iconName;
     GFile* m_trash;
     GFileMonitor* m_monitor;
+    QDBusInterface* m_nautilusIface;
 };
 
 Q_DECLARE_METATYPE(Trash*)
