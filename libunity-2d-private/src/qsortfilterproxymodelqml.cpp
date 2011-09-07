@@ -210,7 +210,7 @@ bool
 QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
                                            const QModelIndex &sourceParent) const
 {
-    // If there's no regexp set, always accept all rows indepenently of the invertMatch setting */
+    // If there's no regexp set, always accept all rows indepenently of the invertMatch setting
     if (filterRegExp().isEmpty()) {
         return true;
     }
