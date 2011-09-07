@@ -17,8 +17,10 @@
 #include "qsortfilterproxymodelqml.h"
 #include <debug_p.h>
 
-QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
-    QSortFilterProxyModel(parent), m_limit(-1)
+QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_limit(-1)
+    , m_invertMatch(false)
 {
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
@@ -187,6 +189,34 @@ QSortFilterProxyModelQML::setLimit(int limit)
 
         Q_EMIT limitChanged();
     }
+}
+
+bool
+QSortFilterProxyModelQML::invertMatch() const
+{
+    return m_invertMatch;
+}
+
+void
+QSortFilterProxyModelQML::setInvertMatch(bool invertMatch)
+{
+    if (invertMatch != m_invertMatch) {
+        m_invertMatch = invertMatch;
+        Q_EMIT invertMatchChanged(invertMatch);
+    }
+}
+
+bool
+QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
+                                           const QModelIndex &sourceParent) const
+{
+    // If there's no regexp set, always accept all rows indepenently of the invertMatch setting
+    if (filterRegExp().isEmpty()) {
+        return true;
+    }
+
+    bool result = QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+    return (m_invertMatch) ? !result : result;
 }
 
 #include "qsortfilterproxymodelqml.moc"
