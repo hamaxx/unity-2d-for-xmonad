@@ -364,9 +364,9 @@ void
 Trash::updateTrashIcon(void)
 {
     if(count() == 0) {
-        m_iconName = "unity-icon-theme/user-trash"; }
+        m_iconName = "user-trash"; }
     else {
-        m_iconName = "unity-icon-theme/user-trash-full"; }
+        m_iconName = "user-trash-full"; }
 }
 
 #include "trash.moc"
