@@ -34,7 +34,6 @@ public:
 
     Q_INVOKABLE QVariantMap get(int row);
     Q_INVOKABLE int count();
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     /* getters */
