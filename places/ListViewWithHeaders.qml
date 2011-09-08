@@ -235,6 +235,8 @@ FocusScope {
                     Binding { target: headerLoader; property: "model"; value: model }
                     property variant body
                     Binding { target: headerLoader; property: "body"; value: bodyLoader.item }
+                    property int flickerMoving
+                    Binding { target: headerLoader; property: "flickerMoving"; value: mouse.moving }
                 }
 
                 Loader {
