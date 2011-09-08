@@ -193,6 +193,12 @@ void IndicatorsManager::addIndicatorEntryWidget(IndicatorEntryWidget* widget)
     widget->installEventFilter(this);
 }
 
+bool IndicatorsManager::removeIndicatorEntryWidget(IndicatorEntryWidget* widget)
+{
+    widget->removeEventFilter(this);
+    return m_widgetList.removeOne(widget);
+}
+
 bool IndicatorsManager::eventFilter(QObject*, QEvent* event)
 {
     switch (event->type()) {
@@ -224,6 +230,11 @@ void IndicatorsManager::syncGeometries()
         locations[widget->entry()->id()] = rect;
     }
     m_indicators->SyncGeometries("Panel", locations);
+}
+
+IndicatorsManager::IndicatorEntryWidgetList IndicatorsManager::getEntryWidgets() const
+{
+    return m_widgetList;
 }
 
 #include "indicatorsmanager.moc"

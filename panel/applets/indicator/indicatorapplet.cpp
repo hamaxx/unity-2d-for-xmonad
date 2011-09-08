@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@
 // Local
 #include <debug_p.h>
 #include <indicatorsmanager.h>
-#include <indicatorwidget.h>
+#include <indicatorswidget.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -45,6 +46,9 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
     m_indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
         );
+
+    m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
+    layout->addWidget(m_indicatorsWidget);
 }
 
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
@@ -54,8 +58,7 @@ void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
         // appmenu indicator is handled by AppNameApplet
         return;
     }
-    IndicatorWidget* widget = new IndicatorWidget(indicator, m_indicatorsManager);
-    layout()->addWidget(widget);
+    m_indicatorsWidget->addIndicator(indicator);
 }
 
 #include "indicatorapplet.moc"

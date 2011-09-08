@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@
 
 // libunity-core
 #include <UnityCore/Indicator.h>
+#include "indicatorswidget.h"
 
 class IndicatorsManager;
 
@@ -39,6 +41,7 @@ public:
 private:
     Q_DISABLE_COPY(IndicatorApplet)
     IndicatorsManager* m_indicatorsManager;
+    IndicatorsWidget*  m_indicatorsWidget;
     void onObjectAdded(unity::indicator::Indicator::Ptr const&);
 };
 

@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef INDICATORWIDGET_H
-#define INDICATORWIDGET_H
+#ifndef INDICATORSWIDGET_H
+#define INDICATORSWIDGET_H
 
 // Local
 
@@ -35,18 +36,22 @@ class QHBoxLayout;
 class IndicatorEntryWidget;
 class IndicatorsManager;
 
-class IndicatorWidget : public QWidget, public sigc::trackable
+class IndicatorsWidget : public QWidget, public sigc::trackable
 {
 Q_OBJECT
 public:
-    IndicatorWidget(const unity::indicator::Indicator::Ptr& indicator, IndicatorsManager* manager);
+    IndicatorsWidget(IndicatorsManager* manager);
+
+    void addIndicator(const unity::indicator::Indicator::Ptr& indicator);
 
 private:
     QHBoxLayout* m_layout;
     IndicatorsManager* m_indicatorsManager;
-    unity::indicator::Indicator::Ptr m_indicator;
+    QList<unity::indicator::Indicator::Ptr> m_indicators;
+    QList<IndicatorEntryWidget*> m_entries;
 
     void onEntryAdded(const unity::indicator::Entry::Ptr& entry);
+    void onEntryRemoved(const std::string& entry_id);
 };
 
-#endif /* INDICATORWIDGET_H */
+#endif /* INDICATORSWIDGET_H */

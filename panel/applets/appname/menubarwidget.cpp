@@ -66,6 +66,7 @@ void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indica
     QString name = QString::fromStdString(indicator->name());
     if (name == "libappmenu.so") {
         indicator->on_entry_added.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryAdded));
+        indicator->on_entry_removed.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryRemoved));
     }
 }
 
@@ -80,6 +81,22 @@ void MenuBarWidget::onEntryAdded(const unity::indicator::Entry::Ptr& entry)
 
     // Insert *before* stretch
     m_layout->insertWidget(m_layout->count() - 1, widget);
+}
+
+void MenuBarWidget::onEntryRemoved(const std::string& entry_id)
+{
+    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList)
+    {
+        if (widget->entry()->id() == entry_id) {
+            disconnect(widget, SIGNAL(isEmptyChanged()));
+            widget->hide();
+            m_layout->removeWidget(widget);
+            m_indicatorsManager->removeIndicatorEntryWidget(widget);
+            m_widgetList.removeOne(widget);
+            updateIsEmpty();
+            break;
+        }
+    }
 }
 
 void MenuBarWidget::updateIsEmpty()

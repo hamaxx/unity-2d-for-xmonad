@@ -46,6 +46,10 @@ public:
     unity::indicator::DBusIndicators::Ptr indicators() const;
 
     void addIndicatorEntryWidget(IndicatorEntryWidget* widget);
+    bool removeIndicatorEntryWidget(IndicatorEntryWidget* widget);
+
+    typedef QList<IndicatorEntryWidget*> IndicatorEntryWidgetList;
+    IndicatorEntryWidgetList getEntryWidgets() const;
 
 protected:
     bool eventFilter(QObject*, QEvent*);
@@ -60,7 +64,6 @@ private:
     QTimer* m_geometrySyncTimer;
     QTimer* m_mouseTrackerTimer;
 
-    typedef QList<IndicatorEntryWidget*> IndicatorEntryWidgetList;
     IndicatorEntryWidgetList m_widgetList;
 
     void onSynced();

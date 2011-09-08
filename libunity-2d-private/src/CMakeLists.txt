@@ -69,7 +69,7 @@ set(lib${LIB_NAME}_SRCS
     cairoutils.cpp
     indicatorentrywidget.cpp
     indicatorsmanager.cpp
-    indicatorwidget.cpp
+    indicatorswidget.cpp
     panelapplet.cpp
     panelstyle.cpp
     )
