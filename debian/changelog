@@ -1,4 +1,4 @@
-unity-2d (4.6.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (4.6.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
     - [dash] Apps lens shows no result by default (LP: #834571)
@@ -31,7 +31,7 @@ unity-2d (4.6.0-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - rebuild against current nux and unity (API change)
 
- -- Didier Roche <didrocks@ubuntu.com>  Thu, 08 Sep 2011 16:20:55 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 08 Sep 2011 20:09:59 +0200
 
 unity-2d (4.4.0-0ubuntu1) oneiric; urgency=low
 
