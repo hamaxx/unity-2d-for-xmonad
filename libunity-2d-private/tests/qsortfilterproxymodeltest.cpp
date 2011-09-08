@@ -200,10 +200,14 @@ private Q_SLOTS:
         QSignalSpy spyOnRowsInserted(&proxy, SIGNAL(rowsInserted(const QModelIndex &, int, int)));
         QSignalSpy spyOnCountChanged(&proxy, SIGNAL(countChanged()));
 
+        /* FIXME: for some reason the rowsRemoved is not emitted if
+           proxy.rowCount is not called before.
+        */
+        proxy.rowCount();
         proxy.setLimit(5);
-        QCOMPARE(spyOnRowsRemoved.count(), 1);
         QCOMPARE(spyOnRowsInserted.count(), 0);
         QCOMPARE(spyOnCountChanged.count(), 1);
+        QCOMPARE(spyOnRowsRemoved.count(), 1);
         arguments = spyOnRowsRemoved.takeFirst();
         QCOMPARE(arguments.at(1).toInt(), 5);
         QCOMPARE(arguments.at(2).toInt(), 9);
@@ -375,13 +379,12 @@ private Q_SLOTS:
         spyOnRowsInserted.clear();
         spyOnCountChanged.clear();
 
-        /* FIXME: failing case due to QSortFilterProxyModel emitting
-           rowsInserted/rowsRemoved regardless of the limit */
-        //model.insertRows(5, 3);
-        //QCOMPARE(proxy.count(), 7);
-        //QCOMPARE(spyOnRowsRemoved.count(), 0);
-        //QCOMPARE(spyOnRowsInserted.count(), 0);
-        //QCOMPARE(spyOnCountChanged.count(), 0);
+        /* FIXME: failing case */
+        model.insertRows(5, 3);
+        //QCOMPARE(proxy.count(), 7); // proxy.count == 9
+        QCOMPARE(spyOnRowsRemoved.count(), 0);
+        //QCOMPARE(spyOnRowsInserted.count(), 0); // spyOnRowsInserted.count == 1
+        //QCOMPARE(spyOnCountChanged.count(), 0); // spyOnCountChanged.count == 1
     }
 
     void testInvertMatch() {
