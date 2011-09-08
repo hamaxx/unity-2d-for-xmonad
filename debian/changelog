@@ -1,5 +1,33 @@
 unity-2d (4.6.0-0ubuntu1) UNRELEASED; urgency=low
 
+  * New upstream release
+    - [dash] Apps lens shows no result by default (LP: #834571)
+    - Metacity needs command line options to activate capture before unmap and
+      compositing without effects (LP: #791205)
+    - Bold fonts everywhere in the UI (dash, launcher, workspace switcher) but
+      in the panel (LP: #808849)
+    - the migration script needs to be run in unity-2d as well (LP: #819733)
+    - [dash] "View photos" in the dash launches default image viewer instead
+      of shotwell (LP: #822605)
+    - Launcher tooltips sometimes leave holes in panel and windows
+      (LP: #837277)
+    - [dash] Search with non ascii characters fails (LP: #840010)
+    - add a configuration key (dconf) to enable the opengl backend
+      (LP: #809202)
+    - [launcher] when pressing super key shortcuts numbering start at 2
+      instead of 1 (LP: #830036)
+    - [UIFe] Unity 2D should be using the same BFB icon as Unity (LP: #838829)
+    - [launcher] trash icon needs to be the same as in Unity 3D (LP: #840025)
+    - Pressing alt on maximized window does show menu but not window controls
+      (LP: #836274)
+    - [dash] DropShadow on "See X more results" can cause visual errors on
+      scroll (LP: #843820)
+    - Dash - In the App lens filters, users should only be able filter by
+      'star' rating in one star increments (LP: #839759)
+    - Emptying the trash from the unity sidebar should respect nautilus' "Ask
+      before emptying" setting (LP: #730003)
+    - UIFe: Panel - Indicators should be orderable regardless of their parent
+      IndicatorObject (LP: #823061)
   * debian/control:
     - rebuild against current nux and unity (API change)
 
