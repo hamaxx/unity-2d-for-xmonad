@@ -47,6 +47,10 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
         sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
         );
 
+    m_indicatorsManager->indicators()->on_object_removed.connect(
+        sigc::mem_fun(this, &IndicatorApplet::onObjectRemoved)
+        );
+
     m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
     layout->addWidget(m_indicatorsWidget);
 }
@@ -54,11 +58,21 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
-    if (name == "libappmenu.so") {
-        // appmenu indicator is handled by AppNameApplet
-        return;
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->addIndicator(indicator);
     }
-    m_indicatorsWidget->addIndicator(indicator);
+}
+
+void IndicatorApplet::onObjectRemoved(Indicator::Ptr const& indicator)
+{
+    QString name = QString::fromStdString(indicator->name());
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->removeIndicator(indicator);
+    }
 }
 
 #include "indicatorapplet.moc"
