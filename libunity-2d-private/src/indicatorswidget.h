@@ -29,7 +29,11 @@
 #include <UnityCore/IndicatorEntry.h>
 
 // Qt
+#include <QMap>
 #include <QWidget>
+
+// sigc++
+#include <sigc++/connection.h>
 
 class QHBoxLayout;
 
@@ -43,11 +47,12 @@ public:
     IndicatorsWidget(IndicatorsManager* manager);
 
     void addIndicator(const unity::indicator::Indicator::Ptr& indicator);
+    void removeIndicator(const unity::indicator::Indicator::Ptr& indicator);
 
 private:
     QHBoxLayout* m_layout;
     IndicatorsManager* m_indicatorsManager;
-    QList<unity::indicator::Indicator::Ptr> m_indicators;
+    QMap<unity::indicator::Indicator::Ptr, QList<sigc::connection>> m_indicators_connections;
     QList<IndicatorEntryWidget*> m_entries;
 
     void onEntryAdded(const unity::indicator::Entry::Ptr& entry);
