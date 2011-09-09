@@ -44,6 +44,9 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
     indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &MenuBarWidget::onObjectAdded)
         );
+    indicatorsManager->indicators()->on_object_removed.connect(
+        sigc::mem_fun(this, &MenuBarWidget::onObjectRemoved)
+        );
     indicatorsManager->indicators()->on_entry_activated.connect(
         sigc::mem_fun(this, &MenuBarWidget::onEntryActivated)
         );
@@ -65,8 +68,29 @@ void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indica
 {
     QString name = QString::fromStdString(indicator->name());
     if (name == "libappmenu.so") {
-        indicator->on_entry_added.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryAdded));
-        indicator->on_entry_removed.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryRemoved));
+        m_indicator = indicator;
+        entry_added = m_indicator->on_entry_added.connect(
+                          sigc::mem_fun(this, &MenuBarWidget::onEntryAdded)
+                      );
+        entry_removed = m_indicator->on_entry_removed.connect(
+                            sigc::mem_fun(this, &MenuBarWidget::onEntryRemoved)
+                        );
+    }
+}
+
+void MenuBarWidget::onObjectRemoved(const unity::indicator::Indicator::Ptr& indicator)
+{
+    QString name = QString::fromStdString(indicator->name());
+    if (name == "libappmenu.so" && indicator.get()) {
+        entry_added.disconnect();
+        entry_removed.disconnect();
+
+        Q_FOREACH(unity::indicator::Entry::Ptr entry, m_indicator->GetEntries())
+        {
+            onEntryRemoved (entry->id());
+        }
+
+        m_indicator.reset();
     }
 }
 
