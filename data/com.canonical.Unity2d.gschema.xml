@@ -1,4 +1,14 @@
 <schemalist>
+  <schema path="/com/canonical/unity-2d/" id="com.canonical.Unity2d" gettext-domain="unity-2d">
+    <key type="b" name="use-opengl">
+      <default>false</default>
+      <summary>Use OpenGL viewport.</summary>
+      <description>
+        Whether to render the graphics into an OpenGL viewport.
+        When set to false, the raster engine is used.
+      </description>
+    </key>
+  </schema>
   <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">
       <default>true</default>

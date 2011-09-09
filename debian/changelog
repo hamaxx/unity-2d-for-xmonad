@@ -1,3 +1,73 @@
+unity-2d (4.6.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - [dash] Apps lens shows no result by default (LP: #834571)
+    - Metacity needs command line options to activate capture before unmap and
+      compositing without effects (LP: #791205)
+    - Bold fonts everywhere in the UI (dash, launcher, workspace switcher) but
+      in the panel (LP: #808849)
+    - the migration script needs to be run in unity-2d as well (LP: #819733)
+    - [dash] "View photos" in the dash launches default image viewer instead
+      of shotwell (LP: #822605)
+    - Launcher tooltips sometimes leave holes in panel and windows
+      (LP: #837277)
+    - [dash] Search with non ascii characters fails (LP: #840010)
+    - add a configuration key (dconf) to enable the opengl backend
+      (LP: #809202)
+    - [launcher] when pressing super key shortcuts numbering start at 2
+      instead of 1 (LP: #830036)
+    - [UIFe] Unity 2D should be using the same BFB icon as Unity (LP: #838829)
+    - [launcher] trash icon needs to be the same as in Unity 3D (LP: #840025)
+    - Pressing alt on maximized window does show menu but not window controls
+      (LP: #836274)
+    - [dash] DropShadow on "See X more results" can cause visual errors on
+      scroll (LP: #843820)
+    - Dash - In the App lens filters, users should only be able filter by
+      'star' rating in one star increments (LP: #839759)
+    - Emptying the trash from the unity sidebar should respect nautilus' "Ask
+      before emptying" setting (LP: #730003)
+    - UIFe: Panel - Indicators should be orderable regardless of their parent
+      IndicatorObject (LP: #823061)
+  * debian/control:
+    - rebuild against current nux and unity (API change)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 08 Sep 2011 20:09:59 +0200
+
+unity-2d (4.4.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - unity-2d-panel crashed with SIGSEGV in QConfSchema::findKey()
+      (LP: #834045)
+    - unity-2d-panel crashed with SIGSEGV in QConf::notify() (LP: #834001)
+    - [panel] Implement whitelisting for legacy tray applet (LP: #707354)
+    - [launcher] stops automatically hiding after some time using it
+      (LP: #821180)
+    - [panel] Empathy displays icon in deprecated systray (LP: #830017)
+    - [dash] Invalid UTF-8 in the dash (LP: #836587)
+    - [dash] Home buttons 'Media' and 'Internet' apps should not only take you
+      to the apps lens but also activate the right filter (LP: #837360)
+    - [dash] Drag&drop application from dash to launcher is broken
+      (LP: #837361)
+    - [launcher] contextual menu's corner has a blue line (LP: #828386)
+    - [dash] Lens bar graphical layout glitches (LP: #833805)
+    - [dash] Rating Filter: All button not clearing star highlighting
+      (LP: #834640)
+    - [dash] should be falling back to the default renderer if the renderer
+      requested by the lens is not found (LP: #837356)
+    - [dash] Gwibber lens icon doesn't show up in 2d unity (LP: #830728)
+    - [dash] Lacks horizontal renderer used by lenses such as Gwibber
+      (LP: #837712)
+    - [dash] See %1 more result inconsistency (LP: #834226)
+    - [launcher] When application has no icon, a question mark icon should be
+      displayed (LP: #837351)
+    - unity places should return a default icon when no matching icon is found
+      (LP: #711200)
+    - spacing between indicators should be 5 pixels (LP: #734010)
+  * debian/control:
+    - require current nux and unity
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 01 Sep 2011 17:41:00 +0200
+
 unity-2d (4.2.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:

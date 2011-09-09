@@ -246,6 +246,10 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 
     /* FIXME: signal should be forwarded instead of calling the handler directly */
     m_unityLens->activated.connect(sigc::mem_fun(this, &Lens::onActivated));
+
+    /* Forward local states to newly set unityLens */
+    m_unityLens->Search(m_searchQuery.toStdString());
+    m_unityLens->GlobalSearch(m_globalSearchQuery.toStdString());
 }
 
 void Lens::onResultsSwarmNameChanged(std::string swarm_name)

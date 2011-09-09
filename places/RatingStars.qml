@@ -21,10 +21,11 @@ import QtQuick 1.0
 Item {
     id: ratingStars
 
-    property real rating: 3.7
+    property real rating
     property int size: 5 /* Number of stars */
     property alias enabled: starsMouseArea.enabled
     property alias spacing: stars.spacing
+    property bool ratingVisible: true
 
     /* Configure icon size to use. Requires icon files named:
        - artwork/star_empty-${starIconSize}.png
@@ -40,28 +41,11 @@ Item {
     }
 
     function incrementRating() {
-        /* Make math easier since half rating accepted */
-        var double_rating = rating * 2
-
-        if ( double_rating % 1 > 0){ /* if non-integer, round up */
-            double_rating = Math.ceil(double_rating)
-        }
-        else {
-            double_rating = clamp(double_rating+1, 0, size * 2)
-        }
-        rating = double_rating / 2
+        rating = clamp(Math.floor(rating) + 1, 1, size)
     }
 
     function decrementRating() {
-        var double_rating = rating * 2
-
-        if ( double_rating % 1 > 0){ /* if non-integer, round down */
-            double_rating = Math.ceil(double_rating)
-        }
-        else {
-            double_rating = clamp(double_rating-1, 0, size * 2)
-        }
-        rating = double_rating / 2
+        rating = clamp(Math.ceil(rating) - 1, 1, size)
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
@@ -83,9 +67,15 @@ Item {
         Repeater {
             model: size
             Star {
-                fill: clamp(rating - index, 0, 1)
+                fill: if(!enabled){ /* If read-only, display any Star rating */
+                          return clamp(rating - index, 0, size)
+                      }
+                      else{ /* If user selectable, restrict to integer selections */
+                          return (rating - index > 0) ? 1 : 0
+                      }
                 iconSize: starIconSize
                 selected: ( ratingStars.activeFocus )
+                ratingVisible: ( ratingStars.ratingVisible )
             }
         }
     }
@@ -103,19 +93,12 @@ Item {
         property int unitWidth: starIconSize + stars.spacing
 
         function calculateRating( posX ){
-            /* Small left-hand edge to set zero rating */
-            if( posX < 4 ) return 0
-
             /* Mouse X coordinate over one unit, relative to that unit's left edge*/
             var posXOverUnit = posX % unitWidth
 
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
             var rating = (posX - posXOverUnit) / unitWidth + 1
 
-            /* If posX under half the star's width, remove 0.5 from the rating */
-            if( posXOverUnit <= (starIconSize/2) ){
-                rating = rating - 0.5
-            }
             return clamp( rating, 0, size )
         }
 

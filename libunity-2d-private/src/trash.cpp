@@ -41,6 +41,9 @@ Trash::Trash()
     setShortcutKey(Qt::Key_T);
     updateTrashIcon();
     startMonitoringTrash();
+    m_nautilusIface = new QDBusInterface("org.gnome.Nautilus", "/org/gnome/Nautilus",
+                                         "org.gnome.Nautilus.FileOperations",
+                                         QDBusConnection::sessionBus(), this);
 }
 
 Trash::Trash(const Trash& other)
@@ -170,7 +173,7 @@ Trash::open() const
 void
 Trash::empty() const
 {
-    recursiveDelete(m_trash);
+    m_nautilusIface->call("EmptyTrash");
 }
 
 int
@@ -192,56 +195,6 @@ Trash::count() const
     g_object_unref(info);
 
     return count;
-}
-
-void
-Trash::recursiveDelete(GFile* dir)
-{
-    GError* error = NULL;
-    QString attributes;
-    attributes += G_FILE_ATTRIBUTE_STANDARD_NAME;
-    attributes += ",";
-    attributes += G_FILE_ATTRIBUTE_STANDARD_TYPE;
-    GFileEnumerator* children = g_file_enumerate_children(dir,
-        attributes.toAscii().constData(), G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-        NULL, &error);
-    if (error != NULL) {
-        char* uri = g_file_get_uri(dir);
-        UQ_WARNING << "Unable to recursively delete files in" << uri << ":"
-                   << error->message;
-        g_free(uri);
-        g_error_free(error);
-        return;
-    }
-
-    GFileInfo* info = NULL;
-    while ((info = g_file_enumerator_next_file(children, NULL, &error)) != NULL) {
-        GFile* child = g_file_get_child(dir, g_file_info_get_name(info));
-        if (g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY) {
-            recursiveDelete(child);
-        }
-
-        /* If passed a GError* as third parameter, g_file_delete incorrectly
-           reports an error when attempting to delete a file in a subfolder in
-           the trash with the following error message:
-           "Items in the trash cannot be modified".
-           Despite the error, the file (or folder) is actually deleted.
-           For now let’s just ignore errors…
-           Note: the same happens in Unity. */
-        g_file_delete(child, NULL, NULL);
-
-        g_object_unref(child);
-        g_object_unref(info);
-    }
-    g_object_unref(children);
-
-    if (error != NULL) {
-        char* uri = g_file_get_uri(dir);
-        UQ_WARNING << "Unable to recursively delete files in" << uri << ":"
-                   << error->message;
-        g_free(uri);
-        g_error_free(error);
-    }
 }
 
 void
@@ -364,9 +317,9 @@ void
 Trash::updateTrashIcon(void)
 {
     if(count() == 0) {
-        m_iconName = "unity-icon-theme/user-trash"; }
+        m_iconName = "user-trash"; }
     else {
-        m_iconName = "unity-icon-theme/user-trash-full"; }
+        m_iconName = "user-trash-full"; }
 }
 
 #include "trash.moc"

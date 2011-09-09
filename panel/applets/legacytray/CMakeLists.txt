@@ -15,6 +15,7 @@ set(legacytray_SRCS
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${DCONFQT_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -30,6 +31,7 @@ set_target_properties(panelplugin-legacytray PROPERTIES
 target_link_libraries(panelplugin-legacytray
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
+    ${DCONFQT_LIBRARIES}
     ${X11_LIBRARIES}
     ${X11_Xrender_LIB}
     ${X11_Xcomposite_LIB}

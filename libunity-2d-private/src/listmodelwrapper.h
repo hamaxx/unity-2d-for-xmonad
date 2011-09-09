@@ -46,6 +46,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    const QList<WrapperItem*>& rawList() const;
+
 private:
     void onItemAdded(ItemClass item);
     void onItemRemoved(ItemClass item);
@@ -92,6 +94,12 @@ int ListModelWrapper<WrapperItem, ItemClass>::rowCount(const QModelIndex& parent
     Q_UNUSED(parent)
 
     return m_list.count();
+}
+
+template <class WrapperItem, class ItemClass>
+const QList<WrapperItem*>& ListModelWrapper<WrapperItem, ItemClass>::rawList() const
+{
+    return m_list;
 }
 
 template <class WrapperItem, class ItemClass>

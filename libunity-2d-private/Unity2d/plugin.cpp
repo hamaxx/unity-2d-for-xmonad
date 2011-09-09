@@ -73,6 +73,7 @@
 #include <QDeclarativeContext>
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
+#include <QTextCodec>
 
 // QtDee
 #include "deelistmodel.h"
@@ -186,6 +187,15 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
     Unity2dTr::qmlInit(engine->rootContext());
+
+    /* Define the charset that Qt assumes C-strings (char *) and std::string to be in.
+       After that definition, using QString::fromStdString and QString::toStdString
+       will properly convert from and to std::string encoded in UTF-8 as it is
+       the case in Unity's shared backend.
+
+       Ref.: http://developer.qt.nokia.com/wiki/QtStrings
+    */
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 }
 
 Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

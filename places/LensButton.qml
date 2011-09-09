@@ -25,6 +25,8 @@ import Effects 1.0
 AbstractButton {
     property alias icon: icon.source
     property bool active: false
+    property int iconSpacing: 0
+    property int iconWidth: 24
 
     id: lensButton
 
@@ -40,6 +42,8 @@ AbstractButton {
         anchors.fill: parent
         anchors.topMargin: 7
         anchors.bottomMargin: 7
+        anchors.leftMargin: Math.floor(iconSpacing/2)
+        anchors.rightMargin: Math.ceil(iconSpacing/2)
 
         border.color: "white"
         border.width: 1

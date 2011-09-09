@@ -43,6 +43,8 @@ public:
     /* getters */
     FilterOptions* options() const;
 
+    Q_INVOKABLE FilterOption* getOption(const QString& id) const;
+
 Q_SIGNALS:
     void optionsChanged();
 

@@ -24,6 +24,7 @@ Item {
     property real fill: 0
     property int iconSize: 32
     property bool selected: false
+    property alias ratingVisible: ratingStar.visible
 
     width: childrenRect.width
     height: childrenRect.height
@@ -45,6 +46,7 @@ Item {
     }
 
     Image {
+        id: ratingStar
         width: Math.ceil(sourceSize.width * fill)
         height: sourceSize.height
 

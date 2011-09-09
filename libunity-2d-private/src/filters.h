@@ -48,6 +48,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+    Q_INVOKABLE Filter* getFilter(const QString& id) const;
+
 private:
     unity::dash::Filters::Ptr m_unityFilters;
     QList<Filter*> m_filters;

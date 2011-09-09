@@ -35,6 +35,7 @@ class GioDefaultApplication : public QObject
 
     Q_PROPERTY(QString desktopFile READ desktopFile NOTIFY desktopFileChanged)
     Q_PROPERTY(QString contentType READ contentType WRITE setContentType NOTIFY contentTypeChanged)
+    Q_PROPERTY(QString defaultDesktopFile READ defaultDesktopFile WRITE setDefaultDesktopFile NOTIFY defaultDesktopFileChanged)
 
 public:
     GioDefaultApplication(QObject* parent=0);
@@ -42,13 +43,16 @@ public:
     /* getters */
     QString desktopFile() const;
     QString contentType() const;
+    QString defaultDesktopFile() const;
 
     /* setters */
+    void setDefaultDesktopFile(const QString& defaultDesktopFile);
     void setContentType(const QString& contentType);
 
 Q_SIGNALS:
     void desktopFileChanged();
     void contentTypeChanged();
+    void defaultDesktopFileChanged();
 
 private:
     Q_SLOT void updateDesktopFile();
@@ -56,6 +60,7 @@ private:
 
     QString m_contentType;
     QString m_desktopFile;
+    QString m_defaultDesktopFile;
     QFileSystemWatcher* m_mimeappsWatcher;
 };
 
