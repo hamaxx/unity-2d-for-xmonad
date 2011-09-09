@@ -1,8 +1,8 @@
-unity-2d (4.6.1-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (4.6.1-0ubuntu1) oneiric; urgency=low
 
   * Fix a segfault due to new unity service backend change.
 
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 09 Sep 2011 12:34:20 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 09 Sep 2011 13:50:22 +0200
 
 unity-2d (4.6.0-0ubuntu1) UNRELEASED; urgency=low
 
