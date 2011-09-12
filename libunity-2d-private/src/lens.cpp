@@ -134,7 +134,12 @@ void Lens::setActive(bool active)
 
 void Lens::setSearchQuery(const QString& search_query)
 {
-    if (search_query != m_searchQuery) {
+    /* Checking for m_searchQuery.isNull() which returns true only when the string
+       has never been set is necessary because when search_query is the empty
+       string ("") and m_searchQuery is the null string,
+       search_query != m_searchQuery is still true.
+    */
+    if (m_searchQuery.isNull() || search_query != m_searchQuery) {
         m_searchQuery = search_query;
         m_unityLens->Search(search_query.toStdString());
         Q_EMIT searchQueryChanged();
@@ -143,7 +148,12 @@ void Lens::setSearchQuery(const QString& search_query)
 
 void Lens::setGlobalSearchQuery(const QString& search_query)
 {
-    if (search_query != m_globalSearchQuery) {
+    /* Checking for m_globalSearchQuery.isNull() which returns true only when the string
+       has never been set is necessary because when search_query is the empty
+       string ("") and m_globalSearchQuery is the null string,
+       search_query != m_globalSearchQuery is still true.
+    */
+    if (m_globalSearchQuery.isNull() || search_query != m_globalSearchQuery) {
         m_globalSearchQuery = search_query;
         m_unityLens->GlobalSearch(search_query.toStdString());
         Q_EMIT globalSearchQueryChanged();
@@ -210,8 +220,6 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
         delete m_filters;
     }
 
-    // FIXME: should emit change notification signals for all properties
-
     m_unityLens = lens;
 
     m_filters = new Filters(m_unityLens->filters, this);
@@ -247,9 +255,24 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     /* FIXME: signal should be forwarded instead of calling the handler directly */
     m_unityLens->activated.connect(sigc::mem_fun(this, &Lens::onActivated));
 
-    /* Forward local states to newly set unityLens */
-    m_unityLens->Search(m_searchQuery.toStdString());
-    m_unityLens->GlobalSearch(m_globalSearchQuery.toStdString());
+    /* Synchronize local states with m_unityLens right now and whenever
+       m_unityLens becomes connected */
+    /* FIXME: should emit change notification signals for all properties */
+    connect(this, SIGNAL(connectedChanged(bool)), SLOT(synchronizeStates()));
+    synchronizeStates();
+}
+
+void Lens::synchronizeStates()
+{
+    if (connected()) {
+        /* Forward local states to m_unityLens */
+        if (!m_searchQuery.isNull()) {
+            m_unityLens->Search(m_searchQuery.toStdString());
+        }
+        if (!m_globalSearchQuery.isNull()) {
+            m_unityLens->GlobalSearch(m_globalSearchQuery.toStdString());
+        }
+    }
 }
 
 void Lens::onResultsSwarmNameChanged(std::string swarm_name)

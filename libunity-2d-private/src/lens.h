@@ -112,6 +112,9 @@ Q_SIGNALS:
     void searchQueryChanged();
     void globalSearchQueryChanged();
 
+private Q_SLOTS:
+    void synchronizeStates();
+
 private:
     void onResultsSwarmNameChanged(std::string);
     void onResultsChanged(unity::dash::Results::Ptr);
