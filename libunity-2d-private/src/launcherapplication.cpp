@@ -56,6 +56,7 @@
 
 extern "C" {
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <libsn/sn.h>
 }
 
@@ -656,14 +657,18 @@ LauncherApplication::launch()
     }
 
     GError* error = NULL;
-    GTimeVal timeval;
 
-    g_get_current_time (&timeval);
+    GdkWindow* root;
+    guint32 timestamp;
+
     GdkDisplay* display = gdk_display_get_default();
     GObjectScopedPointer<GdkAppLaunchContext> context(gdk_display_get_app_launch_context(display));
-    /* Using GDK_CURRENT_TIME doesn’t seem to work, launched windows
-       sometimes don’t get focus (see https://launchpad.net/bugs/643616). */
-    gdk_app_launch_context_set_timestamp(context.data(), timeval.tv_sec);
+
+    /* FIXME: ultimately we should forward the timestamps from events that triggered the launch */
+    root = gdk_x11_window_lookup_for_display(display, GDK_ROOT_WINDOW());
+    timestamp = gdk_x11_get_server_time(root);
+
+    gdk_app_launch_context_set_timestamp(context.data(), timestamp);
 
     g_app_info_launch(m_appInfo.data(), NULL, (GAppLaunchContext*)context.data(), &error);
 
