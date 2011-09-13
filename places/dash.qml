@@ -124,6 +124,23 @@ Item {
         dashView.activeLens = ""
     }
 
+    function activateLensWithOptionFilter(lensId, filterId, optionId) {
+        var lens = lenses.get(lensId)
+        var filter = lens.filters.getFilter(filterId)
+        var option = filter.getOption(optionId)
+        filter.clear()
+        option.active = true
+        filterPane.folded = false
+        activateLens(lensId)
+    }
+
+    function activateLensAndClearFilter(lensId, filterId) {
+        var lens = lenses.get(lensId)
+        var filter = lens.filters.getFilter(filterId)
+        filter.clear()
+        activateLens(lensId)
+    }
+
     property variant lenses: Lenses {}
 
     Item {
@@ -227,42 +244,37 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible ? refine_search : search_entry
+            KeyNavigation.right: filterPane.visible ? filterPane : search_entry
             KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
             anchors.topMargin: 10
-            anchors.left: leftRight(parent.left, refine_search.right)
+            anchors.left: leftRight(parent.left, filterPane.right)
             anchors.leftMargin: leftRight(16, 10)
-            anchors.right: leftRight(refine_search.left, parent.right)
+            anchors.right: leftRight(filterPane.left, parent.right)
             anchors.rightMargin: leftRight(10, 16)
 
             height: 53
         }
 
-        SearchRefine {
-            id: refine_search
+        FilterPane {
+            id: filterPane
 
             KeyNavigation.left: search_entry
 
-            /* SearchRefine is only to be displayed for lenses, not in the home page */
-            /* FIXME: deactivated for now as the Qt bindings for the filters
-                      backend are not ready. Code should be:
-
-                      visible: dashView.activeLens != ""
-            */
-            visible: false
+            /* FilterPane is only to be displayed for lenses, not in the home page */
+            visible: dashView.activeLens != ""
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
             anchors.topMargin: search_entry.anchors.topMargin
-            height: parent.height
+            anchors.bottom: lensBar.top
             headerHeight: search_entry.height
             width: 310
             anchors.right: leftRight(parent.right)
             anchors.left:  rightLeft(parent.left)
-            anchors.rightMargin: leftRight(3, 0)
-            anchors.leftMargin:  rightLeft(3, 0)
+            anchors.rightMargin: leftRight(15, 0)
+            anchors.leftMargin:  rightLeft(15, 0)
         }
 
         Loader {
@@ -272,7 +284,7 @@ Item {
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
                       ref: http://bugreports.qt.nokia.com/browse/QTBUG-15862
             */
-            KeyNavigation.right: refine_search.visible && !refine_search.folded ? refine_search : pageLoader
+            KeyNavigation.right: filterPane.visible && !filterPane.folded ? filterPane : pageLoader
             KeyNavigation.up: search_entry
             KeyNavigation.down: lensBar
 
@@ -280,12 +292,12 @@ Item {
             anchors.topMargin: 2
             anchors.bottom: lensBar.top
             anchors.left: leftRight(parent.left, 
-                !refine_search.visible || refine_search.folded ? parent.left : refine_search.right)
+                !filterPane.visible || filterPane.folded ? parent.left : filterPane.right)
             anchors.leftMargin: leftRight(0,
-                !refine_search.visible || refine_search.folded ? 0 : 15)
-            anchors.right: leftRight(!refine_search.visible || refine_search.folded ? parent.right : refine_search.left,
+                !filterPane.visible || filterPane.folded ? 0 : 15)
+            anchors.right: leftRight(!filterPanel.visible || filterPanel.folded ? parent.right : filterPanel.left,
                 parent.right)
-            anchors.rightMargin: leftRight(!refine_search.visible || refine_search.folded ? 0 : 15,
+            anchors.rightMargin: leftRight(!filterPanel.visible || filterPanel.folded ? 0 : 15,
                 0)
             onLoaded: item.focus = true
         }
@@ -303,7 +315,7 @@ Item {
         }
     }
 
-    Button {
+    AbstractButton {
         id: fullScreenButton
 
         Accessible.name: "Full Screen"

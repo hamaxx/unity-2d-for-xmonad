@@ -34,7 +34,7 @@ Renderer {
     property alias currentItem: results.currentItem
 
     property variant cellRenderer
-    property bool folded
+    property bool folded: true
 
     property int cellWidth: 158
     property int cellHeight: 76
@@ -100,6 +100,7 @@ Renderer {
                         item.displayName = displayName
                         item.comment = comment
                         item.focus = true
+                        item.dndUri = dndUri
                     }
                 }
             }

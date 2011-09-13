@@ -30,8 +30,8 @@ FocusScope {
         focus: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left:  leftRight(parent.left, scrollbar.right)
-        anchors.right: leftRight(scrollbar.left, parent.right)
+        anchors.left: parent.left
+        anchors.right: parent.right
         anchors.rightMargin: 15
     }
 

@@ -20,6 +20,8 @@
 #ifndef LENS_H
 #define LENS_H
 
+// Local
+
 // Qt
 #include <QObject>
 #include <QString>
@@ -31,6 +33,7 @@
 // dee-qt
 #include "deelistmodel.h"
 
+class Filters;
 
 class Lens : public QObject
 {
@@ -51,6 +54,7 @@ class Lens : public QObject
     Q_PROPERTY(DeeListModel* globalResults READ globalResults NOTIFY globalResultsChanged)
     Q_PROPERTY(DeeListModel* categories READ categories NOTIFY categoriesChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(Filters* filters READ filters NOTIFY filtersChanged)
 
     Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
     Q_PROPERTY(QString globalSearchQuery READ globalSearchQuery WRITE setGlobalSearchQuery NOTIFY globalSearchQueryChanged)
@@ -74,6 +78,7 @@ public:
     DeeListModel* globalResults() const;
     DeeListModel* categories() const;
     bool active() const;
+    Filters* filters() const;
     QString searchQuery() const;
     QString globalSearchQuery() const;
 
@@ -101,10 +106,14 @@ Q_SIGNALS:
     void globalResultsChanged();
     void categoriesChanged();
     void activeChanged(bool);
+    void filtersChanged();
     void searchFinished(std::string const&);
     void globalSearchFinished(std::string const&);
     void searchQueryChanged();
     void globalSearchQueryChanged();
+
+private Q_SLOTS:
+    void synchronizeStates();
 
 private:
     void onResultsSwarmNameChanged(std::string);
@@ -123,6 +132,7 @@ private:
     DeeListModel* m_categories;
     QString m_searchQuery;
     QString m_globalSearchQuery;
+    Filters* m_filters;
 };
 
 Q_DECLARE_METATYPE(Lens*)

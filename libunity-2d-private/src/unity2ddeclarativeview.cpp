@@ -1,17 +1,51 @@
+/*
+ * Copyright (C) 2011 Canonical, Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "unity2ddeclarativeview.h"
+
 #include <QDebug>
 #include <QGLWidget>
+#include <QVariant>
 #include <QX11Info>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include "qconf.h"
+
 #include <debug_p.h>
 
+static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
+
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
-    QDeclarativeView(parent), m_useOpenGL(false), m_transparentBackground(false), m_last_focused_window(None)
+    QDeclarativeView(parent),
+    m_useOpenGL(false),
+    m_transparentBackground(false),
+    m_last_focused_window(None),
+    m_conf(new QConf(UNITY2D_DCONF_SCHEMA))
 {
+    m_useOpenGL = m_conf->property("useOpengl").toBool();
+
     setupViewport();
+}
+
+Unity2DDeclarativeView::~Unity2DDeclarativeView()
+{
+    delete m_conf;
+    m_conf = 0;
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const

@@ -29,6 +29,8 @@
 #include <UnityCore/Indicator.h>
 #include <UnityCore/IndicatorEntry.h>
 
+#include <sigc++/connection.h>
+
 class QHBoxLayout;
 
 class IndicatorEntryWidget;
@@ -53,6 +55,9 @@ private Q_SLOTS:
 private:
     Q_DISABLE_COPY(MenuBarWidget)
 
+    unity::indicator::Indicator::Ptr m_indicator;
+    sigc::connection entry_added;
+    sigc::connection entry_removed;
     IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     bool m_isEmpty;
@@ -60,7 +65,9 @@ private:
     QList<IndicatorEntryWidget*> m_widgetList;
 
     void onObjectAdded(const unity::indicator::Indicator::Ptr&);
+    void onObjectRemoved(const unity::indicator::Indicator::Ptr&);
     void onEntryAdded(const unity::indicator::Entry::Ptr&);
+    void onEntryRemoved(const std::string&);
     void onEntryActivated(const std::string&);
 };
 

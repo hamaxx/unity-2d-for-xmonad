@@ -44,6 +44,9 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
     indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &MenuBarWidget::onObjectAdded)
         );
+    indicatorsManager->indicators()->on_object_removed.connect(
+        sigc::mem_fun(this, &MenuBarWidget::onObjectRemoved)
+        );
     indicatorsManager->indicators()->on_entry_activated.connect(
         sigc::mem_fun(this, &MenuBarWidget::onEntryActivated)
         );
@@ -65,7 +68,29 @@ void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indica
 {
     QString name = QString::fromStdString(indicator->name());
     if (name == "libappmenu.so") {
-        indicator->on_entry_added.connect(sigc::mem_fun(this, &MenuBarWidget::onEntryAdded));
+        m_indicator = indicator;
+        entry_added = m_indicator->on_entry_added.connect(
+                          sigc::mem_fun(this, &MenuBarWidget::onEntryAdded)
+                      );
+        entry_removed = m_indicator->on_entry_removed.connect(
+                            sigc::mem_fun(this, &MenuBarWidget::onEntryRemoved)
+                        );
+    }
+}
+
+void MenuBarWidget::onObjectRemoved(const unity::indicator::Indicator::Ptr& indicator)
+{
+    QString name = QString::fromStdString(indicator->name());
+    if (name == "libappmenu.so" && indicator.get()) {
+        entry_added.disconnect();
+        entry_removed.disconnect();
+
+        Q_FOREACH(unity::indicator::Entry::Ptr entry, m_indicator->GetEntries())
+        {
+            onEntryRemoved (entry->id());
+        }
+
+        m_indicator.reset();
     }
 }
 
@@ -80,6 +105,22 @@ void MenuBarWidget::onEntryAdded(const unity::indicator::Entry::Ptr& entry)
 
     // Insert *before* stretch
     m_layout->insertWidget(m_layout->count() - 1, widget);
+}
+
+void MenuBarWidget::onEntryRemoved(const std::string& entry_id)
+{
+    Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList)
+    {
+        if (widget->entry()->id() == entry_id) {
+            disconnect(widget, SIGNAL(isEmptyChanged()));
+            widget->hide();
+            m_layout->removeWidget(widget);
+            m_indicatorsManager->removeIndicatorEntryWidget(widget);
+            m_widgetList.removeOne(widget);
+            updateIsEmpty();
+            break;
+        }
+    }
 }
 
 void MenuBarWidget::updateIsEmpty()

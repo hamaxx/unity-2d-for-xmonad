@@ -69,7 +69,7 @@ QImage IconImageProvider::requestImage(const QString &id, QSize *size, const QSi
         }
 
         if (requestedSize.isValid()) {
-            icon = icon.scaled(requestedSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            icon = icon.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         }
 
         if (size) {

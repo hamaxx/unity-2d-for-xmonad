@@ -1,7 +1,25 @@
+/*
+ * Copyright (C) 2011 Canonical, Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef UNITY2DDECLARATIVEVIEW_H
 #define UNITY2DDECLARATIVEVIEW_H
 
 #include <QDeclarativeView>
+
+class QConf;
 
 class Unity2DDeclarativeView : public QDeclarativeView
 {
@@ -13,6 +31,7 @@ class Unity2DDeclarativeView : public QDeclarativeView
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
+    ~Unity2DDeclarativeView();
 
     // getters
     bool useOpenGL() const;
@@ -43,6 +62,7 @@ private:
     bool m_useOpenGL;
     bool m_transparentBackground;
     WId m_last_focused_window;
+    QConf* m_conf;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)

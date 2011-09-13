@@ -61,11 +61,22 @@
 #include "lenses.h"
 #include "lens.h"
 
+#include "filter.h"
+#include "filters.h"
+#include "ratingsfilter.h"
+#include "radiooptionfilter.h"
+#include "checkoptionfilter.h"
+#include "multirangefilter.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
+#include <QTextCodec>
+
+// QtDee
+#include "deelistmodel.h"
 
 #include <X11/Xlib.h>
 
@@ -136,6 +147,15 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
     qmlRegisterType<Lens>(uri, 1, 0, "Lens");
+
+    qmlRegisterType<Filter>();
+    qmlRegisterType<Filters>();
+    qmlRegisterType<RatingsFilter>();
+    qmlRegisterType<RadioOptionFilter>();
+    qmlRegisterType<CheckOptionFilter>();
+    qmlRegisterType<MultiRangeFilter>();
+    qmlRegisterType<FilterOption>();
+    qmlRegisterType<FilterOptions>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -167,6 +187,15 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
     Unity2dTr::qmlInit(engine->rootContext());
+
+    /* Define the charset that Qt assumes C-strings (char *) and std::string to be in.
+       After that definition, using QString::fromStdString and QString::toStdString
+       will properly convert from and to std::string encoded in UTF-8 as it is
+       the case in Unity's shared backend.
+
+       Ref.: http://developer.qt.nokia.com/wiki/QtStrings
+    */
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 }
 
 Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

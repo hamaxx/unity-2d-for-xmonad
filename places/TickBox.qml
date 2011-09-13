@@ -42,25 +42,33 @@ AbstractButton {
 
     Rectangle {
         id: container
-        width: parent.width //should be 144
-        height: parent.height //should be 29
-        border.color: "white"
-        border.width: 1
-        color: ( checked ) ? "white" : "#00000000"
-        opacity: if (checked) return 0.8
-                 else if (parent.state == "selected") return 1
-                 else return 0.5
+
+        /* FIXME: Rectangle's borders grow half inside and half outside of the
+           rectangle. In order to avoid it being clipped, we adjust its size
+           and position depending on its border's width.
+
+           Ref.: http://lists.qt.nokia.com/pipermail/qt-qml/2010-May/000264.html
+        */
+        x: Math.floor(border.width / 2)
+        y: Math.floor(border.width / 2)
+        width: parent.width - border.width
+        height: parent.height - border.width
+        border.color: if ( parent.state == "selected") return "white"
+                      else if ( checked ) return "#cdffffff" // 13% opaque
+                      else return "#21ffffff" // 80% opaque
+        border.width: ( checked ) ? 2 : 1
+        color: ( checked ) ? "#21ffffff" : "transparent"
         radius: 5
     }
 
     TextCustom {
         id: label
-        anchors.fill: container
+        anchors.fill: parent
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 15
-        color: ( checked ) ? "black" : "white"
+        fontSize: "medium"
+        color: "white"
         text: tickBox.text
         elide: Text.ElideRight
         opacity: ( !canUncheck ) ? 0 : 1

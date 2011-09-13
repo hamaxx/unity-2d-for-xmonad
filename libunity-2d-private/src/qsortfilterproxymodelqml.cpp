@@ -17,8 +17,10 @@
 #include "qsortfilterproxymodelqml.h"
 #include <debug_p.h>
 
-QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent) :
-    QSortFilterProxyModel(parent), m_limit(-1)
+QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_limit(-1)
+    , m_invertMatch(false)
 {
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
@@ -110,17 +112,6 @@ QSortFilterProxyModelQML::count()
 }
 
 int
-QSortFilterProxyModelQML::rowCount(const QModelIndex &parent) const
-{
-    int count = QSortFilterProxyModel::rowCount(parent);
-    if (m_limit >= 0) {
-        return qMin(count, m_limit);
-    } else {
-        return count;
-    }
-}
-
-int
 QSortFilterProxyModelQML::limit() const
 {
     return m_limit;
@@ -129,64 +120,46 @@ QSortFilterProxyModelQML::limit() const
 void
 QSortFilterProxyModelQML::setLimit(int limit)
 {
+    if (limit != -1 && !filterRegExp().isEmpty()) {
+        qFatal("QSortFilterProxyModel: filterRegExp and limit are both set which is not supported");
+    }
+
     if (limit != m_limit) {
-        int count = QSortFilterProxyModel::rowCount();
-        int start;
-        int end;
-        bool inserted = false;
-        bool removed = false;
-
-        if (m_limit == -1) {
-            if (limit < count) {
-                start = qMin(count, limit);
-                end = count-1;
-                removed = true;
-            }
-        } else if (limit == -1) {
-            if (m_limit < count) {
-                start = qMin(count, m_limit);
-                end = count-1;
-                inserted = true;
-            }
-        } else if (m_limit >= count && limit >= count) {
-            // Nothing
-        } else if (m_limit >= count && limit < count) {
-            start = qMin(count, limit);
-            end = count-1;
-            removed = true;
-        } else if (m_limit < count && limit >= count) {
-            start = qMin(count, m_limit);
-            end = count-1;
-            inserted = true;
-        } else if (m_limit < count && limit < count) {
-            if (m_limit < limit) {
-                start = qMin(count, m_limit);
-                end = qMin(count, limit)-1;
-                inserted = true;
-            } else {
-                start = qMin(count, limit);
-                end = qMin(count, m_limit)-1;
-                removed = true;
-            }
-        }
-
-        if (inserted) {
-            beginInsertRows(QModelIndex(), start, end);
-        }
-        if (removed) {
-            beginRemoveRows(QModelIndex(), start, end);
-        }
         m_limit = limit;
-
-        if (inserted) {
-            endInsertRows();
-        }
-        if (removed) {
-            endRemoveRows();
-        }
-
+        invalidateFilter();
         Q_EMIT limitChanged();
     }
+}
+
+bool
+QSortFilterProxyModelQML::invertMatch() const
+{
+    return m_invertMatch;
+}
+
+void
+QSortFilterProxyModelQML::setInvertMatch(bool invertMatch)
+{
+    if (invertMatch != m_invertMatch) {
+        m_invertMatch = invertMatch;
+        Q_EMIT invertMatchChanged(invertMatch);
+    }
+}
+
+bool
+QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
+                                           const QModelIndex &sourceParent) const
+{
+    if (m_limit != -1 && sourceRow >= m_limit) {
+        return false;
+    }
+    // If there's no regexp set, always accept all rows indepenently of the invertMatch setting
+    if (filterRegExp().isEmpty()) {
+        return true;
+    }
+
+    bool result = QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+    return (m_invertMatch) ? !result : result;
 }
 
 #include "qsortfilterproxymodelqml.moc"

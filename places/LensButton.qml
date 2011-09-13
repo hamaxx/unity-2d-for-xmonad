@@ -25,6 +25,8 @@ import Effects 1.0
 AbstractButton {
     property alias icon: icon.source
     property bool active: false
+    property int iconSpacing: 0
+    property int iconWidth: 24
 
     id: lensButton
 
@@ -40,6 +42,8 @@ AbstractButton {
         anchors.fill: parent
         anchors.topMargin: 7
         anchors.bottomMargin: 7
+        anchors.leftMargin: Math.floor(iconSpacing/2)
+        anchors.rightMargin: Math.ceil(iconSpacing/2)
 
         border.color: "white"
         border.width: 1
@@ -48,13 +52,13 @@ AbstractButton {
         visible: ( parent.state == "selected" )
     }
 
-    /* Lens icon supplied is of size 48x48. This is too much for the 44pixels high
-       lensBar. However much of the icon is transparent so we effectively crop it to 32x32. */
     Image {
         id: icon
 
-        height: iconWidth
-        fillMode: Image.PreserveAspectCrop
+        sourceSize.width: iconWidth
+        sourceSize.height: iconWidth
+        width: sourceSize.width
+        height: sourceSize.height
         clip: true
 
         anchors.horizontalCenter: parent.horizontalCenter

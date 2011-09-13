@@ -68,12 +68,12 @@ bool BfbItem::urgent() const
 
 QString BfbItem::name() const
 {
-    return u2dTr("Dash");
+    return u2dTr("Dash home");
 }
 
 QString BfbItem::icon() const
 {
-    return "unity-icon-theme/distributor-logo";
+    return "/usr/share/unity/4/launcher_bfb.png";
 }
 
 bool BfbItem::launching() const

@@ -5,6 +5,7 @@
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,35 +25,54 @@
 // Local
 #include <debug_p.h>
 #include <indicatorsmanager.h>
-#include <indicatorwidget.h>
+#include <indicatorswidget.h>
+#include <unity2dpanel.h>
 
 // Qt
 #include <QHBoxLayout>
 
 using namespace unity::indicator;
 
-IndicatorApplet::IndicatorApplet(IndicatorsManager* manager)
-: m_indicatorsManager(manager)
+IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 
+    m_indicatorsManager = panel->indicatorsManager();
+
     m_indicatorsManager->indicators()->on_object_added.connect(
         sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
         );
+
+    m_indicatorsManager->indicators()->on_object_removed.connect(
+        sigc::mem_fun(this, &IndicatorApplet::onObjectRemoved)
+        );
+
+    m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
+    layout->addWidget(m_indicatorsWidget);
 }
 
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
-    if (name == "libappmenu.so") {
-        // appmenu indicator is handled by AppNameApplet
-        return;
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->addIndicator(indicator);
     }
-    IndicatorWidget* widget = new IndicatorWidget(indicator, m_indicatorsManager);
-    layout()->addWidget(widget);
+}
+
+void IndicatorApplet::onObjectRemoved(Indicator::Ptr const& indicator)
+{
+    QString name = QString::fromStdString(indicator->name());
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->removeIndicator(indicator);
+    }
 }
 
 #include "indicatorapplet.moc"

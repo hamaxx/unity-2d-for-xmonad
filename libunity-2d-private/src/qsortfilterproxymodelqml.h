@@ -27,22 +27,25 @@ class QSortFilterProxyModelQML : public QSortFilterProxyModel
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
     Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
+    Q_PROPERTY(bool invertMatch READ invertMatch WRITE setInvertMatch NOTIFY invertMatchChanged)
 
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
     Q_INVOKABLE QVariantMap get(int row);
     Q_INVOKABLE int count();
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     /* getters */
     QObject* sourceModelQObject() const;
     int limit() const;
     int totalCount() const;
+    bool invertMatch() const;
 
     /* setters */
     void setSourceModelQObject(QObject *model);
     void setLimit(int limit);
+    void setInvertMatch(bool invertMatch);
 
     Q_SLOT void setRoleNames(const QHash<int,QByteArray> &roleNames);
 
@@ -50,10 +53,12 @@ Q_SIGNALS:
     void limitChanged();
     void totalCountChanged();
     void countChanged();
+    void invertMatchChanged(bool);
     void roleNamesChanged(const QHash<int,QByteArray> &);
 
 private:
     int m_limit;
+    bool m_invertMatch;
 };
 
 #endif // QSORTFILTERPROXYMODELQML_H

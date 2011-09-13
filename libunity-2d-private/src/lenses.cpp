@@ -53,7 +53,7 @@ int Lenses::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent)
 
-    return m_unityLenses->count();
+    return m_lenses.count();
 }
 
 QVariant Lenses::data(const QModelIndex& index, int role) const
@@ -93,7 +93,7 @@ QVariant Lenses::get(const QString& lens_id) const
 
 void Lenses::onLensAdded(unity::dash::Lens::Ptr& lens)
 {
-    int index = m_unityLenses->count()-1;
+    int index = m_lenses.count();
     beginInsertRows(QModelIndex(), index, index);
     addUnityLens(lens, index);
     endInsertRows();

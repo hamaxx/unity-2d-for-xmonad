@@ -22,6 +22,7 @@
 // Self
 #include "unity2dpanel.h"
 #include <debug_p.h>
+#include <indicatorsmanager.h>
 
 // Qt
 #include <QApplication>
@@ -41,6 +42,7 @@ struct Unity2dPanelPrivate
 {
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
+    mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     QPropertyAnimation* m_slideInAnimation;
     QPropertyAnimation* m_slideOutAnimation;
@@ -148,6 +150,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
 {
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
+    d->m_indicatorsManager = 0;
     d->m_useStrut = true;
     d->m_delta = 0;
     d->m_manualSliding = false;
@@ -198,6 +201,15 @@ void Unity2dPanel::setEdge(Unity2dPanel::Edge edge)
 Unity2dPanel::Edge Unity2dPanel::edge() const
 {
     return d->m_edge;
+}
+
+IndicatorsManager* Unity2dPanel::indicatorsManager() const
+{
+    if (d->m_indicatorsManager == 0)
+        d->m_indicatorsManager =
+            new IndicatorsManager(const_cast<Unity2dPanel*>(this));
+
+    return d->m_indicatorsManager;
 }
 
 void Unity2dPanel::showEvent(QShowEvent* event)

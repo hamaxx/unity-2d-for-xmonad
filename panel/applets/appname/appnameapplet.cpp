@@ -26,6 +26,7 @@
 #include "croppedlabel.h"
 #include "menubarwidget.h"
 #include "panelstyle.h"
+#include "unity2dpanel.h"
 #include "windowhelper.h"
 
 // Unity-2d
@@ -39,7 +40,6 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLinearGradient>
@@ -49,9 +49,6 @@
 #include <QDesktopWidget>
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
-
-namespace Unity2d
-{
 
 class WindowButton : public QAbstractButton
 {
@@ -190,8 +187,9 @@ struct AppNameAppletPrivate
     }
 };
 
-AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
-: d(new AppNameAppletPrivate)
+AppNameApplet::AppNameApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, d(new AppNameAppletPrivate)
 {
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
@@ -199,7 +197,7 @@ AppNameApplet::AppNameApplet(IndicatorsManager* indicatorsManager)
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMenuBarWidget(indicatorsManager);
+    d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
@@ -225,14 +223,16 @@ void AppNameApplet::updateWidgets()
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
-    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
-        && (isUnderMouse
+    bool isOpened = isOnSameScreen &&
+        (isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
+    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showWindowButtons = isOpened && isMaximized;
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
-    d->m_windowButtonWidget->setVisible(isOnSameScreen && isMaximized && isUnderMouse);
+    d->m_windowButtonWidget->setVisible(showWindowButtons);
 
     d->m_label->setVisible(showLabel);
     if (showLabel) {
@@ -270,7 +270,5 @@ void AppNameApplet::enterEvent(QEvent*) {
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
-
-} // namespace
 
 #include "appnameapplet.moc"

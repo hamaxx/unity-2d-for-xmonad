@@ -51,8 +51,10 @@ public:
     bool collapsed() const;
     bool filtering() const;
 
-    void clear();
-    virtual void setUnityFilter(unity::dash::Filter::Ptr filter);
+    Q_INVOKABLE void clear();
+
+    static Filter* newFromUnityFilter(unity::dash::Filter::Ptr unityFilter);
+    bool hasUnityFilter(unity::dash::Filter::Ptr unityFilter) const;
 
 Q_SIGNALS:
     void idChanged(std::string);
@@ -67,6 +69,7 @@ Q_SIGNALS:
 
 protected:
     unity::dash::Filter::Ptr m_unityFilter;
+    virtual void setUnityFilter(unity::dash::Filter::Ptr unityFilter);
 };
 
 Q_DECLARE_METATYPE(Filter*)

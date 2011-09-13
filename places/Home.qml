@@ -56,7 +56,7 @@ FocusScope {
     /* Used by dash.qml to bind to dashView "expanded" property */
     property bool expanded: globalSearchActive || shortcutsActive
 
-    Button {
+    AbstractButton {
         id: openShortcutsButton
 
         Accessible.name: "Open Shortcuts"
@@ -87,7 +87,7 @@ FocusScope {
             anchors.rightMargin: rightLeft(3,0)
             width: paintedWidth
             height: icon.height
-            font.pixelSize: 16
+            fontSize: "large"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -110,7 +110,7 @@ FocusScope {
 
         model: dash.lenses
 
-        bodyDelegate: UnityDefaultRenderer {
+        bodyDelegate: TileVertical {
             lens: model.item
             name: model.item.name
             iconHint: model.item.iconHint
@@ -153,7 +153,7 @@ FocusScope {
             color: Qt.rgba(0, 0, 0, 0.3)
         }
 
-        Button {
+        AbstractButton {
             id: closeShortcutsButton
 
             anchors.left:  leftRight(parent.left)
