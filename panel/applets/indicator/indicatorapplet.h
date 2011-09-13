@@ -43,6 +43,7 @@ private:
     IndicatorsManager* m_indicatorsManager;
     IndicatorsWidget*  m_indicatorsWidget;
     void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+    void onObjectRemoved(unity::indicator::Indicator::Ptr const&);
 };
 
 #endif /* INDICATORAPPLET_H */

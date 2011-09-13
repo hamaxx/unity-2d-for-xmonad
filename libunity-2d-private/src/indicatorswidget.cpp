@@ -42,9 +42,32 @@ IndicatorsWidget::IndicatorsWidget(IndicatorsManager* manager)
 
 void IndicatorsWidget::addIndicator(const unity::indicator::Indicator::Ptr& indicator)
 {
-    m_indicators.append(indicator);
-    indicator->on_entry_added.connect(sigc::mem_fun(this, &IndicatorsWidget::onEntryAdded));
-    indicator->on_entry_removed.connect(sigc::mem_fun(this, &IndicatorsWidget::onEntryRemoved));
+    sigc::connection conn;
+
+    conn = indicator->on_entry_added.connect(
+                                sigc::mem_fun(this, &IndicatorsWidget::onEntryAdded)
+                            );
+    m_indicators_connections[indicator].append(conn);
+
+    conn = indicator->on_entry_removed.connect(
+                                  sigc::mem_fun(this, &IndicatorsWidget::onEntryRemoved)
+                              );
+    m_indicators_connections[indicator].append(conn);
+}
+
+void IndicatorsWidget::removeIndicator(const unity::indicator::Indicator::Ptr& indicator)
+{
+    Q_FOREACH(sigc::connection conn, m_indicators_connections[indicator])
+    {
+        conn.disconnect();
+    }
+
+    Q_FOREACH(Entry::Ptr entry, indicator->GetEntries())
+    {
+        onEntryRemoved (entry->id());
+    }
+
+    m_indicators_connections.remove(indicator);
 }
 
 void IndicatorsWidget::onEntryAdded(const Entry::Ptr& entry)
