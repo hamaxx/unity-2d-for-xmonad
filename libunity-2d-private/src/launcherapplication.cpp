@@ -664,7 +664,11 @@ LauncherApplication::launch()
     GdkDisplay* display = gdk_display_get_default();
     GObjectScopedPointer<GdkAppLaunchContext> context(gdk_display_get_app_launch_context(display));
 
-    /* FIXME: ultimately we should forward the timestamps from events that triggered the launch */
+    /* We need to take the timestamp from the X server for the
+       window manager to work properly
+       https://bugs.launchpad.net/unity-2d/+bug/735205 */
+    /* FIXME: ultimately we should forward the timestamps from
+       events that triggered the launch */
     root = gdk_x11_window_lookup_for_display(display, GDK_ROOT_WINDOW());
     timestamp = gdk_x11_get_server_time(root);
 
