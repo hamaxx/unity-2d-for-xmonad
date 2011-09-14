@@ -79,6 +79,7 @@ public:
         CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(&image));
         CairoUtils::Pointer cr(cairo_create(surface.data()));
         gtk_render_background(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
+        gtk_render_frame(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
         return QBrush(image);
     }
 
