@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
 
 AbstractButton {
@@ -96,7 +96,7 @@ AbstractButton {
                     offset.x: 0
                     offset.y: 0
                     color: "white"
-                    enabled: search_input.text != ""
+                    enabled: search_input.text != "" || search_input.inputMethodComposing
                 }
 
             anchors.left: search_icon.right
@@ -165,7 +165,7 @@ AbstractButton {
                 fontSize: "x-large"
                 font.italic: true
                 text: {
-                    if(search_input.text)
+                    if(search_input.text || search_input.inputMethodComposing)
                         return ""
                     else if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
                         return dash.currentPage.model.searchHint
