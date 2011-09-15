@@ -49,15 +49,19 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
-, m_mode(HiddenMode)
-, m_expanded(false)
+, m_mode(DesktopMode)
+, m_expanded(true)
+, m_active(false)
 {
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
+    connect(desktop, SIGNAL(resized(int)), SIGNAL(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
+
+    resizeToDesktopModeSize();
 }
 
 void
@@ -67,11 +71,40 @@ DashDeclarativeView::onWorkAreaResized(int screen)
         return;
     }
 
+    updateSize();
+    availableGeometryChanged();
+}
+
+
+static int getenvInt(const char* name, int defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    bool ok;
+    int value = stringValue.toInt(&ok);
+    return ok ? value : defaultValue;
+}
+
+void
+DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
+{
+    QRect rect = QApplication::desktop()->screenGeometry(this);
+    static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
+    static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
+    if (rect.width() < minWidth && rect.height() < minHeight) {
+        setDashMode(FullScreenMode);
+    } else {
+        setDashMode(DesktopMode);
+    }
+}
+
+void
+DashDeclarativeView::updateSize()
+{
     if (m_mode == FullScreenMode) {
         fitToAvailableSpace();
+    } else {
+        resizeToDesktopModeSize();
     }
-
-    availableGeometryChanged();
 }
 
 void
@@ -102,14 +135,6 @@ DashDeclarativeView::focusOutEvent(QFocusEvent* event)
     setActive(false);
 }
 
-static int getenvInt(const char* name, int defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    bool ok;
-    int value = stringValue.toInt(&ok);
-    return ok ? value : defaultValue;
-}
-
 void
 DashDeclarativeView::setWMFlags()
 {
@@ -138,26 +163,27 @@ DashDeclarativeView::showEvent(QShowEvent *event)
 void
 DashDeclarativeView::setActive(bool value)
 {
-    if (value != active()) {
+    if (value != m_active) {
         if (value) {
-            QRect rect = QApplication::desktop()->screenGeometry(this);
-            static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
-            static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-            if (rect.width() < minWidth && rect.height() < minHeight) {
-                setDashMode(FullScreenMode);
-            } else {
-                setDashMode(DesktopMode);
-            }
+            updateDashModeDependingOnScreenGeometry();
+            show();
+            raise();
+            // We need a delay, otherwise the window may not be visible when we try to activate it
+            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
+            m_launcherClient->beginForceVisible();
         } else {
-            setDashMode(HiddenMode);
+            hide();
+            m_launcherClient->endForceVisible();
         }
+        m_active = value;
+        activeChanged(m_active);
     }
 }
 
 bool
 DashDeclarativeView::active() const
 {
-    return m_mode != HiddenMode;
+    return m_active;
 }
 
 void
@@ -167,29 +193,8 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         return;
     }
 
-    DashDeclarativeView::DashMode oldMode = m_mode;
     m_mode = mode;
-    if (m_mode == HiddenMode) {
-        hide();
-        m_launcherClient->endForceVisible();
-        activeChanged(false);
-    } else {
-        if (m_mode == FullScreenMode) {
-            fitToAvailableSpace();
-        } else {
-            resizeToDesktopModeSize();
-        }
-        show();
-        raise();
-        // We need a delay, otherwise the window may not be visible when we try to activate it
-        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-        if (oldMode == HiddenMode) {
-            // Check old mode to ensure we do not call BeginForceVisible twice
-            // if we go from desktop to fullscreen mode
-            m_launcherClient->beginForceVisible();
-            activeChanged(true);
-        }
-    }
+    updateSize();
     dashModeChanged(m_mode);
 }
 
@@ -205,11 +210,9 @@ DashDeclarativeView::setExpanded(bool value)
     if (m_expanded == value) {
         return;
     }
-    
+
     m_expanded = value;
-    if (m_mode == DesktopMode) {
-        resizeToDesktopModeSize();
-    }
+    updateSize();
     expandedChanged(m_expanded);
 }
 
