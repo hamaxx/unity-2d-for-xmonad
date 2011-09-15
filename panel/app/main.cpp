@@ -64,6 +64,9 @@ int main(int argc, char** argv)
 
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+    if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
+        QApplication::setLayoutDirection(Qt::RightToLeft);
+    }
 
     PanelManager panels;
 

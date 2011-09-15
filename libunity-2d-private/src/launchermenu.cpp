@@ -58,9 +58,17 @@ LauncherContextualMenu::LauncherContextualMenu():
     /* Load the pixmap for the arrow. It is drawn separately as its position
        may vary depending on the position of the menu on the screen. */
     if (transparencyAvailable()) {
-        m_arrow.load(":/launchermenu/arrow.png");
+        if (QApplication::isLeftToRight()) {
+            m_arrow.load(":/launchermenu/arrow.png");
+        } else {
+            m_arrow.load(":/launchermenu/arrow_rtl.png");
+        }
     } else {
-        m_arrow.load(":/launchermenu/arrow_no_transparency.png");
+        if (QApplication::isLeftToRight()) {
+            m_arrow.load(":/launchermenu/arrow_no_transparency.png");
+        } else {
+            m_arrow.load(":/launchermenu/arrow_no_transparency_rtl.png");
+        }
     }
 
     /* First action used to display the title of the item */
@@ -77,6 +85,9 @@ void
 LauncherContextualMenu::loadCSS()
 {
     QString cssFilePath = ":/launchermenu/launchermenu.css";
+    if (QApplication::isRightToLeft()) {
+        cssFilePath = ":/launchermenu/launchermenu_rtl.css";
+    }
 
     QFile file(cssFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -154,6 +165,11 @@ LauncherContextualMenu::show(int x, int y)
         return;
 
     m_arrowY = 6;
+
+    if (QApplication::isRightToLeft()) {
+        x = QApplication::desktop()->width() - x - sizeHint().width();
+    }
+
     move(x, y - minimumSize().height() / 2);
     QMenu::show();
 
@@ -203,10 +219,15 @@ LauncherContextualMenu::setFolded(int folded)
             }
         }
     } else {
+        int prevWidth = width();
+        int left = x(), top = y();
         addSeparator();
         m_launcherItem->createMenuActions();
 
         QRect screenGeometry = QApplication::desktop()->screenGeometry(this);
+        if (QApplication::isRightToLeft()) {
+            left -= width() - prevWidth;
+        }
         if (height() <= screenGeometry.height()) {
             /* Adjust the position of the menu only if it fits entirely on the screen. */
             int menuBottomEdge = y() + height();
@@ -214,12 +235,13 @@ LauncherContextualMenu::setFolded(int folded)
             if (menuBottomEdge > screenBottomEdge) {
                 /* The menu goes offscreen, shift it upwards. */
                 m_arrowY += menuBottomEdge - screenBottomEdge;
-                move(x(), screenBottomEdge - height());
-                if (!transparencyAvailable()) {
-                    /* The arrow has moved relatively to the menu. */
-                    updateMask();
-                }
+                top = screenBottomEdge - height();
             }
+        }
+        move(left, top);
+        if (!transparencyAvailable()) {
+            /* The arrow has moved relatively to the menu. */
+            updateMask();
         }
     }
 
@@ -236,7 +258,11 @@ LauncherContextualMenu::paintEvent(QPaintEvent* event)
     /* Draw the arrow. */
     QPainter painter(this);
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.drawPixmap(0, m_arrowY, m_arrow);
+    int left = 0;
+    if (QApplication::isRightToLeft()) {
+        left = width() - m_arrow.width();
+    }
+    painter.drawPixmap(left, m_arrowY, m_arrow);
 }
 
 LauncherItem*
