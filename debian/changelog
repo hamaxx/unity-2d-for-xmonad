@@ -1,3 +1,23 @@
+unity-2d (4.8.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release
+    - [window management] Alt tab does not switch to the desired application
+      but instead set the urgency flag on the window (LP: #735205)
+    - [dash] search field default text not cleared immediately when using
+      chinese input method (LP: #745246)
+    - [dash] Apps lens shows no result by default (LP: #834571)
+    - unity-2d-panel crashed with SIGSEGV in
+      IndicatorsWidget::onEntryRemoved() (LP: #846836)
+    - [panel] graphics corruption in top line of pixels (LP: #846335)
+    - Repeated indicators in unity-2d panel when second screen added
+      (LP: #846441)
+    - [dash] Lens navigation bar (buttons on lower edge of dash window) is
+      accessible (LP: #826560)
+    - [dash] Category filters is sorted according to their english names, even
+      when another language is used (LP: #838023)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 10:57:27 +0200
+
 unity-2d (4.6.1-0ubuntu1) oneiric; urgency=low
 
   * Fix a segfault due to new unity service backend change.
