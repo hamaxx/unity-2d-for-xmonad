@@ -11,6 +11,7 @@ set(lib${LIB_NAME}_SRCS
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp
     hotkey.cpp
+    keymonitor.cpp
     launcherclient.cpp
     mousearea.cpp
     unity2dapplication.cpp
