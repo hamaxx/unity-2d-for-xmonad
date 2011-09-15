@@ -61,7 +61,7 @@ DashDeclarativeView::DashDeclarativeView()
     connect(desktop, SIGNAL(resized(int)), SIGNAL(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 
-    resizeToDesktopModeSize();
+    updateSize();
 }
 
 void
