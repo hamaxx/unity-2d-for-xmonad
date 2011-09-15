@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 
 /* This component represents a single "tile" in the launcher and the surrounding
@@ -52,6 +52,7 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
+
     property int padding
     height: tileSize + padding
 
@@ -84,7 +85,7 @@ DropItem {
 
     property int pips: 0
     property string pipSource: "artwork/launcher_" +
-                               ((pips <= 1) ? "arrow" : "pip") + "_" + leftRight("ltr", "rtl") + ".png"
+                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
     function getPipOffset(index) {
         /* Pips need to always be centered, regardless if they are an even or odd
            number. The following simple conditional code works and is less
@@ -95,16 +96,9 @@ DropItem {
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
 
-    function isLeftToRight() {
-        return item.layoutDirection == Qt.LeftToRight;
-    }
-
-    function leftRight(ltr, rtl) {
-        return isLeftToRight() ? ltr : rtl;
-    }
-
-    function rightLeft(rtl, ltr) {
-        return isLeftToRight() ? ltr : rtl;
+    function isRightToLeft() {
+        console.log("layoutDirection: " + Qt.application.layoutDirection)
+        return Qt.application.layoutDirection == Qt.RightToLeft
     }
 
     signal clicked(variant mouse)
@@ -114,6 +108,8 @@ DropItem {
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem
+        LayoutMirroring.enabled: isRightToLeft()
+        LayoutMirroring.childrenInherit: true
         parent: list
         width: item.width
         height: item.height
@@ -137,12 +133,12 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
-            anchors.right: leftRight(parent.right)
-            anchors.left: rightLeft(parent.left)
+            anchors.right: parent.right
             y: item.height - item.tileSize / 2 - height / 2
+            mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("artwork/launcher_arrow_" + leftRight("rtl","ltr") + ".png")
+                  .arg("artwork/launcher_arrow_rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 
@@ -162,9 +158,9 @@ DropItem {
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
-                anchors.left: leftRight((parent) ? parent.left : undefined)
-                anchors.right: rightLeft((parent) ? parent.right : undefined)
+                anchors.left: (parent) ? parent.left : undefined
                 y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
+                mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
                         .arg(pipSource).arg("lightgrey").arg(1.0)
