@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 
 FocusScope {
@@ -62,10 +62,8 @@ FocusScope {
         Accessible.name: "Open Shortcuts"
 
         anchors.bottom: parent.top
-        anchors.right: leftRight(parent.right)
-        anchors.left: rightLeft(parent.left)
-        anchors.rightMargin: leftRight(50, 0)
-        anchors.leftMargin: rightLeft(50, 0)
+        anchors.right: parent.right
+        anchors.rightMargin: 50
         anchors.bottomMargin: 10
         width: childrenRect.width
         height: childrenRect.height
@@ -75,16 +73,13 @@ FocusScope {
             source: "artwork/open_shortcuts.png"
             width: sourceSize.width
             height: sourceSize.height
-            anchors.left: leftRight(parent.left)
-            anchors.right: rightLeft(parent.right)
+            anchors.left: parent.left
         }
 
         TextCustom {
             text: u2d.tr("Shortcuts")
-            anchors.left: leftRight(icon.right)
-            anchors.right: rightLeft(icon.left)
-            anchors.leftMargin: leftRight(3, 0)
-            anchors.rightMargin: rightLeft(3, 0)
+            anchors.left: icon.right
+            anchors.leftMargin: 3
             width: paintedWidth
             height: icon.height
             fontSize: "large"
@@ -156,11 +151,9 @@ FocusScope {
         AbstractButton {
             id: closeShortcutsButton
 
-            anchors.left: leftRight(parent.left)
-            anchors.right: rightLeft(parent.right)
+            anchors.left: parent.left
             anchors.top: parent.top
-            anchors.leftMargin: leftRight(-width/2, 0)
-            anchors.rightMargin: rightLeft(-width/2, 0)
+            anchors.leftMargin: -width/2
 
             width: childrenRect.width
             height: childrenRect.height
