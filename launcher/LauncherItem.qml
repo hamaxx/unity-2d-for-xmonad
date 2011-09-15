@@ -97,7 +97,6 @@ DropItem {
     }
 
     function isRightToLeft() {
-        console.log("layoutDirection: " + Qt.application.layoutDirection)
         return Qt.application.layoutDirection == Qt.RightToLeft
     }
 
