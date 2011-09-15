@@ -1,4 +1,4 @@
-unity-2d (4.8.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (4.8.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
     - [window management] Alt tab does not switch to the desired application
@@ -16,7 +16,7 @@ unity-2d (4.8.0-0ubuntu1) UNRELEASED; urgency=low
     - [dash] Category filters is sorted according to their english names, even
       when another language is used (LP: #838023)
 
- -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 10:57:27 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 11:43:52 +0200
 
 unity-2d (4.6.1-0ubuntu1) oneiric; urgency=low
 
