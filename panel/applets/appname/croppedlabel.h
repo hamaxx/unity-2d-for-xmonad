@@ -26,6 +26,8 @@
 // Qt
 #include <QLabel>
 
+class GConfItemQmlWrapper;
+
 /**
  * This label makes sure minimumSizeHint() is not set. This ensures the applet
  * does not get wider if a window title is very long
@@ -40,6 +42,13 @@ public:
 
 protected:
     void paintEvent(QPaintEvent*);
+
+private Q_SLOTS:
+    void onWindowTitleFontNameChanged();
+
+private:
+    GConfItemQmlWrapper *m_gconfItem;
+    QString m_windowTitleFontName;
 };
 
 #endif /* CROPPEDLABEL_H */
