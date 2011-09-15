@@ -36,7 +36,6 @@ class DashDeclarativeView : public Unity2DDeclarativeView
 
 public:
     enum DashMode {
-        HiddenMode,
         DesktopMode,
         FullScreenMode
     };
@@ -76,6 +75,8 @@ protected:
 
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
+    void updateDashModeDependingOnScreenGeometry();
+    void updateSize();
 
 private:
     void fitToAvailableSpace();
@@ -89,6 +90,7 @@ private:
     DashMode m_mode;
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */
+    bool m_active;
 };
 
 Q_DECLARE_METATYPE(DashDeclarativeView*)
