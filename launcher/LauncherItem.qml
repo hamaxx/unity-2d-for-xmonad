@@ -52,7 +52,6 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
-
     property int padding
     height: tileSize + padding
 
