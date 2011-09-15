@@ -261,7 +261,6 @@ Item {
             anchors.topMargin: 2
             anchors.bottom: lensBar.top
             anchors.left: parent.left
-            anchors.leftMargin: 0
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
             anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
             onLoaded: item.focus = true
