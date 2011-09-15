@@ -164,6 +164,7 @@ void
 DashDeclarativeView::setActive(bool value)
 {
     if (value != m_active) {
+        m_active = value;
         if (value) {
             updateDashModeDependingOnScreenGeometry();
             show();
@@ -175,7 +176,6 @@ DashDeclarativeView::setActive(bool value)
             hide();
             m_launcherClient->endForceVisible();
         }
-        m_active = value;
         activeChanged(m_active);
     }
 }
