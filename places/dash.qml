@@ -72,6 +72,7 @@ Item {
             var lens = lenses.get(dashView.activeLens)
             lens.active = false
         }
+        dashView.activeLens = ""
     }
 
     function activateLens(lensId) {
