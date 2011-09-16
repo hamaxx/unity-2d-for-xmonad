@@ -41,6 +41,7 @@ class MenuBarWidget : public QWidget, public sigc::trackable
 Q_OBJECT
 public:
     MenuBarWidget(IndicatorsManager*, QWidget* parent = 0);
+    ~MenuBarWidget();
 
     bool isEmpty() const;
     bool isOpened() const;
