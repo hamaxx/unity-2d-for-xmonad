@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
 
@@ -27,26 +27,8 @@ Item {
 
     property variant currentPage
 
-    function isLeftToRight() {
-        return dashView.layoutDirection == Qt.LeftToRight;
-    }
-
-    function isRightToLeft() { return ! isLeftToRight(); }
-
-    function leftRight(ltr, rtl) {
-        if (isLeftToRight())
-            return ltr;
-        else
-            return rtl;
-    }
-
-    function rightLeft(rtl, ltr) {
-        if (isRightToLeft())
-            return rtl;
-        else
-            return ltr;
-    }
-
+    LayoutMirroring.enabled: dashView.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
     Binding {
         target: dashView
         property: "expanded"
@@ -198,22 +180,8 @@ Item {
         BorderImage {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-            source: getBorderImage()
-        }
-
-        function getBorderImage() {
-            var dir = dashView.layoutDirection;
-            if (dir == Qt.LeftToRight) {
-                if (screen.isCompositingManagerRunning)
-                    return "artwork/desktop_dash_background.sci";
-                else
-                    return "artwork/desktop_dash_background_no_transparency.sci";
-            } else { // Qt.RightToLeft
-                if (screen.isCompositingManagerRunning)
-                    return "artwork/desktop_dash_background_rtl.sci";
-                else
-                    return "artwork/desktop_dash_background_no_transparency_rtl.sci";
-            }
+            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+            mirror: dashView.layoutDirection == Qt.RightToLeft
         }
     }
 
@@ -225,8 +193,7 @@ Item {
            the border defined by the background image.
         */
         anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: leftRight(dashView.dashMode == DashDeclarativeView.DesktopMode ? 37 : 0, 0)
-        anchors.leftMargin: rightLeft(dashView.dashMode == DashDeclarativeView.DesktopMode ? 37 : 0, 0)
+        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 37 : 0
 
         visible: dashView.active
 
@@ -249,10 +216,10 @@ Item {
 
             anchors.top: parent.top
             anchors.topMargin: 10
-            anchors.left: leftRight(parent.left, filterPane.right)
-            anchors.leftMargin: leftRight(16, 10)
-            anchors.right: leftRight(filterPane.left, parent.right)
-            anchors.rightMargin: leftRight(10, 16)
+            anchors.left: parent.left
+            anchors.leftMargin: 16
+            anchors.right: filterPane.left
+            anchors.rightMargin: 10
 
             height: 53
         }
@@ -271,10 +238,8 @@ Item {
             anchors.bottom: lensBar.top
             headerHeight: search_entry.height
             width: 310
-            anchors.right: leftRight(parent.right)
-            anchors.left:  rightLeft(parent.left)
-            anchors.rightMargin: leftRight(15, 0)
-            anchors.leftMargin:  rightLeft(15, 0)
+            anchors.right: parent.right
+            anchors.rightMargin: 15
         }
 
         Loader {
@@ -291,14 +256,9 @@ Item {
             anchors.top: search_entry.bottom
             anchors.topMargin: 2
             anchors.bottom: lensBar.top
-            anchors.left: leftRight(parent.left, 
-                !filterPane.visible || filterPane.folded ? parent.left : filterPane.right)
-            anchors.leftMargin: leftRight(0,
-                !filterPane.visible || filterPane.folded ? 0 : 15)
-            anchors.right: leftRight(!filterPanel.visible || filterPanel.folded ? parent.right : filterPanel.left,
-                parent.right)
-            anchors.rightMargin: leftRight(!filterPanel.visible || filterPanel.folded ? 0 : 15,
-                0)
+            anchors.left: parent.left
+            anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
+            anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
             onLoaded: item.focus = true
         }
 
@@ -321,10 +281,8 @@ Item {
         Accessible.name: "Full Screen"
 
         anchors.bottom: parent.bottom
-        anchors.right: leftRight(parent.right)
-        anchors.left:  rightLeft(parent.left)
-        anchors.rightMargin: leftRight(15,0)
-        anchors.leftMargin:  rightLeft(15,0)
+        anchors.right: parent.right
+        anchors.rightMargin: 15
         anchors.bottomMargin: 15
         width: fullScreenButtonImage.sourceSize.width
         height: fullScreenButtonImage.sourceSize.height
@@ -332,8 +290,8 @@ Item {
 
         Image {
             id: fullScreenButtonImage
-            source: leftRight("artwork/fullscreen_button.png",
-                              "artwork/fullscreen_button_rtl.png");
+            source: "artwork/fullscreen_button.png"
+            mirror: dashView.layoutDirection == Qt.RightToLeft
         }
 
         onClicked: {

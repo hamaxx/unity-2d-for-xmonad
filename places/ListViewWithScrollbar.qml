@@ -42,8 +42,7 @@ FocusScope {
         anchors.topMargin: 15
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
-        anchors.right: leftRight(parent.right)
-        anchors.left:  rightLeft(parent.left)
+        anchors.right: parent.right
 
         targetFlickable: list.flickable
 

@@ -57,10 +57,8 @@ AbstractButton {
         Image {
             id: search_icon
 
-            anchors.left:  leftRight(parent.left)
-            anchors.right: rightLeft(parent.right)
-            anchors.leftMargin:  leftRight(-5,0)
-            anchors.rightMargin: rightLeft(-5,0)
+            anchors.left: parent.left
+            anchors.leftMargin: -5
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: sourceSize.width
@@ -101,13 +99,10 @@ AbstractButton {
                     enabled: search_input.text != "" || search_input.inputMethodComposing
                 }
 
-            anchors.left:  leftRight(search_icon.right, parent.left)
-            anchors.leftMargin:  leftRight(-5,0)
-            anchors.rightMargin: rightLeft(-5,0)
-            anchors.right: leftRight(parent.right, search_icon.left)
+            anchors.left: search_icon.right
+            anchors.leftMargin: -5
+            anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-
-            horizontalAlignment: leftRight(Text.AlignLeft, Text.AlignRight)
 
             color: "#ffffff"
             font.pixelSize: 28
@@ -164,8 +159,6 @@ AbstractButton {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-
-                horizontalAlignment: leftRight(Text.AlignLeft, Text.AlignRight)
 
                 color: "white"
                 opacity: 0.5
