@@ -117,6 +117,7 @@ void MenuBarWidget::onEntryRemoved(const std::string& entry_id)
             m_layout->removeWidget(widget);
             m_indicatorsManager->removeIndicatorEntryWidget(widget);
             m_widgetList.removeOne(widget);
+            delete widget;
             updateIsEmpty();
             break;
         }
