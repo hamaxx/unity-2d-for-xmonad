@@ -45,7 +45,12 @@ static const char* WINDOW_TITLE_FONT_KEY = "/apps/metacity/general/titlebar_font
 
 CroppedLabel::CroppedLabel(QWidget* parent)
 : QLabel(parent)
+, m_gconfItem(new GConfItemQmlWrapper(this))
 {
+    QObject::connect(m_gconfItem, SIGNAL(valueChanged()),
+                     this, SLOT(onWindowTitleFontNameChanged()));
+    m_gconfItem->setKey(WINDOW_TITLE_FONT_KEY);
+    m_windowTitleFontName = m_gconfItem->getValue().toString();
 }
 
 QSize CroppedLabel::minimumSizeHint() const
@@ -66,13 +71,6 @@ static void paintFadeoutGradient(QImage* image)
     painter.fillRect(gradientRect, gradient);
 }
 
-static QString getWindowTitleFontName()
-{
-    GConfItemQmlWrapper client;
-    client.setKey(WINDOW_TITLE_FONT_KEY);
-    return client.getValue().toString();
-}
-
 void CroppedLabel::paintEvent(QPaintEvent* event)
 {
     // Create an image filled with background brush (to avoid subpixel hinting
@@ -89,7 +87,7 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
     GObjectScopedPointer<PangoLayout> layout(pango_layout_new(pangoContext.data()));
 
     // Set font
-    QByteArray fontName = getWindowTitleFontName().toUtf8();
+    QByteArray fontName = m_windowTitleFontName.toUtf8();
     PangoFontDescription* desc = pango_font_description_from_string(fontName.data());
     pango_layout_set_font_description(layout.data(), desc);
     pango_font_description_free(desc);
@@ -140,6 +138,12 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
     // Paint on our widget
     QPainter painter(this);
     painter.drawImage(0, 0, image);
+}
+
+void CroppedLabel::onWindowTitleFontNameChanged()
+{
+    m_windowTitleFontName = m_gconfItem->getValue().toString();
+    update();
 }
 
 #include "croppedlabel.moc"

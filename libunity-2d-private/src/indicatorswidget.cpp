@@ -40,6 +40,16 @@ IndicatorsWidget::IndicatorsWidget(IndicatorsManager* manager)
     m_layout->setSpacing(0);
 }
 
+IndicatorsWidget::~IndicatorsWidget()
+{
+    /* Disconnect from all the indicators' signals 'on_entry_added' and 'on_entry_removed' */
+    Q_FOREACH(QList<sigc::connection> connections, m_indicators_connections) {
+        Q_FOREACH(sigc::connection connection, connections) {
+            connection.disconnect();
+        }
+    }
+}
+
 void IndicatorsWidget::addIndicator(const unity::indicator::Indicator::Ptr& indicator)
 {
     sigc::connection conn;

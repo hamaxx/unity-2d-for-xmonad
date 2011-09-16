@@ -45,6 +45,7 @@ class IndicatorsWidget : public QWidget, public sigc::trackable
 Q_OBJECT
 public:
     IndicatorsWidget(IndicatorsManager* manager);
+    ~IndicatorsWidget();
 
     void addIndicator(const unity::indicator::Indicator::Ptr& indicator);
     void removeIndicator(const unity::indicator::Indicator::Ptr& indicator);
