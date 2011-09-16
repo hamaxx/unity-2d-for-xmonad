@@ -54,6 +54,11 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
     m_layout->addStretch();
 }
 
+MenuBarWidget::~MenuBarWidget()
+{
+    qDeleteAll(m_widgetList);
+}
+
 bool MenuBarWidget::isEmpty() const
 {
     return m_isEmpty;
