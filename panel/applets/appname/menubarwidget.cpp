@@ -56,6 +56,9 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
 
 MenuBarWidget::~MenuBarWidget()
 {
+    // disconnect from the entry signals
+    entry_added.disconnect();
+    entry_removed.disconnect();
     qDeleteAll(m_widgetList);
 }
 
