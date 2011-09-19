@@ -22,8 +22,11 @@
 
 // Qt
 #include <QObject>
+#include <QFuture>
+#include <QVector>
 
-struct KeyMonitorPrivate;
+// X11
+#include <X11/extensions/XInput.h>
 
 /**
  * This class monitors global keypresses. Whenever a non-modifier is pressed,
@@ -46,11 +49,15 @@ Q_SIGNALS:
 private:
     KeyMonitor(QObject* parent=0);
 
-    bool register_events();
-    void get_modifiers();
+    void getModifiers();
+    bool registerEvents();
     void run();
 
-    KeyMonitorPrivate* const d;
+    Display *m_display;
+    QFuture<void> m_future;
+    bool m_stop;
+    QVector<XEventClass> m_eventList;
+    QVector<KeyCode> m_modList;
 };
 
 #endif // KEYMONITOR_H
