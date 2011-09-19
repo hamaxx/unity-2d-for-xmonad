@@ -130,6 +130,9 @@ LauncherView::updateSuperKeyMonitoring()
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        QObject::disconnect(keyMonitor,
+                            SIGNAL(keyPressed()),
+                            this, SLOT(ignoreSuperPress()));
         m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
         if (m_superKeyHeld) {
