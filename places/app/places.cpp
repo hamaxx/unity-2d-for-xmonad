@@ -34,7 +34,6 @@
 // unity-2d
 #include <unity2dapplication.h>
 #include <unity2ddebug.h>
-#include <unity2dtr.h>
 
 #include "dashdeclarativeview.h"
 #include "config.h"
@@ -45,11 +44,6 @@ int main(int argc, char *argv[])
     Unity2dApplication application(argc, argv);
     application.setApplicationName("Unity 2D Dash");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
-
-    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
-    if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
-        QApplication::setLayoutDirection(Qt::RightToLeft);
-    }
 
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;

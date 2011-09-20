@@ -28,6 +28,7 @@
 #include <gconnector.h>
 #include <gscopedpointer.h>
 #include <unity2ddebug.h>
+#include <unity2dtr.h>
 
 // Qt
 #include <QFont>
@@ -145,6 +146,12 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 : QApplication(argc, argv)
 , m_platformFontTracker(new PlatformFontTracker)
 {
+    /* Configure translations */
+    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+    if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
+        QApplication::setLayoutDirection(Qt::RightToLeft);
+    }
+
     /* Allow developers to run Unity 2D uninstalled by telling dconf-qt
        where to look for Unity 2D's schemas.
        It relies on the fact that the schema is compiled when running cmake.

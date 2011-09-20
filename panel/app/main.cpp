@@ -28,7 +28,6 @@
 #include <gnomesessionclient.h>
 #include <unity2ddebug.h>
 #include <unity2dapplication.h>
-#include <unity2dtr.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>
@@ -61,12 +60,6 @@ int main(int argc, char** argv)
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");
     client.connectToSessionManager();
-
-    /* Configure translations */
-    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
-    if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
-        QApplication::setLayoutDirection(Qt::RightToLeft);
-    }
 
     PanelManager panels;
 
