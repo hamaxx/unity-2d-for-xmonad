@@ -54,6 +54,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardNumericHotkey();
+    void ignoreSuperPress();
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void toggleDash();
@@ -67,6 +68,7 @@ private:
     QConf* m_dconf_launcher;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
+    bool m_superPressIgnored;
     QTimer m_superKeyHoldTimer;
 
     friend class LauncherDBus;

@@ -11,6 +11,7 @@ set(lib${LIB_NAME}_SRCS
     keyboardmodifiersmonitor.cpp
     hotkeymonitor.cpp
     hotkey.cpp
+    keymonitor.cpp
     launcherclient.cpp
     mousearea.cpp
     unity2dapplication.cpp
@@ -99,6 +100,7 @@ include_directories(
     ${UNITYCORE_INCLUDE_DIRS}
     ${NUXCORE_INCLUDE_DIRS}
     ${DEE_INCLUDE_DIRS}
+    ${XINPUT_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS} listmodelwrapper.h)
@@ -133,6 +135,7 @@ target_link_libraries(${LIB_NAME}
     ${UNITYCORE_LDFLAGS}
     ${NUXCORE_LDFLAGS}
     ${DEE_LDFLAGS}
+    ${XINPUT_LDFLAGS}
     )
 
 # Install

@@ -42,6 +42,7 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
+#include <keymonitor.h>
 #include <debug_p.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
@@ -112,17 +113,26 @@ void
 LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
+    KeyMonitor *keyMonitor = KeyMonitor::instance();
 
     QVariant value = m_dconf_launcher->property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                          this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        /* Ignore Super presses if another key was pressed simultaneously
+           (i.e. a shortcut). https://bugs.launchpad.net/unity-2d/+bug/801073 */
+        QObject::connect(keyMonitor,
+                         SIGNAL(keyPressed()),
+                         this, SLOT(ignoreSuperPress()));
         setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
     } else {
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        QObject::disconnect(keyMonitor,
+                            SIGNAL(keyPressed()),
+                            this, SLOT(ignoreSuperPress()));
         m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
         if (m_superKeyHeld) {
@@ -142,6 +152,7 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
     if (m_superKeyPressed != superKeyPressed) {
         m_superKeyPressed = superKeyPressed;
         if (superKeyPressed) {
+            m_superPressIgnored = false;
             /* If the key is pressed, start up a timer to monitor if it's being held short
                enough to qualify as just a "tap" or as a proper hold */
             m_superKeyHoldTimer.start();
@@ -149,10 +160,12 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
             m_superKeyHoldTimer.stop();
 
             /* If the key is released, and was not being held, it means that the user just
-               performed a "tap". Otherwise the user just terminated a hold. */
-            if (!m_superKeyHeld) {
+               performed a "tap". Unless we're told to ignore that tap, that is. */
+            if (!m_superKeyHeld && !m_superPressIgnored) {
                 Q_EMIT superKeyTapped();
-            } else {
+            }
+            /* Otherwise the user just terminated a hold. */
+            else if(m_superKeyHeld){
                 m_superKeyHeld = false;
                 Q_EMIT superKeyHeldChanged(m_superKeyHeld);
             }
@@ -164,11 +177,18 @@ void
 LauncherView::updateSuperKeyHoldState()
 {
     /* If the key was released in the meantime, just do nothing, otherwise
-       consider the key being held. */
-    if (m_superKeyPressed) {
+       consider the key being held, unless we're told to ignore it. */
+    if (m_superKeyPressed && !m_superPressIgnored) {
         m_superKeyHeld = true;
         Q_EMIT superKeyHeldChanged(m_superKeyHeld);
     }
+}
+
+void
+LauncherView::ignoreSuperPress()
+{
+    /* There was a key pressed, ignore current super tap/hold */
+    m_superPressIgnored = true;
 }
 
 void
