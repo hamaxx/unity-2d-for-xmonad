@@ -37,6 +37,11 @@ Item {
         schema: "org.gnome.desktop.background"
     }
 
+    PercentCoder {
+        id: backgroundFilename
+        encoded: desktopBackground.pictureUri
+    }
+
     Rectangle {
         Rectangle {
             anchors.fill: parent
@@ -64,7 +69,7 @@ Item {
                https://bugs.launchpad.net/ubuntu/+source/ubuntu-wallpapers/+bug/296538
                http://bugreports.qt.nokia.com/browse/QTBUG-7276
             */
-            var filename = desktopBackground.pictureUri
+            var filename = backgroundFilename.unencoded /* path is urlencoded */
             if(filename == "file:///usr/share/backgrounds/warty-final-ubuntu.png")
                 filename = "/usr/share/unity-2d/warty-final-ubuntu.jpg"
 

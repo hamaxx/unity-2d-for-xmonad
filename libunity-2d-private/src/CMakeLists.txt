@@ -73,6 +73,7 @@ set(lib${LIB_NAME}_SRCS
     indicatorswidget.cpp
     panelapplet.cpp
     panelstyle.cpp
+    percentcoder.cpp
     )
 
 # Build
