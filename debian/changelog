@@ -1,3 +1,33 @@
+unity-2d (4.10.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release
+    - unity-2d-panel segfault switching between single and dual screens
+      (LP: #848944)
+    - bad memory leak in unity-2d-panel (LP: #850320)
+    - unity-2d-panel crashed with SIGABRT in raise() (LP: #848155)
+    - [dash] Dash is shown when pressing and releasing quickly super+KEY
+      (LP: #801073)
+    - Wallpaper is loaded twice with different alignment by gnome-session and
+      nautilus (Oneiric) (LP: #804435)
+    - [panel] Maximized window title switches to Arial font (LP: #820274)
+    - [panel] graphics corruption in top line of pixels (LP: #846335)
+    - Unity-2d no panel after cancel logout due to not responding app
+      (LP: #849379)
+    - [panel] Indicators are duplicated if unity-panel-service restarts with
+      multiple monitors connected (LP: #850000)
+    - Unity doesn't mirror its interface for RTL locales. (LP: #654988)
+    - [panel] F10 shortcut with dual screens shows menus on both screens
+      (LP: #777995)
+    - Background wallpaper briefly appears shifted horizontally by around 15
+      pixels on startup (LP: #839610)
+    - alt+f2 - can type, doing nothing (LP: #842413)
+    - Pressing Alt+F2 sometimes opens the Dash instead of opening the 'Run
+      command' screen (LP: #847486)
+  * debian/control:
+    - bump libxi-dev build-dep
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 22 Sep 2011 09:45:13 +0200
+
 unity-2d (4.8.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
