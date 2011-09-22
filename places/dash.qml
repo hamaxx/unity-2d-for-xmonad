@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
 
@@ -24,8 +24,14 @@ Item {
     id: dash
 
     Accessible.name: "root"
+    LayoutMirroring.enabled: isRightToLeft()
+    LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+
+    function isRightToLeft() {
+        return Qt.application.layoutDirection == Qt.RightToLeft
+    }
 
     Binding {
         target: dashView
@@ -180,6 +186,7 @@ Item {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
             source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+            mirror: isRightToLeft()
         }
     }
 
@@ -289,6 +296,7 @@ Item {
         Image {
             id: fullScreenButtonImage
             source: "artwork/fullscreen_button.png"
+            mirror: isRightToLeft()
         }
 
         onClicked: {

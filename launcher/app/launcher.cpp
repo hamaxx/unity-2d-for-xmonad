@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
 
     /* Panel containing the QML declarative view */
     Unity2dPanel panel(true);
+
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
     panel.setAccessibleName("Launcher");
