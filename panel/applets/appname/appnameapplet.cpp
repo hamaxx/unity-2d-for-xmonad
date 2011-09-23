@@ -198,7 +198,7 @@ struct AppNameAppletPrivate
 
     void setupKeyboardHotkeys()
     {
-        /* By rule, the F10 hotkey is to open the first menu of the window with focus */
+        // By rule, the F10 hotkey is to open the first menu of the window with focus
         Hotkey *f10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
         QObject::connect(f10, SIGNAL(released()), q, SLOT(hotkeyPressed()));
     }
@@ -324,9 +324,14 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
 
 void AppNameApplet::hotkeyPressed()
 {
-    d->m_menuBarWidget->setOpened(true);
-    updateWidgets();
-    d->m_menuBarWidget->openMenuByPosition(0);
+    // We do a similar check as in updateWidgets(), so to not display the menu
+    // when it doesn't make any sense
+    BamfApplication* app = BamfMatcher::get_default().active_application();
+    bool isUserVisibleApp = app ? app->user_visible() : false;
+    if (isUserVisibleApp) {
+      d->m_menuBarWidget->setOpened(true);
+      d->m_menuBarWidget->openMenuByPosition(0);
+    }
 }
 
 #include "appnameapplet.moc"
