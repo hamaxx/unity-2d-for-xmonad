@@ -47,6 +47,7 @@ protected:
 
 private Q_SLOTS:
     void updateWidgets();
+    void hotkeyPressed();
 
 Q_SIGNALS:
     void titleBarDblClicked();

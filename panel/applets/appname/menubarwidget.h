@@ -45,6 +45,8 @@ public:
 
     bool isEmpty() const;
     bool isOpened() const;
+    void openMenuByPosition(int pos) const;
+    void setOpened(bool opened);
 
 Q_SIGNALS:
     void isOpenedChanged();

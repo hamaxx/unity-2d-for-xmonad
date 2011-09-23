@@ -33,6 +33,8 @@
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 #include <launcherclient.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -191,6 +193,14 @@ struct AppNameAppletPrivate
     {
         QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
             q, SLOT(updateWidgets()));
+    
+    }
+
+    void setupKeyboardHotkeys()
+    {
+        /* By rule, the F10 hotkey is to open the first menu of the window with focus */
+        Hotkey *f10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
+        QObject::connect(f10, SIGNAL(released()), q, SLOT(hotkeyPressed()));
     }
 };
 
@@ -206,6 +216,7 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     d->setupWindowButtonWidget();
     d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
+    d->setupKeyboardHotkeys();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
@@ -309,6 +320,13 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
     } else {
         Unity2d::PanelApplet::mouseReleaseEvent(event);
     }
+}
+
+void AppNameApplet::hotkeyPressed()
+{
+    d->m_menuBarWidget->setOpened(true);
+    updateWidgets();
+    d->m_menuBarWidget->openMenuByPosition(0);
 }
 
 #include "appnameapplet.moc"

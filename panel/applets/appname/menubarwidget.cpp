@@ -72,6 +72,23 @@ bool MenuBarWidget::isOpened() const
     return m_isOpened;
 }
 
+void MenuBarWidget::openMenuByPosition(int pos) const
+{
+    if (m_widgetList.size() > pos) {
+        IndicatorEntryWidget *el = m_widgetList.at(pos);
+        if (el != NULL)
+            el->showMenu(Qt::NoButton);
+    }
+}
+
+void MenuBarWidget::setOpened(bool opened)
+{
+    if (m_isOpened != opened) {
+        m_isOpened = opened;
+        isOpenedChanged();
+    }
+}
+
 void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
@@ -159,10 +176,7 @@ void MenuBarWidget::onEntryActivated(const std::string& id)
             }
         }
     }
-    if (m_isOpened != isOpened) {
-        m_isOpened = isOpened;
-        isOpenedChanged();
-    }
+    setOpened(isOpened);
 }
 
 #include "menubarwidget.moc"
