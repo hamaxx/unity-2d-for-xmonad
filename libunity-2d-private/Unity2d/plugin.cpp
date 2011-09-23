@@ -61,6 +61,8 @@
 #include "lenses.h"
 #include "lens.h"
 
+#include "percentcoder.h"
+
 #include "filter.h"
 #include "filters.h"
 #include "ratingsfilter.h"
@@ -147,6 +149,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
     qmlRegisterType<Lens>(uri, 1, 0, "Lens");
+
+    qmlRegisterType<PercentCoder>(uri, 0, 1, "PercentCoder");
 
     qmlRegisterType<Filter>();
     qmlRegisterType<Filters>();
