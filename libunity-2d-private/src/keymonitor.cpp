@@ -38,7 +38,7 @@ static int notify_type = INVALID_EVENT_TYPE;
 
 
 KeyMonitor::KeyMonitor(QObject* parent)
-: QObject(parent)
+: QObject(parent), m_stop(false)
 {
     if (this->registerEvents()) {
         getModifiers();
