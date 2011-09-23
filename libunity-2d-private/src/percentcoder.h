@@ -31,12 +31,12 @@ class PercentCoder : public QObject {
     Q_PROPERTY(QString unencoded READ unencoded WRITE setUnencoded NOTIFY stringChanged)
 
 public:
-    PercentCoder(QObject *parent = 0);
+    PercentCoder(QObject* parent = 0);
 
     QString encoded() const;
     QString unencoded() const;
-    void setEncoded(const QString &);
-    void setUnencoded(const QString &);
+    void setEncoded(const QString&);
+    void setUnencoded(const QString&);
 
 Q_SIGNALS:
     void stringChanged();

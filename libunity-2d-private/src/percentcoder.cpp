@@ -21,7 +21,7 @@
 
 #include "percentcoder.h"
 
-PercentCoder::PercentCoder(QObject *parent) :
+PercentCoder::PercentCoder(QObject* parent) :
     QObject(parent)
 {
 }
@@ -46,7 +46,7 @@ void PercentCoder::setEncoded(const QString &string)
     }
 }
 
-void PercentCoder::setUnencoded(const QString &string)
+void PercentCoder::setUnencoded(const QString& string)
 {
     if (string != m_string) {
         m_string = string;
