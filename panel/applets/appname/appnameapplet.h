@@ -40,6 +40,7 @@ public:
 protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
+    void mouseDoubleClickEvent(QMouseEvent *);
 
 private Q_SLOTS:
     void updateWidgets();

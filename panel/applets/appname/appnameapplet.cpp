@@ -270,4 +270,8 @@ void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
 
+void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
+    d->m_windowHelper->unmaximize();
+}
+
 #include "appnameapplet.moc"
