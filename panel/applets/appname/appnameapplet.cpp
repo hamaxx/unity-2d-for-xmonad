@@ -134,10 +134,11 @@ struct AppNameAppletPrivate
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         m_label->setTextFormat(Qt::PlainText);
         // Align left of label with left of menubar
-        if (QApplication::isLeftToRight())
+        if (QApplication::isLeftToRight()) {
             m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
-        else
+        } else {
             m_label->setContentsMargins(0, 0, APPNAME_LABEL_LEFT_MARGIN, 0);
+        }
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);

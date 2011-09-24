@@ -54,6 +54,14 @@ MenuBarWidget::MenuBarWidget(IndicatorsManager* indicatorsManager, QWidget* pare
     m_layout->addStretch();
 }
 
+MenuBarWidget::~MenuBarWidget()
+{
+    // disconnect from the entry signals
+    entry_added.disconnect();
+    entry_removed.disconnect();
+    qDeleteAll(m_widgetList);
+}
+
 bool MenuBarWidget::isEmpty() const
 {
     return m_isEmpty;
@@ -117,6 +125,7 @@ void MenuBarWidget::onEntryRemoved(const std::string& entry_id)
             m_layout->removeWidget(widget);
             m_indicatorsManager->removeIndicatorEntryWidget(widget);
             m_widgetList.removeOne(widget);
+            delete widget;
             updateIsEmpty();
             break;
         }

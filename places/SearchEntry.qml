@@ -103,6 +103,7 @@ AbstractButton {
             anchors.leftMargin: -5
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
+            horizontalAlignment: Text.AlignLeft
 
             color: "#ffffff"
             font.pixelSize: 28
@@ -159,6 +160,8 @@ AbstractButton {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+                LayoutMirroring.enabled: false
+                horizontalAlignment: isRightToLeft() ? Text.AlignRight : Text.AlignLeft
 
                 color: "white"
                 opacity: 0.5

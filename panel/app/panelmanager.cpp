@@ -139,8 +139,9 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     panel->setFixedHeight(24);
 
     QPoint p;
-    if (QApplication::isRightToLeft())
-        p = QPoint(QApplication::desktop()->width(), 0);
+    if (QApplication::isRightToLeft()) {
+        p = QPoint(QApplication::desktop()->width() - 1, 0);
+    }
     int leftmost = QApplication::desktop()->screenNumber(p);
 
     QHash<QString, PanelAppletProviderInterface*> plugins = loadPlugins();

@@ -24,11 +24,15 @@ Item {
     id: dash
 
     Accessible.name: "root"
+    LayoutMirroring.enabled: isRightToLeft()
+    LayoutMirroring.childrenInherit: true
 
     property variant currentPage
 
-    LayoutMirroring.enabled: dashView.layoutDirection == Qt.RightToLeft
-    LayoutMirroring.childrenInherit: true
+    function isRightToLeft() {
+        return Qt.application.layoutDirection == Qt.RightToLeft
+    }
+
     Binding {
         target: dashView
         property: "expanded"
@@ -74,6 +78,7 @@ Item {
             var lens = lenses.get(dashView.activeLens)
             lens.active = false
         }
+        dashView.activeLens = ""
     }
 
     function activateLens(lensId) {
@@ -181,7 +186,7 @@ Item {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
             source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
-            mirror: dashView.layoutDirection == Qt.RightToLeft
+            mirror: isRightToLeft()
         }
     }
 
@@ -291,7 +296,7 @@ Item {
         Image {
             id: fullScreenButtonImage
             source: "artwork/fullscreen_button.png"
-            mirror: dashView.layoutDirection == Qt.RightToLeft
+            mirror: isRightToLeft()
         }
 
         onClicked: {

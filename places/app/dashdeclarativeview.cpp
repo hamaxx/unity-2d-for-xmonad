@@ -125,8 +125,9 @@ DashDeclarativeView::resizeToDesktopModeSize()
     rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
                         rect.height()));
 
-    if (QApplication::isRightToLeft())
+    if (QApplication::isRightToLeft()) {
         rect.moveRight(screenRight);
+    }
 
     move(rect.topLeft());
     setFixedSize(rect.size());
@@ -277,8 +278,9 @@ DashDeclarativeView::availableGeometry() const
         screenRect.width() - LauncherClient::MaximumWidth,
         availableRect.height()
         );
-    if (QApplication::isRightToLeft())
+    if (QApplication::isRightToLeft()) {
         availableGeometry.moveLeft(0);
+    }
     return availableGeometry;
 }
 
