@@ -141,8 +141,6 @@ DropItem {
                   .arg(1.0)
 
             visible: active && (looseItem.state != "beingDragged")
-
-            mirror: item.layoutDirection == Qt.RightToLeft
         }
 
         /* This is the area on the left of the tile where the pips/arrow end up.
@@ -166,8 +164,6 @@ DropItem {
                         .arg(pipSource).arg("lightgrey").arg(1.0)
 
                 visible: looseItem.state != "beingDragged"
-
-                mirror: item.layoutDirection == Qt.RightToLeft
             }
         }
 
