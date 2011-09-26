@@ -50,7 +50,7 @@ FdoTask::FdoTask(WId id, QObject* parent)
 FdoTask::~FdoTask()
 {
     taskDeleted(m_id);
-    if ( m_widget != NULL ){
+    if (m_widget != NULL) {
         m_widget->deleteLater();
     }
 }
