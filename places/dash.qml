@@ -78,27 +78,32 @@ Item {
             var lens = lenses.get(dashView.activeLens)
             lens.active = false
         }
-        dashView.activeLens = ""
+    }
+
+    function buildLensPage(lens) {
+        pageLoader.source = "LensView.qml"
+        /* Take advantage of the fact that the loaded qml is local and setting
+           the source loads it immediately making pageLoader.item valid */
+        pageLoader.item.model = lens
+        activatePage(pageLoader.item)
     }
 
     function activateLens(lensId) {
-        if (lensId == dashView.activeLens) {
-            return
-        }
-
-        deactivateActiveLens()
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
             return
         }
 
+        if (lensId == dashView.activeLens) {
+            /* we don't need to activate the lens, just show its UI */
+            buildLensPage(lens)
+            return
+        }
+
+        deactivateActiveLens()
         lens.active = true
-        pageLoader.source = "LensView.qml"
-        /* Take advantage of the fact that the loaded qml is local and setting
-           the source loads it immediately making pageLoader.item valid */
-        pageLoader.item.model = lens
-        activatePage(pageLoader.item)
+        buildLensPage(lens)
         dashView.activeLens = lens.id
     }
 
