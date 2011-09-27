@@ -182,7 +182,7 @@ void WindowHelper::drag(const QPoint& pos)
         xev.xclient.data.l[4] = 0;
         XUngrabPointer(QX11Info::display(), QX11Info::appTime());
         XSendEvent(QX11Info::display(), QX11Info::appRootWindow(info.screen()), false,
-        SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+                   SubstructureRedirectMask | SubstructureNotifyMask, &xev);
     }
 }
 
