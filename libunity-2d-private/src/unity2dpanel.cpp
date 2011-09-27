@@ -49,6 +49,7 @@ struct Unity2dPanelPrivate
     bool m_useStrut;
     int m_delta;
     bool m_manualSliding;
+    QHash<QString, Unity2d::PanelApplet*> m_applets;
 
     void setStrut(ulong* struts)
     {
@@ -243,6 +244,16 @@ void Unity2dPanel::paintEvent(QPaintEvent* event)
 void Unity2dPanel::addWidget(QWidget* widget)
 {
     d->m_layout->addWidget(widget);
+}
+
+void Unity2dPanel::addApplet(const QString& name, Unity2d::PanelApplet* widget)
+{
+    d->m_applets[name] = widget;
+}
+
+Unity2d::PanelApplet* Unity2dPanel::getApplet(const QString& name)
+{
+    return d->m_applets[name];
 }
 
 void Unity2dPanel::addSpacer()

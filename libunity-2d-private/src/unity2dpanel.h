@@ -24,9 +24,13 @@
 
 // Local
 class IndicatorsManager;
+namespace Unity2d {
+    class PanelApplet;
+}
 
 // Qt
 #include <QWidget>
+#include <QEvent>
 
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
@@ -51,6 +55,8 @@ public:
         TopEdge
     };
 
+    static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
+
     Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
     ~Unity2dPanel();
 
@@ -58,6 +64,8 @@ public:
     Edge edge() const;
 
     void addWidget(QWidget*);
+    void addApplet(const QString&, Unity2d::PanelApplet*);
+    Unity2d::PanelApplet* getApplet(const QString&);
 
     void addSpacer();
 

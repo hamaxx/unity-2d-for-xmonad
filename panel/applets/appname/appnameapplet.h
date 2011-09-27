@@ -44,10 +44,10 @@ protected:
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
+    void customEvent(QEvent*);
 
 private Q_SLOTS:
     void updateWidgets();
-    void hotkeyPressed();
 
 Q_SIGNALS:
     void titleBarDblClicked();

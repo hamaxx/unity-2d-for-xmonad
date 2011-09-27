@@ -45,8 +45,8 @@ public:
 
     bool isEmpty() const;
     bool isOpened() const;
-    void openMenuByPosition(int pos) const;
     void setOpened(bool opened);
+    QList<IndicatorEntryWidget*> getWidgetList() const;
 
 Q_SIGNALS:
     void isOpenedChanged();

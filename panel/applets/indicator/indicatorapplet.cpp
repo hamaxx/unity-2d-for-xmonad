@@ -26,6 +26,7 @@
 #include <debug_p.h>
 #include <indicatorsmanager.h>
 #include <indicatorswidget.h>
+#include <indicatorentrywidget.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -53,6 +54,18 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
 
     m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
     layout->addWidget(m_indicatorsWidget);
+}
+
+void IndicatorApplet::customEvent(QEvent* event)
+{
+    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
+        QList<IndicatorEntryWidget*> list = m_indicatorsWidget->getEntryList();
+        if (!list.isEmpty()) {
+            IndicatorEntryWidget* el = list.first();
+            if (el != NULL)
+                el->showMenu(Qt::NoButton);
+        }
+    }
 }
 
 void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
