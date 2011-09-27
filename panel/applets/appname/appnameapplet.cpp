@@ -282,7 +282,7 @@ void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
     d->m_windowHelper->unmaximize();
 }
 
-void AppNameApplet::mousePressEvent(QMouseEvent *event) {
+void AppNameApplet::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         d->m_dragStartPosition = event->pos();
         d->m_dragInProgress = true;
@@ -291,7 +291,7 @@ void AppNameApplet::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void AppNameApplet::mouseReleaseEvent(QMouseEvent *event) {
+void AppNameApplet::mouseReleaseEvent(QMouseEvent* event) {
     if (d->m_dragInProgress && event->button() == Qt::LeftButton) {
         d->m_dragInProgress = false;
     } else {
@@ -299,7 +299,7 @@ void AppNameApplet::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-void AppNameApplet::mouseMoveEvent(QMouseEvent *event) {
+void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
     if (d->m_dragInProgress && (event->buttons() & Qt::LeftButton)) {
         if ((event->pos() - d->m_dragStartPosition).manhattanLength()
                 >= QApplication::startDragDistance()) {
