@@ -26,6 +26,7 @@
 // Qt
 #include <QMap>
 #include <QObject>
+#include <QPoint>
 
 // libunity-core
 #include <UnityCore/DBusIndicators.h>
@@ -63,6 +64,7 @@ private:
     unity::indicator::DBusIndicators::Ptr m_indicators;
     QTimer* m_geometrySyncTimer;
     QTimer* m_mouseTrackerTimer;
+    QPoint m_lastMousePosition;
 
     IndicatorEntryWidgetList m_widgetList;
 
