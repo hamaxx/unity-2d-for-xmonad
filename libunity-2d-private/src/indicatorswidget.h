@@ -50,7 +50,7 @@ public:
     void addIndicator(const unity::indicator::Indicator::Ptr& indicator);
     void removeIndicator(const unity::indicator::Indicator::Ptr& indicator);
 
-    QList<IndicatorEntryWidget*> entries() const;
+    const QList<IndicatorEntryWidget*>* entries() const;
 
 private:
     QHBoxLayout* m_layout;

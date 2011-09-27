@@ -33,9 +33,8 @@
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 #include <launcherclient.h>
-#include <hotkey.h>
-#include <hotkeymonitor.h>
 #include <indicatorentrywidget.h>
+#include <f10eventfilter.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -120,6 +119,25 @@ private:
     }
 };
 
+class AppMenuShowFilter : public F10EventFilter
+{
+public:
+    AppMenuShowFilter(const QList<IndicatorEntryWidget*>* entries, MenuBarWidget* menubar)
+    : F10EventFilter(entries, true)
+    , m_menubar(menubar)
+    {
+    }
+
+protected:
+    virtual void beforeOpen(QObject*, QEvent*)
+    {
+        m_menubar->setOpened(true);
+    }
+
+private:
+    MenuBarWidget* m_menubar;
+};
+
 struct AppNameAppletPrivate
 {
     AppNameApplet* q;
@@ -132,6 +150,8 @@ struct AppNameAppletPrivate
     MenuBarWidget* m_menuBarWidget;
     QPoint m_dragStartPosition;
     bool m_dragInProgress;
+    Unity2dPanel* m_panel;
+    AppMenuShowFilter* m_filter;
 
     AppNameAppletPrivate()
     : m_dragInProgress(false)
@@ -219,14 +239,23 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     layout->addWidget(d->m_menuBarWidget);
 
     if (panel != NULL) {
-        panel->installEventFilter(this);
+        d->m_filter = new AppMenuShowFilter(d->m_menuBarWidget->entries(), d->m_menuBarWidget);
+        panel->installEventFilter(d->m_filter);
     }
+    else {
+        d->m_filter = NULL;
+    }
+    d->m_panel = panel;
 
     updateWidgets();
 }
 
 AppNameApplet::~AppNameApplet()
 {
+    if (d->m_filter != NULL && d->m_panel != NULL) {
+        d->m_panel->removeEventFilter(d->m_filter);
+    }
+    delete d->m_filter;
     delete d;
 }
 
