@@ -348,28 +348,4 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-bool AppNameApplet::eventFilter(QObject* watched, QEvent* event)
-{
-    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
-        BamfApplication* app = BamfMatcher::get_default().active_application();
-        bool isUserVisibleApp = app ? app->user_visible() : false;
-        if (isUserVisibleApp) {
-            d->m_menuBarWidget->setOpened(true);
-
-            QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->entries();
-            if (!list.isEmpty()) {
-                IndicatorEntryWidget* el = list.first();
-                if (el != NULL) {
-                    el->showMenu(Qt::NoButton);
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return QWidget::eventFilter(watched, event);
-    }
-}
-
 #include "appnameapplet.moc"
