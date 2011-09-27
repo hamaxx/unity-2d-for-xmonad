@@ -40,9 +40,16 @@ public:
 protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
+    void mouseDoubleClickEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
 
 private Q_SLOTS:
     void updateWidgets();
+
+Q_SIGNALS:
+    void titleBarDblClicked();
 
 private:
     Q_DISABLE_COPY(AppNameApplet)

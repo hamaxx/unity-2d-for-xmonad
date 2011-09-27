@@ -47,6 +47,8 @@
 #include <QPainter>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QMouseEvent>
+#include <QPoint>
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
@@ -125,6 +127,12 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
+    QPoint m_dragStartPosition;
+    bool m_dragInProgress;
+
+    AppNameAppletPrivate()
+    : m_dragInProgress(false)
+    {}
 
     void setupLabel()
     {
@@ -268,6 +276,39 @@ void AppNameApplet::enterEvent(QEvent*) {
 
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
+}
+
+void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
+    d->m_windowHelper->unmaximize();
+}
+
+void AppNameApplet::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        d->m_dragStartPosition = event->pos();
+        d->m_dragInProgress = true;
+    } else {
+        Unity2d::PanelApplet::mousePressEvent(event);
+    }
+}
+
+void AppNameApplet::mouseReleaseEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && event->button() == Qt::LeftButton) {
+        d->m_dragInProgress = false;
+    } else {
+        Unity2d::PanelApplet::mouseReleaseEvent(event);
+    }
+}
+
+void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && (event->buttons() & Qt::LeftButton)) {
+        if ((event->pos() - d->m_dragStartPosition).manhattanLength()
+                >= QApplication::startDragDistance()) {
+            d->m_dragInProgress = false;
+            d->m_windowHelper->drag(d->m_dragStartPosition);
+        }
+    } else {
+        Unity2d::PanelApplet::mouseReleaseEvent(event);
+    }
 }
 
 #include "appnameapplet.moc"
