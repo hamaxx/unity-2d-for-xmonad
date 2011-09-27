@@ -211,11 +211,27 @@ FocusScope {
                 height: headerLoader.height + bodyLoader.item.totalHeight
                 property bool focusable: bodyLoader.item.focusable
 
-                property int pmin: pmax - (ymax - ymin)
-                property int pmax: items.heightFirstChildren(index) - ymin
-                property int ymin: list.accordion ? items.heightFirstHeaders(index) : -headerLoader.height
+                property int heightFirstHeaders: items.heightFirstHeaders(index)
+                property int heightFirstChildren: items.heightFirstChildren(index)
+                /* Minimum Y coordinate in viewport space where the item header
+                 * can appear; in the non-accordion case, this is
+                 * -headerLoader.height to allow the header to be placed
+                 * offscreen; the body is anchored to the header on top, so the
+                 * body will appear at viewport Y coordinate 0.
+                 */
+                property int ymin: list.accordion ? heightFirstHeaders : -headerLoader.height
                 property int ymax: list.accordion ? ymin + items.availableHeight : list.height
-                y: items.clamp(-items.value + ymax + pmin, ymin, ymax)
+                /* Physical space available for drawing the item body; in the
+                 * non-accordion case we need to compensate the
+                 * -headerLoader.height which we added to ymin.
+                 */
+                property int bodyAvailableHeight: ymax - y + (list.accordion ? 0 : -headerLoader.height)
+                /* Y coordinate where the body of this item is located, relative to "list" */
+                property int bodyVirtualY: heightFirstChildren - items.value
+                /* Y coordinate where the body becomes visible (in body coordinates) */
+                property int bodyVisibleY: ymin - bodyVirtualY
+                y: items.clamp(bodyVirtualY, ymin, ymax)
+
 
                 Loader {
                     id: headerLoader
@@ -248,12 +264,12 @@ FocusScope {
                     onLoaded: item.focus = true
                     width: parent.width
                     anchors.top: headerLoader.bottom
-                    height: items.clamp(parent.ymax - parent.y, 0, item.totalHeight)
+                    height: Math.min(items.clamp(item.totalHeight - bodyVisibleY, 0, item.totalHeight), bodyAvailableHeight)
 
                     Binding {
                         target: bodyLoader.item
                         property: "contentY"
-                        value: Math.max(items.value - pmax, 0)
+                        value: Math.max(bodyVisibleY, 0)
                     }
 
                     /* Workaround Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-18857
