@@ -38,7 +38,7 @@ Q_OBJECT
 public:
     IndicatorApplet(Unity2dPanel* panel);
 
-    void customEvent(QEvent* event);
+    bool eventFilter(QObject*, QEvent*);
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)

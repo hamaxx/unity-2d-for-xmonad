@@ -80,7 +80,7 @@ void MenuBarWidget::setOpened(bool opened)
     }
 }
 
-QList<IndicatorEntryWidget*> MenuBarWidget::getWidgetList() const
+QList<IndicatorEntryWidget*> MenuBarWidget::entries() const
 {
     return m_widgetList;
 }

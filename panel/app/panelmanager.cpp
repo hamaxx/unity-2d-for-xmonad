@@ -26,18 +26,12 @@
 #include <config.h>
 #include <panelstyle.h>
 #include <indicatorsmanager.h>
-#include <indicatorentrywidget.h>
 #include <hotkeymonitor.h>
 #include <hotkey.h>
 
 // Unity
 #include <unity2dpanel.h>
-#include <panelapplet.h>
 #include <panelappletproviderinterface.h>
-
-// Bamf
-#include <bamf-application.h>
-#include <bamf-matcher.h>
 
 // Qt
 #include <QApplication>
@@ -174,13 +168,12 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
                        << "installed plugin providing it.";
         } else {
             if (screen == leftmost || !onlyLeftmost) {
-                Unity2d::PanelApplet* applet = provider->createApplet(panel);
+                QWidget* applet = provider->createApplet(panel);
                 if (applet == 0) {
                     qWarning() << "The panel applet plugin for" << appletName
                                << "did not return a valid plugin.";
                 } else {
                     panel->addWidget(applet);
-                    panel->addApplet(appletName, applet);
                 }
             }
         }
@@ -242,20 +235,9 @@ void PanelManager::onF10Pressed()
         return;
     }
     panel = m_panels[screen];
-
-    Unity2d::PanelApplet* applet = NULL;
-    BamfApplication* app = BamfMatcher::get_default().active_application();
-    bool isUserVisibleApp = app ? app->user_visible() : false;
-    if (isUserVisibleApp) {
-        applet = panel->getApplet("appname");
-    }
-    else {
-        applet = panel->getApplet("indicator");
-    }
-
-    if (applet) {
+    if (panel != NULL) {
         QEvent* event = new QEvent(Unity2dPanel::SHOW_FIRST_MENU_EVENT);
-        QCoreApplication::postEvent(applet, event);
+        QCoreApplication::postEvent(panel, event);
     }
 }
 

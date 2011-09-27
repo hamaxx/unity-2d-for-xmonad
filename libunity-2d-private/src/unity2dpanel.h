@@ -24,9 +24,6 @@
 
 // Local
 class IndicatorsManager;
-namespace Unity2d {
-    class PanelApplet;
-}
 
 // Qt
 #include <QWidget>
@@ -64,9 +61,6 @@ public:
     Edge edge() const;
 
     void addWidget(QWidget*);
-    void addApplet(const QString&, Unity2d::PanelApplet*);
-    Unity2d::PanelApplet* getApplet(const QString&);
-
     void addSpacer();
 
     IndicatorsManager* indicatorsManager() const;

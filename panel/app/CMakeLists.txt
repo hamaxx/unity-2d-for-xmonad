@@ -1,5 +1,4 @@
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
-pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 
 set(panel_SRCS
     main.cpp
@@ -12,7 +11,6 @@ add_executable(unity-2d-panel ${panel_SRCS})
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${QTBAMF_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${DCONFQT_INCLUDE_DIRS}

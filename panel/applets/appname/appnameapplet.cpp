@@ -218,6 +218,10 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
+    if (panel != NULL) {
+        panel->installEventFilter(this);
+    }
+
     updateWidgets();
 }
 
@@ -315,17 +319,27 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-void AppNameApplet::customEvent(QEvent* event)
+bool AppNameApplet::eventFilter(QObject* watched, QEvent* event)
 {
     if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
-        d->m_menuBarWidget->setOpened(true);
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isUserVisibleApp = app ? app->user_visible() : false;
+        if (isUserVisibleApp) {
+            d->m_menuBarWidget->setOpened(true);
 
-        QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->getWidgetList();
-        if (!list.isEmpty()) {
-            IndicatorEntryWidget* el = list.first();
-            if (el != NULL)
-                el->showMenu(Qt::NoButton);
+            QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
+    } else {
+        return QWidget::eventFilter(watched, event);
     }
 }
 

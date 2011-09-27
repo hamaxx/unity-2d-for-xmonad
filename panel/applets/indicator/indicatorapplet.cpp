@@ -29,6 +29,10 @@
 #include <indicatorentrywidget.h>
 #include <unity2dpanel.h>
 
+// Bamf
+#include <bamf-application.h>
+#include <bamf-matcher.h>
+
 // Qt
 #include <QHBoxLayout>
 
@@ -54,17 +58,31 @@ IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
 
     m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
     layout->addWidget(m_indicatorsWidget);
+
+    if (panel != NULL) {
+        panel->installEventFilter(this);
+    }
 }
 
-void IndicatorApplet::customEvent(QEvent* event)
+bool IndicatorApplet::eventFilter(QObject* watched, QEvent* event)
 {
     if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
-        QList<IndicatorEntryWidget*> list = m_indicatorsWidget->getEntryList();
-        if (!list.isEmpty()) {
-            IndicatorEntryWidget* el = list.first();
-            if (el != NULL)
-                el->showMenu(Qt::NoButton);
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isUserVisibleApp = app ? app->user_visible() : false;
+        if (!isUserVisibleApp) {
+            QList<IndicatorEntryWidget*> list = m_indicatorsWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
+    } else {
+        return QWidget::eventFilter(watched, event);
     }
 }
 
