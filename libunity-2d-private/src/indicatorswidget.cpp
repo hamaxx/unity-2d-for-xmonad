@@ -114,9 +114,9 @@ void IndicatorsWidget::onEntryRemoved(const std::string& entry_id)
     }
 }
 
-const QList<IndicatorEntryWidget*>* IndicatorsWidget::entries() const
+QList<IndicatorEntryWidget*> IndicatorsWidget::entries() const
 {
-    return &m_entries;
+    return m_entries;
 }
 
 #include "indicatorswidget.moc"

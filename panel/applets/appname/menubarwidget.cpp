@@ -80,9 +80,9 @@ void MenuBarWidget::setOpened(bool opened)
     }
 }
 
-const QList<IndicatorEntryWidget*>* MenuBarWidget::entries() const
+QList<IndicatorEntryWidget*> MenuBarWidget::entries() const
 {
-    return &m_widgetList;
+    return m_widgetList;
 }
 
 void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indicator)

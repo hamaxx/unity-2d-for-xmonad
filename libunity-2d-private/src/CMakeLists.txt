@@ -74,7 +74,6 @@ set(lib${LIB_NAME}_SRCS
     panelapplet.cpp
     panelstyle.cpp
     percentcoder.cpp
-    f10eventfilter.cpp
     )
 
 # Build

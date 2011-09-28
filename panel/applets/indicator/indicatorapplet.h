@@ -31,21 +31,19 @@
 #include "indicatorswidget.h"
 
 class IndicatorsManager;
-class F10EventFilter;
 
 class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
 {
 Q_OBJECT
 public:
     IndicatorApplet(Unity2dPanel* panel);
-    ~IndicatorApplet();
+
+    bool eventFilter(QObject*, QEvent*);
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)
     IndicatorsManager* m_indicatorsManager;
     IndicatorsWidget*  m_indicatorsWidget;
-    F10EventFilter*    m_filter;
-    Unity2dPanel*      m_panel;
     void onObjectAdded(unity::indicator::Indicator::Ptr const&);
     void onObjectRemoved(unity::indicator::Indicator::Ptr const&);
 };
