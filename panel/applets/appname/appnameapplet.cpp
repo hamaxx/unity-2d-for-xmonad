@@ -194,7 +194,6 @@ struct AppNameAppletPrivate
     {
         QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
             q, SLOT(updateWidgets()));
-    
     }
 };
 

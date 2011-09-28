@@ -61,6 +61,7 @@ public:
     Edge edge() const;
 
     void addWidget(QWidget*);
+
     void addSpacer();
 
     IndicatorsManager* indicatorsManager() const;
