@@ -127,6 +127,14 @@ void IndicatorsManager::checkMousePosition()
     // Also, delivers motion events to Qt, which will generate correct
     // enter/leave events for IndicatorEntry widgets.
     QPoint pos = QCursor::pos();
+
+    // Don't send the event unless the mouse has moved
+    // https://bugs.launchpad.net/bugs/834065
+    if (!m_lastMousePosition.isNull() && (m_lastMousePosition == pos)) {
+        return;
+    }
+    m_lastMousePosition = pos;
+
     QWidget* widget = QApplication::widgetAt(pos);
     Display* display = QX11Info::display();
 
