@@ -79,9 +79,8 @@ FocusScope {
 
             focus: true
 
-            /* FIXME: should be 48px wide in English but made bigger to
-                      accomodate for more verbose languages */
-            width: 55
+            // dynamically calculate button width, but limit to 100
+            width: Math.min(100, (10 * u2d.tr("All").length) + 18)
             height: 30
             anchors.top: parent.top
             anchors.topMargin: isFirst ? 0 : 13
