@@ -1,3 +1,33 @@
+unity-2d (4.12.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release
+    - unity-2d-panel assert failure: *** glibc detected *** unity-2d-panel:
+      malloc(): smallbin double linked list corrupted: 0x08313b28 ***
+      (LP: #845979)
+    - unity-2d-panel assert failure: *** glibc detected *** unity-2d-panel:
+      corrupted double-linked list: 0x094bc9b0 *** (LP: #852012)
+    - unity-2d-panel crashed with SIGSEGV (LP: #843432)
+    - Dragging downwards from the menu bar or double clicking on the menu bar
+      should un-maximise the window (LP: #661049)
+    - [dash] Dash is shown when pressing and releasing quickly super+KEY
+      (LP: #801073)
+    - [dash] Do search, scroll down using mouse, then maximise window. Layout
+      breaks (LP: #817421)
+    - F10 doesn't start keyboard navigation to the panel (LP: #839628)
+    - [dash] Gridview moves to top when you open or close the "Show X more.."
+      dropdown or the Filter pane (LP: #850036)
+    - Impossible to navigate between panel menus when the mouse cursor is over
+      the panel (LP: #834065)
+    - [panel] F10 menu initially shown about half screen down (LP: #853766)
+    - [dash] Filter pane doesn't clear its background when switching lenses
+      (LP: #858590)
+    - [shortcuts] <Super><Shift># should launch a new instance of #
+      application (LP: #768006)
+    - unity-2d-spread missing background images when path includes Unicode
+      (LP: #855508)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 29 Sep 2011 16:12:55 +0200
+
 unity-2d (4.10.0-0ubuntu1) oneiric; urgency=low
 
   * New upstream release
