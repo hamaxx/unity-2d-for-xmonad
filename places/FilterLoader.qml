@@ -79,6 +79,7 @@ FocusScope {
 
             focus: true
 
+            // FIXME: that will probably break with non-latin LANG
             // dynamically calculate button width, but limit to 100
             width: Math.min(100, (10 * u2d.tr("All").length) + 18)
             height: 30
