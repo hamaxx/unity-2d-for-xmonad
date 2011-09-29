@@ -12,6 +12,7 @@ endmacro(read_pkg_variable)
 # Dependencies
 pkg_check_modules(DBUSMENUQT REQUIRED dbusmenu-qt)
 pkg_check_modules(INDICATOR REQUIRED indicator)
+pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 
 # Get indicator dirs from pkgconfig
 read_pkg_variable(INDICATOR_DIR       indicator indicatordir)
@@ -31,6 +32,7 @@ include_directories(
     ${GTK_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${QTBAMF_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )

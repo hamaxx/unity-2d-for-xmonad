@@ -44,6 +44,7 @@ protected:
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
+    bool eventFilter(QObject*, QEvent*);
 
 private Q_SLOTS:
     void updateWidgets();

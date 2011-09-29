@@ -27,6 +27,7 @@ class IndicatorsManager;
 
 // Qt
 #include <QWidget>
+#include <QEvent>
 
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
@@ -50,6 +51,8 @@ public:
         LeftEdge,
         TopEdge
     };
+
+    static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
 
     Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
     ~Unity2dPanel();

@@ -33,6 +33,9 @@
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 #include <launcherclient.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
+#include <indicatorentrywidget.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -214,6 +217,10 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
+    if (panel != NULL) {
+        panel->installEventFilter(this);
+    }
+
     updateWidgets();
 }
 
@@ -308,6 +315,30 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
         }
     } else {
         Unity2d::PanelApplet::mouseReleaseEvent(event);
+    }
+}
+
+bool AppNameApplet::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isActiveAppVisible = app ? app->user_visible() : false;
+        if (isActiveAppVisible) {
+            d->m_menuBarWidget->setOpened(true);
+
+            QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return QWidget::eventFilter(watched, event);
     }
 }
 

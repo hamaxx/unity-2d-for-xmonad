@@ -26,6 +26,8 @@
 #include <config.h>
 #include <panelstyle.h>
 #include <indicatorsmanager.h>
+#include <hotkeymonitor.h>
+#include <hotkey.h>
 
 // Unity
 #include <unity2dpanel.h>
@@ -124,6 +126,11 @@ PanelManager::PanelManager(QObject* parent)
         panel->move(desktop->screenGeometry(i).topLeft());
     }
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+
+    /* A F10 keypress opens the first menu of the visible application or of the first
+       indicator on the panel */
+    Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
+    connect(F10, SIGNAL(released()), SLOT(onF10Pressed()));
 }
 
 PanelManager::~PanelManager()
@@ -161,7 +168,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
                        << "installed plugin providing it.";
         } else {
             if (screen == leftmost || !onlyLeftmost) {
-                QWidget *applet = provider->createApplet(panel);
+                QWidget* applet = provider->createApplet(panel);
                 if (applet == 0) {
                     qWarning() << "The panel applet plugin for" << appletName
                                << "did not return a valid plugin.";
@@ -215,6 +222,22 @@ PanelManager::onScreenCountChanged(int newCount)
     /* Remove extra panels if any. */
     while (m_panels.size() > newCount) {
         delete m_panels.takeLast();
+    }
+}
+
+void PanelManager::onF10Pressed()
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    int screen = desktop->screenNumber(QCursor::pos());
+    Unity2dPanel* panel;
+    
+    if (screen >= m_panels.size()) {
+        return;
+    }
+    panel = m_panels[screen];
+    if (panel != NULL) {
+        QEvent* event = new QEvent(Unity2dPanel::SHOW_FIRST_MENU_EVENT);
+        QCoreApplication::postEvent(panel, event);
     }
 }
 
