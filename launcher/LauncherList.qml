@@ -306,11 +306,18 @@ AutoScrollingListView {
 
         Connections {
             target: launcherView
-            onKeyboardShortcutPressed: {
+            onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
                 if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
                     item.menu.hide()
                     item.activate()
+                }
+            }
+            onNewInstanceShortcutPressed: {
+                /* Only applications can be launched by keyboard shortcuts */
+                if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
+                    item.menu.hide()
+                    item.launchNewInstance()
                 }
             }
         }
