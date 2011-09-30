@@ -36,6 +36,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <indicatorentrywidget.h>
+#include <unity2dtr.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -244,12 +245,13 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool showWindowButtons = isOpened && isMaximized;
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showDesktopLabel = !isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
 
-    d->m_label->setVisible(showLabel);
-    if (showLabel) {
+    d->m_label->setVisible(showAppLabel || showDesktopLabel);
+    if (showAppLabel) {
         // Define text
         QString text;
         if (app) {
@@ -272,6 +274,8 @@ void AppNameApplet::updateWidgets()
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }
+    } else if (showDesktopLabel) {
+        d->m_label->setText(u2dTr("Desktop", "nautilus"));
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
