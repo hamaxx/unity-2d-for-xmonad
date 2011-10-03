@@ -21,6 +21,7 @@
 #include <unity2ddeclarativeview.h>
 
 class LauncherClient;
+class ScreenInfo;
 
 class DashDeclarativeView : public Unity2DDeclarativeView
 {
@@ -87,6 +88,7 @@ private:
     void setWMFlags();
 
     LauncherClient* m_launcherClient;
+    ScreenInfo* m_screenInfo;
     DashMode m_mode;
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */

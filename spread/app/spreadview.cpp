@@ -23,13 +23,14 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include "launcherclient.h"
+#include "screeninfo.h"
 
-SpreadView::SpreadView() : Unity2DDeclarativeView()
+SpreadView::SpreadView()
+: Unity2DDeclarativeView()
+, m_screenInfo(ScreenInfo::instance())
 {
 }
 
-/* FIXME: copied from places/app/dashdeclarativeview.cpp */
 void SpreadView::fitToAvailableSpace(int screen)
 {
     QDesktopWidget *desktop = QApplication::desktop();
@@ -37,8 +38,7 @@ void SpreadView::fitToAvailableSpace(int screen)
 
     if(screen == current_screen)
     {
-        QRect geometry = desktop->availableGeometry(this);
-        geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
+        QRect geometry = m_screenInfo->availableGeometry();
         setGeometry(geometry);
         setFixedSize(geometry.size());
     }
