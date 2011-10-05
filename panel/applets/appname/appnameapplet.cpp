@@ -267,15 +267,15 @@ void AppNameApplet::updateWidgets()
             }
         }
         d->m_label->setText(text);
-
-        // Define width
-        if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
-        } else {
-            d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
-        }
     } else if (showDesktopLabel) {
         d->m_label->setText(u2dTr("Desktop", "nautilus"));
+    }
+
+    // Define label width
+    if (!isMaximized && showMenu) {
+        d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
+    } else {
+        d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
