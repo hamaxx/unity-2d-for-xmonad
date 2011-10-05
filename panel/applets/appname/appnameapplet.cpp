@@ -61,15 +61,25 @@ class WindowButton : public QAbstractButton
 public:
     WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_buttonType(buttonType)
+    , m_initialized(false)
     {
-        loadPixmaps();
+        setButtonType(buttonType);
         if (buttonType == PanelStyle::MinimizeWindowButton) {
             setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         } else {
             setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         }
         setAttribute(Qt::WA_Hover);
+        m_initialized = true;
+    }
+
+    void setButtonType(const PanelStyle::WindowButtonType& buttonType)
+    {
+        if (m_initialized && m_buttonType == buttonType) return;
+
+        m_buttonType = buttonType;
+        loadPixmaps();
+        update();
     }
 
     QSize minimumSizeHint() const
@@ -111,6 +121,7 @@ private:
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
+    bool m_initialized;
 
     void loadPixmaps()
     {
@@ -170,7 +181,7 @@ struct AppNameAppletPrivate
         m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
-        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
+        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(toggleMaximize()));
     }
 
     void setupWindowHelper()
@@ -244,11 +255,15 @@ void AppNameApplet::updateWidgets()
         || d->m_menuBarWidget->isOpened()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
-    bool showWindowButtons = isOpened && isMaximized;
+    bool showWindowButtons = (isOpened && isMaximized) ||
+        d->m_windowHelper->dashIsVisible();
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
+    d->m_maximizeButton->setButtonType(isMaximized ?
+                                       PanelStyle::UnmaximizeWindowButton :
+                                       PanelStyle::MaximizeWindowButton);
 
     d->m_label->setVisible(showAppLabel || showDesktopLabel);
     if (showAppLabel) {
