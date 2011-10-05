@@ -295,28 +295,4 @@ Item {
             visible: dashView.expanded
         }
     }
-
-    AbstractButton {
-        id: fullScreenButton
-
-        Accessible.name: "Full Screen"
-
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 15
-        anchors.bottomMargin: 15
-        width: fullScreenButtonImage.sourceSize.width
-        height: fullScreenButtonImage.sourceSize.height
-        visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
-
-        Image {
-            id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
-            mirror: isRightToLeft()
-        }
-
-        onClicked: {
-            dashView.dashMode = DashDeclarativeView.FullScreenMode
-        }
-    }
 }
