@@ -26,8 +26,6 @@ FocusScope {
     transformOrigin: Item.TopLeft
 
     property real unzoomedScale
-    property int unzoomedX
-    property int unzoomedY
     property real zoomedScale
     property int zoomedX
     property int zoomedY
@@ -44,7 +42,7 @@ FocusScope {
     }
 
     Windows {
-        state: workspace.state == "screen" ? "screen" : "spread"
+        state: workspace.state
         anchors.fill: parent
         focus: true
         onClicked: workspace.clicked()
@@ -66,8 +64,6 @@ FocusScope {
             PropertyChanges {
                 target: workspace
                 scale: unzoomedScale
-                x: unzoomedX
-                y: unzoomedY
                 z: 0
             }
         },

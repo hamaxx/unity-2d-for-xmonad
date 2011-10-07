@@ -43,6 +43,8 @@ GridView {
     signal clicked
     signal windowActivated(variant window)
 
+    keyNavigationWraps: state == "zoomed"
+
     MouseArea {
         anchors.fill: parent
         onClicked: windows.clicked()
@@ -141,7 +143,7 @@ GridView {
                 Behavior on height { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
 
                 windowInfo: window
-                state: windows.state
+                state: windows.state == "screen" ? "screen" : "spread"
                 states: [
                     State {
                         name: "screen"

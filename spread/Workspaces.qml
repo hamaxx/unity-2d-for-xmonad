@@ -71,10 +71,13 @@ Rectangle {
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
-    Repeater {
+    GridView {
         id: workspaces
+        anchors.fill: parent
 
         model: screen.workspaces.count
+        cellWidth: switcher.width / columns
+        cellHeight: switcher.height / rows
         delegate: Workspace {
             id: workspace
 
@@ -87,9 +90,6 @@ Rectangle {
             width: switcher.width
             height: switcher.height
 
-            /* Organize the workspaces in a grid in 'unzoomed' state */
-            unzoomedX: column * (switcher.width * cellScale) + (column * switcher.spacing)
-            unzoomedY: row * (switcher.height * cellScale) + (row * switcher.spacing)
             unzoomedScale:  switcher.cellScale
 
             /* Center the workspace in 'zoomed' state */
