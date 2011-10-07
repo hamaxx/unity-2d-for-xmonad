@@ -78,6 +78,7 @@ Rectangle {
         model: screen.workspaces.count
         cellWidth: switcher.width / columns
         cellHeight: switcher.height / rows
+        keyNavigationWraps: true
         delegate: Workspace {
             id: workspace
 
@@ -99,6 +100,32 @@ Rectangle {
 
             focus: zoomedWorkspace == workspaceNumber
 
+            Connections {
+                target: workspaces
+                onCurrentIndexChanged: {
+                    /* If this workspace has lost the focus, reset its current
+                     * index so that navigating back to this workspace with the
+                     * keyboard would select the expected window: the first
+                     * one, if we are coming from a "previous" workspace, and
+                     * the last one if we are coming from a "following"
+                     * workspace (where "previous" and "following" depend on
+                     * the item's index).
+                     */
+                    var count = workspaces.count
+                    var currentIndex = workspaces.currentIndex
+                    if (currentIndex == index) return
+
+                    if (currentIndex < index) {
+                        currentIndex += count
+                    }
+
+                    if (currentIndex - index > count / 2) {
+                        setFocusOnFirstWindow()
+                    } else {
+                        setFocusOnLastWindow()
+                    }
+                }
+            }
             state: {
                 if (initial) {
                     if (screen.workspaces.current == workspaceNumber) {

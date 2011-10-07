@@ -42,6 +42,7 @@ FocusScope {
     }
 
     Windows {
+        id: windows
         state: workspace.state
         anchors.fill: parent
         focus: true
@@ -115,4 +116,12 @@ FocusScope {
             }
         }
     ]
+
+    function setFocusOnFirstWindow() {
+        windows.currentIndex = 0
+    }
+
+    function setFocusOnLastWindow() {
+        windows.currentIndex = windows.count - 1
+    }
 }
