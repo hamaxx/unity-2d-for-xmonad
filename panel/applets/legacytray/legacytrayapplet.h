@@ -50,6 +50,7 @@ private:
     SystemTray::FdoSelectionManager* m_selectionManager;
     QConf* m_dconfPanel;
     QStringList m_whitelist;
+    bool m_whitelist_all;
 };
 
 #endif /* LEGACYTRAYAPPLET_H */
