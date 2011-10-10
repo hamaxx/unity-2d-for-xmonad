@@ -149,7 +149,7 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
-    /* TRANSLATORS: QT_LAYOUT_DIRECTION refers to the direction of text
+    /* TRANSLATORS: This refers to the direction of text
        (left-to-right or right-to-left): possible values are LTR or RTL */
     if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
         QApplication::setLayoutDirection(Qt::RightToLeft);
