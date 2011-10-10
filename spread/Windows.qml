@@ -81,7 +81,12 @@ GridView {
     cellWidth: Math.floor(width / columns)
     cellHeight: height / rows
 
-    model: filteredByApplication
+    /* Set the model only when the component is ready; otherwise, the
+     * initialization gets somehow messed up and the "columns" and "rows"
+     * variables are set to those of the first workspace. */
+    Component.onCompleted: {
+        model = filteredByApplication
+    }
 
     delegate:
         Item {
