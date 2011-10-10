@@ -239,8 +239,8 @@ Item {
 
             KeyNavigation.left: search_entry
 
-            /* FilterPane is only to be displayed for lenses, not in the home page */
-            visible: dashView.activeLens != ""
+            /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
+            visible: dashView.activeLens != "" && dashView.activeLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
