@@ -250,32 +250,36 @@ void AppNameApplet::updateWidgets()
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
 
-    d->m_label->setVisible(showAppLabel || showDesktopLabel);
-    if (showAppLabel) {
-        // Define text
-        QString text;
-        if (app) {
-            if (isMaximized) {
-                // When maximized, show window title
-                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                if (bamfWindow) {
-                    text = bamfWindow->name();
+    if (showAppLabel || showDesktopLabel) {
+        d->m_label->setVisible(true);
+        if (showAppLabel) {
+            // Define text
+            QString text;
+            if (app) {
+                if (isMaximized) {
+                    // When maximized, show window title
+                    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                    if (bamfWindow) {
+                        text = bamfWindow->name();
+                    }
+                } else {
+                    // When not maximized, show application name
+                    text = app->name();
                 }
-            } else {
-                // When not maximized, show application name
-                text = app->name();
             }
+            d->m_label->setText(text);
+        } else if (showDesktopLabel) {
+            d->m_label->setText(u2dTr("Desktop", "nautilus"));
         }
-        d->m_label->setText(text);
-    } else if (showDesktopLabel) {
-        d->m_label->setText(u2dTr("Desktop", "nautilus"));
-    }
 
-    // Define label width
-    if (!isMaximized && showMenu) {
-        d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
+        // Define label width
+        if (!isMaximized && showMenu) {
+            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
+        } else {
+            d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
+        }
     } else {
-        d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
+        d->m_label->setVisible(false);
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
