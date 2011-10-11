@@ -22,6 +22,7 @@
 #define INDICATORSMANAGER_H
 
 // Local
+#include "unity2dpanel.h"
 
 // Qt
 #include <QMap>
@@ -42,7 +43,8 @@ class IndicatorsManager : public QObject, public sigc::trackable
 {
     Q_OBJECT
 public:
-    IndicatorsManager(QObject* parent);
+    IndicatorsManager(Unity2dPanel* panel);
+    ~IndicatorsManager();
 
     unity::indicator::DBusIndicators::Ptr indicators() const;
 
