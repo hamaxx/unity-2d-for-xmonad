@@ -81,6 +81,8 @@ public:
     bool manualSliding() const;
     void setManualSliding(bool);
 
+    QString getID() const;
+
 public Q_SLOTS:
     void slideIn();
     void slideOut();

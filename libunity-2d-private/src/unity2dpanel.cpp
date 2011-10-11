@@ -323,4 +323,10 @@ void Unity2dPanel::setManualSliding(bool manualSliding)
     }
 }
 
+QString Unity2dPanel::getID() const
+{
+    int screen = QApplication::desktop()->screenNumber(d->q);
+    return "Unity2DPanel" + QString::number(screen);
+}
+
 #include "unity2dpanel.moc"
