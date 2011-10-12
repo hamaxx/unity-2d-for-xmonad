@@ -91,6 +91,11 @@ LauncherDropItem {
                     shelf.positionViewAtBeginning()
                 }
             }
+
+            /* Prevent shadow from overlapping a highlighted item */
+            preferredHighlightBegin: (tileSize - itemPadding)*2
+            preferredHighlightEnd: main.height - preferredHighlightBegin
+            highlightRangeMode: ListView.ApplyRange
         }
 
         LauncherList {
