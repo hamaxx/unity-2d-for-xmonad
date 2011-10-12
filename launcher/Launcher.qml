@@ -80,6 +80,17 @@ LauncherDropItem {
 
             focus: true
             KeyNavigation.down: shelf
+            KeyNavigation.up: shelf
+
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Up && currentIndex == 0) {
+                    shelf.currentIndex = shelf.count - 1
+                    shelf.positionViewAtEnd()
+                } else if (event.key == Qt.Key_Down && currentIndex == count - 1) {
+                    shelf.currentIndex = 0
+                    shelf.positionViewAtBeginning()
+                }
+            }
         }
 
         LauncherList {
@@ -100,6 +111,17 @@ LauncherDropItem {
             }
 
             KeyNavigation.up: main
+            KeyNavigation.down: main
+
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Up && currentIndex == 0) {
+                    main.currentIndex = main.count - 1
+                    main.positionViewAtEnd()
+                } else if (event.key == Qt.Key_Down && currentIndex == count - 1) {
+                    main.currentIndex = 0
+                    main.positionViewAtBeginning()
+                }
+            }
         }
     }
 
