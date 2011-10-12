@@ -205,9 +205,10 @@ Unity2dPanel::Edge Unity2dPanel::edge() const
 
 IndicatorsManager* Unity2dPanel::indicatorsManager() const
 {
-    if (d->m_indicatorsManager == 0)
-        d->m_indicatorsManager =
-            new IndicatorsManager(const_cast<Unity2dPanel*>(this));
+    if (d->m_indicatorsManager == 0) {
+        auto const_this = const_cast<Unity2dPanel*>(this);
+        d->m_indicatorsManager = new IndicatorsManager(const_this, const_this);
+    }
 
     return d->m_indicatorsManager;
 }
@@ -323,9 +324,9 @@ void Unity2dPanel::setManualSliding(bool manualSliding)
     }
 }
 
-QString Unity2dPanel::getID() const
+QString Unity2dPanel::id() const
 {
-    int screen = QApplication::desktop()->screenNumber(d->q);
+    int screen = QApplication::desktop()->screenNumber(this);
     return "Unity2DPanel" + QString::number(screen);
 }
 

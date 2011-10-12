@@ -35,8 +35,9 @@
 
 using namespace unity::indicator;
 
-IndicatorsManager::IndicatorsManager(Unity2dPanel* panel)
-: QObject(panel)
+IndicatorsManager::IndicatorsManager(QObject* parent, Unity2dPanel *panel)
+: QObject(parent)
+, m_panel(panel)
 , m_indicators(new DBusIndicators)
 , m_geometrySyncTimer(new QTimer(this))
 , m_mouseTrackerTimer(new QTimer(this))
@@ -83,8 +84,7 @@ IndicatorsManager::IndicatorsManager(Unity2dPanel* panel)
 IndicatorsManager::~IndicatorsManager()
 {
     EntryLocationMap locations;
-    QString panel_id = qobject_cast<Unity2dPanel*>(parent())->getID();
-    m_indicators->SyncGeometries(panel_id.toUtf8().constData(), locations);
+    m_indicators->SyncGeometries(m_panel->id().toUtf8().constData(), locations);
 }
 
 unity::indicator::DBusIndicators::Ptr IndicatorsManager::indicators() const
@@ -245,8 +245,7 @@ void IndicatorsManager::syncGeometries()
         locations[widget->entry()->id()] = rect;
     }
 
-    QString panel_id = qobject_cast<Unity2dPanel*>(parent())->getID();
-    m_indicators->SyncGeometries(panel_id.toUtf8().constData(), locations);
+    m_indicators->SyncGeometries(m_panel->id().toUtf8().constData(), locations);
 }
 
 IndicatorsManager::IndicatorEntryWidgetList IndicatorsManager::getEntryWidgets() const

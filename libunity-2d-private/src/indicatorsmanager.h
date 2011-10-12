@@ -43,7 +43,7 @@ class IndicatorsManager : public QObject, public sigc::trackable
 {
     Q_OBJECT
 public:
-    IndicatorsManager(Unity2dPanel* panel);
+    IndicatorsManager(QObject* parent, Unity2dPanel* panel);
     ~IndicatorsManager();
 
     unity::indicator::DBusIndicators::Ptr indicators() const;
@@ -63,6 +63,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(IndicatorsManager)
+    Unity2dPanel* m_panel;
     unity::indicator::DBusIndicators::Ptr m_indicators;
     QTimer* m_geometrySyncTimer;
     QTimer* m_mouseTrackerTimer;
