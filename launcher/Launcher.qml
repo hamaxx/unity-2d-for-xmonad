@@ -65,6 +65,11 @@ LauncherDropItem {
             id: main
             Accessible.name: "main"
 
+            /* Tile considered 'visible' if it fully drawn */
+            property int numberVisibleTiles: Math.floor(height / (tileSize + itemPadding))
+            property int indexFirstVisibleTile: Math.ceil(contentY / (tileSize + itemPadding))
+            property int indexLastVisibleTile: indexFirstVisibleTile + numberVisibleTiles - 1
+
             anchors.top: parent.top
             anchors.bottom: shelf.top
             anchors.bottomMargin: itemPadding
@@ -82,20 +87,31 @@ LauncherDropItem {
             KeyNavigation.down: shelf
             KeyNavigation.up: shelf
 
+            /* Implement wrapping and prevent shadow from overlapping a highlighted item */
             Keys.onPressed: {
-                if (event.key == Qt.Key_Up && currentIndex == 0) {
-                    shelf.currentIndex = shelf.count - 1
-                    shelf.positionViewAtEnd()
-                } else if (event.key == Qt.Key_Down && currentIndex == count - 1) {
-                    shelf.currentIndex = 0
-                    shelf.positionViewAtBeginning()
+                if (event.key == Qt.Key_Up) {
+                    autoScrolling = true /* disable scroll animation as bounce effect problematic */
+                    if (currentIndex == 0) {
+                        shelf.currentIndex = shelf.count - 1
+                        shelf.positionViewAtEnd()
+                    } else if (currentIndex <= indexFirstVisibleTile + 1) {
+                        positionViewAtIndex(currentIndex - 2, ListView.Beginning)
+                    }
+                } else if (event.key == Qt.Key_Down) {
+                    autoScrolling = true
+                    if (currentIndex == count - 1) {
+                        shelf.currentIndex = 0
+                        shelf.positionViewAtBeginning()
+                    } else if (currentIndex >= indexLastVisibleTile - 1) {
+                        positionViewAtIndex(currentIndex + 2, ListView.End)
+                    }
                 }
             }
-
-            /* Prevent shadow from overlapping a highlighted item */
-            preferredHighlightBegin: (tileSize - itemPadding)*2
-            preferredHighlightEnd: main.height - preferredHighlightBegin
-            highlightRangeMode: ListView.ApplyRange
+            Keys.onReleased: {
+                if (event.key == Qt.Key_Up || event.key == Qt.Key_Down) {
+                    autoScrolling = false
+                }
+            }
         }
 
         LauncherList {
