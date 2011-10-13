@@ -94,7 +94,7 @@ LauncherDropItem {
                     if (currentIndex == 0) {
                         shelf.currentIndex = shelf.count - 1
                         shelf.positionViewAtEnd()
-                    } else if (currentIndex <= indexFirstVisibleTile + 1) {
+                    } else if (currentIndex <= indexFirstVisibleTile + 1 && currentIndex > 1) {
                         positionViewAtIndex(currentIndex - 2, ListView.Beginning)
                     }
                 } else if (event.key == Qt.Key_Down) {
@@ -102,7 +102,7 @@ LauncherDropItem {
                     if (currentIndex == count - 1) {
                         shelf.currentIndex = 0
                         shelf.positionViewAtBeginning()
-                    } else if (currentIndex >= indexLastVisibleTile - 1) {
+                    } else if (currentIndex >= indexLastVisibleTile - 1 && currentIndex < count - 2 ) {
                         positionViewAtIndex(currentIndex + 2, ListView.End)
                     }
                 }
