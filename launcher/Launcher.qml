@@ -112,6 +112,19 @@ LauncherDropItem {
                     autoScrolling = false
                 }
             }
+
+            /* Always reset highlight to so-called BFB or Dash button */
+            Connections {
+                target: launcherView
+                onFocusChanged: {
+                    if (launcherView.focus) {
+                        main.autoScrolling = true
+                        main.currentIndex = 0
+                        main.positionViewAtBeginning()
+                        main.autoScrolling = false
+                    }
+                }
+            }
         }
 
         LauncherList {
