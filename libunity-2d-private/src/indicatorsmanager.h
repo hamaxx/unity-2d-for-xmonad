@@ -43,7 +43,7 @@ class IndicatorsManager : public QObject, public sigc::trackable
 {
     Q_OBJECT
 public:
-    IndicatorsManager(QObject* parent, Unity2dPanel* panel);
+    IndicatorsManager(Unity2dPanel* panel, QObject* parent = NULL);
     ~IndicatorsManager();
 
     unity::indicator::DBusIndicators::Ptr indicators() const;
