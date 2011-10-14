@@ -70,7 +70,7 @@ LauncherDropItem {
             Accessible.name: "main"
 
             /* function to position highlighted tile so that the shadow does not cover it */
-            function positionMainViewforIndex(index) {
+            function positionMainViewForIndex(index) {
                 /* Tile considered 'visible' if it fully drawn */
                 var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
                 var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
@@ -113,14 +113,14 @@ LauncherDropItem {
                         shelf.currentIndex = shelf.count - 1
                         shelf.positionViewAtEnd()
                     } else {
-                        positionMainViewforIndex(currentIndex - 1)
+                        positionMainViewForIndex(currentIndex - 1)
                     }
                 } else if (event.key == Qt.Key_Down) {
                     if (currentIndex == count - 1) {
                         shelf.currentIndex = 0
                         shelf.positionViewAtBeginning()
                     } else {
-                        positionMainViewforIndex(currentIndex + 1)
+                        positionMainViewForIndex(currentIndex + 1)
                     }
                 }
             }
