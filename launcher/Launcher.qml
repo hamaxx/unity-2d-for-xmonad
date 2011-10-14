@@ -117,7 +117,7 @@ LauncherDropItem {
             Connections {
                 target: launcherView
                 onFocusChanged: {
-                    if (launcherView.focus) {
+                    if (launcherView.focus && !main.flicking) {
                         main.autoScrolling = true
                         main.currentIndex = 0
                         main.positionViewAtBeginning()
