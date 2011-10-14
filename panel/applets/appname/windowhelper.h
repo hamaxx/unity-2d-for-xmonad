@@ -41,11 +41,14 @@ public:
 
     bool isMaximized() const;
     bool isMostlyOnScreen(int screen) const;
+    bool dashIsVisible() const;
 
 public Q_SLOTS:
     void close();
     void minimize();
     void unmaximize();
+    void maximize();
+    void toggleMaximize();
     void drag(const QPoint& pos);
 
 private Q_SLOTS:

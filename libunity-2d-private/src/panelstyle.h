@@ -48,7 +48,8 @@ public:
     enum WindowButtonType {
         CloseWindowButton,
         MinimizeWindowButton,
-        UnmaximizeWindowButton
+        UnmaximizeWindowButton,
+        MaximizeWindowButton
     };
 
     enum WindowButtonState {
