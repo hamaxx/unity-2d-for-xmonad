@@ -35,6 +35,9 @@ public:
 
     Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers);
 
+    void disableModifiers(Qt::KeyboardModifiers modifiers);
+    void enableModifiers(Qt::KeyboardModifiers modifiers);
+
 private:
     HotkeyMonitor(QObject* parent=0);
 
@@ -43,6 +46,7 @@ private:
                          bool isPressEvent);
 
     QList<Hotkey*> m_hotkeys;
+    Qt::KeyboardModifiers m_disabledModifiers;
 };
 
 
