@@ -116,9 +116,11 @@ LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
     KeyMonitor *keyMonitor = KeyMonitor::instance();
+    HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
     QVariant value = m_dconf_launcher->property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
+        hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                          this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
@@ -129,6 +131,7 @@ LauncherView::updateSuperKeyMonitoring()
                          this, SLOT(ignoreSuperPress()));
         setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
     } else {
+        hotkeyMonitor.disableModifiers(Qt::MetaModifier);
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
