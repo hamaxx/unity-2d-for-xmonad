@@ -262,7 +262,7 @@ void AppNameApplet::updateWidgets()
     bool dashIsVisible = d->m_windowHelper->dashIsVisible();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
-    bool showDesktopLabel = !isUserVisibleApp;
+    bool showDesktopLabel = !app;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
     d->m_maximizeButton->setButtonType(isMaximized ?
@@ -271,7 +271,7 @@ void AppNameApplet::updateWidgets()
     /* disable the minimize button for the dash */
     d->m_minimizeButton->setEnabled(!dashIsVisible);
 
-    if (showAppLabel || showDesktopLabel) {
+    if (showAppLabel || showDesktopLabel || dashIsVisible) {
         d->m_label->setVisible(true);
         if (showAppLabel) {
             // Define text
@@ -291,6 +291,8 @@ void AppNameApplet::updateWidgets()
             d->m_label->setText(text);
         } else if (showDesktopLabel) {
             d->m_label->setText(u2dTr("Desktop", "nautilus"));
+        } else {
+            d->m_label->setText("");
         }
 
         // Define label width
