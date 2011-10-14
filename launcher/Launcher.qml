@@ -24,6 +24,10 @@ LauncherDropItem {
 
     Accessible.name: "root"
 
+    function clamp(x, min, max) {
+        return Math.max(Math.min(x, max), min)
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent
@@ -65,10 +69,21 @@ LauncherDropItem {
             id: main
             Accessible.name: "main"
 
-            /* Tile considered 'visible' if it fully drawn */
-            property int numberVisibleTiles: Math.floor(height / (tileSize + itemPadding))
-            property int indexFirstVisibleTile: Math.ceil(contentY / (tileSize + itemPadding))
-            property int indexLastVisibleTile: indexFirstVisibleTile + numberVisibleTiles - 1
+            /* function to position highlighted tile so that the shadow does not cover it */
+            function positionMainViewforIndex(index) {
+                /* Tile considered 'visible' if it fully drawn */
+                var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
+                var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
+                var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
+                var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
+
+                if (nearestVisibleTile == indexFirstVisibleTile) {
+                    positionViewAtIndex(Math.max(index - 1, 0), ListView.Beginning)
+                }
+                else if (nearestVisibleTile == indexLastVisibleTile) {
+                    positionViewAtIndex(Math.min(index + 1, count - 1), ListView.End)
+                }
+            }
 
             anchors.top: parent.top
             anchors.bottom: shelf.top
@@ -97,15 +112,15 @@ LauncherDropItem {
                     if (currentIndex == 0) {
                         shelf.currentIndex = shelf.count - 1
                         shelf.positionViewAtEnd()
-                    } else if (currentIndex <= indexFirstVisibleTile + 1 && currentIndex > 1) {
-                        positionViewAtIndex(currentIndex - 2, ListView.Beginning)
+                    } else {
+                        positionMainViewforIndex(currentIndex - 1)
                     }
                 } else if (event.key == Qt.Key_Down) {
                     if (currentIndex == count - 1) {
                         shelf.currentIndex = 0
                         shelf.positionViewAtBeginning()
-                    } else if (currentIndex >= indexLastVisibleTile - 1 && currentIndex < count - 2 ) {
-                        positionViewAtIndex(currentIndex + 2, ListView.End)
+                    } else {
+                        positionMainViewforIndex(currentIndex + 1)
                     }
                 }
             }
