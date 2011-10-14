@@ -78,6 +78,16 @@ HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers)
     return hotkey;
 }
 
+void HotkeyMonitor::disableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    m_disabledModifiers |= modifiers;
+}
+
+void HotkeyMonitor::enableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    m_disabledModifiers &= ~modifiers;
+}
+
 bool
 HotkeyMonitor::keyEventFilter(void* message)
 {
@@ -96,6 +106,12 @@ HotkeyMonitor::processKeyEvent(uint x11Keycode, uint x11Modifiers,
                                bool isPressEvent)
 {
     Q_FOREACH(Hotkey* hotkey, m_hotkeys) {
+        if (hotkey->modifiers() & m_disabledModifiers) {
+            /* If any of the hotkey's modifiers have been disabled, the hotkey
+             * cannot be triggered */
+            continue;
+        }
+
         if (hotkey->processNativeEvent(x11Keycode, x11Modifiers, isPressEvent)) {
             return;
         }
