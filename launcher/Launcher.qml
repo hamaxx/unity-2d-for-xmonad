@@ -75,6 +75,10 @@ LauncherDropItem {
             anchors.bottomMargin: itemPadding
             width: parent.width
 
+            /* Ensure all delegates are cached in order to improve smoothness of
+               scrolling on very low end platforms */
+            cacheBuffer: 10000
+
             autoScrollSize: tileSize / 2
             autoScrollVelocity: 200
             reorderable: true
@@ -90,7 +94,6 @@ LauncherDropItem {
             /* Implement wrapping and prevent shadow from overlapping a highlighted item */
             Keys.onPressed: {
                 if (event.key == Qt.Key_Up) {
-                    autoScrolling = true /* disable scroll animation as bounce effect problematic */
                     if (currentIndex == 0) {
                         shelf.currentIndex = shelf.count - 1
                         shelf.positionViewAtEnd()
@@ -98,7 +101,6 @@ LauncherDropItem {
                         positionViewAtIndex(currentIndex - 2, ListView.Beginning)
                     }
                 } else if (event.key == Qt.Key_Down) {
-                    autoScrolling = true
                     if (currentIndex == count - 1) {
                         shelf.currentIndex = 0
                         shelf.positionViewAtBeginning()
@@ -107,21 +109,14 @@ LauncherDropItem {
                     }
                 }
             }
-            Keys.onReleased: {
-                if (event.key == Qt.Key_Up || event.key == Qt.Key_Down) {
-                    autoScrolling = false
-                }
-            }
 
             /* Always reset highlight to so-called BFB or Dash button */
             Connections {
                 target: launcherView
                 onFocusChanged: {
                     if (launcherView.focus && !main.flicking) {
-                        main.autoScrolling = true
                         main.currentIndex = 0
                         main.positionViewAtBeginning()
-                        main.autoScrolling = false
                     }
                 }
             }
@@ -136,9 +131,6 @@ LauncherDropItem {
             height: (tileSize + itemPadding) * count
             width: parent.width
             itemPadding: 0
-            /* Ensure all delegates are cached in order to improve smoothness of
-               scrolling on very low end platforms */
-            cacheBuffer: 10000
             interactive: false
 
             model: ListAggregatorModel {
