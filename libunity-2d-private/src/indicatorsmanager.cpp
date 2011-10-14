@@ -35,7 +35,7 @@
 
 using namespace unity::indicator;
 
-IndicatorsManager::IndicatorsManager(Unity2dPanel *panel, QObject* parent)
+IndicatorsManager::IndicatorsManager(Unity2dPanel* panel, QObject* parent)
 : QObject(parent)
 , m_panel(panel)
 , m_indicators(new DBusIndicators)
