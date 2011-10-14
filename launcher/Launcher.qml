@@ -115,6 +115,7 @@ LauncherDropItem {
                 target: launcherView
                 onFocusChanged: {
                     if (launcherView.focus && !main.flicking) {
+                        main.visibleMenu.hide()
                         main.currentIndex = 0
                         main.positionViewAtBeginning()
                     }
