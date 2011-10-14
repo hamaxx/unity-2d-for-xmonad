@@ -41,6 +41,9 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 
+// libc
+#include <stdlib.h>
+
 ///////////////////////////////
 class PlatformFontTracker
 {
@@ -132,6 +135,14 @@ void Unity2dApplication::earlySetup(int& argc, char** argv)
     if(getenv("QT_GRAPHICSSYSTEM") == 0) {
         QApplication::setGraphicsSystem("raster");
     }
+
+    /* We have these if we were DBus activated, but we don't want our child
+     * processes to inherit them
+     *
+     * https://launchpad.net/bugs/873027
+     */
+    unsetenv("DBUS_STARTER_ADDRESS");
+    unsetenv("DBUS_STARTER_BUS_TYPE");
 
     /* Unless style has been specified in args, set default Qt style to
      * QWindowStyle to avoid loading QGtkStyle. We don't want to load QGtkStyle
