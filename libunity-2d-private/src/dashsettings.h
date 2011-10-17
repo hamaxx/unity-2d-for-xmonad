@@ -54,6 +54,8 @@ public:
     void setFormFactor(FormFactor formFactor);
     FormFactor formFactor() const;
 
+    static QSize minimumSizeForDesktop();
+
 Q_SIGNALS:
     void formFactorChanged();
 

@@ -28,7 +28,11 @@
 
 // Qt
 #include <QMetaEnum>
+#include <QSize>
 #include <QVariant>
+
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 static const char* DASH_DCONF_SCHEMA = "com.canonical.Unity";
 static const char* FORM_FACTOR = "formFactor";
@@ -89,6 +93,23 @@ DashSettings::FormFactor DashSettings::formFactor() const
     Q_D(const DashSettings);
     QByteArray key = d->conf->property(FORM_FACTOR).toString().toLatin1();
     return FormFactor(d->formFactorEnum.keyToValue(key.constData()));
+}
+
+static int getenvInt(const char* name, int defaultValue)
+{
+    QByteArray stringValue = qgetenv(name);
+    bool ok;
+    int value = stringValue.toInt(&ok);
+    return ok ? value : defaultValue;
+}
+
+QSize DashSettings::minimumSizeForDesktop()
+{
+    static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH",
+                                    DASH_MIN_SCREEN_WIDTH);
+    static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT",
+                                     DASH_MIN_SCREEN_HEIGHT);
+    return QSize(minWidth, minHeight);
 }
 
 }; // namespace Unity2d
