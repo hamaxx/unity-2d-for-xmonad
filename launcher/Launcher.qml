@@ -105,7 +105,7 @@ LauncherDropItem {
             focus: true
             KeyNavigation.down: shelf
 
-            /* Implement wrapping and prevent shadow from overlapping a highlighted item */
+            /* Prevent shadow from overlapping a highlighted item */
             Keys.onPressed: {
                 if (event.key == Qt.Key_Up) {
                     positionMainViewForIndex(currentIndex - 1)
