@@ -259,6 +259,7 @@ void AppNameApplet::updateWidgets()
         || d->m_menuBarWidget->isOpened()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool dashCanResize = d->m_windowHelper->dashCanResize();
     bool dashIsVisible = d->m_windowHelper->dashIsVisible();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
@@ -270,6 +271,8 @@ void AppNameApplet::updateWidgets()
                                        PanelStyle::MaximizeWindowButton);
     /* disable the minimize button for the dash */
     d->m_minimizeButton->setEnabled(!dashIsVisible);
+    /* and the maximize button, if the dash is not resizeable */
+    d->m_maximizeButton->setEnabled(!dashIsVisible || dashCanResize);
 
     if (showAppLabel || showDesktopLabel || dashIsVisible) {
         d->m_label->setVisible(true);

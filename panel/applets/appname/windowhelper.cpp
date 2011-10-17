@@ -55,10 +55,28 @@ using namespace Unity2d;
 
 struct WindowHelperPrivate
 {
+    void updateDashCanResize()
+    {
+        WnckScreen* screen = wnck_window_get_screen(m_window);
+        int screenNumber = wnck_screen_get_number(screen);
+        QRect rect = QApplication::desktop()->screenGeometry(screenNumber);
+
+        /* If the screen size too small, we don't allow the Dash to be used
+         * in Desktop mode (not fullscreen) */
+        QSize minSize = DashSettings::minimumSizeForDesktop();
+        if (rect.width() < minSize.width() &&
+            rect.height() < minSize.height()) {
+            m_dashCanResize = false;
+        } else {
+            m_dashCanResize = true;
+        }
+    }
+
     DashSettings* m_dashSettings;
     WnckWindow* m_window;
     GConnector m_connector;
     bool m_activeWindowIsDash;
+    bool m_dashCanResize;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -132,6 +150,8 @@ void WindowHelper::update()
              * stateChanged() from that. */
             d->m_connector.connect(G_OBJECT(d->m_window), "geometry-changed",
                                    G_CALLBACK(geometryChangedCB), this);
+
+            d->updateDashCanResize();
         }
 
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
@@ -183,6 +203,11 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 bool WindowHelper::dashIsVisible() const
 {
     return d->m_window != 0 && d->m_activeWindowIsDash;
+}
+
+bool WindowHelper::dashCanResize() const
+{
+    return d->m_dashCanResize;
 }
 
 void WindowHelper::close()
