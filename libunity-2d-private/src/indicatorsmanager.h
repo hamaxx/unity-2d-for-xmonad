@@ -22,6 +22,7 @@
 #define INDICATORSMANAGER_H
 
 // Local
+#include "unity2dpanel.h"
 
 // Qt
 #include <QMap>
@@ -42,7 +43,8 @@ class IndicatorsManager : public QObject, public sigc::trackable
 {
     Q_OBJECT
 public:
-    IndicatorsManager(QObject* parent);
+    IndicatorsManager(Unity2dPanel* panel, QObject* parent = 0);
+    ~IndicatorsManager();
 
     unity::indicator::DBusIndicators::Ptr indicators() const;
 
@@ -61,6 +63,7 @@ private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(IndicatorsManager)
+    Unity2dPanel* m_panel;
     unity::indicator::DBusIndicators::Ptr m_indicators;
     QTimer* m_geometrySyncTimer;
     QTimer* m_mouseTrackerTimer;
