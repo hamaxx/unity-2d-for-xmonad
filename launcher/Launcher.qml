@@ -24,6 +24,10 @@ LauncherDropItem {
 
     Accessible.name: "root"
 
+    function clamp(x, min, max) {
+        return Math.max(Math.min(x, max), min)
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent
@@ -65,10 +69,30 @@ LauncherDropItem {
             id: main
             Accessible.name: "main"
 
+            /* function to position highlighted tile so that the shadow does not cover it */
+            function positionMainViewForIndex(index) {
+                /* Tile considered 'visible' if it fully drawn */
+                var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
+                var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
+                var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
+                var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
+
+                if (nearestVisibleTile == indexFirstVisibleTile) {
+                    positionViewAtIndex(Math.max(index - 1, 0), ListView.Beginning)
+                }
+                else if (nearestVisibleTile == indexLastVisibleTile) {
+                    positionViewAtIndex(Math.min(index + 1, count - 1), ListView.End)
+                }
+            }
+
             anchors.top: parent.top
             anchors.bottom: shelf.top
             anchors.bottomMargin: itemPadding
             width: parent.width
+
+            /* Ensure all delegates are cached in order to improve smoothness of
+               scrolling on very low end platforms */
+            cacheBuffer: 10000
 
             autoScrollSize: tileSize / 2
             autoScrollVelocity: 200
@@ -82,13 +106,38 @@ LauncherDropItem {
             KeyNavigation.down: shelf
             KeyNavigation.up: shelf
 
+            /* Implement wrapping and prevent shadow from overlapping a highlighted item */
             Keys.onPressed: {
-                if (event.key == Qt.Key_Up && currentIndex == 0) {
-                    shelf.currentIndex = shelf.count - 1
-                    shelf.positionViewAtEnd()
-                } else if (event.key == Qt.Key_Down && currentIndex == count - 1) {
-                    shelf.currentIndex = 0
-                    shelf.positionViewAtBeginning()
+                if (event.key == Qt.Key_Up) {
+                    if (currentIndex == 0) {
+                        shelf.currentIndex = shelf.count - 1
+                        shelf.positionViewAtEnd()
+                    } else {
+                        positionMainViewForIndex(currentIndex - 1)
+                    }
+                } else if (event.key == Qt.Key_Down) {
+                    if (currentIndex == count - 1) {
+                        shelf.currentIndex = 0
+                        shelf.positionViewAtBeginning()
+                    } else {
+                        positionMainViewForIndex(currentIndex + 1)
+                    }
+                }
+            }
+
+            /* Always reset highlight to so-called BFB or Dash button */
+            Connections {
+                target: launcherView
+                onFocusChanged: {
+                    if (launcherView.focus && !main.flicking) {
+                        if (main.visibleMenu != undefined) {
+                            main.visibleMenu.hide()
+                        } else if (shelf.visibleMenu != undefined) {
+                            shelf.visibleMenu.hide()
+                        }
+                        main.currentIndex = 0
+                        main.positionViewAtBeginning()
+                    }
                 }
             }
         }
@@ -102,9 +151,6 @@ LauncherDropItem {
             height: (tileSize + itemPadding) * count
             width: parent.width
             itemPadding: 0
-            /* Ensure all delegates are cached in order to improve smoothness of
-               scrolling on very low end platforms */
-            cacheBuffer: 10000
             interactive: false
 
             model: ListAggregatorModel {
