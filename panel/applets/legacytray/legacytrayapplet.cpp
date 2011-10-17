@@ -54,6 +54,7 @@ LegacyTrayApplet::LegacyTrayApplet(Unity2dPanel* panel)
         SLOT(slotTaskCreated(SystemTray::Task*)));
 
     m_whitelist = m_dconfPanel->property("systrayWhitelist").toStringList();
+    m_whitelistAll = m_whitelist.contains("all", Qt::CaseInsensitive);
 }
 
 LegacyTrayApplet::~LegacyTrayApplet()
@@ -69,7 +70,7 @@ void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
        classes to allow in the Panel's systray implementation." but here we only
        support matching on WM_CLASS.
     */
-    if (!m_whitelist.contains(task->name())) {
+    if (!m_whitelistAll && !m_whitelist.contains(task->name(), Qt::CaseInsensitive)) {
         return;
     }
 
