@@ -104,24 +104,13 @@ LauncherDropItem {
 
             focus: true
             KeyNavigation.down: shelf
-            KeyNavigation.up: shelf
 
-            /* Implement wrapping and prevent shadow from overlapping a highlighted item */
+            /* Prevent shadow from overlapping a highlighted item */
             Keys.onPressed: {
                 if (event.key == Qt.Key_Up) {
-                    if (currentIndex == 0) {
-                        shelf.currentIndex = shelf.count - 1
-                        shelf.positionViewAtEnd()
-                    } else {
-                        positionMainViewForIndex(currentIndex - 1)
-                    }
+                    positionMainViewForIndex(currentIndex - 1)
                 } else if (event.key == Qt.Key_Down) {
-                    if (currentIndex == count - 1) {
-                        shelf.currentIndex = 0
-                        shelf.positionViewAtBeginning()
-                    } else {
-                        positionMainViewForIndex(currentIndex + 1)
-                    }
+                    positionMainViewForIndex(currentIndex + 1)
                 }
             }
 
@@ -158,17 +147,6 @@ LauncherDropItem {
             }
 
             KeyNavigation.up: main
-            KeyNavigation.down: main
-
-            Keys.onPressed: {
-                if (event.key == Qt.Key_Up && currentIndex == 0) {
-                    main.currentIndex = main.count - 1
-                    main.positionViewAtEnd()
-                } else if (event.key == Qt.Key_Down && currentIndex == count - 1) {
-                    main.currentIndex = 0
-                    main.positionViewAtBeginning()
-                }
-            }
         }
     }
 
