@@ -322,7 +322,7 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
             d->m_windowHelper->drag(d->m_dragStartPosition);
         }
     } else {
-        Unity2d::PanelApplet::mouseReleaseEvent(event);
+        Unity2d::PanelApplet::mouseMoveEvent(event);
     }
 }
 
