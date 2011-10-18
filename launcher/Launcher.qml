@@ -123,9 +123,10 @@ LauncherDropItem {
                             main.visibleMenu.hide()
                         } else if (shelf.visibleMenu != undefined) {
                             shelf.visibleMenu.hide()
+                        } else {
+                            main.currentIndex = 0
+                            main.positionViewAtBeginning()
                         }
-                        main.currentIndex = 0
-                        main.positionViewAtBeginning()
                     }
                 }
             }
