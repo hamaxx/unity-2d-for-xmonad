@@ -149,6 +149,10 @@ Rectangle {
                 }
             }
         }
+
+        onCurrentIndexChanged: {
+            zoomedWorkspace = -1
+        }
     }
 
     /* FIXME: bad naming. Ideas: screenModeActivated, initialState */
