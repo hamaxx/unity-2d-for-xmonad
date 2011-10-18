@@ -110,6 +110,8 @@ GridView {
                 itemHeight: window.size.height
                 parent: windows
             }
+            //focus: GridView.view.currentIndex == index
+            focus: GridView.isCurrentItem
 
             /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
             //GridView.onAdd:
