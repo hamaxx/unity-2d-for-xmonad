@@ -80,7 +80,6 @@ Rectangle {
         cellHeight: switcher.height / rows
         keyNavigationWraps: true
         highlight: Rectangle { color: "orange"; z: -1 }
-        currentIndex: screen.workspaces.current
         delegate: Workspace {
             id: workspace
 
@@ -152,6 +151,12 @@ Rectangle {
 
         onCurrentIndexChanged: {
             zoomedWorkspace = -1
+        }
+
+        Binding {
+            target: workspaces
+            property: "currentIndex"
+            value: screen.workspaces.current
         }
     }
 
