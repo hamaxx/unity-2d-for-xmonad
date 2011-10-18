@@ -152,12 +152,6 @@ Rectangle {
         onCurrentIndexChanged: {
             zoomedWorkspace = -1
         }
-
-        Binding {
-            target: workspaces
-            property: "currentIndex"
-            value: screen.workspaces.current
-        }
     }
 
     /* FIXME: bad naming. Ideas: screenModeActivated, initialState */
@@ -199,6 +193,7 @@ Rectangle {
 
         spreadView.show()
         spreadView.forceActivateWindow()
+        workspaces.currentIndex = screen.workspaces.current
         /* This is necessary otherwise we don't get keypresses until the user does a
            mouse over on a window */
         workspaces.forceActiveFocus()
