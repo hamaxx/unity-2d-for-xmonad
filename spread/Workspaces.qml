@@ -79,26 +79,22 @@ Rectangle {
         cellWidth: switcher.width / columns
         cellHeight: switcher.height / rows
         keyNavigationWraps: true
+        highlight: Rectangle { color: "orange"; z: -1 }
+        currentIndex: screen.workspaces.current
         delegate: Workspace {
             id: workspace
 
-            /* FIXME: This is ok right now since we ignore screen.orientation and
-               screen.startingCorner, but we should respect them eventually */
             property int workspaceNumber: index
-            property int row: Math.floor(index / columns)
-            property int column: index % columns
 
-            width: switcher.width
-            height: switcher.height
+            width: workspaces.cellWidth
+            height: workspaces.cellHeight
 
             unzoomedScale:  switcher.cellScale
 
             /* Center the workspace in 'zoomed' state */
-            zoomedX: (switcher.width - width*zoomedScale) / 2
-            zoomedY: (switcher.height - height*zoomedScale) / 2
+            zoomedX: switcher.width * (1 - zoomedScale) / 2
+            zoomedY: switcher.height * (1 - zoomedScale) / 2
             zoomedScale: switcher.zoomedScale
-
-            focus: zoomedWorkspace == workspaceNumber
 
             Connections {
                 target: workspaces
@@ -146,6 +142,7 @@ Rectangle {
                 if (zoomedWorkspace == workspaceNumber) {
                     activateWorkspace(workspaceNumber)
                 } else if (zoomedWorkspace == -1) {
+                    workspaces.currentIndex = index
                     zoomedWorkspace = workspaceNumber
                 } else {
                     zoomedWorkspace = -1
@@ -195,7 +192,7 @@ Rectangle {
         spreadView.forceActivateWindow()
         /* This is necessary otherwise we don't get keypresses until the user does a
            mouse over on a window */
-        switcher.forceActiveFocus()
+        workspaces.forceActiveFocus()
         initial = false
     }
 

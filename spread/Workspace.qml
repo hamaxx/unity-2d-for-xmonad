@@ -23,8 +23,6 @@ import Unity2d 1.0
 FocusScope {
     id: workspace
 
-    transformOrigin: Item.TopLeft
-
     property real unzoomedScale
     property real zoomedScale
     property int zoomedX
@@ -32,90 +30,123 @@ FocusScope {
 
     signal clicked
 
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0
+    Item {
+        id: workspaceWindow
 
-        clip: true
-        cached: false
-    }
+        transformOrigin: Item.TopLeft
+        width: switcher.width
+        height: switcher.height
+        state: parent.state
 
-    Windows {
-        id: windows
-        state: workspace.state
-        anchors.fill: parent
-        focus: true
-        onClicked: workspace.clicked()
-        onWindowActivated: {
-            if (workspace.state != "zoomed") {
-                workspace.clicked()
-            } else {
-                /* Hack to make sure the window is on top of the others during the
-                   outro animation */
-                window.z = 9999
-                switcher.activateWindow(window.windowInfo)
+        GnomeBackground {
+            anchors.fill: parent
+            overlay_color: "black"
+            overlay_alpha: 0
+
+            clip: true
+            cached: false
+        }
+
+        Windows {
+            id: windows
+            state: workspace.state
+            anchors.fill: parent
+            focus: true
+            onClicked: workspace.clicked()
+            onWindowActivated: {
+                if (workspace.state != "zoomed") {
+                    workspace.clicked()
+                } else {
+                    /* Hack to make sure the window is on top of the others during the
+                       outro animation */
+                    window.z = 9999
+                    switcher.activateWindow(window.windowInfo)
+                }
             }
         }
-    }
 
-    states: [
-        State {
-            name: "unzoomed"
-            PropertyChanges {
-                target: workspace
-                scale: unzoomedScale
-                z: 0
-            }
-        },
-        State {
-            name: "zoomed"
-            PropertyChanges {
-                target: workspace
-                scale: zoomedScale
-                x: zoomedX
-                y: zoomedY
-                z: 2
-            }
-        },
-        State {
-            name: "screen"
-            PropertyChanges {
-                target: workspace
-                scale: 1.0
-                x: 0
-                y: 0
-                z: 2
-            }
-        }
-    ]
-
-    transitions: [
-        Transition {
-            NumberAnimation {
-                target: workspace
-                properties: "x,y,scale"
-                duration: Utils.transitionDuration
-                easing.type: Easing.InOutQuad
-            }
-        },
-        Transition {
-            to: "unzoomed"
-            SequentialAnimation {
-                /* When going to default state put the workspace underneath the
-                   workspace in zoomed state but not on the same plane as the
-                   workspaces also in the default state until the end of the transition. */
-                PropertyAction { property: "z"; value: 1 }
-                NumberAnimation {
+        states: [
+            State {
+                name: "unzoomed"
+                PropertyChanges {
+                    target: workspaceWindow
+                    scale: unzoomedScale
+                    x: 0
+                    y: 0
+                }
+                PropertyChanges {
                     target: workspace
+                    z: 0
+                }
+            },
+            State {
+                name: "zoomed"
+                PropertyChanges {
+                    target: workspaceWindow
+                    scale: zoomedScale
+                    x: zoomedX - workspace.x
+                    y: zoomedY - workspace.y
+                }
+                PropertyChanges {
+                    target: workspace
+                    z: 2
+                }
+            },
+            State {
+                name: "screen"
+                PropertyChanges {
+                    target: workspaceWindow
+                    scale: 1.0
+                    x: -workspace.x
+                    y: -workspace.y
+                }
+                PropertyChanges {
+                    target: workspace
+                    z: 2
+                }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                /* Disable animations when coming from the base state */
+                from: ""
+            },
+            Transition {
+                NumberAnimation {
+                    target: workspaceWindow
                     properties: "x,y,scale"
                     duration: Utils.transitionDuration
                     easing.type: Easing.InOutQuad
                 }
-                PropertyAction { property: "z" }
+            },
+            Transition {
+                to: "unzoomed"
+                SequentialAnimation {
+                    /* When going to default state put the workspace underneath the
+                       workspace in zoomed state but not on the same plane as the
+                       workspaces also in the default state until the end of the transition. */
+                    PropertyAction { target: workspace; property: "z"; value: 1 }
+                    NumberAnimation {
+                        target: workspaceWindow
+                        properties: "x,y,scale"
+                        duration: Utils.transitionDuration
+                        easing.type: Easing.InOutQuad
+                    }
+                    PropertyAction { target: workspace; property: "z" }
+                }
             }
+        ]
+    }
+
+    Keys.onPressed: {
+        switch (event.key) {
+            case Qt.Key_Enter:
+            case Qt.Key_Return:
+                clicked()
+                event.accepted = true
         }
-    ]
+    }
 
     function setFocusOnFirstWindow() {
         windows.currentIndex = 0

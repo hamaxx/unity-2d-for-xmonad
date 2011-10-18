@@ -92,6 +92,16 @@ GridView {
         Item {
             id: cell
 
+            onActiveFocusChanged: {
+                console.log("Active focus changing: current item is " + windows.currentIndex)
+                if (GridView.isCurrentItem)
+                    console.log("Current window active focus: " + activeFocus)
+            }
+            onFocusChanged: {
+                if (GridView.isCurrentItem)
+                    console.log("Current window focus: " + focus)
+            }
+
             ScaledItem {
                 id: scaledCell
 
@@ -128,7 +138,6 @@ GridView {
 
                 onEntered: {
                     windows.currentIndex = index
-                    cell.forceActiveFocus()
                 }
 
                 onClicked: windows.windowActivated(spreadWindow)
