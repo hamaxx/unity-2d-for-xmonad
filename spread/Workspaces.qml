@@ -143,9 +143,11 @@ Rectangle {
         }
 
         onShowAllWorkspaces: {
-            applicationFilter = applicationDesktopFile
-            zoomedWorkspace = -1
-            show()
+            if (screen.workspaces.count > 1) {
+                applicationFilter = applicationDesktopFile
+                zoomedWorkspace = -1
+                show()
+            } else control.showCurrentWorkspace(applicationDesktopFile)
         }
 
         onHide: cancelAndExit()
