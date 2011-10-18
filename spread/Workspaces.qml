@@ -147,7 +147,9 @@ Rectangle {
                 applicationFilter = applicationDesktopFile
                 zoomedWorkspace = -1
                 show()
-            } else control.showCurrentWorkspace(applicationDesktopFile)
+            } else {
+                control.showCurrentWorkspace(applicationDesktopFile)
+            }
         }
 
         onHide: cancelAndExit()
