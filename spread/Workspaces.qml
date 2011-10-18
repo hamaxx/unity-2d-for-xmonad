@@ -137,6 +137,10 @@ Rectangle {
                 }
             }
 
+            onEntered: {
+                workspaces.currentIndex = index
+            }
+
             onClicked: {
                 if (zoomedWorkspace == workspaceNumber) {
                     activateWorkspace(workspaceNumber)

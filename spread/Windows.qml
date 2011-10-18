@@ -41,6 +41,7 @@ GridView {
     id: windows
 
     signal clicked
+    signal entered
     signal windowActivated(variant window)
 
     keyNavigationWraps: state == "zoomed"
@@ -50,6 +51,7 @@ GridView {
         onClicked: windows.clicked()
         /* Eating all mouse events so that they are not passed beneath the workspace */
         hoverEnabled: true
+        onEntered: windows.entered()
     }
 
     /* This proxy model takes care of removing all windows that are not on
@@ -145,6 +147,8 @@ GridView {
 
                 onEntered: {
                     windows.currentIndex = index
+                    /* Make sure the workspace is notified as well */
+                    windows.entered()
                 }
 
                 onClicked: windows.windowActivated(spreadWindow)

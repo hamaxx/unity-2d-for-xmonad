@@ -29,6 +29,7 @@ FocusScope {
     property int zoomedY
 
     signal clicked
+    signal entered
 
     Item {
         id: workspaceWindow
@@ -53,6 +54,7 @@ FocusScope {
             anchors.fill: parent
             focus: true
             onClicked: workspace.clicked()
+            onEntered: workspace.entered()
             onWindowActivated: {
                 if (workspace.state != "zoomed") {
                     workspace.clicked()
