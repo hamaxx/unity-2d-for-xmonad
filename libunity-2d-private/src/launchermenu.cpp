@@ -157,6 +157,14 @@ LauncherContextualMenu::enterEvent(QEvent* event)
 }
 
 void
+LauncherContextualMenu::focusOutEvent(QFocusEvent* event)
+{
+    /* Hide menu if mouse click outside widget */
+    m_hidingDelayTimer.stop();
+    hide();
+}
+
+void
 LauncherContextualMenu::show(int x, int y)
 {
     m_hidingDelayTimer.stop();
@@ -304,6 +312,7 @@ LauncherContextualMenu::setFocus()
             break;
         }
     }
+    QMenu::setFocus();
 }
 
 void
