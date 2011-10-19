@@ -88,9 +88,9 @@ Rectangle {
         keyNavigationWraps: true
         property string windowFocus
         Keys.onPressed: {
-            if (event.key == Qt.Key_Left) {
+            if (event.key == Qt.Key_Left || event.key == Qt.Key_Up) {
                 windowFocus = "last"
-            } else if (event.key == Qt.Key_Right) {
+            } else if (event.key == Qt.Key_Right || event.key == Qt.Key_Down) {
                 windowFocus = "first"
             }
         }
