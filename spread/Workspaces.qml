@@ -45,8 +45,12 @@ Rectangle {
     */
     property bool isLayoutHorizontal: (columns * screen.availableGeometry.width) >
                                       (rows * screen.availableGeometry.height)
-    property real cellScale: (isLayoutHorizontal) ? (availableWidth / columns / switcher.width) :
-                                                    (availableHeight / rows / switcher.height)
+
+    property int maxCellWidth: availableWidth / columns
+    property int maxCellHeight: availableHeight / rows
+    property int cellWidth: isLayoutHorizontal ? maxCellWidth : maxCellHeight * switcher.width / switcher.height
+    property int cellHeight: isLayoutHorizontal ? maxCellWidth * switcher.height / switcher.width : maxCellHeight
+    property real cellScale: cellWidth / switcher.width
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
@@ -73,11 +77,14 @@ Rectangle {
        to the switcher itself. */
     GridView {
         id: workspaces
-        anchors.fill: parent
+        anchors.centerIn: parent
+
+        width: cellWidth * columns
+        height: cellHeight * rows
 
         model: screen.workspaces.count
-        cellWidth: switcher.width / columns
-        cellHeight: switcher.height / rows
+        cellWidth: parent.cellWidth + spacing
+        cellHeight: parent.cellHeight + spacing
         keyNavigationWraps: true
 
         highlight: Rectangle {
