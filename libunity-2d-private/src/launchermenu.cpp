@@ -317,8 +317,8 @@ LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
     if (key == Qt::Key_Left || key == Qt::Key_Escape) {
-        hide();
         Q_EMIT dismissedByKeyEvent();
+        hide();
         event->accept();
         return;
     }
