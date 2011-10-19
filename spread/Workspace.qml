@@ -29,8 +29,15 @@ FocusScope {
     property int zoomedY
     property alias windowCount: windows.count
 
+    property int screenOriginX
+    property int screenOriginY
     signal clicked
     signal entered
+
+    onStateChanged: {
+        screenOriginX = mapFromItem(switcher, 0, 0).x
+        screenOriginY = mapFromItem(switcher, 0, 0).y
+    }
 
     Item {
         id: workspaceWindow
@@ -87,8 +94,8 @@ FocusScope {
                 PropertyChanges {
                     target: workspaceWindow
                     scale: zoomedScale
-                    x: zoomedX - workspace.x
-                    y: zoomedY - workspace.y
+                    x: zoomedX + workspace.screenOriginX
+                    y: zoomedY + workspace.screenOriginY
                 }
                 PropertyChanges {
                     target: workspace
@@ -100,8 +107,8 @@ FocusScope {
                 PropertyChanges {
                     target: workspaceWindow
                     scale: 1.0
-                    x: -workspace.x
-                    y: -workspace.y
+                    x: workspace.screenOriginX
+                    y: workspace.screenOriginY
                 }
                 PropertyChanges {
                     target: workspace
