@@ -87,6 +87,7 @@ Rectangle {
             z: -1
             width: workspaces.cellWidth
             height: workspaces.cellHeight
+            visible: workspaces.currentItem.state == "unzoomed"
         }
         highlightFollowsCurrentItem: false
 
