@@ -86,6 +86,14 @@ Rectangle {
         cellWidth: parent.cellWidth + spacing
         cellHeight: parent.cellHeight + spacing
         keyNavigationWraps: true
+        property string windowFocus
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Left) {
+                windowFocus = "last"
+            } else if (event.key == Qt.Key_Right) {
+                windowFocus = "first"
+            }
+        }
 
         highlight: Rectangle {
             color: "orange"
@@ -116,25 +124,9 @@ Rectangle {
             Connections {
                 target: workspaces
                 onCurrentIndexChanged: {
-                    /* If this workspace has lost the focus, reset its current
-                     * index so that navigating back to this workspace with the
-                     * keyboard would select the expected window: the first
-                     * one, if we are coming from a "previous" workspace, and
-                     * the last one if we are coming from a "following"
-                     * workspace (where "previous" and "following" depend on
-                     * the item's index).
-                     */
-                    var count = workspaces.count
-                    var currentIndex = workspaces.currentIndex
-                    if (currentIndex == index) return
-
-                    if (currentIndex < index) {
-                        currentIndex += count
-                    }
-
-                    if (currentIndex - index > count / 2) {
+                    if (workspaces.windowFocus == "first") {
                         setFocusOnFirstWindow()
-                    } else {
+                    } else if (workspaces.windowFocus == "last") {
                         setFocusOnLastWindow()
                     }
                 }
