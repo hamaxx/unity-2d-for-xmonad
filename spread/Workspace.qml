@@ -73,8 +73,8 @@ FocusScope {
                 PropertyChanges {
                     target: workspaceWindow
                     scale: unzoomedScale
-                    x: 0
-                    y: 0
+                    x: switcher.spacing / 2
+                    y: switcher.spacing / 2
                 }
                 PropertyChanges {
                     target: workspace

@@ -29,12 +29,12 @@ Rectangle {
     property int rows: screen.workspaces.rows
 
     property int margin: 35
-    property int spacing: 5
+    property int spacing: 4
 
     /* Effective area available for laying out the workspaces after considering
        inter-workspace spaces */
-    property int availableWidth: switcher.width - ((columns - 1) * spacing)
-    property int availableHeight: switcher.height - ((rows - 1) * spacing)
+    property int availableWidth: switcher.width - (columns * spacing)
+    property int availableHeight: switcher.height - (rows * spacing)
 
     /* Scale of each workspace when laid out in the switcher grid
        Note that all scale calculations are done using the desktop's available
