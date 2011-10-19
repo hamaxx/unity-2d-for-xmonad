@@ -79,7 +79,17 @@ Rectangle {
         cellWidth: switcher.width / columns
         cellHeight: switcher.height / rows
         keyNavigationWraps: true
-        highlight: Rectangle { color: "orange"; z: -1 }
+
+        highlight: Rectangle {
+            color: "orange"
+            x: workspaces.currentItem.x
+            y: workspaces.currentItem.y
+            z: -1
+            width: workspaces.cellWidth
+            height: workspaces.cellHeight
+        }
+        highlightFollowsCurrentItem: false
+
         delegate: Workspace {
             id: workspace
 
