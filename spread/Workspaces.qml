@@ -156,8 +156,12 @@ Rectangle {
                 if (zoomedWorkspace == workspaceNumber) {
                     activateWorkspace(workspaceNumber)
                 } else if (zoomedWorkspace == -1) {
-                    workspaces.currentIndex = index
-                    zoomedWorkspace = workspaceNumber
+                    if (windowCount <= 1) {
+                        activateWorkspace(workspaceNumber)
+                    } else {
+                        workspaces.currentIndex = index
+                        zoomedWorkspace = workspaceNumber
+                    }
                 } else {
                     zoomedWorkspace = -1
                 }

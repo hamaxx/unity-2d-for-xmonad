@@ -27,6 +27,7 @@ FocusScope {
     property real zoomedScale
     property int zoomedX
     property int zoomedY
+    property alias windowCount: windows.count
 
     signal clicked
     signal entered
