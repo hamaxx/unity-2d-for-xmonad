@@ -36,20 +36,23 @@ Rectangle {
     property int availableWidth: switcher.width - (columns * spacing)
     property int availableHeight: switcher.height - (rows * spacing)
 
-    /* Scale of each workspace when laid out in the switcher grid
-       Note that all scale calculations are done using the desktop's available
-       geometry as this is the "natural" (initial) size of every workspace.
+    property int maxCellWidth: Math.floor(availableWidth / columns)
+    property int maxCellHeight: Math.floor(availableHeight / rows)
+    /* Depending on the aspect ratio of the final workspaces layout, we will
+       have either vertical or horizontal margins. That is, we will either:
+       - use maxCellWidth as base cell width and compute the height based on the
+         screen ratio, or
+       - use maxCellHeight for the base cell height and compute the width based
+         on the screen ratio.
+       To figure out which way to go, compute the other size and see how things
+       would fit inside the screen.  */
+    property int computedCellHeight: maxCellWidth * switcher.height / switcher.width
+    property int computedCellWidth: maxCellHeight * switcher.width / switcher.height
 
-       FIXME: this seems to be broken in the case of 10 workspaces and 4x4 layout.
-              it does only display a 3x3 grid for some reason.
-    */
-    property bool isLayoutHorizontal: (columns * screen.availableGeometry.width) >
-                                      (rows * screen.availableGeometry.height)
+    property bool useWidth: (computedCellHeight + spacing) * rows <= switcher.height
 
-    property int maxCellWidth: availableWidth / columns
-    property int maxCellHeight: availableHeight / rows
-    property int cellWidth: isLayoutHorizontal ? maxCellWidth : maxCellHeight * switcher.width / switcher.height
-    property int cellHeight: isLayoutHorizontal ? maxCellWidth * switcher.height / switcher.width : maxCellHeight
+    property int cellWidth: useWidth ? maxCellWidth : computedCellWidth
+    property int cellHeight: useWidth ? computedCellHeight : maxCellHeight
     property real cellScale: cellWidth / switcher.width
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
