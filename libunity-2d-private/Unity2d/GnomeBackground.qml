@@ -82,8 +82,12 @@ Item {
         height: screen.geometry.height
 
         smooth: true
-        x: screen.availableGeometry.x - declarativeView.globalPosition.x
-        y: -screen.availableGeometry.y
+
+        /* by default, place the background on top of the desktop background,
+           no matter where the DeclarativeView or the parent object are placed.
+        */
+        x: parent.mapFromItem(null, -declarativeView.globalPosition.x, 0).x
+        y: parent.mapFromItem(null, 0, -declarativeView.globalPosition.y).y
 
         /* Possible modes are:
             - "wallpaper"
