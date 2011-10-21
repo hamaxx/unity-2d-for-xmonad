@@ -89,6 +89,7 @@ private:
 private Q_SLOTS:
     void updateMask();
     void activateWindow();
+    void titleTriggered();
 };
 
 #endif // LAUNCHERMENU_H
