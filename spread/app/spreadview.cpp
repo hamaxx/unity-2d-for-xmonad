@@ -38,7 +38,7 @@ void SpreadView::fitToAvailableSpace(int screen)
 
     if(screen == current_screen)
     {
-        QRect geometry = m_screenInfo->availableGeometry();
+        QRect geometry = m_screenInfo->panelsFreeGeometry();
         setGeometry(geometry);
         setFixedSize(geometry.size());
     }

@@ -43,14 +43,14 @@ Rectangle {
        FIXME: this seems to be broken in the case of 10 workspaces and 4x4 layout.
               it does only display a 3x3 grid for some reason.
     */
-    property bool isLayoutHorizontal: (columns * screen.availableGeometry.width) >
-                                      (rows * screen.availableGeometry.height)
+    property bool isLayoutHorizontal: (columns * screen.panelsFreeGeometry.width) >
+                                      (rows * screen.panelsFreeGeometry.height)
     property real cellScale: (isLayoutHorizontal) ? (availableWidth / columns / switcher.width) :
                                                     (availableHeight / rows / switcher.height)
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
-    property bool isDesktopHorizontal: screen.availableGeometry.width > screen.availableGeometry.height
+    property bool isDesktopHorizontal: screen.panelsFreeGeometry.width > screen.panelsFreeGeometry.height
     property real zoomedScale: (isDesktopHorizontal) ? ((width - 2*margin) / switcher.width) :
                                                        ((height - 2*margin) / switcher.height)
 
