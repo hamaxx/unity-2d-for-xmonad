@@ -29,24 +29,31 @@ Rectangle {
     property int rows: screen.workspaces.rows
 
     property int margin: 35
-    property int spacing: 5
+    property int spacing: 4
 
     /* Effective area available for laying out the workspaces after considering
        inter-workspace spaces */
-    property int availableWidth: switcher.width - ((columns - 1) * spacing)
-    property int availableHeight: switcher.height - ((rows - 1) * spacing)
+    property int availableWidth: switcher.width - (columns * spacing)
+    property int availableHeight: switcher.height - (rows * spacing)
 
-    /* Scale of each workspace when laid out in the switcher grid
-       Note that all scale calculations are done using the desktop's available
-       geometry as this is the "natural" (initial) size of every workspace.
+    property int maxCellWidth: Math.floor(availableWidth / columns)
+    property int maxCellHeight: Math.floor(availableHeight / rows)
+    /* Depending on the aspect ratio of the final workspaces layout, we will
+       have either vertical or horizontal margins. That is, we will either:
+       - use maxCellWidth as base cell width and compute the height based on the
+         screen ratio, or
+       - use maxCellHeight for the base cell height and compute the width based
+         on the screen ratio.
+       To figure out which way to go, compute the other size and see how things
+       would fit inside the screen.  */
+    property int computedCellHeight: maxCellWidth * switcher.height / switcher.width
+    property int computedCellWidth: maxCellHeight * switcher.width / switcher.height
 
-       FIXME: this seems to be broken in the case of 10 workspaces and 4x4 layout.
-              it does only display a 3x3 grid for some reason.
-    */
-    property bool isLayoutHorizontal: (columns * screen.panelsFreeGeometry.width) >
-                                      (rows * screen.panelsFreeGeometry.height)
-    property real cellScale: (isLayoutHorizontal) ? (availableWidth / columns / switcher.width) :
-                                                    (availableHeight / rows / switcher.height)
+    property bool useWidth: (computedCellHeight + spacing) * rows <= switcher.height
+
+    property int cellWidth: useWidth ? maxCellWidth : computedCellWidth
+    property int cellHeight: useWidth ? computedCellHeight : maxCellHeight
+    property real cellScale: cellWidth / switcher.width
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
@@ -71,34 +78,62 @@ Rectangle {
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
        to the switcher itself. */
-    Repeater {
+    GridView {
         id: workspaces
+        anchors.centerIn: parent
+
+        width: cellWidth * columns
+        height: cellHeight * rows
 
         model: screen.workspaces.count
+        cellWidth: parent.cellWidth + spacing
+        cellHeight: parent.cellHeight + spacing
+        keyNavigationWraps: true
+        property string windowFocus
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Left || event.key == Qt.Key_Up) {
+                windowFocus = "last"
+            } else if (event.key == Qt.Key_Right || event.key == Qt.Key_Down) {
+                windowFocus = "first"
+            }
+        }
+
+        highlight: Rectangle {
+            color: "orange"
+            x: workspaces.currentItem.x
+            y: workspaces.currentItem.y
+            z: -1
+            width: workspaces.cellWidth
+            height: workspaces.cellHeight
+            visible: workspaces.currentItem.state == "unzoomed"
+        }
+        highlightFollowsCurrentItem: false
+
         delegate: Workspace {
             id: workspace
 
-            /* FIXME: This is ok right now since we ignore screen.orientation and
-               screen.startingCorner, but we should respect them eventually */
             property int workspaceNumber: index
-            property int row: Math.floor(index / columns)
-            property int column: index % columns
 
-            width: switcher.width
-            height: switcher.height
+            width: workspaces.cellWidth
+            height: workspaces.cellHeight
 
-            /* Organize the workspaces in a grid in 'unzoomed' state */
-            unzoomedX: column * (switcher.width * cellScale) + (column * switcher.spacing)
-            unzoomedY: row * (switcher.height * cellScale) + (row * switcher.spacing)
             unzoomedScale:  switcher.cellScale
 
             /* Center the workspace in 'zoomed' state */
-            zoomedX: (switcher.width - width*zoomedScale) / 2
-            zoomedY: (switcher.height - height*zoomedScale) / 2
+            zoomedX: switcher.width * (1 - zoomedScale) / 2
+            zoomedY: switcher.height * (1 - zoomedScale) / 2
             zoomedScale: switcher.zoomedScale
 
-            focus: zoomedWorkspace == workspaceNumber
-
+            Connections {
+                target: workspaces
+                onCurrentIndexChanged: {
+                    if (workspaces.windowFocus == "first") {
+                        setFocusOnFirstWindow()
+                    } else if (workspaces.windowFocus == "last") {
+                        setFocusOnLastWindow()
+                    }
+                }
+            }
             state: {
                 if (initial) {
                     if (screen.workspaces.current == workspaceNumber) {
@@ -115,15 +150,28 @@ Rectangle {
                 }
             }
 
+            onEntered: {
+                workspaces.currentIndex = index
+            }
+
             onClicked: {
                 if (zoomedWorkspace == workspaceNumber) {
                     activateWorkspace(workspaceNumber)
                 } else if (zoomedWorkspace == -1) {
-                    zoomedWorkspace = workspaceNumber
+                    if (windowCount <= 1) {
+                        activateWorkspace(workspaceNumber)
+                    } else {
+                        workspaces.currentIndex = index
+                        zoomedWorkspace = workspaceNumber
+                    }
                 } else {
                     zoomedWorkspace = -1
                 }
             }
+        }
+
+        onCurrentIndexChanged: {
+            zoomedWorkspace = -1
         }
     }
 
@@ -166,9 +214,10 @@ Rectangle {
 
         spreadView.show()
         spreadView.forceActivateWindow()
+        workspaces.currentIndex = screen.workspaces.current
         /* This is necessary otherwise we don't get keypresses until the user does a
            mouse over on a window */
-        switcher.forceActiveFocus()
+        workspaces.forceActiveFocus()
         initial = false
     }
 
