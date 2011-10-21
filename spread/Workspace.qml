@@ -54,6 +54,8 @@ FocusScope {
 
             clip: true
             cached: false
+            offsetX: -screen.panelsFreeGeometry.x
+            offsetY: -screen.panelsFreeGeometry.y
         }
 
         Windows {
