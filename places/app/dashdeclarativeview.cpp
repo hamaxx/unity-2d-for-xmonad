@@ -50,7 +50,6 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
-, m_screenInfo(ScreenInfo::instance())
 , m_mode(DesktopMode)
 , m_expanded(true)
 , m_active(false)
@@ -110,7 +109,7 @@ DashDeclarativeView::updateSize()
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = m_screenInfo->panelsFreeGeometry();
+    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -118,7 +117,7 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = m_screenInfo->panelsFreeGeometry();
+    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
     int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
