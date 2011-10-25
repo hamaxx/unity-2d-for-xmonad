@@ -151,7 +151,9 @@ Rectangle {
             }
 
             onEntered: {
-                workspaces.currentIndex = index
+                if (zoomedWorkspace == -1) {
+                    workspaces.currentIndex = index
+                }
             }
 
             onClicked: {
