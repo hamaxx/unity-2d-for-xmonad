@@ -48,6 +48,7 @@ KeyMonitor::KeyMonitor(QObject* parent)
 KeyMonitor::~KeyMonitor()
 {
     m_eventList.clear();
+    XCloseDisplay(m_display);
 }
 
 KeyMonitor* KeyMonitor::instance()
@@ -71,6 +72,8 @@ void KeyMonitor::getModifiers()
             m_modList.append(xmodmap->modifiermap[i]);
         }
     }
+
+    XFreeModifiermap(xmodmap);
 }
 
 bool KeyMonitor::registerEvents()
@@ -114,7 +117,10 @@ bool KeyMonitor::registerEvents()
                 }
             }
         }
+        XCloseDevice(m_display, device);
     }
+
+    XFreeDeviceList(devices);
 
     if (m_eventList.size() == 0) {
         UQ_WARNING << "No input devices found.";
