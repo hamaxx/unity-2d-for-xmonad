@@ -21,7 +21,7 @@
 #include "keymonitor.h"
 
 // Qt
-#include <QtConcurrentRun>
+#include <QSocketNotifier>
 #include <QDebug>
 
 // X11
@@ -38,18 +38,15 @@ static int notify_type = INVALID_EVENT_TYPE;
 
 
 KeyMonitor::KeyMonitor(QObject* parent)
-: QObject(parent), m_stop(false)
+: QObject(parent)
 {
     if (this->registerEvents()) {
         getModifiers();
-        m_future = QtConcurrent::run(this, &KeyMonitor::run);
     }
 }
 
 KeyMonitor::~KeyMonitor()
 {
-    /* let the running thread know that it should stop */
-    m_stop = true;
     m_eventList.clear();
 }
 
@@ -82,6 +79,7 @@ bool KeyMonitor::registerEvents()
     Window window;
 
     XDeviceInfo *devices;
+    int x11FileDescriptor;
     int num_devices;
     int i, j;
 
@@ -128,15 +126,21 @@ bool KeyMonitor::registerEvents()
         return false;
     }
 
+    /* Dispatch XEvents when there is activity on the X11 file descriptor */
+    x11FileDescriptor = ConnectionNumber(m_display);
+    QSocketNotifier* socketNotifier = new QSocketNotifier(x11FileDescriptor, QSocketNotifier::Read, this);
+    connect(socketNotifier, SIGNAL(activated(int)), this, SLOT(x11EventDispatch()));
+
     return true;
 }
 
 
-void KeyMonitor::run()
+void KeyMonitor::x11EventDispatch()
 {
     XEvent event;
 
-    while(!m_stop && !XNextEvent(m_display, &event)) {
+    while (XPending(m_display) > 0) {
+        XNextEvent(m_display, &event);
         if (event.type == key_press_type) {
             XDeviceKeyEvent *keyEvent = (XDeviceKeyEvent *) &event;
             if (!m_modList.contains((KeyCode) keyEvent->keycode)) {
