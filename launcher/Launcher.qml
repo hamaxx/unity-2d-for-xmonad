@@ -129,6 +129,14 @@ LauncherDropItem {
                         }
                     }
                 }
+
+                onSpreadHotKeyPressedChanged : {
+                    if (main.visibleMenu !== undefined) {
+                        main.visibleMenu.hide()
+                    } else if (shelf.visibleMenu !== undefined) {
+                        shelf.visibleMenu.hide()
+                    }
+                }
             }
         }
 

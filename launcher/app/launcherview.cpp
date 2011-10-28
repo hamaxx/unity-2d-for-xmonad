@@ -90,6 +90,11 @@ LauncherView::LauncherView(QWidget* parent) :
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
+
+    {
+        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+        connect(hotkey, SIGNAL(pressed()), SIGNAL(spreadHotKeyPressedChanged()));
+    }
 }
 
 LauncherView::~LauncherView()
