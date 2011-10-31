@@ -28,6 +28,14 @@ LauncherDropItem {
         return Math.max(Math.min(x, max), min)
     }
 
+    function onSpreadHotKeyPressed() {
+        if (main.visibleMenu !== undefined) {
+            main.visibleMenu.hide()
+        } else if (shelf.visibleMenu !== undefined) {
+            shelf.visibleMenu.hide()
+        }
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent
@@ -127,14 +135,6 @@ LauncherDropItem {
                             main.currentIndex = 0
                             main.positionViewAtBeginning()
                         }
-                    }
-                }
-
-                onSpreadHotKeyPressedChanged : {
-                    if (main.visibleMenu !== undefined) {
-                        main.visibleMenu.hide()
-                    } else if (shelf.visibleMenu !== undefined) {
-                        shelf.visibleMenu.hide()
                     }
                 }
             }

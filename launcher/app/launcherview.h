@@ -38,15 +38,11 @@ class LauncherView : public Unity2DDeclarativeView
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden
 
-    //[Bug 881458] Hover over launcher, activate spread. Launcher name popup stuck on screen
-    Q_PROPERTY(bool isSpreadHotKeyPressed READ isSpreadHotKeyPressed NOTIFY spreadHotKeyPressedChanged)
-
 public:
     explicit LauncherView(QWidget* parent = NULL);
     ~LauncherView();
 
     bool superKeyHeld() const { return m_superKeyHeld; }
-    bool isSpreadHotKeyPressed() const { return true; }
 
 Q_SIGNALS:
     void activateShortcutPressed(int itemIndex);
@@ -55,7 +51,6 @@ Q_SIGNALS:
     void superKeyTapped();
     void addWebFavoriteRequested(const QUrl& url);
     void focusChanged(bool focus);
-    void spreadHotKeyPressedChanged();
 
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
@@ -65,6 +60,7 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void showCommandsLens();
+    void spreadHotKeyPressed();    //[Bug 881458] Hover over launcher, activate spread. Launcher name popup stuck on screen
 
 protected:
     void focusInEvent(QFocusEvent* event);

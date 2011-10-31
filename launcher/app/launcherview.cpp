@@ -23,6 +23,7 @@
 #include <QDesktopWidget>
 #include <QX11Info>
 #include <QDebug>
+#include <QGraphicsObject>
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -93,7 +94,7 @@ LauncherView::LauncherView(QWidget* parent) :
 
     {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-        connect(hotkey, SIGNAL(pressed()), SIGNAL(spreadHotKeyPressedChanged()));
+        connect(hotkey, SIGNAL(pressed()), SLOT(spreadHotKeyPressed()));
     }
 }
 
@@ -278,3 +279,9 @@ LauncherView::showCommandsLens()
     dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
 }
 
+void
+LauncherView::spreadHotKeyPressed()
+{
+    QGraphicsObject* launcher = rootObject();
+    QMetaObject::invokeMethod(launcher, "onSpreadHotKeyPressed", Qt::AutoConnection);
+}
