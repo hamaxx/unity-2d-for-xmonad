@@ -32,6 +32,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDir>
+#include <QGraphicsObject>
 
 #include "config.h"
 #include "launcherview.h"

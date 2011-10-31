@@ -23,7 +23,6 @@
 #include <QDesktopWidget>
 #include <QX11Info>
 #include <QDebug>
-#include <QGraphicsObject>
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
