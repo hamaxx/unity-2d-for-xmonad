@@ -28,12 +28,15 @@ LauncherDropItem {
         return Math.max(Math.min(x, max), min)
     }
 
-    function onSpreadHotKeyPressed() {
+    function hideMenu() {
         if (main.visibleMenu !== undefined) {
             main.visibleMenu.hide()
+            return true;
         } else if (shelf.visibleMenu !== undefined) {
             shelf.visibleMenu.hide()
+            return true;
         }
+        return false;
     }
 
     GnomeBackground {
@@ -127,11 +130,7 @@ LauncherDropItem {
                 target: launcherView
                 onFocusChanged: {
                     if (launcherView.focus && !main.flicking) {
-                        if (main.visibleMenu != undefined) {
-                            main.visibleMenu.hide()
-                        } else if (shelf.visibleMenu != undefined) {
-                            shelf.visibleMenu.hide()
-                        } else {
+                        if (!hideMenu()) {
                             main.currentIndex = 0
                             main.positionViewAtBeginning()
                         }

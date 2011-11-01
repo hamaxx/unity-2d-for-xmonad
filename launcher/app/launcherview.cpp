@@ -23,6 +23,7 @@
 #include <QDesktopWidget>
 #include <QX11Info>
 #include <QDebug>
+#include <QGraphicsObject>
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -93,7 +94,7 @@ LauncherView::LauncherView(QWidget* parent) :
 
     {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-        connect(hotkey, SIGNAL(pressed()), SLOT(spreadHotKeyPressed()));
+        connect(hotkey, SIGNAL(pressed()), SLOT(spreadHotkeyPressed()));
     }
 }
 
@@ -279,8 +280,8 @@ LauncherView::showCommandsLens()
 }
 
 void
-LauncherView::spreadHotKeyPressed()
+LauncherView::spreadHotkeyPressed()
 {
     QGraphicsObject* launcher = rootObject();
-    QMetaObject::invokeMethod(launcher, "onSpreadHotKeyPressed", Qt::AutoConnection);
+    QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }

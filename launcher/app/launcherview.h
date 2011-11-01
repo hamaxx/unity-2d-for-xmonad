@@ -60,7 +60,7 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void showCommandsLens();
-    void spreadHotKeyPressed();    //[Bug 881458] Hover over launcher, activate spread. Launcher name popup stuck on screen
+    void spreadHotkeyPressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
