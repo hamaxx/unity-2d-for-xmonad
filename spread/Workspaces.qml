@@ -167,6 +167,7 @@ Rectangle {
                         zoomedWorkspace = workspaceNumber
                     }
                 } else {
+                    workspaces.currentIndex = index
                     zoomedWorkspace = -1
                 }
             }
