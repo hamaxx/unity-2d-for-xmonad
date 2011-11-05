@@ -35,8 +35,9 @@
 
 using namespace unity::indicator;
 
-IndicatorsManager::IndicatorsManager(QObject* parent)
+IndicatorsManager::IndicatorsManager(Unity2dPanel* panel, QObject* parent)
 : QObject(parent)
+, m_panel(panel)
 , m_indicators(new DBusIndicators)
 , m_geometrySyncTimer(new QTimer(this))
 , m_mouseTrackerTimer(new QTimer(this))
@@ -78,6 +79,12 @@ IndicatorsManager::IndicatorsManager(QObject* parent)
     m_indicators->on_synced.connect(
         sigc::mem_fun(this, &IndicatorsManager::onSynced)
         );
+}
+
+IndicatorsManager::~IndicatorsManager()
+{
+    EntryLocationMap locations;
+    m_indicators->SyncGeometries(m_panel->id().toUtf8().constData(), locations);
 }
 
 unity::indicator::DBusIndicators::Ptr IndicatorsManager::indicators() const
@@ -127,6 +134,14 @@ void IndicatorsManager::checkMousePosition()
     // Also, delivers motion events to Qt, which will generate correct
     // enter/leave events for IndicatorEntry widgets.
     QPoint pos = QCursor::pos();
+
+    // Don't send the event unless the mouse has moved
+    // https://bugs.launchpad.net/bugs/834065
+    if (!m_lastMousePosition.isNull() && (m_lastMousePosition == pos)) {
+        return;
+    }
+    m_lastMousePosition = pos;
+
     QWidget* widget = QApplication::widgetAt(pos);
     Display* display = QX11Info::display();
 
@@ -229,7 +244,8 @@ void IndicatorsManager::syncGeometries()
         nux::Rect rect(topLeft.x(), topLeft.y(), widget->width(), widget->height());
         locations[widget->entry()->id()] = rect;
     }
-    m_indicators->SyncGeometries("Panel", locations);
+
+    m_indicators->SyncGeometries(m_panel->id().toUtf8().constData(), locations);
 }
 
 IndicatorsManager::IndicatorEntryWidgetList IndicatorsManager::getEntryWidgets() const

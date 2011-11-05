@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
-"POT-Creation-Date: 2011-08-25 16:14+0200\n"
+"POT-Creation-Date: 2011-09-29 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,68 +13,88 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Language: \n"
 
-#: places/FilterPane.qml:69
-msgid "Filter results"
+#: libunity-2d-private/src/launcherdevice.cpp:273
+msgid "Eject"
 msgstr ""
 
-#: places/SearchEntry.qml:173
-msgid "Search"
+#: libunity-2d-private/src/launcherdevice.cpp:281
+msgid "Safely remove"
 msgstr ""
 
-#: places/HomeShortcuts.qml:56
-msgid "Media Apps"
+#: libunity-2d-private/src/workspaces.cpp:73
+msgid "Workspaces"
 msgstr ""
 
-#: places/HomeShortcuts.qml:64
-msgid "Internet Apps"
+#: libunity-2d-private/src/trash.cpp:128
+msgid "Trash"
 msgstr ""
 
-#: places/HomeShortcuts.qml:72
-msgid "More Apps"
+#: libunity-2d-private/src/trash.cpp:208
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] ""
+msgstr[1] ""
+
+#: libunity-2d-private/src/trash.cpp:215
+msgid "Empty Trash"
 msgstr ""
 
-#: places/HomeShortcuts.qml:78
-msgid "Find Files"
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Keep in launcher"
 msgstr ""
 
-#: places/HomeShortcuts.qml:85
-msgid "Browse the Web"
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Remove from launcher"
 msgstr ""
 
-#: places/HomeShortcuts.qml:90
-msgid "View Photos"
+#: libunity-2d-private/src/launcherapplication.cpp:910
+msgid "Quit"
 msgstr ""
 
-#: places/HomeShortcuts.qml:95
-msgid "Check Email"
+#: libunity-2d-private/src/unity2dapplication.cpp:151
+msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
 
-#: places/HomeShortcuts.qml:100
-msgid "Listen to Music"
+#: libunity-2d-private/src/bfb.cpp:71
+msgid "Dash home"
+msgstr ""
+
+#: launcher/LauncherList.qml:82
+#, qt-format
+msgid "%1 window opened"
+msgid_plural "%1 windows opened"
+msgstr[0] ""
+msgstr[1] ""
+
+#: launcher/LauncherList.qml:85
+msgid "not running"
+msgstr ""
+
+#: places/LensBar.qml:100
+msgid "home"
 msgstr ""
 
 #: places/Home.qml:80
 msgid "Shortcuts"
 msgstr ""
 
-#: places/CategoryHeader.qml:30
+#: places/CategoryHeader.qml:36
 msgid "not expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:30
+#: places/CategoryHeader.qml:36
 msgid "expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:92
-msgid "See one more result"
-msgstr ""
-
-#: places/CategoryHeader.qml:94
-#, qt-format
-msgid "See %1 more results"
-msgstr ""
-
 #: places/CategoryHeader.qml:97
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: places/CategoryHeader.qml:99
 msgid "See fewer results"
 msgstr ""
 
@@ -92,56 +112,42 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: launcher/LauncherList.qml:82
-#, qt-format
-msgid "%1 window opened"
-msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
-
-#: launcher/LauncherList.qml:85
-msgid "not running"
+#: places/HomeShortcuts.qml:56
+msgid "Media Apps"
 msgstr ""
 
-#: libunity-2d-private/src/trash.cpp:125
-msgid "Trash"
+#: places/HomeShortcuts.qml:62
+msgid "Internet Apps"
 msgstr ""
 
-#: libunity-2d-private/src/trash.cpp:255
-#, c-format, qt-plural-format
-msgid "%n item in trash"
-msgid_plural "%n items in trash"
-msgstr[0] ""
-msgstr[1] ""
-
-#: libunity-2d-private/src/trash.cpp:262
-msgid "Empty Trash"
+#: places/HomeShortcuts.qml:68
+msgid "More Apps"
 msgstr ""
 
-#: libunity-2d-private/src/workspaces.cpp:73
-msgid "Workspaces"
+#: places/HomeShortcuts.qml:74
+msgid "Find Files"
 msgstr ""
 
-#: libunity-2d-private/src/launcherdevice.cpp:273
-msgid "Eject"
+#: places/HomeShortcuts.qml:81
+msgid "Browse the Web"
 msgstr ""
 
-#: libunity-2d-private/src/launcherdevice.cpp:281
-msgid "Safely remove"
+#: places/HomeShortcuts.qml:86
+msgid "View Photos"
 msgstr ""
 
-#: libunity-2d-private/src/launcherapplication.cpp:894
-msgid "Keep in launcher"
+#: places/HomeShortcuts.qml:92
+msgid "Check Email"
 msgstr ""
 
-#: libunity-2d-private/src/launcherapplication.cpp:894
-msgid "Remove from launcher"
+#: places/HomeShortcuts.qml:97
+msgid "Listen to Music"
 msgstr ""
 
-#: libunity-2d-private/src/launcherapplication.cpp:901
-msgid "Quit"
+#: places/FilterPane.qml:69
+msgid "Filter results"
 msgstr ""
 
-#: libunity-2d-private/src/bfb.cpp:71
-msgid "Dash home"
+#: places/SearchEntry.qml:176
+msgid "Search"
 msgstr ""

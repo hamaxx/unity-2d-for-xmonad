@@ -19,6 +19,7 @@
 
 // unity-2d
 #include <launcherclient.h>
+#include <screeninfo.h>
 
 // Qt
 #include <QDesktopWidget>
@@ -49,6 +50,7 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
+, m_screenInfo(ScreenInfo::instance())
 , m_mode(DesktopMode)
 , m_expanded(true)
 , m_active(false)
@@ -269,19 +271,7 @@ DashDeclarativeView::screenGeometry() const
 QRect
 DashDeclarativeView::availableGeometry() const
 {
-    QRect screenRect = QApplication::desktop()->screenGeometry(this);
-    QRect availableRect = QApplication::desktop()->availableGeometry(this);
-
-    QRect availableGeometry(
-        LauncherClient::MaximumWidth,
-        availableRect.top(),
-        screenRect.width() - LauncherClient::MaximumWidth,
-        availableRect.height()
-        );
-    if (QApplication::isRightToLeft()) {
-        availableGeometry.moveLeft(0);
-    }
-    return availableGeometry;
+    return m_screenInfo->availableGeometry();
 }
 
 void

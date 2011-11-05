@@ -6,6 +6,7 @@ extern "C" {
 #include "bamf-application.h"
 #include "bamf-window.h"
 
+#include "launcherclient.h"
 #include "screeninfo.h"
 #include "workspacesinfo.h"
 
@@ -70,7 +71,22 @@ QString ScreenInfo::currentTime()
 
 QRect ScreenInfo::availableGeometry() const
 {
-    return QApplication::desktop()->availableGeometry(QX11Info::appScreen());
+    /* We cannot just return the system's availableGeometry(), because that
+     * doesn't consider the Launcher, if it's set to auto-hide. */
+    int screen = QX11Info::appScreen();
+    QRect screenRect = QApplication::desktop()->screenGeometry(screen);
+    QRect availableRect = QApplication::desktop()->availableGeometry(screen);
+
+    QRect availableGeometry(
+        LauncherClient::MaximumWidth,
+        availableRect.top(),
+        screenRect.width() - LauncherClient::MaximumWidth,
+        availableRect.height()
+        );
+    if (QApplication::isRightToLeft()) {
+        availableGeometry.moveLeft(0);
+    }
+    return availableGeometry;
 }
 
 QRect ScreenInfo::geometry() const

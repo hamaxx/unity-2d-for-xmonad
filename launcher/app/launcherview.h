@@ -45,7 +45,8 @@ public:
     bool superKeyHeld() const { return m_superKeyHeld; }
 
 Q_SIGNALS:
-    void keyboardShortcutPressed(int itemIndex);
+    void activateShortcutPressed(int itemIndex);
+    void newInstanceShortcutPressed(int itemIndex);
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
     void addWebFavoriteRequested(const QUrl& url);

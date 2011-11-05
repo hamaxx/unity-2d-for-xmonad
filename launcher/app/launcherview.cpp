@@ -87,6 +87,8 @@ LauncherView::LauncherView(QWidget* parent) :
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
+        hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 }
 
@@ -114,9 +116,11 @@ LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
     KeyMonitor *keyMonitor = KeyMonitor::instance();
+    HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
     QVariant value = m_dconf_launcher->property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
+        hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                          this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
@@ -127,6 +131,7 @@ LauncherView::updateSuperKeyMonitoring()
                          this, SLOT(ignoreSuperPress()));
         setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
     } else {
+        hotkeyMonitor.disableModifiers(Qt::MetaModifier);
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
@@ -204,10 +209,17 @@ LauncherView::forwardNumericHotkey()
         Qt::Key key = hotkey->key();
         if (key >= Qt::Key_1 && key <= Qt::Key_9) {
             int index = key - Qt::Key_0;
-            Q_EMIT keyboardShortcutPressed(index);
-        }
-        else if (key == Qt::Key_0){
-            Q_EMIT keyboardShortcutPressed(10);
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(index);
+            } else {
+                Q_EMIT activateShortcutPressed(index);
+            }
+        } else if (key == Qt::Key_0) {
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(10);
+            } else {
+                Q_EMIT activateShortcutPressed(10);
+            }
         }
     }
 }

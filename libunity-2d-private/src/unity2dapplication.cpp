@@ -41,6 +41,9 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 
+// libc
+#include <stdlib.h>
+
 ///////////////////////////////
 class PlatformFontTracker
 {
@@ -133,6 +136,14 @@ void Unity2dApplication::earlySetup(int& argc, char** argv)
         QApplication::setGraphicsSystem("raster");
     }
 
+    /* We have these if we were DBus activated, but we don't want our child
+     * processes to inherit them
+     *
+     * https://launchpad.net/bugs/873027
+     */
+    unsetenv("DBUS_STARTER_ADDRESS");
+    unsetenv("DBUS_STARTER_BUS_TYPE");
+
     /* Unless style has been specified in args, set default Qt style to
      * QWindowStyle to avoid loading QGtkStyle. We don't want to load QGtkStyle
      * because it uses libgtk2, which causes conflicts with our gtk3 code.
@@ -148,6 +159,9 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 {
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
+
+    /* TRANSLATORS: This refers to the direction of text
+       (left-to-right or right-to-left): possible values are LTR or RTL */
     if (u2dTr("QT_LAYOUT_DIRECTION") == "RTL") {
         QApplication::setLayoutDirection(Qt::RightToLeft);
     }

@@ -38,6 +38,8 @@ Q_OBJECT
 public:
     IndicatorApplet(Unity2dPanel* panel);
 
+    bool eventFilter(QObject*, QEvent*);
+
 private:
     Q_DISABLE_COPY(IndicatorApplet)
     IndicatorsManager* m_indicatorsManager;

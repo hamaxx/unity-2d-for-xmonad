@@ -35,6 +35,15 @@ GridView {
         return true
     }
 
+    /* FIXME: HACK to workaround GridView's layout issues in Qt 4.7.4.
+       Ref.: https://bugreports.qt.nokia.com/browse/QTBUG-21452
+    */
+    onWidthChanged: {
+        var y = contentY
+        contentY = 0
+        contentY = y
+    }
+
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
         switch (key) {

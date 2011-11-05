@@ -132,8 +132,13 @@ void WorkspacesInfo::updateWorkspaceGeometry()
         /* In this property does not exist (as is the case if you
            don't login into the regular gnome session before unity-2d),
            just fallback on reasonable defaults. */
-        rows = 2;
-        columns = ceil((float) workspaceCount / (float) rows);
+        if (workspaceCount > 1) {
+            rows = 2;
+            columns = ceil((float) workspaceCount / (float) rows);
+        } else {
+            rows = 1;
+            columns = 1;
+        }
         orientation = WorkspacesInfo::OrientationHorizontal;
         startingCorner = WorkspacesInfo::CornerTopLeft;
     }

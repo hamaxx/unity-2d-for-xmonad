@@ -62,6 +62,7 @@ protected:
     void resizeEvent(QResizeEvent* event);
     void leaveEvent(QEvent* event);
     void enterEvent(QEvent* event);
+    void focusOutEvent(QFocusEvent* event);
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent* event);
 
@@ -88,6 +89,7 @@ private:
 private Q_SLOTS:
     void updateMask();
     void activateWindow();
+    void titleTriggered();
 };
 
 #endif // LAUNCHERMENU_H

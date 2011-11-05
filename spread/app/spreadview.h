@@ -25,6 +25,8 @@
 
 #include <unity2ddeclarativeview.h>
 
+class ScreenInfo;
+
 class SpreadView : public Unity2DDeclarativeView
 {
     Q_OBJECT
@@ -46,6 +48,9 @@ protected:
 Q_SIGNALS:
     void outsideClick();
     void visibleChanged(bool visible);
+
+private:
+    ScreenInfo* m_screenInfo;
 };
 
 #endif // SPREADVIEW_H

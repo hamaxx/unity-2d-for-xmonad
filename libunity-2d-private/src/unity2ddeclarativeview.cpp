@@ -225,6 +225,10 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
 
     XSendEvent(display, QX11Info::appRootWindow(), False,
                SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+    /* Ensure focus is actually switched to active window */
+    XSetInputFocus(display, window, RevertToParent, CurrentTime);
+    XFlush(display);
 }
 
 /* Save WId of window with keyboard focus to m_last_focused_window */

@@ -33,6 +33,10 @@
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
 #include <launcherclient.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
+#include <indicatorentrywidget.h>
+#include <unity2dtr.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -47,6 +51,8 @@
 #include <QPainter>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QMouseEvent>
+#include <QPoint>
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
@@ -127,6 +133,12 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
+    QPoint m_dragStartPosition;
+    bool m_dragInProgress;
+
+    AppNameAppletPrivate()
+    : m_dragInProgress(false)
+    {}
 
     void setupLabel()
     {
@@ -208,6 +220,10 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
 
+    if (panel != NULL) {
+        panel->installEventFilter(this);
+    }
+
     updateWidgets();
 }
 
@@ -231,34 +247,41 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool showWindowButtons = isOpened && isMaximized;
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showDesktopLabel = !isUserVisibleApp;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
 
-    d->m_label->setVisible(showLabel);
-    if (showLabel) {
-        // Define text
-        QString text;
-        if (app) {
-            if (isMaximized) {
-                // When maximized, show window title
-                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                if (bamfWindow) {
-                    text = bamfWindow->name();
+    if (showAppLabel || showDesktopLabel) {
+        d->m_label->setVisible(true);
+        if (showAppLabel) {
+            // Define text
+            QString text;
+            if (app) {
+                if (isMaximized) {
+                    // When maximized, show window title
+                    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                    if (bamfWindow) {
+                        text = bamfWindow->name();
+                    }
+                } else {
+                    // When not maximized, show application name
+                    text = app->name();
                 }
-            } else {
-                // When not maximized, show application name
-                text = app->name();
             }
+            d->m_label->setText(text);
+        } else if (showDesktopLabel) {
+            d->m_label->setText(u2dTr("Desktop", "nautilus"));
         }
-        d->m_label->setText(text);
 
-        // Define width
+        // Define label width
         if (!isMaximized && showMenu) {
             d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }
+    } else {
+        d->m_label->setVisible(false);
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
@@ -270,6 +293,63 @@ void AppNameApplet::enterEvent(QEvent*) {
 
 void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
+}
+
+void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
+    d->m_windowHelper->unmaximize();
+}
+
+void AppNameApplet::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        d->m_dragStartPosition = event->pos();
+        d->m_dragInProgress = true;
+    } else {
+        Unity2d::PanelApplet::mousePressEvent(event);
+    }
+}
+
+void AppNameApplet::mouseReleaseEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && event->button() == Qt::LeftButton) {
+        d->m_dragInProgress = false;
+    } else {
+        Unity2d::PanelApplet::mouseReleaseEvent(event);
+    }
+}
+
+void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && (event->buttons() & Qt::LeftButton)) {
+        if ((event->pos() - d->m_dragStartPosition).manhattanLength()
+                >= QApplication::startDragDistance()) {
+            d->m_dragInProgress = false;
+            d->m_windowHelper->drag(d->m_dragStartPosition);
+        }
+    } else {
+        Unity2d::PanelApplet::mouseMoveEvent(event);
+    }
+}
+
+bool AppNameApplet::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isActiveAppVisible = app ? app->user_visible() : false;
+        if (isActiveAppVisible) {
+            d->m_menuBarWidget->setOpened(true);
+
+            QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return QWidget::eventFilter(watched, event);
+    }
 }
 
 #include "appnameapplet.moc"

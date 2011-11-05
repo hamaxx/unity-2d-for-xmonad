@@ -73,7 +73,6 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
-    m_titleAction->setEnabled(false);
     addAction(m_titleAction);
 }
 
@@ -154,6 +153,14 @@ LauncherContextualMenu::enterEvent(QEvent* event)
     /* Always keep the menu visible when the mouse hovers it */
     m_hidingDelayTimer.stop();
     QMenu::enterEvent(event);
+}
+
+void
+LauncherContextualMenu::focusOutEvent(QFocusEvent* event)
+{
+    /* Hide menu if mouse click outside widget */
+    m_hidingDelayTimer.stop();
+    hide();
 }
 
 void
@@ -275,6 +282,13 @@ void
 LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
+    connect(m_titleAction, SIGNAL(triggered()), SLOT(titleTriggered()));
+}
+
+void LauncherContextualMenu::titleTriggered()
+{
+    hide();
+    m_launcherItem->activate();
 }
 
 void
@@ -304,6 +318,7 @@ LauncherContextualMenu::setFocus()
             break;
         }
     }
+    QMenu::setFocus();
 }
 
 void
@@ -317,8 +332,8 @@ LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
     if (key == Qt::Key_Left || key == Qt::Key_Escape) {
-        hide();
         Q_EMIT dismissedByKeyEvent();
+        hide();
         event->accept();
         return;
     }
