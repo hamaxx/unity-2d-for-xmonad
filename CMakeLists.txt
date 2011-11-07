@@ -6,7 +6,7 @@ set(UNITY_2D_DIR share/unity-2d)
 set(UNITY_DIR /usr/share/unity/)
 set(UNITY_2D_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
 
-configure_file(config.h.in config.h)
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 # Build flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")
@@ -80,3 +80,7 @@ add_subdirectory(panel)
 add_subdirectory(places)
 add_subdirectory(spread)
 add_subdirectory(po)
+
+# uninstall target
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
+add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")

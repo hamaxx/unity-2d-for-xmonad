@@ -13,7 +13,7 @@ inline QString unity2dDirectory() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/" UNITY_2D_DIR);
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../../");
+        return QString("@CMAKE_SOURCE_DIR@/");
     }
 }
 
@@ -21,7 +21,7 @@ inline QString unity2dImportPath() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/lib/qt4/imports");
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../");
+        return QString("@CMAKE_BINARY_DIR@/libunity-2d-private/");
     }
 }
 

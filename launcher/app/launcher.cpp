@@ -108,9 +108,6 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
-    if (!isRunningInstalled()) {
-        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
 
     launcherView->rootContext()->setContextProperty("declarativeView", launcherView);
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
