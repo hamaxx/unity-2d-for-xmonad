@@ -31,12 +31,17 @@ LauncherDropItem {
     function hideMenu() {
         if (main.visibleMenu !== undefined) {
             main.visibleMenu.hide()
-            return true;
-        } else if (shelf.visibleMenu !== undefined) {
-            shelf.visibleMenu.hide()
-            return true;
         }
-        return false;
+        if (shelf.visibleMenu !== undefined) {
+            shelf.visibleMenu.hide()
+        }
+    }
+
+    function focusDashButton() {
+        if (main.currentIndex !== 0) {
+            main.currentIndex = 0
+            main.positionViewAtBeginning()
+        }
     }
 
     GnomeBackground {
@@ -130,10 +135,7 @@ LauncherDropItem {
                 target: launcherView
                 onFocusChanged: {
                     if (launcherView.focus && !main.flicking) {
-                        if (!hideMenu()) {
-                            main.currentIndex = 0
-                            main.positionViewAtBeginning()
-                        }
+                        hideMenu()
                     }
                 }
             }

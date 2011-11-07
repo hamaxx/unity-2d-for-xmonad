@@ -76,13 +76,17 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
-    /* Alt+F1 gives the keyboard focus to the launcher. */
+    /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
+    connect(altF1, SIGNAL(pressed()), SLOT(altF1Pressed()));
 
     /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
+
+    /*Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher.*/
+    Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+    connect(hotkey, SIGNAL(pressed()), SLOT(spreadHotkeyPressed()));
 
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
@@ -90,11 +94,6 @@ LauncherView::LauncherView(QWidget* parent) :
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-    }
-
-    {
-        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-        connect(hotkey, SIGNAL(pressed()), SLOT(spreadHotkeyPressed()));
     }
 }
 
@@ -282,6 +281,20 @@ LauncherView::showCommandsLens()
 void
 LauncherView::spreadHotkeyPressed()
 {
+    // BUGFIX:881458
     QGraphicsObject* launcher = rootObject();
     QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
+
+void
+LauncherView::altF1Pressed()
+{
+    // Reveal the launcher if not shown already.
+    if (!hasFocus())
+        forceActivateWindow();
+
+    // Give the keyboard focus to Dash button, if not focused already.
+    QGraphicsObject* launcher = rootObject();
+    QMetaObject::invokeMethod(launcher, "focusDashButton", Qt::AutoConnection);
+}
+

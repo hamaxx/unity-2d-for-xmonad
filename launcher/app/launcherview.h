@@ -61,6 +61,7 @@ private Q_SLOTS:
     void toggleDash();
     void showCommandsLens();
     void spreadHotkeyPressed();
+    void altF1Pressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
