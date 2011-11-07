@@ -20,6 +20,7 @@ import QtQuick 1.0
 import Unity2d 1.0
 
 FocusScope {
+    focus: true
     property variant model: PageModel {
         /* model.searchQuery is copied over to all lenses globalSearchQuery property */
         onSearchQueryChanged: {
@@ -97,35 +98,35 @@ FocusScope {
 
     ListViewWithScrollbar {
         id: globalSearch
-
         focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
         anchors.leftMargin: 20
-
         model: dash.lenses
+
+        headerDelegate: CategoryHeader {
+            visible: body.needHeader && body.visible
+            focus: true //visible && foldable
+            height: visible ? 32 : 0
+            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            icon: body.iconHint
+            label: body.name
+
+            property bool foldable: body.folded != undefined
+
+            onClicked: if(foldable) body.folded = !body.folded
+        }
 
         bodyDelegate: TileVertical {
             lens: model.item
             name: model.item.name
             iconHint: model.item.iconHint
-
             category_model: model.item.globalResults
-            property bool focusable: category_model != undefined && category_model.count > 0
+            visible: category_model.count > 0
+            focus: visible
         }
 
-        headerDelegate: CategoryHeader {
-            visible: body.needHeader && body.focusable
-            height: visible ? 32 : 0
-
-            property bool foldable: body.folded != undefined
-            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
-            folded: foldable ? body.folded : false
-            onClicked: if(foldable) body.folded = !body.folded
-
-            icon: body.iconHint
-            label: body.name
-        }
     }
 
     FocusScope {

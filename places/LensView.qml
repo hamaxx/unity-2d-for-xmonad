@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 import "utils.js" as Utils
 
-FocusScope {
+Item {
     id: lensView
+    focus: false
 
     /* An instance of Lens */
     property variant model
@@ -47,7 +48,6 @@ FocusScope {
 
     SortFilterProxyModel {
         id: firstCategoryModel
-
         property int categoryId
         model: lensView.model != undefined ? lensView.model.results : null
 
@@ -62,7 +62,6 @@ FocusScope {
 
     ListViewWithScrollbar {
         id: results
-
         focus: true
         anchors.fill: parent
         anchors.leftMargin: 20
@@ -78,6 +77,10 @@ FocusScope {
            the file 'UnityShowcaseRenderer.qml' and use it to render the category.
         */
         bodyDelegate: Loader {
+            visible: category_model.count > 0
+            focus: true
+            FocusPath.skip: false
+
             property string name: model.column_0
             property string iconHint: model.column_1
             property string rendererName: model.column_2
@@ -108,31 +111,29 @@ FocusScope {
             */
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
             property int contentY
-            Binding { target: item; property: "contentY"; value: contentY }
-            property bool focusable: category_model.count > 0
             property variant currentItem: item.currentItem
 
+            Binding { target: item; property: "contentY"; value: contentY }
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }
             Binding { target: item; property: "categoryId"; value: categoryId }
             Binding { target: item; property: "category_model"; value: category_model }
             Binding { target: item; property: "lens"; value: lensView.model }
-
-            onLoaded: item.focus = true
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.item.needHeader && body.focusable
+            visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
-
-            property bool foldable: body.item.folded != undefined
-            availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
-            folded: foldable ? body.item.folded : false
-            onClicked: if(foldable) body.item.folded = !body.item.folded
-            moving: flickerMoving
-
+            availableCount: foldable ? body.category_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            focus: true
             icon: body.iconHint
             label: body.name
+            focusIndex: 0
+
+            property bool foldable: body.folded != undefined
+
+            onClicked: if(foldable) body.folded = !body.folded
         }
 
         model: lensView.model != undefined ? lensView.model.categories : undefined

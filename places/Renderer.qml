@@ -30,7 +30,10 @@ FocusScope {
     property string name /* Name of the category typically displayed in the header */
     property string iconHint /* Icon id of the category */
     property int categoryId /* Index of the category */
-    property variant category_model /* List model containing the items to be displayed by the renderer */
+    property QtObject category_model /* List model containing the items to be displayed by the renderer */
     property variant lens /* Reference to the lens the category belongs to */
     property bool needHeader: false /* Whether or not the renderer requires a header to be displayed */
+    property QtObject currentItem /* Current selected item */
+
+    focus: true
 }

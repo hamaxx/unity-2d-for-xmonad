@@ -254,6 +254,7 @@ Item {
 
         Loader {
             id: pageLoader
+            focus: true
 
             Accessible.name: "loader"
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
@@ -269,7 +270,6 @@ Item {
             anchors.left: parent.left
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
             anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
-            onLoaded: item.focus = true
         }
 
         LensBar {

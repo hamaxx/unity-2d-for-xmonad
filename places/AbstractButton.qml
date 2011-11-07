@@ -16,10 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
+import Unity2d 1.0
 
 FocusScope {
+    FocusPath.skip: focusSkip
+    FocusPath.index: focusIndex
+
     property bool enabled: true
+    property int focusIndex: 0
+    property bool focusSkip: !visible
+
+
 
     /* Use to manually set the "pressed" state of the button. This is not
        necessary in the normal use case, but is useful when a child item eats
@@ -53,16 +61,20 @@ FocusScope {
         }
     }
 
-    state: {
-        if(pressed || mouse_area.pressed)
-            return "pressed"
-        else if(mouse_area.containsMouse)
-            return "hovered"
-        else if(activeFocus)
-            return "selected"
-        else
-            return "default"
-    }
+    states: [
+        State {
+            name: "pressed"
+            when: pressed || mouse_area.pressed
+        },
+        State {
+            name: "hovered"
+            when: mouse_area.containsMouse
+        },
+        State {
+            name: "selected"
+            when: activeFocus
+        }
+    ]
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Return) {

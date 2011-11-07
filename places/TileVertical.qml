@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0 /* required for drag’n’drop handling */
 
 RendererGrid {
@@ -24,94 +24,93 @@ RendererGrid {
     cellHeight: 112
     horizontalSpacing: 42
     verticalSpacing: 20
+    focus: true
 
-    cellRenderer: Component {
-        AbstractButton {
-            id: button
+    cellRenderer: AbstractButton {
+        id: button
 
-            property string uri
-            property string iconHint
-            property string mimetype
-            property string displayName
-            property string comment
-            property string dndUri
+        property string uri
+        property string iconHint
+        property string mimetype
+        property string displayName
+        property string comment
+        property string dndUri
 
-            Accessible.name: displayName
+        Accessible.name: displayName
 
-            onClicked: {
-                dashView.active = false
-                lens.activate(decodeURIComponent(uri))
+        onClicked: {
+            dashView.active = false
+            lens.activate(decodeURIComponent(uri))
+        }
+
+        DragItemWithUrl {
+            anchors.fill: parent
+            url: decodeURIComponent(dndUri)
+            defaultAction: {
+                if (!url.indexOf("application://")) return Qt.CopyAction
+                else if (!url.indexOf("unity-install://")) return Qt.IgnoreAction
+                else return Qt.LinkAction
             }
-
-            DragItemWithUrl {
-                anchors.fill: parent
-                url: decodeURIComponent(dndUri)
-                defaultAction: {
-                    if (!url.indexOf("application://")) return Qt.CopyAction
-                    else if (!url.indexOf("unity-install://")) return Qt.IgnoreAction
-                    else return Qt.LinkAction
+            supportedActions: defaultAction
+            delegate: Component {
+                Image {
+                    source: icon.source
+                    width: icon.width
+                    height: icon.height
+                    fillMode: icon.fillMode
+                    sourceSize.width: width
+                    sourceSize.height: height
+                    asynchronous: true
                 }
-                supportedActions: defaultAction
-                delegate: Component {
-                    Image {
-                        source: icon.source
-                        width: icon.width
-                        height: icon.height
-                        fillMode: icon.fillMode
-                        sourceSize.width: width
-                        sourceSize.height: height
-                        asynchronous: true
-                    }
-                }
-                onPressed: parent.pressed = true
-                onReleased: {
-                    parent.pressed = false
-                    parent.clicked()
-                }
-                onDrop: parent.pressed = false
             }
-
-            ButtonBackground {
-                anchors.fill: icon
-                anchors.margins: -4
-                state: button.state
+            onPressed: parent.pressed = true
+            onReleased: {
+                parent.pressed = false
+                parent.clicked()
             }
+            onDrop: parent.pressed = false
+        }
 
-            Image {
-                id: icon
+        ButtonBackground {
+            anchors.fill: icon
+            anchors.margins: -4
+            state: button.state
+        }
 
-                source: iconHint != "" ? "image://icons/"+iconHint : "image://icons/unknown"
-                onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
-                width: 64
-                height: 64
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: 4
-                fillMode: Image.PreserveAspectFit
-                sourceSize.width: width
-                sourceSize.height: height
+        Image {
+            id: icon
 
-                asynchronous: true
-                opacity: status == Image.Ready ? 1 : 0
-                Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-            }
+            source: iconHint != "" ? "image://icons/"+iconHint : "image://icons/unknown"
+            onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
+            width: 64
+            height: 64
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 4
+            fillMode: Image.PreserveAspectFit
+            sourceSize.width: width
+            sourceSize.height: height
 
-            TextMultiLine {
-                id: label
+            asynchronous: true
+            opacity: status == Image.Ready ? 1 : 0
+            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
+        }
 
-                text: displayName
-                color: "#ffffff"
-                state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
-                horizontalAlignment: Text.AlignHCenter
-                anchors.top: icon.bottom
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-                anchors.left: parent.left
-                anchors.topMargin: 10
-                anchors.rightMargin: 3
-                anchors.leftMargin: 3
-                fontSize: "small"
-            }
+        TextMultiLine {
+            id: label
+
+            text: displayName
+            color: "#ffffff"
+            state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
+            horizontalAlignment: Text.AlignHCenter
+            anchors.top: icon.bottom
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.topMargin: 10
+            anchors.rightMargin: 3
+            anchors.leftMargin: 3
+            fontSize: "small"
         }
     }
 }
