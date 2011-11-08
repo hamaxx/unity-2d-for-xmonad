@@ -25,7 +25,10 @@
 
 #include <debug_p.h>
 
-GestureHandler::GestureHandler(Unity2dPanel* launcher, QObject *parent) : QObject(parent), m_launcher(launcher)
+GestureHandler::GestureHandler(Unity2dPanel* launcher, QObject *parent)
+: QObject(parent)
+, m_launcher(launcher)
+, m_geisInstance(NULL)
 {
     if (geisInitialize() != GEIS_STATUS_SUCCESS) {
         UQ_WARNING << "GEIS initialization failed: multitouch support disabled";
@@ -44,7 +47,9 @@ GestureHandler::GestureHandler(Unity2dPanel* launcher, QObject *parent) : QObjec
 
 GestureHandler::~GestureHandler()
 {
-    geis_finish(m_geisInstance);
+    if (m_geisInstance != NULL) {
+        geis_finish(m_geisInstance);
+    }
 }
 
 GeisStatus GestureHandler::geisInitialize()
