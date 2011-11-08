@@ -151,8 +151,6 @@ install(TARGETS ${LIB_NAME}
 #
 set (PREFIXDIR "${CMAKE_INSTALL_PREFIX}")
 set (EXEC_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set (LIBDIR "${CMAKE_INSTALL_PREFIX}/lib")
-set (INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
 
 install(DIRECTORY .
     DESTINATION include/${LIB_NAME}
@@ -160,7 +158,7 @@ install(DIRECTORY .
     PATTERN "*_p.h" EXCLUDE
     )
 
-configure_file (${LIB_NAME}.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc)
+configure_file (${LIB_NAME}.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc @ONLY)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc DESTINATION
          ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
 
