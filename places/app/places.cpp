@@ -48,7 +48,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
     view.setAccessibleName("Dash");
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     if (!view.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
