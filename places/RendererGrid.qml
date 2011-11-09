@@ -37,8 +37,14 @@ Renderer {
     property bool folded: true
     property int cellWidth: 158
     property int cellHeight: 76
+
+    /* used for celtralized grid */
+    property int minHorizontalSpacing: 0
+    property int minVerticalSpacing: 0
+
     property int horizontalSpacing: 26
     property int verticalSpacing: 26
+
     property bool centralized: true
 
     FocusPath {
@@ -57,11 +63,11 @@ Renderer {
         id: grid
         columns: Math.floor(parent.width/(renderer.cellWidth + renderer.horizontalSpacing))
         anchors.topMargin: 12
-        x: alingSpace
         width: parent.width
-        property int alingSpace: centralized ? (renderer.width - (columns * (renderer.cellWidth + renderer.horizontalSpacing))) / 2 : 0
 
-
+        property int virtualHorizontalSpacing: renderer.centralized ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.horizontalSpacing
+        /* Keep the horizontal space alway larger then minHorizontalSpacing */
+        property int itemHorizontalSpacing: virtualHorizontalSpacing < minHorizontalSpacing ? minHorizontalSpacing : virtualHorizontalSpacing
         Repeater {
             id: results
             FocusPath.skip: true
@@ -77,7 +83,7 @@ Renderer {
                 id: cell
                 FocusPath.index: index
 
-                width: renderer.cellWidth + renderer.horizontalSpacing
+                width: renderer.cellWidth + grid.itemHorizontalSpacing
                 height: renderer.cellHeight + renderer.verticalSpacing
 
                 property string uri: column_0
