@@ -11,15 +11,15 @@ set(UNITY_2D_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
 
 configure_file(config.h.in config.h)
 
-# Configure debian install files
+# Configure debian files
 string(SUBSTRING "${CMAKE_INSTALL_PREFIX}" 1 -1 DEBIAN_INSTALL_PREFIX)
-file(GLOB DEBIAN_INSTALL_FILES debian/*.install.in)
-foreach(install_file_in ${DEBIAN_INSTALL_FILES})
-    string(LENGTH ${install_file_in} len)
+file(GLOB DEBIAN_FILES debian/*.in)
+foreach(in_file ${DEBIAN_FILES})
+    string(LENGTH ${in_file} len)
     math(EXPR len "${len} - 3")
-    string(SUBSTRING "${install_file_in}" 0 ${len} install_file)
-    configure_file(${install_file_in} ${install_file} @ONLY)
-endforeach(install_file_in)
+    string(SUBSTRING "${in_file}" 0 ${len} file)
+    configure_file(${in_file} ${file} @ONLY)
+endforeach(in_file)
 
 # Build flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual -Wall -std=c++0x")

@@ -9,7 +9,7 @@
 export NO_PNG_PKG_MANGLE=1
 
 override_dh_install:
-	find debian/tmp/usr/lib -name \*.*a -exec rm {} \;
+	find debian/tmp/@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -name \*.*a -exec rm {} \;
 	dh_install --fail-missing
 
 override_dh_auto_test:
