@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 {
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
-    application.setApplicationName("Unity 2D Dash");
+    application.setApplicationName("Unity 2D Shell");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
@@ -50,20 +50,19 @@ int main(int argc, char *argv[])
     view.setAccessibleName("Dash");
     view.setUseOpenGL(arguments.contains("-opengl"));
 
+    // FIXME: this should not be part of the view. It should be a separate class.
     if (!view.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
 
-    QDir::addSearchPath("artwork", unity2dDirectory() + "/viewer/artwork");
+    QDir::addSearchPath("artwork", unity2dDirectory() + "/shell/artwork");
 
     view.engine()->addImportPath(unity2dImportPath());
-    /* Note: baseUrl seems to be picky: if it does not end with a slash,
-       setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/viewer/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     if (!isRunningInstalled()) {
-        /* Place.qml imports Unity2d */
+        /* Allows importing Unity2d when uninstalled */
         view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
     }
 
@@ -80,6 +79,5 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
 }
