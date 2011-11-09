@@ -40,6 +40,8 @@ Item {
                 return Qt.Key_Left
             case Qt.Key_Left:
                 return Qt.Key_Right
+            default:
+                return key;
             }
         }
         return key;
