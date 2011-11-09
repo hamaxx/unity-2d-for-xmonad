@@ -110,10 +110,13 @@ Item {
                In that case the list view scrolls the Flickable appropriately.
             */
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
-            property int contentY
+            property int cellsPerRow: item.cellsPerRow
             property variant currentItem: item.currentItem
 
-            Binding { target: item; property: "contentY"; value: contentY }
+            /* This is necessary becase the alias does not work in a loader */
+            property bool folded: item.folded
+            onFoldedChanged: item.folded = folded
+
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }
             Binding { target: item; property: "categoryId"; value: categoryId }
@@ -124,7 +127,7 @@ Item {
         headerDelegate: CategoryHeader {
             visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
-            availableCount: foldable ? body.category_model.count - body.cellsPerRow : 0
+            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
             folded: foldable ? body.folded : false
             focus: true
             icon: body.iconHint
@@ -132,6 +135,7 @@ Item {
             focusIndex: 0
 
             property bool foldable: body.folded != undefined
+            property int columns: body.cellsPerRow ? body.cellsPerRow : 0
 
             onClicked: if(foldable) body.folded = !body.folded
         }
