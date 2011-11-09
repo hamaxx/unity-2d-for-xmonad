@@ -84,7 +84,7 @@ LauncherView::LauncherView(QWidget* parent) :
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
 
-    /*Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher.*/
+    /* Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher. */
     Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
     connect(superS, SIGNAL(pressed()), SLOT(onSuperSPressed()));
 
