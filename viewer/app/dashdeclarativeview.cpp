@@ -22,7 +22,6 @@
 #include <screeninfo.h>
 
 // Qt
-#include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
 #include <QCloseEvent>
@@ -50,7 +49,6 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
-, m_screenInfo(ScreenInfo::instance())
 , m_mode(DesktopMode)
 , m_expanded(true)
 , m_active(false)
@@ -58,25 +56,12 @@ DashDeclarativeView::DashDeclarativeView()
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
-    QDesktopWidget* desktop = QApplication::desktop();
-    connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(resized(int)), SIGNAL(updateDashModeDependingOnScreenGeometry()));
-    connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
+    ScreenInfo* screen = ScreenInfo::instance();
+    connect(screen, SIGNAL(geometryChanged(QRect)), SLOT(updateDashModeDependingOnScreenGeometry()));
+    connect(screen, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateSize()));
 
     updateSize();
 }
-
-void
-DashDeclarativeView::onWorkAreaResized(int screen)
-{
-    if (QApplication::desktop()->screenNumber(this) != screen) {
-        return;
-    }
-
-    updateSize();
-    availableGeometryChanged();
-}
-
 
 static int getenvInt(const char* name, int defaultValue)
 {
@@ -89,7 +74,7 @@ static int getenvInt(const char* name, int defaultValue)
 void
 DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
-    QRect rect = QApplication::desktop()->screenGeometry(this);
+    QRect rect = ScreenInfo::instance()->geometry();
     static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
     static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
     if (rect.width() < minWidth && rect.height() < minHeight) {
@@ -112,7 +97,7 @@ DashDeclarativeView::updateSize()
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = availableGeometry();
+    QRect rect = ScreenInfo::instance()->availableGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -120,7 +105,7 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = availableGeometry();
+    QRect rect = ScreenInfo::instance()->availableGeometry();
     int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
@@ -259,19 +244,6 @@ DashDeclarativeView::activateHome()
     QGraphicsObject* dash = rootObject();
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
     setActive(true);
-}
-
-const QRect
-DashDeclarativeView::screenGeometry() const
-{
-    QDesktopWidget* desktop = QApplication::desktop();
-    return desktop->screenGeometry(this);
-}
-
-QRect
-DashDeclarativeView::availableGeometry() const
-{
-    return m_screenInfo->availableGeometry();
 }
 
 void

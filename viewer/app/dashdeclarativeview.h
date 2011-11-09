@@ -32,8 +32,6 @@ class DashDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
-    Q_PROPERTY(QRect screenGeometry READ screenGeometry NOTIFY screenGeometryChanged)
-    Q_PROPERTY(QRect availableGeometry READ availableGeometry NOTIFY availableGeometryChanged)
 
 public:
     enum DashMode {
@@ -46,8 +44,6 @@ public:
     bool active() const;
     DashMode dashMode() const;
     const QString& activeLens() const;
-    const QRect screenGeometry() const;
-    QRect availableGeometry() const;
     bool expanded() const;
 
     /* setters */
@@ -67,15 +63,11 @@ Q_SIGNALS:
     void expandedChanged(bool);
     void activeLensChanged(const QString&);
 
-    void screenGeometryChanged();
-    void availableGeometryChanged();
-
 protected:
     void resizeEvent(QResizeEvent*);
     virtual void showEvent(QShowEvent *event);
 
 private Q_SLOTS:
-    void onWorkAreaResized(int screen);
     void updateDashModeDependingOnScreenGeometry();
     void updateSize();
 
@@ -88,7 +80,6 @@ private:
     void setWMFlags();
 
     LauncherClient* m_launcherClient;
-    ScreenInfo* m_screenInfo;
     DashMode m_mode;
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */
