@@ -80,6 +80,5 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
 }
