@@ -28,8 +28,8 @@ Item {
     property bool ratingVisible: true
 
     /* Configure icon size to use. Requires icon files named:
-       - artwork/star_empty-${starIconSize}.png
-       - artwork/star_full-${starIconSize}.png
+       - artwork:dash/star_empty-${starIconSize}.png
+       - artwork:dash/star_full-${starIconSize}.png
     */
     property int starIconSize: 32
 

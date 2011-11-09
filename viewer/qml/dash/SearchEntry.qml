@@ -43,7 +43,7 @@ AbstractButton {
 
     BorderImage {
         anchors.fill: parent
-        source: "artwork/search_background.sci"
+        source: "artwork:dash/search_background.sci"
         smooth: false
     }
 
@@ -65,7 +65,7 @@ AbstractButton {
 
             smooth: true
 
-            source: search_input.text ? "artwork/cross.png" : "artwork/search_icon.png"
+            source: search_input.text ? "artwork:dash/cross.png" : "artwork:dash/search_icon.png"
             fillMode: Image.PreserveAspectFit
         }
 

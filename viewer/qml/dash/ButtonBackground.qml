@@ -42,7 +42,7 @@ Item {
         Image {
             fillMode: Image.Tile
             anchors.fill: parent
-            source: "artwork/button_background.png"
+            source: "artwork:dash/button_background.png"
             smooth: false
         }
     }

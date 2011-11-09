@@ -70,7 +70,7 @@ FocusScope {
 
         Image {
             id: icon
-            source: "artwork/open_shortcuts.png"
+            source: "artwork:dash/open_shortcuts.png"
             width: sourceSize.width
             height: sourceSize.height
             anchors.left: parent.left
@@ -164,7 +164,7 @@ FocusScope {
                 width: sourceSize.width
                 height: sourceSize.height
 
-                source: "artwork/cross.png"
+                source: "artwork:dash/cross.png"
             }
 
             opacity: (expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0

@@ -183,14 +183,14 @@ Item {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectCrop
-                source: "artwork/background_sheen.png"
+                source: "artwork:dash/background_sheen.png"
             }
         }
 
         BorderImage {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+            source: screen.isCompositingManagerRunning ? "artwork:dash/desktop_dash_background.sci" : "artwork:dash/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
     }
@@ -300,7 +300,7 @@ Item {
 
         Image {
             id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
+            source: "artwork:dash/fullscreen_button.png"
             mirror: isRightToLeft()
         }
 

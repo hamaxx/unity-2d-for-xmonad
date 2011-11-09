@@ -98,7 +98,7 @@ Item {
 
             smooth: false
 
-            source: "artwork/scrollbar.sci"
+            source: "artwork:dash/scrollbar.sci"
         }
 
         MouseArea {

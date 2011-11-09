@@ -1,0 +1,6 @@
+To obtain a full upstreamable merge of dash and launcher that mantains the full
+feature set currently available we need to take care of the following tasks:
+
+* Add cmd line option to choose which root QML file to load
+* Properly install the viewer files (both in CMakeLists and debian/)
+

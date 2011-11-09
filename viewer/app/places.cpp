@@ -55,10 +55,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    QDir::addSearchPath("artwork", unity2dDirectory() + "/viewer/artwork");
+
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
+    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/viewer/"));
 
     if (!isRunningInstalled()) {
         /* Place.qml imports Unity2d */
@@ -69,7 +71,7 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("dashView", &view);
-    view.setSource(QUrl("./dash.qml"));
+    view.setSource(QUrl("qml/dash/dash.qml"));
 
     /* When spawned via DBus activation, the current working directory is
        inherited from the DBus daemon, and it usually is not the user’s home
