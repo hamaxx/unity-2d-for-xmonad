@@ -1,0 +1,6 @@
+usr/bin/unity-2d-shell
+usr/share/applications/unity-2d-shell.desktop
+usr/share/dbus-1/services/unity-2d-places.service
+usr/share/unity-2d/shell/qml/dash/*.qml
+usr/share/unity-2d/shell/qml/dash/*.js
+usr/share/unity-2d/shell/artwork/dash

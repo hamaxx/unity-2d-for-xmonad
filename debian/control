@@ -33,8 +33,8 @@ Architecture: all
 Depends: ${misc:Depends},
          unity-2d-launcher,
          unity-2d-panel,
-         unity-2d-places,
          unity-2d-spread,
+	 unity-2d-shell,
          metacity (>= 2.30.3-0ubuntu5)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
@@ -114,6 +114,7 @@ Description: Unity 2D Places
  The Unity 2D places overlay over the desktop to provide quick access to
  various categories of applications. It is part of Unity 2D and can not run
  as a standalone application outside of the Unity 2D environment.
+ This package does not install anything anymore, it was replaced by unity-2d-shell.
 
 Package: unity-2d-spread
 Architecture: any
@@ -127,3 +128,16 @@ Description: Unity 2D Spread
  switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
+Package: unity-2d-shell
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libunity-2d-private0 (= ${binary:Version}),
+         libqt4-svg
+Description: Unity 2D Shell
+ The Unity 2D shell include various Unity 2D components.
+ It is part of Unity 2D and can not run as a standalone application outside
+ of the Unity 2D environment.
+ The components are:
+ * Places: an overlay over the desktop to provide quick access to
+           various categories of applications. 
