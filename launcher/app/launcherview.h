@@ -60,8 +60,7 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void showCommandsLens();
-    void spreadHotkeyPressed();
-    void altF1Pressed();
+    void onSuperSPressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
