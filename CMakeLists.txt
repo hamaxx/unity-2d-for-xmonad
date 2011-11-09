@@ -1,8 +1,11 @@
 project(unity-2d)
 cmake_minimum_required(VERSION 2.8)
 
+# Standard install paths
+include(GNUInstallDirs)
+
 # Dirs
-set(UNITY_2D_DIR share/unity-2d)
+set(UNITY_2D_DIR "${CMAKE_INSTALL_DATADIR}/unity-2d")
 set(UNITY_DIR /usr/share/unity/)
 set(UNITY_2D_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
 
