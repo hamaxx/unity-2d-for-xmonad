@@ -5,12 +5,12 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 set(shell_SRCS
     shell.cpp
     dashdbus.cpp
-    dashdeclarativeview.cpp
+    shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
     dashdbus.h
-    dashdeclarativeview.h
+    shelldeclarativeview.h
     )
 
 qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})

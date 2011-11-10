@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DashDeclarativeView_H
-#define DashDeclarativeView_H
+#ifndef ShellDeclarativeView_H
+#define ShellDeclarativeView_H
 
 #include <QDeclarativeView>
 #include <unity2ddeclarativeview.h>
@@ -24,7 +24,7 @@ class LauncherClient;
 class ScreenInfo;
 class DashDBus;
 
-class DashDeclarativeView : public Unity2DDeclarativeView
+class ShellDeclarativeView : public Unity2DDeclarativeView
 {
     Q_OBJECT
     Q_ENUMS(DashMode)
@@ -39,7 +39,7 @@ public:
         DesktopMode,
         FullScreenMode
     };
-    explicit DashDeclarativeView();
+    explicit ShellDeclarativeView();
 
     /* getters */
     bool active() const;
@@ -86,6 +86,6 @@ private:
     friend class DashDBus;
 };
 
-Q_DECLARE_METATYPE(DashDeclarativeView*)
+Q_DECLARE_METATYPE(ShellDeclarativeView*)
 
-#endif // DashDeclarativeView_H
+#endif // ShellDeclarativeView_H

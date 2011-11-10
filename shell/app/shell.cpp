@@ -36,7 +36,7 @@
 #include <unity2dapplication.h>
 #include <unity2ddebug.h>
 
-#include "dashdeclarativeview.h"
+#include "shelldeclarativeview.h"
 #include "dashdbus.h"
 #include "config.h"
 
@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
     application.setApplicationName("Unity 2D Shell");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
-    qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
-    DashDeclarativeView view;
-    view.setAccessibleName("Dash");
+    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+    ShellDeclarativeView view;
+    view.setAccessibleName("Shell");
     view.setUseOpenGL(arguments.contains("-opengl"));
 
     DashDBus dashDBus(&view);

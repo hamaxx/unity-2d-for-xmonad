@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "dashdeclarativeview.h"
+#include "shelldeclarativeview.h"
 #include "dashdbus.h"
 
 // unity-2d
@@ -43,7 +43,7 @@ static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
 
-DashDeclarativeView::DashDeclarativeView()
+ShellDeclarativeView::ShellDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
 , m_mode(DesktopMode)
@@ -69,7 +69,7 @@ static int getenvInt(const char* name, int defaultValue)
 }
 
 void
-DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
+ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
     QRect rect = ScreenInfo::instance()->geometry();
     static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
@@ -82,7 +82,7 @@ DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
 }
 
 void
-DashDeclarativeView::updateSize()
+ShellDeclarativeView::updateSize()
 {
     if (m_mode == FullScreenMode) {
         fitToAvailableSpace();
@@ -92,7 +92,7 @@ DashDeclarativeView::updateSize()
 }
 
 void
-DashDeclarativeView::fitToAvailableSpace()
+ShellDeclarativeView::fitToAvailableSpace()
 {
     QRect rect = ScreenInfo::instance()->availableGeometry();
     move(rect.topLeft());
@@ -100,7 +100,7 @@ DashDeclarativeView::fitToAvailableSpace()
 }
 
 void
-DashDeclarativeView::resizeToDesktopModeSize()
+ShellDeclarativeView::resizeToDesktopModeSize()
 {
     QRect rect = ScreenInfo::instance()->availableGeometry();
     int screenRight = rect.right();
@@ -118,14 +118,14 @@ DashDeclarativeView::resizeToDesktopModeSize()
 }
 
 void
-DashDeclarativeView::focusOutEvent(QFocusEvent* event)
+ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
     setActive(false);
 }
 
 void
-DashDeclarativeView::setWMFlags()
+ShellDeclarativeView::setWMFlags()
 {
     Display *display = QX11Info::display();
     Atom stateAtom = XInternAtom(display, "_NET_WM_STATE", False);
@@ -141,7 +141,7 @@ DashDeclarativeView::setWMFlags()
 }
 
 void
-DashDeclarativeView::showEvent(QShowEvent *event)
+ShellDeclarativeView::showEvent(QShowEvent *event)
 {
     QDeclarativeView::showEvent(event);
     /* Note that this has to be called everytime the window is shown, as the WM
@@ -150,7 +150,7 @@ DashDeclarativeView::showEvent(QShowEvent *event)
 }
 
 void
-DashDeclarativeView::setActive(bool value)
+ShellDeclarativeView::setActive(bool value)
 {
     if (value != m_active) {
         m_active = value;
@@ -170,13 +170,13 @@ DashDeclarativeView::setActive(bool value)
 }
 
 bool
-DashDeclarativeView::active() const
+ShellDeclarativeView::active() const
 {
     return m_active;
 }
 
 void
-DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
+ShellDeclarativeView::setDashMode(ShellDeclarativeView::DashMode mode)
 {
     if (m_mode == mode) {
         return;
@@ -187,14 +187,14 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
     dashModeChanged(m_mode);
 }
 
-DashDeclarativeView::DashMode
-DashDeclarativeView::dashMode() const
+ShellDeclarativeView::DashMode
+ShellDeclarativeView::dashMode() const
 {
     return m_mode;
 }
 
 void
-DashDeclarativeView::setExpanded(bool value)
+ShellDeclarativeView::setExpanded(bool value)
 {
     if (m_expanded == value) {
         return;
@@ -206,13 +206,13 @@ DashDeclarativeView::setExpanded(bool value)
 }
 
 bool
-DashDeclarativeView::expanded() const
+ShellDeclarativeView::expanded() const
 {
     return m_expanded;
 }
 
 void
-DashDeclarativeView::setActiveLens(const QString& activeLens)
+ShellDeclarativeView::setActiveLens(const QString& activeLens)
 {
     if (activeLens != m_activeLens) {
         m_activeLens = activeLens;
@@ -221,13 +221,13 @@ DashDeclarativeView::setActiveLens(const QString& activeLens)
 }
 
 const QString&
-DashDeclarativeView::activeLens() const
+ShellDeclarativeView::activeLens() const
 {
     return m_activeLens;
 }
 
 void
-DashDeclarativeView::keyPressEvent(QKeyEvent* event)
+ShellDeclarativeView::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key()) {
         case Qt::Key_Escape:
@@ -240,7 +240,7 @@ DashDeclarativeView::keyPressEvent(QKeyEvent* event)
 }
 
 void
-DashDeclarativeView::resizeEvent(QResizeEvent* event)
+ShellDeclarativeView::resizeEvent(QResizeEvent* event)
 {
     if (!QX11Info::isCompositingManagerRunning()) {
         updateMask();
@@ -256,7 +256,7 @@ createCornerMask()
 }
 
 void
-DashDeclarativeView::updateMask()
+ShellDeclarativeView::updateMask()
 {
     if (m_mode == FullScreenMode) {
         clearMask();

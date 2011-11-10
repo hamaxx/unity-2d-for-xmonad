@@ -199,7 +199,7 @@ Item {
 
         BorderImage {
             anchors.fill: parent
-            visible: dashView.dashMode == DashDeclarativeView.DesktopMode
+            visible: dashView.dashMode == ShellDeclarativeView.DesktopMode
             source: screen.isCompositingManagerRunning ? "artwork:dash/desktop_dash_background.sci" : "artwork:dash/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
@@ -212,8 +212,8 @@ Item {
         /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
-        anchors.bottomMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: dashView.dashMode == DashDeclarativeView.DesktopMode ? 37 : 0
+        anchors.bottomMargin: dashView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
+        anchors.rightMargin: dashView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
 
         visible: dashView.active
 
@@ -306,7 +306,7 @@ Item {
         anchors.bottomMargin: 15
         width: fullScreenButtonImage.sourceSize.width
         height: fullScreenButtonImage.sourceSize.height
-        visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
+        visible: dashView.dashMode != ShellDeclarativeView.FullScreenMode
 
         Image {
             id: fullScreenButtonImage
@@ -315,7 +315,7 @@ Item {
         }
 
         onClicked: {
-            dashView.dashMode = DashDeclarativeView.FullScreenMode
+            dashView.dashMode = ShellDeclarativeView.FullScreenMode
         }
     }
 }

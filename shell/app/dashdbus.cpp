@@ -21,7 +21,7 @@
 #include "dashadaptor.h"
 
 // Local
-#include <dashdeclarativeview.h>
+#include <shelldeclarativeview.h>
 
 // Qt
 #include <QtDBus/QDBusConnection>
@@ -29,7 +29,7 @@
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
-DashDBus::DashDBus(DashDeclarativeView* view, QObject* parent)
+DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 : QObject(parent)
 , m_view(view)
 {
