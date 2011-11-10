@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
     ShellDeclarativeView view;
     view.setAccessibleName("Shell");
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     DashDBus dashDBus(&view);
     if (!dashDBus.connectToBus()) {
