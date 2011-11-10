@@ -41,10 +41,10 @@ Item {
             case Qt.Key_Left:
                 return Qt.Key_Right
             default:
-                return key;
+                return key
             }
         }
-        return key;
+        return key
     }
         
     Binding {
