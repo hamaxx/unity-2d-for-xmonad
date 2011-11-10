@@ -87,7 +87,7 @@ FocusScope {
             verticalAlignment: Text.AlignVCenter
         }
 
-        opacity: (!expanded && declarativeView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+        opacity: (!expanded && declarativeView.dashMode == ShellDeclarativeView.DesktopMode) ? 1 : 0
         Behavior on opacity {NumberAnimation {duration: 100}}
 
         onClicked: {
@@ -132,7 +132,7 @@ FocusScope {
         id: shortcuts
 
         focus: !globalSearchActive
-        opacity: (!globalSearchActive && (shortcutsActive || declarativeView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
+        opacity: (!globalSearchActive && (shortcutsActive || declarativeView.dashMode == ShellDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
@@ -167,7 +167,7 @@ FocusScope {
                 source: "artwork:dash/cross.png"
             }
 
-            opacity: (expanded && declarativeView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+            opacity: (expanded && declarativeView.dashMode == ShellDeclarativeView.DesktopMode) ? 1 : 0
             Behavior on opacity {NumberAnimation {duration: 100}}
 
             onClicked: shortcutsActive = false
