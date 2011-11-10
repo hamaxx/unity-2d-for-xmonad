@@ -25,6 +25,7 @@ Item {
 
     Loader {
         id: dash
+        focus: true
         source: "dash/dash.qml"
         anchors.top: parent.top
         anchors.left: parent.left
