@@ -15,7 +15,7 @@
  */
 
 #include "dashdeclarativeview.h"
-#include "dashadaptor.h"
+#include "dashdbus.h"
 
 // unity-2d
 #include <launcherclient.h>
@@ -42,9 +42,6 @@ static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
-
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
@@ -230,23 +227,6 @@ DashDeclarativeView::activeLens() const
 }
 
 void
-DashDeclarativeView::activateLens(const QString& lensId)
-{
-    QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activateLens", Qt::AutoConnection,
-                              Q_ARG(QVariant, QVariant::fromValue(lensId)));
-    setActive(true);
-}
-
-void
-DashDeclarativeView::activateHome()
-{
-    QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
-    setActive(true);
-}
-
-void
 DashDeclarativeView::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key()) {
@@ -302,15 +282,4 @@ DashDeclarativeView::updateMask()
         painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
     }
     setMask(bmp);
-}
-
-bool
-DashDeclarativeView::connectToBus()
-{
-    bool ok = QDBusConnection::sessionBus().registerService(DASH_DBUS_SERVICE);
-    if (!ok) {
-        return false;
-    }
-    new DashAdaptor(this);
-    return QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, this);
 }

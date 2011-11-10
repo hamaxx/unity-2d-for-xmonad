@@ -4,10 +4,12 @@ pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 # Sources
 set(shell_SRCS
     shell.cpp
+    dashdbus.cpp
     dashdeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
+    dashdbus.h
     dashdeclarativeview.h
     )
 
@@ -16,10 +18,7 @@ qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
 # Build
 configure_file(unity-2d-places.service.in unity-2d-places.service)
 
-# TODO: split the DBUS parts of the view into a separate c++ class
-qt4_add_dbus_adaptor(shell_SRCS dash.xml
-    dashdeclarativeview.h DashDeclarativeView
-    )
+qt4_add_dbus_adaptor(shell_SRCS dash.xml dashdbus.h DashDBus)
 
 add_executable(unity-2d-shell ${shell_SRCS} ${shell_MOC_SRCS})
 

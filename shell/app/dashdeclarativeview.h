@@ -22,6 +22,7 @@
 
 class LauncherClient;
 class ScreenInfo;
+class DashDBus;
 
 class DashDeclarativeView : public Unity2DDeclarativeView
 {
@@ -52,16 +53,13 @@ public:
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
 
-    /* methods */
-    Q_INVOKABLE void activateLens(const QString& lensId);
-    Q_SLOT void activateHome();
-    bool connectToBus();
-
 Q_SIGNALS:
     void activeChanged(bool);
     void dashModeChanged(DashMode);
     void expandedChanged(bool);
     void activeLensChanged(const QString&);
+    void activateLens(const QString& lensId);
+    void activateHome();
 
 protected:
     void resizeEvent(QResizeEvent*);
@@ -84,6 +82,8 @@ private:
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
+
+    friend class DashDBus;
 };
 
 Q_DECLARE_METATYPE(DashDeclarativeView*)

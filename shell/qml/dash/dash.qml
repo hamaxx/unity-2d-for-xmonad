@@ -56,6 +56,16 @@ Item {
                 pageLoader.source = ""
             }
         }
+
+        onActivateHome: {
+            activateHome()
+            dashView.active = true
+        }
+
+        onActivateLens: {
+            activateLens(lensId)
+            dashView.active = true
+        }
     }
 
     function activatePage(page) {

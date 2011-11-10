@@ -3,6 +3,7 @@
  *
  * Authors:
  *  Florian Boucault <florian.boucault@canonical.com>
+ *  Ugo Riboni <ugo.riboni@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +37,7 @@
 #include <unity2ddebug.h>
 
 #include "dashdeclarativeview.h"
+#include "dashdbus.h"
 #include "config.h"
 
 int main(int argc, char *argv[])
@@ -50,8 +52,8 @@ int main(int argc, char *argv[])
     view.setAccessibleName("Dash");
     view.setUseOpenGL(arguments.contains("-opengl"));
 
-    // FIXME: this should not be part of the view. It should be a separate class.
-    if (!view.connectToBus()) {
+    DashDBus dashDBus(&view);
+    if (!dashDBus.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
