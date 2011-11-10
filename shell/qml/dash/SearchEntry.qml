@@ -26,8 +26,8 @@ AbstractButton {
 
     /* Cancels current search when the dash becomes invisible */
     Connections {
-        target: dashView
-        onActiveChanged: if (!dashView.active) search_input.text = ""
+        target: declarativeView
+        onActiveChanged: if (!declarativeView.active) search_input.text = ""
     }
 
     Binding {

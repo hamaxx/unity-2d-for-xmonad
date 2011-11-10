@@ -56,7 +56,7 @@ HomeButton {
     visible: application.desktop_file != ""
 
     onClicked: {
-        dashView.active = false
+        declarativeView.active = false
         application.activate()
     }
 

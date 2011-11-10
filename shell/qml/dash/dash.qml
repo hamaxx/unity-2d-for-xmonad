@@ -34,16 +34,16 @@ Item {
     }
 
     Binding {
-        target: dashView
+        target: declarativeView
         property: "expanded"
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
     /* Unload the current page when closing the dash */
     Connections {
-        target: dashView
+        target: declarativeView
         onActiveChanged: {
-            if (!dashView.active) {
+            if (!declarativeView.active) {
                 /* FIXME: currentPage needs to stop pointing to pageLoader.item
                           that is about to be invalidated otherwise a crash
                           occurs because SearchEntry has a binding that refers
@@ -59,12 +59,12 @@ Item {
 
         onActivateHome: {
             activateHome()
-            dashView.active = true
+            declarativeView.active = true
         }
 
         onActivateLens: {
             activateLens(lensId)
-            dashView.active = true
+            declarativeView.active = true
         }
     }
 
@@ -84,8 +84,8 @@ Item {
     }
 
     function deactivateActiveLens() {
-        if (dashView.activeLens != "") {
-            var lens = lenses.get(dashView.activeLens)
+        if (declarativeView.activeLens != "") {
+            var lens = lenses.get(declarativeView.activeLens)
             lens.active = false
         }
     }
@@ -105,7 +105,7 @@ Item {
             return
         }
 
-        if (lensId == dashView.activeLens) {
+        if (lensId == declarativeView.activeLens) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
@@ -114,7 +114,7 @@ Item {
         deactivateActiveLens()
         lens.active = true
         buildLensPage(lens)
-        dashView.activeLens = lens.id
+        declarativeView.activeLens = lens.id
     }
 
     function activateHome() {
@@ -123,7 +123,7 @@ Item {
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
-        dashView.activeLens = ""
+        declarativeView.activeLens = ""
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
@@ -199,7 +199,7 @@ Item {
 
         BorderImage {
             anchors.fill: parent
-            visible: dashView.dashMode == ShellDeclarativeView.DesktopMode
+            visible: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             source: screen.isCompositingManagerRunning ? "artwork:dash/desktop_dash_background.sci" : "artwork:dash/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
@@ -212,10 +212,10 @@ Item {
         /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
-        anchors.bottomMargin: dashView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: dashView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
+        anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
+        anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
 
-        visible: dashView.active
+        visible: declarativeView.active
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
@@ -250,7 +250,7 @@ Item {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: dashView.activeLens != "" && dashView.activeLens != "commands.lens"
+            visible: declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
@@ -291,7 +291,7 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 44
-            visible: dashView.expanded
+            visible: declarativeView.expanded
         }
     }
 
@@ -306,7 +306,7 @@ Item {
         anchors.bottomMargin: 15
         width: fullScreenButtonImage.sourceSize.width
         height: fullScreenButtonImage.sourceSize.height
-        visible: dashView.dashMode != ShellDeclarativeView.FullScreenMode
+        visible: declarativeView.dashMode != ShellDeclarativeView.FullScreenMode
 
         Image {
             id: fullScreenButtonImage
@@ -315,7 +315,7 @@ Item {
         }
 
         onClicked: {
-            dashView.dashMode = ShellDeclarativeView.FullScreenMode
+            declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
         }
     }
 }

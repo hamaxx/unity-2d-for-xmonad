@@ -40,7 +40,7 @@ FocusScope {
                 var firstResult = lens.globalResults.get(0)
                 /* Lenses give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
-                dashView.active = false
+                declarativeView.active = false
                 lens.activate(decodeURIComponent(uri))
                 return;
             }
@@ -53,7 +53,7 @@ FocusScope {
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
     property bool globalSearchActive: model.searchQuery != ""
     
-    /* Used by dash.qml to bind to dashView "expanded" property */
+    /* Used by dash.qml to bind to declarativeView "expanded" property */
     property bool expanded: globalSearchActive || shortcutsActive
 
     AbstractButton {
@@ -87,7 +87,7 @@ FocusScope {
             verticalAlignment: Text.AlignVCenter
         }
 
-        opacity: (!expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+        opacity: (!expanded && declarativeView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
         Behavior on opacity {NumberAnimation {duration: 100}}
 
         onClicked: {
@@ -132,7 +132,7 @@ FocusScope {
         id: shortcuts
 
         focus: !globalSearchActive
-        opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
+        opacity: (!globalSearchActive && (shortcutsActive || declarativeView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
@@ -167,7 +167,7 @@ FocusScope {
                 source: "artwork:dash/cross.png"
             }
 
-            opacity: (expanded && dashView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
+            opacity: (expanded && declarativeView.dashMode == DashDeclarativeView.DesktopMode) ? 1 : 0
             Behavior on opacity {NumberAnimation {duration: 100}}
 
             onClicked: shortcutsActive = false

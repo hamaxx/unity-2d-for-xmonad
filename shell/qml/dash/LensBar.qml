@@ -102,7 +102,7 @@ FocusScope {
             focus: true
             icon: "artwork:dash/lens-nav-home.svg"
             onClicked: dash.activateHome()
-            active: ( dashView.activeLens == "" )
+            active: ( declarativeView.activeLens == "" )
             iconWidth: lensBar.iconWidth
             iconSpacing: lensBar.iconSpacing
             width: iconWidth+iconSpacing

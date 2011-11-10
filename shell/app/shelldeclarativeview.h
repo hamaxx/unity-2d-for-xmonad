@@ -17,7 +17,6 @@
 #ifndef ShellDeclarativeView_H
 #define ShellDeclarativeView_H
 
-#include <QDeclarativeView>
 #include <unity2ddeclarativeview.h>
 
 class LauncherClient;
