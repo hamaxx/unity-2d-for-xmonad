@@ -53,11 +53,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
-    ScreenInfo* screen = ScreenInfo::instance();
-    connect(screen, SIGNAL(geometryChanged(QRect)), SLOT(updateDashModeDependingOnScreenGeometry()));
-    connect(screen, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateSize()));
-
-    updateSize();
+    move(ScreenInfo::instance()->availableGeometry().topLeft());
 }
 
 static int getenvInt(const char* name, int defaultValue)
@@ -68,6 +64,7 @@ static int getenvInt(const char* name, int defaultValue)
     return ok ? value : defaultValue;
 }
 
+// TODO: this is probably expressed more nicely in QML.
 void
 ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
@@ -79,42 +76,6 @@ ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
     } else {
         setDashMode(DesktopMode);
     }
-}
-
-void
-ShellDeclarativeView::updateSize()
-{
-    if (m_mode == FullScreenMode) {
-        fitToAvailableSpace();
-    } else {
-        resizeToDesktopModeSize();
-    }
-}
-
-void
-ShellDeclarativeView::fitToAvailableSpace()
-{
-    QRect rect = ScreenInfo::instance()->availableGeometry();
-    move(rect.topLeft());
-    setFixedSize(rect.size());
-}
-
-void
-ShellDeclarativeView::resizeToDesktopModeSize()
-{
-    QRect rect = ScreenInfo::instance()->availableGeometry();
-    int screenRight = rect.right();
-
-    rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
-    rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
-                        rect.height()));
-
-    if (QApplication::isRightToLeft()) {
-        rect.moveRight(screenRight);
-    }
-
-    move(rect.topLeft());
-    setFixedSize(rect.size());
 }
 
 void
@@ -183,7 +144,6 @@ ShellDeclarativeView::setDashMode(ShellDeclarativeView::DashMode mode)
     }
 
     m_mode = mode;
-    updateSize();
     dashModeChanged(m_mode);
 }
 
@@ -201,7 +161,6 @@ ShellDeclarativeView::setExpanded(bool value)
     }
 
     m_expanded = value;
-    updateSize();
     expandedChanged(m_expanded);
 }
 

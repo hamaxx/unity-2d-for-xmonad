@@ -318,4 +318,31 @@ Item {
             declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
         }
     }
+
+    property int desktopCollapsedHeight: 115
+    property int desktopExpandedHeight: 606
+    property int desktopWidth: 989
+
+    states: [
+        State {
+            name: "desktop"
+            when: declarativeView.active && declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            PropertyChanges {
+                target: dash
+                width: Math.min(desktopWidth, screen.availableGeometry.width)
+                height: Math.min(screen.availableGeometry.height,
+                                 declarativeView.expanded ? desktopExpandedHeight :
+                                                            desktopCollapsedHeight)
+            }
+        },
+        State {
+            name: "fullscreen"
+            when: declarativeView.active && declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
+            PropertyChanges {
+                target: dash
+                width: screen.availableGeometry.width
+                height: screen.availableGeometry.height
+            }
+        }
+    ]
 }

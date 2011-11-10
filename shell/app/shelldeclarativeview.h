@@ -66,11 +66,8 @@ protected:
 
 private Q_SLOTS:
     void updateDashModeDependingOnScreenGeometry();
-    void updateSize();
 
 private:
-    void fitToAvailableSpace();
-    void resizeToDesktopModeSize();
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     void updateMask();

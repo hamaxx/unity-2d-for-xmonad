@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
     }
 
     /* Load the QML UI, focus and show the window */
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
-    view.setSource(QUrl("qml/dash/dash.qml"));
+    view.setSource(QUrl("qml/shell.qml"));
 
     /* When spawned via DBus activation, the current working directory is
        inherited from the DBus daemon, and it usually is not the user’s home

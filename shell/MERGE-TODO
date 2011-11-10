@@ -4,3 +4,6 @@ feature set currently available we need to take care of the following tasks:
 * Add cmd line option to choose which root QML file to load
 * Add proper package transition for launcher and dash in debian/rules
 * Actually merge the launcher into the shell
+
+* Put back in support for RTL
+* Move updateDashModeDependingOnScreenGeometry to QML
