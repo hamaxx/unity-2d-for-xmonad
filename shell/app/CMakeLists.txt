@@ -1,15 +1,22 @@
 # Dependencies
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
+pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
 # Sources
 set(shell_SRCS
     shell.cpp
     dashdbus.cpp
+    launcherdbus.cpp
+    visibilitycontroller.cpp
+    gesturehandler.cpp
     shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
     dashdbus.h
+    launcherdbus.h
+    visibilitycontroller.h
+    gesturehandler.h
     shelldeclarativeview.h
     )
 
@@ -17,8 +24,10 @@ qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
 
 # Build
 configure_file(unity-2d-places.service.in unity-2d-places.service)
-
 qt4_add_dbus_adaptor(shell_SRCS dash.xml dashdbus.h DashDBus)
+
+configure_file(unity-2d-launcher.service.in unity-2d-launcher.service)
+qt4_add_dbus_adaptor(shell_SRCS launcher.xml launcherdbus.h LauncherDBus)
 
 add_executable(unity-2d-shell ${shell_SRCS} ${shell_MOC_SRCS})
 
@@ -26,6 +35,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTGCONF_INCLUDE_DIRS}
+    ${DCONFQT_INCLUDE_DIRS}
+    ${GEIS_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -36,6 +47,8 @@ target_link_libraries(unity-2d-shell
     ${QT_QTDBUS_LIBRARIES}
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QTGCONF_LDFLAGS}
+    ${DCONFQT_LDFLAGS}
+    ${GEIS_LDFLAGS}
     ${GTK_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}

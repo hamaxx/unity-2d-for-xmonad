@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
 
-class LauncherView;
+class ShellDeclarativeView;
 class VisibilityController;
 
 /**
@@ -37,7 +37,7 @@ class LauncherDBus : public QObject, protected QDBusContext
     Q_OBJECT
 
 public:
-    LauncherDBus(VisibilityController* visibilityController, LauncherView* view, QObject* parent=0);
+    LauncherDBus(VisibilityController* visibilityController, ShellDeclarativeView* view, QObject* parent=0);
     ~LauncherDBus();
 
     bool connectToBus();
@@ -49,7 +49,7 @@ public Q_SLOTS:
 
 private:
     VisibilityController* m_visibilityController;
-    LauncherView* m_view;
+    ShellDeclarativeView* m_view;
 };
 
 #endif // LauncherDBus_H

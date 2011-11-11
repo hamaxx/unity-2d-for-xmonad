@@ -24,10 +24,17 @@ Item {
     height: childrenRect.height
 
     Loader {
+        id: launcher
+        source: "launcher/Launcher.qml"
+        anchors.top: parent.top
+        anchors.left: parent.left
+    }
+
+    Loader {
         id: dash
         focus: true
         source: "dash/dash.qml"
         anchors.top: parent.top
-        anchors.left: parent.left
+        anchors.left: launcher.right
     }
 }

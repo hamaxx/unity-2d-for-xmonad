@@ -7,3 +7,5 @@ feature set currently available we need to take care of the following tasks:
 
 * Put back in support for RTL
 * Move updateDashModeDependingOnScreenGeometry to QML
+
+* Tests were removed

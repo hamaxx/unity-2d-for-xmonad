@@ -75,7 +75,6 @@ add_custom_target(check)
 
 # Source
 add_subdirectory(libunity-2d-private)
-add_subdirectory(launcher)
 add_subdirectory(panel)
 add_subdirectory(spread)
 add_subdirectory(shell)
