@@ -5,7 +5,7 @@
 #include <QCoreApplication>
 
 inline bool isRunningInstalled() {
-    static bool cachedResult = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
+    static bool cachedResult = (QCoreApplication::applicationDirPath().compare(INSTALL_PREFIX "/bin") == 0);
     return cachedResult;
 }
 
