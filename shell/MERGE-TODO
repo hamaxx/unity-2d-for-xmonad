@@ -4,11 +4,9 @@ feature set currently available we need to take care of the following tasks (ord
 = High =
 
 * Shell window should be input-shaped so that the part that belongs to neither dash nor launcher does not receive input
-* Clicking on the panel or inactive parts of the launcher does not make the dash lose focus (and thus disappear)
 * Correctly register shell as Launcher over DBUS
 * Make launcher hide modes work with the shell. Right now launcher is always visible.
 * Laucher was a dock window, now it's a regular window. Experiment with making it dock again or at least always-on-top
-
 
 = Medium =
 
