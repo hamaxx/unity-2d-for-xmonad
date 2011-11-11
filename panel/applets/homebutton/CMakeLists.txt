@@ -29,5 +29,5 @@ target_link_libraries(panelplugin-homebutton
     )
 
 install(TARGETS panelplugin-homebutton
-        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity-2d/plugins/panel
        )

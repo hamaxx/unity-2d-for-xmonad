@@ -60,6 +60,10 @@ CMakeLists.txt.user
 
 # Debian packaging files
 obj-x86_64-linux-gnu
+debian/*.install
+debian/unity-2d.postinst
+debian/unity-2d.postrm
+debian/unity-2d.triggers
 debian/files
 debian/*.debhelper.log
 debian/*.substvars

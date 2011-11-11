@@ -1,7 +1,7 @@
 prefix=@PREFIXDIR@
 exec_prefix=@EXEC_PREFIX@
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 
 Name: unity-2d-private
 Description: Unity 2d private library
