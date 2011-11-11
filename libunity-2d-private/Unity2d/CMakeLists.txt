@@ -43,7 +43,7 @@ target_link_libraries(unity-2d-private-qml
     )
 
 # Install
-set(IMPORT_INSTALL_DIR lib/qt4/imports/Unity2d)
+set(IMPORT_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt4/imports/Unity2d)
 
 install(TARGETS unity-2d-private-qml
     LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}

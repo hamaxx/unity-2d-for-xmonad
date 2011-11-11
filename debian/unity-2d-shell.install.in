@@ -1,0 +1,6 @@
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/unity-2d-shell
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/applications/unity-2d-shell.desktop
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/dbus-1/services/unity-2d-places.service
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/unity-2d/shell/qml/dash/*.qml
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/unity-2d/shell/qml/dash/*.js
+@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/unity-2d/shell/artwork/dash
