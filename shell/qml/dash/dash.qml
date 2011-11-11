@@ -186,7 +186,7 @@ Item {
                 source: declarativeView.dashActive ? "image://window/root@" + blurredBackground.timeAtActivation : ""
 
                 fillMode: Image.PreserveAspectCrop
-                x: -declarativeView.globalPosition.x
+                x: -launcher.width
                 y: -declarativeView.globalPosition.y
             }
 
