@@ -125,9 +125,9 @@ LauncherDropItem {
 
             /* Always reset highlight to so-called BFB or Dash button */
             Connections {
-                target: launcherView
+                target: declarativeView
                 onFocusChanged: {
-                    if (launcherView.focus && !main.flicking) {
+                    if (declarativeView.focus && !main.flicking) {
                         hideMenu()
                     }
                 }
@@ -175,7 +175,7 @@ LauncherDropItem {
 
     Keys.onPressed: {
         if( event.key == Qt.Key_Escape ){
-            launcherView.forceDeactivateWindow()
+            declarativeView.forceDeactivateWindow()
             event.accepted = true
         }
     }
@@ -189,7 +189,8 @@ LauncherDropItem {
     }
 
     Connections {
-        target: launcherView
+        target: declarativeView
+        // FIXME: copy methods over
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
         onSuperKeyHeldChanged: {
             if (superKeyHeld) visibilityController.beginForceVisible()

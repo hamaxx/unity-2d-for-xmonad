@@ -208,7 +208,7 @@ DropItem {
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
                 source: {
-                    var actualColor = launcherView.focus && item.activeFocus ? selectedBackgroundColor : color
+                    var actualColor = declarativeView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg("artwork/launcher/round_corner_54x54.png")
                         .arg(actualColor.toString().replace("#", ""))
@@ -279,7 +279,7 @@ DropItem {
                 anchors.centerIn: parent
                 smooth: true
                 source: "artwork:launcher/round_selected_66x66.png"
-                visible: launcherView.focus && item.activeFocus
+                visible: declarativeView.focus && item.activeFocus
             }
 
             Rectangle {

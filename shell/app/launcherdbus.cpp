@@ -61,8 +61,7 @@ LauncherDBus::connectToBus()
 void
 LauncherDBus::AddWebFavorite(const QString& url)
 {
-    // TODO: add this back in the view
-    // m_view->addWebFavoriteRequested(url);
+    Q_EMIT m_view->addWebFavoriteRequested(url);
 }
 
 void

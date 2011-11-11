@@ -19,6 +19,8 @@
 
 #include <unity2ddeclarativeview.h>
 
+#include <QTimer>
+
 class LauncherClient;
 class ScreenInfo;
 class DashDBus;
@@ -32,6 +34,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
+    Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
 
 public:
     enum DashMode {
@@ -59,6 +62,24 @@ Q_SIGNALS:
     void activeLensChanged(const QString&);
     void activateLens(const QString& lensId);
     void activateHome();
+    void focusChanged();
+
+    void addWebFavoriteRequested(const QUrl& url);
+    void superKeyHeldChanged(bool superKeyHeld);
+    void superKeyTapped();
+    void activateShortcutPressed(int itemIndex);
+    void newInstanceShortcutPressed(int itemIndex);
+
+private Q_SLOTS:
+    void updateSuperKeyMonitoring();
+    void updateSuperKeyHoldState();
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void forwardNumericHotkey();
+    void ignoreSuperPress();
+
+    void toggleDash();
+    void showCommandsLens();
+    void onSuperSPressed();
 
 protected:
     void resizeEvent(QResizeEvent*);
@@ -79,7 +100,14 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
+    QConf* m_dconf_launcher;
+    bool m_superKeyPressed;
+    bool m_superKeyHeld;
+    bool m_superPressIgnored;
+    QTimer m_superKeyHoldTimer;
+
     friend class DashDBus;
+    friend class LauncherDBus;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)

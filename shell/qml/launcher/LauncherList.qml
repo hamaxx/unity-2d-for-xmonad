@@ -108,7 +108,8 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
-        shortcutVisible: launcherView.superKeyHeld &&
+        // FIXME: port method over
+        shortcutVisible: declarativeView.superKeyHeld &&
                          ((item.toString().indexOf("LauncherApplication") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
@@ -213,7 +214,7 @@ AutoScrollingListView {
             target: item.menu
             /* The menu had the keyboard focus because the launcher had
                activated it. Restore it. */
-            onDismissedByKeyEvent: launcherView.forceActivateWindow()
+            onDismissedByKeyEvent: declarativeView.forceActivateWindow()
         }
 
         Connections {
@@ -305,7 +306,8 @@ AutoScrollingListView {
         }
 
         Connections {
-            target: launcherView
+            target: declarativeView
+            // FIXME: port methods over
             onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
                 if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
