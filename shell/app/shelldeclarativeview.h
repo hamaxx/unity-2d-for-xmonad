@@ -30,7 +30,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView
     Q_OBJECT
     Q_ENUMS(DashMode)
 
-    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
@@ -45,20 +45,20 @@ public:
     explicit ShellDeclarativeView();
 
     /* getters */
-    bool active() const;
+    bool dashActive() const;
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
 
     /* setters */
-    Q_SLOT void setActive(bool active);
+    Q_SLOT void setDashActive(bool active);
     Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
 
 Q_SIGNALS:
-    void activeChanged(bool);
+    void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
     void expandedChanged(bool);
     void activeLensChanged(const QString&);

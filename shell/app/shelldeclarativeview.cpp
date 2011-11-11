@@ -139,7 +139,7 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
-    setActive(false);
+    setDashActive(false);
 }
 
 void
@@ -168,7 +168,7 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
 }
 
 void
-ShellDeclarativeView::setActive(bool value)
+ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
         m_active = value;
@@ -183,12 +183,12 @@ ShellDeclarativeView::setActive(bool value)
             hide();
             m_launcherClient->endForceVisible();
         }
-        activeChanged(m_active);
+        dashActiveChanged(m_active);
     }
 }
 
 bool
-ShellDeclarativeView::active() const
+ShellDeclarativeView::dashActive() const
 {
     return m_active;
 }
@@ -247,7 +247,7 @@ ShellDeclarativeView::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key()) {
         case Qt::Key_Escape:
-            setActive(false);
+            setDashActive(false);
             break;
         default:
             QDeclarativeView::keyPressEvent(event);

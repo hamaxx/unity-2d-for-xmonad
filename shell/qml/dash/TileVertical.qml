@@ -39,7 +39,7 @@ RendererGrid {
             Accessible.name: displayName
 
             onClicked: {
-                declarativeView.active = false
+                declarativeView.dashActive = false
                 lens.activate(decodeURIComponent(uri))
             }
 

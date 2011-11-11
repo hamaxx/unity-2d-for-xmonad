@@ -42,8 +42,8 @@ Item {
     /* Unload the current page when closing the dash */
     Connections {
         target: declarativeView
-        onActiveChanged: {
-            if (!declarativeView.active) {
+        onDashActiveChanged: {
+            if (!declarativeView.dashActive) {
                 /* FIXME: currentPage needs to stop pointing to pageLoader.item
                           that is about to be invalidated otherwise a crash
                           occurs because SearchEntry has a binding that refers
@@ -59,12 +59,12 @@ Item {
 
         onActivateHome: {
             activateHome()
-            declarativeView.active = true
+            declarativeView.dashActive = true
         }
 
         onActivateLens: {
             activateLens(lensId)
-            declarativeView.active = true
+            declarativeView.dashActive = true
         }
     }
 
@@ -165,7 +165,7 @@ Item {
                 effect: Blur {blurRadius: 12}
 
                 /* 'source' needs to be set when the dash becomes visible, that
-                   is when declarativeView.active becomes true, so that a
+                   is when declarativeView.dashActive becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
                    'source' also needs to change so that the screenshot is
@@ -178,12 +178,12 @@ Item {
                 property variant timeAtActivation
                 Connections {
                     target: declarativeView
-                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+                    onDashActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
                 }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: declarativeView.dashActive ? "image://window/root@" + blurredBackground.timeAtActivation : ""
 
                 fillMode: Image.PreserveAspectCrop
                 x: -declarativeView.globalPosition.x
@@ -215,7 +215,7 @@ Item {
         anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
         anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
 
-        visible: declarativeView.active
+        visible: declarativeView.dashActive
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
@@ -326,7 +326,7 @@ Item {
     states: [
         State {
             name: "desktop"
-            when: declarativeView.active && declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            when: declarativeView.dashActive && declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             PropertyChanges {
                 target: dash
                 width: Math.min(desktopWidth, screen.availableGeometry.width)
@@ -337,7 +337,7 @@ Item {
         },
         State {
             name: "fullscreen"
-            when: declarativeView.active && declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
+            when: declarativeView.dashActive && declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
             PropertyChanges {
                 target: dash
                 width: screen.availableGeometry.width

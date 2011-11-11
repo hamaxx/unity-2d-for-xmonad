@@ -38,7 +38,7 @@ FocusScope {
                 var firstResult = firstCategoryModel.get(0)
                 /* Lenses give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
-                declarativeView.active = false
+                declarativeView.dashActive = false
                 model.activate(decodeURIComponent(uri))
                 return;
             }

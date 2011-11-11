@@ -70,13 +70,13 @@ DashDBus::activateLens(const QString& lensId)
 bool
 DashDBus::active() const
 {
-    return m_view->active();
+    return m_view->dashActive();
 }
 
 void
 DashDBus::setActive(bool active)
 {
-    m_view->setActive(active);
+    m_view->setDashActive(active);
 }
 
 QString
