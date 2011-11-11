@@ -31,7 +31,6 @@ Vcs-Bzr: http://bazaar.launchpad.net/~unity-2d-team/unity-2d/oneiric
 Package: unity-2d
 Architecture: all
 Depends: ${misc:Depends},
-         unity-2d-launcher,
          unity-2d-panel,
          unity-2d-spread,
 	 unity-2d-shell,
@@ -86,6 +85,7 @@ Description: Unity 2D Launcher
  list of favorite applications in a panel at the left of the screen.
  Notifications from individual applications are also highlighted in the
  launcher.
+ This package does not install anything anymore, it was replaced by unity-2d-shell.
  
 Package: unity-2d-panel
 Architecture: any
@@ -141,3 +141,5 @@ Description: Unity 2D Shell
  The components are:
  * Places: an overlay over the desktop to provide quick access to
            various categories of applications. 
+ * Launcher: displays in a panel at the left of the screen a list of running
+             and favorite applications as well as highlighting their notifications.
