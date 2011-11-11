@@ -10,9 +10,11 @@ feature set currently available we need to take care of the following tasks (ord
 
 = Medium =
 
+* Bfb button: make it properly toggle the dash (now it only shows it) and have the correct arrow indicator when dash is up.
 * Add proper package transition from unity-2d-launcher+unity-2d-places to unity-2d-shell in debian/rules
 * Put back in support for RTL
 * Add cmd line option to choose which root QML file to load
+* Put back in support for gestures (in a way that's not tied to the panel)
 
 = Minor =
 

@@ -68,12 +68,16 @@ void
 LauncherDBus::BeginForceVisible()
 {
     UQ_RETURN_IF_FAIL(calledFromDBus());
-    m_visibilityController->beginForceVisible(message().service());
+    if (m_visibilityController) {
+        m_visibilityController->beginForceVisible(message().service());
+    }
 }
 
 void
 LauncherDBus::EndForceVisible()
 {
-    UQ_RETURN_IF_FAIL(calledFromDBus());
-    m_visibilityController->endForceVisible(message().service());
+    if (m_visibilityController) {
+        UQ_RETURN_IF_FAIL(calledFromDBus());
+        m_visibilityController->endForceVisible(message().service());
+    }
 }

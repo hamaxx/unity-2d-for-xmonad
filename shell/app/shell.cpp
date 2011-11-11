@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// QT
 #include <QApplication>
 #include <QDebug>
 #include <QtDeclarative>
@@ -30,15 +31,21 @@
 #include <QAbstractEventDispatcher>
 #include <QDir>
 
+// X11
 #include <X11/Xlib.h>
 
 // unity-2d
+#include <gnomesessionclient.h>
 #include <unity2dapplication.h>
 #include <unity2ddebug.h>
 
+// Local
+#include "config.h"
 #include "shelldeclarativeview.h"
 #include "dashdbus.h"
-#include "config.h"
+#include "gesturehandler.h"
+#include "launcherdbus.h"
+#include "visibilitycontroller.h"
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +53,9 @@ int main(int argc, char *argv[])
     Unity2dApplication application(argc, argv);
     application.setApplicationName("Unity 2D Shell");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
+
+    GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");
+    client.connectToSessionManager();
 
     qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
     ShellDeclarativeView view;
@@ -59,6 +69,13 @@ int main(int argc, char *argv[])
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
+
+    // TODO: this should be kept around but not be tied to the panel anymore.
+    //    VisibilityController visibilityController(panel);
+    //    view.rootContext()->setContextProperty("visibilityController", &visibilityController);
+
+    LauncherDBus launcherDBus(NULL /*&visibilityController*/, &view);
+    launcherDBus.connectToBus();
 
     QDir::addSearchPath("artwork", unity2dDirectory() + "/shell/artwork");
 
@@ -74,6 +91,19 @@ int main(int argc, char *argv[])
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
     view.setSource(QUrl("qml/shell.qml"));
+
+    /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
+       applications) to use the same client id.
+       This would prevent some applications (e.g. nautilus) from launching when
+       the launcher itself was autostarted (which is the common case when
+       running installed).
+       For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
+    unsetenv("DESKTOP_AUTOSTART_ID");
+
+    // TODO: bring this back after refactoring it so that it doesn't use the panel
+    /* Gesture handler instance in charge of listening to gesture events and
+       trigger appropriate actions in response. */
+    //GestureHandler gestureHandler(&panel);
 
     /* When spawned via DBus activation, the current working directory is
        inherited from the DBus daemon, and it usually is not the user’s home
