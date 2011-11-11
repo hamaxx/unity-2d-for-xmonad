@@ -23,6 +23,8 @@ import Effects 1.0
 Item {
     id: dash
 
+    visible: declarativeView.dashActive
+
     Accessible.name: "root"
     LayoutMirroring.enabled: isRightToLeft()
     LayoutMirroring.childrenInherit: true
