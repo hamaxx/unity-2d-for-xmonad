@@ -35,6 +35,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
+    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
     enum DashMode {
@@ -48,6 +49,7 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
+    bool superKeyHeld() const { return m_superKeyHeld; }
 
     /* setters */
     Q_SLOT void setActive(bool active);

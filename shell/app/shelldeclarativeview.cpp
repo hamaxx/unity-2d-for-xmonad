@@ -33,6 +33,7 @@
 #include <QBitmap>
 #include <QCloseEvent>
 #include <QDeclarativeContext>
+#include <QDesktopWidget>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
@@ -78,7 +79,9 @@ ShellDeclarativeView::ShellDeclarativeView()
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
-    move(ScreenInfo::instance()->availableGeometry().topLeft());
+    /* We don't use ScreenInfo::availableGeometry here because it includes
+       the launcher in its calculations (see comments in the method itself) */
+    move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);

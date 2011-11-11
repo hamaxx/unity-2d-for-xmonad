@@ -22,6 +22,9 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 LauncherDropItem {
     id: launcher
 
+    width: 66
+    height: screen.availableGeometry.height
+
     Accessible.name: "root"
 
     function clamp(x, min, max) {

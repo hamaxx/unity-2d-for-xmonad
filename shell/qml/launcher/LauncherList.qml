@@ -108,7 +108,6 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
-        // FIXME: port method over
         shortcutVisible: declarativeView.superKeyHeld &&
                          ((item.toString().indexOf("LauncherApplication") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
@@ -142,7 +141,7 @@ AutoScrollingListView {
             list.visibleMenu = item.menu
             // FIXME: The extra 2 pixels are needed to center the menu arrow with
             // the center of the tile.
-            item.menu.show(width, panel.y + list.y - list.contentY +
+            item.menu.show(width, declarativeView.globalPosition.y + list.y - list.contentY +
                                   y + height - tileSize / 2 - 2)
 
         }
@@ -242,7 +241,9 @@ AutoScrollingListView {
 
         function setIconGeometry() {
             if (running) {
-                item.setIconGeometry(x + panel.x, y + panel.y, width, height)
+                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                                     y + declarativeView.globalPosition.y,
+                                     width, height)
             }
         }
 
@@ -279,7 +280,9 @@ AutoScrollingListView {
 
         Connections {
             target: item
-            onWindowAdded: item.setIconGeometry(x + panel.x, y + panel.y, width, height, xid)
+            onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
+                                                y + declarativeView.globalPosition.y,
+                                                width, height, xid)
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }
