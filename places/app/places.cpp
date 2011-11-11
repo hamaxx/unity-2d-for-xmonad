@@ -48,7 +48,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
     view.setAccessibleName("Dash");
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     if (!view.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
@@ -73,6 +75,5 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
 }

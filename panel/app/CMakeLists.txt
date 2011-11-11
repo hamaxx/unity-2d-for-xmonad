@@ -26,9 +26,9 @@ target_link_libraries(unity-2d-panel
     )
 
 install(TARGETS unity-2d-panel
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 install(FILES unity-2d-panel.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )

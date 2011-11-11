@@ -34,5 +34,5 @@ target_link_libraries(panelplugin-appindicator
     )
 
 install(TARGETS panelplugin-appindicator
-        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity-2d/plugins/panel
        )

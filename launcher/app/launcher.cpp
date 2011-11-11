@@ -99,7 +99,9 @@ int main(int argc, char *argv[])
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView(&panel);
-    launcherView->setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        launcherView->setUseOpenGL(true);
+    }
 
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();

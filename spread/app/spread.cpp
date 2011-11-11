@@ -39,7 +39,9 @@ int main(int argc, char *argv[])
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */

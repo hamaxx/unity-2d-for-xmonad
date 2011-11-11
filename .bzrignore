@@ -38,6 +38,7 @@ libunity-2d-private/tests/paneltest
 libunity-2d-private/tests/qsortfilterproxymodeltest
 libunity-2d-private/tests/unity2dtrtest
 libunity-2d-private/Unity2d/qrc_launchermenu.cxx
+libunity-2d-private/Unity2d/launchermenu/launchermenu.qrc.depends
 
 po/*.gmo
 
@@ -59,6 +60,10 @@ CMakeLists.txt.user
 
 # Debian packaging files
 obj-x86_64-linux-gnu
+debian/*.install
+debian/unity-2d.postinst
+debian/unity-2d.postrm
+debian/unity-2d.triggers
 debian/files
 debian/*.debhelper.log
 debian/*.substvars
