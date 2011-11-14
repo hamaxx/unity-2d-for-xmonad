@@ -22,19 +22,28 @@
 
 #include <QObject>
 #include <QHash>
+#include <QMetaType>
 
 extern "C" {
   #include <geis/geis.h>
 }
 
-#include "unity2dpanel.h"
-
 class GestureHandler : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(double dragDelta READ dragDelta NOTIFY dragDeltaChanged)
+    Q_PROPERTY(bool isDragging READ isDragging NOTIFY isDraggingChanged)
+
 public:
-    explicit GestureHandler(Unity2dPanel* launcher, QObject *parent = 0);
+    explicit GestureHandler(QObject *parent = 0);
     ~GestureHandler();
+
+    double dragDelta() const;
+    bool isDragging() const;
+
+Q_SIGNALS:
+    void dragDeltaChanged();
+    void isDraggingChanged();
 
 private Q_SLOTS:
     void geisEventDispatch();
@@ -60,7 +69,9 @@ private:
     float m_pinchPreviousRadius;
     int m_pinchPreviousTimestamp;
     float m_dragDelta;
-    Unity2dPanel* m_launcher;
+    bool m_isDragging;
 };
+
+Q_DECLARE_METATYPE(GestureHandler*)
 
 #endif // GESTUREHANDLER_H

@@ -57,6 +57,7 @@
 #include "intellihidebehavior.h"
 #include "forcevisiblebehavior.h"
 #include "bfb.h"
+#include "gesturehandler.h"
 
 #include "lenses.h"
 #include "lens.h"
@@ -160,6 +161,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<MultiRangeFilter>();
     qmlRegisterType<FilterOption>();
     qmlRegisterType<FilterOptions>();
+
+    qmlRegisterType<GestureHandler>(uri, 0, 1, "GestureHandler");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

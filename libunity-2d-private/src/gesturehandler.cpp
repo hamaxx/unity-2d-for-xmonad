@@ -25,10 +25,10 @@
 
 #include <debug_p.h>
 
-GestureHandler::GestureHandler(Unity2dPanel* launcher, QObject *parent)
+GestureHandler::GestureHandler(QObject *parent)
 : QObject(parent)
 , m_geisInstance(NULL)
-, m_launcher(launcher)
+, m_isDragging(false)
 {
     if (geisInitialize() != GEIS_STATUS_SUCCESS) {
         UQ_WARNING << "GEIS initialization failed: multitouch support disabled";
@@ -218,9 +218,10 @@ void GestureHandler::gestureStart(GeisGestureType type, GeisGestureId id,
         /* 4 fingers drag reveals the launcher progressively; if the drag goes far
            enough, the launcher is then locked in place and does not autohide anymore */
         /* FIXME: only supports the launcher positioned on the left edge of the screen */
-        m_launcher->setManualSliding(true);
-        m_dragDelta = m_launcher->delta() + attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
-        m_launcher->setDelta(m_dragDelta);
+        m_isDragging = true;
+        Q_EMIT isDraggingChanged();
+        m_dragDelta = attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
+        Q_EMIT dragDeltaChanged();
     }
 }
 
@@ -262,18 +263,17 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
             m_pinchPreviousTimestamp = timestamp;
         }
     } else if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
-        /* FIXME: only supports the launcher positioned on the left edge of the screen */
         m_dragDelta += attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
-        m_launcher->setDelta(m_dragDelta);
+        Q_EMIT dragDeltaChanged();
         /* If the drag goes sufficiently above than the maximum delta then
            lock the launcher in place by reserving the area so that no windows
-           overlap it.
+           overlap it. TODO: move to QML.
          */
-        if (m_dragDelta - m_launcher->delta() > 240) {
-            m_launcher->setUseStrut(true);
-        } else {
-            m_launcher->setUseStrut(false);
-        }
+//        if (m_dragDelta - m_launcher->delta() > 240) {
+//            m_launcher->setUseStrut(true);
+//        } else {
+//            m_launcher->setUseStrut(false);
+//        }
     }
 }
 
@@ -284,8 +284,20 @@ void GestureHandler::gestureFinish(GeisGestureType type, GeisGestureId id,
 
     if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
         m_dragDelta += attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
-        m_launcher->setDelta(m_dragDelta);
-        m_launcher->setManualSliding(false);
+        Q_EMIT dragDeltaChanged();
+        m_isDragging = false;
+        Q_EMIT isDraggingChanged();
     }
 }
 
+double GestureHandler::dragDelta() const
+{
+    return m_dragDelta;
+}
+
+bool GestureHandler::isDragging() const
+{
+    return m_isDragging;
+}
+
+#include "gesturehandler.moc"

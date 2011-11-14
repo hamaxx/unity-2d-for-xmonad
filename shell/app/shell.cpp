@@ -100,11 +100,6 @@ int main(int argc, char *argv[])
        For a discussion, see https://bugs.launchpad.net/upicek/+bug/684160. */
     unsetenv("DESKTOP_AUTOSTART_ID");
 
-    // TODO: bring this back after refactoring it so that it doesn't use the panel
-    /* Gesture handler instance in charge of listening to gesture events and
-       trigger appropriate actions in response. */
-    GestureHandler gestureHandler(NULL /*&panel*/);
-
     /* When spawned via DBus activation, the current working directory is
        inherited from the DBus daemon, and it usually is not the user’s home
        directory. Applications launched from the dash in turn inherit their

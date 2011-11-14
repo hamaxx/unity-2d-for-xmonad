@@ -35,7 +35,6 @@ Item {
         focus: true
         source: "dash/dash.qml"
         anchors.top: parent.top
-        anchors.left: launcher.right
     }
 
     Component.onCompleted: declarativeView.show()

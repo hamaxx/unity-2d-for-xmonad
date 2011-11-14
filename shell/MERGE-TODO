@@ -15,6 +15,9 @@ feature set currently available we need to take care of the following tasks (ord
 * Put back in support for RTL
 * Add cmd line option to choose which root QML file to load
 * Put back in support for gestures (in a way that's not tied to the panel)
+  - Put back support for struts
+* We are doing IPC between components in the same process in various cases. This brings back
+  bad memories and should be removed.
 
 = Minor =
 

@@ -1,7 +1,6 @@
 # Dependencies
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
-pkg_check_modules(GEIS REQUIRED libutouch-geis)
 
 # Sources
 set(shell_SRCS
@@ -9,7 +8,6 @@ set(shell_SRCS
     dashdbus.cpp
     launcherdbus.cpp
     visibilitycontroller.cpp
-    gesturehandler.cpp
     shelldeclarativeview.cpp
     )
 
@@ -17,7 +15,6 @@ set(shell_MOC_HDRS
     dashdbus.h
     launcherdbus.h
     visibilitycontroller.h
-    gesturehandler.h
     shelldeclarativeview.h
     )
 
@@ -37,7 +34,6 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QTGCONF_INCLUDE_DIRS}
     ${DCONFQT_INCLUDE_DIRS}
-    ${GEIS_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -49,7 +45,6 @@ target_link_libraries(unity-2d-shell
     ${QT_QTDECLARATIVE_LIBRARIES}
     ${QTGCONF_LDFLAGS}
     ${DCONFQT_LDFLAGS}
-    ${GEIS_LDFLAGS}
     ${GTK_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}

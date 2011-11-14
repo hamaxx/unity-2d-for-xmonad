@@ -26,6 +26,7 @@ set(lib${LIB_NAME}_SRCS
     autohidebehavior.cpp
     edgehitdetector.cpp
     forcevisiblebehavior.cpp
+    gesturehandler.cpp
     intellihidebehavior.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp
@@ -102,6 +103,7 @@ include_directories(
     ${NUXCORE_INCLUDE_DIRS}
     ${DEE_INCLUDE_DIRS}
     ${XINPUT_INCLUDE_DIRS}
+    ${GEIS_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS} listmodelwrapper.h)
@@ -137,6 +139,7 @@ target_link_libraries(${LIB_NAME}
     ${NUXCORE_LDFLAGS}
     ${DEE_LDFLAGS}
     ${XINPUT_LDFLAGS}
+    ${GEIS_LDFLAGS}
     )
 
 # Install

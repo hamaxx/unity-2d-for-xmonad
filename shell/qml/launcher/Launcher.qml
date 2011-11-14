@@ -25,6 +25,18 @@ LauncherDropItem {
     width: 66
     height: screen.availableGeometry.height
 
+    GestureHandler {
+        id: gestures
+        // TODO: use isDragging and dragDelta to slide out the launcher
+        // manually and lock it in place when the slide goes far enough.
+    }
+
+    MouseArea {
+        id: launcherFullArea
+        anchors.fill: parent
+    }
+    property alias containsMouse: launcherFullArea.containsMouse
+
     Accessible.name: "root"
 
     function clamp(x, min, max) {
