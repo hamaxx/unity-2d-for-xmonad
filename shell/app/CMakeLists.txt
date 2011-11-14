@@ -1,6 +1,7 @@
 # Dependencies
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
+pkg_check_modules(GEIS REQUIRED libutouch-geis)
 
 # Sources
 set(shell_SRCS
@@ -8,7 +9,7 @@ set(shell_SRCS
     dashdbus.cpp
     launcherdbus.cpp
     visibilitycontroller.cpp
-    #gesturehandler.cpp
+    gesturehandler.cpp
     shelldeclarativeview.cpp
     )
 
@@ -16,7 +17,7 @@ set(shell_MOC_HDRS
     dashdbus.h
     launcherdbus.h
     visibilitycontroller.h
-    #gesturehandler.h
+    gesturehandler.h
     shelldeclarativeview.h
     )
 

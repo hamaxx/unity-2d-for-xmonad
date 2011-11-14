@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     // TODO: bring this back after refactoring it so that it doesn't use the panel
     /* Gesture handler instance in charge of listening to gesture events and
        trigger appropriate actions in response. */
-    //GestureHandler gestureHandler(&panel);
+    GestureHandler gestureHandler(NULL /*&panel*/);
 
     /* When spawned via DBus activation, the current working directory is
        inherited from the DBus daemon, and it usually is not the user’s home
