@@ -27,7 +27,6 @@ Item {
         id: launcher
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
-        anchors.left: parent.left
     }
 
     Loader {
@@ -35,6 +34,7 @@ Item {
         focus: true
         source: "dash/dash.qml"
         anchors.top: parent.top
+        anchors.left: launcher.right
     }
 
     Component.onCompleted: declarativeView.show()
