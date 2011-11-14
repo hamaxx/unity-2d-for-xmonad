@@ -58,7 +58,7 @@ void EdgeHitDetector::updateGeometryFromScreen()
     if (QApplication::isLeftToRight()) {
         m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
     } else {
-        m_mouseArea->setGeometry(rect.right(), rect.top(), 1, rect.height());
+        m_mouseArea->setGeometry(rect.right() - 1, rect.top(), 1, rect.height());
     }
 }
 

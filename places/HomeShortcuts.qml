@@ -39,7 +39,7 @@ Grid {
     property int currentIndex: 0
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
-        switch (switchLeftRightKeys(key)) {
+        switch (key) {
         case Qt.Key_Right:
             return selectChild(currentIndex+1)
         case Qt.Key_Left:
