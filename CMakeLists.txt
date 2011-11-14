@@ -9,7 +9,7 @@ set(UNITY_2D_DIR "${CMAKE_INSTALL_DATADIR}/unity-2d")
 set(UNITY_DIR /usr/share/unity/)
 set(UNITY_2D_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
 
-configure_file(config.h.in config.h)
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 # Configure debian files
 string(SUBSTRING "${CMAKE_INSTALL_PREFIX}" 1 -1 DEBIAN_INSTALL_PREFIX)
@@ -93,3 +93,7 @@ add_subdirectory(panel)
 add_subdirectory(places)
 add_subdirectory(spread)
 add_subdirectory(po)
+
+# uninstall target
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
+add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
