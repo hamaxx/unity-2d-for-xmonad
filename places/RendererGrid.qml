@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 1.0
 import Unity2d 1.0
 
 /* Renderers typically use a grid layout to render the model. The RendererGrid
@@ -30,10 +30,9 @@ Renderer {
     width: parent.width
     height:  grid.height
     needHeader: true
-    focus: true
 
     property alias cellsPerRow: grid.columns
-    property Component cellRenderer
+    property variant cellRenderer
     property bool folded: true
     property int cellWidth: 158
     property int cellHeight: 76
@@ -72,19 +71,11 @@ Renderer {
             id: results
             FocusPath.skip: true
 
-            /* Only display one line of items when folded */
-            model: SortFilterProxyModel {
-                id: modell
-                model: renderer.category_model != undefined ? renderer.category_model : null
-                limit: renderer.folded ? grid.columns : -1
-            }
-
             FocusScope {
                 id: cell
-                FocusPath.index: index
-
                 width: renderer.cellWidth + grid.itemHorizontalSpacing
                 height: renderer.cellHeight + renderer.verticalSpacing
+                FocusPath.index: index
 
                 property string uri: column_0
                 property string iconHint: column_1
@@ -120,6 +111,12 @@ Renderer {
                         item.dndUri = dndUri
                     }
                 }
+            }
+
+            /* Only display one line of items when folded */
+            model: SortFilterProxyModel {
+                model: renderer.category_model != undefined ? renderer.category_model : null
+                limit: renderer.folded ? grid.columns : -1
             }
         }
     }

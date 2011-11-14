@@ -20,7 +20,6 @@ import QtQuick 1.0
 import Unity2d 1.0
 
 FocusScope {
-    focus: true
     property variant model: PageModel {
         /* model.searchQuery is copied over to all lenses globalSearchQuery property */
         onSearchQueryChanged: {
@@ -104,9 +103,18 @@ FocusScope {
         anchors.leftMargin: 20
         model: dash.lenses
 
+        bodyDelegate: TileVertical {
+            lens: model.item
+            name: model.item.name
+            iconHint: model.item.iconHint
+            category_model: model.item.globalResults
+            visible: category_model.count > 0
+            focus: visible
+        }
+
         headerDelegate: CategoryHeader {
             visible: body.needHeader && body.visible
-            focus: true //visible && foldable
+            focus: true
             height: visible ? 32 : 0
             availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
             folded: foldable ? body.folded : false
@@ -116,15 +124,6 @@ FocusScope {
             property bool foldable: body.folded != undefined
 
             onClicked: if(foldable) body.folded = !body.folded
-        }
-
-        bodyDelegate: TileVertical {
-            lens: model.item
-            name: model.item.name
-            iconHint: model.item.iconHint
-            category_model: model.item.globalResults
-            visible: category_model.count > 0
-            focus: visible
         }
 
     }

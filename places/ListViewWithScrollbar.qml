@@ -26,12 +26,13 @@ FocusScope {
 
     ListViewWithHeaders {
         id: list
+
+        focus: true
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.rightMargin: 15
-        focus: true
     }
 
     Scrollbar {
@@ -47,10 +48,6 @@ FocusScope {
 
         /* Hide the scrollbar if there is less than a page of results */
         opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 100
-            }
-        }
+        Behavior on opacity {NumberAnimation {duration: 100}}
     }
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 1.0
 import Unity2d 1.0
 
 Item {
@@ -35,28 +35,24 @@ Item {
 
         HomeButton {
             focus: true
-            focusIndex: 0
             label: u2d.tr("Media Apps")
             icon: "artwork/find_media_apps.png"
             onClicked: activateLensWithOptionFilter("applications.lens", "type", "media")
         }
 
         HomeButton {
-            focusIndex: 1
             label: u2d.tr("Internet Apps")
             icon: "artwork/find_internet_apps.png"
             onClicked: activateLensWithOptionFilter("applications.lens", "type", "internet")
         }
 
         HomeButton {
-            focusIndex: 2
             label: u2d.tr("More Apps")
             icon: "artwork/find_more_apps.png"
             onClicked: activateLensAndClearFilter("applications.lens", "type")
         }
 
         HomeButton {
-            focusIndex: 3
             label: u2d.tr("Find Files")
             icon: "artwork/find_files.png"
             onClicked: activateLens("files.lens")
@@ -64,26 +60,22 @@ Item {
 
         /* FIXME: use user's preferred applications instead of hardcoding them */
         HomeButtonDefaultApplication {
-            focusIndex: 4
             label: u2d.tr("Browse the Web")
             contentType: "x-scheme-handler/http"
         }
 
         HomeButtonDefaultApplication {
-            focusIndex: 5
             label: u2d.tr("View Photos")
             contentType: "image/jpeg"
             desktopFile: "shotwell-viewer.desktop"
         }
 
         HomeButtonDefaultApplication {
-            focusIndex: 6
             label: u2d.tr("Check Email")
             contentType: "x-scheme-handler/mailto"
         }
 
         HomeButtonDefaultApplication {
-            focusIndex: 7
             label: u2d.tr("Listen to Music")
             contentType: "audio/x-vorbis+ogg"
         }

@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+import QtQuick 1.0
 import Unity2d 1.0
 import "utils.js" as Utils
 
-Item {
+FocusScope {
     id: lensView
-    focus: false
 
     /* An instance of Lens */
     property variant model
@@ -91,6 +90,8 @@ Item {
                 if (status == Loader.Error) {
                     console.log("Failed to load renderer %1. Using default renderer instead.".arg(rendererName))
                     source = "TileVertical.qml"
+                } else {
+                    item.focus = true
                 }
             }
 
@@ -113,7 +114,10 @@ Item {
             property int cellsPerRow: item.cellsPerRow
             property variant currentItem: item.currentItem
 
-            /* This is necessary becase the alias does not work in a loader */
+            /*This is necessary because the alias does not work in a loaded item.
+              Is not possible create alias for this property because that property does not exist
+              during the object creation, this property will became available after the load item process .
+             */
             property bool folded: item.folded
             onFoldedChanged: item.folded = folded
 
@@ -132,10 +136,8 @@ Item {
             focus: true
             icon: body.iconHint
             label: body.name
-            focusIndex: 0
 
             property bool foldable: body.folded != undefined
-            property int columns: body.cellsPerRow ? body.cellsPerRow : 0
 
             onClicked: if(foldable) body.folded = !body.folded
         }
