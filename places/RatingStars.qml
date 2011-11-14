@@ -50,7 +50,7 @@ Item {
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
-        switch (key) {
+        switch (switchLeftRightKeys(key)) {
         case Qt.Key_Right:
             incrementRating()
             return true
@@ -63,6 +63,9 @@ Item {
 
     Row {
         id: stars
+
+        // Required for right-to-left mirroring
+        anchors.left: parent.left
 
         Repeater {
             model: size
@@ -98,6 +101,8 @@ Item {
 
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
             var rating = (posX - posXOverUnit) / unitWidth + 1
+            if (isRightToLeft())
+                rating = size + 1 - rating
 
             return clamp( rating, 0, size )
         }
