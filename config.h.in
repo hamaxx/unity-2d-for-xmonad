@@ -7,8 +7,7 @@
 #include <QCoreApplication>
 
 inline bool isRunningInstalled() {
-    static bool cachedResult = (QCoreApplication::applicationDirPath().compare(INSTALL_PREFIX "/" INSTALL_BINDIR) == 0);
-    return cachedResult;
+    return (QCoreApplication::applicationDirPath() == (INSTALL_PREFIX "/" INSTALL_BINDIR));
 }
 
 inline QString unity2dDirectory() {
