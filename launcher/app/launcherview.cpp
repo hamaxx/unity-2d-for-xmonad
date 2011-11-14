@@ -290,10 +290,14 @@ LauncherView::onSuperSPressed()
 void
 LauncherView::onAltF1Pressed()
 {
+    QGraphicsObject* launcher = rootObject();
+
     if (hasFocus()) {
+        QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
         forceDeactivateWindow();
     }
     else {
         forceActivateWindow();
+        QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
     }
 }

@@ -37,6 +37,13 @@ LauncherDropItem {
         }
     }
 
+    function focusBFB() {
+        if (main.currentIndex != 0) {
+            main.currentIndex = 0
+            main.positionViewAtBeginning()
+        }
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent
