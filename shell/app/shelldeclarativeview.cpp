@@ -476,3 +476,56 @@ ShellDeclarativeView::forwardNumericHotkey()
         }
     }
 }
+
+/* ----------------- monitored area handling ---------------- */
+
+void
+ShellDeclarativeView::mouseMoveEvent(QMouseEvent *event)
+{
+    Unity2DDeclarativeView::mouseMoveEvent(event);
+
+    bool containsMouse = m_monitoredArea.contains(event->pos());
+    if (m_monitoredAreaContainsMouse != containsMouse) {
+        m_monitoredAreaContainsMouse = containsMouse;
+        Q_EMIT monitoredAreaContainsMouseChanged();
+    }
+}
+
+void
+ShellDeclarativeView::leaveEvent(QEvent *event)
+{
+    Unity2DDeclarativeView::leaveEvent(event);
+
+    if (m_monitoredAreaContainsMouse) {
+        m_monitoredAreaContainsMouse = false;
+        Q_EMIT monitoredAreaContainsMouseChanged();
+    }
+}
+
+QRect
+ShellDeclarativeView::monitoredArea() const
+{
+    return m_monitoredArea;
+}
+
+void
+ShellDeclarativeView::setMonitoredArea(QRect monitoredArea)
+{
+    if (m_monitoredArea != monitoredArea) {
+        m_monitoredArea = monitoredArea;
+        Q_EMIT monitoredAreaChanged();
+
+        bool containsMouse = monitoredArea.contains(mapFromGlobal(QCursor::pos()));
+        if (containsMouse != m_monitoredAreaContainsMouse) {
+            m_monitoredAreaContainsMouse = containsMouse;
+            Q_EMIT monitoredAreaContainsMouseChanged();
+        }
+    }
+}
+
+bool
+ShellDeclarativeView::monitoredAreaContainsMouse() const
+{
+    return m_monitoredAreaContainsMouse;
+}
+

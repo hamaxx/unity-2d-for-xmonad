@@ -78,10 +78,10 @@ void VisibilityController::update()
         case ManualHide:
             break;
         case AutoHide:
-            setBehavior(new AutoHideBehavior(m_panel));
+            setBehavior(new AutoHideBehavior());
             break;
         case IntelliHide:
-            setBehavior(new IntelliHideBehavior(m_panel));
+            setBehavior(new IntelliHideBehavior());
             break;
         }
     }
@@ -99,7 +99,7 @@ void VisibilityController::beginForceVisible(const QString& service)
         }
     }
     if (wasEmpty) {
-        setBehavior(new ForceVisibleBehavior(m_panel));
+        setBehavior(new ForceVisibleBehavior());
     }
 }
 

@@ -37,6 +37,16 @@ class ShellDeclarativeView : public Unity2DDeclarativeView
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
+    /* These two properties and mouse movement tracking on the widget are added here only because
+       we need to detect when the mouse is inside the area occupied by the lancher. This should
+       be entirely doable in QML with MouseAreas, but the current implementation has serious
+       issues with event bubbling so we can't use it.
+       See http://bugreports.qt.nokia.com/browse/QTBUG-13007?focusedCommentId=137123 */
+    Q_PROPERTY(QRect monitoredArea READ monitoredArea WRITE setMonitoredArea
+                                   NOTIFY monitoredAreaChanged)
+    Q_PROPERTY(bool monitoredAreaContainsMouse READ monitoredAreaContainsMouse
+                                               NOTIFY monitoredAreaContainsMouseChanged)
+
 public:
     enum DashMode {
         DesktopMode,
@@ -50,12 +60,15 @@ public:
     const QString& activeLens() const;
     bool expanded() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
+    QRect monitoredArea() const;
+    bool monitoredAreaContainsMouse() const;
 
     /* setters */
     Q_SLOT void setDashActive(bool active);
     Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
+    void setMonitoredArea(QRect monitoredArea);
 
 Q_SIGNALS:
     void dashActiveChanged(bool);
@@ -65,6 +78,8 @@ Q_SIGNALS:
     void activateLens(const QString& lensId);
     void activateHome();
     void focusChanged();
+    void monitoredAreaChanged();
+    void monitoredAreaContainsMouseChanged();
 
     void addWebFavoriteRequested(const QUrl& url);
     void superKeyHeldChanged(bool superKeyHeld);
@@ -86,6 +101,8 @@ private Q_SLOTS:
 protected:
     void resizeEvent(QResizeEvent*);
     virtual void showEvent(QShowEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void leaveEvent(QEvent *event);
 
 private Q_SLOTS:
     void updateDashModeDependingOnScreenGeometry();
@@ -107,6 +124,8 @@ private:
     bool m_superKeyHeld;
     bool m_superPressIgnored;
     QTimer m_superKeyHoldTimer;
+    QRect m_monitoredArea;
+    bool m_monitoredAreaContainsMouse;
 
     friend class DashDBus;
     friend class LauncherDBus;

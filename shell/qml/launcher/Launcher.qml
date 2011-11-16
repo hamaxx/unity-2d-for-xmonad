@@ -24,18 +24,30 @@ LauncherDropItem {
 
     width: 66
     height: screen.availableGeometry.height
+    x: visibilityController.shown ? 0 : -width
 
-    GestureHandler {
-        id: gestures
-        // TODO: use isDragging and dragDelta to slide out the launcher
-        // manually and lock it in place when the slide goes far enough.
+    Behavior on x { NumberAnimation { duration: 125 } }
+
+    property bool outerEdgeContainsMouse: outerEdge.containsMouse
+    VisibilityController {
+        id: visibilityController
+        launcher: launcher
     }
 
     MouseArea {
-        id: launcherFullArea
+        id: outerEdge
         anchors.fill: parent
+        anchors.margins: -1
+        hoverEnabled: !visibilityController.shown
+        enabled: !visibilityController.shown
     }
-    property alias containsMouse: launcherFullArea.containsMouse
+
+    Binding {
+        target: declarativeView
+        property: "monitoredArea"
+        value: Qt.rect(launcher.x, launcher.y, launcher.width, launcher.height)
+    }
+    property bool containsMouse: declarativeView.monitoredAreaContainsMouse
 
     Accessible.name: "root"
 
