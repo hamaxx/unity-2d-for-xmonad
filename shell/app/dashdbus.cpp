@@ -33,7 +33,7 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 : QObject(parent)
 , m_view(view)
 {
-    connect(m_view, SIGNAL(activeChanged(bool)), SIGNAL(activeChanged(bool)));
+    connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
     connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 }
 
