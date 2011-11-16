@@ -23,6 +23,8 @@ Item {
     width: childrenRect.width
     height: childrenRect.height
 
+    Accessible.name: "shell"
+
     Loader {
         id: launcher
         source: "launcher/Launcher.qml"

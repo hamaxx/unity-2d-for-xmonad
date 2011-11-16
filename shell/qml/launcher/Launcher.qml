@@ -21,6 +21,7 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 LauncherDropItem {
     id: launcher
+    Accessible.name: "launcher"
 
     width: 66
     height: screen.availableGeometry.height
@@ -48,8 +49,6 @@ LauncherDropItem {
         value: Qt.rect(launcher.x, launcher.y, launcher.width, launcher.height)
     }
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-
-    Accessible.name: "root"
 
     function clamp(x, min, max) {
         return Math.max(Math.min(x, max), min)

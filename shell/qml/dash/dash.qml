@@ -22,10 +22,10 @@ import Effects 1.0
 
 Item {
     id: dash
+    Accessible.name: "dash"
 
     visible: declarativeView.dashActive
 
-    Accessible.name: "root"
     LayoutMirroring.enabled: isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
