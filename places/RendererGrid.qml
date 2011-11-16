@@ -27,24 +27,20 @@ import Unity2d 1.0
 */
 Renderer {
     id: renderer
-    width: parent.width
-    height:  grid.height
     needHeader: true
+    currentItem: focusPath.currentItem
 
+    property int contentHeight: grid.height + grid.anchors.topMargin + grid.anchors.bottomMargin
     property alias cellsPerRow: grid.columns
     property variant cellRenderer
     property bool folded: true
     property int cellWidth: 158
     property int cellHeight: 76
 
-    /* used for celtralized grid */
-    property int minHorizontalSpacing: 0
-    property int minVerticalSpacing: 0
+    property int minHorizontalSpacing: 26
+    property int minVerticalSpacing: 26
 
-    property int horizontalSpacing: 26
-    property int verticalSpacing: 26
-
-    property bool centralized: true
+    property bool centered: true
 
     FocusPath {
         id: focusPath
@@ -52,21 +48,16 @@ Renderer {
         columns: grid.columns
     }
 
-    onActiveFocusChanged: {
-        if (activeFocus && (grid.children > focusPath.currentIndex)) {
-            currentItem = grid.children[focusPath.currentIndex]
-        }
-    }
-
     Grid {
         id: grid
-        columns: Math.floor(parent.width/(renderer.cellWidth + renderer.horizontalSpacing))
+        columns: Math.floor(parent.width/(renderer.cellWidth + renderer.minHorizontalSpacing))
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 2
         anchors.topMargin: 12
-        width: parent.width
 
-        property int virtualHorizontalSpacing: renderer.centralized ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.horizontalSpacing
-        /* Keep the horizontal space alway larger then minHorizontalSpacing */
-        property int itemHorizontalSpacing: virtualHorizontalSpacing < minHorizontalSpacing ? minHorizontalSpacing : virtualHorizontalSpacing
+        property int itemHorizontalSpacing: renderer.centered ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.minHorizontalSpacing
         Repeater {
             id: results
             FocusPath.skip: true
@@ -74,7 +65,7 @@ Renderer {
             FocusScope {
                 id: cell
                 width: renderer.cellWidth + grid.itemHorizontalSpacing
-                height: renderer.cellHeight + renderer.verticalSpacing
+                height: renderer.cellHeight + renderer.minVerticalSpacing
                 FocusPath.index: index
 
                 property string uri: column_0
@@ -85,16 +76,9 @@ Renderer {
                 property string comment: column_5
                 property string dndUri: column_6
 
-                onActiveFocusChanged: {
-                    if (activeFocus) {
-                        renderer.currentItem = cell
-                    }
-                }
-
                 Loader {
                     id: loader
                     focus: true
-                    clip: true
                     width: renderer.cellWidth
                     height: renderer.cellHeight
                     anchors.horizontalCenter: parent.horizontalCenter

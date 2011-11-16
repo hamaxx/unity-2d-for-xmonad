@@ -78,6 +78,8 @@ FocusScope {
         bodyDelegate: Loader {
             visible: category_model.count > 0
             focus: true
+            width: parent.width
+            height: item.contentHeight
             FocusPath.skip: false
 
             property string name: model.column_0

@@ -110,6 +110,8 @@ FocusScope {
             category_model: model.item.globalResults
             visible: category_model.count > 0
             focus: visible
+            height: contentHeight
+            width: parent.width
         }
 
         headerDelegate: CategoryHeader {

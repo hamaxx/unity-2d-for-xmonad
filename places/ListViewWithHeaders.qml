@@ -28,25 +28,24 @@ import Unity2d 1.0
   depending on where you are in the list.
 
   To use it the following properties need to be set:
-  - bodyDelegate: Component used as a template for each item of the model; it
+  - bodyDelegate: Component used as a template for each item of the model;
   - headerDelegate: Component used as a template for the header preceding each body
 
   Currently, it only works in a vertical layout.
 */
 FocusScope {
     id: list
-    anchors.fill: parent
 
     property alias flickable: scroll
     property Component bodyDelegate
     property Component headerDelegate
-    property alias model: content.model
+    property alias model: categories.model
 
     property bool giveFocus: false
 
     FocusPath {
         id: focusPath
-        item: root
+        item: categoriesColumn
         columns: 1
     }
 
@@ -60,7 +59,7 @@ FocusScope {
         clip: true
         interactive: true
         contentWidth: width
-        contentHeight: root.height
+        contentHeight: categoriesColumn.height
         flickableDirection: Flickable.VerticalFlick
         focus: true
 
@@ -68,48 +67,42 @@ FocusScope {
             NumberAnimation { duration:  300; }
         }
 
-        function moveToPosition(itemPos, itemHeight) {
-            var itemBottom = itemPos.y + itemHeight
-            var itemTop = itemHeight * 0.30
-            if (itemPos.y < itemTop) {
-                itemTop = itemPos.y
-            } else {
-                itemTop = itemPos.y - 30
-            }
-
-            var scrollPos = -1;
+        function moveToPosition(item) {
+            var itemPosition = item.mapToItem(categoriesColumn, x, y)
+            var itemBottom = itemPosition.y + item.height
+            //Keep a margin of 30px visible
+            var itemTop = itemPosition.y - 30
+            var newContentY = -1;
 
             if (scroll.contentY > itemTop) {
-                scrollPos = itemTop
+                newContentY = itemTop
             } else if ((scroll.contentY + scroll.height) < itemBottom) {
-                scrollPos = itemBottom - scroll.height;
+                newContentY = itemBottom - scroll.height;
             }
 
-            if (scrollPos >= 0) {
-                scroll.contentY = scrollPos
+            if (newContentY >= 0) {
+                scroll.contentY = newContentY
             }
         }
 
         Column {
-            id: root
+            id: categoriesColumn
 
             Repeater {
-                id: content
+                id: categories
                 clip: true
-                focus: true
                 FocusPath.skip: true
 
                 FocusScope {
                     focus: false
                     width: childrenRect.width
-                    height: rowItem.height
+                    height: category.height
                     visible: bodyLoader.height > 0
                     FocusPath.index: index
-                    FocusPath.skip: !bodyLoader.item || !bodyLoader.visible || !headerLoader.item
+                    FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
 
                     Column {
-                        id: rowItem
-                        focus: true
+                        id: category
 
                         Loader {
                             id: headerLoader
@@ -119,6 +112,9 @@ FocusScope {
                             focus: item && item.visible
                             KeyNavigation.down: bodyLoader
 
+                            /* Workaround Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-18857
+                               More documentation at http://bugreports.qt.nokia.com/browse/QTBUG-18011
+                             */
                             property int index
                             Binding { target: headerLoader; property: "index"; value: index }
                             property variant model
@@ -128,8 +124,7 @@ FocusScope {
 
                             onActiveFocusChanged: {
                                 if (visible && item && item.activeFocus) {
-                                    var itemPos = item.mapToItem(root, x, y)
-                                    scroll.moveToPosition(itemPos, item.height)
+                                    scroll.moveToPosition(item)
                                 }
                             }
                         }
@@ -146,14 +141,16 @@ FocusScope {
                             function scrollToActiveItem()
                             {
                                 if (visible && currentItem && (activeFocus || currentItem.activeFocus)) {
-                                    var itemPos = currentItem.mapToItem(root, x, y)
-                                    scroll.moveToPosition(itemPos, currentItem.height)
+                                    scroll.moveToPosition(currentItem)
                                 }
                             }
 
                             onCurrentItemChanged: scrollToActiveItem()
                             onActiveFocusChanged: scrollToActiveItem()
 
+                           /* Workaround Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-18857
+                              More documentation at http://bugreports.qt.nokia.com/browse/QTBUG-18011
+                            */
                             property int index
                             Binding { target: bodyLoader; property: "index"; value: index }
                             property variant model

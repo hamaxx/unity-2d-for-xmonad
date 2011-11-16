@@ -103,6 +103,15 @@ int FocusPath::currentIndex() const
     return m_currentIndex;
 }
 
+QDeclarativeItem* FocusPath::currentItem() const
+{
+    if (m_currentIndex >= 0 && m_currentIndex < m_path.size()) {
+        return m_path[m_currentIndex].second;
+    }
+
+    return 0;
+}
+
 void FocusPath::setItem(QDeclarativeItem* item)
 {
     if (m_item != item) {
@@ -122,8 +131,12 @@ void FocusPath::setColumns(int columns)
 void FocusPath::setCurrentIndex(int index)
 {
     if (m_currentIndex != index) {
+        QDeclarativeItem* focus = m_path[index].second;
+        Q_ASSERT(focus);
+        focus->forceActiveFocus();
         m_currentIndex = index;
         Q_EMIT currentIndexChanged();
+        Q_EMIT currentItemChanged();
     }
 }
 
@@ -150,35 +163,39 @@ void FocusPath::reset()
         }
     }
     m_currentIndex = 0;
+    Q_EMIT currentIndexChanged();
+    Q_EMIT currentItemChanged();
 }
 
 void FocusPath::addItem(QDeclarativeItem *item)
 {
-    QObject *attached = qmlAttachedPropertiesObject<FocusPath>(item);
-    FocusPathAttached *info = static_cast<FocusPathAttached *>(attached);
+    if (item->flags() & QGraphicsItem::ItemIsFocusScope) {
+        QObject *attached = qmlAttachedPropertiesObject<FocusPath>(item);
+        FocusPathAttached *info = static_cast<FocusPathAttached *>(attached);
 
-    if (!info->skip()) {
-        QList<PathItem>::iterator i = m_path.begin();
-        for(; i != m_path.end(); i++) {
-            if (info->index() < (*i).first) {
-                break;
+        if (!info->skip()) {
+            QList<PathItem>::iterator i = m_path.begin();
+            for(; i != m_path.end(); i++) {
+                if (info->index() < (*i).first) {
+                    break;
+                }
             }
+
+            if (i == m_path.begin()) {
+                m_path.prepend(qMakePair(info->index(), item));
+            } else if (i == m_path.end()) {
+                m_path.append(qMakePair(info->index(), item));
+            } else {
+                m_path.insert(--i, qMakePair(info->index(), item));
+            }
+
+            reset();
         }
 
-        if (i == m_path.begin()) {
-            m_path.prepend(qMakePair(info->index(), item));
-        } else if (i == m_path.end()) {
-            m_path.append(qMakePair(info->index(), item));
-        } else {
-            m_path.insert(--i, qMakePair(info->index(), item));
-        }
-
-        reset();
+        m_items << item;
+        QObject::connect(info, SIGNAL(indexChanged()), this, SLOT(onItemChanged()));
+        QObject::connect(info, SIGNAL(skipChanged()), this, SLOT(onItemChanged()));
     }
-
-    m_items << item;
-    QObject::connect(info, SIGNAL(indexChanged()), this, SLOT(onItemChanged()));
-    QObject::connect(info, SIGNAL(skipChanged()), this, SLOT(onItemChanged()));
 }
 
 void FocusPath::removeItem(QDeclarativeItem *item)
@@ -239,10 +256,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                 }
 
                 if ((nextFocus >= 0) && (nextFocus < m_path.size())) {
-                    QDeclarativeItem* focus = m_path[nextFocus].second;
-                    Q_ASSERT(focus);
-                    focus->forceActiveFocus();
-                    m_currentIndex = nextFocus;
+                    setCurrentIndex(nextFocus);
                     return true;
                 }
                 break;

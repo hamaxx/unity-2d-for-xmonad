@@ -33,6 +33,7 @@ class FocusPath : public QObject
     Q_PROPERTY(QDeclarativeItem* item READ item WRITE setItem NOTIFY itemChanged)
     Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(QDeclarativeItem* currentItem READ currentItem NOTIFY currentItemChanged)
 
 public:
     explicit FocusPath(QObject *parent = 0);
@@ -42,6 +43,7 @@ public:
     int columns() const;
     QDeclarativeItem *item() const;
     int currentIndex() const;
+    QDeclarativeItem *currentItem() const;
 
     /* setters */
     void setColumns(int columns);
@@ -56,6 +58,7 @@ Q_SIGNALS:
     void itemChanged();
     void columnsChanged();
     void currentIndexChanged();
+    void currentItemChanged();
 
 protected Q_SLOTS:
     void onChildrenChanged();
