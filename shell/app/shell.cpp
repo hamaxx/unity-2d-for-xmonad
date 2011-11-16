@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
-    view.setSource(QUrl("qml/shell.qml"));
+    view.setSource(QUrl("qml/Shell.qml"));
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.
