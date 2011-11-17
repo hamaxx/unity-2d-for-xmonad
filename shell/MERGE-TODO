@@ -5,12 +5,14 @@ feature set currently available we need to take care of the following tasks (ord
 
 * Shell window should be input-shaped so that the part that belongs to neither dash nor launcher does not receive input
 * Correctly register shell as Launcher over DBUS
-* Make launcher hide modes work with the shell. Right now launcher is always visible.
+* Make forceVisible feature work with the QML-based visibility controller
+  - Remove DBUS forceVisible API: only spread and the to-be-removed panel home plugin use it, and spread activation can be
+    detected from inside shell to trigger forced visibility.
 * Laucher was a dock window, now it's a regular window. Experiment with making it dock again or at least always-on-top
+* Make ALT+F1 and keyboard operation for the launcher work again
 
 = Medium =
 
-* Bfb button: make it properly toggle the dash (now it only shows it) and have the correct arrow indicator when dash is up.
 * Add proper package transition from unity-2d-launcher+unity-2d-places to unity-2d-shell in debian/rules
 * Put back in support for RTL
 * Add cmd line option to choose which root QML file to load
@@ -21,6 +23,5 @@ feature set currently available we need to take care of the following tasks (ord
 
 = Minor =
 
-* The BFB button in launcher activates the dash through dbus, but it can be done more efficiently in some more direct way (signals ?)
-* Tests were removed
+* Tests were removed, do we need to put them back ?
 * Move updateDashModeDependingOnScreenGeometry to QML
