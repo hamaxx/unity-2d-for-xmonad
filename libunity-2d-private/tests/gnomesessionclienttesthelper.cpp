@@ -15,9 +15,11 @@
 // Qt
 #include <QApplication>
 #include <QPushButton>
+#include <QWindowsStyle>
 
 int main(int argc, char** argv)
 {
+    QApplication::setStyle(new QWindowsStyle);
     QApplication app(argc, argv);
     GnomeSessionClient client("/tmp/gnomesessionclient-test.desktop");
     client.connectToSessionManager();

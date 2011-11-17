@@ -53,9 +53,19 @@ Item {
                 */
                 deactivateActiveLens()
                 currentPage = undefined
-                pageLoader.source = ""
+                // Delay the following instruction by 1 millisecond using a
+                // timer. This is enough to work around a crash that happens
+                // when the layout is mirrored (RTL locales). See QTBUG-22776
+                // for details.
+                //pageLoader.source = ""
+                delayPageLoaderReset.restart()
             }
         }
+    }
+    Timer {
+        id: delayPageLoaderReset
+        interval: 1
+        onTriggered: pageLoader.source = ""
     }
 
     function activatePage(page) {
