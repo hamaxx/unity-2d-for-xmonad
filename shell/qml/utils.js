@@ -31,3 +31,8 @@ function convertToCamelCase( name ) {
 function clamp(x, min, max) {
     return Math.max(Math.min(x, max), min)
 }
+
+function hashEmpty(hash) {
+    for (var key in hash) return false;
+    return true
+}
