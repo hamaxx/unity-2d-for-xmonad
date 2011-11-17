@@ -17,15 +17,18 @@
 #ifndef ShellDeclarativeView_H
 #define ShellDeclarativeView_H
 
-#include <unity2ddeclarativeview.h>
+// libunity-2d-private
+#include "unity2ddeclarativeview.h"
+#include "unity2dapplication.h"
 
+// Qt
 #include <QTimer>
 
 class LauncherClient;
 class ScreenInfo;
 class DashDBus;
 
-class ShellDeclarativeView : public Unity2DDeclarativeView
+class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
     Q_OBJECT
     Q_ENUMS(DashMode)
@@ -69,6 +72,8 @@ public:
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
     void setMonitoredArea(QRect monitoredArea);
+
+    virtual bool x11EventFilter(XEvent* event);
 
 Q_SIGNALS:
     void dashActiveChanged(bool);

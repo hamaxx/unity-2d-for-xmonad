@@ -502,6 +502,27 @@ ShellDeclarativeView::leaveEvent(QEvent *event)
     }
 }
 
+/* When another window calls XGrabPointer we receive a LeaveNotify event
+   but QT doesn't emit a corresponding leaveEvent. Therefore we have to intercept it
+   ourselves from X11 and act accordingly.
+   The same is true for the opposite, when XUngrabPointer is called. */
+bool
+ShellDeclarativeView::x11EventFilter(XEvent* event)
+{
+    if (event->type == LeaveNotify && event->xcrossing.mode == NotifyGrab) {
+        if (m_monitoredAreaContainsMouse) {
+            m_monitoredAreaContainsMouse = false;
+            Q_EMIT monitoredAreaContainsMouseChanged();
+        }
+    } else if (event->type == EnterNotify && event->xcrossing.mode == NotifyUngrab) {
+        if (!m_monitoredAreaContainsMouse) {
+            m_monitoredAreaContainsMouse = true;
+            Q_EMIT monitoredAreaContainsMouseChanged();
+        }
+    }
+    return false;
+}
+
 QRect
 ShellDeclarativeView::monitoredArea() const
 {
@@ -528,4 +549,3 @@ ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
 }
-

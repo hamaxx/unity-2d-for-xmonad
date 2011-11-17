@@ -72,6 +72,8 @@ int main(int argc, char *argv[])
     LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
 
+    application.installX11EventFilter(&view);
+
     QDir::addSearchPath("artwork", unity2dDirectory() + "/shell/artwork");
 
     view.engine()->addImportPath(unity2dImportPath());

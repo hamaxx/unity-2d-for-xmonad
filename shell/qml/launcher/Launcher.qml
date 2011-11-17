@@ -237,4 +237,11 @@ LauncherDropItem {
             main.positionViewAtIndex(index, ListView.Center)
         }
     }
+
+    SpreadMonitor {
+        id: spread
+        enabled: true
+        onShownChanged: if (shown) visibilityController.beginForceVisible("spread")
+                        else visibilityController.endForceVisible("spread")
+    }
 }

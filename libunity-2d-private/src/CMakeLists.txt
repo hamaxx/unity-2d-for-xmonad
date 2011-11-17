@@ -72,6 +72,8 @@ set(lib${LIB_NAME}_SRCS
     panelstyle.cpp
     percentcoder.cpp
     windowsintersectmonitor.cpp
+    abstractdbusservicemonitor.cpp
+    spreadmonitor.cpp
     )
 
 # Build

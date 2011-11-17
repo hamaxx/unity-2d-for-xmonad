@@ -19,7 +19,6 @@ Item {
     }
 
     Connections {
-        id: launcherConnections
         target: launcher !== undefined ? launcher : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true

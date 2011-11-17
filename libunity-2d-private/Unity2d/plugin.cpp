@@ -68,6 +68,7 @@
 #include "checkoptionfilter.h"
 #include "multirangefilter.h"
 #include "windowsintersectmonitor.h"
+#include "spreadmonitor.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -158,6 +159,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<GestureHandler>(uri, 0, 1, "GestureHandler");
     qmlRegisterType<WindowsIntersectMonitor>(uri, 0, 1, "WindowsIntersectMonitor");
+    qmlRegisterType<SpreadMonitor>(uri, 0, 1, "SpreadMonitor");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
