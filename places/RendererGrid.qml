@@ -71,6 +71,10 @@ Renderer {
 
                 width: renderer.cellWidth + grid.itemHorizontalSpacing
                 height: renderer.cellHeight + renderer.minVerticalSpacing
+                /* When hovered the item needs to be on top of every other item
+                   in order for its label to not be covered */
+                z: ( loader.item.state == "selected" || loader.item.state == "hovered" ) ? 1 : 0
+
                 FocusPath.index: index
 
                 property string uri: column_0
