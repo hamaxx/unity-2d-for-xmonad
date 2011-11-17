@@ -17,6 +17,7 @@ macro(launcher_tests)
 endmacro(launcher_tests)
 
 include_directories(
+    ${CMAKE_SOURCE_DIR}/tests
     ${CMAKE_CURRENT_SOURCE_DIR}/../app
     ${CMAKE_CURRENT_BINARY_DIR}
     ${QT_QTTEST_INCLUDE_DIR}
