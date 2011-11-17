@@ -38,10 +38,8 @@ LauncherDropItem {
     }
 
     function focusBFB() {
-        if (main.currentIndex != 0) {
-            main.currentIndex = 0
-            main.positionViewAtBeginning()
-        }
+        main.currentIndex = 0
+        main.positionViewAtBeginning()
     }
 
     GnomeBackground {
