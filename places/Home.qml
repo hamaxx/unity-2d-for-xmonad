@@ -122,6 +122,7 @@ FocusScope {
             folded: foldable ? body.folded : false
             icon: body.iconHint
             label: body.name
+            moving: flickerMoving
 
             property bool foldable: body.folded != undefined
 

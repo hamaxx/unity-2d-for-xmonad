@@ -142,6 +142,7 @@ FocusScope {
             property bool foldable: body.folded != undefined
 
             onClicked: if(foldable) body.folded = !body.folded
+            moving: flickerMoving
         }
 
         model: lensView.model != undefined ? lensView.model.categories : undefined
