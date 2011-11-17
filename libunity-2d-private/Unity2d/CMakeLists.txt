@@ -43,7 +43,7 @@ target_link_libraries(unity-2d-private-qml
     )
 
 # Install
-set(IMPORT_INSTALL_DIR lib/qt4/imports/Unity2d)
+set(IMPORT_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/qt4/imports/Unity2d)
 
 install(TARGETS unity-2d-private-qml
     LIBRARY DESTINATION ${IMPORT_INSTALL_DIR}
@@ -57,3 +57,8 @@ install(FILES warty-final-ubuntu.jpg
     DESTINATION ${UNITY_2D_DIR}
     )
 
+#Allow build in different directory
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/GnomeBackground.qml"
+                                                              "${CMAKE_CURRENT_BINARY_DIR}/GnomeBackground.qml")
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/qmldir"
+                                                              "${CMAKE_CURRENT_BINARY_DIR}/qmldir")

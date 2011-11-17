@@ -1,34 +1,35 @@
-#define INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-#define UNITY_2D_DIR "${UNITY_2D_DIR}"
-#define UNITY_DIR "${UNITY_DIR}"
+#define INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define INSTALL_LIBDIR "@CMAKE_INSTALL_LIBDIR@"
+#define INSTALL_BINDIR "@CMAKE_INSTALL_BINDIR@"
+#define UNITY_2D_DIR "@UNITY_2D_DIR@"
+#define UNITY_DIR "@UNITY_DIR@"
 
 #include <QCoreApplication>
 
 inline bool isRunningInstalled() {
-    static bool cachedResult = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
-    return cachedResult;
+    return (QCoreApplication::applicationDirPath() == (INSTALL_PREFIX "/" INSTALL_BINDIR));
 }
 
 inline QString unity2dDirectory() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/" UNITY_2D_DIR);
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../../");
+        return QString("@CMAKE_SOURCE_DIR@/");
     }
 }
 
 inline QString unity2dImportPath() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/lib/qt4/imports");
+        return QString(INSTALL_PREFIX "/" INSTALL_LIBDIR "/qt4/imports");
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../");
+        return QString("@CMAKE_BINARY_DIR@/libunity-2d-private/");
     }
 }
 
 inline QString unity2dPluginsPath() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/lib/unity-2d/plugins");
+        return QString(INSTALL_PREFIX "/" INSTALL_LIBDIR "/unity-2d/plugins");
     } else {
-        return unity2dDirectory();
+        return QString("@CMAKE_BINARY_DIR@");
     }
 }

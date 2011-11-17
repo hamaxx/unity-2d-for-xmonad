@@ -44,13 +44,13 @@ target_link_libraries(unity-2d-places
 
 # Install
 install(TARGETS unity-2d-places
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-places.service
-    DESTINATION share/dbus-1/services
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
     )
 
 install(FILES unity-2d-places.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )

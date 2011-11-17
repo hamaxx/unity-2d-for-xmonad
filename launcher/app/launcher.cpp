@@ -99,7 +99,9 @@ int main(int argc, char *argv[])
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView(&panel);
-    launcherView->setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        launcherView->setUseOpenGL(true);
+    }
 
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();
@@ -108,9 +110,6 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
-    if (!isRunningInstalled()) {
-        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
 
     launcherView->rootContext()->setContextProperty("declarativeView", launcherView);
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);

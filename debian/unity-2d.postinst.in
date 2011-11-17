@@ -17,12 +17,12 @@ case "$1" in
   triggered)
     for trigger in $2; do
       case $trigger in
-        /usr/share/gconf/ubuntu-2d/mandatory)
-          update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/mandatory \
+        @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory)
+          update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory \
           --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
         ;;
-        /usr/share/gconf/ubuntu-2d/default)
-          update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/default \
+        @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default)
+          update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default \
           --destination /var/lib/gconf/ubuntu-2d.default --no-signal
         ;;
       esac
@@ -36,9 +36,9 @@ esac
 
 # Upon installation/upgrade, regenerate all databases, because in this case 
 # there will be no trigger run
-update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/mandatory \
+update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory \
                       --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
-update-gconf-defaults --source /usr/share/gconf/ubuntu-2d/default \
+update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default \
                       --destination /var/lib/gconf/ubuntu-2d.default --no-signal
 signal_daemons
 
