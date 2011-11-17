@@ -81,7 +81,7 @@ FocusScope {
             visible: category_model.count > 0
             focus: true
             width: parent.width
-            height: item.contentHeight
+            height: visible ? item.contentHeight : 0
             FocusPath.skip: false
 
             property string name: model.column_0

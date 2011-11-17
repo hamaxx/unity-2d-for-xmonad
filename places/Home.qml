@@ -113,7 +113,7 @@ FocusScope {
             category_model: model.item.globalResults
             visible: category_model.count > 0
             focus: visible
-            height: contentHeight
+            height: visible ? contentHeight : 0
             width: parent.width
         }
 

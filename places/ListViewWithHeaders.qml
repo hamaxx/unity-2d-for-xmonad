@@ -97,7 +97,7 @@ FocusScope {
                     focus: false
                     width: childrenRect.width
                     height: category.height
-                    visible: bodyLoader.height > 0
+                    visible: headerLoader.visible || bodyLoader.visible
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
 
@@ -108,7 +108,6 @@ FocusScope {
                             id: headerLoader
                             sourceComponent: headerDelegate
                             width: scroll.width
-                            visible: item && bodyLoader.visible
                             focus: item && item.visible
                             KeyNavigation.down: bodyLoader
 
@@ -135,7 +134,7 @@ FocusScope {
                             id: bodyLoader
                             sourceComponent: list.bodyDelegate
                             width: scroll.width
-                            focus: item.visible
+                            focus: item && item.visible
                             KeyNavigation.up: headerLoader
 
                             property variant currentItem: item.currentItem ? item.currentItem : null
