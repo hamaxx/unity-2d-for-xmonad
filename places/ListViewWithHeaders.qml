@@ -49,10 +49,6 @@ FocusScope {
         columns: 1
     }
 
-    onVisibleChanged: {
-        focusPath.reset();
-    }
-
     Flickable {
         id: scroll
         anchors.fill: parent
@@ -97,7 +93,6 @@ FocusScope {
                     focus: false
                     width: childrenRect.width
                     height: category.height
-                    visible: headerLoader.visible || bodyLoader.visible
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
 

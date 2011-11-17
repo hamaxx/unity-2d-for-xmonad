@@ -140,10 +140,18 @@ void FocusPath::setCurrentIndex(int index)
     }
 }
 
-void FocusPath::onItemChanged()
+void FocusPath::onInfoChanged()
 {
     FocusPathAttached *info = qobject_cast<FocusPathAttached *> (sender());
     QDeclarativeItem *item = qobject_cast<QDeclarativeItem *>(info->parent());
+
+    removeItem(item);
+    addItem(item);
+}
+
+void FocusPath::onItemChanged()
+{
+    QDeclarativeItem *item = qobject_cast<QDeclarativeItem *>(sender());
 
     removeItem(item);
     addItem(item);
@@ -173,7 +181,7 @@ void FocusPath::addItem(QDeclarativeItem *item)
         QObject *attached = qmlAttachedPropertiesObject<FocusPath>(item);
         FocusPathAttached *info = static_cast<FocusPathAttached *>(attached);
 
-        if (!info->skip()) {
+        if (!info->skip() && item->isVisible()) {
             QList<PathItem>::iterator i = m_path.begin();
             for(; i != m_path.end(); i++) {
                 if (info->index() < (*i).first) {
@@ -193,8 +201,9 @@ void FocusPath::addItem(QDeclarativeItem *item)
         }
 
         m_items << item;
-        QObject::connect(info, SIGNAL(indexChanged()), this, SLOT(onItemChanged()));
-        QObject::connect(info, SIGNAL(skipChanged()), this, SLOT(onItemChanged()));
+        QObject::connect(info, SIGNAL(indexChanged()), this, SLOT(onInfoChanged()));
+        QObject::connect(info, SIGNAL(skipChanged()), this, SLOT(onInfoChanged()));
+        QObject::connect(item, SIGNAL(visibleChanged()), this, SLOT(onItemChanged()));
     }
 }
 
@@ -210,15 +219,16 @@ void FocusPath::removeItem(QDeclarativeItem *item)
         }
     }
 
-    m_items.removeOne(item);
-
     QObject *attached = qmlAttachedPropertiesObject<FocusPath>(item);
     FocusPathAttached *info = static_cast<FocusPathAttached *>(attached);
 
     if (info) {
-        QObject::disconnect(info, SIGNAL(indexChanged()), this, SLOT(onItemChanged()));
-        QObject::disconnect(info, SIGNAL(skipChanged()), this, SLOT(onItemChanged()));
+        QObject::disconnect(info, SIGNAL(indexChanged()), this, SLOT(onInfoChanged()));
+        QObject::disconnect(info, SIGNAL(skipChanged()), this, SLOT(onInfoChanged()));
     }
+
+    QObject::disconnect(item, SIGNAL(visibleChanged()), this, SLOT(onItemChanged()));
+    m_items.removeOne(item);
 }
 
 bool FocusPath::eventFilter(QObject* obj, QEvent* event)
