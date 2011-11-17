@@ -75,6 +75,7 @@ set(lib${LIB_NAME}_SRCS
     panelapplet.cpp
     panelstyle.cpp
     percentcoder.cpp
+    windowsintersectmonitor.cpp
     )
 
 # Build

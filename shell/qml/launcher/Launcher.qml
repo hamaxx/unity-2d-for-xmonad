@@ -29,7 +29,7 @@ LauncherDropItem {
 
     Behavior on x { NumberAnimation { duration: 125 } }
 
-    property bool outerEdgeContainsMouse: outerEdge.containsMouse
+    property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     VisibilityController {
         id: visibilityController
         launcher: launcher
