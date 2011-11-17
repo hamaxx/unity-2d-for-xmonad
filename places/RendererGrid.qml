@@ -58,7 +58,6 @@ Renderer {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 2
-        anchors.topMargin: 12
 
         property int itemHorizontalSpacing: renderer.centered ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.minHorizontalSpacing
         Repeater {
