@@ -23,7 +23,7 @@ RendererGrid {
     cellWidth: 100
     cellHeight: 112
     minHorizontalSpacing: 42
-    minVerticalSpacing: 38
+    minVerticalSpacing: 20
 
     cellRenderer: Component {
         AbstractButton {
