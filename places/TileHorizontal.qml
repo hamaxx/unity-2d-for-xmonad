@@ -22,8 +22,8 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 RendererGrid {
     cellWidth: 280
     cellHeight: 75
-    horizontalSpacing: 10
-    verticalSpacing: 10
+    minHorizontalSpacing: 10
+    minVerticalSpacing: 10
 
     cellRenderer: Component {
         AbstractButton {
