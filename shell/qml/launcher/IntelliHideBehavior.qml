@@ -14,14 +14,15 @@ Item {
     }
 
     Connections {
-        target: launcher
+        target: (launcher !== undefined) ? launcher : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 
     WindowsIntersectMonitor {
         id: windows
-        monitoredArea: Qt.rect(0, launcher.y, launcher.width, launcher.height)
+        monitoredArea: launcher ? Qt.rect(0, launcher.y, launcher.width, launcher.height)
+                                : Qt.rect(0, 0, 0, 0)
     }
 
     /* For some reason this requires a Binding, assigning directly to the property
@@ -29,7 +30,6 @@ Item {
     Binding {
         target: intellihide
         property: "shown"
-        value: launcher.containsMouse || !windows.intersects
-        when: launcher !== null
+        value: launcher ? launcher.containsMouse || !windows.intersects : true
     }
 }

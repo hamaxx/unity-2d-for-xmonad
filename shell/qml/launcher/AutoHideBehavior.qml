@@ -8,7 +8,7 @@ Item {
     Timer {
         id: autoHideTimer
         interval: 1000
-        running: !launcher.containsMouse
+        running: (launcher !== undefined) ? !launcher.containsMouse : false
         onTriggered: shown = false
     }
 
@@ -19,7 +19,8 @@ Item {
     }
 
     Connections {
-        target: launcher
+        id: launcherConnections
+        target: launcher !== undefined ? launcher : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }

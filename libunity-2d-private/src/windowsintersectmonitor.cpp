@@ -142,7 +142,7 @@ void WindowsIntersectMonitor::updateIntersect()
             // Check the window rect
             int x, y, width, height;
             wnck_window_get_geometry(window, &x, &y, &width, &height);
-            QRect rect(x, y, width, height);
+            QRectF rect(x, y, width, height);
             if (rect.intersects(m_monitoredArea)) {
                 crossWindow = true;
                 break;
@@ -156,16 +156,17 @@ void WindowsIntersectMonitor::updateIntersect()
     }
 }
 
-QRect WindowsIntersectMonitor::monitoredArea() const
+QRectF WindowsIntersectMonitor::monitoredArea() const
 {
     return m_monitoredArea;
 }
 
-void WindowsIntersectMonitor::setMonitoredArea(const QRect& monitoredArea)
+void WindowsIntersectMonitor::setMonitoredArea(const QRectF& monitoredArea)
 {
     if (m_monitoredArea != monitoredArea) {
         m_monitoredArea = monitoredArea;
         Q_EMIT monitoredAreaChanged();
+        updateIntersect();
     }
 }
 

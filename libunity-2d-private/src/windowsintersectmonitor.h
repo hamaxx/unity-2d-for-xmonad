@@ -15,7 +15,7 @@
 
 // Qt
 #include <QObject>
-#include <QRect>
+#include <QRectF>
 
 struct _WnckWindow;
 
@@ -23,16 +23,16 @@ class WindowsIntersectMonitor : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QRect monitoredArea READ monitoredArea WRITE setMonitoredArea
-                                   NOTIFY monitoredAreaChanged)
+    Q_PROPERTY(QRectF monitoredArea READ monitoredArea WRITE setMonitoredArea
+                                    NOTIFY monitoredAreaChanged)
     Q_PROPERTY(bool intersects READ intersects NOTIFY intersectsChanged)
 
 public:
     WindowsIntersectMonitor();
     ~WindowsIntersectMonitor();
 
-    QRect monitoredArea() const;
-    void setMonitoredArea(const QRect& monitoredArea);
+    QRectF monitoredArea() const;
+    void setMonitoredArea(const QRectF& monitoredArea);
     bool intersects() const;
 
 Q_SIGNALS:
@@ -48,7 +48,7 @@ private:
     void disconnectFromGSignals();
 
     struct _WnckWindow* m_activeWindow;
-    QRect m_monitoredArea;
+    QRectF m_monitoredArea;
     bool m_intersects;
 };
 
