@@ -111,7 +111,7 @@ FocusScope {
             iconHint: model.item.iconHint
 
             category_model: model.item.globalResults
-            visible: category_model.count > 0
+            visible: category_model != undefined && category_model.count > 0
             focus: visible
             height: visible ? contentHeight : 0
             width: parent.width
