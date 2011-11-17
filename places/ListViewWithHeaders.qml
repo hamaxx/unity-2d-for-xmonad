@@ -93,7 +93,6 @@ FocusScope {
                     focus: false
                     width: childrenRect.width
                     height: category.height
-                    visible: headerLoader.visible || bodyLoader.visible
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
 
