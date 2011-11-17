@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import "../utils.js" as Utils
 
 /*
   List item that behaves similarly to a ListView but supports adding headers
@@ -125,11 +126,6 @@ FocusScope {
             return totalHeight
         }
 
-        function clamp(x, min, max) {
-            return Math.max(Math.min(x, max), min)
-        }
-
-
         /* Keyboard navigation */
         function isIndexValid(index) {
             /* Assuming that children contains exactly one item that is not a child (repeater) */
@@ -230,7 +226,7 @@ FocusScope {
                 property int bodyVirtualY: heightFirstChildren - items.value
                 /* Y coordinate where the body becomes visible (in body coordinates) */
                 property int bodyVisibleY: ymin - bodyVirtualY
-                y: items.clamp(bodyVirtualY, ymin, ymax)
+                y: Utils.clamp(bodyVirtualY, ymin, ymax)
 
 
                 Loader {
@@ -264,7 +260,7 @@ FocusScope {
                     onLoaded: item.focus = true
                     width: parent.width
                     anchors.top: headerLoader.bottom
-                    height: Math.min(items.clamp(item.totalHeight - bodyVisibleY, 0, item.totalHeight), bodyAvailableHeight)
+                    height: Math.min(Utils.clamp(item.totalHeight - bodyVisibleY, 0, item.totalHeight), bodyAvailableHeight)
 
                     Binding {
                         target: bodyLoader.item

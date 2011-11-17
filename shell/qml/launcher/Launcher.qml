@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
+import "../utils.js" as Utils
 
 LauncherDropItem {
     id: launcher
@@ -49,10 +50,6 @@ LauncherDropItem {
         value: Qt.rect(launcher.x, launcher.y, launcher.width, launcher.height)
     }
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-
-    function clamp(x, min, max) {
-        return Math.max(Math.min(x, max), min)
-    }
 
     function hideMenu() {
         if (main.visibleMenu !== undefined) {
@@ -110,7 +107,7 @@ LauncherDropItem {
                 var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
                 var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
                 var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
-                var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
+                var nearestVisibleTile = Utils.clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
 
                 if (nearestVisibleTile == indexFirstVisibleTile) {
                     positionViewAtIndex(Math.max(index - 1, 0), ListView.Beginning)

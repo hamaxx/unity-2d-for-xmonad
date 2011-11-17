@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import "utils.js" as Utils
+import "../utils.js" as Utils
 
 FocusScope {
     id: filterLoader
