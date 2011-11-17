@@ -24,7 +24,6 @@
 #include <QtDBus/QDBusContext>
 
 class ShellDeclarativeView;
-class VisibilityController;
 
 /**
  * DBus interface for the launcher.
@@ -37,7 +36,7 @@ class LauncherDBus : public QObject, protected QDBusContext
     Q_OBJECT
 
 public:
-    LauncherDBus(VisibilityController* visibilityController, ShellDeclarativeView* view, QObject* parent=0);
+    LauncherDBus(ShellDeclarativeView* view, QObject* parent=0);
     ~LauncherDBus();
 
     bool connectToBus();
@@ -48,7 +47,6 @@ public Q_SLOTS:
     Q_NOREPLY void AddWebFavorite(const QString& url);
 
 private:
-    VisibilityController* m_visibilityController;
     ShellDeclarativeView* m_view;
 };
 

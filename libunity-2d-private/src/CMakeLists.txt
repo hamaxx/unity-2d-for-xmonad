@@ -22,12 +22,8 @@ set(lib${LIB_NAME}_SRCS
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
-    abstractvisibilitybehavior.cpp
-    autohidebehavior.cpp
     edgehitdetector.cpp
-    forcevisiblebehavior.cpp
     gesturehandler.cpp
-    intellihidebehavior.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp

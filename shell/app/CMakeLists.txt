@@ -7,14 +7,12 @@ set(shell_SRCS
     shell.cpp
     dashdbus.cpp
     launcherdbus.cpp
-    visibilitycontroller.cpp
     shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
     dashdbus.h
     launcherdbus.h
-    visibilitycontroller.h
     shelldeclarativeview.h
     )
 

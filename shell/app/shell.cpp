@@ -45,7 +45,6 @@
 #include "dashdbus.h"
 #include "gesturehandler.h"
 #include "launcherdbus.h"
-#include "visibilitycontroller.h"
 
 int main(int argc, char *argv[])
 {
@@ -70,11 +69,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // TODO: this should be kept around but not be tied to the panel anymore.
-    //    VisibilityController visibilityController(panel);
-    //    view.rootContext()->setContextProperty("visibilityController", &visibilityController);
-
-    LauncherDBus launcherDBus(NULL /*&visibilityController*/, &view);
+    LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
 
     QDir::addSearchPath("artwork", unity2dDirectory() + "/shell/artwork");

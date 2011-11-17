@@ -53,9 +53,6 @@
 
 #include "config.h"
 
-#include "autohidebehavior.h"
-#include "intellihidebehavior.h"
-#include "forcevisiblebehavior.h"
 #include "bfb.h"
 #include "gesturehandler.h"
 
@@ -140,10 +137,6 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
-
-    qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
-    qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
-    qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
 
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 

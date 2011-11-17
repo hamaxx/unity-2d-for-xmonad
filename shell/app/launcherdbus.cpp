@@ -22,7 +22,6 @@
 
 // Local
 #include <shelldeclarativeview.h>
-#include <visibilitycontroller.h>
 
 // unity-2d
 #include <debug_p.h>
@@ -33,9 +32,8 @@
 static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 
-LauncherDBus::LauncherDBus(VisibilityController* visibilityController, ShellDeclarativeView* view, QObject* parent)
+LauncherDBus::LauncherDBus(ShellDeclarativeView* view, QObject* parent)
 : QObject(parent)
-, m_visibilityController(visibilityController)
 , m_view(view)
 {
 }
@@ -67,17 +65,9 @@ LauncherDBus::AddWebFavorite(const QString& url)
 void
 LauncherDBus::BeginForceVisible()
 {
-    UQ_RETURN_IF_FAIL(calledFromDBus());
-    if (m_visibilityController) {
-        m_visibilityController->beginForceVisible(message().service());
-    }
 }
 
 void
 LauncherDBus::EndForceVisible()
 {
-    if (m_visibilityController) {
-        UQ_RETURN_IF_FAIL(calledFromDBus());
-        m_visibilityController->endForceVisible(message().service());
-    }
 }
