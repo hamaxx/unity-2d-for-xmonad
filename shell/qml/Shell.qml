@@ -29,12 +29,11 @@ Item {
         id: launcher
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
-        onProgressChanged: if (progress == 1.0) dash.source = "dash/Dash.qml"
     }
 
     Loader {
         id: dash
-        focus: true
+        source: "dash/Dash.qml"
         anchors.top: parent.top
         anchors.left: launcher.right
     }

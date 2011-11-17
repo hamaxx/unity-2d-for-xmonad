@@ -176,14 +176,8 @@ ShellDeclarativeView::setDashActive(bool value)
             updateDashModeDependingOnScreenGeometry();
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-
-            // TODO: Do the same but not through DBUS
-            //m_launcherClient->beginForceVisible();
-        } else {
-            // TODO: Do the same but not through DBUS
-            //m_launcherClient->endForceVisible();
         }
-        dashActiveChanged(m_active);
+        Q_EMIT dashActiveChanged(m_active);
     }
 }
 

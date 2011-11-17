@@ -244,4 +244,12 @@ LauncherDropItem {
         onShownChanged: if (shown) visibilityController.beginForceVisible("spread")
                         else visibilityController.endForceVisible("spread")
     }
+
+    Connections {
+        target: declarativeView
+        onDashActiveChanged: {
+            if (declarativeView.dashActive) visibilityController.beginForceVisible("dash")
+            else visibilityController.endForceVisible("dash")
+        }
+    }
 }
