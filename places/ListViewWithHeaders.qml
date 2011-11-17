@@ -49,10 +49,6 @@ FocusScope {
         columns: 1
     }
 
-    onVisibleChanged: {
-        focusPath.reset();
-    }
-
     Flickable {
         id: scroll
         anchors.fill: parent

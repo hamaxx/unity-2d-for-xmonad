@@ -63,6 +63,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void onChildrenChanged();
     void onItemChanged();
+    void onInfoChanged();
     void onItemDestroyed();
     void addItem(QDeclarativeItem *item);
     void removeItem(QDeclarativeItem *item);
