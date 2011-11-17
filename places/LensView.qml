@@ -78,6 +78,12 @@ FocusScope {
            the file 'UnityShowcaseRenderer.qml' and use it to render the category.
         */
         bodyDelegate: Loader {
+            visible: category_model.count > 0
+            focus: true
+            width: parent.width
+            height: visible ? item.contentHeight : 0
+            FocusPath.skip: false
+
             property string name: model.column_0
             property string iconHint: model.column_1
             property string rendererName: model.column_2
@@ -88,6 +94,8 @@ FocusScope {
                 if (status == Loader.Error) {
                     console.log("Failed to load renderer %1. Using default renderer instead.".arg(rendererName))
                     source = "TileVertical.qml"
+                } else {
+                    item.focus = true
                 }
             }
 
@@ -107,32 +115,36 @@ FocusScope {
                In that case the list view scrolls the Flickable appropriately.
             */
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
-            property int contentY
-            Binding { target: item; property: "contentY"; value: contentY }
-            property bool focusable: category_model.count > 0
+            property int cellsPerRow: item.cellsPerRow
             property variant currentItem: item.currentItem
+
+            /*This is necessary because the alias does not work in a loaded item.
+              Is not possible create alias for this property because that property does not exist
+              during the object creation, this property will became available after the load item process .
+             */
+            property bool folded: item.folded
+            onFoldedChanged: item.folded = folded
 
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }
             Binding { target: item; property: "categoryId"; value: categoryId }
             Binding { target: item; property: "category_model"; value: category_model }
             Binding { target: item; property: "lens"; value: lensView.model }
-
-            onLoaded: item.focus = true
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.item.needHeader && body.focusable
+            visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
-
-            property bool foldable: body.item.folded != undefined
-            availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
-            folded: foldable ? body.item.folded : false
-            onClicked: if(foldable) body.item.folded = !body.item.folded
-            moving: flickerMoving
-
+            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            focus: true
             icon: body.iconHint
             label: body.name
+
+            property bool foldable: body.folded != undefined
+
+            onClicked: if(foldable) body.folded = !body.folded
+            moving: flickerMoving
         }
 
         model: lensView.model != undefined ? lensView.model.categories : undefined

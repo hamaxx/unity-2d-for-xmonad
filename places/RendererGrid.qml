@@ -29,69 +29,71 @@ Renderer {
     id: renderer
 
     needHeader: true
-    property alias cellsPerRow: results.cellsPerRow
-    property alias contentY: results.contentY
-    property alias currentItem: results.currentItem
+    currentItem: focusPath.currentItem
 
+    property int contentHeight: grid.height + grid.anchors.topMargin + grid.anchors.bottomMargin
+    property alias cellsPerRow: grid.columns
     property variant cellRenderer
     property bool folded: true
-
     property int cellWidth: 158
     property int cellHeight: 76
-    property int horizontalSpacing: 26
-    property int verticalSpacing: 26
 
-    /* FIXME: using results_layout.anchors.topMargin in the following expression
-              causes QML to think they might be an anchor loop. */
-    property int totalHeight: results.count > 0 ? results_layout.anchors.topMargin + results.totalHeight : 0
+    property int minHorizontalSpacing: 26
+    property int minVerticalSpacing: 26
 
-    Item {
-        id: results_layout
+    property bool centered: true
 
-        anchors.fill: parent
-        anchors.topMargin: 12
+    FocusPath {
+        id: focusPath
+
+        item: grid
+        columns: grid.columns
+    }
+
+    Grid {
+        id: grid
+
+        columns: Math.floor(parent.width/(renderer.cellWidth + renderer.minHorizontalSpacing))
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
         anchors.leftMargin: 2
+        anchors.topMargin: 12
 
-        CenteredGridView {
+        property int itemHorizontalSpacing: renderer.centered ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.minHorizontalSpacing
+        Repeater {
             id: results
 
-            focus: true
+            FocusPath.skip: true
 
-            anchors.fill: parent
+            FocusScope {
+                id: cell
 
-            property int totalHeight: results.cellHeight*Math.ceil(count/cellsPerRow)
-
-            minHorizontalSpacing: renderer.horizontalSpacing
-            minVerticalSpacing: renderer.verticalSpacing
-            delegateWidth: renderer.cellWidth
-            delegateHeight: renderer.cellHeight
-
-            interactive: false
-            clip: true
-
-            delegate: FocusScope {
-
-                width: results.cellWidth
-                height: results.cellHeight
+                width: renderer.cellWidth + grid.itemHorizontalSpacing
+                height: renderer.cellHeight + renderer.minVerticalSpacing
                 /* When hovered the item needs to be on top of every other item
                    in order for its label to not be covered */
                 z: ( loader.item.state == "selected" || loader.item.state == "hovered" ) ? 1 : 0
 
+                FocusPath.index: index
+
+                property string uri: column_0
+                property string iconHint: column_1
+                property string categoryId: column_2 // FIXME: rename to categoryIndex
+                property string mimetype: column_3
+                property string displayName: column_4 // FIXME: rename to name
+                property string comment: column_5
+                property string dndUri: column_6
+
                 Loader {
                     id: loader
-                    property string uri: column_0
-                    property string iconHint: column_1
-                    property string categoryId: column_2 // FIXME: rename to categoryIndex
-                    property string mimetype: column_3
-                    property string displayName: column_4 // FIXME: rename to name
-                    property string comment: column_5
-                    property string dndUri: column_6
-
-                    width: results.delegateWidth
-                    height: results.delegateHeight
-                    anchors.horizontalCenter: parent.horizontalCenter
 
                     focus: true
+                    width: renderer.cellWidth
+                    height: renderer.cellHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+
                     sourceComponent: cellRenderer
                     onLoaded: {
                         item.uri = uri
@@ -108,7 +110,7 @@ Renderer {
             /* Only display one line of items when folded */
             model: SortFilterProxyModel {
                 model: renderer.category_model != undefined ? renderer.category_model : null
-                limit: folded ? results.cellsPerRow : -1
+                limit: renderer.folded ? grid.columns : -1
             }
         }
     }

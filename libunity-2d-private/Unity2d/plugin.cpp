@@ -69,6 +69,7 @@
 #include "radiooptionfilter.h"
 #include "checkoptionfilter.h"
 #include "multirangefilter.h"
+#include "focuspath.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -152,6 +153,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<PercentCoder>(uri, 0, 1, "PercentCoder");
 
+    qmlRegisterType<FocusPath>(uri, 0, 1, "FocusPath");
+
     qmlRegisterType<Filter>();
     qmlRegisterType<Filters>();
     qmlRegisterType<RatingsFilter>();
@@ -160,6 +163,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<MultiRangeFilter>();
     qmlRegisterType<FilterOption>();
     qmlRegisterType<FilterOptions>();
+
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

@@ -40,7 +40,7 @@ AbstractButton {
                 offset.x: 0
                 offset.y: 0
                 color: "white"
-                enabled: categoryHeader.state == "pressed"
+                enabled: ( moreResults.opacity == 1.0 && !moving )
             }
 
     Image {

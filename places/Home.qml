@@ -111,20 +111,27 @@ FocusScope {
             iconHint: model.item.iconHint
 
             category_model: model.item.globalResults
-            property bool focusable: category_model != undefined && category_model.count > 0
+            visible: category_model.count > 0
+            focus: visible
+            height: visible ? contentHeight : 0
+            width: parent.width
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.needHeader && body.focusable
+            visible: body.needHeader && body.visible
+            focus: true
             height: visible ? 32 : 0
 
-            property bool foldable: body.folded != undefined
             availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
             folded: foldable ? body.folded : false
-            onClicked: if(foldable) body.folded = !body.folded
 
             icon: body.iconHint
             label: body.name
+            moving: flickerMoving
+
+            property bool foldable: body.folded != undefined
+
+            onClicked: if(foldable) body.folded = !body.folded
         }
     }
 
