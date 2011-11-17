@@ -97,16 +97,19 @@ FocusScope {
 
     ListViewWithScrollbar {
         id: globalSearch
+
         focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
         anchors.leftMargin: 20
+
         model: dash.lenses
 
         bodyDelegate: TileVertical {
             lens: model.item
             name: model.item.name
             iconHint: model.item.iconHint
+
             category_model: model.item.globalResults
             visible: category_model.count > 0
             focus: visible
@@ -118,8 +121,10 @@ FocusScope {
             visible: body.needHeader && body.visible
             focus: true
             height: visible ? 32 : 0
+
             availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
             folded: foldable ? body.folded : false
+
             icon: body.iconHint
             label: body.name
             moving: flickerMoving
@@ -128,7 +133,6 @@ FocusScope {
 
             onClicked: if(foldable) body.folded = !body.folded
         }
-
     }
 
     FocusScope {

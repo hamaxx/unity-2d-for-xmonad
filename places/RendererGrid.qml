@@ -27,6 +27,7 @@ import Unity2d 1.0
 */
 Renderer {
     id: renderer
+
     needHeader: true
     currentItem: focusPath.currentItem
 
@@ -44,12 +45,14 @@ Renderer {
 
     FocusPath {
         id: focusPath
+
         item: grid
         columns: grid.columns
     }
 
     Grid {
         id: grid
+
         columns: Math.floor(parent.width/(renderer.cellWidth + renderer.minHorizontalSpacing))
         anchors.top: parent.top
         anchors.left: parent.left
@@ -60,10 +63,12 @@ Renderer {
         property int itemHorizontalSpacing: renderer.centered ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.minHorizontalSpacing
         Repeater {
             id: results
+
             FocusPath.skip: true
 
             FocusScope {
                 id: cell
+
                 width: renderer.cellWidth + grid.itemHorizontalSpacing
                 height: renderer.cellHeight + renderer.minVerticalSpacing
                 FocusPath.index: index
@@ -78,6 +83,7 @@ Renderer {
 
                 Loader {
                     id: loader
+
                     focus: true
                     width: renderer.cellWidth
                     height: renderer.cellHeight

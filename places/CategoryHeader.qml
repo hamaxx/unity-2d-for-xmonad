@@ -26,14 +26,12 @@ AbstractButton {
     property alias label: title.text
     property bool folded: true
     property int availableCount
-
     /* HACK: DropShadow causes visual artifacts while being moved. The previously painted
        DropShadow can remain in areas where nothing draws over it. Work around this by
        detecting the flicking movement and disable DropShadow when it happens.
        DropShadow not officially supported until Qt4.8, when hopefully this will be fixed.
     */
     property bool moving: false
-
 
     Accessible.name: "%1 %2 %3".arg(title.text).arg(label.text).arg(folded ? u2d.tr("not expanded") : u2d.tr("expanded"))
 
@@ -93,6 +91,7 @@ AbstractButton {
 
         TextCustom {
             id: label
+
             fontSize: "small"
             text: if(categoryHeader.folded) {
                       return u2d.tr("See %1 more result", "See %1 more results", availableCount).arg(availableCount)
@@ -106,6 +105,7 @@ AbstractButton {
 
         FoldingArrow {
             id: arrow
+
             folded: categoryHeader.folded
             anchors.left: label.right
             anchors.leftMargin: 10
@@ -115,7 +115,9 @@ AbstractButton {
 
     Rectangle {
         id: underline
+
         color: "#21ffffff"
+
         height: 1
         anchors.bottom: parent.bottom
         anchors.left: parent.left

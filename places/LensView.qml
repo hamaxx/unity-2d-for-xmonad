@@ -47,6 +47,7 @@ FocusScope {
 
     SortFilterProxyModel {
         id: firstCategoryModel
+
         property int categoryId
         model: lensView.model != undefined ? lensView.model.results : null
 
@@ -61,6 +62,7 @@ FocusScope {
 
     ListViewWithScrollbar {
         id: results
+
         focus: true
         anchors.fill: parent
         anchors.leftMargin: 20

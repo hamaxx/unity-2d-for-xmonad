@@ -28,6 +28,7 @@ Item {
 
     Grid {
         id: buttons
+
         anchors.fill: parent
         spacing: 51
         columns: 4
