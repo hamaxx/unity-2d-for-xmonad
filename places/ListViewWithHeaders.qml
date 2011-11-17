@@ -60,7 +60,7 @@ FocusScope {
         focus: true
 
         Behavior on contentY {
-            NumberAnimation { duration:  300; }
+            NumberAnimation { duration:  200; }
         }
 
         function moveToPosition(item) {
