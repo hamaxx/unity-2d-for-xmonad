@@ -225,7 +225,7 @@ DropItem {
 
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
-                source: "artwork:launcher/round_outline_54x54.png"
+                source: "../../artwork/launcher/round_outline_54x54.png"
 
                 opacity: 0
 
@@ -269,7 +269,7 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                source: "artwork:launcher/round_shine_54x54.png"
+                source: "../../artwork/launcher/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
             }
@@ -278,7 +278,7 @@ DropItem {
                 id: selectionOutline
                 anchors.centerIn: parent
                 smooth: true
-                source: "artwork:launcher/round_selected_66x66.png"
+                source: "../../artwork/launcher/round_selected_66x66.png"
                 visible: declarativeView.focus && item.activeFocus
             }
 
@@ -310,7 +310,7 @@ DropItem {
 
             Image {
                 id: progressBar
-                source: "artwork:launcher/progress_bar_trough.png"
+                source: "../../artwork/launcher/progress_bar_trough.png"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 width: tile.width
@@ -319,7 +319,7 @@ DropItem {
 
                 Image {
                     id: progressFill
-                    source: "artwork:launcher/progress_bar_fill.png"
+                    source: "../../artwork/launcher/progress_bar_fill.png"
                     anchors.verticalCenter: parent.verticalCenter
                     x: 6
                     width: sourceSize.width * launcherItem.progress

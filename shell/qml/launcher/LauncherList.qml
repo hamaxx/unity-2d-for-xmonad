@@ -56,7 +56,7 @@ AutoScrollingListView {
         /* Take into account the one pixel border of the background */
         width: list.width - 1
         height: Math.max(0, Math.min(list.contentY, 50))
-        source: "artwork:launcher/gradient_more_items_top.png"
+        source: "../../artwork/launcher/gradient_more_items_top.png"
         z: overlayZ
     }
 
@@ -66,7 +66,7 @@ AutoScrollingListView {
         anchors.bottom: list.bottom
         width: topGradient.width
         height: Math.max(0, Math.min(list.contentHeight - list.contentY - list.height, 50))
-        source: "artwork:launcher/gradient_more_items_bottom.png"
+        source: "../../artwork/launcher/gradient_more_items_bottom.png"
         z: overlayZ
     }
 

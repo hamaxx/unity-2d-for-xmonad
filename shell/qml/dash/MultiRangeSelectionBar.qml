@@ -32,8 +32,8 @@ Item {
 
     Image {
         id: leftBorder
-        source: (isFirst) ? "artwork:dash/multirange_selection_left_first.png"
-                          : "artwork:dash/multirange_selection_left.png"
+        source: (isFirst) ? "../../artwork/dash/multirange_selection_left_first.png"
+                          : "../../artwork/dash/multirange_selection_left.png"
         width: sourceSize.width
         height: sourceSize.height
         anchors.left: parent.left
@@ -42,7 +42,7 @@ Item {
 
     Image {
         id: background
-        source: "artwork:dash/multirange_selection_middle.png"
+        source: "../../artwork/dash/multirange_selection_middle.png"
         width: sourceSize.width
         height: sourceSize.height
         anchors.top: parent.top
@@ -53,8 +53,8 @@ Item {
 
     Image {
         id: rightBorder
-        source: (isLast) ? "artwork:dash/multirange_selection_right_last.png"
-                         : "artwork:dash/multirange_selection_right.png"
+        source: (isLast) ? "../../artwork/dash/multirange_selection_right_last.png"
+                         : "../../artwork/dash/multirange_selection_right.png"
         width: sourceSize.width
         height: sourceSize.height
         anchors.top: parent.top

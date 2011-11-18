@@ -54,25 +54,25 @@ Grid {
     HomeButton {
         focus: true
         label: u2d.tr("Media Apps")
-        icon: "artwork:dash/find_media_apps.png"
+        icon: "../../artwork/dash/find_media_apps.png"
         onClicked: activateLensWithOptionFilter("applications.lens", "type", "media")
     }
 
     HomeButton {
         label: u2d.tr("Internet Apps")
-        icon: "artwork:dash/find_internet_apps.png"
+        icon: "../../artwork/dash/find_internet_apps.png"
         onClicked: activateLensWithOptionFilter("applications.lens", "type", "internet")
     }
 
     HomeButton {
         label: u2d.tr("More Apps")
-        icon: "artwork:dash/find_more_apps.png"
+        icon: "../../artwork/dash/find_more_apps.png"
         onClicked: activateLensAndClearFilter("applications.lens", "type")
     }
 
     HomeButton {
         label: u2d.tr("Find Files")
-        icon: "artwork:dash/find_files.png"
+        icon: "../../artwork/dash/find_files.png"
         onClicked: activateLens("files.lens")
     }
 

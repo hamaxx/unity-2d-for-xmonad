@@ -84,7 +84,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: parent.right
         fillMode: Image.TileVertically
-        source: "artwork:launcher/background.png"
+        source: "../../artwork/launcher/background.png"
     }
 
     onDesktopFileDropped: applications.insertFavoriteApplication(path)
