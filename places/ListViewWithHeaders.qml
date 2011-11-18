@@ -95,7 +95,7 @@ FocusScope {
                     width: childrenRect.width
                     height: childrenRect.height
                     FocusPath.index: index
-                    FocusPath.skip: !headerLoader.item.visibe && !bodyLoader.item.visible
+                    FocusPath.skip: !headerLoader.item.visible && !bodyLoader.item.visible
 
                     Column {
 

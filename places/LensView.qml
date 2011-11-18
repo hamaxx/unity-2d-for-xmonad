@@ -82,7 +82,6 @@ FocusScope {
             focus: true
             width: parent.width
             height: visible ? item.contentHeight : 0
-            FocusPath.skip: false
 
             property string name: model.column_0
             property string iconHint: model.column_1
