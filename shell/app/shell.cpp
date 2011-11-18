@@ -79,11 +79,6 @@ int main(int argc, char *argv[])
     view.engine()->addImportPath(unity2dImportPath());
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
-    if (!isRunningInstalled()) {
-        /* Allows importing Unity2d when uninstalled */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
-
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);

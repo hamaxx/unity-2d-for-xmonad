@@ -54,7 +54,7 @@ void EdgeHitDetector::updateGeometryFromScreen()
     QPoint p = QApplication::isLeftToRight() ?
         QPoint() :
         QPoint(QApplication::desktop()->width() - 1, 0);
-    QRect rect = QApplication::desktop()->screenGeometry(p);
+    QRect rect = QApplication::desktop()->availableGeometry(p);
     if (QApplication::isLeftToRight()) {
         m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
     } else {
