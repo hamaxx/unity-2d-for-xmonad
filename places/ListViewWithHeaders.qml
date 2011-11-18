@@ -92,7 +92,6 @@ FocusScope {
                 FocusScope {
                     id: category
 
-                    focus: false
                     width: childrenRect.width
                     height: childrenRect.height
                     FocusPath.index: index
