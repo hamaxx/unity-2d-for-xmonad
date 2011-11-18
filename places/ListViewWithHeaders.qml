@@ -95,7 +95,7 @@ FocusScope {
                     width: childrenRect.width
                     height: childrenRect.height
                     FocusPath.index: index
-                    FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
+                    FocusPath.skip: !headerLoader.item.visibe && !bodyLoader.item.visible
 
                     Column {
 
@@ -103,7 +103,7 @@ FocusScope {
                             id: headerLoader
                             sourceComponent: headerDelegate
                             width: scroll.width
-                            focus: item && item.visible
+                            focus: true
                             KeyNavigation.down: bodyLoader
 
                             /* Workaround Qt bug http://bugreports.qt.nokia.com/browse/QTBUG-18857
@@ -129,7 +129,6 @@ FocusScope {
                             id: bodyLoader
                             sourceComponent: list.bodyDelegate
                             width: scroll.width
-                            focus: item && item.visible
                             KeyNavigation.up: headerLoader
 
                             property variant currentItem: item.currentItem ? item.currentItem : null
