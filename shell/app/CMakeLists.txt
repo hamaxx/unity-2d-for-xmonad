@@ -58,6 +58,10 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-places.service
     DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
     )
 
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
+    )
+
 install(FILES unity-2d-shell.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )
