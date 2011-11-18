@@ -23,9 +23,6 @@
 #include <unity2dapplication.h>
 #include <propertybinder.h>
 
-// libdconf-qt
-#include "qconf.h"
-
 // Qt
 #include <QApplication>
 #include <QDesktopWidget>
@@ -44,8 +41,6 @@
 
 // libc
 #include <stdlib.h>
-
-static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 #if defined(QMLJSDEBUGGER)
 #include <qt_private/qdeclarativedebughelper_p.h>
@@ -122,10 +117,9 @@ int main(int argc, char *argv[])
     launcherView->setSource(QUrl("./Launcher.qml"));
 
     /* Synchronise panel's "useStrut" property with its corresponding DConf key */
-    QConf dconfLauncher(LAUNCHER_DCONF_SCHEMA);
-    panel.setUseStrut(dconfLauncher.property("useStrut").toBool());
+    panel.setUseStrut(launcher2dConfiguration().property("useStrut").toBool());
     PropertyBinder useStrutBinder;
-    useStrutBinder.bind(&dconfLauncher, "useStrut", &panel, "useStrut");
+    useStrutBinder.bind(&launcher2dConfiguration(), "useStrut", &panel, "useStrut");
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);

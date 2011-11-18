@@ -6,6 +6,7 @@ extern "C" {
 #include "bamf-application.h"
 #include "bamf-window.h"
 
+#include "config.h"
 #include "launcherclient.h"
 #include "screeninfo.h"
 #include "workspacesinfo.h"
