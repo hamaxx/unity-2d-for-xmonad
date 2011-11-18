@@ -241,7 +241,12 @@ LauncherDropItem {
     SpreadMonitor {
         id: spread
         enabled: true
-        onShownChanged: if (shown) visibilityController.beginForceVisible("spread")
+        onShownChanged: if (shown) {
+                            /* The the spread grabs input and Qt can't properly
+                               detect we've lost input, so explicitly hide the menus */
+                            hideMenu()
+                            visibilityController.beginForceVisible("spread")
+                        }
                         else visibilityController.endForceVisible("spread")
     }
 
