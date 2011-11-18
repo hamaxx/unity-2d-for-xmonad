@@ -10,8 +10,6 @@ include_directories(
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
-enable_testing()
-
 set(LIBUNITY_2D_TEST_DIR ${libunity-2d-private_BINARY_DIR}/tests)
 
 # Unit-tests
@@ -28,10 +26,6 @@ macro(libunity_2d_tests)
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
-
-    add_custom_target(libunity-2d-private_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-        DEPENDS ${_test_list})
-    add_dependencies(check libunity-2d-private_check)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
@@ -68,7 +62,6 @@ configure_file(gnomesessionclienttest.sh.in
 add_test(NAME gnomesessionclient_check
     COMMAND /bin/sh gnomesessionclienttest.sh
     )
-add_dependencies(libunity-2d-private_check gnomesessionclient_check)
 
 # mouseareademo
 add_executable(mouseareademo
