@@ -20,8 +20,17 @@ import QtQuick 1.1
 import Unity2d 1.0
 
 Item {
-    width: childrenRect.width
+    id: shell
     height: childrenRect.height
+
+    Binding {
+        target: shell
+        property: "width"
+        when: launcher.progress === 1.0
+        /* Clamp to a minimum width of 1px to make sure that the -1px margin is
+           correctly considered (it's not reflected in the childrenRect) */
+        value: Math.max(shell.childrenRect.width + Math.min(launcher.item.x, 0), 1)
+    }
 
     Accessible.name: "shell"
 

@@ -70,7 +70,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
 {
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     /* We don't use ScreenInfo::availableGeometry here because it includes
