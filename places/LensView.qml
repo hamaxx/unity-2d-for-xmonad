@@ -116,13 +116,6 @@ FocusScope {
             property int cellsPerRow: item.cellsPerRow
             property variant currentItem: item.currentItem
 
-            /*This is necessary because the alias does not work in a loaded item.
-              Is not possible create alias for this property because that property does not exist
-              during the object creation, this property will became available after the load item process .
-             */
-            property bool folded: item.folded
-            onFoldedChanged: item.folded = folded
-
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }
             Binding { target: item; property: "categoryId"; value: categoryId }
