@@ -94,8 +94,6 @@ FocusScope {
                 if (status == Loader.Error) {
                     console.log("Failed to load renderer %1. Using default renderer instead.".arg(rendererName))
                     source = "TileVertical.qml"
-                } else {
-                    item.focus = true
                 }
             }
 
@@ -130,21 +128,23 @@ FocusScope {
             Binding { target: item; property: "categoryId"; value: categoryId }
             Binding { target: item; property: "category_model"; value: category_model }
             Binding { target: item; property: "lens"; value: lensView.model }
+
+            onLoaded: item.focus = true
         }
 
         headerDelegate: CategoryHeader {
             visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
-            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
-            folded: foldable ? body.folded : false
             focus: true
+
+            property bool foldable: body.item.folded != undefined
+            availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
+            folded: foldable ? body.item.folded : false
+            onClicked: if(foldable) body.item.folded = !body.item.folded
+            moving: flickerMoving
+
             icon: body.iconHint
             label: body.name
-
-            property bool foldable: body.folded != undefined
-
-            onClicked: if(foldable) body.folded = !body.folded
-            moving: flickerMoving
         }
 
         model: lensView.model != undefined ? lensView.model.categories : undefined
