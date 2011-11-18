@@ -4,11 +4,8 @@ feature set currently available we need to take care of the following tasks (ord
 = High =
 
 * Shell window should be input-shaped so that the part that belongs to neither dash nor launcher does not receive input
+  - This should also work correctly with the dash bottom-right corner which is already input shaped.
 * Correctly register shell as Launcher over DBUS
-* Make forceVisible feature work with the QML-based visibility controller
-  - Remove DBUS forceVisible API: only spread and the to-be-removed panel home plugin use it, and spread activation can be
-    detected from inside shell to trigger forced visibility.
-* Laucher was a dock window, now it's a regular window. Experiment with making it dock again or at least always-on-top
 * Make ALT+F1 and keyboard operation for the launcher work again
 
 = Medium =
