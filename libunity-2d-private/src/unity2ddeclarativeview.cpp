@@ -24,28 +24,22 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include "qconf.h"
-
 #include <debug_p.h>
-
-static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
+#include <config.h>
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
     m_useOpenGL(false),
     m_transparentBackground(false),
-    m_last_focused_window(None),
-    m_conf(new QConf(UNITY2D_DCONF_SCHEMA))
+    m_last_focused_window(None)
 {
-    m_useOpenGL = m_conf->property("useOpengl").toBool();
+    m_useOpenGL = unity2dConfiguration().property("useOpengl").toBool();
 
     setupViewport();
 }
 
 Unity2DDeclarativeView::~Unity2DDeclarativeView()
 {
-    delete m_conf;
-    m_conf = 0;
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const

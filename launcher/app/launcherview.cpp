@@ -37,14 +37,12 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-// libdconf-qt
-#include "qconf.h"
-
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <keymonitor.h>
 #include <debug_p.h>
+#include <config.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -59,7 +57,6 @@ static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* COMMANDS_LENS_ID = "commands.lens";
-static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
@@ -72,8 +69,7 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
-    connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
+    connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
@@ -99,7 +95,6 @@ LauncherView::LauncherView(QWidget* parent) :
 
 LauncherView::~LauncherView()
 {
-    delete m_dconf_launcher;
 }
 
 void
@@ -123,7 +118,7 @@ LauncherView::updateSuperKeyMonitoring()
     KeyMonitor *keyMonitor = KeyMonitor::instance();
     HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
-    QVariant value = m_dconf_launcher->property("superKeyEnable");
+    QVariant value = launcher2dConfiguration().property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
