@@ -90,14 +90,14 @@ FocusScope {
                 FocusPath.skip: true
 
                 FocusScope {
-                    focus: false
+                    id: category
+
                     width: childrenRect.width
-                    height: category.height
+                    height: childrenRect.height
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.focus && !bodyLoader.focus
 
                     Column {
-                        id: category
 
                         Loader {
                             id: headerLoader
