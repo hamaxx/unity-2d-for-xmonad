@@ -34,21 +34,33 @@ class FocusPath : public QObject
     Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(QDeclarativeItem* currentItem READ currentItem NOTIFY currentItemChanged)
+    Q_PROPERTY(Flow flow READ flow WRITE setFlow NOTIFY flowChanged)
 
 public:
     explicit FocusPath(QObject *parent = 0);
     ~FocusPath();
+
+    Q_ENUMS(Flow)
+    enum Flow {
+        LeftToRight,
+        TopToBottom
+    };
+
 
     /* getters */
     int columns() const;
     QDeclarativeItem *item() const;
     int currentIndex() const;
     QDeclarativeItem *currentItem() const;
+    Flow flow() const;
 
     /* setters */
     void setColumns(int columns);
     void setItem(QDeclarativeItem *item);
     void setCurrentIndex(int index);
+    void setFlow(Flow value);
+
+    QList<PathItem > path() const;
 
     Q_INVOKABLE void reset();
 
@@ -59,6 +71,7 @@ Q_SIGNALS:
     void columnsChanged();
     void currentIndexChanged();
     void currentItemChanged();
+    void flowChanged();
 
 protected Q_SLOTS:
     void onChildrenChanged();
@@ -74,7 +87,9 @@ protected:
 private:
     QDeclarativeItem *m_item;
     int m_columns;
+    int m_rows;
     int m_currentIndex;
+    Flow m_flow;
     QList<PathItem > m_path;
     QList<QDeclarativeItem *> m_items;
 

@@ -4,6 +4,7 @@ configure_file(config-test.h.in config-test.h)
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     ${libunity-2d-private_SOURCE_DIR}/Unity2d
+    ${CMAKE_SOURCE_DIR}/tests
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GLIB_INCLUDE_DIRS}
     ${QT_QTTEST_INCLUDE_DIR}
@@ -41,6 +42,7 @@ libunity_2d_tests(
     launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest
+    focuspathtest
     )
 
 add_custom_target(unity2dtr_po COMMAND

@@ -19,6 +19,8 @@
 
 #include "focuspath.h"
 
+#include <QtCore/qmath.h>
+
 /*!
     \qmlclass FocusPath
     \brief FocusPath is used to help keyboard navigation between QML elements
@@ -64,6 +66,13 @@
 */
 
 /*!
+    \qmlproperty Flow flow
+
+   Holds the flow of the path
+*/
+
+
+/*!
     \qmlproperty int index
 
     Attached property used to determine the focus sequence
@@ -79,7 +88,9 @@ FocusPath::FocusPath(QObject *parent)
     : QObject(parent),
       m_item(0),
       m_columns(0),
-      m_currentIndex(0)
+      m_rows(0),
+      m_currentIndex(0),
+      m_flow(FocusPath::LeftToRight)
 {
 }
 
@@ -112,6 +123,16 @@ QDeclarativeItem* FocusPath::currentItem() const
     return 0;
 }
 
+FocusPath::Flow FocusPath::flow() const
+{
+    return m_flow;
+}
+
+QList<PathItem > FocusPath::path() const
+{
+    return m_path;
+}
+
 void FocusPath::setItem(QDeclarativeItem* item)
 {
     if (m_item != item) {
@@ -124,19 +145,34 @@ void FocusPath::setColumns(int columns)
 {
     if (m_columns != columns) {
         m_columns = columns;
+        if (m_columns) {
+            m_rows = qCeil(m_path.size() / m_columns);
+        } else {
+            m_rows = 0;
+        }
         Q_EMIT columnsChanged();
     }
 }
 
 void FocusPath::setCurrentIndex(int index)
 {
-    if (m_currentIndex != index) {
+    if ((m_currentIndex != index) &&
+        (index >= 0) &&
+        (index < m_path.size())) {
         QDeclarativeItem* focus = m_path[index].second;
         Q_ASSERT(focus);
         focus->forceActiveFocus();
         m_currentIndex = index;
         Q_EMIT currentIndexChanged();
         Q_EMIT currentItemChanged();
+    }
+}
+
+void FocusPath::setFlow(FocusPath::Flow value)
+{
+    if (m_flow != value) {
+        m_flow = value;
+        Q_EMIT flowChanged();
     }
 }
 
@@ -169,6 +205,9 @@ void FocusPath::reset()
             gi->setFocus();
             m_path[0].second->setFocus(true);
         }
+    }
+    if (m_columns) {
+        m_rows = qCeil(m_path.size() / m_columns);
     }
     m_currentIndex = 0;
     Q_EMIT currentIndexChanged();
@@ -241,21 +280,22 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
                 switch(keyEvent->key()) {
                     case Qt::Key_Right:
-                        nextFocus++;
+
+                        nextFocus = (m_flow == FocusPath::LeftToRight) ? nextFocus + 1 : nextFocus + m_rows;
                         break;
                     case Qt::Key_Left:
-                        nextFocus--;
+                        nextFocus = (m_flow == FocusPath::LeftToRight) ? nextFocus - 1 : nextFocus - m_rows;
                         break;
                     case Qt::Key_Up:
                         if (m_columns >= 0) {
-                            nextFocus-= m_columns;
+                            nextFocus = (m_flow == FocusPath::LeftToRight) ? nextFocus - m_columns : nextFocus - 1;
                         } else {
                             nextFocus = -1;
                         }
                         break;
                     case Qt::Key_Down:
                         if (m_columns >= 0) {
-                            nextFocus += m_columns;
+                            nextFocus = (m_flow == FocusPath::LeftToRight) ? nextFocus + m_columns : nextFocus + 1;
                         } else {
                             nextFocus = -1;
                         }

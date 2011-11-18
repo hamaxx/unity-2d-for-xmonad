@@ -20,6 +20,7 @@
  */
 
 // Local
+#include <unitytestmacro.h>
 #include <launchermenu.h>
 
 // Qt
@@ -51,7 +52,7 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(LauncherMenuTest)
+QAPP_TEST_MAIN(LauncherMenuTest)
 
 #include "launchermenutest.moc"
 
