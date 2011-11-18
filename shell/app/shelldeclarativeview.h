@@ -123,7 +123,6 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
-    QConf* m_dconf_launcher;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
     bool m_superPressIgnored;

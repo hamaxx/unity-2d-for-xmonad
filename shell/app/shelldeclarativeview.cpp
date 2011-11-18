@@ -44,9 +44,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-// dconfqt
-#include <qconf.h>
-
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
@@ -62,8 +59,6 @@ static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* SPREAD_DBUS_PATH = "/Spread";
 static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
-
-static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
@@ -87,8 +82,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
-    connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
+    connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
@@ -110,6 +104,8 @@ ShellDeclarativeView::ShellDeclarativeView()
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
+
+    //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
 }
 
 static int getenvInt(const char* name, int defaultValue)
@@ -375,7 +371,7 @@ ShellDeclarativeView::updateSuperKeyMonitoring()
     KeyMonitor *keyMonitor = KeyMonitor::instance();
     HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
-    QVariant value = m_dconf_launcher->property("superKeyEnable");
+    QVariant value = launcher2dConfiguration().property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
