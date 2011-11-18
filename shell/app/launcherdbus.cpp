@@ -23,9 +23,6 @@
 // Local
 #include <shelldeclarativeview.h>
 
-// unity-2d
-#include <debug_p.h>
-
 // Qt
 #include <QtDBus/QDBusConnection>
 
@@ -60,14 +57,4 @@ void
 LauncherDBus::AddWebFavorite(const QString& url)
 {
     Q_EMIT m_view->addWebFavoriteRequested(url);
-}
-
-void
-LauncherDBus::BeginForceVisible()
-{
-}
-
-void
-LauncherDBus::EndForceVisible()
-{
 }

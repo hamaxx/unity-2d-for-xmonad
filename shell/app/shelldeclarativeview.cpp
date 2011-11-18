@@ -69,7 +69,6 @@ static const char* COMMANDS_LENS_ID = "commands.lens";
 
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
-    , m_launcherClient(new LauncherClient(this))
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)

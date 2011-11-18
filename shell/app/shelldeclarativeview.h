@@ -118,7 +118,6 @@ private:
     void updateMask();
     void setWMFlags();
 
-    LauncherClient* m_launcherClient;
     DashMode m_mode;
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */
