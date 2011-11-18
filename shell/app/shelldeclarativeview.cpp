@@ -135,6 +135,14 @@ ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
     setDashActive(false);
+    Q_EMIT focusChanged();
+}
+
+void
+ShellDeclarativeView::focusInEvent(QFocusEvent* event)
+{
+    QDeclarativeView::focusInEvent(event);
+    Q_EMIT focusChanged();
 }
 
 void

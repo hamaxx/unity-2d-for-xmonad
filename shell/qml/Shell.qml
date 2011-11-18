@@ -36,6 +36,7 @@ Item {
 
     Loader {
         id: launcher
+        focus: true
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
     }
