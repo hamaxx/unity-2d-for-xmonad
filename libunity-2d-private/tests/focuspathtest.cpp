@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testChangeCurrentIndex();
     void testNavigation();
     void testFlow();
+    void testNavigationDirection();
 
 private:
     QDeclarativeView *m_view;
@@ -168,6 +169,28 @@ void FocusPathTest::testFlow()
     QTest::keyPress(m_view, Qt::Key_Left);
     QCOMPARE(m_focusPath->currentIndex(), 3);
     QTest::keyPress(m_view, Qt::Key_Left);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+}
+
+/*
+ * Test NavigationDirection limitations
+ */
+void FocusPathTest::testNavigationDirection()
+{
+    m_focusPath->setDirection(FocusPath::Horizontal);
+    QTest::keyPress(m_view, Qt::Key_Down);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    QTest::keyPress(m_view, Qt::Key_Right);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+    QTest::keyPress(m_view, Qt::Key_Left);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+
+    m_focusPath->setDirection(FocusPath::Vertical);
+    QTest::keyPress(m_view, Qt::Key_Right);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    QTest::keyPress(m_view, Qt::Key_Down);
+    QCOMPARE(m_focusPath->currentIndex(), 3);
+    QTest::keyPress(m_view, Qt::Key_Up);
     QCOMPARE(m_focusPath->currentIndex(), 0);
 }
 
