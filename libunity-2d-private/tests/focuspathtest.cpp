@@ -41,6 +41,7 @@ private Q_SLOTS:
     void testFlow();
     void testNavigationDirection();
     void testRTLNavigation();
+    void testOrderChange();
 
 private:
     QDeclarativeView *m_view;
@@ -229,6 +230,31 @@ void FocusPathTest::testRTLNavigation()
     QCOMPARE(m_focusPath->currentIndex(), 0);
 }
 
+/*
+ * Test insert a new item in the midle of path
+ */
+
+void FocusPathTest::testOrderChange()
+{
+    /* Check if current index 3 is the item3 */
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    m_focusPath->setCurrentIndex(3);
+    QCOMPARE(m_focusPath->currentItem()->property("itemData").toString(), QString("Item3"));
+
+
+    QGraphicsObject *root = m_view->rootObject();
+    Q_ASSERT(root);
+    QObject *grid = root->findChild<QObject*>("gridLayout");
+
+    /* Insert a new item with index 3 */
+    QMetaObject::invokeMethod(grid, "insertItem", Q_ARG(QVariant, 3), Q_ARG(QVariant, "newItem3"));
+
+    QCOMPARE(m_focusPath->path().size(), 10);
+
+    /* Cehck if the item with index 3 is the new item */
+    m_focusPath->setCurrentIndex(3);
+    QCOMPARE(m_focusPath->currentItem()->property("itemData").toString(), QString("newItem3"));
+}
 
 
 UAPP_TEST_MAIN(FocusPathTest)

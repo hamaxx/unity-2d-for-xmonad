@@ -30,6 +30,10 @@ Rectangle {
         objectName: "gridLayout"
         columns: 3
 
+        function insertItem(index, itemName) {
+            myModel.insert(index, {"name" : itemName})
+        }
+
         Repeater {
             model: myModel
             FocusPath.skip: true
