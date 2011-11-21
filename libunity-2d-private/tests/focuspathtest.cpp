@@ -40,6 +40,7 @@ private Q_SLOTS:
     void testNavigation();
     void testFlow();
     void testNavigationDirection();
+    void testRTLNavigation();
 
 private:
     QDeclarativeView *m_view;
@@ -193,6 +194,41 @@ void FocusPathTest::testNavigationDirection()
     QTest::keyPress(m_view, Qt::Key_Up);
     QCOMPARE(m_focusPath->currentIndex(), 0);
 }
+
+/*
+ * Test RightToLeft navigation
+ */
+void FocusPathTest::testRTLNavigation()
+{
+    QGraphicsObject *root = m_view->rootObject();
+    Q_ASSERT(root);
+    QObject *grid = root->findChild<QObject*>("gridLayout");
+    grid->setProperty("layoutDirection", 1);
+    m_focusPath->setFlow(FocusPath::RightToLeft);
+
+
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    QTest::keyPress(m_view, Qt::Key_Down);
+    QCOMPARE(m_focusPath->currentIndex(), 3);
+    QTest::keyPress(m_view, Qt::Key_Down);
+    QCOMPARE(m_focusPath->currentIndex(), 6);
+
+    QTest::keyPress(m_view, Qt::Key_Left);
+    QCOMPARE(m_focusPath->currentIndex(), 7);
+    QTest::keyPress(m_view, Qt::Key_Left);
+    QCOMPARE(m_focusPath->currentIndex(), 8);
+
+    QTest::keyPress(m_view, Qt::Key_Up);
+    QCOMPARE(m_focusPath->currentIndex(), 5);
+    QTest::keyPress(m_view, Qt::Key_Up);
+    QCOMPARE(m_focusPath->currentIndex(), 2);
+
+    QTest::keyPress(m_view, Qt::Key_Right);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+    QTest::keyPress(m_view, Qt::Key_Right);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+}
+
 
 
 UAPP_TEST_MAIN(FocusPathTest)

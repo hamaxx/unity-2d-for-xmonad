@@ -1,4 +1,4 @@
-import QtQuick 1.
+import QtQuick 1.1
 import Unity2d 1.0
 
 Rectangle {
