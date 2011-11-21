@@ -211,6 +211,7 @@ LauncherDropItem {
         shelfItems.appendModel(trashes);
     }
 
+    property bool explicitlyFocused: false
     Connections {
         target: declarativeView
         // FIXME: copy methods over
@@ -220,9 +221,13 @@ LauncherDropItem {
             else visibilityController.endForceVisible()
         }
         onFocusChanged: {
-            if (focus) visibilityController.beginForceVisible()
-            else visibilityController.endForceVisible()
+            if (declarativeView.focus) visibilityController.beginForceVisible()
+            else {
+                launcher.explicitlyFocused = false
+                visibilityController.endForceVisible()
+            }
         }
+        onLauncherFocusRequested: explicitlyFocused = true
     }
 
     Connections {

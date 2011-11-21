@@ -91,6 +91,7 @@ Q_SIGNALS:
     void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
+    void launcherFocusRequested();
 
 private Q_SLOTS:
     void updateSuperKeyMonitoring();
@@ -102,6 +103,7 @@ private Q_SLOTS:
     void toggleDash();
     void showCommandsLens();
     void onSuperSPressed();
+    void onAltF1Pressed();
 
 protected:
     void resizeEvent(QResizeEvent*);

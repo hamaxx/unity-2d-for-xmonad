@@ -36,9 +36,15 @@ Item {
 
     Loader {
         id: launcher
-        focus: true
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
+    }
+
+    Binding {
+        target: launcher
+        property: "focus"
+        when: launcher.progress === 1.0
+        value: declarativeView.focus && launcher.item.explicitlyFocused && !declarativeView.dashActive
     }
 
     Loader {
@@ -46,6 +52,7 @@ Item {
         source: "dash/Dash.qml"
         anchors.top: parent.top
         anchors.left: launcher.right
+        focus: declarativeView.focus && declarativeView.dashActive
     }
 
     Component.onCompleted: declarativeView.show()

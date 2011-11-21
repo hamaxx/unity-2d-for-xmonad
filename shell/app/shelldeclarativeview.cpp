@@ -87,7 +87,7 @@ ShellDeclarativeView::ShellDeclarativeView()
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
+    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
 
     /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
@@ -133,7 +133,7 @@ ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
 void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
-    QDeclarativeView::focusOutEvent(event);
+    Unity2DDeclarativeView::focusOutEvent(event);
     setDashActive(false);
     Q_EMIT focusChanged();
 }
@@ -141,7 +141,7 @@ ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 void
 ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 {
-    QDeclarativeView::focusInEvent(event);
+    Unity2DDeclarativeView::focusInEvent(event);
     Q_EMIT focusChanged();
 }
 
@@ -358,6 +358,12 @@ ShellDeclarativeView::onSuperSPressed()
     QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
 
+void
+ShellDeclarativeView::onAltF1Pressed()
+{
+    Q_EMIT launcherFocusRequested();
+    forceActivateWindow();
+}
 
 /* ----------------- super key handling ---------------- */
 
