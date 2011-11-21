@@ -185,7 +185,7 @@ AutoScrollingListView {
                 item.activate()
                 event.accepted = true
             }
-            else if (event.key == Qt.Key_Right ||
+            else if ((event.key == Qt.Key_Right && !declarativeView.dashActive) ||
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that

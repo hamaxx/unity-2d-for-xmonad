@@ -38,6 +38,7 @@ Item {
         id: launcher
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
+        KeyNavigation.right: dash
     }
 
     Binding {
@@ -53,6 +54,7 @@ Item {
         anchors.top: parent.top
         anchors.left: launcher.right
         focus: declarativeView.focus && declarativeView.dashActive
+        KeyNavigation.left: launcher
     }
 
     Component.onCompleted: declarativeView.show()
