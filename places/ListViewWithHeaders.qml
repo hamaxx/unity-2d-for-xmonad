@@ -98,6 +98,7 @@ FocusScope {
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.item.visible && !bodyLoader.item.visible
 
+
                     Column {
 
                         Loader {
@@ -124,6 +125,7 @@ FocusScope {
                                     scroll.moveToPosition(item)
                                 }
                             }
+                            onLoaded: item.focus = true
                         }
 
                         Loader {
@@ -151,6 +153,7 @@ FocusScope {
                             Binding { target: bodyLoader; property: "index"; value: index }
                             property variant model
                             Binding { target: bodyLoader; property: "model"; value: model }
+                            onLoaded: item.focus = true
                         }
                     }
                 }

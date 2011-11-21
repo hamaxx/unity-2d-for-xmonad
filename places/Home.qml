@@ -112,14 +112,12 @@ FocusScope {
 
             category_model: model.item.globalResults
             visible: category_model != undefined && category_model.count > 0
-            focus: visible
             height: visible ? contentHeight : 0
             width: parent.width
         }
 
         headerDelegate: CategoryHeader {
             visible: body.needHeader && body.visible
-            focus: true
             height: visible ? 32 : 0
 
             property bool foldable: body.folded != undefined

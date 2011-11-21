@@ -79,7 +79,6 @@ FocusScope {
         */
         bodyDelegate: Loader {
             visible: category_model.count > 0
-            focus: true
             width: parent.width
             height: visible ? item.contentHeight : 0
 
@@ -126,7 +125,6 @@ FocusScope {
         headerDelegate: CategoryHeader {
             visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
-            focus: true
 
             property bool foldable: body.item.folded != undefined
             availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
