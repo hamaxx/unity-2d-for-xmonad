@@ -47,6 +47,7 @@ FocusScope {
         id: focusPath
         item: categoriesColumn
         columns: 1
+        direction: FocusPath.Vertical
     }
 
     Flickable {
