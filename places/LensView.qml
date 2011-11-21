@@ -112,7 +112,6 @@ FocusScope {
                In that case the list view scrolls the Flickable appropriately.
             */
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
-            property int cellsPerRow: item.cellsPerRow
             property variant currentItem: item.currentItem
 
             Binding { target: item; property: "name"; value: name }
