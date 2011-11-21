@@ -6,8 +6,8 @@ feature set currently available we need to take care of the following tasks (ord
 * Shell window should be input-shaped so that the part that belongs to neither dash nor launcher does not receive input
   - This should also work correctly with the dash bottom-right corner which is already input shaped.
 * Fix focus between dash and launcher.
-  - dash should get focus when activated
   - left/right should move focus between dash and launcher
+* Make sure everything works fine with -opengl
 
 = Medium =
 
