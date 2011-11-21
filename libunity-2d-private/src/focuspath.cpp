@@ -20,6 +20,8 @@
 #include "focuspath.h"
 
 #include <QtCore/qmath.h>
+#include <QEvent>
+#include <QKeyEvent>
 
 /*!
     \qmlclass FocusPath
