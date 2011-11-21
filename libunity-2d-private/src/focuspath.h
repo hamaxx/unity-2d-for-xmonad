@@ -44,7 +44,8 @@ public:
     Q_ENUMS(Flow)
     enum Flow {
         LeftToRight,
-        TopToBottom
+        TopToBottom,
+        RightToLeft
     };
 
     Q_ENUMS(NavigationDirection)
