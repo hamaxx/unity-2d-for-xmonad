@@ -63,6 +63,9 @@ private Q_SLOTS:
     void onSuperSPressed();
     void onAltF1Pressed();
 
+private:
+    void positionAtBeginning();
+
 protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);

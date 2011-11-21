@@ -38,7 +38,14 @@ LauncherDropItem {
     }
 
     function focusBFB() {
+        if (!main.activeFocus)
+            main.focus = true
+
         main.currentIndex = 0
+        main.positionViewAtBeginning()
+    }
+
+    function positionAtBeginning() {
         main.positionViewAtBeginning()
     }
 
