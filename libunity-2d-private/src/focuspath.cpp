@@ -254,7 +254,7 @@ void FocusPath::addItem(QDeclarativeItem *item)
             } else if (i == m_path.end()) {
                 m_path.append(qMakePair(info->index(), item));
             } else {
-                m_path.insert(--i, qMakePair(info->index(), item));
+                m_path.insert(i, qMakePair(info->index(), item));
             }
 
             reset();
