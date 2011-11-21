@@ -46,7 +46,6 @@
 
 using namespace Unity2d;
 
-static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
 static const char* PANEL_PLUGINS_DEV_DIR_ENV = "UNITY2D_PANEL_PLUGINS_PATH";
 
@@ -103,11 +102,11 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
 
 QStringList PanelManager::loadPanelConfiguration() const
 {
-    QVariant appletsConfig = m_conf.property(PANEL_DCONF_PROPERTY_APPLETS);
+    QVariant appletsConfig = panel2dConfiguration().property(PANEL_DCONF_PROPERTY_APPLETS);
     if (!appletsConfig.isValid()) {
         qWarning() << "Missing or invalid panel applets configuration in dconf. Please check"
                    << "the property" << PANEL_DCONF_PROPERTY_APPLETS
-                   << "in schema" << PANEL_DCONF_SCHEMA;
+                   << "in schema" << PANEL2D_DCONF_SCHEMA;
         return QStringList();
     }
 
@@ -116,7 +115,6 @@ QStringList PanelManager::loadPanelConfiguration() const
 
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
-, m_conf(PANEL_DCONF_SCHEMA)
 {
     QDesktopWidget* desktop = QApplication::desktop();
     for(int i = 0; i < desktop->screenCount(); ++i) {
