@@ -56,10 +56,13 @@ FocusScope {
         clip: true
         interactive: true
         contentWidth: width
-        /* Keep a 30px margin on the bottom to avoid clip items with large labels */
-        contentHeight: categoriesColumn.height + 30
+        contentHeight: categoriesColumn.height + scrollBottomMargin
         flickableDirection: Flickable.VerticalFlick
         focus: true
+
+        /* Margin used in auto-scroll */
+        property int scrollTopMargin: 30
+        property int scrollBottomMargin: 30
 
         Behavior on contentY {
             NumberAnimation { duration:  200; }
@@ -67,9 +70,8 @@ FocusScope {
 
         function moveToPosition(item) {
             var itemPosition = item.mapToItem(categoriesColumn, x, y)
-            //Keep a margin of 30px visible
-            var itemBottom = itemPosition.y + item.height + 30
-            var itemTop = itemPosition.y - 30
+            var itemBottom = itemPosition.y + item.height + scrollBottomMargin
+            var itemTop = itemPosition.y - scrollTopMargin
             var newContentY = -1;
 
             if (scroll.contentY > itemTop) {
