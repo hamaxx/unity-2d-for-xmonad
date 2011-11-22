@@ -28,10 +28,7 @@ FocusScope {
         id: list
 
         focus: true
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.fill: parent
         anchors.rightMargin: 15
     }
 

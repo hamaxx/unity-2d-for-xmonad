@@ -33,4 +33,5 @@ FocusScope {
     property variant category_model /* List model containing the items to be displayed by the renderer */
     property variant lens /* Reference to the lens the category belongs to */
     property bool needHeader: false /* Whether or not the renderer requires a header to be displayed */
+    property QtObject currentItem /* Current selected item */
 }
