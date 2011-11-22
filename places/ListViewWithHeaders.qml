@@ -56,7 +56,8 @@ FocusScope {
         clip: true
         interactive: true
         contentWidth: width
-        contentHeight: categoriesColumn.height
+        /* Keep a 30px margin on the bottom to avoid clip items with large labels */
+        contentHeight: categoriesColumn.height + 30
         flickableDirection: Flickable.VerticalFlick
         focus: true
 
@@ -66,8 +67,8 @@ FocusScope {
 
         function moveToPosition(item) {
             var itemPosition = item.mapToItem(categoriesColumn, x, y)
-            var itemBottom = itemPosition.y + item.height
             //Keep a margin of 30px visible
+            var itemBottom = itemPosition.y + item.height + 30
             var itemTop = itemPosition.y - 30
             var newContentY = -1;
 
