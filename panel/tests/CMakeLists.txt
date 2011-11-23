@@ -22,7 +22,5 @@ include_directories(
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
-enable_testing()
-
 #panel_tests(
 #    )
