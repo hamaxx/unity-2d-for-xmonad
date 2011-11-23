@@ -263,6 +263,7 @@ LauncherView::toggleDash()
         }
 
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
+        positionAtBeginning();
     }
 }
 
@@ -280,3 +281,11 @@ LauncherView::onSuperSPressed()
     QGraphicsObject* launcher = rootObject();
     QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
+
+void
+LauncherView::positionAtBeginning()
+{
+    QGraphicsObject* launcher = rootObject();
+    QMetaObject::invokeMethod(launcher, "positionAtBeginning", Qt::AutoConnection);
+}
+
