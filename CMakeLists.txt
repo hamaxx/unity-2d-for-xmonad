@@ -87,6 +87,7 @@ include_directories(
 
 # Tests
 enable_testing()
+add_custom_target(check make test)
 
 # Source
 add_subdirectory(libunity-2d-private)
