@@ -268,7 +268,6 @@ LauncherView::toggleDash()
         }
 
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
-        positionAtBeginning();
     }
 }
 
@@ -301,11 +300,4 @@ LauncherView::onAltF1Pressed()
         forceActivateWindow();
         QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
     }
-}
-
-void
-LauncherView::positionAtBeginning()
-{
-    QGraphicsObject* launcher = rootObject();
-    QMetaObject::invokeMethod(launcher, "positionAtBeginning", Qt::AutoConnection);
 }
