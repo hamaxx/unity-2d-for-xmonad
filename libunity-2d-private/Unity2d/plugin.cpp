@@ -69,6 +69,7 @@
 #include "multirangefilter.h"
 #include "windowsintersectmonitor.h"
 #include "spreadmonitor.h"
+#include "focuspath.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -147,6 +148,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<Lens>(uri, 1, 0, "Lens");
 
     qmlRegisterType<PercentCoder>(uri, 0, 1, "PercentCoder");
+
+    qmlRegisterType<FocusPath>(uri, 0, 1, "FocusPath");
 
     qmlRegisterType<Filter>();
     qmlRegisterType<Filters>();

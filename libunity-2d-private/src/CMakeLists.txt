@@ -74,6 +74,7 @@ set(lib${LIB_NAME}_SRCS
     windowsintersectmonitor.cpp
     abstractdbusservicemonitor.cpp
     spreadmonitor.cpp
+    focuspath.cpp
     )
 
 # Build

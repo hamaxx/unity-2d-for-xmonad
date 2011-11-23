@@ -111,11 +111,13 @@ FocusScope {
             iconHint: model.item.iconHint
 
             category_model: model.item.globalResults
-            property bool focusable: category_model != undefined && category_model.count > 0
+            visible: category_model != undefined && category_model.count > 0
+            height: visible ? contentHeight : 0
+            width: parent.width
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.needHeader && body.focusable
+            visible: body.needHeader && body.visible
             height: visible ? 32 : 0
 
             property bool foldable: body.folded != undefined
@@ -125,6 +127,7 @@ FocusScope {
 
             icon: body.iconHint
             label: body.name
+            moving: flickerMoving
         }
     }
 
