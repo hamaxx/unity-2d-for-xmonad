@@ -286,7 +286,6 @@ LauncherView::onSuperSPressed()
     QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
 
-/* lp:885304 */
 void
 LauncherView::onAltF1Pressed()
 {
@@ -295,8 +294,7 @@ LauncherView::onAltF1Pressed()
     if (hasFocus()) {
         QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
         forceDeactivateWindow();
-    }
-    else {
+    } else {
         forceActivateWindow();
         QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
     }
