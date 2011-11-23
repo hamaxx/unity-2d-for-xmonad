@@ -12,7 +12,7 @@ include_directories(
 
 set(LIBUNITY_2D_TEST_DIR ${libunity-2d-private_BINARY_DIR}/tests)
 
-# Unit-tests
+# Unit-tests not needing X
 macro(libunity_2d_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
@@ -29,13 +29,34 @@ macro(libunity_2d_tests)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
-    gconnectortest
-    keyboardmodifiersmonitortest
-    paneltest
     unity2dtrtest
-    launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest
+    gconnectortest
+    )
+
+# Unit-tests needing X (emulated with Xvfb)
+macro(libunity_2d_tests_with_x)
+    set(_test_list "")
+    foreach(_test ${ARGN})
+        add_test(NAME ${_test} 
+            COMMAND /bin/bash ${CMAKE_SOURCE_DIR}/tests/run-with-xvfb.sh ${_test}
+            )
+        add_executable(${_test} ${_test}.cpp ${_test}.moc)
+        qt4_generate_moc(${_test}.cpp ${_test}.moc)
+        target_link_libraries(${_test}
+            ${QT_QTTEST_LIBRARIES}
+            unity-2d-private
+            unity-2d-private-qml
+            )
+        set(_test_list "${_test_list};${_test}")
+    endforeach(_test)
+endmacro(libunity_2d_tests_with_x)
+
+libunity_2d_tests_with_x(
+    keyboardmodifiersmonitortest
+    paneltest
+    launchermenutest
     focuspathtest
     )
 
