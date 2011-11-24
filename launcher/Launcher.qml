@@ -81,8 +81,8 @@ LauncherDropItem {
             /* function to position highlighted tile so that the shadow does not cover it */
             function positionMainViewForIndex(index) {
                 /* Tile considered 'visible' if it fully drawn */
-                var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
-                var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
+                var numberVisibleTiles = Math.floor(height / tileSize)
+                var indexFirstVisibleTile = Math.ceil(contentY / tileSize)
                 var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
                 var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
 
@@ -96,8 +96,8 @@ LauncherDropItem {
 
             anchors.top: parent.top
             anchors.bottom: shelf.top
-            anchors.bottomMargin: itemPadding
             width: parent.width
+
 
             /* Ensure all delegates are cached in order to improve smoothness of
                scrolling on very low end platforms */
@@ -140,9 +140,8 @@ LauncherDropItem {
 
             anchors.bottom: parent.bottom
             anchors.bottomMargin: main.anchors.bottomMargin
-            height: (tileSize + itemPadding) * count
+            height: tileSizeFull * count
             width: parent.width
-            itemPadding: 0
             interactive: false
 
             model: ListAggregatorModel {
