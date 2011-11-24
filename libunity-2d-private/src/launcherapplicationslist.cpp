@@ -393,7 +393,7 @@ LauncherApplicationsList::load()
     QString desktop_file;
     QStringList favorites = launcherConfiguration().property("favorites").toStringList();
 
-    Q_FOREACH(QString favorite, favorites) {
+    Q_FOREACH(const QString& favorite, favorites) {
        insertFavoriteApplication(favorite);
     }
 
