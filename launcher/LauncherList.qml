@@ -151,7 +151,13 @@ AutoScrollingListView {
                 item.menu.hide()
                 item.activate()
             }
-            else if (mouse.button == Qt.RightButton) {
+            else if (mouse.button == Qt.MidButton) {
+                item.launchNewInstance()
+            }
+        }
+        
+        onPressed: {
+            if (mouse.button == Qt.RightButton) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
                    adjusts the position of the menu in case it goes offscreen
@@ -159,9 +165,6 @@ AutoScrollingListView {
                    See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
                 item.menu.folded = false
-            }
-            else if (mouse.button == Qt.MidButton) {
-                item.launchNewInstance()
             }
         }
 
