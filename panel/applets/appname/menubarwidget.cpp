@@ -106,7 +106,7 @@ void MenuBarWidget::onObjectRemoved(const unity::indicator::Indicator::Ptr& indi
         entry_added.disconnect();
         entry_removed.disconnect();
 
-        Q_FOREACH(unity::indicator::Entry::Ptr entry, m_indicator->GetEntries())
+        Q_FOREACH(const unity::indicator::Entry::Ptr& entry, m_indicator->GetEntries())
         {
             onEntryRemoved (entry->id());
         }

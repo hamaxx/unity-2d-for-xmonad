@@ -77,7 +77,7 @@ static QHash<QString, PanelAppletProviderInterface*> loadPlugins()
     filters << "*.so";
     pluginDir.setNameFilters(filters);
 
-    Q_FOREACH(QString fileEntry, pluginDir.entryList()) {
+    Q_FOREACH(const QString& fileEntry, pluginDir.entryList()) {
         QString pluginFilePath = pluginDir.absoluteFilePath(fileEntry);
         qDebug() << "Loading panel plugin:" << pluginFilePath;
 
