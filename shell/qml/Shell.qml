@@ -41,11 +41,9 @@ Item {
         KeyNavigation.right: dash
     }
 
-    Binding {
-        target: launcher
-        property: "focus"
-        when: launcher.progress === 1.0
-        value: declarativeView.focus && launcher.item.explicitlyFocused && !declarativeView.dashActive
+    Connections {
+        target: launcher.item
+        onExplicitlyFocusedChanged: if (launcher.item.explicitlyFocused) launcher.focus = true
     }
 
     Loader {
@@ -53,8 +51,12 @@ Item {
         source: "dash/Dash.qml"
         anchors.top: parent.top
         anchors.left: launcher.right
-        focus: declarativeView.focus && declarativeView.dashActive
         KeyNavigation.left: launcher
+    }
+
+    Connections {
+        target: declarativeView
+        onDashActiveChanged: if (declarativeView.dashActive) dash.focus = true
     }
 
     Component.onCompleted: declarativeView.show()
