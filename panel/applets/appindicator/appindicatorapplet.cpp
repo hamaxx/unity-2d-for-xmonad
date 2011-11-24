@@ -67,7 +67,7 @@ void AppIndicatorApplet::setupUi()
 void AppIndicatorApplet::createItems()
 {
     QStringList ids = m_watcher->property("RegisteredStatusNotifierItems").toStringList();
-    Q_FOREACH(QString id, ids) {
+    Q_FOREACH(const QString& id, ids) {
         createItem(id);
     }
 }
