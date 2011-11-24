@@ -62,8 +62,14 @@ public:
     Q_INVOKABLE void beginForceVisible(const QString& service = QString());
     Q_INVOKABLE void endForceVisible(const QString& service = QString());
 
+private:
+    enum UpdateReason {
+        RegularUpdate,
+        UpdateFromForceVisibilityEnded
+    };
+    
 private Q_SLOTS:
-    void update();
+    void update(UpdateReason reason = RegularUpdate);
     void slotServiceUnregistered(const QString&);
     void updatePanelVisibility(bool);
 
