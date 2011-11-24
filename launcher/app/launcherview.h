@@ -66,6 +66,9 @@ protected:
     void focusOutEvent(QFocusEvent* event);
 
 private:
+    void positionAtBeginning();
+
+private:
     bool m_superKeyPressed;
     bool m_superKeyHeld;
     bool m_superPressIgnored;
