@@ -34,11 +34,26 @@ libunity_2d_tests(
     gconnectortest
     keyboardmodifiersmonitortest
     paneltest
-    unity2dtrtest
     launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest
     focuspathtest
+    )
+    
+# unity2dtrtest
+add_test(NAME unity2dtrtest_check
+    COMMAND /bin/sh unity2dtrtest.sh
+    )
+add_executable(unity2dtrtest
+    unity2dtrtest.cpp unity2dtrtest.moc
+    )
+qt4_generate_moc(unity2dtrtest.cpp
+    unity2dtrtest.moc
+    )
+target_link_libraries(unity2dtrtest
+    ${QT_QTTEST_LIBRARIES}
+    unity-2d-private
+    unity-2d-private-qml
     )
 
 add_custom_target(unity2dtr_po COMMAND
