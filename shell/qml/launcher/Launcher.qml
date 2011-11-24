@@ -31,8 +31,7 @@ LauncherDropItem {
     Behavior on x { NumberAnimation { duration: 125 } }
 
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
-    VisibilityController {
-        id: visibilityController
+    property variant visibilityController: VisibilityController {
         launcher: launcher
     }
 
@@ -211,7 +210,6 @@ LauncherDropItem {
         shelfItems.appendModel(trashes);
     }
 
-    property bool explicitlyFocused: false
     Connections {
         target: declarativeView
         // FIXME: copy methods over
@@ -220,14 +218,6 @@ LauncherDropItem {
             if (superKeyHeld) visibilityController.beginForceVisible()
             else visibilityController.endForceVisible()
         }
-        onFocusChanged: {
-            if (declarativeView.focus) visibilityController.beginForceVisible()
-            else {
-                launcher.explicitlyFocused = false
-                visibilityController.endForceVisible()
-            }
-        }
-        onLauncherFocusRequested: explicitlyFocused = true
     }
 
     Connections {

@@ -235,7 +235,6 @@ Item {
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
 
-
         SearchEntry {
             id: search_entry
 
@@ -330,6 +329,8 @@ Item {
             declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
         }
     }
+
+    Keys.onPressed: if (event.key == Qt.Key_Escape) declarativeView.dashActive = false
 
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 606

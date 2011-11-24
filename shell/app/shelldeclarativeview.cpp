@@ -240,19 +240,6 @@ ShellDeclarativeView::activeLens() const
 }
 
 void
-ShellDeclarativeView::keyPressEvent(QKeyEvent* event)
-{
-    switch (event->key()) {
-        case Qt::Key_Escape:
-            setDashActive(false);
-            break;
-        default:
-            QDeclarativeView::keyPressEvent(event);
-            break;
-    }
-}
-
-void
 ShellDeclarativeView::resizeEvent(QResizeEvent* event)
 {
     if (!QX11Info::isCompositingManagerRunning()) {

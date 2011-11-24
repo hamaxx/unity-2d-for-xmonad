@@ -39,11 +39,10 @@ Item {
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
         KeyNavigation.right: dash
-    }
-
-    Connections {
-        target: launcher.item
-        onExplicitlyFocusedChanged: if (launcher.item.explicitlyFocused) launcher.focus = true
+        onActiveFocusChanged: {
+            if (activeFocus) item.visibilityController.beginForceVisible("launcher")
+            else item.visibilityController.endForceVisible("launcher")
+        }
     }
 
     Loader {
@@ -57,6 +56,16 @@ Item {
     Connections {
         target: declarativeView
         onDashActiveChanged: if (declarativeView.dashActive) dash.focus = true
+        onLauncherFocusRequested: launcher.focus = true
+        onFocusChanged: {
+            /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
+               the documentation says that setting focus=false will make an item lose activeFocus
+               if it has it, this doesn't happen with FocusScopes (and Loader is a FocusScope).
+               Therefore I'm working around this by giving focus to the shell, which is safe since
+               the shell doesn't react to activeFocus at all.
+               See: https://bugreports.qt.nokia.com/browse/QTBUG-19688 */
+            if (!declarativeView.focus && launcher.activeFocus) shell.focus = true
+        }
     }
 
     Component.onCompleted: declarativeView.show()
