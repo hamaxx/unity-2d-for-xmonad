@@ -54,6 +54,8 @@ target_link_libraries(unity2dtrtest
     unity-2d-private
     unity-2d-private-qml
     )
+configure_file(unity2dtrtest.sh.in
+    unity2dtrtest.sh @ONLY)
 
 add_custom_target(unity2dtr_po COMMAND
     mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/
