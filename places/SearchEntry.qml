@@ -110,6 +110,7 @@ AbstractButton {
             focus: true
             selectByMouse: true
             cursorDelegate: cursor
+            selectionColor: "gray"
 
             onTextChanged: live_search_timeout.restart()
 

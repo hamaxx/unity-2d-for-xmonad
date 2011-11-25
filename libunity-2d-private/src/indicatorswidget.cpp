@@ -43,7 +43,7 @@ IndicatorsWidget::IndicatorsWidget(IndicatorsManager* manager)
 IndicatorsWidget::~IndicatorsWidget()
 {
     /* Disconnect from all the indicators' signals 'on_entry_added' and 'on_entry_removed' */
-    Q_FOREACH(QList<sigc::connection> connections, m_indicators_connections) {
+    Q_FOREACH(const QList<sigc::connection>& connections, m_indicators_connections) {
         Q_FOREACH(sigc::connection connection, connections) {
             connection.disconnect();
         }
@@ -72,7 +72,7 @@ void IndicatorsWidget::removeIndicator(const unity::indicator::Indicator::Ptr& i
         conn.disconnect();
     }
 
-    Q_FOREACH(Entry::Ptr entry, indicator->GetEntries())
+    Q_FOREACH(const Entry::Ptr& entry, indicator->GetEntries())
     {
         onEntryRemoved (entry->id());
     }

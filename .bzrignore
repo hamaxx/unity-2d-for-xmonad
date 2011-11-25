@@ -19,7 +19,6 @@ panel/applets/appname/registraradaptor.*
 panel/applets/indicator/indicator-config.h
 panel/applets/libpanelplugin-*.so.*
 panel/lib/libuqpanel.so*
-panel/tests/Testing
 panel/tests/homebuttonapplettest
 
 libunity-2d-private/src/libunity-2d-private.so.*
@@ -34,6 +33,7 @@ libunity-2d-private/tests/launchermenutest
 libunity-2d-private/tests/listaggregatormodeltest
 libunity-2d-private/tests/locale
 libunity-2d-private/tests/mouseareademo
+libunity-2d-private/tests/focuspathtest
 libunity-2d-private/tests/paneltest
 libunity-2d-private/tests/qsortfilterproxymodeltest
 libunity-2d-private/tests/unity2dtrtest
@@ -52,6 +52,9 @@ CMakeCache*
 moc_*.cxx
 *.moc
 install_manifest.txt
+
+# Dynamic directory created during the test execution.
+Testing/
 
 # KDevelop and Qtcreator
 *.kdev4

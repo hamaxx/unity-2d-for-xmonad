@@ -20,6 +20,7 @@
  */
 
 // Local
+#include <unitytestmacro.h>
 #include <unity2dpanel.h>
 
 // Qt
@@ -107,6 +108,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(PanelTest)
+QAPP_TEST_MAIN(PanelTest)
 
 #include "paneltest.moc"

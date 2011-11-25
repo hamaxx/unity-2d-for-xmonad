@@ -1,4 +1,3 @@
-pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
 set(panel_SRCS
     main.cpp
@@ -13,7 +12,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${GTK_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
-    ${DCONFQT_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 

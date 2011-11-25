@@ -46,6 +46,11 @@ LauncherDropItem {
         main.positionViewAtBeginning()
     }
 
+    function positionAtBeginning() {
+        main.positionViewAtBeginning()
+        hideMenu()
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent

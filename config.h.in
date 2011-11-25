@@ -5,6 +5,46 @@
 #define UNITY_DIR "@UNITY_DIR@"
 
 #include <QCoreApplication>
+#include "qconf.h"
+
+static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
+static const char* LAUNCHER2D_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
+static const char* PANEL2D_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+
+static const char* UNITY_DCONF_SCHEMA = "com.canonical.Unity";
+static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity.Launcher";
+static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity.Panel";
+
+inline QConf& unity2dConfiguration() {
+    static QConf configuration(UNITY2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& launcher2dConfiguration() {
+    static QConf configuration(LAUNCHER2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& panel2dConfiguration() {
+    static QConf configuration(PANEL2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& unityConfiguration() {
+    static QConf configuration(UNITY_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& launcherConfiguration() {
+    static QConf configuration(LAUNCHER_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& panelConfiguration() {
+    static QConf configuration(PANEL_DCONF_SCHEMA);
+    return configuration;
+}
+
 
 inline bool isRunningInstalled() {
     return (QCoreApplication::applicationDirPath() == (INSTALL_PREFIX "/" INSTALL_BINDIR));

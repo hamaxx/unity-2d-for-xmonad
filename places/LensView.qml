@@ -78,6 +78,10 @@ FocusScope {
            the file 'UnityShowcaseRenderer.qml' and use it to render the category.
         */
         bodyDelegate: Loader {
+            visible: category_model.count > 0
+            width: parent.width
+            height: visible ? item.contentHeight : 0
+
             property string name: model.column_0
             property string iconHint: model.column_1
             property string rendererName: model.column_2
@@ -107,9 +111,6 @@ FocusScope {
                In that case the list view scrolls the Flickable appropriately.
             */
             property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
-            property int contentY
-            Binding { target: item; property: "contentY"; value: contentY }
-            property bool focusable: category_model.count > 0
             property variant currentItem: item.currentItem
 
             Binding { target: item; property: "name"; value: name }
@@ -122,7 +123,7 @@ FocusScope {
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.item.needHeader && body.focusable
+            visible: body.item.needHeader && body.visible
             height: visible ? 32 : 0
 
             property bool foldable: body.item.folded != undefined

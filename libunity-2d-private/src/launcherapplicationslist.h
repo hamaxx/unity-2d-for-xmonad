@@ -36,7 +36,6 @@ struct SnStartupSequence;
 class LauncherApplication;
 class BamfApplication;
 class BamfView;
-class QConf;
 
 class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
 {
@@ -88,7 +87,6 @@ private:
        displayed (m_applications).
     */
     QHash<QString, LauncherApplication*> m_applicationForExecutable;
-    QConf* m_dconf_launcher;
     QStringList m_xdgApplicationDirs;
 
     /* Startup notification support */

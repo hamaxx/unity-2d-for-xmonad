@@ -45,6 +45,7 @@ pkg_check_modules(WNCK REQUIRED libwnck-3.0)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 pkg_check_modules(NUXCORE REQUIRED nux-core-1.0)
 pkg_check_modules(PANGO REQUIRED pango)
+pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
 
 # GSettings schemas
@@ -81,10 +82,12 @@ include_directories(
     ${QT_QTGUI_INCLUDE_DIR}
     ${QT_QTOPENGL_INCLUDE_DIR}
     ${X11_INCLUDE_DIR}
+    ${DCONFQT_INCLUDE_DIRS}
     )
 
 # Tests
-add_custom_target(check)
+enable_testing()
+add_custom_target(check make test)
 
 # Source
 add_subdirectory(libunity-2d-private)

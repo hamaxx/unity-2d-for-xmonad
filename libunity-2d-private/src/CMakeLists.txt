@@ -74,6 +74,7 @@ set(lib${LIB_NAME}_SRCS
     panelapplet.cpp
     panelstyle.cpp
     percentcoder.cpp
+    focuspath.cpp
     )
 
 # Build
@@ -97,7 +98,6 @@ include_directories(
     ${STARTUPNOTIFICATION_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
-    ${DCONFQT_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${NUXCORE_INCLUDE_DIRS}
     ${DEE_INCLUDE_DIRS}

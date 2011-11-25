@@ -19,8 +19,6 @@
 
 #include <QDeclarativeView>
 
-class QConf;
-
 class Unity2DDeclarativeView : public QDeclarativeView
 {
     Q_OBJECT
@@ -62,7 +60,6 @@ private:
     bool m_useOpenGL;
     bool m_transparentBackground;
     WId m_last_focused_window;
-    QConf* m_conf;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)
