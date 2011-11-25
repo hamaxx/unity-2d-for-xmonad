@@ -20,7 +20,7 @@ import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
 
-Item {
+FocusScope {
     id: dash
     Accessible.name: "dash"
 

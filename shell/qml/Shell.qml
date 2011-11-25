@@ -51,6 +51,7 @@ Item {
         anchors.top: parent.top
         anchors.left: launcher.right
         KeyNavigation.left: launcher
+        onLoaded: dash.item.focus = true
     }
 
     Connections {
