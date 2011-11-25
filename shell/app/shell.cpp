@@ -74,15 +74,13 @@ int main(int argc, char *argv[])
 
     application.installX11EventFilter(&view);
 
-    QDir::addSearchPath("artwork", unity2dDirectory() + "/shell/artwork");
-
     view.engine()->addImportPath(unity2dImportPath());
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
-    view.setSource(QUrl("qml/Shell.qml"));
+    view.setSource(QUrl("Shell.qml"));
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.

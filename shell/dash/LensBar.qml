@@ -100,7 +100,7 @@ FocusScope {
             Accessible.name: u2d.tr("home")
 
             focus: true
-            icon: "../../artwork/dash/lens-nav-home.svg"
+            icon: "artwork/lens-nav-home.svg"
             onClicked: dash.activateHome()
             active: ( declarativeView.activeLens == "" )
             iconWidth: lensBar.iconWidth

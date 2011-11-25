@@ -83,7 +83,7 @@ DropItem {
     property int dragPosition
 
     property int pips: 0
-    property string pipSource: "artwork/launcher/launcher_" +
+    property string pipSource: "launcher/artwork/launcher_" +
                                ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
     function getPipOffset(index) {
         /* Pips need to always be centered, regardless if they are an even or odd
@@ -136,7 +136,7 @@ DropItem {
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("artwork/launcher/launcher_arrow_rtl.png")
+                  .arg("launcher/artwork/launcher_arrow_rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 
@@ -210,7 +210,7 @@ DropItem {
                 source: {
                     var actualColor = declarativeView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
-                        .arg("artwork/launcher/round_corner_54x54.png")
+                        .arg("launcher/artwork/round_corner_54x54.png")
                         .arg(actualColor.toString().replace("#", ""))
                         .arg(1.0)
                 }
@@ -225,7 +225,7 @@ DropItem {
 
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
-                source: "../../artwork/launcher/round_outline_54x54.png"
+                source: "artwork/round_outline_54x54.png"
 
                 opacity: 0
 
@@ -269,7 +269,7 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                source: "../../artwork/launcher/round_shine_54x54.png"
+                source: "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
             }
@@ -278,7 +278,7 @@ DropItem {
                 id: selectionOutline
                 anchors.centerIn: parent
                 smooth: true
-                source: "../../artwork/launcher/round_selected_66x66.png"
+                source: "artwork/round_selected_66x66.png"
                 visible: declarativeView.focus && item.activeFocus
             }
 
@@ -310,7 +310,7 @@ DropItem {
 
             Image {
                 id: progressBar
-                source: "../../artwork/launcher/progress_bar_trough.png"
+                source: "artwork/progress_bar_trough.png"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 width: tile.width
@@ -319,7 +319,7 @@ DropItem {
 
                 Image {
                     id: progressFill
-                    source: "../../artwork/launcher/progress_bar_fill.png"
+                    source: "artwork/progress_bar_fill.png"
                     anchors.verticalCenter: parent.verticalCenter
                     x: 6
                     width: sourceSize.width * launcherItem.progress

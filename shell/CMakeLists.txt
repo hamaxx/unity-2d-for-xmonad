@@ -3,11 +3,17 @@ project(unity-2d-shell)
 # Source
 add_subdirectory(app)
 
+file(GLOB shell_QML *.qml *.js)
+
 # Install
-install(DIRECTORY qml
+install(FILES ${shell_QML}
     DESTINATION ${UNITY_2D_DIR}/shell
     )
 
-install(DIRECTORY artwork
+install(DIRECTORY launcher
+    DESTINATION ${UNITY_2D_DIR}/shell
+    )
+
+install(DIRECTORY dash
     DESTINATION ${UNITY_2D_DIR}/shell
     )

@@ -40,7 +40,7 @@ Item {
         width: sourceSize.width
         height: sourceSize.height
 
-        source: ("../../artwork/dash/star_empty-%1.png").arg(iconSize)
+        source: ("artwork/star_empty-%1.png").arg(iconSize)
         opacity: ( selected ) ? 0.8 : 0.3
         asynchronous: true
     }
@@ -50,7 +50,7 @@ Item {
         width: Math.ceil(sourceSize.width * fill)
         height: sourceSize.height
 
-        source: ("../../artwork/dash/star_full-%1.png").arg(iconSize)
+        source: ("artwork/star_full-%1.png").arg(iconSize)
         fillMode: Image.TileHorizontally
         asynchronous: true
         opacity: ( selected ) ? 1 : 0.8

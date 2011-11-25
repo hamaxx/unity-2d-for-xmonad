@@ -205,14 +205,14 @@ FocusScope {
             Image {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectCrop
-                source: "../../artwork/dash/background_sheen.png"
+                source: "artwork/background_sheen.png"
             }
         }
 
         BorderImage {
             anchors.fill: parent
             visible: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
-            source: screen.isCompositingManagerRunning ? "../../artwork/dash/desktop_dash_background.sci" : "../../artwork/dash/desktop_dash_background_no_transparency.sci"
+            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
     }
@@ -321,7 +321,7 @@ FocusScope {
 
         Image {
             id: fullScreenButtonImage
-            source: "../../artwork/dash/fullscreen_button.png"
+            source: "artwork/fullscreen_button.png"
             mirror: isRightToLeft()
         }
 

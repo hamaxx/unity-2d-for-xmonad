@@ -251,7 +251,7 @@ ShellDeclarativeView::resizeEvent(QResizeEvent* event)
 static QBitmap
 createCornerMask()
 {
-    QPixmap pix(unity2dDirectory() + "/shell/artwork/dash/desktop_dash_background_no_transparency.png");
+    QPixmap pix(unity2dDirectory() + "/shell/dash/artwork/desktop_dash_background_no_transparency.png");
     return pix.createMaskFromColor(Qt::red, Qt::MaskOutColor);
 }
 

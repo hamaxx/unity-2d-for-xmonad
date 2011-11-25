@@ -23,7 +23,7 @@ Image {
     property bool folded: true
 
     rotation: folded ? 0 : 90
-    source: "../../artwork/dash/arrow.png"
+    source: "artwork/arrow.png"
     width: sourceSize.width
     height: sourceSize.height
     fillMode: Image.PreserveAspectFit
