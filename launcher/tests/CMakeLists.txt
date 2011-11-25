@@ -23,6 +23,7 @@ include_directories(
     )
 
 launcher_tests(
-    launcherviewtest
+# FIXME: test need a mock dbus object to message with via dbus-test-runner
+#    launcherviewtest
     )
 
