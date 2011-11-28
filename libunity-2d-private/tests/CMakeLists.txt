@@ -39,10 +39,10 @@ libunity_2d_tests(
     focuspathtest
     )
     
-# unity2dtrtest
-add_test(NAME unity2dtrtest_check
-    COMMAND /bin/sh unity2dtrtest.sh
-    )
+# unity2dtrtest - FIXME
+#add_test(NAME unity2dtrtest_check
+#    COMMAND /bin/sh unity2dtrtest.sh
+#    )
 add_executable(unity2dtrtest
     unity2dtrtest.cpp unity2dtrtest.moc
     )
