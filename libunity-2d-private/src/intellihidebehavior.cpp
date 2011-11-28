@@ -212,19 +212,23 @@ bool IntelliHideBehavior::isMouseForcingVisibility() const
 
 void IntelliHideBehavior::hidePanel()
 {
-    m_visible = false;
-    Q_EMIT visibleChanged(m_visible);
-    createEdgeHitDetector();
+    if (m_visible) {
+        m_visible = false;
+        Q_EMIT visibleChanged(m_visible);
+        createEdgeHitDetector();
+    }
 }
 
 void IntelliHideBehavior::showPanel()
 {
-    // Delete the edge hit detector so that it does not prevent mouse events
-    // from reaching the panel
-    delete m_edgeHitDetector;
-    m_edgeHitDetector = 0;
-    m_visible = true;
-    Q_EMIT visibleChanged(m_visible);
+    if (!m_visible) {
+        // Delete the edge hit detector so that it does not prevent mouse events
+        // from reaching the panel
+        delete m_edgeHitDetector;
+        m_edgeHitDetector = 0;
+        m_visible = true;
+        Q_EMIT visibleChanged(m_visible);
+    }
 }
 
 void IntelliHideBehavior::createEdgeHitDetector()
