@@ -52,10 +52,10 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
-    height: tileSizeFull
+    height: selectionOutlineSize
 
     property int tileSize
-    property int tileSizeFull
+    property int selectionOutlineSize
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation
@@ -132,7 +132,7 @@ DropItem {
            the active one */
         Image {
             anchors.right: parent.right
-            y: item.height - item.tileSizeFull / 2 - height / 2
+            y: item.height - item.selectionOutlineSize / 2 - height / 2
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
@@ -157,7 +157,7 @@ DropItem {
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                y: item.height - item.tileSizeFull / 2 - height / 2 + getPipOffset(index)
+                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
                 mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"

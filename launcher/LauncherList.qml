@@ -23,14 +23,14 @@ AutoScrollingListView {
     id: list
 
     /* The spacing is explicitly set to -7 in order to compensate
-       the space added by selectionOutline. */
+       the space added by selectionOutline and round_corner_54x54.png. */
     spacing: -7
 
     property int tileSize: 54
 
     /* selectionOutline tile size, so AutoScrollingList view can calculate
-       the right height. See https://bugreports.qt.nokia.com//browse/QTBUG-17067 */
-    property int tileSizeFull:  66
+       the right height. */
+    property int selectionOutlineSize:  66
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -92,7 +92,7 @@ AutoScrollingListView {
 
         width: list.width
         tileSize: list.tileSize
-        tileSizeFull: list.tileSizeFull
+        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
@@ -142,7 +142,7 @@ AutoScrollingListView {
             }
             list.visibleMenu = item.menu
             item.menu.show(width, panel.y + list.y - list.contentY +
-                                  y + height - tileSizeFull / 2)
+                                  y + height - selectionOutlineSize / 2)
 
         }
 
