@@ -72,9 +72,9 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
-    /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
+    /* Alt+F1 toggle the keyboard focus between laucher and other(previous) application. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
+    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
 
     /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
@@ -263,7 +263,6 @@ LauncherView::toggleDash()
         }
 
         dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
-        positionAtBeginning();
     }
 }
 
@@ -283,9 +282,15 @@ LauncherView::onSuperSPressed()
 }
 
 void
-LauncherView::positionAtBeginning()
+LauncherView::onAltF1Pressed()
 {
     QGraphicsObject* launcher = rootObject();
-    QMetaObject::invokeMethod(launcher, "positionAtBeginning", Qt::AutoConnection);
-}
 
+    if (hasFocus()) {
+        QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
+        forceDeactivateWindow();
+    } else {
+        forceActivateWindow();
+        QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
+    }
+}
