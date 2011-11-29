@@ -17,7 +17,8 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* required for drag’n’drop handling */
+import Unity2d 1.0
+import "../common"
 import "../common/utils.js" as Utils
 
 LauncherDropItem {
@@ -32,7 +33,24 @@ LauncherDropItem {
 
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     property variant visibilityController: VisibilityController {
-        launcher: launcher
+        behavior: visibilityBehavior.status == Loader.Ready ? visibilityBehavior.item : null
+    }
+
+    Loader {
+        id: visibilityBehavior
+
+        property variant modesMap: { 0: '../common/AlwaysVisibleBehavior.qml',
+                                     1: 'AutoHideBehavior.qml',
+                                     2: 'IntelliHideBehavior.qml' }
+
+        source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
+    }
+
+    Binding {
+        target: visibilityBehavior
+        property: "item.target"
+        value: launcher
+        when: visibilityBehavior.status == Loader.Ready
     }
 
     MouseArea {

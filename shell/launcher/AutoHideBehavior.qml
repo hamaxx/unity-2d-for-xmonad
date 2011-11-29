@@ -1,25 +1,27 @@
 import QtQuick 1.0
+import "../common"
 
-Item {
+BaseBehavior {
     id: autoHide
-    property bool shown: true
-    property variant launcher: null
+    property bool shownRegardlessOfFocus: true
+
+    shown: target.activeFocus || shownRegardlessOfFocus
 
     Timer {
         id: autoHideTimer
         interval: 1000
-        running: (launcher !== undefined) ? !launcher.containsMouse : false
-        onTriggered: shown = false
+        running: (target !== undefined) ? !target.containsMouse : false
+        onTriggered: shownRegardlessOfFocus = false
     }
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: shown = true
+        onTriggered: shownRegardlessOfFocus = true
     }
 
     Connections {
-        target: launcher !== undefined ? launcher : null
+        target: autoHide.target !== undefined ? autoHide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }

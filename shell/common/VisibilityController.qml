@@ -1,33 +1,18 @@
 import QtQuick 1.0
-import QConf 1.0
-import "../common/utils.js" as Utils
+import "utils.js" as Utils
 
 Item {
     id: controller
     property bool shown: true
-    property variant launcher: null
-    property variant modesMap: { 0: 'AlwaysVisibleBehavior.qml',
-                                 1: 'AutoHideBehavior.qml',
-                                 2: 'IntelliHideBehavior.qml' }
+    property variant behavior: null
     property bool forceVisible: false
     property variant forceVisibleStack: {}
-
-    Loader {
-        id: visibilityBehavior
-        source: modesMap[(forceVisible) ? 0 : Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
-    }
-
-    Binding {
-        target: visibilityBehavior
-        property: "item.launcher"
-        value: launcher
-        when: visibilityBehavior.progress == 1.0
-    }
 
     Binding {
         target: controller
         property: "shown"
-        value: visibilityBehavior.item.shown
+        value: forceVisible || behavior.shown
+        when: behavior != null
     }
 
     function beginForceVisible(id) {

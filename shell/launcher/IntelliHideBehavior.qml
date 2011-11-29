@@ -1,35 +1,39 @@
 import QtQuick 1.0
 import Unity2d 1.0
+import "../common"
 
-Item {
+BaseBehavior {
     id: intellihide
 
-    property variant launcher: null
-    property bool shown: true
+    property bool shownRegardlessOfFocus: true
+
+    shown: target.activeFocus || shownRegardlessOfFocus
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: shown = true
+        onTriggered: shownRegardlessOfFocus = true
     }
 
     Connections {
-        target: (launcher !== undefined) ? launcher : null
+        target: (intellihide.target !== undefined) ? intellihide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 
     WindowsIntersectMonitor {
         id: windows
-        monitoredArea: launcher ? Qt.rect(0, launcher.y, launcher.width, launcher.height)
-                                : Qt.rect(0, 0, 0, 0)
+        monitoredArea: intellihide.target ? Qt.rect(0, intellihide.target.y,
+                                                    intellihide.target.width,
+                                                    intellihide.target.height)
+                                          : Qt.rect(0, 0, 0, 0)
     }
 
     /* For some reason this requires a Binding, assigning directly to the property
        won't work in certain cases. */
     Binding {
         target: intellihide
-        property: "shown"
-        value: launcher ? launcher.containsMouse || !windows.intersects : true
+        property: "shownRegardlessOfFocus"
+        value: intellihide.target ? intellihide.target.containsMouse || !windows.intersects : true
     }
 }
