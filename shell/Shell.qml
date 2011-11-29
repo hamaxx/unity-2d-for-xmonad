@@ -53,6 +53,7 @@ Item {
         anchors.left: launcher.right
         KeyNavigation.left: launcher
         onLoaded: dash.item.focus = true
+        opacity: declarativeView.dashActive ? 1.0 : 0.0
     }
 
     Connections {

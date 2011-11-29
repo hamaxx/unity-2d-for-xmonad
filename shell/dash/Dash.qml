@@ -25,8 +25,6 @@ FocusScope {
     id: dash
     Accessible.name: "dash"
 
-    visible: declarativeView.dashActive
-
     LayoutMirroring.enabled: isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
@@ -227,8 +225,6 @@ FocusScope {
         */
         anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
         anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
-
-        visible: declarativeView.dashActive
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
