@@ -134,6 +134,11 @@ Item {
 
     property variant lenses: Lenses {}
 
+    /* If unity-2d-places is launched on demand by an activateLens() dbus call,
+       "lenses" is not yet populated, so activating "commands.lens",
+       for example, triggered by Alt+F2 fails.
+       This following connection fixes this issue by checking if any lenses
+       should be activated as long as "lenses" is being populated */
     Connections {
         target: lenses
         onRowsInserted: {
