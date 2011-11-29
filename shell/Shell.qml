@@ -39,6 +39,7 @@ Item {
         source: "launcher/Launcher.qml"
         anchors.top: parent.top
         KeyNavigation.right: dash
+        onLoaded: item.focus = true
         onActiveFocusChanged: {
             if (activeFocus) item.visibilityController.beginForceVisible("launcher")
             else item.visibilityController.endForceVisible("launcher")
