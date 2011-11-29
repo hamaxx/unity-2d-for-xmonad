@@ -227,7 +227,7 @@ Trash::onEmptyTriggered()
 void
 Trash::onDragEnter(DeclarativeDragDropEvent* event)
 {
-    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+    Q_FOREACH(const QUrl& url, event->mimeData()->urls()) {
         if (url.scheme() == "file") {
             event->setDropAction(Qt::MoveAction);
             event->setAccepted(true);
@@ -239,7 +239,7 @@ Trash::onDragEnter(DeclarativeDragDropEvent* event)
 void
 Trash::onDrop(DeclarativeDragDropEvent* event)
 {
-    Q_FOREACH(QUrl url, event->mimeData()->urls()) {
+    Q_FOREACH(const QUrl& url, event->mimeData()->urls()) {
         if (url.scheme() == "file") {
             GFile* file = g_file_new_for_path(url.toLocalFile().toUtf8().constData());
             if (!g_file_trash(file, NULL, NULL)) {

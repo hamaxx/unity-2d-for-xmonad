@@ -23,6 +23,7 @@
 #include <QDesktopWidget>
 #include <QX11Info>
 #include <QDebug>
+#include <QGraphicsObject>
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -36,14 +37,12 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-// libdconf-qt
-#include "qconf.h"
-
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <keymonitor.h>
 #include <debug_p.h>
+#include <config.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -58,7 +57,6 @@ static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 static const char* COMMANDS_LENS_ID = "commands.lens";
-static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
@@ -71,17 +69,20 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
-    connect(m_dconf_launcher, SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
+    connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
-    /* Alt+F1 gives the keyboard focus to the launcher. */
+    /* Alt+F1 toggle the keyboard focus between laucher and other(previous) application. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(forceActivateWindow()));
+    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
 
     /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
+
+    /* Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher. */
+    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+    connect(superS, SIGNAL(pressed()), SLOT(onSuperSPressed()));
 
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
@@ -94,7 +95,6 @@ LauncherView::LauncherView(QWidget* parent) :
 
 LauncherView::~LauncherView()
 {
-    delete m_dconf_launcher;
 }
 
 void
@@ -118,7 +118,7 @@ LauncherView::updateSuperKeyMonitoring()
     KeyMonitor *keyMonitor = KeyMonitor::instance();
     HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
-    QVariant value = m_dconf_launcher->property("superKeyEnable");
+    QVariant value = launcher2dConfiguration().property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
@@ -273,3 +273,24 @@ LauncherView::showCommandsLens()
     dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
 }
 
+/* BUGFIX:881458 */
+void
+LauncherView::onSuperSPressed()
+{
+    QGraphicsObject* launcher = rootObject();
+    QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
+}
+
+void
+LauncherView::onAltF1Pressed()
+{
+    QGraphicsObject* launcher = rootObject();
+
+    if (hasFocus()) {
+        QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
+        forceDeactivateWindow();
+    } else {
+        forceActivateWindow();
+        QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
+    }
+}

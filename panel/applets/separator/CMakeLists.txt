@@ -28,5 +28,5 @@ target_link_libraries(panelplugin-separator
     )
 
 install(TARGETS panelplugin-separator
-        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity-2d/plugins/panel
        )

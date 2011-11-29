@@ -28,8 +28,6 @@
 #include <QObject>
 #include <QScopedPointer>
 
-class QConf;
-
 class AbstractVisibilityBehavior;
 class Unity2dPanel;
 class QDBusServiceWatcher;
@@ -77,7 +75,6 @@ private:
     };
     Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
-    QConf* m_dconf_launcher;
     QDBusServiceWatcher* m_dbusWatcher;
     QScopedPointer<AbstractVisibilityBehavior> m_behavior;
 

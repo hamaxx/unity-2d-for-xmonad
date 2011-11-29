@@ -23,9 +23,6 @@
 #include <unity2dapplication.h>
 #include <propertybinder.h>
 
-// libdconf-qt
-#include "qconf.h"
-
 // Qt
 #include <QApplication>
 #include <QDesktopWidget>
@@ -44,8 +41,6 @@
 
 // libc
 #include <stdlib.h>
-
-static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 
 #if defined(QMLJSDEBUGGER)
 #include <qt_private/qdeclarativedebughelper_p.h>
@@ -99,7 +94,9 @@ int main(int argc, char *argv[])
 
     /* QML declarative view */
     LauncherView *launcherView = new LauncherView(&panel);
-    launcherView->setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        launcherView->setUseOpenGL(true);
+    }
 
     launcherView->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     launcherView->setFocus();
@@ -108,9 +105,6 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     launcherView->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/launcher/"));
-    if (!isRunningInstalled()) {
-        launcherView->engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
 
     launcherView->rootContext()->setContextProperty("declarativeView", launcherView);
     launcherView->rootContext()->setContextProperty("launcherView", launcherView);
@@ -123,10 +117,9 @@ int main(int argc, char *argv[])
     launcherView->setSource(QUrl("./Launcher.qml"));
 
     /* Synchronise panel's "useStrut" property with its corresponding DConf key */
-    QConf dconfLauncher(LAUNCHER_DCONF_SCHEMA);
-    panel.setUseStrut(dconfLauncher.property("useStrut").toBool());
+    panel.setUseStrut(launcher2dConfiguration().property("useStrut").toBool());
     PropertyBinder useStrutBinder;
-    useStrutBinder.bind(&dconfLauncher, "useStrut", &panel, "useStrut");
+    useStrutBinder.bind(&launcher2dConfiguration(), "useStrut", &panel, "useStrut");
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);

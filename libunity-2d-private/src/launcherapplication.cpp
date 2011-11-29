@@ -820,7 +820,7 @@ LauncherApplication::slotChildRemoved(BamfView* child)
 void
 LauncherApplication::fetchIndicatorMenus()
 {
-    Q_FOREACH(QString path, m_indicatorMenus.keys()) {
+    Q_FOREACH(const QString& path, m_indicatorMenus.keys()) {
         m_indicatorMenus.take(path)->deleteLater();
     }
 
