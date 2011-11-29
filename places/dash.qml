@@ -28,6 +28,7 @@ Item {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+    property variant pageQueue
 
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
@@ -110,6 +111,12 @@ Item {
     }
 
     function activateLens(lensId) {
+        /* check if lenses variable was populated already */
+        if (lenses.rowCount() == 0) {
+            pageQueue = lensId
+            return
+        }
+
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
@@ -155,6 +162,20 @@ Item {
     }
 
     property variant lenses: Lenses {}
+
+    Connections {
+        target: lenses
+        onRowsInserted: {
+            if (pageQueue != "") {
+                var lens = lenses.get(pageQueue)
+                if (lens != null) {
+                    activateLens(pageQueue)
+                    pageQueue = "";
+                    return
+                }
+            }
+        }
+    }
 
     Item {
         id: background
