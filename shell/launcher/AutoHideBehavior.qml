@@ -3,24 +3,24 @@ import Unity2d 1.0
 
 BaseBehavior {
     id: autoHide
-    property bool behaviorShown: true
-    property bool shown: (focusComponent && focusComponent.activeFocus) || behaviorShown
+    property bool shownRegardlessOfFocus: true
+    property bool shown: (monitorFocusOn && monitorFocusOn.activeFocus) || shownRegardlessOfFocus
 
     Timer {
         id: autoHideTimer
         interval: 1000
-        running: (component !== undefined) ? !component.containsMouse : false
-        onTriggered: behaviorShown = false
+        running: (target !== undefined) ? !target.containsMouse : false
+        onTriggered: shownRegardlessOfFocus = false
     }
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: behaviorShown = true
+        onTriggered: shownRegardlessOfFocus = true
     }
 
     Connections {
-        target: component !== undefined ? component : null
+        target: autoHide.target !== undefined ? autoHide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }

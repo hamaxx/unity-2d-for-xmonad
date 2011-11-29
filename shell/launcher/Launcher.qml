@@ -53,14 +53,14 @@ LauncherDropItem {
 
     Binding {
         target: visibilityBehavior
-        property: "item.component"
+        property: "item.target"
         value: launcher
         when: visibilityBehavior.status == Loader.Ready
     }
 
     Binding {
         target: visibilityBehavior
-        property: "item.focusComponent"
+        property: "item.monitorFocusOn"
         value: content
         when: visibilityBehavior.status == Loader.Ready
     }
