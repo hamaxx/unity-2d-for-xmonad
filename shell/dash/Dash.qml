@@ -76,7 +76,7 @@ FocusScope {
     Timer {
         id: delayPageLoaderReset
         interval: 1
-        onTriggered: pageLoader.source = ""
+        onTriggered: pageLoader.setSource("")
     }
 
     function activatePage(page) {
@@ -102,7 +102,7 @@ FocusScope {
     }
 
     function buildLensPage(lens) {
-        pageLoader.source = "LensView.qml"
+        pageLoader.setSource("LensView.qml")
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = lens
@@ -130,7 +130,7 @@ FocusScope {
 
     function activateHome() {
         deactivateActiveLens()
-        pageLoader.source = "Home.qml"
+        pageLoader.setSource("Home.qml")
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
@@ -288,6 +288,18 @@ FocusScope {
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
             anchors.rightMargin: !filterPane.visible || filterPane.folded ? 0 : 15
             onLoaded: item.focus = true
+
+            /* Workaround loss of focus issue happening when the loaded item has
+               active focus and is then destroyed. The active focus was completely
+               lost instead of being relinquished to the Loader.
+
+               Ref.: https://bugreports.qt.nokia.com/browse/QTBUG-22939
+            */
+            function setSource(newSource) {
+                var hadActiveFocus = activeFocus
+                source = newSource
+                if (hadActiveFocus) forceActiveFocus()
+            }
         }
 
         LensBar {
