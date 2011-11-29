@@ -32,22 +32,23 @@ import Unity2d 1.0
 
    The context property called control is the initiator of the entire spread process, and
    is triggered by D-Bus calls on the C++ side.
-
-   The ScreenInfo's property availableGeometry represents the available space on the screen (i.e.
-   screen minus launcher, panels, etc.).
 */
 
 GridView {
     id: windows
 
     signal clicked
+    signal entered
     signal windowActivated(variant window)
+
+    keyNavigationWraps: state == "zoomed"
 
     MouseArea {
         anchors.fill: parent
         onClicked: windows.clicked()
         /* Eating all mouse events so that they are not passed beneath the workspace */
         hoverEnabled: true
+        onEntered: windows.entered()
     }
 
     /* This proxy model takes care of removing all windows that are not on
@@ -79,7 +80,12 @@ GridView {
     cellWidth: Math.floor(width / columns)
     cellHeight: height / rows
 
-    model: filteredByApplication
+    /* Set the model only when the component is ready; otherwise, the
+     * initialization gets somehow messed up and the "columns" and "rows"
+     * variables are set to those of the first workspace. */
+    Component.onCompleted: {
+        model = filteredByApplication
+    }
 
     delegate:
         Item {
@@ -93,6 +99,11 @@ GridView {
                 itemHeight: window.size.height
                 parent: windows
             }
+            /* We are not using GridView.isCurrentItem because it mysteriously
+             * returns "false" the first time the spread is activated. Couldn't
+             * reproduce the same behaviour with simpler test cases.
+             */
+            focus: GridView.view.currentIndex == index
 
             /* Workaround http://bugreports.qt.nokia.com/browse/QTBUG-15642 where onAdd is not called for the first item */
             //GridView.onAdd:
@@ -106,8 +117,10 @@ GridView {
                 switch (event.key) {
                     case Qt.Key_Enter:
                     case Qt.Key_Return:
+                    {
                         windows.windowActivated(spreadWindow)
                         event.accepted = true
+                    }
                 }
             }
 
@@ -121,7 +134,8 @@ GridView {
 
                 onEntered: {
                     windows.currentIndex = index
-                    cell.forceActiveFocus()
+                    /* Make sure the workspace is notified as well */
+                    windows.entered()
                 }
 
                 onClicked: windows.windowActivated(spreadWindow)
@@ -141,14 +155,12 @@ GridView {
                 Behavior on height { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
 
                 windowInfo: window
-                state: windows.state
+                state: windows.state == "screen" ? "screen" : "spread"
                 states: [
                     State {
                         name: "screen"
                         PropertyChanges {
                             target: spreadWindow
-                            /* Note that we subtract the availableGeometry x and y since window.location is
-                            expressed in global screen coordinates. */
                             x: window.position.x - declarativeView.globalPosition.x
                             y: window.position.y - declarativeView.globalPosition.y
                             width: window.size.width

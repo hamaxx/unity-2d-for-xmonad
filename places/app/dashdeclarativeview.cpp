@@ -72,7 +72,6 @@ DashDeclarativeView::onWorkAreaResized(int screen)
     }
 
     updateSize();
-    availableGeometryChanged();
 }
 
 void
@@ -100,7 +99,7 @@ DashDeclarativeView::updateSize()
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = availableGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -108,7 +107,7 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = availableGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
     int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
@@ -247,19 +246,6 @@ DashDeclarativeView::activateHome()
     QGraphicsObject* dash = rootObject();
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
     setActive(true);
-}
-
-const QRect
-DashDeclarativeView::screenGeometry() const
-{
-    QDesktopWidget* desktop = QApplication::desktop();
-    return desktop->screenGeometry(this);
-}
-
-QRect
-DashDeclarativeView::availableGeometry() const
-{
-    return m_screenInfo->availableGeometry();
 }
 
 void

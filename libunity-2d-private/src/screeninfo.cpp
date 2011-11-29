@@ -72,6 +72,12 @@ QString ScreenInfo::currentTime()
 
 QRect ScreenInfo::availableGeometry() const
 {
+    int screen = QX11Info::appScreen();
+    return QApplication::desktop()->availableGeometry(screen);
+}
+
+QRect ScreenInfo::panelsFreeGeometry() const
+{
     /* We cannot just return the system's availableGeometry(), because that
      * doesn't consider the Launcher, if it's set to auto-hide. */
     int screen = QX11Info::appScreen();
@@ -106,6 +112,7 @@ void ScreenInfo::updateAvailableGeometry(int screen)
 {
     if (screen == QX11Info::appScreen()) {
         Q_EMIT availableGeometryChanged(availableGeometry());
+        Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
 }
 
