@@ -4,7 +4,7 @@ import Unity2d 1.0
 Item {
     id: intellihide
 
-    property variant launcher: null
+    property variant component: null
     property bool shown: true
 
     Timer {
@@ -14,14 +14,14 @@ Item {
     }
 
     Connections {
-        target: (launcher !== undefined) ? launcher : null
+        target: (component !== undefined) ? component : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 
     WindowsIntersectMonitor {
         id: windows
-        monitoredArea: launcher ? Qt.rect(0, launcher.y, launcher.width, launcher.height)
+        monitoredArea: component ? Qt.rect(0, component.y, component.width, component.height)
                                 : Qt.rect(0, 0, 0, 0)
     }
 
@@ -30,6 +30,6 @@ Item {
     Binding {
         target: intellihide
         property: "shown"
-        value: launcher ? launcher.containsMouse || !windows.intersects : true
+        value: component ? component.containsMouse || !windows.intersects : true
     }
 }

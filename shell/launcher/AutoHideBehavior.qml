@@ -3,12 +3,12 @@ import QtQuick 1.0
 Item {
     id: autoHide
     property bool shown: true
-    property variant launcher: null
+    property variant component: null
 
     Timer {
         id: autoHideTimer
         interval: 1000
-        running: (launcher !== undefined) ? !launcher.containsMouse : false
+        running: (component !== undefined) ? !component.containsMouse : false
         onTriggered: shown = false
     }
 
@@ -19,7 +19,7 @@ Item {
     }
 
     Connections {
-        target: launcher !== undefined ? launcher : null
+        target: component !== undefined ? component : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }

@@ -10,6 +10,7 @@ set(unity-2d-private-qml_MOC_HDRS
 file(GLOB unity-2d-private-qml_QML *.qml)
 
 qt4_add_resources(unity-2d-private-qml_RC_SRCS launchermenu/launchermenu.qrc)
+qt4_add_resources(unity-2d-private-qml_RC_SRCS visibilitybehaviors/visibilitybehaviors.qrc)
 qt4_wrap_cpp(unity-2d-private-qml_MOC_SRCS ${unity-2d-private-qml_MOC_HDRS})
 
 # Build
@@ -59,5 +60,7 @@ install(FILES warty-final-ubuntu.jpg
 #Allow build in different directory
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/GnomeBackground.qml"
                                                               "${CMAKE_CURRENT_BINARY_DIR}/GnomeBackground.qml")
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/VisibilityController.qml"
+                                                              "${CMAKE_CURRENT_BINARY_DIR}/VisibilityController.qml")
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/qmldir"
                                                               "${CMAKE_CURRENT_BINARY_DIR}/qmldir")
