@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import "../common"
 
 FocusScope {
     property alias scrollbar: scrollbar
@@ -32,7 +33,7 @@ FocusScope {
         anchors.rightMargin: 15
     }
 
-    Scrollbar {
+    AbstractScrollbar {
         id: scrollbar
 
         anchors.top: parent.top
@@ -42,6 +43,17 @@ FocusScope {
         anchors.right: parent.right
 
         targetFlickable: list.flickable
+
+        /* The glow around the slider is 5 pixels wide on the left and right sides
+           and 10 pixels tall on the top and bottom sides. */
+        sliderAnchors.rightMargin: -5
+        sliderAnchors.leftMargin: -5
+        sliderAnchors.topMargin: -10
+        sliderAnchors.bottomMargin: -10
+
+        sliderSmooth: false
+
+        sliderSource: "artwork/scrollbar.sci"
 
         /* Hide the scrollbar if there is less than a page of results */
         opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
