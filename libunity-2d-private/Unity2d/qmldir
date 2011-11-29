@@ -1,3 +1,4 @@
 plugin unity-2d-private-qml
 
 GnomeBackground 1.0 GnomeBackground.qml
+AbstractScrollbar 1.0 AbstractScrollbar.qml
