@@ -1,5 +1,3 @@
 plugin unity-2d-private-qml
 
 GnomeBackground 1.0 GnomeBackground.qml
-VisibilityController 1.0 VisibilityController.qml
-BaseBehavior 1.0 BaseBehavior.qml

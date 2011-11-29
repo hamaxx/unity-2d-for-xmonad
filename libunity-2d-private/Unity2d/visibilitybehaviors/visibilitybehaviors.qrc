@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/visibilitybehaviors">
-        <file>AlwaysVisibleBehavior.qml</file>
-    </qresource>
-</RCC>

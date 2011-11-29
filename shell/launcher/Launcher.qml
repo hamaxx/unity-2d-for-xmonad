@@ -19,6 +19,7 @@
 import QtQuick 1.0
 import Unity2d 1.0
 import QConf 1.0
+import "../common"
 import "../common/utils.js" as Utils
 
 LauncherDropItem {
@@ -44,7 +45,7 @@ LauncherDropItem {
     Loader {
         id: visibilityBehavior
 
-        property variant modesMap: { 0: 'qrc:/visibilitybehaviors/AlwaysVisibleBehavior.qml',
+        property variant modesMap: { 0: '../common/AlwaysVisibleBehavior.qml',
                                      1: 'AutoHideBehavior.qml',
                                      2: 'IntelliHideBehavior.qml' }
 

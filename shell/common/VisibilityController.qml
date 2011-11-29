@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import "utils.js" as Utils
 
 Item {
     id: controller
@@ -14,11 +15,6 @@ Item {
         when: behaviorLoader.status == Loader.Ready
     }
 
-    function hashEmpty(hash) {
-        for (var key in hash) return false;
-        return true
-    }
-
     function beginForceVisible(id) {
         /* We need to copy the property to a JS variable before we can properly interact
            with it and then copy it back to the QML property when done. This seems to be
@@ -26,7 +22,7 @@ Item {
            https://bugreports.qt.nokia.com/browse/QTBUG-21842
         */
         var stack = controller.forceVisibleStack
-        var wasEmpty = hashEmpty(stack)
+        var wasEmpty = Utils.hashEmpty(stack)
 
         if (stack[id]) stack[id] += 1
         else stack[id] = 1
@@ -45,6 +41,6 @@ Item {
                            "\" called without matching startForceVisible")
 
         controller.forceVisibleStack = stack
-        if (hashEmpty(stack)) forceVisible = false
+        if (Utils.hashEmpty(stack)) forceVisible = false
     }
 }

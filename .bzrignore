@@ -39,8 +39,6 @@ libunity-2d-private/tests/qsortfilterproxymodeltest
 libunity-2d-private/tests/unity2dtrtest
 libunity-2d-private/Unity2d/qrc_launchermenu.cxx
 libunity-2d-private/Unity2d/launchermenu/launchermenu.qrc.depends
-libunity-2d-private/Unity2d/qrc_visibilitybehaviors.cxx
-libunity-2d-private/Unity2d/visibilitybehaviors/visibilitybehaviors.qrc.depends
 
 po/*.gmo
 
