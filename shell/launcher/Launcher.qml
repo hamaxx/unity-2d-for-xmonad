@@ -39,7 +39,7 @@ LauncherDropItem {
 
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     property variant visibilityController: VisibilityController {
-        behaviorLoader: visibilityBehavior
+        behavior: visibilityBehavior.status == Loader.Ready ? visibilityBehavior.item : null
     }
 
     Loader {
@@ -56,13 +56,6 @@ LauncherDropItem {
         target: visibilityBehavior
         property: "item.target"
         value: launcher
-        when: visibilityBehavior.status == Loader.Ready
-    }
-
-    Binding {
-        target: visibilityBehavior
-        property: "item.monitorFocusOn"
-        value: content
         when: visibilityBehavior.status == Loader.Ready
     }
 
@@ -121,7 +114,6 @@ LauncherDropItem {
     onWebpageUrlDropped: applications.insertWebFavorite(url)
 
     FocusScope {
-        id: content
         Accessible.name: "content"
 
         focus: true

@@ -4,7 +4,8 @@ import "../common"
 BaseBehavior {
     id: autoHide
     property bool shownRegardlessOfFocus: true
-    property bool shown: (monitorFocusOn && monitorFocusOn.activeFocus) || shownRegardlessOfFocus
+
+    shown: target.activeFocus || shownRegardlessOfFocus
 
     Timer {
         id: autoHideTimer

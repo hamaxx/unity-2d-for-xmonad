@@ -4,15 +4,15 @@ import "utils.js" as Utils
 Item {
     id: controller
     property bool shown: true
-    property variant behaviorLoader: null
+    property variant behavior: null
     property bool forceVisible: false
     property variant forceVisibleStack: {}
 
     Binding {
         target: controller
         property: "shown"
-        value: forceVisible || behaviorLoader.item.shown
-        when: behaviorLoader.status == Loader.Ready
+        value: forceVisible || behavior.shown
+        when: behavior != null
     }
 
     function beginForceVisible(id) {
