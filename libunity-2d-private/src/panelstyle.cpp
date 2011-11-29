@@ -98,6 +98,9 @@ public:
         case PanelStyle::UnmaximizeWindowButton:
             typeString = "unmaximize";
             break;
+        case PanelStyle::MaximizeWindowButton:
+            typeString = "maximize";
+            break;
         }
 
         switch (state) {
@@ -131,6 +134,9 @@ public:
             break;
         case PanelStyle::UnmaximizeWindowButton:
             standardIcon = QStyle::SP_TitleBarNormalButton;
+            break;
+        case PanelStyle::MaximizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarMaxButton;
             break;
         }
 

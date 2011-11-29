@@ -39,6 +39,17 @@ Item {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
+    DashSettings {
+        id: settings
+    }
+
+    Binding {
+        target: dashView
+        property: "dashMode"
+        value: (settings.formFactor == DashSettings.Desktop) ?
+            DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
+    }
+
     /* Unload the current page when closing the dash */
     Connections {
         target: dashView
@@ -292,30 +303,6 @@ Item {
             anchors.right: parent.right
             height: 44
             visible: dashView.expanded
-        }
-    }
-
-    AbstractButton {
-        id: fullScreenButton
-
-        Accessible.name: "Full Screen"
-
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 15
-        anchors.bottomMargin: 15
-        width: fullScreenButtonImage.sourceSize.width
-        height: fullScreenButtonImage.sourceSize.height
-        visible: dashView.dashMode != DashDeclarativeView.FullScreenMode
-
-        Image {
-            id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
-            mirror: isRightToLeft()
-        }
-
-        onClicked: {
-            dashView.dashMode = DashDeclarativeView.FullScreenMode
         }
     }
 }

@@ -18,6 +18,7 @@
 #include "dashadaptor.h"
 
 // unity-2d
+#include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
 
@@ -36,9 +37,6 @@
 #include <X11/Xatom.h>
 
 #include <config.h>
-
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
@@ -75,22 +73,12 @@ DashDeclarativeView::onWorkAreaResized(int screen)
     updateSize();
 }
 
-
-static int getenvInt(const char* name, int defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    bool ok;
-    int value = stringValue.toInt(&ok);
-    return ok ? value : defaultValue;
-}
-
 void
 DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
     QRect rect = QApplication::desktop()->screenGeometry(this);
-    static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
-    static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-    if (rect.width() < minWidth && rect.height() < minHeight) {
+    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
+    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
         setDashMode(FullScreenMode);
     } else {
         setDashMode(DesktopMode);
