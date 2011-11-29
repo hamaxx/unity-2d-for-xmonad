@@ -18,7 +18,6 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
-import QConf 1.0
 import "../common"
 import "../common/utils.js" as Utils
 
@@ -32,11 +31,6 @@ LauncherDropItem {
 
     Behavior on x { NumberAnimation { duration: 125 } }
 
-    QConf {
-        id: configuration
-        schema: "com.canonical.Unity2d.Launcher"
-    }
-
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     property variant visibilityController: VisibilityController {
         behavior: visibilityBehavior.status == Loader.Ready ? visibilityBehavior.item : null
@@ -49,7 +43,7 @@ LauncherDropItem {
                                      1: 'AutoHideBehavior.qml',
                                      2: 'IntelliHideBehavior.qml' }
 
-        source: modesMap[Utils.clamp(configuration.hideMode, 0, 2)]
+        source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
     }
 
     Binding {
