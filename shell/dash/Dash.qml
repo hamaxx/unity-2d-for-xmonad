@@ -340,7 +340,7 @@ FocusScope {
     states: [
         State {
             name: "desktop"
-            when: declarativeView.dashActive && declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            when: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             PropertyChanges {
                 target: dash
                 width: Math.min(desktopWidth, screen.availableGeometry.width)
@@ -351,7 +351,7 @@ FocusScope {
         },
         State {
             name: "fullscreen"
-            when: declarativeView.dashActive && declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
+            when: declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
             PropertyChanges {
                 target: dash
                 width: screen.availableGeometry.width
