@@ -12,14 +12,9 @@ Item {
     property bool forceVisible: false
     property variant forceVisibleStack: {}
 
-    QConf {
-        id: configuration
-        schema: "com.canonical.Unity2d.Launcher"
-    }
-
     Loader {
         id: visibilityBehavior
-        source: modesMap[(forceVisible) ? 0 : Utils.clamp(configuration.hideMode, 0, 2)]
+        source: modesMap[(forceVisible) ? 0 : Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
     }
 
     Binding {
