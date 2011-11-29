@@ -1,21 +1,22 @@
 import QtQuick 1.0
+import Unity2d 1.0
 
-Item {
+BaseBehavior {
     id: autoHide
-    property bool shown: true
-    property variant component: null
+    property bool behaviorShown: true
+    property bool shown: (focusComponent && focusComponent.activeFocus) || behaviorShown
 
     Timer {
         id: autoHideTimer
         interval: 1000
         running: (component !== undefined) ? !component.containsMouse : false
-        onTriggered: shown = false
+        onTriggered: behaviorShown = false
     }
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: shown = true
+        onTriggered: behaviorShown = true
     }
 
     Connections {

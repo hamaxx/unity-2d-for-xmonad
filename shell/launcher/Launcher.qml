@@ -58,6 +58,13 @@ LauncherDropItem {
         when: visibilityBehavior.status == Loader.Ready
     }
 
+    Binding {
+        target: visibilityBehavior
+        property: "item.focusComponent"
+        value: content
+        when: visibilityBehavior.status == Loader.Ready
+    }
+
     MouseArea {
         id: outerEdge
         anchors.fill: parent
@@ -113,6 +120,7 @@ LauncherDropItem {
     onWebpageUrlDropped: applications.insertWebFavorite(url)
 
     FocusScope {
+        id: content
         Accessible.name: "content"
 
         focus: true

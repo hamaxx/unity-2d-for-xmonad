@@ -1,6 +1,5 @@
-import QtQuick 1.0
+import Unity2d 1.0
 
-Item {
+BaseBehavior {
     property bool shown: true
-    property variant component
 }

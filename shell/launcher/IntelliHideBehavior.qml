@@ -1,16 +1,16 @@
 import QtQuick 1.0
 import Unity2d 1.0
 
-Item {
+BaseBehavior {
     id: intellihide
 
-    property variant component: null
-    property bool shown: true
+    property bool behaviorShown: true
+    property bool shown: (focusComponent && focusComponent.activeFocus) || behaviorShown
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: shown = true
+        onTriggered: behaviorShown = true
     }
 
     Connections {
@@ -29,7 +29,7 @@ Item {
        won't work in certain cases. */
     Binding {
         target: intellihide
-        property: "shown"
+        property: "behaviorShown"
         value: component ? component.containsMouse || !windows.intersects : true
     }
 }
