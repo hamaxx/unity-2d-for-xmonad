@@ -74,6 +74,7 @@ set(lib${LIB_NAME}_SRCS
     panelapplet.cpp
     panelstyle.cpp
     percentcoder.cpp
+    focuspath.cpp
     )
 
 # Build
@@ -97,7 +98,6 @@ include_directories(
     ${STARTUPNOTIFICATION_INCLUDE_DIRS}
     ${INDICATOR_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
-    ${DCONFQT_INCLUDE_DIRS}
     ${UNITYCORE_INCLUDE_DIRS}
     ${NUXCORE_INCLUDE_DIRS}
     ${DEE_INCLUDE_DIRS}
@@ -141,9 +141,7 @@ target_link_libraries(${LIB_NAME}
 
 # Install
 install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib${LIB_SUFFIX}
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
 
 #
@@ -151,16 +149,14 @@ install(TARGETS ${LIB_NAME}
 #
 set (PREFIXDIR "${CMAKE_INSTALL_PREFIX}")
 set (EXEC_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set (LIBDIR "${CMAKE_INSTALL_PREFIX}/lib")
-set (INCLUDEDIR "${CMAKE_INSTALL_PREFIX}/include")
 
 install(DIRECTORY .
-    DESTINATION include/${LIB_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_NAME}
     FILES_MATCHING PATTERN "*.h"
     PATTERN "*_p.h" EXCLUDE
     )
 
-configure_file (${LIB_NAME}.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc)
+configure_file (${LIB_NAME}.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc @ONLY)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}.pc DESTINATION
-         ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+         ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 

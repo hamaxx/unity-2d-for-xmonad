@@ -20,9 +20,9 @@
  */
 
 // Local
+#include <unitytestmacro.h>
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
-#include <unity2dapplication.h>
 
 // Qt
 #include <QSignalSpy>
@@ -33,18 +33,6 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
-
-// Equivalent to QTEST_MAIN, but using Unity2dApplication instead of
-// QApplication
-#define UQ_TEST_MAIN(TestObject) \
-int main(int argc, char *argv[]) \
-{ \
-    Unity2dApplication::earlySetup(argc, argv); \
-    Unity2dApplication app(argc, argv); \
-    QTEST_DISABLE_KEYPAD_NAVIGATION \
-    TestObject tc; \
-    return QTest::qExec(&tc, argc, argv); \
-}
 
 Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
 
@@ -99,6 +87,6 @@ private Q_SLOTS:
     }
 };
 
-UQ_TEST_MAIN(KeyboardModifiersMonitorTest)
+UAPP_TEST_MAIN(KeyboardModifiersMonitorTest)
 
 #include "keyboardmodifiersmonitortest.moc"

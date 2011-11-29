@@ -39,7 +39,9 @@ int main(int argc, char *argv[])
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -49,11 +51,6 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
-
-    if (!isRunningInstalled()) {
-        /* Spread.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
 
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and

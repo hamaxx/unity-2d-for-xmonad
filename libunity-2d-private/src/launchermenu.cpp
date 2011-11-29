@@ -73,7 +73,6 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
-    m_titleAction->setEnabled(false);
     addAction(m_titleAction);
 }
 
@@ -283,6 +282,13 @@ void
 LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
+    connect(m_titleAction, SIGNAL(triggered()), SLOT(titleTriggered()));
+}
+
+void LauncherContextualMenu::titleTriggered()
+{
+    hide();
+    m_launcherItem->activate();
 }
 
 void

@@ -23,9 +23,6 @@
 #include "bamf-application.h"
 #include "gconfitem-qml-wrapper.h"
 
-// libdconf-qt
-#include "qconf.h"
-
 // unity-2d
 #include "config.h"
 #include <debug_p.h>
@@ -45,8 +42,6 @@ extern "C" {
 }
 
 
-#define LAUNCHER_DCONF_SCHEMA QString("com.canonical.Unity.Launcher")
-#define LAUNCHER_DCONF_PATH QString("/desktop/unity/launcher")
 #define DBUS_SERVICE_UNITY "com.canonical.Unity"
 #define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
 #define DBUS_SERVICE_LAUNCHER "com.canonical.Unity.Launcher"
@@ -59,8 +54,6 @@ static const QByteArray LATEST_SETTINGS_MIGRATION = "3.2.10";
 LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_dconf_launcher = new QConf(LAUNCHER_DCONF_SCHEMA);
-
     QDBusConnection session = QDBusConnection::sessionBus();
     /* FIXME: libunity will send out the Update signal for LauncherEntries
        only if it finds com.canonical.Unity on the bus, so let's just quickly
@@ -187,7 +180,6 @@ LauncherApplicationsList::~LauncherApplicationsList()
     sn_display_unref(m_snDisplay);
 
     qDeleteAll(m_applications);
-    delete m_dconf_launcher;
 }
 
 QString
@@ -390,7 +382,7 @@ void
 LauncherApplicationsList::load()
 {
     /* Migrate the favorites if needed and ignore errors */
-    QByteArray latest_migration = m_dconf_launcher->property("favoriteMigration").toString().toAscii();
+    QByteArray latest_migration = launcherConfiguration().property("favoriteMigration").toString().toAscii();
     if (latest_migration < LATEST_SETTINGS_MIGRATION) {
         if(QProcess::execute(INSTALL_PREFIX "/lib/unity/migrate_favorites.py") != 0) {
             UQ_WARNING << "Unable to run the migrate favorites tool successfully";
@@ -399,9 +391,9 @@ LauncherApplicationsList::load()
 
     /* Insert favorites */
     QString desktop_file;
-    QStringList favorites = m_dconf_launcher->property("favorites").toStringList();
+    QStringList favorites = launcherConfiguration().property("favorites").toStringList();
 
-    Q_FOREACH(QString favorite, favorites) {
+    Q_FOREACH(const QString& favorite, favorites) {
        insertFavoriteApplication(favorite);
     }
 
@@ -484,9 +476,9 @@ LauncherApplicationsList::writeFavoritesToGConf()
         }
     }
 
-    m_dconf_launcher->blockSignals(true);
-    m_dconf_launcher->setProperty("favorites", QVariant(favorites));
-    m_dconf_launcher->blockSignals(false);
+    launcherConfiguration().blockSignals(true);
+    launcherConfiguration().setProperty("favorites", QVariant(favorites));
+    launcherConfiguration().blockSignals(false);
 }
 
 int

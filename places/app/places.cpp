@@ -48,7 +48,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
     view.setAccessibleName("Dash");
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     if (!view.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
@@ -59,11 +61,6 @@ int main(int argc, char *argv[])
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
-
-    if (!isRunningInstalled()) {
-        /* Place.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
 
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
@@ -78,6 +75,5 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
 }

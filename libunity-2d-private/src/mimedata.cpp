@@ -22,7 +22,7 @@
 DeclarativeMimeData::DeclarativeMimeData(const QMimeData* data)
     : QMimeData()
 {
-    Q_FOREACH(QString format, data->formats()) {
+    Q_FOREACH(const QString& format, data->formats()) {
         setData(format, data->data(format));
     }
 }

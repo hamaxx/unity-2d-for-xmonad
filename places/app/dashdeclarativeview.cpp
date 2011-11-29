@@ -58,7 +58,8 @@ DashDeclarativeView::DashDeclarativeView()
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     QDesktopWidget* desktop = QApplication::desktop();
-    connect(desktop, SIGNAL(resized(int)), SIGNAL(updateDashModeDependingOnScreenGeometry()));
+    connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
+    connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 
     updateSize();

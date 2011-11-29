@@ -15,7 +15,6 @@ set(legacytray_SRCS
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${DCONFQT_INCLUDE_DIRS}
     ${X11_INCLUDE_DIR}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
@@ -41,5 +40,5 @@ target_link_libraries(panelplugin-legacytray
     )
 
 install(TARGETS panelplugin-legacytray
-        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity-2d/plugins/panel
        )

@@ -30,7 +30,6 @@
 
 class DeclarativeDragDropEvent;
 class LauncherDBus;
-class QConf;
 
 class LauncherView : public Unity2DDeclarativeView
 {
@@ -60,13 +59,14 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void toggleDash();
     void showCommandsLens();
+    void onSuperSPressed();
+    void onAltF1Pressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
 
 private:
-    QConf* m_dconf_launcher;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
     bool m_superPressIgnored;

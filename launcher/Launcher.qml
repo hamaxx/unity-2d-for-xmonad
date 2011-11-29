@@ -28,6 +28,24 @@ LauncherDropItem {
         return Math.max(Math.min(x, max), min)
     }
 
+    function hideMenu() {
+        if (main.visibleMenu !== undefined) {
+            main.visibleMenu.hide()
+        }
+        if (shelf.visibleMenu !== undefined) {
+            shelf.visibleMenu.hide()
+        }
+    }
+
+    function focusBFB() {
+        if (!main.activeFocus) {
+            main.focus = true
+        }
+
+        main.currentIndex = 0
+        main.positionViewAtBeginning()
+    }
+
     GnomeBackground {
         Accessible.name: "background"
         anchors.fill: parent
@@ -119,14 +137,7 @@ LauncherDropItem {
                 target: launcherView
                 onFocusChanged: {
                     if (launcherView.focus && !main.flicking) {
-                        if (main.visibleMenu != undefined) {
-                            main.visibleMenu.hide()
-                        } else if (shelf.visibleMenu != undefined) {
-                            shelf.visibleMenu.hide()
-                        } else {
-                            main.currentIndex = 0
-                            main.positionViewAtBeginning()
-                        }
+                        hideMenu()
                     }
                 }
             }

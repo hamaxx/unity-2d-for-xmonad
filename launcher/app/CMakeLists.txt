@@ -1,7 +1,6 @@
 # Dependencies
 pkg_check_modules(GEIS REQUIRED libutouch-geis)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
-pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
 # Sources
 set(launcher_SRCS
@@ -37,7 +36,6 @@ include_directories(
     ${X11_INCLUDE_DIRS}
     ${GEIS_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
-    ${DCONFQT_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -59,14 +57,14 @@ target_link_libraries(unity-2d-launcher
 
 # Install
 install(TARGETS unity-2d-launcher
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 install(FILES unity-2d-launcher.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
-    DESTINATION share/dbus-1/services
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
     )
 
