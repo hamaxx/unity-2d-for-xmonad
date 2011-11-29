@@ -61,15 +61,25 @@ class WindowButton : public QAbstractButton
 public:
     WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_buttonType(buttonType)
+    , m_initialized(false)
     {
-        loadPixmaps();
+        setButtonType(buttonType);
         if (buttonType == PanelStyle::MinimizeWindowButton) {
             setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         } else {
             setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         }
         setAttribute(Qt::WA_Hover);
+        m_initialized = true;
+    }
+
+    void setButtonType(const PanelStyle::WindowButtonType& buttonType)
+    {
+        if (m_initialized && m_buttonType == buttonType) return;
+
+        m_buttonType = buttonType;
+        loadPixmaps();
+        update();
     }
 
     QSize minimumSizeHint() const
@@ -90,10 +100,14 @@ protected:
     {
         QPainter painter(this);
         QPixmap pix;
-        if (isDown()) {
-            pix = m_downPix;
-        } else if (underMouse()) {
-            pix = m_hoverPix;
+        if (isEnabled()) {
+            if (isDown()) {
+                pix = m_downPix;
+            } else if (underMouse()) {
+                pix = m_hoverPix;
+            } else {
+                pix = m_normalPix;
+            }
         } else {
             pix = m_normalPix;
         }
@@ -111,6 +125,7 @@ private:
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
+    bool m_initialized;
 
     void loadPixmaps()
     {
@@ -170,7 +185,7 @@ struct AppNameAppletPrivate
         m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
-        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
+        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(toggleMaximize()));
     }
 
     void setupWindowHelper()
@@ -244,13 +259,22 @@ void AppNameApplet::updateWidgets()
         || d->m_menuBarWidget->isOpened()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
-    bool showWindowButtons = isOpened && isMaximized;
+    bool dashCanResize = d->m_windowHelper->dashCanResize();
+    bool dashIsVisible = d->m_windowHelper->dashIsVisible();
+    bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
-    bool showDesktopLabel = !isUserVisibleApp;
+    bool showDesktopLabel = !app;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
+    d->m_maximizeButton->setButtonType(isMaximized ?
+                                       PanelStyle::UnmaximizeWindowButton :
+                                       PanelStyle::MaximizeWindowButton);
+    /* disable the minimize button for the dash */
+    d->m_minimizeButton->setEnabled(!dashIsVisible);
+    /* and the maximize button, if the dash is not resizeable */
+    d->m_maximizeButton->setEnabled(!dashIsVisible || dashCanResize);
 
-    if (showAppLabel || showDesktopLabel) {
+    if (showAppLabel || showDesktopLabel || dashIsVisible) {
         d->m_label->setVisible(true);
         if (showAppLabel) {
             // Define text
@@ -270,6 +294,8 @@ void AppNameApplet::updateWidgets()
             d->m_label->setText(text);
         } else if (showDesktopLabel) {
             d->m_label->setText(u2dTr("Desktop", "nautilus"));
+        } else {
+            d->m_label->setText("");
         }
 
         // Define label width
