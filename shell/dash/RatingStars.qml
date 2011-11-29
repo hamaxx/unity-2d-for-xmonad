@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import "../utils.js" as Utils
+import "../common/utils.js" as Utils
 
 Item {
     id: ratingStars

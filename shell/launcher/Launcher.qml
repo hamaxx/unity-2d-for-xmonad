@@ -18,7 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
-import "../utils.js" as Utils
+import "../common/utils.js" as Utils
 
 LauncherDropItem {
     id: launcher
