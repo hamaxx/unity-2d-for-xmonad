@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Effects 1.0
+import "../common"
 
 AbstractButton {
     id: categoryHeader

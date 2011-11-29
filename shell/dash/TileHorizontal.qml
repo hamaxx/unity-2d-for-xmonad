@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
+import "../common"
 
 RendererGrid {
     cellWidth: 280

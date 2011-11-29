@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Effects 1.0
+import "../common"
 
 /* This component represents a single "lens" in the dash and an active
  * indicator icon positioned above it if necessary.
