@@ -25,14 +25,13 @@ LauncherDropItem {
     id: launcher
     Accessible.name: "launcher"
 
-    width: 66
-    height: screen.availableGeometry.height
-    x: visibilityController.shown ? 0 : -width
-
     Behavior on x { NumberAnimation { duration: 125 } }
 
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
-    property variant visibilityController: VisibilityController {
+    property alias shown: visibilityController.shown
+
+    VisibilityController {
+        id: visibilityController
         behavior: visibilityBehavior.status == Loader.Ready ? visibilityBehavior.item : null
     }
 

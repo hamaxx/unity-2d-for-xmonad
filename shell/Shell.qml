@@ -18,35 +18,31 @@
 
 import QtQuick 1.1
 import Unity2d 1.0
+import "launcher"
 
 Item {
     id: shell
-    height: childrenRect.height
-
-    Binding {
-        target: shell
-        property: "width"
-        when: launcher.progress === 1.0
-        /* Clamp to a minimum width of 1px to make sure that the -1px margin is
-           correctly considered (it's not reflected in the childrenRect) */
-        value: Math.max(shell.childrenRect.width + Math.min(launcher.item.x, 0), 1)
-    }
+    height: screen.availableGeometry.height
+    width: shell.childrenRect.width
 
     Accessible.name: "shell"
 
-    Loader {
+    Launcher {
         id: launcher
-        source: "launcher/Launcher.qml"
+
         anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 66
+        x: launcher.shown ? 0 : -width
+
         KeyNavigation.right: dash
-        onLoaded: item.focus = true
     }
 
     Loader {
         id: dash
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        anchors.left: launcher.right
+        x: launcher.width
         KeyNavigation.left: launcher
         onLoaded: dash.item.focus = true
         opacity: declarativeView.dashActive ? 1.0 : 0.0
@@ -59,7 +55,7 @@ Item {
         onFocusChanged: {
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
-               if it has it, this doesn't happen with FocusScopes (and Loader is a FocusScope).
+               if it has it, this doesn't happen with FocusScopes (and Launcher is a FocusScope).
                Therefore I'm working around this by giving focus to the shell, which is safe since
                the shell doesn't react to activeFocus at all.
                See: https://bugreports.qt.nokia.com/browse/QTBUG-19688 */
