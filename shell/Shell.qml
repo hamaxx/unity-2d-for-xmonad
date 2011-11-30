@@ -51,7 +51,10 @@ Item {
     Connections {
         target: declarativeView
         onDashActiveChanged: if (declarativeView.dashActive) dash.focus = true
-        onLauncherFocusRequested: launcher.focus = true
+        onLauncherFocusRequested: {
+            launcher.focus = true
+            launcher.focusBFB()
+        }
         onFocusChanged: {
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus

@@ -22,6 +22,7 @@
 */
 #include "plugin.h"
 
+#include "dashsettings.h"
 #include "launcherapplication.h"
 #include "place.h"
 #include "placeentry.h"
@@ -83,6 +84,8 @@
 
 #include <X11/Xlib.h>
 
+using namespace Unity2d;
+
 /* FIXME: This should be done more properly, it's just an hack this way.
           We should silence only the errors that we know we can produce.
           We could probably also learn something from gdk-error-trap-push.
@@ -99,6 +102,8 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
+
+    qmlRegisterType<DashSettings>(uri, 0, 1, "DashSettings");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");

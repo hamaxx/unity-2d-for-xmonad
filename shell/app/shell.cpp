@@ -50,7 +50,10 @@ int main(int argc, char *argv[])
 {
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
+
     application.setApplicationName("Unity 2D Shell");
+    application.setQuitOnLastWindowClosed(false);
+
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");

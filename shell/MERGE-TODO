@@ -5,7 +5,10 @@ feature set currently available we need to take care of the following tasks (ord
 
 * Shell window should be input-shaped so that the part that belongs to neither dash nor launcher does not receive input
   - This should also work correctly with the dash bottom-right corner which is already input shaped.
-* Make sure everything works fine with -opengl
+* The panel now has window buttons to close, minimize, maximize the dash. Make these work with the shell and remove the
+  bottom-right maximize button we have now.
+* Add back this Launcher feature: when alt+f1 is pressed and launcher already has focus, the shell window should be deactivated
+  so the WM will give focus back to whatever window had it before.
 
 = Medium =
 

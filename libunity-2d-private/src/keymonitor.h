@@ -51,11 +51,12 @@ private:
 
     void getModifiers();
     bool registerEvents();
-    void run();
 
+private Q_SLOTS:
+    void x11EventDispatch();
+
+private:
     Display *m_display;
-    QFuture<void> m_future;
-    bool m_stop;
     QVector<XEventClass> m_eventList;
     QVector<KeyCode> m_modList;
 };

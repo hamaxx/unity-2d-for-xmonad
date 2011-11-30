@@ -25,6 +25,7 @@
 #include <hotkeymonitor.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
+#include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
 
@@ -43,9 +44,6 @@
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -108,22 +106,13 @@ ShellDeclarativeView::ShellDeclarativeView()
     //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
 }
 
-static int getenvInt(const char* name, int defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    bool ok;
-    int value = stringValue.toInt(&ok);
-    return ok ? value : defaultValue;
-}
-
 // TODO: this is probably expressed more nicely in QML.
 void
 ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
     QRect rect = ScreenInfo::instance()->geometry();
-    static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
-    static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-    if (rect.width() < minWidth && rect.height() < minHeight) {
+    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
+    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
         setDashMode(FullScreenMode);
     } else {
         setDashMode(DesktopMode);

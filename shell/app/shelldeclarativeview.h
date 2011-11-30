@@ -25,7 +25,6 @@
 #include <QTimer>
 
 class LauncherClient;
-class ScreenInfo;
 class DashDBus;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter

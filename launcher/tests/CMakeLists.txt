@@ -1,7 +1,9 @@
 macro(launcher_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
-        add_test(${_test} ${_test})
+        add_test(NAME ${_test} 
+            COMMAND /bin/bash ${CMAKE_SOURCE_DIR}/tests/run-with-xvfb.sh ./${_test}
+            )
         add_executable(${_test} ${_test}.cpp ${_test}.moc)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
         target_link_libraries(${_test}
@@ -21,6 +23,7 @@ include_directories(
     )
 
 launcher_tests(
-    launcherviewtest
+# FIXME: test need a mock dbus object to message with via dbus-test-runner
+#    launcherviewtest
     )
 

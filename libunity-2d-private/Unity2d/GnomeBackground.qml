@@ -24,6 +24,8 @@ import Unity2d 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
+    property int offsetX: -1
+    property int offsetY: -1
     
     /* Avoid redraw at rendering */
     CacheEffect {
@@ -86,8 +88,8 @@ Item {
         /* by default, place the background on top of the desktop background,
            no matter where the DeclarativeView or the parent object are placed.
         */
-        x: parent.mapFromItem(null, -declarativeView.globalPosition.x, 0).x
-        y: parent.mapFromItem(null, 0, -declarativeView.globalPosition.y).y
+        x: offsetX != -1 ? offsetX : parent.mapFromItem(null, -declarativeView.globalPosition.x, 0).x
+        y: offsetY != -1 ? offsetY : parent.mapFromItem(null, 0, -declarativeView.globalPosition.y).y
 
         /* Possible modes are:
             - "wallpaper"
