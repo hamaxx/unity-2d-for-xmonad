@@ -27,4 +27,3 @@ feature set currently available we need to take care of the following tasks (ord
 * Tests were removed, do we need to put them back ?
 * Move updateDashModeDependingOnScreenGeometry to QML
 * Fix .bzrignore
-* Remove the entire launcher folder
