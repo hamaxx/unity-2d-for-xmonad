@@ -35,6 +35,7 @@ Item {
         width: 66
         x: launcher.shown ? 0 : -width
 
+        Behavior on x { NumberAnimation { duration: 125 } }
         KeyNavigation.right: dash
     }
 

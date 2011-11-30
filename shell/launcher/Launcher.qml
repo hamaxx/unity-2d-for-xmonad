@@ -25,8 +25,6 @@ LauncherDropItem {
     id: launcher
     Accessible.name: "launcher"
 
-    Behavior on x { NumberAnimation { duration: 125 } }
-
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     property alias shown: visibilityController.shown
 
