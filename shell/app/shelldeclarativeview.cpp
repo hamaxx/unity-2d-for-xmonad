@@ -69,11 +69,11 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-    setTransparentBackground(QX11Info::isCompositingManagerRunning());
-
-    /* We don't use ScreenInfo::availableGeometry here because it includes
-       the launcher in its calculations (see comments in the method itself) */
+    /* Respect the struts manually because the window manager does not enforce struts
+       on dock windows */
     move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
+
+    setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
