@@ -41,14 +41,14 @@ FocusScope {
     }
 
     DashSettings {
-        id: settings
+        id: dashSettings
     }
 
     Binding {
-        target: dashView
+        target: declarativeView
         property: "dashMode"
-        value: (settings.formFactor == DashSettings.Desktop) ?
-            DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
+        value: (dashSettings.formFactor == DashSettings.Desktop) ?
+               ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
     }
 
     /* Unload the current page when closing the dash */
