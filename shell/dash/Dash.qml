@@ -362,7 +362,7 @@ FocusScope {
             when: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             PropertyChanges {
                 target: dash
-                width: Math.min(desktopWidth, screen.availableGeometry.width)
+                width: Math.min(desktopWidth, screen.panelsFreeGeometry.width)
                 height: Math.min(screen.availableGeometry.height,
                                  declarativeView.expanded ? desktopExpandedHeight :
                                                             desktopCollapsedHeight)
@@ -373,7 +373,7 @@ FocusScope {
             when: declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
             PropertyChanges {
                 target: dash
-                width: screen.availableGeometry.width
+                width: screen.panelsFreeGeometry.width
                 height: screen.availableGeometry.height
             }
         }
