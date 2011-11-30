@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import "../common"
 import "../common/utils.js" as Utils
 
 FocusScope {
