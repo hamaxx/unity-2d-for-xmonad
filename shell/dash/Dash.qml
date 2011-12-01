@@ -199,7 +199,7 @@ FocusScope {
                 effect: Blur {blurRadius: 12}
 
                 /* 'source' needs to be set when the dash becomes visible, that
-                   is when declarativeView.dashActive becomes true, so that a
+                   is when dash.active becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
                    'source' also needs to change so that the screenshot is
@@ -211,13 +211,13 @@ FocusScope {
                 */
                 property variant timeAtActivation
                 Connections {
-                    target: declarativeView
-                    onDashActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+                    target: dash
+                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
                 }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.dashActive ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: dash.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
 
                 fillMode: Image.PreserveAspectCrop
                 x: -launcher.width
@@ -362,7 +362,7 @@ FocusScope {
         }
     }
 
-    Keys.onPressed: if (event.key == Qt.Key_Escape) declarativeView.dashActive = false
+    Keys.onPressed: if (event.key == Qt.Key_Escape) dash.active = false
 
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 606
