@@ -47,7 +47,7 @@ Item {
         x: launcher.width
         KeyNavigation.left: launcher
         onLoaded: item.focus = true
-        opacity: declarativeView.dashActive ? 1.0 : 0.0
+        opacity: item.active ? 1.0 : 0.0
     }
 
     Connections {
