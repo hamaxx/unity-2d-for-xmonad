@@ -44,7 +44,6 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
     m_dbusWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
 
     connect(&launcher2dConfiguration(), SIGNAL(hideModeChanged(int)), SLOT(update()));
-    connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
     connect(m_dbusWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
     update();
@@ -63,18 +62,19 @@ void VisibilityController::update(UpdateReason reason)
 
     setBehavior(0);
 
-    /* Do not use any hiding controller if the panel is either:
-        - being slid manually
-        - locked in place (using struts)
-    */
-    if (!m_panel->manualSliding() && !m_panel->useStrut()) {
+    /* Do not use any hiding controller if the panel is being slid manually */
+    if (!m_panel->manualSliding()) {
         switch (mode) {
         case ManualHide:
+            m_panel->setUseStrut(true);
+            m_panel->slideIn();
             break;
         case AutoHide:
+            m_panel->setUseStrut(false);
             setBehavior(new AutoHideBehavior(m_panel));
             break;
         case IntelliHide:
+            m_panel->setUseStrut(false);
             setBehavior(new IntelliHideBehavior(m_panel));
             if (reason == UpdateFromForceVisibilityEnded && !m_panel->geometry().contains(QCursor::pos())) {
                 // The first thing IntelliHideBehavior does is checking if there is
