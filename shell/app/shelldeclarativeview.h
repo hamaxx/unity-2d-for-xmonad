@@ -118,6 +118,7 @@ private:
     void focusInEvent(QFocusEvent* event);
     void updateMask();
     void setWMFlags();
+    bool isSpreadActive();
 
     DashMode m_mode;
     bool m_expanded;

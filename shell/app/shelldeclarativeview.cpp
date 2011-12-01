@@ -50,8 +50,6 @@ static const int KEY_HOLD_THRESHOLD = 250;
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
-static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 
 static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* SPREAD_DBUS_PATH = "/Spread";
@@ -150,6 +148,25 @@ ShellDeclarativeView::setWMFlags()
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
 
+bool
+ShellDeclarativeView::isSpreadActive()
+{
+    /* Check if the spread is present on DBUS first, as we don't want to have DBUS
+       activate it if it's not running yet */
+    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
+    if (reply.isValid() && reply.value() == true) {
+        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
+                                       SPREAD_DBUS_INTERFACE);
+
+        QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
+        if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
@@ -163,12 +180,24 @@ void
 ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
-        m_active = value;
         if (value) {
+            /* Check if the spread is active before activating the dash.
+               We need to do this since the spread can't prevent the launcher from
+               monitoring the super key and therefore getting to this point if
+               it's tapped. */
+            if (isSpreadActive()) {
+                return;
+            }
+
+            /* FIXME: should not be called here; it is unrelated to the dash being active or not
+               It should be called at the shell instantiation and whenever
+               ScreenInfo::instance()->geometry() changes */
             updateDashModeDependingOnScreenGeometry();
+            // FIXME: should be moved to Shell.qml
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         }
+        m_active = value;
         Q_EMIT dashActiveChanged(m_active);
     }
 }
@@ -276,44 +305,10 @@ ShellDeclarativeView::updateMask()
 void
 ShellDeclarativeView::toggleDash()
 {
-    // TODO: replace the calls to the dash over DBUS, we can access it directly now
-
-    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-
-    QVariant dashActiveResult = dashInterface.property(DASH_DBUS_PROPERTY_ACTIVE);
-    if (!dashActiveResult.isValid()) {
-        UQ_WARNING << "Can't read the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
-                   << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        return;
-    }
-
-    bool dashActive = dashActiveResult.toBool();
-    if (dashActive) {
-        if (!dashInterface.setProperty(DASH_DBUS_PROPERTY_ACTIVE, false)) {
-            UQ_WARNING << "Can't set the DBUS Dash property" << DASH_DBUS_PROPERTY_ACTIVE
-                       << "on" << DASH_DBUS_SERVICE << DASH_DBUS_PATH << DASH_DBUS_INTERFACE;
-        }
+    if (dashActive()) {
+        setDashActive(false);
     } else {
-        /* Check if the spread is active before activating the dash.
-           We need to do this since the spread can't prevent the launcher from
-           monitoring the super key and therefore getting to this point if
-           it's tapped. */
-
-        /* Check if the spread is present on DBUS first, as we don't want to have DBUS
-           activate it if it's not running yet */
-        QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-        QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
-        if (reply.isValid() && reply.value() == true) {
-            QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
-                                           SPREAD_DBUS_INTERFACE);
-
-            QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
-            if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
-                return;
-            }
-        }
-
-        dashInterface.asyncCall(DASH_DBUS_METHOD_ACTIVATE_HOME);
+        Q_EMIT activateHome();
     }
 }
 

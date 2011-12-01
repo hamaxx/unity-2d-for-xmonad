@@ -29,6 +29,52 @@ FocusScope {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+    /* FIXME: 'active' property exactly mirrors 'declarativeView.dashActive'.
+       The final goal is to transition to using exclusively the QML 'active' property
+       and drop the C++ 'declarativeView.dashActive'.
+    */
+    property variant active
+    /* The following way of mirroring the values of 'declarativeView.dashActive'
+       and 'active' works now and QML does not see it as a binding loop but we
+       cannot count on it long term.
+    */
+    Binding {
+        target: declarativeView
+        property: "dashActive"
+        value: dash.active
+    }
+    Binding {
+        target: dash
+        property: "active"
+        value: declarativeView.dashActive
+    }
+
+    /* Unload the current page when closing the dash */
+    onActiveChanged: {
+        if (!dash.active) {
+            /* FIXME: currentPage needs to stop pointing to pageLoader.item
+                      that is about to be invalidated otherwise a crash
+                      occurs because SearchEntry has a binding that refers
+                      to currentPage and tries to access it.
+               Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
+                     https://bugreports.qt.nokia.com/browse/QTBUG-20692
+            */
+            deactivateActiveLens()
+            currentPage = undefined
+            // Delay the following instruction by 1 millisecond using a
+            // timer. This is enough to work around a crash that happens
+            // when the layout is mirrored (RTL locales). See QTBUG-22776
+            // for details.
+            //pageLoader.source = ""
+            delayPageLoaderReset.restart()
+        }
+    }
+
+    Timer {
+        id: delayPageLoaderReset
+        interval: 1
+        onTriggered: pageLoader.setSource("")
+    }
 
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
@@ -51,43 +97,11 @@ FocusScope {
                ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
     }
 
-    /* Unload the current page when closing the dash */
     Connections {
         target: declarativeView
-        onDashActiveChanged: {
-            if (!declarativeView.dashActive) {
-                /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                          that is about to be invalidated otherwise a crash
-                          occurs because SearchEntry has a binding that refers
-                          to currentPage and tries to access it.
-                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
-                */
-                deactivateActiveLens()
-                currentPage = undefined
-                // Delay the following instruction by 1 millisecond using a
-                // timer. This is enough to work around a crash that happens
-                // when the layout is mirrored (RTL locales). See QTBUG-22776
-                // for details.
-                //pageLoader.source = ""
-                delayPageLoaderReset.restart()
-            }
-        }
 
-        onActivateHome: {
-            activateHome()
-            declarativeView.dashActive = true
-        }
-
-        onActivateLens: {
-            activateLens(lensId)
-            declarativeView.dashActive = true
-        }
-    }
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.setSource("")
+        onActivateHome: activateHome()
+        onActivateLens: activateLens(lensId)
     }
 
     function activatePage(page) {
@@ -137,6 +151,7 @@ FocusScope {
         lens.active = true
         buildLensPage(lens)
         declarativeView.activeLens = lens.id
+        dash.active = true
     }
 
     function activateHome() {
@@ -146,6 +161,7 @@ FocusScope {
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
         declarativeView.activeLens = ""
+        dash.active = true
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
@@ -163,6 +179,16 @@ FocusScope {
         var filter = lens.filters.getFilter(filterId)
         filter.clear()
         activateLens(lensId)
+    }
+
+    function activateUriWithLens(lens, uri, mimetype) {
+        dash.active = false
+        lens.activate(decodeURIComponent(uri))
+    }
+
+    function activateApplication(application) {
+        dash.active = false
+        application.activate()
     }
 
     property variant lenses: Lenses {}
@@ -187,7 +213,7 @@ FocusScope {
                 effect: Blur {blurRadius: 12}
 
                 /* 'source' needs to be set when the dash becomes visible, that
-                   is when declarativeView.dashActive becomes true, so that a
+                   is when dash.active becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
                    'source' also needs to change so that the screenshot is
@@ -199,13 +225,13 @@ FocusScope {
                 */
                 property variant timeAtActivation
                 Connections {
-                    target: declarativeView
-                    onDashActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+                    target: dash
+                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
                 }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.dashActive ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: dash.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
 
                 fillMode: Image.PreserveAspectCrop
                 x: -launcher.width
@@ -350,7 +376,7 @@ FocusScope {
         }
     }
 
-    Keys.onPressed: if (event.key == Qt.Key_Escape) declarativeView.dashActive = false
+    Keys.onPressed: if (event.key == Qt.Key_Escape) dash.active = false
 
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 606

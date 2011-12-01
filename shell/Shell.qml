@@ -34,6 +34,7 @@ Item {
         anchors.bottom: parent.bottom
         width: 66
         x: launcher.shown ? 0 : -width
+        showMenus: !dashLoader.item.active
 
         Behavior on x { NumberAnimation { duration: 125 } }
         KeyNavigation.right: dashLoader
@@ -46,12 +47,16 @@ Item {
         x: launcher.width
         KeyNavigation.left: launcher
         onLoaded: item.focus = true
-        opacity: declarativeView.dashActive ? 1.0 : 0.0
+        opacity: item.active ? 1.0 : 0.0
+    }
+
+    Connections {
+        target: dashLoader.item
+        onActiveChanged: if (dashLoader.item.active) dashLoader.focus = true
     }
 
     Connections {
         target: declarativeView
-        onDashActiveChanged: if (declarativeView.dashActive) dashLoader.focus = true
         onLauncherFocusRequested: {
             launcher.focus = true
             launcher.focusBFB()

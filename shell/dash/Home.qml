@@ -39,10 +39,11 @@ FocusScope {
             lens = dash.lenses.get(i)
             if (lens.globalResults != null && lens.globalResults.count != 0) {
                 var firstResult = lens.globalResults.get(0)
-                /* Lenses give back the uri of the item in 'column_0' per specification */
+                /* Lenses give back the uri of the item in 'column_0' and the
+                   mimetype in 'column_3' per specification */
                 var uri = firstResult.column_0
-                declarativeView.dashActive = false
-                lens.activate(decodeURIComponent(uri))
+                var mimetype = firstResult.column_3
+                dash.activateUriWithLens(lens, uri, mimetype)
                 return;
             }
         }
