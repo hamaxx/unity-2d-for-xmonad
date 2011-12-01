@@ -48,11 +48,7 @@ Item {
         KeyNavigation.left: launcher
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
-    }
-
-    Connections {
-        target: dashLoader.item
-        onActiveChanged: if (dashLoader.item.active) dashLoader.focus = true
+        focus: item.active
     }
 
     Connections {
