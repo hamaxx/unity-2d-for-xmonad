@@ -36,22 +36,22 @@ Item {
         x: launcher.shown ? 0 : -width
 
         Behavior on x { NumberAnimation { duration: 125 } }
-        KeyNavigation.right: dash
+        KeyNavigation.right: dashLoader
     }
 
     Loader {
-        id: dash
+        id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
         x: launcher.width
         KeyNavigation.left: launcher
-        onLoaded: dash.item.focus = true
+        onLoaded: item.focus = true
         opacity: declarativeView.dashActive ? 1.0 : 0.0
     }
 
     Connections {
         target: declarativeView
-        onDashActiveChanged: if (declarativeView.dashActive) dash.focus = true
+        onDashActiveChanged: if (declarativeView.dashActive) dashLoader.focus = true
         onLauncherFocusRequested: {
             launcher.focus = true
             launcher.focusBFB()
