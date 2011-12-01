@@ -34,6 +34,10 @@ FocusScope {
        and drop the C++ 'declarativeView.dashActive'.
     */
     property variant active
+    /* The following way of mirroring the values of 'declarativeView.dashActive'
+       and 'active' works now and QML does not see it as a binding loop but we
+       cannot count on it long term.
+    */
     Binding {
         target: declarativeView
         property: "dashActive"
