@@ -257,6 +257,7 @@ LauncherDropItem {
         }
     }
 
+    /* FIXME: should be moved to shell; that requires having visibilityController exposed */
     SpreadMonitor {
         id: spread
         enabled: true
