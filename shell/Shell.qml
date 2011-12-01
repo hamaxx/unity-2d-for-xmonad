@@ -51,8 +51,12 @@ Item {
     }
 
     Connections {
+        target: dashLoader.item
+        onActiveChanged: if (dashLoader.item.active) dashLoader.focus = true
+    }
+
+    Connections {
         target: declarativeView
-        onDashActiveChanged: if (declarativeView.dashActive) dashLoader.focus = true
         onLauncherFocusRequested: {
             launcher.focus = true
             launcher.focusBFB()
