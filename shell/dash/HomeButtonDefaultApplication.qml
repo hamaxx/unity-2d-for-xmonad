@@ -37,10 +37,7 @@ HomeButton {
 
     visible: application.desktop_file != ""
 
-    onClicked: {
-        declarativeView.dashActive = false
-        application.activate()
-    }
+    onClicked: dash.activateApplication(application)
 
     icon: "image://icons/" + application.icon
     iconSourceSize.width: 128

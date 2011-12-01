@@ -36,10 +36,11 @@ FocusScope {
             firstCategoryModel.categoryId = i
             if (firstCategoryModel.count != 0) {
                 var firstResult = firstCategoryModel.get(0)
-                /* Lenses give back the uri of the item in 'column_0' per specification */
+                /* Lenses give back the uri of the item in 'column_0' and the
+                   mimetype in 'column_3' per specification */
                 var uri = firstResult.column_0
-                declarativeView.dashActive = false
-                model.activate(decodeURIComponent(uri))
+                var mimetype = firstResult.column_3
+                dash.activateUriWithLens(model, uri, mimetype)
                 return;
             }
         }

@@ -39,10 +39,7 @@ RendererGrid {
 
             Accessible.name: displayName
 
-            onClicked: {
-                declarativeView.dashActive = false
-                lens.activate(decodeURIComponent(uri))
-            }
+            onClicked: dash.activateUriWithLens(lens, uri, mimetype)
 
             DragItemWithUrl {
                 anchors.fill: parent

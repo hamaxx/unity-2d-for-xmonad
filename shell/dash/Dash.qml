@@ -177,6 +177,16 @@ FocusScope {
         activateLens(lensId)
     }
 
+    function activateUriWithLens(lens, uri, mimetype) {
+        dash.active = false
+        lens.activate(decodeURIComponent(uri))
+    }
+
+    function activateApplication(application) {
+        dash.active = false
+        application.activate()
+    }
+
     property variant lenses: Lenses {}
 
     Item {
