@@ -29,6 +29,48 @@ FocusScope {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+    /* FIXME: 'active' property exactly mirrors 'declarativeView.dashActive'.
+       The final goal is to transition to using exclusively the QML 'active' property
+       and drop the C++ 'declarativeView.dashActive'.
+    */
+    property variant active
+    Binding {
+        target: declarativeView
+        property: "dashActive"
+        value: dash.active
+    }
+    Binding {
+        target: dash
+        property: "active"
+        value: declarativeView.dashActive
+    }
+
+    /* Unload the current page when closing the dash */
+    onActiveChanged: {
+        if (!dash.active) {
+            /* FIXME: currentPage needs to stop pointing to pageLoader.item
+                      that is about to be invalidated otherwise a crash
+                      occurs because SearchEntry has a binding that refers
+                      to currentPage and tries to access it.
+               Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
+                     https://bugreports.qt.nokia.com/browse/QTBUG-20692
+            */
+            deactivateActiveLens()
+            currentPage = undefined
+            // Delay the following instruction by 1 millisecond using a
+            // timer. This is enough to work around a crash that happens
+            // when the layout is mirrored (RTL locales). See QTBUG-22776
+            // for details.
+            //pageLoader.source = ""
+            delayPageLoaderReset.restart()
+        }
+    }
+
+    Timer {
+        id: delayPageLoaderReset
+        interval: 1
+        onTriggered: pageLoader.setSource("")
+    }
 
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
@@ -51,43 +93,11 @@ FocusScope {
                ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
     }
 
-    /* Unload the current page when closing the dash */
     Connections {
         target: declarativeView
-        onDashActiveChanged: {
-            if (!declarativeView.dashActive) {
-                /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                          that is about to be invalidated otherwise a crash
-                          occurs because SearchEntry has a binding that refers
-                          to currentPage and tries to access it.
-                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
-                */
-                deactivateActiveLens()
-                currentPage = undefined
-                // Delay the following instruction by 1 millisecond using a
-                // timer. This is enough to work around a crash that happens
-                // when the layout is mirrored (RTL locales). See QTBUG-22776
-                // for details.
-                //pageLoader.source = ""
-                delayPageLoaderReset.restart()
-            }
-        }
 
-        onActivateHome: {
-            activateHome()
-            declarativeView.dashActive = true
-        }
-
-        onActivateLens: {
-            activateLens(lensId)
-            declarativeView.dashActive = true
-        }
-    }
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.setSource("")
+        onActivateHome: activateHome()
+        onActivateLens: activateLens(lensId)
     }
 
     function activatePage(page) {
@@ -137,6 +147,7 @@ FocusScope {
         lens.active = true
         buildLensPage(lens)
         declarativeView.activeLens = lens.id
+        dash.active = true
     }
 
     function activateHome() {
@@ -146,6 +157,7 @@ FocusScope {
            the source loads it immediately making pageLoader.item valid */
         activatePage(pageLoader.item)
         declarativeView.activeLens = ""
+        dash.active = true
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
