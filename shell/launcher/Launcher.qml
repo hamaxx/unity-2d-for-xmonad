@@ -222,13 +222,6 @@ LauncherDropItem {
         id: trashes
     }
 
-    Keys.onPressed: {
-        if( event.key == Qt.Key_Escape ){
-            declarativeView.forceDeactivateWindow()
-            event.accepted = true
-        }
-    }
-
     Component.onCompleted: {
         items.appendModel(bfbModel);
         items.appendModel(applications);

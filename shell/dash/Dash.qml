@@ -376,8 +376,6 @@ FocusScope {
         }
     }
 
-    Keys.onPressed: if (event.key == Qt.Key_Escape) dash.active = false
-
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 606
     property int desktopWidth: 989
