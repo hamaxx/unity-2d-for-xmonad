@@ -18,6 +18,7 @@
 
 import QtQuick 1.1
 import Effects 1.0
+import "../common/fontUtils.js" as FontUtils
 import "../common"
 
 AbstractButton {
@@ -107,7 +108,7 @@ AbstractButton {
             horizontalAlignment: Text.AlignLeft
 
             color: "#ffffff"
-            font.pixelSize: 28
+            font.pixelSize: FontUtils.fontSizeToPixels("xx-large")
             focus: true
             selectByMouse: true
             cursorDelegate: cursor
