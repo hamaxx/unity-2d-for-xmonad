@@ -44,7 +44,6 @@ VisibilityController::VisibilityController(Unity2dPanel* panel)
     m_dbusWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
 
     connect(&launcher2dConfiguration(), SIGNAL(hideModeChanged(int)), SLOT(update()));
-    connect(m_panel, SIGNAL(useStrutChanged(bool)), SLOT(update()));
     connect(m_panel, SIGNAL(manualSlidingChanged(bool)), SLOT(update()));
     connect(m_dbusWatcher, SIGNAL(serviceUnregistered(const QString&)), SLOT(slotServiceUnregistered(const QString&)));
     update();
@@ -54,7 +53,7 @@ VisibilityController::~VisibilityController()
 {
 }
 
-void VisibilityController::update()
+void VisibilityController::update(UpdateReason reason)
 {
     if (!m_forceVisibleCountHash.isEmpty()) {
         return;
@@ -63,19 +62,33 @@ void VisibilityController::update()
 
     setBehavior(0);
 
-    /* Do not use any hiding controller if the panel is either:
-        - being slid manually
-        - locked in place (using struts)
-    */
-    if (!m_panel->manualSliding() && !m_panel->useStrut()) {
+    /* Do not use any hiding controller if the panel is being slid manually */
+    if (!m_panel->manualSliding()) {
         switch (mode) {
         case ManualHide:
+            m_panel->setUseStrut(true);
+            m_panel->slideIn();
             break;
         case AutoHide:
+            m_panel->setUseStrut(false);
             setBehavior(new AutoHideBehavior(m_panel));
             break;
         case IntelliHide:
+            m_panel->setUseStrut(false);
             setBehavior(new IntelliHideBehavior(m_panel));
+            if (reason == UpdateFromForceVisibilityEnded && !m_panel->geometry().contains(QCursor::pos())) {
+                // The first thing IntelliHideBehavior does is checking if there is
+                // a window behind the panel, and if there is one, hide the panel immediately
+                // This is correct for some cases, but in the case we come from an update because the
+                // panel is not forced visible anymore and the mouse is not in the panel,
+                // i.e. the launcher was visible and the user clicked in an action of the tile menu,
+                // we should still give the user the wait 1 second before hiding behaviour.
+                // To achieve this we tell the behaviour controller to show the panel
+                // and simulate a mouse leave on the panel to start the hiding timer
+                QMetaObject::invokeMethod(m_behavior.data(), "showPanel");
+                QEvent e(QEvent::Leave);
+                QCoreApplication::sendEvent(m_panel, &e);
+            }
             break;
         }
     }
@@ -110,7 +123,7 @@ void VisibilityController::endForceVisible(const QString& service)
         UQ_WARNING << "Application" << service << "called endForceVisible() more than beginForceVisible().";
     }
     if (m_forceVisibleCountHash.isEmpty()) {
-        update();
+        update(UpdateFromForceVisibilityEnded);
     }
 }
 
@@ -145,6 +158,6 @@ void VisibilityController::slotServiceUnregistered(const QString& service)
     m_forceVisibleCountHash.remove(service);
     m_dbusWatcher->removeWatchedService(service);
     if (m_forceVisibleCountHash.isEmpty()) {
-        update();
+        update(UpdateFromForceVisibilityEnded);
     }
 }
