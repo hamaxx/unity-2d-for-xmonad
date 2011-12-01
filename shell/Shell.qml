@@ -34,6 +34,7 @@ Item {
         anchors.bottom: parent.bottom
         width: 66
         x: launcher.shown ? 0 : -width
+        showMenus: !dashLoader.item.active
 
         Behavior on x { NumberAnimation { duration: 125 } }
         KeyNavigation.right: dashLoader

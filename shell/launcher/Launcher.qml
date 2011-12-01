@@ -27,6 +27,7 @@ LauncherDropItem {
 
     property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
     property alias shown: visibilityController.shown
+    property bool showMenus: true
 
     VisibilityController {
         id: visibilityController
@@ -152,6 +153,7 @@ LauncherDropItem {
             autoScrollSize: tileSize / 2
             autoScrollVelocity: 200
             reorderable: true
+            showMenus: launcher.showMenus
 
             model: ListAggregatorModel {
                 id: items
@@ -190,6 +192,7 @@ LauncherDropItem {
             width: parent.width
             itemPadding: 0
             interactive: false
+            showMenus: launcher.showMenus
 
             model: ListAggregatorModel {
                 id: shelfItems

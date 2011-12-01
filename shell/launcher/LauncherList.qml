@@ -33,6 +33,9 @@ AutoScrollingListView {
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
 
+    /* Whether or not the contextual menus should be displayed */
+    property bool showMenus: true
+
     /* Can we reorder the items in this list by means of drag and drop ? */
     property alias reorderable: reorder.enabled
 
@@ -167,7 +170,7 @@ AutoScrollingListView {
 
         /* Display the tooltip when hovering the item only when the list
            is not moving */
-        onEntered: if (!list.moving && !list.autoScrolling) showMenu()
+        onEntered: if (!list.moving && !list.autoScrolling && list.showMenus) showMenu()
         onExited: {
             /* When unfolded, leave enough time for the user to reach the
                menu. Necessary because there is some void between the item
@@ -185,7 +188,7 @@ AutoScrollingListView {
                 item.activate()
                 event.accepted = true
             }
-            else if ((event.key == Qt.Key_Right && !declarativeView.dashActive) ||
+            else if ((event.key == Qt.Key_Right && list.showMenus) ||
                     (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
