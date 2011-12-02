@@ -53,7 +53,7 @@ FocusScope {
 
         sliderSmooth: false
 
-        sliderSource: "artwork/scrollbar.sci"
+        sliderSource: "../common/artwork/scrollbar.sci"
 
         /* Hide the scrollbar if there is less than a page of results */
         opacity: targetFlickable.visibleArea.heightRatio < 1.0 ? 1.0 : 0.0
