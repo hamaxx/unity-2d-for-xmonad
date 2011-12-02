@@ -171,7 +171,7 @@ bool WindowHelper::isMaximized() const
         wnck_window_get_geometry(d->m_window, &x, &y, &width, &height);
         const QRect windowGeometry(x, y, width, height);
         ScreenInfo* screenInfo = ScreenInfo::instance();
-        return  screenInfo->panelsFreeGeometry() == windowGeometry;
+        return screenInfo->panelsFreeGeometry() == windowGeometry;
     } else {
         return wnck_window_is_maximized(d->m_window);
     }
