@@ -71,7 +71,7 @@ AbstractButton {
     /* Indicator arrow to show Lens active */
     Image {
         id: indicator
-        source: "artwork/arrow.png"
+        source: "../common/artwork/arrow.png"
 
         width: sourceSize.width
         height: sourceSize.height
