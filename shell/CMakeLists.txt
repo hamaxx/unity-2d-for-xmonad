@@ -10,6 +10,10 @@ install(FILES ${shell_QML}
     DESTINATION ${UNITY_2D_DIR}/shell
     )
 
+install(DIRECTORY artwork
+    DESTINATION ${UNITY_2D_DIR}/shell
+    )
+
 install(DIRECTORY common
     DESTINATION ${UNITY_2D_DIR}/shell
     )
