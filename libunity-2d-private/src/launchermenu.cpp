@@ -28,7 +28,6 @@
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QPainter>
-#include <qmath.h>
 
 LauncherContextualMenu::LauncherContextualMenu():
     QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
