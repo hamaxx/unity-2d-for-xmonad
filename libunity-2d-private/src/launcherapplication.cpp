@@ -38,6 +38,8 @@
 
 #include <X11/X.h>
 
+#include <gio/gio.h>
+
 // libunity-2d
 #include <unity2dtr.h>
 #include <debug_p.h>
@@ -1050,6 +1052,121 @@ LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& 
 {
     m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
     setDynamicQuicklistImporter(newOwner);
+}
+
+void
+LauncherApplication::onDragEnter(DeclarativeDragDropEvent* event)
+{
+    QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
+    if (urls.isEmpty()) {
+        event->setDropAction(Qt::IgnoreAction);
+        event->setAccepted(false);
+    } else {
+        event->setDropAction(Qt::CopyAction);
+        event->setAccepted(true);
+    }
+    return;
+}
+
+void
+LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
+{
+    GError* error = NULL;
+    QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
+
+    if (g_app_info_supports_uris(m_appInfo.data())) {
+        GList* list = NULL;
+        Q_FOREACH(QUrl url, urls)
+            list = g_list_prepend(list, g_strdup(qPrintable(url.toString())));
+
+        g_app_info_launch_uris(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
+        g_list_free_full(list, g_free);
+    } else if (g_app_info_supports_files(G_APP_INFO(m_appInfo.data()))) {
+        GList* list = NULL, *l;
+        Q_FOREACH(QUrl url, urls) {
+          GFile* file = g_file_new_for_uri(qPrintable(url.toString()));
+          list = g_list_prepend(list, file);
+        }
+        g_app_info_launch(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
+        for (l = list; l; l = l->next)
+            g_object_unref(G_FILE(list->data));
+
+        g_list_free(list);
+    } else {
+        g_app_info_launch(G_APP_INFO(m_appInfo.data()), NULL, NULL, &error);
+    }
+
+    if (error) {
+        g_warning("%s\n", error->message);
+        g_error_free(error);
+    }
+}
+
+
+QList<QUrl>
+LauncherApplication::validateUrisForLaunch(DeclarativeMimeData* mimedata)
+{
+    QList<QUrl> result;
+    bool isHomeLauncher = desktop_file().endsWith("nautilus-home.desktop");
+
+    if (isHomeLauncher) {
+        result = mimedata->urls();
+        return result;
+    }
+
+    QStringList appSupportedTypes = supportedTypes();
+    QList<QUrl> urls = mimedata->urls();
+
+    QStringList urlTypes;
+    QMap<QString, QList<QUrl> > typesToUris;
+
+    Q_FOREACH(QUrl url, urls) {
+        GFile * file(g_file_new_for_uri(qPrintable(url.toString())));
+        GFileInfo * info(g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, G_FILE_QUERY_INFO_NONE, NULL, NULL));
+        const char* contentType = g_file_info_get_content_type(info);
+        if (contentType != NULL)  {
+            urlTypes.append(contentType);
+            typesToUris[contentType].append(url);
+        }
+    }
+
+    Q_FOREACH(QString urlType, urlTypes) {
+        Q_FOREACH(QString appSupportType, appSupportedTypes) {
+            if (g_content_type_is_a(qPrintable(urlType), qPrintable(appSupportType))) {
+                Q_FOREACH(QUrl url, typesToUris.value(urlType)) {
+                    result.append(url);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+
+QStringList
+LauncherApplication::supportedTypes()
+{
+    QStringList types;
+    QString desktopFile = desktop_file();
+    if (desktopFile.isEmpty()) {
+        return types;
+    }
+
+    QFile file(desktopFile);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        while (!file.atEnd()) {
+            QString line = file.readLine();
+            if (line.startsWith("MimeType")) {
+                QString mimetype = line.split("=").at(1);
+                mimetype = mimetype.simplified();
+                types = mimetype.split(";");
+                break;
+            }
+        }
+    }
+
+    return types;
 }
 
 #include "launcherapplication.moc"
