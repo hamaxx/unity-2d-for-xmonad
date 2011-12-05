@@ -28,6 +28,7 @@
 #include <QX11Info>
 #include <QDesktopWidget>
 #include <QPainter>
+#include <qmath.h>
 
 LauncherContextualMenu::LauncherContextualMenu():
     QMenu(0), m_folded(true), m_launcherItem(NULL), m_titleAction(NULL)
@@ -177,7 +178,7 @@ LauncherContextualMenu::show(int x, int y)
         x = QApplication::desktop()->width() - x - sizeHint().width();
     }
 
-    move(x, y - minimumSize().height() / 2);
+    move(x, y - sizeHint().height() / 2 );
     QMenu::show();
 
     /* FIXME: adjust the position of the menu if it goes offscreen,
