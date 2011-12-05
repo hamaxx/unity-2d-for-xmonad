@@ -1158,10 +1158,13 @@ LauncherApplication::supportedTypes()
         while (!file.atEnd()) {
             QString line = file.readLine();
             if (line.startsWith("MimeType")) {
-                QString mimetype = line.split("=").at(1);
-                mimetype = mimetype.simplified();
-                types = mimetype.split(";");
-                break;
+                QString mimeTypeKey = line.split("=").at(0);
+                if (mimeTypeKey == "MimeType") {
+                    QString mimetype = line.split("=").at(1);
+                    mimetype = mimetype.simplified();
+                    types = mimetype.split(";");
+                    break;
+                }
             }
         }
     }
