@@ -179,22 +179,13 @@ Item {
                    is when declarativeView.active becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
-                   'source' also needs to change so that the screenshot is
-                   re-taken as opposed to pulled from QML's image cache.
-                   This workarounds the fact that the image cache cannot be
-                   disabled. A new API to deal with this was introduced in Qt Quick 1.1.
-
                    See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
                 */
-                property variant timeAtActivation
-                Connections {
-                    target: declarativeView
-                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
-                }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: declarativeView.active ? "image://window/root" : ""
+                cache: false
 
                 fillMode: Image.PreserveAspectCrop
                 x: -declarativeView.globalPosition.x
