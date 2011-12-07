@@ -1,0 +1,13 @@
+----
+ * Hit super key to Open Dash.
+
+--> Dash have window buttons to maximize/unmaximize - Clicking on maximize/unmaximize 
+    button should toggle the dash mode between full-screen and netbook mode. If display is 
+    small, Dash should be locked to full-screen mode. (lp:860400)
+
+----
+ * Press Alt+F2
+
+--> Dash opens and "Run a command" is shown in the search field - (lp:883392)
+
+----
