@@ -36,6 +36,8 @@ FocusScope {
     AbstractScrollbar {
         id: scrollbar
 
+        width: 3
+
         anchors.top: parent.top
         anchors.topMargin: 15
         anchors.bottom: parent.bottom
