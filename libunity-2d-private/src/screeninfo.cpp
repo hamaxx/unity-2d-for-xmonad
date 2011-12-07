@@ -62,14 +62,6 @@ void ScreenInfo::updateActiveWindow(WnckScreen *screen)
     }
 }
 
-/* FIXME: This should be removed when we find a cleaner way to bypass the
-   QML Image cache. See SpreadWindow.qml and WindowImageProvider::requestImage
-   for details. */
-QString ScreenInfo::currentTime()
-{
-    return QString::number(time(NULL));
-}
-
 QRect ScreenInfo::availableGeometry() const
 {
     int screen = QX11Info::appScreen();
