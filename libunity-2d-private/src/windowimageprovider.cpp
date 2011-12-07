@@ -101,8 +101,8 @@ QImage WindowImageProvider::requestImage(const QString &id,
 {
     QString windowIds = id;
 
-    /* After doing this, split the rest of the id on the character "|". The first
-       part is the window ID of the decorations, the latter of the actual content. */
+    /* Split the id on the character "|". The first part is the window ID of
+       the decorations, the latter of the actual content. */
     int atPos = windowIds.indexOf('|');
     Window frameId = ((atPos == -1) ? windowIds : windowIds.left(atPos)).toULong();
     Window contentId = ((atPos == -1) ? windowIds : windowIds.mid(atPos + 1)).toULong();
