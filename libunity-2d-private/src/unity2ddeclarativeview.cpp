@@ -20,6 +20,7 @@
 #include <QGLWidget>
 #include <QVariant>
 #include <QX11Info>
+#include <QFileInfo>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -33,7 +34,11 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     m_transparentBackground(false),
     m_last_focused_window(None)
 {
-    m_useOpenGL = unity2dConfiguration().property("useOpengl").toBool();
+    if (!QFileInfo(UNITY_2D_SCHEMA_FILE).exists()) {
+        m_useOpenGL = false;
+    } else {
+        m_useOpenGL = unity2dConfiguration().property("useOpengl").toBool();
+    }
 
     setupViewport();
 }
