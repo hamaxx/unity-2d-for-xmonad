@@ -5,7 +5,10 @@
 # Run all tests with
 #   $ ruby run-tests.rb
 
-require './misc/lib/testhelper.rb'
+# Add ./misc/lib to the list of library locations
+$LOAD_PATH.unshift File.expand_path('./misc/lib')
+
+require 'testhelper'
 
 # List of directories in which to search for test cases
 test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
@@ -14,4 +17,3 @@ test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', '
 test_directories.each do | directory |
     Dir["#{directory}/*.rb"].each { |testCase| require testCase}
 end
-
