@@ -39,8 +39,6 @@ Item {
     property alias sliderAnchors: sliderImage.anchors
     property alias sliderSmooth: sliderImage.smooth
 
-    width: 3
-
     MouseArea {
         id: scrollMouseArea
 
