@@ -22,13 +22,15 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 AutoScrollingListView {
     id: list
 
-    /* The spacing is explicitly set to 0 and compensated for
-       by adding some padding to the items because of
-       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
-    spacing: 0
-    property int itemPadding: 5
+    /* The spacing is explicitly set to -7 in order to compensate
+       the space added by selectionOutline and round_corner_54x54.png. */
+    spacing: -7
 
     property int tileSize: 54
+
+    /* selectionOutline tile size, so AutoScrollingList view can calculate
+       the right height. */
+    property int selectionOutlineSize:  66
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -65,7 +67,7 @@ AutoScrollingListView {
 
         anchors.bottom: list.bottom
         width: topGradient.width
-        height: Math.max(0, Math.min(list.contentHeight * (1 - list.visibleArea.heightRatio) - list.contentY, 50))
+        height: Math.max(0, Math.min(list.contentHeight - list.contentY - list.height, 50))
         source: "artwork/gradient_more_items_bottom.png"
         z: overlayZ
     }
@@ -77,12 +79,23 @@ AutoScrollingListView {
     delegate: LauncherItem {
         id: launcherItem
 
+        function accessibleDescription() {
+            if (running) {
+                var windows = u2d.tr("%1 window opened", "%1 windows opened", item.windowCount).arg(item.windowCount)
+                return "%1 %2".arg(item.name).arg(windows)
+            } else {
+                return "%1 %2".arg(item.name).arg(u2d.tr("not running"))
+            }
+        }
+
+        Accessible.name: accessibleDescription()
+
         width: list.width
         tileSize: list.tileSize
-        padding: list.itemPadding
+        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
-        icon: "image://icons/" + item.icon
+        icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
         running: item.running
         active: item.active
         urgent: item.urgent
@@ -96,12 +109,13 @@ AutoScrollingListView {
         emblem: item.emblem ? "image://icons/" + item.emblem : ""
         emblemVisible: item.emblemVisible
 
+        /* Launcher of index 0 is the so-called BFB or Dash launcher */
         shortcutVisible: launcherView.superKeyHeld &&
-                         ((item.toString().indexOf("LauncherApplication") == 0 && index <= 9) ||
+                         ((item.toString().indexOf("LauncherApplication") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
             if (item.toString().indexOf("LauncherApplication") == 0) {
-                return (index + 1) % 10
+                return index % 10
             } else {
                 return String.fromCharCode(item.shortcutKey).toLowerCase()
             }
@@ -127,10 +141,8 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            // FIXME: The extra 2 pixels are needed to center the menu arrow with
-            // the center of the tile.
             item.menu.show(width, panel.y + list.y - list.contentY +
-                                  y + height - tileSize / 2 - 2)
+                                  y + height - selectionOutlineSize / 2)
 
         }
 
@@ -185,7 +197,7 @@ AutoScrollingListView {
                 item.menu.setFocus()
                 event.accepted = true
             }
-            else if (event.key == Qt.Key_Left || event.key == Qt.Key_Escape) {
+            else if (event.key == Qt.Key_Left) {
                 item.menu.hide()
                 event.accepted = true
             }
@@ -201,7 +213,7 @@ AutoScrollingListView {
             target: item.menu
             /* The menu had the keyboard focus because the launcher had
                activated it. Restore it. */
-            onDismissedByKeyEvent: launcherView.activateWindow()
+            onDismissedByKeyEvent: launcherView.forceActivateWindow()
         }
 
         Connections {
@@ -294,11 +306,18 @@ AutoScrollingListView {
 
         Connections {
             target: launcherView
-            onKeyboardShortcutPressed: {
+            onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
                 if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
                     item.menu.hide()
                     item.activate()
+                }
+            }
+            onNewInstanceShortcutPressed: {
+                /* Only applications can be launched by keyboard shortcuts */
+                if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
+                    item.menu.hide()
+                    item.launchNewInstance()
                 }
             }
         }

@@ -1,0 +1,113 @@
+# Hungarian translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-07-06 16:45+0000\n"
+"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Még egy találat megjelenítése"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "További %1 találat megtekintése"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Kevesebb találat megjelenítése"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr ""
+"Média-\n"
+"alkalmazások"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Internetes alkalmazások"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "További alkalmazások"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Fájlok keresése"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Webböngészés"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Fotók megtekintése"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "E-mailek ellenőrzése"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Zenehallgatás"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Parancsikonok"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Keresés finomítása"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Típus"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Kiadás"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Kuka"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n elem a Kukában"
+msgstr[1] "%n elem a Kukában"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Kuka ürítése"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Munkaterületek"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Indítóban tartás"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Eltávolítás az Indítóból"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Kilépés"

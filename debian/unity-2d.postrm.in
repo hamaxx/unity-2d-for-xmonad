@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  remove|purge)
+    if which update-gconf-defaults >/dev/null 2>&1 && [ -d @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/mandatory/ubuntu-2d ]; then
+        update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory \
+        --destination /var/lib/gconf/ubuntu-2d.mandatory
+        update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default \
+        --destination /var/lib/gconf/ubuntu-2d.default
+    fi
+    if [ -d /var/lib/gconf/ubuntu-2d.mandatory ]; then
+        rm -rf /var/lib/gconf/ubuntu-2d.mandatory
+    fi
+    if [ -d /var/lib/gconf/ubuntu-2d.default ]; then
+        rm -rf /var/lib/gconf/ubuntu-2d.default
+    fi
+    ;;
+esac
+
+#DEBHELPER#

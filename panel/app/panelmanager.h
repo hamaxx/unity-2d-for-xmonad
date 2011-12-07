@@ -40,8 +40,12 @@ private:
     Q_DISABLE_COPY(PanelManager)
     QList<Unity2dPanel*> m_panels;
 
+    Unity2dPanel* instantiatePanel(int screen);
+    QStringList loadPanelConfiguration() const;
+
 private Q_SLOTS:
     void onScreenCountChanged(int newCount);
+    void onF10Pressed();
 };
 
 #endif // PanelManager_H

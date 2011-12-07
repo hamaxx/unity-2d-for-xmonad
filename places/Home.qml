@@ -17,31 +17,31 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for SortFilterProxyModel and for the ImageProvider serving image://icons/theme_name/icon_name */
+import Unity2d 1.0
 
-Item {
+FocusScope {
     property variant model: PageModel {
-        /* model.entrySearchQuery is copied over to all place entries's globalSearchQuery property */
-        onEntrySearchQueryChanged: {
-            for (var i = 0; i < dash.places.rowCount(); i++) {
-                dash.places.get(i).globalSearchQuery = entrySearchQuery
+        /* model.searchQuery is copied over to all lenses globalSearchQuery property */
+        onSearchQueryChanged: {
+            for (var i = 0; i < dash.lenses.rowCount(); i++) {
+                dash.lenses.get(i).globalSearchQuery = searchQuery
             }
         }
     }
 
     function activateFirstResult() {
-        /* Going through the list of place entries and selecting the first one
+        /* Going through the list of lenses and selecting the first one
            that has results for the global search, that is items in its
-           globalResultsModel */
-        var placeEntry, i
-        for (i=0; i<dash.places.rowCount(); i=i+1) {
-            placeEntry = dash.places.get(i)
-            if (placeEntry.globalResultsModel != null && placeEntry.globalResultsModel.count() != 0) {
-                var firstResult = placeEntry.globalResultsModel.get(0)
-                /* Places give back the uri of the item in 'column_0' per specification */
+           globalResults */
+        var lens, i
+        for (i=0; i<dash.lenses.rowCount(); i=i+1) {
+            lens = dash.lenses.get(i)
+            if (lens.globalResults != null && lens.globalResults.count != 0) {
+                var firstResult = lens.globalResults.get(0)
+                /* Lenses give back the uri of the item in 'column_0' per specification */
                 var uri = firstResult.column_0
                 dashView.active = false
-                placeEntry.place.activate(decodeURIComponent(uri))
+                lens.activate(decodeURIComponent(uri))
                 return;
             }
         }
@@ -51,13 +51,15 @@ Item {
     property bool shortcutsActive: true
 
     /* Either globalSearch is shown or buttons are shown depending on globalSearchActive */
-    property bool globalSearchActive: model.entrySearchQuery != ""
+    property bool globalSearchActive: model.searchQuery != ""
     
     /* Used by dash.qml to bind to dashView "expanded" property */
     property bool expanded: globalSearchActive || shortcutsActive
 
-    Button {
+    AbstractButton {
         id: openShortcutsButton
+
+        Accessible.name: "Open Shortcuts"
 
         anchors.bottom: parent.top
         anchors.right: parent.right
@@ -80,7 +82,7 @@ Item {
             anchors.leftMargin: 3
             width: paintedWidth
             height: icon.height
-            font.pixelSize: 16
+            fontSize: "large"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
@@ -96,64 +98,60 @@ Item {
     ListViewWithScrollbar {
         id: globalSearch
 
+        focus: globalSearchActive
         opacity: globalSearchActive ? 1 : 0
         anchors.fill: parent
+        anchors.leftMargin: 20
 
-        list.model: dash.places
+        model: dash.lenses
 
-        list.delegate: UnityDefaultRenderer {
-            width: ListView.view.width
+        bodyDelegate: TileVertical {
+            lens: model.item
+            name: model.item.name
+            iconHint: model.item.iconHint
 
-            parentListView: list
-            placeEntryModel: item
-            displayName: item.name
-            iconHint: item.icon
+            category_model: model.item.globalResults
+            visible: category_model != undefined && category_model.count > 0
+            height: visible ? contentHeight : 0
+            width: parent.width
+        }
 
-            /* Filter out results for which the corresponding group's renderer
-               is 'UnityEmptySearchRenderer'.
-               Each result has a column (the second one) containing the id of
-               the group it belongs to (groupId).
-            */
-            model:  SortFilterProxyModel {
-                model: item.globalResultsModel
+        headerDelegate: CategoryHeader {
+            visible: body.needHeader && body.visible
+            height: visible ? 32 : 0
 
-                /* FIXME: we ignore the groupId with renderer 'UnityEmptySearchRenderer'
-                   by hardcoding it instead of looking it up in the Place's
-                   groupsModel as Unity does.
+            property bool foldable: body.folded != undefined
+            availableCount: foldable && body.category_model != null ? body.category_model.count - body.cellsPerRow : 0
+            folded: foldable ? body.folded : false
+            onClicked: if(foldable) body.folded = !body.folded
 
-                   Two solutions could be envisioned:
-                   1) Actually looking for the row in the Place's groupsModel
-                      that has in its first column 'UnityEmptySearchRenderer'.
-                      That would require adding an API in libqtdee's DeeListModel.
-                   2) Changing the behaviour of the place daemons so that the
-                      Place's globalResultsModel is empty when there are no
-                      results. The applications place does that but not the
-                      files place.
-                */
-                property int ignoredGroupId: 5
-                filterRole: 2 /* groupId column */
-                filterRegExp: RegExp("^[^%1]$".arg(ignoredGroupId)) /* anything but the ignoredGroupId */
-            }
+            icon: body.iconHint
+            label: body.name
+            moving: flickerMoving
         }
     }
 
-    Rectangle {
+    FocusScope {
         id: shortcuts
 
+        focus: !globalSearchActive
         opacity: (!globalSearchActive && (shortcutsActive || dashView.dashMode == DashDeclarativeView.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
         width: 888
-        height: 466
+        height: 436
 
-        radius: 5
-        border.width: 1
-        /* FIXME: wrong colors */
-        border.color: Qt.rgba(1, 1, 1, 0.2)
-        color: Qt.rgba(0, 0, 0, 0.3)
+        Rectangle {
+            anchors.fill: parent
+            radius: 5
+            border.width: 1
+            /* FIXME: wrong colors */
+            border.color: Qt.rgba(1, 1, 1, 0.2)
+            color: Qt.rgba(0, 0, 0, 0.3)
+        }
 
-        Button {
+        AbstractButton {
             id: closeShortcutsButton
 
             anchors.left: parent.left
@@ -182,11 +180,13 @@ Item {
            on the default version if a custom one doesn’t exist. */
         Loader {
             id: customShortcutsLoader
+            focus: status == Loader.Ready
             anchors.fill: parent
             source: "HomeShortcutsCustomized.qml"
         }
         Loader {
             id: defaultShortcutsLoader
+            focus: !customShortcutsLoader.focus
             anchors.fill: parent
             source: (customShortcutsLoader.status == Loader.Error) ? "HomeShortcuts.qml" : ""
         }

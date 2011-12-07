@@ -30,6 +30,8 @@ FocusScope {
 
     signal clicked
 
+    Accessible.role: Accessible.PushButton
+
     MouseArea {
         id: mouse_area
 
@@ -55,7 +57,7 @@ FocusScope {
         if(pressed || mouse_area.pressed)
             return "pressed"
         else if(mouse_area.containsMouse)
-            return "selected"
+            return "hovered"
         else if(activeFocus)
             return "selected"
         else

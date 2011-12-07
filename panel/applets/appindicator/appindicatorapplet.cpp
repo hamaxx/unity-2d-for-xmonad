@@ -37,7 +37,8 @@ static const char* WATCHER_SERVICE = "org.kde.StatusNotifierWatcher";
 static const char* WATCHER_PATH = "/StatusNotifierWatcher";
 static const char* WATCHER_IFACE = "org.kde.StatusNotifierWatcher";
 
-AppIndicatorApplet::AppIndicatorApplet()
+AppIndicatorApplet::AppIndicatorApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
 {
     setupDBus();
     setupUi();
@@ -66,7 +67,7 @@ void AppIndicatorApplet::setupUi()
 void AppIndicatorApplet::createItems()
 {
     QStringList ids = m_watcher->property("RegisteredStatusNotifierItems").toStringList();
-    Q_FOREACH(QString id, ids) {
+    Q_FOREACH(const QString& id, ids) {
         createItem(id);
     }
 }

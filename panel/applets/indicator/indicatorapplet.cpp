@@ -1,10 +1,11 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,97 +19,91 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 // Self
 #include "indicatorapplet.h"
 
 // Local
-#include "abstractindicator.h"
-#include "datetimeindicator.h"
-#include "debug_p.h"
-#include "indicator.h"
+#include <debug_p.h>
+#include <indicatorsmanager.h>
+#include <indicatorswidget.h>
+#include <indicatorentrywidget.h>
+#include <unity2dpanel.h>
+
+// Bamf
+#include <bamf-application.h>
+#include <bamf-matcher.h>
 
 // Qt
-#include <QAction>
-#include <QDBusConnection>
 #include <QHBoxLayout>
-#include <QMenu>
-#include <QX11EmbedContainer>
 
-// Gtk
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
+using namespace unity::indicator;
 
-IndicatorApplet::IndicatorApplet()
+IndicatorApplet::IndicatorApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
 {
-    setupUi();
-    loadIndicators();
-}
-
-void IndicatorApplet::setupUi()
-{
-    m_menuBar = new QMenuBar;
-    m_menuBar->setNativeMenuBar(false);
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
-    layout->addWidget(m_menuBar);
+    layout->setSpacing(0);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 
-    QMetaObject::invokeMethod(this, "createGtkIndicator", Qt::QueuedConnection);
-}
+    m_indicatorsManager = panel->indicatorsManager();
 
-void IndicatorApplet::createGtkIndicator()
-{
-    int* argc = 0;
-    char*** argv = 0;
-    gtk_init(argc, argv);
+    m_indicatorsManager->indicators()->on_object_added.connect(
+        sigc::mem_fun(this, &IndicatorApplet::onObjectAdded)
+        );
 
-    m_container = new QX11EmbedContainer;
-    layout()->addWidget(m_container);
+    m_indicatorsManager->indicators()->on_object_removed.connect(
+        sigc::mem_fun(this, &IndicatorApplet::onObjectRemoved)
+        );
 
-    m_gtkIndicator = indicator_new();
-    m_container->embedClient(gtk_plug_get_id(GTK_PLUG(m_gtkIndicator->container)));
-    gtk_widget_show(m_gtkIndicator->container);
+    m_indicatorsWidget = new IndicatorsWidget(m_indicatorsManager);
+    layout->addWidget(m_indicatorsWidget);
 
-    QTimer* timer = new QTimer(this);
-    timer->setInterval(1000);
-    timer->setSingleShot(false);
-    connect(timer, SIGNAL(timeout()), SLOT(adjustGtkIndicatorSize()));
-    timer->start();
-}
-
-void IndicatorApplet::adjustGtkIndicatorSize()
-{
-    GtkRequisition requisition;
-    gtk_widget_size_request(m_gtkIndicator->menu, &requisition);
-    m_container->setFixedWidth(requisition.width);
-}
-
-void IndicatorApplet::loadIndicators()
-{
-#if 0
-    // FIXME: Using Qt plugins
-    QList<AbstractIndicator*> indicators = QList<AbstractIndicator*>()
-        << new DateTimeIndicator(this)
-        ;
-
-    Q_FOREACH(AbstractIndicator* indicator, indicators) {
-        connect(indicator, SIGNAL(actionAdded(QAction*)), SLOT(slotActionAdded(QAction*)));
-        connect(indicator, SIGNAL(actionRemoved(QAction*)), SLOT(slotActionRemoved(QAction*)));
-        indicator->init();
+    if (panel != NULL) {
+        panel->installEventFilter(this);
     }
-#endif
 }
 
-void IndicatorApplet::slotActionAdded(QAction* action)
+bool IndicatorApplet::eventFilter(QObject* watched, QEvent* event)
 {
-    UQ_VAR(action->text());
-    m_menuBar->addAction(action);
+    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isActiveAppVisible = app ? app->user_visible() : false;
+        if (!isActiveAppVisible) {
+            QList<IndicatorEntryWidget*> list = m_indicatorsWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return QWidget::eventFilter(watched, event);
+    }
 }
 
-void IndicatorApplet::slotActionRemoved(QAction* action)
+void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
 {
-    m_menuBar->removeAction(action);
+    QString name = QString::fromStdString(indicator->name());
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->addIndicator(indicator);
+    }
 }
 
+void IndicatorApplet::onObjectRemoved(Indicator::Ptr const& indicator)
+{
+    QString name = QString::fromStdString(indicator->name());
+
+    // appmenu indicator is handled by AppNameApplet
+    if (name != "libappmenu.so") {
+        m_indicatorsWidget->removeIndicator(indicator);
+    }
+}
 
 #include "indicatorapplet.moc"

@@ -17,13 +17,15 @@
  */
 
 import QtQuick 1.0
-import gconf 1.0
+import QConf 1.0
 /* Necessary to access the blended image provider and CacheEffect */
 import Unity2d 1.0
 
 Item {
     property string overlay_color
     property real overlay_alpha
+    property int offsetX: -1
+    property int offsetY: -1
     
     /* Avoid redraw at rendering */
     CacheEffect {
@@ -32,19 +34,14 @@ Item {
     property bool cached: true
     effect: (cached) ? cacheEffect : null
 
-    GConfItem {
-        id: primary_color
-        key: "/desktop/gnome/background/primary_color"
+    QConf {
+        id: desktopBackground
+        schema: "org.gnome.desktop.background"
     }
 
-    GConfItem {
-        id: picture_filename
-        key: "/desktop/gnome/background/picture_filename"
-    }
-
-    GConfItem {
-        id: picture_options
-        key: "/desktop/gnome/background/picture_options"
+    PercentCoder {
+        id: backgroundFilename
+        encoded: desktopBackground.pictureUri
     }
 
     Rectangle {
@@ -55,13 +52,13 @@ Item {
         }
 
         anchors.fill: parent
-        color: primary_color.value
+        color: desktopBackground.primaryColor
     }
 
     Image {
         id: picture
 
-        visible: picture_filename.value
+        visible: desktopBackground.pictureUri
         source: {
             if (!visible) return ""
             
@@ -74,8 +71,8 @@ Item {
                https://bugs.launchpad.net/ubuntu/+source/ubuntu-wallpapers/+bug/296538
                http://bugreports.qt.nokia.com/browse/QTBUG-7276
             */
-            var filename = picture_filename.value
-            if(filename == "/usr/share/backgrounds/warty-final-ubuntu.png")
+            var filename = backgroundFilename.unencoded /* path is urlencoded */
+            if(filename == "file:///usr/share/backgrounds/warty-final-ubuntu.png")
                 filename = "/usr/share/unity-2d/warty-final-ubuntu.jpg"
 
             if(overlay_alpha > 0.0)
@@ -93,8 +90,12 @@ Item {
         sourceSize.height: 0
 
         smooth: true
-        x: screen.availableGeometry.x
-        y: -screen.availableGeometry.y
+
+        /* by default, place the background on top of the desktop background,
+           no matter where the DeclarativeView or the parent object are placed.
+        */
+        x: offsetX != -1 ? offsetX : parent.mapFromItem(null, -declarativeView.globalPosition.x, 0).x
+        y: offsetY != -1 ? offsetY : parent.mapFromItem(null, 0, -declarativeView.globalPosition.y).y
 
         /* Possible modes are:
             - "wallpaper"
@@ -105,13 +106,13 @@ Item {
             - "spanned" (NOT IMPLEMENTED)
         */
         fillMode: {
-            if(picture_options.value == "wallpaper")
+            if(desktopBackground.pictureOptions== "wallpaper")
                 return Image.Tile
-            else if(picture_options.value == "scaled")
+            else if(desktopBackground.pictureOptions == "scaled")
                 return Image.PreserveAspectFit
-            else if(picture_options.value == "stretched")
+            else if(desktopBackground.pictureOptions == "stretched")
                 return Image.Stretch
-            else if(picture_options.value == "zoom")
+            else if(desktopBackground.pictureOptions == "zoom")
                 return Image.PreserveAspectCrop
             else return Image.PreserveAspectFit
         }

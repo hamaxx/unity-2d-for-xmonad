@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Effects 1.0
+import "fontUtils.js" as FontUtils
 
-FocusScope {
+AbstractButton {
     property string searchQuery
+
+    Accessible.name: "Search Entry"
 
     /* Cancels current search when the dash becomes invisible */
     Connections {
@@ -30,12 +33,14 @@ FocusScope {
 
     Binding {
         target: dash.currentPage != undefined ? dash.currentPage.model : null
-        property: "entrySearchQuery"
+        property: "searchQuery"
         value: searchQuery
     }
 
     /* Keys forwarded to the search entry are forwarded to the text input. */
     Keys.forwardTo: [search_input]
+
+    opacity: ( state == "selected" || state == "hovered" ) ? 1.0 : 0.7
 
     BorderImage {
         anchors.fill: parent
@@ -68,6 +73,9 @@ FocusScope {
         MouseArea {
             id: clear_button
 
+            Accessible.name: "Clear"
+            Accessible.role: Accessible.PushButton
+
             anchors.fill: search_icon
 
             onClicked: {
@@ -79,6 +87,9 @@ FocusScope {
         TextInput {
             id: search_input
 
+            Accessible.name: search_instructions.text
+            Accessible.role: Accessible.EditableText
+
             effect: DropShadow {
                     id: glow
 
@@ -86,19 +97,21 @@ FocusScope {
                     offset.x: 0
                     offset.y: 0
                     color: "white"
-                    enabled: search_input.text != ""
+                    enabled: search_input.text != "" || search_input.inputMethodComposing
                 }
 
             anchors.left: search_icon.right
             anchors.leftMargin: -5
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
+            horizontalAlignment: Text.AlignLeft
 
             color: "#ffffff"
-            font.pixelSize: 28
+            font.pixelSize: FontUtils.fontSizeToPixels("xx-large")
             focus: true
             selectByMouse: true
             cursorDelegate: cursor
+            selectionColor: "gray"
 
             onTextChanged: live_search_timeout.restart()
 
@@ -143,19 +156,21 @@ FocusScope {
                 }
             }
 
-            Text {
+            TextCustom {
                 id: search_instructions
 
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+                LayoutMirroring.enabled: false
+                horizontalAlignment: isRightToLeft() ? Text.AlignRight : Text.AlignLeft
 
                 color: "white"
                 opacity: 0.5
-                font.pixelSize: 20
+                fontSize: "x-large"
                 font.italic: true
                 text: {
-                    if(search_input.text)
+                    if(search_input.text || search_input.inputMethodComposing)
                         return ""
                     else if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
                         return dash.currentPage.model.searchHint

@@ -22,6 +22,7 @@
 // Self
 #include "unity2dpanel.h"
 #include <debug_p.h>
+#include <indicatorsmanager.h>
 
 // Qt
 #include <QApplication>
@@ -41,6 +42,7 @@ struct Unity2dPanelPrivate
 {
     Unity2dPanel* q;
     Unity2dPanel::Edge m_edge;
+    mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
     QPropertyAnimation* m_slideInAnimation;
     QPropertyAnimation* m_slideOutAnimation;
@@ -65,9 +67,15 @@ struct Unity2dPanelPrivate
         ulong struts[12] = {};
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            struts[0] = q->width();
-            struts[4] = available.top();
-            struts[5] = available.y() + available.height();
+            if (QApplication::isLeftToRight()) {
+                struts[0] = q->width();
+                struts[4] = available.top();
+                struts[5] = available.y() + available.height();
+            } else {
+                struts[1] = q->width();
+                struts[6] = available.top();
+                struts[7] = available.y() + available.height();
+            }
             break;
         case Unity2dPanel::TopEdge:
             struts[2] = q->height();
@@ -95,8 +103,13 @@ struct Unity2dPanelPrivate
         QRect rect;
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            rect = QRect(screen.left(), available.top(), q->width(), available.height());
-            rect.moveLeft(m_delta);
+            if (QApplication::isLeftToRight()) {
+                rect = QRect(screen.left(), available.top(), q->width(), available.height());
+                rect.moveLeft(m_delta);
+            } else {
+                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
+                rect.moveRight(screen.right() - m_delta);
+            }
             break;
         case Unity2dPanel::TopEdge:
             rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
@@ -112,7 +125,7 @@ struct Unity2dPanelPrivate
         QBoxLayout::Direction direction;
         switch(m_edge) {
         case Unity2dPanel::TopEdge:
-            direction = QApplication::isRightToLeft() ? QBoxLayout::RightToLeft : QBoxLayout::LeftToRight;
+            direction = QBoxLayout::LeftToRight;
             break;
         case Unity2dPanel::LeftEdge:
             direction = QBoxLayout::TopToBottom;
@@ -137,6 +150,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
 {
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
+    d->m_indicatorsManager = 0;
     d->m_useStrut = true;
     d->m_delta = 0;
     d->m_manualSliding = false;
@@ -187,6 +201,16 @@ void Unity2dPanel::setEdge(Unity2dPanel::Edge edge)
 Unity2dPanel::Edge Unity2dPanel::edge() const
 {
     return d->m_edge;
+}
+
+IndicatorsManager* Unity2dPanel::indicatorsManager() const
+{
+    if (d->m_indicatorsManager == 0) {
+        auto const_this = const_cast<Unity2dPanel*>(this);
+        d->m_indicatorsManager = new IndicatorsManager(const_this, const_this);
+    }
+
+    return d->m_indicatorsManager;
 }
 
 void Unity2dPanel::showEvent(QShowEvent* event)
@@ -298,6 +322,12 @@ void Unity2dPanel::setManualSliding(bool manualSliding)
         }
         Q_EMIT manualSlidingChanged(d->m_manualSliding);
     }
+}
+
+QString Unity2dPanel::id() const
+{
+    int screen = QApplication::desktop()->screenNumber(this);
+    return "Unity2DPanel" + QString::number(screen);
 }
 
 #include "unity2dpanel.moc"

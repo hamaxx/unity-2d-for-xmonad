@@ -1,0 +1,112 @@
+# Italian translations for l package.
+# Copyright (C) 2010 THE l'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the l package.
+# Canonical OEM, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: l 10n\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-20 12:38+0000\n"
+"Last-Translator: Mario Guerriero <Unknown>\n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+"Language: \n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Mostra un altro risultato"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Mostra altri %1 risultati"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Mostra meno risultati"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Applicazioni multimediali"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Applicazioni per internet"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Altre applicazioni"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Trova file"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Esplora il web"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Visualizza foto"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Controlla email"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Ascolta musica"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Scorciatoie"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Ricerca più accurata"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Tipo"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Espelli"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Cestino"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n elemento nel cestino"
+msgstr[1] "%n elementi nel cestino"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Svuota cestino"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Spazi di lavoro"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Mantieni nel Launcher"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Rimuovi dal Launcher"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Esci"

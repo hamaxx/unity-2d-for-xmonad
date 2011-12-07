@@ -27,6 +27,8 @@
 // Qt
 #include <QObject>
 
+class QPoint;
+
 struct WindowHelperPrivate;
 class WindowHelper : public QObject
 {
@@ -39,11 +41,16 @@ public:
 
     bool isMaximized() const;
     bool isMostlyOnScreen(int screen) const;
+    bool dashIsVisible() const;
+    bool dashCanResize() const;
 
 public Q_SLOTS:
     void close();
     void minimize();
     void unmaximize();
+    void maximize();
+    void toggleMaximize();
+    void drag(const QPoint& pos);
 
 private Q_SLOTS:
     void update();

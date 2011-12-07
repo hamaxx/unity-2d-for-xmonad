@@ -1,7 +1,7 @@
+
 set(panel_SRCS
     main.cpp
     panelmanager.cpp
-    unity2dstyle.cpp
     )
 
 qt4_automoc(${panel_SRCS})
@@ -10,22 +10,23 @@ add_executable(unity-2d-panel ${panel_SRCS})
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${uqapplets_SOURCE_DIR}
-    ${uqapplets_SOURCE_DIR}/common
+    ${GTK_INCLUDE_DIRS}
+    ${UNITYCORE_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
 target_link_libraries(unity-2d-panel
     ${QT_QTGUI_LIBRARIES}
     ${QT_QTCORE_LIBRARIES}
-    uqapplets
+    ${GTK_LDFLAGS}
+    ${DCONFQT_LIBRARIES}
     unity-2d-private
     )
 
 install(TARGETS unity-2d-panel
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 install(FILES unity-2d-panel.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )

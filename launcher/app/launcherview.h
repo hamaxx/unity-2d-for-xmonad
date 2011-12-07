@@ -24,8 +24,7 @@
 #include <QList>
 #include <QUrl>
 #include <QTimer>
-
-#include "gconfitem-qml-wrapper.h"
+#include <QVariant>
 
 #include <unity2ddeclarativeview.h>
 
@@ -40,12 +39,13 @@ class LauncherView : public Unity2DDeclarativeView
 
 public:
     explicit LauncherView(QWidget* parent = NULL);
-    Q_INVOKABLE QList<QVariant> getColorsFromIcon(QUrl source, QSize size) const;
+    ~LauncherView();
 
     bool superKeyHeld() const { return m_superKeyHeld; }
 
 Q_SIGNALS:
-    void keyboardShortcutPressed(int itemIndex);
+    void activateShortcutPressed(int itemIndex);
+    void newInstanceShortcutPressed(int itemIndex);
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
     void addWebFavoriteRequested(const QUrl& url);
@@ -54,22 +54,22 @@ Q_SIGNALS:
 private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardNumericHotkey();
+    void ignoreSuperPress();
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void toggleDash();
-    void showCommandsPlace();
-
-public Q_SLOTS:
-    void activateWindow();
+    void showCommandsLens();
+    void onSuperSPressed();
+    void onAltF1Pressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
 
 private:
-    GConfItemQmlWrapper m_enableSuperKey;
     bool m_superKeyPressed;
     bool m_superKeyHeld;
+    bool m_superPressIgnored;
     QTimer m_superKeyHoldTimer;
 
     friend class LauncherDBus;

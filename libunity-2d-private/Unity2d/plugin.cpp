@@ -20,12 +20,9 @@
 /* Required otherwise using wnck_set_client_type breaks linking with error:
    undefined reference to `wnck_set_client_type(WnckClientType)'
 */
-extern "C" {
-#include <libwnck/util.h>
-}
-
 #include "plugin.h"
 
+#include "dashsettings.h"
 #include "launcherapplication.h"
 #include "place.h"
 #include "placeentry.h"
@@ -45,7 +42,9 @@ extern "C" {
 #include "screeninfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
+#include "iconutilities.h"
 #include "unity2dtr.h"
+#include "giodefaultapplication.h"
 
 #include "mimedata.h"
 #include "dragdropevent.h"
@@ -58,14 +57,34 @@ extern "C" {
 #include "autohidebehavior.h"
 #include "intellihidebehavior.h"
 #include "forcevisiblebehavior.h"
+#include "bfb.h"
+
+#include "lenses.h"
+#include "lens.h"
+
+#include "percentcoder.h"
+
+#include "filter.h"
+#include "filters.h"
+#include "ratingsfilter.h"
+#include "radiooptionfilter.h"
+#include "checkoptionfilter.h"
+#include "multirangefilter.h"
+#include "focuspath.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsEffect>
 #include <QAbstractListModel>
+#include <QTextCodec>
+
+// QtDee
+#include "deelistmodel.h"
 
 #include <X11/Xlib.h>
+
+using namespace Unity2d;
 
 /* FIXME: This should be done more properly, it's just an hack this way.
           We should silence only the errors that we know we can produce.
@@ -83,6 +102,8 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
+
+    qmlRegisterType<DashSettings>(uri, 0, 1, "DashSettings");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -102,6 +123,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<LauncherDropItem>(uri, 0, 1, "LauncherDropItem");
 
     qmlRegisterType<ListAggregatorModel>(uri, 0, 1, "ListAggregatorModel");
+
+    qmlRegisterType<BfbModel>(uri, 0, 1, "BfbModel");
+    qmlRegisterType<BfbItem>(uri, 0, 1, "BfbItem");
 
     qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
@@ -124,6 +148,27 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
     qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
     qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
+
+    qmlRegisterType<IconUtilities>(); // Register the type as non creatable
+
+    qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
+
+    qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
+    qmlRegisterType<Lens>(uri, 1, 0, "Lens");
+
+    qmlRegisterType<PercentCoder>(uri, 0, 1, "PercentCoder");
+
+    qmlRegisterType<FocusPath>(uri, 0, 1, "FocusPath");
+
+    qmlRegisterType<Filter>();
+    qmlRegisterType<Filters>();
+    qmlRegisterType<RatingsFilter>();
+    qmlRegisterType<RadioOptionFilter>();
+    qmlRegisterType<CheckOptionFilter>();
+    qmlRegisterType<MultiRangeFilter>();
+    qmlRegisterType<FilterOption>();
+    qmlRegisterType<FilterOptions>();
+
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -139,6 +184,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* ScreenInfo is exposed as a context property as it's a singleton and therefore
        not creatable directly in QML */
     engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
+    engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.
@@ -154,6 +200,15 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
     Unity2dTr::qmlInit(engine->rootContext());
+
+    /* Define the charset that Qt assumes C-strings (char *) and std::string to be in.
+       After that definition, using QString::fromStdString and QString::toStdString
+       will properly convert from and to std::string encoded in UTF-8 as it is
+       the case in Unity's shared backend.
+
+       Ref.: http://developer.qt.nokia.com/wiki/QtStrings
+    */
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 }
 
 Q_EXPORT_PLUGIN2(Unity2d, Unity2dPlugin);

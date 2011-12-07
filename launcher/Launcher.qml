@@ -22,7 +22,32 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 LauncherDropItem {
     id: launcher
 
+    Accessible.name: "root"
+
+    function clamp(x, min, max) {
+        return Math.max(Math.min(x, max), min)
+    }
+
+    function hideMenu() {
+        if (main.visibleMenu !== undefined) {
+            main.visibleMenu.hide()
+        }
+        if (shelf.visibleMenu !== undefined) {
+            shelf.visibleMenu.hide()
+        }
+    }
+
+    function focusBFB() {
+        if (!main.activeFocus) {
+            main.focus = true
+        }
+
+        main.currentIndex = 0
+        main.positionViewAtBeginning()
+    }
+
     GnomeBackground {
+        Accessible.name: "background"
         anchors.fill: parent
         overlay_color: "black"
         overlay_alpha: 0.66
@@ -30,6 +55,7 @@ LauncherDropItem {
     }
 
     Rectangle {
+        Accessible.name: "background"
         anchors.fill: parent
         color: "black"
         opacity: 0.66
@@ -37,6 +63,7 @@ LauncherDropItem {
     }
     
     Image {
+        Accessible.name: "border"
         id: border
 
         width: 1
@@ -50,16 +77,42 @@ LauncherDropItem {
     onWebpageUrlDropped: applications.insertWebFavorite(url)
 
     FocusScope {
+        Accessible.name: "content"
+
         focus: true
         anchors.fill: parent
         z: 1 /* ensure the lists are always strictly on top of the background */
 
         LauncherList {
             id: main
+            Accessible.name: "main"
+
+            /* function to position highlighted tile so that the shadow does not cover it */
+            function positionMainViewForIndex(index) {
+                /* Tile considered 'visible' if it fully drawn */
+                var numberVisibleTiles = Math.floor(height / selectionOutlineSize)
+                var indexFirstVisibleTile = Math.ceil(contentY / selectionOutlineSize)
+                var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
+                var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
+
+                if (nearestVisibleTile == indexFirstVisibleTile) {
+                    positionViewAtIndex(Math.max(index - 1, 0), ListView.Beginning)
+                }
+                else if (nearestVisibleTile == indexLastVisibleTile) {
+                    positionViewAtIndex(Math.min(index + 1, count - 1), ListView.End)
+                }
+            }
+
             anchors.top: parent.top
-            anchors.bottom: shelf.top
-            anchors.bottomMargin: itemPadding
+            anchors.bottomMargin: 0
+            /* the distance from the top of the launcher and the dash tile is 6 instead of 7 */
+            anchors.topMargin: -1
+            height: parent.height - shelf.height + ((selectionOutlineSize - tileSize)) - 4
             width: parent.width
+
+            /* Ensure all delegates are cached in order to improve smoothness of
+               scrolling on very low end platforms */
+            cacheBuffer: 10000
 
             autoScrollSize: tileSize / 2
             autoScrollVelocity: 200
@@ -71,18 +124,37 @@ LauncherDropItem {
 
             focus: true
             KeyNavigation.down: shelf
+
+            /* Prevent shadow from overlapping a highlighted item */
+            Keys.onPressed: {
+                if (event.key == Qt.Key_Up) {
+                    positionMainViewForIndex(currentIndex - 1)
+                } else if (event.key == Qt.Key_Down) {
+                    positionMainViewForIndex(currentIndex + 1)
+                }
+            }
+
+            /* Always reset highlight to so-called BFB or Dash button */
+            Connections {
+                target: launcherView
+                onFocusChanged: {
+                    if (launcherView.focus && !main.flicking) {
+                        hideMenu()
+                    }
+                }
+            }
         }
 
         LauncherList {
             id: shelf
+            Accessible.name: "shelf"
+
             anchors.bottom: parent.bottom
             anchors.bottomMargin: main.anchors.bottomMargin
-            height: (tileSize + itemPadding) * count
+            anchors.topMargin: main.anchors.topMargin
+            height: selectionOutlineSize * count
             width: parent.width
-            itemPadding: 0
-            /* Ensure all delegates are cached in order to improve smoothness of
-               scrolling on very low end platforms */
-            cacheBuffer: 10000
+            interactive: false
 
             model: ListAggregatorModel {
                 id: shelfItems
@@ -92,21 +164,12 @@ LauncherDropItem {
         }
     }
 
-    SortFilterProxyModel {
-        id: visiblePlaces
-        model: places
-        dynamicSortFilter: true
-
-        filterRole: LauncherPlacesList.RoleShowEntry
-        filterRegExp: RegExp("^true$")
+    BfbModel {
+        id: bfbModel
     }
 
     LauncherApplicationsList {
         id: applications
-    }
-
-    LauncherPlacesList {
-        id: places
     }
 
     LauncherDevicesList {
@@ -121,10 +184,17 @@ LauncherDropItem {
         id: trashes
     }
 
+    Keys.onPressed: {
+        if( event.key == Qt.Key_Escape ){
+            launcherView.forceDeactivateWindow()
+            event.accepted = true
+        }
+    }
+
     Component.onCompleted: {
+        items.appendModel(bfbModel);
         items.appendModel(applications);
         items.appendModel(workspaces);
-        items.appendModel(visiblePlaces);
         items.appendModel(devices);
         shelfItems.appendModel(trashes);
     }

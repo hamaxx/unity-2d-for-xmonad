@@ -23,9 +23,11 @@
 #define UNITY2DPANEL_H
 
 // Local
+class IndicatorsManager;
 
 // Qt
 #include <QWidget>
+#include <QEvent>
 
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
@@ -50,6 +52,8 @@ public:
         TopEdge
     };
 
+    static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
+
     Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
     ~Unity2dPanel();
 
@@ -59,6 +63,8 @@ public:
     void addWidget(QWidget*);
 
     void addSpacer();
+
+    IndicatorsManager* indicatorsManager() const;
 
     /**
      * Whether the panel should reserve space on the edge, preventing maximized
@@ -74,6 +80,8 @@ public:
 
     bool manualSliding() const;
     void setManualSliding(bool);
+
+    QString id() const;
 
 public Q_SLOTS:
     void slideIn();

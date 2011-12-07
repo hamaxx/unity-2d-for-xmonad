@@ -28,13 +28,16 @@
 
 // libunity-2d-private
 #include <debug_p.h>
+#include <config.h>
 
 // Qt
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QVariant>
 
-LegacyTrayApplet::LegacyTrayApplet()
-: m_selectionManager(new SystemTray::FdoSelectionManager)
+LegacyTrayApplet::LegacyTrayApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, m_selectionManager(new SystemTray::FdoSelectionManager)
 {
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
@@ -44,6 +47,9 @@ LegacyTrayApplet::LegacyTrayApplet()
 
     connect(m_selectionManager, SIGNAL(taskCreated(SystemTray::Task*)),
         SLOT(slotTaskCreated(SystemTray::Task*)));
+
+    m_whitelist = panelConfiguration().property("systrayWhitelist").toStringList();
+    m_whitelistAll = m_whitelist.contains("all", Qt::CaseInsensitive);
 }
 
 LegacyTrayApplet::~LegacyTrayApplet()
@@ -53,6 +59,15 @@ LegacyTrayApplet::~LegacyTrayApplet()
 
 void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
 {
+    /* Only accept tasks whose name is in the whitelist.
+       The whitelist contains a "List of client names, resource classes or wm
+       classes to allow in the Panel's systray implementation." but here we only
+       support matching on WM_CLASS.
+    */
+    if (!m_whitelistAll && !m_whitelist.contains(task->name(), Qt::CaseInsensitive)) {
+        return;
+    }
+
     task->createWidget();
     connect(task, SIGNAL(widgetCreated(QWidget*)), SLOT(slotWidgetCreated(QWidget*)));
 }

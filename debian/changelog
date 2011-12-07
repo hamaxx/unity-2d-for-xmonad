@@ -1,5 +1,339 @@
-unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (5.2.0-0ubuntu1) UNRELEASED; urgency=low
 
+  * 
+
+ -- Florian Boucault <florian@boucault.net>  Mon, 21 Nov 2011 00:17:26 +0000
+
+unity-2d (4.12.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - unity-2d-panel assert failure: *** glibc detected *** unity-2d-panel:
+      malloc(): smallbin double linked list corrupted: 0x08313b28 ***
+      (LP: #845979)
+    - unity-2d-panel assert failure: *** glibc detected *** unity-2d-panel:
+      corrupted double-linked list: 0x094bc9b0 *** (LP: #852012)
+    - unity-2d-panel crashed with SIGSEGV (LP: #843432)
+    - Dragging downwards from the menu bar or double clicking on the menu bar
+      should un-maximise the window (LP: #661049)
+    - [dash] Dash is shown when pressing and releasing quickly super+KEY
+      (LP: #801073)
+    - [dash] Do search, scroll down using mouse, then maximise window. Layout
+      breaks (LP: #817421)
+    - F10 doesn't start keyboard navigation to the panel (LP: #839628)
+    - [dash] Gridview moves to top when you open or close the "Show X more.."
+      dropdown or the Filter pane (LP: #850036)
+    - Impossible to navigate between panel menus when the mouse cursor is over
+      the panel (LP: #834065)
+    - [panel] F10 menu initially shown about half screen down (LP: #853766)
+    - [dash] Filter pane doesn't clear its background when switching lenses
+      (LP: #858590)
+    - [shortcuts] <Super><Shift># should launch a new instance of #
+      application (LP: #768006)
+    - unity-2d-spread missing background images when path includes Unicode
+      (LP: #855508)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 29 Sep 2011 16:58:34 +0200
+
+unity-2d (4.10.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - unity-2d-panel segfault switching between single and dual screens
+      (LP: #848944)
+    - bad memory leak in unity-2d-panel (LP: #850320)
+    - unity-2d-panel crashed with SIGABRT in raise() (LP: #848155)
+    - [dash] Dash is shown when pressing and releasing quickly super+KEY
+      (LP: #801073)
+    - Wallpaper is loaded twice with different alignment by gnome-session and
+      nautilus (Oneiric) (LP: #804435)
+    - [panel] Maximized window title switches to Arial font (LP: #820274)
+    - [panel] graphics corruption in top line of pixels (LP: #846335)
+    - Unity-2d no panel after cancel logout due to not responding app
+      (LP: #849379)
+    - [panel] Indicators are duplicated if unity-panel-service restarts with
+      multiple monitors connected (LP: #850000)
+    - Unity doesn't mirror its interface for RTL locales. (LP: #654988)
+    - [panel] F10 shortcut with dual screens shows menus on both screens
+      (LP: #777995)
+    - Background wallpaper briefly appears shifted horizontally by around 15
+      pixels on startup (LP: #839610)
+    - alt+f2 - can type, doing nothing (LP: #842413)
+    - Pressing Alt+F2 sometimes opens the Dash instead of opening the 'Run
+      command' screen (LP: #847486)
+  * debian/control:
+    - bump libxi-dev build-dep
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 22 Sep 2011 09:55:59 +0200
+
+unity-2d (4.8.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+    - [window management] Alt tab does not switch to the desired application
+      but instead set the urgency flag on the window (LP: #735205)
+    - [dash] search field default text not cleared immediately when using
+      chinese input method (LP: #745246)
+    - [dash] Apps lens shows no result by default (LP: #834571)
+    - unity-2d-panel crashed with SIGSEGV in
+      IndicatorsWidget::onEntryRemoved() (LP: #846836)
+    - [panel] graphics corruption in top line of pixels (LP: #846335)
+    - Repeated indicators in unity-2d panel when second screen added
+      (LP: #846441)
+    - [dash] Lens navigation bar (buttons on lower edge of dash window) is
+      accessible (LP: #826560)
+    - [dash] Category filters is sorted according to their english names, even
+      when another language is used (LP: #838023)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 15 Sep 2011 11:43:52 +0200
+
+unity-2d (4.6.1-0ubuntu1) oneiric; urgency=low
+
+  * Fix a segfault due to new unity service backend change.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 09 Sep 2011 13:50:22 +0200
+
+unity-2d (4.6.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release
+    - [dash] Apps lens shows no result by default (LP: #834571)
+    - Metacity needs command line options to activate capture before unmap and
+      compositing without effects (LP: #791205)
+    - Bold fonts everywhere in the UI (dash, launcher, workspace switcher) but
+      in the panel (LP: #808849)
+    - the migration script needs to be run in unity-2d as well (LP: #819733)
+    - [dash] "View photos" in the dash launches default image viewer instead
+      of shotwell (LP: #822605)
+    - Launcher tooltips sometimes leave holes in panel and windows
+      (LP: #837277)
+    - [dash] Search with non ascii characters fails (LP: #840010)
+    - add a configuration key (dconf) to enable the opengl backend
+      (LP: #809202)
+    - [launcher] when pressing super key shortcuts numbering start at 2
+      instead of 1 (LP: #830036)
+    - [UIFe] Unity 2D should be using the same BFB icon as Unity (LP: #838829)
+    - [launcher] trash icon needs to be the same as in Unity 3D (LP: #840025)
+    - Pressing alt on maximized window does show menu but not window controls
+      (LP: #836274)
+    - [dash] DropShadow on "See X more results" can cause visual errors on
+      scroll (LP: #843820)
+    - Dash - In the App lens filters, users should only be able filter by
+      'star' rating in one star increments (LP: #839759)
+    - Emptying the trash from the unity sidebar should respect nautilus' "Ask
+      before emptying" setting (LP: #730003)
+    - UIFe: Panel - Indicators should be orderable regardless of their parent
+      IndicatorObject (LP: #823061)
+  * debian/control:
+    - rebuild against current nux and unity (API change)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 08 Sep 2011 20:09:59 +0200
+
+unity-2d (4.4.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - unity-2d-panel crashed with SIGSEGV in QConfSchema::findKey()
+      (LP: #834045)
+    - unity-2d-panel crashed with SIGSEGV in QConf::notify() (LP: #834001)
+    - [panel] Implement whitelisting for legacy tray applet (LP: #707354)
+    - [launcher] stops automatically hiding after some time using it
+      (LP: #821180)
+    - [panel] Empathy displays icon in deprecated systray (LP: #830017)
+    - [dash] Invalid UTF-8 in the dash (LP: #836587)
+    - [dash] Home buttons 'Media' and 'Internet' apps should not only take you
+      to the apps lens but also activate the right filter (LP: #837360)
+    - [dash] Drag&drop application from dash to launcher is broken
+      (LP: #837361)
+    - [launcher] contextual menu's corner has a blue line (LP: #828386)
+    - [dash] Lens bar graphical layout glitches (LP: #833805)
+    - [dash] Rating Filter: All button not clearing star highlighting
+      (LP: #834640)
+    - [dash] should be falling back to the default renderer if the renderer
+      requested by the lens is not found (LP: #837356)
+    - [dash] Gwibber lens icon doesn't show up in 2d unity (LP: #830728)
+    - [dash] Lacks horizontal renderer used by lenses such as Gwibber
+      (LP: #837712)
+    - [dash] See %1 more result inconsistency (LP: #834226)
+    - [launcher] When application has no icon, a question mark icon should be
+      displayed (LP: #837351)
+    - unity places should return a default icon when no matching icon is found
+      (LP: #711200)
+    - spacing between indicators should be 5 pixels (LP: #734010)
+  * debian/control:
+    - require current nux and unity
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 01 Sep 2011 17:41:00 +0200
+
+unity-2d (4.2.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [panel] application menus do not appear on first hover after dismissal
+      (lp: #825262)
+    - [dash] Lens icons badly scaled (lp: #825368)
+    - [panel] indicators are shifted offscreen to the right (lp: #827673)
+    - [panel] scrubbing from system indicators to menubar should be possible
+      (lp: #706903)
+    - [launcher] Closed applications don't get their launcher counts cleared
+      (lp: #767367)
+    - [dash] selected item should not be underlined but use the same 
+      treatment as unity (lp: #817456)
+    - [dash] categories should be collapsed by default (lp: #827214)
+    - [dash] Ratings filter (lp: #831855)
+    - [dash] Multirange filter (lp: #831856)
+    - [dash] ToggleButton filter (lp: #831857)
+    - [dash] Icon size must be bigger to match the mockups (lp: #831858)
+    - [dash] "Refine search" right margin should be 15 pixels (lp: #832058)
+    - [dash] "Refine search" should be "Filter results" (lp: #832060)
+    - [dash] Font sizes should match new design (lp: #832114)
+    - [panel] Glitch: application menu appearing when pressing the BFB 
+      (lp: #825060)
+    - [panel] Glitch: application menus are quickly opened after a drag gesture
+      (lp: #825267)
+    - [dash] File thumbnails aspect ratio is not respected (lp: #832204)
+  * debian/control: require current the current versions of nux and unity
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Thu, 25 Aug 2011 18:16:57 +0200
+
+unity-2d (4.0.0-0ubuntu2) oneiric; urgency=low
+
+  * No change rebuild for the nux update abi break
+  * debian/control: update the nux requirement to be sure to pick the new one
+
+ -- Sebastien Bacher <seb128@ubuntu.com>  Fri, 19 Aug 2011 11:25:56 +0200
+
+unity-2d (4.0.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [launcher] Impossible to keep KDE Apps in Launcher (LP: #741129)
+    - [dash] Background should be blurred (LP: #823326)
+    - No 'safely remove' option is present in the unity menu when a usb disk
+      is inserted (LP: #660010)
+    - Quicklist item "Keep In Launcher" should be "Keep in launcher" as design
+      (LP: #795422)
+    - [launcher] ESC doesn't dismiss launcher when activated with Alt+F1
+      (LP: #812792)
+    - [dash] Background wallpaper shifted when using a non compositing window
+      manager (LP: #823295)
+    - [launcher] Bottom gradient appears too early (LP: #823877)
+    - mute/unmute sound when user clicks on sound applet using scroll button
+      or middle mouse button (LP: #609860)
+    - Secondary activate (i.e. middle click) support for indicators advanced
+      usage (LP: #812933)
+    - Unused GConfItemQmlWrapper dep found (LP: #821880)
+  * debian/control:
+    - bump libunity-core-4.0-dev, libnux-1.0-dev
+    - recommends lenses and not places anymore. Adding music lens
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 11 Aug 2011 21:22:18 +0200
+
+unity-2d (3.8.14.1-0ubuntu1) oneiric; urgency=low
+
+  * Few upstream fixes:
+    - unity-2d-places crashed with SIGSEGV in
+      QDeclarativePropertyPrivate::initProperty() (LP: #817896)
+    - update resets unity launcher favorites (LP: #817954)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 02 Aug 2011 16:08:27 +0200
+
+unity-2d (3.8.14-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release:
+    - [launcher] Need to press Alt+F1 twice to show launcher (LP: #812787)
+  * debian/control:
+    - build on latest libunity-core-4.0-dev and latest libnux-1.0-dev
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 01 Aug 2011 19:53:40 +0200
+
+unity-2d (3.8.12-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - enforcing latest libunity-private0 to be installed for each local
+      consumer
+    - don't recommends indicator-me, it's deprecated
+  * debian/libunity-2d-private0.lintian-overrides:
+    - remove a qml-related exported symbol warning wrongly detected
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 29 Jul 2011 15:19:11 +0200
+
+unity-2d (3.8.12-0ubuntu1) oneiric; urgency=low
+
+  [ Florian Boucault ]
+  * Upstreamed patch 01_build_with_new_indicator.patch
+  * do not run pkgbinarymangler to convert images to 8bit since this breaks
+    the launcher icon background handling. (LP: #809205)
+    (QT upstream bug: http://bugreports.qt.nokia.com/browse/QTBUG-4459)
+  * debian/unity-2d.install:
+    - install GSettings schemas into usr/share/glib-2.0/schemas
+    - install GConf to GSettings conversion into usr/share/GConf/gsettings
+  * debian/gconf/schemas/unity-2d.schemas:
+    - remove GConf schema for /desktop/unity-2d/launcher/super_key_enable
+    - remove GConf schema for /desktop/unity-2d/launcher/favorites
+  * debian/20_unity-2d-gconf-default:
+    - remove default value for /desktop/unity-2d/launcher/super_key_enable
+    - remove default value for /desktop/unity-2d/launcher/favorites
+  * debian/control:
+    - add dependency on libdconf-qt-dev
+    - add dependency on libnux-1.0-dev
+
+  [ Didier Roche ]
+  * New upstream release:
+    - [dash] preferred applications are not stored in GConf anylonger
+      (LP: #805063)
+    - [launcher] Tiles background is white/grey instead of the color of the
+      icon (oneiric only) (LP: #809205)
+    - [dash] Keyboard navigation not implemented as specified (LP: #608132)
+    - Unity 2D should use dconf instead of gconf (LP: #692965)
+    - [launcher] KDE3 Applications do not appear in launcher (LP: #719983)
+    - ubuntu-bug showing that I am running unity-2D, when reporting from
+      Compiz Unity interface (LP: #712343)
+    - Apps pinned in launcher not retained between 2D and 3D Unity versions
+      (LP: #746823)
+    - [dash] Cannot have KDE4 applications as shortcuts on home screen
+      (LP: #750081)
+    - [panel] F10 shortcut does not navigate from application menu to
+      indicators (LP: #772061)
+    - [panel] F10 shortcut does not show application menu (LP: #777993)
+    - [dash] Wine applications are not launched (LP: #794471)
+    - [spread] GnomeBackground needs to use dconf to retrieve image path
+      (LP: #805393)
+    - [dash] transparency broken and graphical artifacts when using opengl
+      backend (LP: #806019)
+    - [dash] Enter no longer launches first item (LP: #811673)
+    - [panel] navigation between application menus temporarily gives focus
+      back to the application (LP: #717682)
+    - [panel] Empathy's emotes not visible in panel menus (LP: #742822)
+    - pgadmin3 not handled by unity-2d (LP: #800710)
+    - [dash] slow rendering of background with opengl engine (LP: #806122)
+    - [spread] Wallpaper is shifted by the width of the launcher (LP: #808712)
+    - [launcher] Migrate gconf key /desktop/unity-2d/launcher/super_key_enable
+      to dconf (LP: #810509)
+    - [panel] application name cut when menu bar visible should use a fade
+      (LP: #704615)
+    - [panel] Window title could use a little fade (LP: #694924)
+    - [launcher] Codeblocks doesn't appear in the list of applications
+      (LP: #716524)
+  * Fix typo in trigger (debian/unity-2d.triggers): (LP: #807358)
+  * Install the apport hook in the right directory so that it's not launched
+    unconditionally (LP: #712343)
+  * debian/control:
+    - dep on latest libqtdee-dev
+    - dep now on gtk3 indicator version
+    - dep on versionned libnux-1.0-dev
+    - dep on versionned libunity-core-4.0-dev
+  * debian/control, debian/rules, debian/libunity-2d-private-dev:
+    - add new -dev project (LP: #814709)
+    - add an upstream pc file
+
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 28 Jul 2011 12:05:38 +0200
+
+unity-2d (3.8.10-0ubuntu2) oneiric; urgency=low
+
+  * debian/control:
+    - rebuild with new indicator 0.4
+  * 01_build_with_new_indicator.patch:
+    - patch to build with the new indicator 0.4 stack
+
+ -- Didier Roche <didrocks@ubuntu.com>  Sun, 10 Jul 2011 23:48:01 +0200
+
+unity-2d (3.8.10-0ubuntu1) oneiric; urgency=low
+
+  [ Florian Boucault ]
   * debian/unity-2d-launcher.install:
     - do not install launcher/launchermenu.css anylonger as its now shipped as
       part as libunity-2d-private-qml.so using the Qt resource system
@@ -9,9 +343,28 @@ unity-2d (3.8.10-0ubuntu1) UNRELEASED; urgency=low
   * debian/control:
     - add pkg-config as a build dependency 
 
- -- Florian Boucault <florian.boucault@canonical.com>  Wed, 22 Jun 2011 23:17:12 +0200
+  [ Didier Roche ]
+  * New upstream release:
+    - FTBFS due to erroneous check on libwnck (LP: #800550)
+    - [dash] Search is slow and freezes (LP: #774569)
+    - Some community lenses do not display anything - UnityHorizontalRenderer
+      not implemented (LP: #790319)
+    - [underthehood] the ListAggregatorModel class is not unit tested
+      (LP: #794482)
+    - Missing a GConf schema file for the /desktop/unity-2d/… keys
+      (LP: #750303)
+    - [dash] home screen search hint should be 'Search' (LP: #797825)
+  * debian/unity-2d.gconf-defaults,
+    debian/20_ubuntu-2d-gconf-default:
+    - transition some gconf keys from session-wide to system-wide
+      (LP: #797672, #797676)
+  * debian/control:
+    - ensure we are still using gtk2 indicator for alpha2 (LP: #804938)
+    - bump standards-version
 
-unity-2d (3.8.8-0ubuntu1) natty; urgency=low
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 04 Jul 2011 11:05:54 +0200
+
+unity-2d (3.8.8-0ubuntu1) oneiric; urgency=low
 
   [ Didier Roche ]
   * new upstream release:
@@ -58,7 +411,21 @@ unity-2d (3.8.8-0ubuntu1) natty; urgency=low
 
  -- Didier Roche <didrocks@ubuntu.com>  Tue, 14 Jun 2011 16:14:18 +0200
 
-unity-2d (3.8.6-0ubuntu1) natty; urgency=low
+unity-2d (3.8.6-0ubuntu3~ppa1) oneiric; urgency=low
+
+  * Rebuild with new gcc
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 07 Jun 2011 15:00:32 +0200
+
+unity-2d (3.8.6-0ubuntu2) oneiric; urgency=low
+
+  * debian/unity-2d.postinst, debian/unity-2d.postrm:
+    - remove the magic to set unity-2d in oneiric as the default session in gdm
+      as it's now installed on the ubuntu CD.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 01 Jun 2011 09:42:21 +0200
+
+unity-2d (3.8.6-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
     - [launcher] Support static shortcuts in the quicklists. (LP: #669923)
@@ -102,6 +469,18 @@ unity-2d (3.8.6-0ubuntu1) natty; urgency=low
   * debian/libunity-2d-private0.post*
     - removed: ldconfig is generated directly by dh_makeshlibs as we don't pass
       -n anymore
+  * don't install unity-2d session as it's in gnome-session now
+  * debian/unity-2d.install
+    debian/20_ubuntu-2d-gconf-default
+    debian/20_ubuntu-2d-gconf-mandatory
+    debian/gconf/ubuntu-2d.default.path
+    debian/gconf/ubuntu-2d.mandatory.path:
+    - remove uneeded defaults and mandatory
+    - remove some deprecated keys
+    - the session is now called ubuntu-2d and not unity-2d anymore
+  * debian/unity-2d.preinst, debian/unity-2d.postinst
+    debian/unity-2d.postrm:
+    - take into account the natty -> oneiric migration with session name change
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 25 May 2011 12:19:25 +0200
 

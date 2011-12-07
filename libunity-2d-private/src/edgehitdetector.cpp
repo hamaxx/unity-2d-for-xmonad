@@ -51,9 +51,15 @@ EdgeHitDetector::EdgeHitDetector(QObject* parent)
 
 void EdgeHitDetector::updateGeometryFromScreen()
 {
-    int leftScreen = QApplication::desktop()->screenNumber(QPoint());
-    QRect rect = QApplication::desktop()->screenGeometry(leftScreen);
-    m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
+    QPoint p = QApplication::isLeftToRight() ?
+        QPoint() :
+        QPoint(QApplication::desktop()->width() - 1, 0);
+    QRect rect = QApplication::desktop()->availableGeometry(p);
+    if (QApplication::isLeftToRight()) {
+        m_mouseArea->setGeometry(rect.left(), rect.top(), 1, rect.height());
+    } else {
+        m_mouseArea->setGeometry(rect.right() - 1, rect.top(), 1, rect.height());
+    }
 }
 
 #include "edgehitdetector.moc"

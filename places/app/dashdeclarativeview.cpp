@@ -18,7 +18,9 @@
 #include "dashadaptor.h"
 
 // unity-2d
+#include <dashsettings.h>
 #include <launcherclient.h>
+#include <screeninfo.h>
 
 // Qt
 #include <QDesktopWidget>
@@ -36,9 +38,6 @@
 
 #include <config.h>
 
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
-
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
@@ -49,15 +48,20 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
-, m_mode(HiddenMode)
-, m_expanded(false)
+, m_screenInfo(ScreenInfo::instance())
+, m_mode(DesktopMode)
+, m_expanded(true)
+, m_active(false)
 {
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
+    connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
+
+    updateSize();
 }
 
 void
@@ -67,17 +71,35 @@ DashDeclarativeView::onWorkAreaResized(int screen)
         return;
     }
 
+    updateSize();
+}
+
+void
+DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
+{
+    QRect rect = QApplication::desktop()->screenGeometry(this);
+    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
+    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
+        setDashMode(FullScreenMode);
+    } else {
+        setDashMode(DesktopMode);
+    }
+}
+
+void
+DashDeclarativeView::updateSize()
+{
     if (m_mode == FullScreenMode) {
         fitToAvailableSpace();
+    } else {
+        resizeToDesktopModeSize();
     }
-
-    availableGeometryChanged();
 }
 
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = availableGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -85,11 +107,16 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = availableGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
+    int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
     rect.setHeight(qMin(m_expanded ? DASH_DESKTOP_EXPANDED_HEIGHT : DASH_DESKTOP_COLLAPSED_HEIGHT,
                         rect.height()));
+
+    if (QApplication::isRightToLeft()) {
+        rect.moveRight(screenRight);
+    }
 
     move(rect.topLeft());
     setFixedSize(rect.size());
@@ -100,14 +127,6 @@ DashDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     QDeclarativeView::focusOutEvent(event);
     setActive(false);
-}
-
-static int getenvInt(const char* name, int defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    bool ok;
-    int value = stringValue.toInt(&ok);
-    return ok ? value : defaultValue;
 }
 
 void
@@ -138,26 +157,27 @@ DashDeclarativeView::showEvent(QShowEvent *event)
 void
 DashDeclarativeView::setActive(bool value)
 {
-    if (value != active()) {
+    if (value != m_active) {
+        m_active = value;
         if (value) {
-            QRect rect = QApplication::desktop()->screenGeometry(this);
-            static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
-            static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-            if (rect.width() < minWidth && rect.height() < minHeight) {
-                setDashMode(FullScreenMode);
-            } else {
-                setDashMode(DesktopMode);
-            }
+            updateDashModeDependingOnScreenGeometry();
+            show();
+            raise();
+            // We need a delay, otherwise the window may not be visible when we try to activate it
+            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
+            m_launcherClient->beginForceVisible();
         } else {
-            setDashMode(HiddenMode);
+            hide();
+            m_launcherClient->endForceVisible();
         }
+        activeChanged(m_active);
     }
 }
 
 bool
 DashDeclarativeView::active() const
 {
-    return m_mode != HiddenMode;
+    return m_active;
 }
 
 void
@@ -167,29 +187,8 @@ DashDeclarativeView::setDashMode(DashDeclarativeView::DashMode mode)
         return;
     }
 
-    DashDeclarativeView::DashMode oldMode = m_mode;
     m_mode = mode;
-    if (m_mode == HiddenMode) {
-        hide();
-        m_launcherClient->endForceVisible();
-        activeChanged(false);
-    } else {
-        show();
-        raise();
-        // We need a delay, otherwise the window may not be visible when we try to activate it
-        QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-        if (m_mode == FullScreenMode) {
-            fitToAvailableSpace();
-        } else {
-            resizeToDesktopModeSize();
-        }
-        if (oldMode == HiddenMode) {
-            // Check old mode to ensure we do not call BeginForceVisible twice
-            // if we go from desktop to fullscreen mode
-            m_launcherClient->beginForceVisible();
-        }
-        activeChanged(true);
-    }
+    updateSize();
     dashModeChanged(m_mode);
 }
 
@@ -205,11 +204,9 @@ DashDeclarativeView::setExpanded(bool value)
     if (m_expanded == value) {
         return;
     }
-    
+
     m_expanded = value;
-    if (m_mode == DesktopMode) {
-        resizeToDesktopModeSize();
-    }
+    updateSize();
     expandedChanged(m_expanded);
 }
 
@@ -220,57 +217,26 @@ DashDeclarativeView::expanded() const
 }
 
 void
-DashDeclarativeView::setActivePlaceEntry(const QString& activePlaceEntry)
+DashDeclarativeView::setActiveLens(const QString& activeLens)
 {
-    if (activePlaceEntry != m_activePlaceEntry) {
-        m_activePlaceEntry = activePlaceEntry;
-        Q_EMIT activePlaceEntryChanged(activePlaceEntry);
+    if (activeLens != m_activeLens) {
+        m_activeLens = activeLens;
+        Q_EMIT activeLensChanged(activeLens);
     }
 }
 
 const QString&
-DashDeclarativeView::activePlaceEntry() const
+DashDeclarativeView::activeLens() const
 {
-    return m_activePlaceEntry;
+    return m_activeLens;
 }
 
 void
-DashDeclarativeView::forceActivateWindow()
-{
-    /* Workaround focus stealing prevention implemented by some window
-       managers such as Compiz. This is the exact same code you will find in
-       libwnck::wnck_window_activate().
-
-       ref.: http://permalink.gmane.org/gmane.comp.lib.qt.general/4733
-    */
-    Display* display = QX11Info::display();
-    Atom net_wm_active_window = XInternAtom(display, "_NET_ACTIVE_WINDOW",
-                                            False);
-    XEvent xev;
-    xev.xclient.type = ClientMessage;
-    xev.xclient.send_event = True;
-    xev.xclient.display = display;
-    xev.xclient.window = this->effectiveWinId();
-    xev.xclient.message_type = net_wm_active_window;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = 2;
-    xev.xclient.data.l[1] = CurrentTime;
-    xev.xclient.data.l[2] = 0;
-    xev.xclient.data.l[3] = 0;
-    xev.xclient.data.l[4] = 0;
-
-    XSendEvent(display, QX11Info::appRootWindow(), False,
-               SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-}
-
-void
-DashDeclarativeView::activatePlaceEntry(const QString& file, const QString& entry, const int section)
+DashDeclarativeView::activateLens(const QString& lensId)
 {
     QGraphicsObject* dash = rootObject();
-    QMetaObject::invokeMethod(dash, "activatePlaceEntry", Qt::AutoConnection,
-                              Q_ARG(QVariant, QVariant::fromValue(file)),
-                              Q_ARG(QVariant, QVariant::fromValue(entry)),
-                              Q_ARG(QVariant, QVariant::fromValue(section)));
+    QMetaObject::invokeMethod(dash, "activateLens", Qt::AutoConnection,
+                              Q_ARG(QVariant, QVariant::fromValue(lensId)));
     setActive(true);
 }
 
@@ -280,27 +246,6 @@ DashDeclarativeView::activateHome()
     QGraphicsObject* dash = rootObject();
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
     setActive(true);
-}
-
-const QRect
-DashDeclarativeView::screenGeometry() const
-{
-    QDesktopWidget* desktop = QApplication::desktop();
-    return desktop->screenGeometry(this);
-}
-
-QRect
-DashDeclarativeView::availableGeometry() const
-{
-    QRect screenRect = QApplication::desktop()->screenGeometry(this);
-    QRect availableRect = QApplication::desktop()->availableGeometry(this);
-
-    return QRect(
-        LauncherClient::MaximumWidth,
-        availableRect.top(),
-        screenRect.width() - LauncherClient::MaximumWidth,
-        availableRect.height()
-        );
 }
 
 void

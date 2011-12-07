@@ -1,6 +1,4 @@
 # Dependencies
-pkg_check_modules(GTK REQUIRED gtk+-2.0)
-pkg_check_modules(X11 REQUIRED x11)
 pkg_check_modules(GEIS REQUIRED libutouch-geis)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
@@ -50,6 +48,7 @@ target_link_libraries(uqlauncher
     ${X11_LDFLAGS}
     ${GEIS_LDFLAGS}
     ${QTGCONF_LDFLAGS}
+    ${DCONFQT_LDFLAGS}
     unity-2d-private
     )
 
@@ -58,14 +57,14 @@ target_link_libraries(unity-2d-launcher
 
 # Install
 install(TARGETS unity-2d-launcher
-    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
 install(FILES unity-2d-launcher.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
-    DESTINATION share/dbus-1/services
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
     )
 

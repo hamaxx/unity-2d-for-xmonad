@@ -1,0 +1,110 @@
+# Uyghur translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-20 11:40+0000\n"
+"Last-Translator: Gheyret T.Kenji <Unknown>\n"
+"Language-Team: Uyghur <ug@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "يەنە بىر نەتىجىنى كۆرۈش"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "تېخىمۇ كوپ %1 نەتىجىنى كۆرۈش"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "ئازراق نەتىجىنى كۆرۈش"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "ۋاسىتە پروگراممىلىرى"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "ئىنتېرنېت پروگراممىلىرى"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "تېخىمۇ كوپ پروگراممىلار"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "ھۆججەتلەرنى تېپىش"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "توربەتلىرىنى كۆرۈش"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "سۈرەتلەرنى كۆرۈش"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "ئېلخەت تەكشۈرۈش"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "مۇزىكا ئاڭلاش"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "تېزلەتمىلەر"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "ئىنىچكە ئىزدەش"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "تىپى"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "قاڭقىت"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "ئەخلەتخانا"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "ئەخلەت ساندۇقىدا %n دانە نەرسە بار"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "ئەخلەتخانىنى تازىلا"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "خىزمەت رايونى"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "ئىجراچىدا تۇرسۇن"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "ئىجراچىدىن چىقىرىۋېتىش"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "چېكىن"

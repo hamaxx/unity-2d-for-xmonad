@@ -22,13 +22,12 @@
 // Local
 #include <config.h>
 #include <panelmanager.h>
+#include <panelstyle.h>
 
 // Unity
 #include <gnomesessionclient.h>
 #include <unity2ddebug.h>
 #include <unity2dapplication.h>
-#include <unity2dstyle.h>
-#include <unity2dtr.h>
 
 // Qt
 #include <QAbstractFileEngineHandler>
@@ -52,29 +51,15 @@ public:
 int main(int argc, char** argv)
 {
     ThemeEngineHandler handler;
-
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where black rectangular artifacts were appearing randomly:
-
-       https://bugs.launchpad.net/unity-2d/+bug/734143
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
+    Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication app(argc, argv);
-    QApplication::setStyle(new Unity2dStyle);
+    app.setApplicationName("Unity 2D Panel");
+
+    // Instantiate a PanelStyle so that it configures QApplication
+    PanelStyle::instance();
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-panel.desktop");
     client.connectToSessionManager();
-
-    /* Configure translations */
-    Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
     PanelManager panels;
 

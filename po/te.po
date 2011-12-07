@@ -1,0 +1,111 @@
+# Telugu translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-21 03:09+0000\n"
+"Last-Translator: Arjuna Rao Chavala <arjunaraoc@gmail.com>\n"
+"Language-Team: Telugu <te@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "ఇంకొక ఫలితం చూడు"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "ఇంకా  %1  ఫలితాలు చూడు"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "తక్కువ ఫలితాలు చూడు"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "మాధ్యమ అనువర్తనాలు"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "అంతర్జాల అనువర్తనాలు"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "మరిన్ని అనువర్తనాలు"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "ఫైళ్లు కనుగొను"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "వెబ్ లో విహరించు"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "ఫొటోలు చూడు"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "ఈమెయిల్ గమనించు"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "సంగీతం విను"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "దగ్గరిదారులు"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "అన్వేషణ సున్నితం చేయు"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "రకం"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "తోసివేయి"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "చెత్తబుట్ట"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "చెత్తబుట్టలో %n అంశం"
+msgstr[1] "చెత్తబుట్టలో %n అంశాలు"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "చెత్తబుట్టని  ఖాళీచేయి"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "కార్యక్షేత్రాలు"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "లాంచర్ లో వుంచు"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "లాంచర్ నుండి తొలగించు"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "నిష్క్రమించు"

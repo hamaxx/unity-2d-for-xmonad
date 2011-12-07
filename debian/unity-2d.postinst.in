@@ -1,0 +1,44 @@
+#!/bin/sh
+set -e
+
+signal_daemons()
+{
+    # Tell all running daemons to reload their databases
+    pkill -HUP -x gconfd-2 >/dev/null 2>&1 || true
+}
+
+case "$1" in
+  configure|upgrade)
+    if which update-gconf-defaults >/dev/null 2>&1 ; then
+        mkdir -p /var/lib/gconf/ubuntu-2d.mandatory
+        mkdir -p /var/lib/gconf/ubuntu-2d.default
+    fi
+  ;;
+  triggered)
+    for trigger in $2; do
+      case $trigger in
+        @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory)
+          update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory \
+          --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
+        ;;
+        @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default)
+          update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default \
+          --destination /var/lib/gconf/ubuntu-2d.default --no-signal
+        ;;
+      esac
+    done
+    signal_daemons
+    exit 0
+  ;;
+esac
+
+#DEBHELPER#
+
+# Upon installation/upgrade, regenerate all databases, because in this case 
+# there will be no trigger run
+update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/mandatory \
+                      --destination /var/lib/gconf/ubuntu-2d.mandatory --no-signal
+update-gconf-defaults --source @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default \
+                      --destination /var/lib/gconf/ubuntu-2d.default --no-signal
+signal_daemons
+

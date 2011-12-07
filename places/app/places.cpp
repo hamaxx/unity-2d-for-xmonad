@@ -31,9 +31,8 @@
 
 #include <X11/Xlib.h>
 
-#include <gtk/gtk.h>
-
 // unity-2d
+#include <unity2dapplication.h>
 #include <unity2ddebug.h>
 
 #include "dashdeclarativeview.h"
@@ -41,28 +40,18 @@
 
 int main(int argc, char *argv[])
 {
-    /* gtk needs to be inited, otherwise we get an assert failure in gdk */
-    gtk_init(&argc, &argv);
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where some pixmaps become blueish:
-
-       https://bugs.launchpad.net/unity-2d/+bug/689877
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
-    QApplication application(argc, argv);
+    Unity2dApplication::earlySetup(argc, argv);
+    Unity2dApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Dash");
+    application.setQuitOnLastWindowClosed(false);
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     qmlRegisterType<DashDeclarativeView>("Unity2d", 1, 0, "DashDeclarativeView");
     DashDeclarativeView view;
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    view.setAccessibleName("Dash");
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     if (!view.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
@@ -74,13 +63,9 @@ int main(int argc, char *argv[])
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/places/"));
 
-    if (!isRunningInstalled()) {
-        /* Place.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
-
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("dashView", &view);
     view.setSource(QUrl("./dash.qml"));
 
@@ -91,6 +76,5 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    application.setProperty("view", QVariant::fromValue(&view));
     return application.exec();
 }

@@ -23,6 +23,7 @@
 #include <QDesktopWidget>
 #include <QX11Info>
 #include <QDebug>
+#include <QGraphicsObject>
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -39,7 +40,9 @@
 #include <keyboardmodifiersmonitor.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
+#include <keymonitor.h>
 #include <debug_p.h>
+#include <config.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -53,8 +56,7 @@ static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
 static const char* DASH_DBUS_PROPERTY_ACTIVE = "active";
 static const char* DASH_DBUS_METHOD_ACTIVATE_HOME = "activateHome";
 static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
-static const char* APPLICATIONS_PLACE = "/usr/share/unity/places/applications.place";
-static const char* COMMANDS_PLACE_ENTRY = "Runner";
+static const char* COMMANDS_LENS_ID = "commands.lens";
 
 LauncherView::LauncherView(QWidget* parent) :
     Unity2DDeclarativeView(parent),
@@ -67,29 +69,32 @@ LauncherView::LauncherView(QWidget* parent) :
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
 
-    m_enableSuperKey.setKey("/desktop/unity-2d/launcher/super_key_enable");
-    connect(&m_enableSuperKey, SIGNAL(valueChanged()), SLOT(updateSuperKeyMonitoring()));
+    connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
-    /* Alt+F1 gives the keyboard focus to the launcher. */
+    /* Alt+F1 toggle the keyboard focus between laucher and other(previous) application. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(activateWindow()));
+    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
 
-    /* Alt+F2 shows the dash with the commands place entry activated. */
+    /* Alt+F2 shows the dash with the commands lens activated. */
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
-    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsPlace()));
+    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
+
+    /* Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher. */
+    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
+    connect(superS, SIGNAL(pressed()), SLOT(onSuperSPressed()));
 
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
+        hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 }
 
-void
-LauncherView::activateWindow()
+LauncherView::~LauncherView()
 {
-    QDeclarativeView::activateWindow();
 }
 
 void
@@ -110,17 +115,29 @@ void
 LauncherView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
+    KeyMonitor *keyMonitor = KeyMonitor::instance();
+    HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
-    QVariant value = m_enableSuperKey.getValue();
+    QVariant value = launcher2dConfiguration().property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
+        hotkeyMonitor.enableModifiers(Qt::MetaModifier);
         QObject::connect(modifiersMonitor,
                          SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                          this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        /* Ignore Super presses if another key was pressed simultaneously
+           (i.e. a shortcut). https://bugs.launchpad.net/unity-2d/+bug/801073 */
+        QObject::connect(keyMonitor,
+                         SIGNAL(keyPressed()),
+                         this, SLOT(ignoreSuperPress()));
         setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
     } else {
+        hotkeyMonitor.disableModifiers(Qt::MetaModifier);
         QObject::disconnect(modifiersMonitor,
                             SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
                             this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        QObject::disconnect(keyMonitor,
+                            SIGNAL(keyPressed()),
+                            this, SLOT(ignoreSuperPress()));
         m_superKeyHoldTimer.stop();
         m_superKeyPressed = false;
         if (m_superKeyHeld) {
@@ -140,6 +157,7 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
     if (m_superKeyPressed != superKeyPressed) {
         m_superKeyPressed = superKeyPressed;
         if (superKeyPressed) {
+            m_superPressIgnored = false;
             /* If the key is pressed, start up a timer to monitor if it's being held short
                enough to qualify as just a "tap" or as a proper hold */
             m_superKeyHoldTimer.start();
@@ -147,10 +165,12 @@ LauncherView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
             m_superKeyHoldTimer.stop();
 
             /* If the key is released, and was not being held, it means that the user just
-               performed a "tap". Otherwise the user just terminated a hold. */
-            if (!m_superKeyHeld) {
+               performed a "tap". Unless we're told to ignore that tap, that is. */
+            if (!m_superKeyHeld && !m_superPressIgnored) {
                 Q_EMIT superKeyTapped();
-            } else {
+            }
+            /* Otherwise the user just terminated a hold. */
+            else if(m_superKeyHeld){
                 m_superKeyHeld = false;
                 Q_EMIT superKeyHeldChanged(m_superKeyHeld);
             }
@@ -162,11 +182,18 @@ void
 LauncherView::updateSuperKeyHoldState()
 {
     /* If the key was released in the meantime, just do nothing, otherwise
-       consider the key being held. */
-    if (m_superKeyPressed) {
+       consider the key being held, unless we're told to ignore it. */
+    if (m_superKeyPressed && !m_superPressIgnored) {
         m_superKeyHeld = true;
         Q_EMIT superKeyHeldChanged(m_superKeyHeld);
     }
+}
+
+void
+LauncherView::ignoreSuperPress()
+{
+    /* There was a key pressed, ignore current super tap/hold */
+    m_superPressIgnored = true;
 }
 
 void
@@ -175,13 +202,24 @@ LauncherView::forwardNumericHotkey()
     Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey != NULL) {
         /* Shortcuts from 1 to 9 should activate the items with index
-           from 0 to 8. Shortcut for 0 should activate item with index 9.
+           from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
+           Shortcut for 0 should activate item with index 10.
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
         Qt::Key key = hotkey->key();
-        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
-            int index = (key - Qt::Key_0 + 9) % 10;
-            Q_EMIT keyboardShortcutPressed(index);
+        if (key >= Qt::Key_1 && key <= Qt::Key_9) {
+            int index = key - Qt::Key_0;
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(index);
+            } else {
+                Q_EMIT activateShortcutPressed(index);
+            }
+        } else if (key == Qt::Key_0) {
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(10);
+            } else {
+                Q_EMIT activateShortcutPressed(10);
+            }
         }
     }
 }
@@ -228,62 +266,31 @@ LauncherView::toggleDash()
     }
 }
 
-/* Calculates both the background color and the glow color of a launcher tile
-   based on the colors in the specified icon (using the same algorithm as Unity).
-   The values are returned as list where the first item is the background color
-   and the second one is the glow color.
-*/
-QList<QVariant>
-LauncherView::getColorsFromIcon(QUrl source, QSize size) const
+void
+LauncherView::showCommandsLens()
 {
-    QList<QVariant> colors;
+    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+    dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
+}
 
-    // FIXME: we should find a way to avoid reloading the icon
-    QImage icon = engine()->imageProvider("icons")->requestImage(source.path().mid(1), &size, size);
-    if (icon.width() == 0 || icon.height() == 0) {
-        UQ_WARNING << "Unable to load icon in getColorsFromIcon from" << source;
-        return colors;
-    }
-
-    long int rtotal = 0, gtotal = 0, btotal = 0;
-    float total = 0.0f;
-
-    for (int y = 0; y < icon.height(); ++y) {
-        for (int x = 0; x < icon.width(); ++x) {
-            QColor color = QColor::fromRgba(icon.pixel(x, y));
-
-            float saturation = (qMax (color.red(), qMax (color.green(), color.blue())) -
-                                qMin (color.red(), qMin (color.green(), color.blue()))) / 255.0f;
-            float relevance = .1 + .9 * (color.alpha() / 255.0f) * saturation;
-
-            rtotal += (unsigned char) (color.red() * relevance);
-            gtotal += (unsigned char) (color.green() * relevance);
-            btotal += (unsigned char) (color.blue() * relevance);
-
-            total += relevance * 255;
-        }
-    }
-
-    QColor hsv = QColor::fromRgbF(rtotal / total, gtotal / total, btotal / total).toHsv();
-
-    /* Background color is the base color with 0.90f HSV value */
-    hsv.setHsvF(hsv.hueF(),
-                (hsv.saturationF() > .15f) ? 0.65f : hsv.saturationF(),
-                0.90f);
-    colors.append(QVariant::fromValue(hsv.toRgb()));
-
-    /* Glow color is the base color with 1.0f HSV value */
-    hsv.setHsvF(hsv.hueF(), hsv.saturationF(), 1.0f);
-    colors.append(QVariant::fromValue(hsv.toRgb()));
-
-    return colors;
+/* BUGFIX:881458 */
+void
+LauncherView::onSuperSPressed()
+{
+    QGraphicsObject* launcher = rootObject();
+    QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
 
 void
-LauncherView::showCommandsPlace()
+LauncherView::onAltF1Pressed()
 {
-    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    dashInterface.asyncCall("activatePlaceEntry",
-                            APPLICATIONS_PLACE, COMMANDS_PLACE_ENTRY, 0);
-}
+    QGraphicsObject* launcher = rootObject();
 
+    if (hasFocus()) {
+        QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
+        forceDeactivateWindow();
+    } else {
+        forceActivateWindow();
+        QMetaObject::invokeMethod(launcher, "focusBFB", Qt::AutoConnection);
+    }
+}

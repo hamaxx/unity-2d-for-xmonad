@@ -18,50 +18,54 @@
 
 import QtQuick 1.0
 
-Button {
+AbstractButton {
+    id: button
+
     property alias icon: icon.source
     property alias label: label.text
     property alias iconSourceSize: icon.sourceSize
 
+    Accessible.name: label.text
+
     width: 160
     height: 172
 
-    Item {
-        anchors.right: parent.right
-        anchors.left: parent.left
+    ButtonBackground {
+        anchors.fill: icon
+        anchors.margins: -5
+        state: button.state
+    }
+
+    Image {
+        id: icon
+
+        width: sourceSize.width
+        height: sourceSize.height
+
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.bottom: label.bottom
-        anchors.bottomMargin: 30
+        anchors.topMargin: 5
+        fillMode: Image.PreserveAspectFit
 
-        Image {
-            id: icon
-
-            width: sourceSize.width
-            height: sourceSize.height
-
-            anchors.centerIn: parent
-            fillMode: Image.PreserveAspectFit
-
-            asynchronous: true
-            opacity: status == Image.Ready ? 1 : 0
-            Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
-        }
+        asynchronous: true
+        opacity: status == Image.Ready ? 1 : 0
+        Behavior on opacity {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
     }
 
     TextMultiLine {
         id: label
 
-        color: parent.state == "pressed" ? "#444444" : "#ffffff"
+        color: "#ffffff"
+        state: ( parent.state == "selected" || parent.state == "hovered" ) ? "expanded" : ""
         horizontalAlignment: Text.AlignHCenter
-        anchors.bottom: parent.bottom
+        anchors.top: icon.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottomMargin: 3
+        anchors.topMargin: 8
         anchors.rightMargin: 5
         anchors.leftMargin: 7
         height: 40
-        font.underline: parent.activeFocus
         font.bold: true
-        font.pixelSize: 16
+        fontSize: "large"
     }
 }

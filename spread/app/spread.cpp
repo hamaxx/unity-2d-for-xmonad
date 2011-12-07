@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gtk/gtk.h>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDeclarativeEngine>
@@ -28,35 +27,21 @@
 #include "spreadcontrol.h"
 #include "launcherclient.h"
 
-#include <unity2ddebug.h>
+#include <unity2dapplication.h>
 
 #include "config.h"
 
 int main(int argc, char *argv[])
 {
-    /* Unity2d plugin uses GTK APIs to retrieve theme icons
-       (gtk_icon_theme_get_default) and requires a call to gtk_init */
-    gtk_init(&argc, &argv);
-
-    Unity2dDebug::installHandlers();
-
-    /* When the environment variable QT_GRAPHICSSYSTEM is not set,
-       force graphics system to 'raster' instead of the default 'native'
-       which on X11 is 'XRender'.
-       'XRender' defaults to using a TrueColor visual. We do _not_ mimick that
-       behaviour with 'raster' by calling QApplication::setColorSpec because
-       of a bug where some pixmaps become blueish:
-
-       https://bugs.launchpad.net/unity-2d/+bug/689877
-    */
-    if(getenv("QT_GRAPHICSSYSTEM") == 0) {
-        QApplication::setGraphicsSystem("raster");
-    }
-    QApplication application(argc, argv);
+    Unity2dApplication::earlySetup(argc, argv);
+    Unity2dApplication application(argc, argv);
+    application.setApplicationName("Unity 2D Workspace Switcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -67,11 +52,6 @@ int main(int argc, char *argv[])
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
-    if (!isRunningInstalled()) {
-        /* Spread.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
-
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
               instantiated on the QML side */
@@ -80,10 +60,9 @@ int main(int argc, char *argv[])
     control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(setIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
 
-    view.rootContext()->setContextProperty("launcherMaximumWidth", LauncherClient::MaximumWidth);
-
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Workspaces.qml"));
 

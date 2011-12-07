@@ -1,10 +1,11 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010 Canonical Ltd.
+ * Copyright 2011 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ * - Marco Trevisan (Treviño) <3v1n0@ubuntu.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,38 +24,28 @@
 #define INDICATORAPPLET_H
 
 // Local
-#include <applet.h>
+#include <panelapplet.h>
 
-// Qt
-#include <QDBusInterface>
-#include <QMenuBar>
+// libunity-core
+#include <UnityCore/Indicator.h>
+#include "indicatorswidget.h"
 
-class QX11EmbedContainer;
+class IndicatorsManager;
 
-struct _IndicatorPlugin;
-
-class IndicatorApplet : public Unity2d::Applet
+class IndicatorApplet : public Unity2d::PanelApplet, public sigc::trackable
 {
 Q_OBJECT
 public:
-    IndicatorApplet();
+    IndicatorApplet(Unity2dPanel* panel);
 
-private Q_SLOTS:
-    void loadIndicators();
-    void slotActionAdded(QAction*);
-    void slotActionRemoved(QAction*);
-    void createGtkIndicator();
-    void adjustGtkIndicatorSize();
+    bool eventFilter(QObject*, QEvent*);
 
 private:
     Q_DISABLE_COPY(IndicatorApplet)
-
-    QDBusInterface* m_watcher;
-    QMenuBar* m_menuBar;
-    QX11EmbedContainer* m_container;
-    struct _IndicatorPlugin* m_gtkIndicator;
-
-    void setupUi();
+    IndicatorsManager* m_indicatorsManager;
+    IndicatorsWidget*  m_indicatorsWidget;
+    void onObjectAdded(unity::indicator::Indicator::Ptr const&);
+    void onObjectRemoved(unity::indicator::Indicator::Ptr const&);
 };
 
 #endif /* INDICATORAPPLET_H */

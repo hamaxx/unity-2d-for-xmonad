@@ -4,10 +4,11 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+# we dont want to convert images to 8bit.
+# Ref.: https://bugs.launchpad.net/unity-2d/+bug/809205
+export NO_PNG_PKG_MANGLE=1
+
 override_dh_install:
-	find debian/tmp/usr/lib -name \*.*a -exec rm {} \;
-	rm debian/tmp/usr/lib/libunity-2d-private.so
-	rm -r debian/tmp/usr/include/unity-2d-private
 	dh_install --fail-missing
 
 override_dh_auto_test:

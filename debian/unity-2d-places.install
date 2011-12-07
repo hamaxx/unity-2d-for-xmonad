@@ -1,5 +1,0 @@
-usr/bin/unity-2d-places
-usr/share/applications/unity-2d-places.desktop
-usr/share/dbus-1/services/unity-2d-places.service
-usr/share/unity-2d/places/*.qml
-usr/share/unity-2d/places/artwork

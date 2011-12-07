@@ -25,6 +25,8 @@
 
 #include <unity2ddeclarativeview.h>
 
+class ScreenInfo;
+
 class SpreadView : public Unity2DDeclarativeView
 {
     Q_OBJECT
@@ -36,9 +38,6 @@ public Q_SLOTS:
     /* FIXME: copied from places/app/dashdeclarativeview.h */
     void fitToAvailableSpace(int screen);
 
-    /* FIXME: copied from places/app/dashdeclarativeview.h */
-    void forceActivateWindow();
-
 protected:
     virtual void focusInEvent( QFocusEvent * event );
     virtual void focusOutEvent( QFocusEvent * event );
@@ -49,6 +48,9 @@ protected:
 Q_SIGNALS:
     void outsideClick();
     void visibleChanged(bool visible);
+
+private:
+    ScreenInfo* m_screenInfo;
 };
 
 #endif // SPREADVIEW_H

@@ -38,7 +38,7 @@ macro(create_translation_targets _potFile)
         add_dependencies(msgmerge msgmerge-${_lang})
 
         # Install .gmo
-        install(FILES ${_gmoFile} DESTINATION share/locale/${_lang}/LC_MESSAGES RENAME ${_potBasename}.mo)
+        install(FILES ${_gmoFile} DESTINATION ${CMAKE_INSTALL_DATADIR}/locale/${_lang}/LC_MESSAGES RENAME ${_potBasename}.mo)
     endforeach(_currentPoFile)
 
     # Create the msgfmt target, building all .gmo files

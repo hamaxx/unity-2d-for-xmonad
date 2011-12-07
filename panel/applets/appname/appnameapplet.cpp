@@ -23,12 +23,20 @@
 #include "appnameapplet.h"
 
 // Local
+#include "croppedlabel.h"
 #include "menubarwidget.h"
+#include "panelstyle.h"
+#include "unity2dpanel.h"
 #include "windowhelper.h"
 
 // Unity-2d
 #include <debug_p.h>
 #include <keyboardmodifiersmonitor.h>
+#include <launcherclient.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
+#include <indicatorentrywidget.h>
+#include <unity2dtr.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -36,35 +44,42 @@
 
 // Qt
 #include <QAbstractButton>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLinearGradient>
 #include <QMenuBar>
 #include <QPainter>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QMouseEvent>
+#include <QPoint>
 
-static const char* METACITY_DIR = "/usr/share/themes/Ambiance/metacity-1";
-
-static const int WINDOW_BUTTONS_RIGHT_MARGIN = 4;
-
-static const int APPNAME_LABEL_LEFT_MARGIN = 12;
-
-namespace Unity2d
-{
+static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 class WindowButton : public QAbstractButton
 {
 public:
-    WindowButton(const QString& prefix, QWidget* parent = 0)
+    WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_prefix(prefix)
-    , m_normalPix(loadPix("normal"))
-    , m_hoverPix(loadPix("prelight"))
-    , m_downPix(loadPix("pressed"))
+    , m_initialized(false)
     {
-        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        setButtonType(buttonType);
+        if (buttonType == PanelStyle::MinimizeWindowButton) {
+            setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+        } else {
+            setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        }
         setAttribute(Qt::WA_Hover);
+        m_initialized = true;
+    }
+
+    void setButtonType(const PanelStyle::WindowButtonType& buttonType)
+    {
+        if (m_initialized && m_buttonType == buttonType) return;
+
+        m_buttonType = buttonType;
+        loadPixmaps();
+        update();
     }
 
     QSize minimumSizeHint() const
@@ -73,50 +88,51 @@ public:
     }
 
 protected:
+    bool event(QEvent* ev)
+    {
+        if (ev->type() == QEvent::PaletteChange) {
+            loadPixmaps();
+        }
+        return QAbstractButton::event(ev);
+    }
+
     void paintEvent(QPaintEvent*)
     {
         QPainter painter(this);
         QPixmap pix;
-        if (isDown()) {
-            pix = m_downPix;
-        } else if (underMouse()) {
-            pix = m_hoverPix;
+        if (isEnabled()) {
+            if (isDown()) {
+                pix = m_downPix;
+            } else if (underMouse()) {
+                pix = m_hoverPix;
+            } else {
+                pix = m_normalPix;
+            }
         } else {
             pix = m_normalPix;
         }
-        painter.drawPixmap((width() - pix.width()) / 2, (height() - pix.height()) / 2, pix);
+        int posX;
+        if (m_buttonType == PanelStyle::CloseWindowButton) {
+            posX = width() - pix.width();
+        } else {
+            posX = 0;
+        }
+        painter.drawPixmap(posX, (height() - pix.height()) / 2, pix);
     }
 
 private:
-    QString m_prefix;
+    PanelStyle::WindowButtonType m_buttonType;
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
+    bool m_initialized;
 
-    QPixmap loadPix(const QString& name)
+    void loadPixmaps()
     {
-        QString path = QString("%1/%2_focused_%3.png")
-            .arg(METACITY_DIR)
-            .arg(m_prefix)
-            .arg(name);
-        return QPixmap(path);
-    }
-};
-
-/**
- * This label makes sure minimumSizeHint() is not set. This ensures the applet
- * does not get wider if a window title is very long
- */
-class CroppedLabel : public QLabel
-{
-public:
-    CroppedLabel(QWidget* parent = 0)
-    : QLabel(parent)
-    {}
-
-    QSize minimumSizeHint() const
-    {
-        return QWidget::minimumSizeHint();
+        PanelStyle* style = PanelStyle::instance();
+        m_normalPix = style->windowButtonPixmap(m_buttonType, PanelStyle::NormalState);
+        m_hoverPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PrelightState);
+        m_downPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PressedState);
     }
 };
 
@@ -130,6 +146,12 @@ struct AppNameAppletPrivate
     QLabel* m_label;
     WindowHelper* m_windowHelper;
     MenuBarWidget* m_menuBarWidget;
+    QPoint m_dragStartPosition;
+    bool m_dragInProgress;
+
+    AppNameAppletPrivate()
+    : m_dragInProgress(false)
+    {}
 
     void setupLabel()
     {
@@ -137,7 +159,11 @@ struct AppNameAppletPrivate
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         m_label->setTextFormat(Qt::PlainText);
         // Align left of label with left of menubar
-        m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
+        if (QApplication::isLeftToRight()) {
+            m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
+        } else {
+            m_label->setContentsMargins(0, 0, APPNAME_LABEL_LEFT_MARGIN, 0);
+        }
         QFont font = m_label->font();
         font.setBold(true);
         m_label->setFont(font);
@@ -148,17 +174,18 @@ struct AppNameAppletPrivate
         m_windowButtonWidget = new QWidget;
         m_windowButtonWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         QHBoxLayout* layout = new QHBoxLayout(m_windowButtonWidget);
-        layout->setContentsMargins(0, 0, WINDOW_BUTTONS_RIGHT_MARGIN, 0);
+        layout->setMargin(0);
         layout->setSpacing(0);
-        m_closeButton = new WindowButton("close");
-        m_minimizeButton = new WindowButton("minimize");
-        m_maximizeButton = new WindowButton("unmaximize");
+        m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
+        m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
+        m_maximizeButton = new WindowButton(PanelStyle::UnmaximizeWindowButton);
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
+        m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
-        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
+        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(toggleMaximize()));
     }
 
     void setupWindowHelper()
@@ -170,10 +197,10 @@ struct AppNameAppletPrivate
             q, SLOT(updateWidgets()));
     }
 
-    void setupMenuBarWidget()
+    void setupMenuBarWidget(IndicatorsManager* manager)
     {
-        m_menuBarWidget = new MenuBarWidget(0 /* Window menu */);
-        QObject::connect(m_menuBarWidget, SIGNAL(menuBarClosed()),
+        m_menuBarWidget = new MenuBarWidget(manager);
+        QObject::connect(m_menuBarWidget, SIGNAL(isOpenedChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_menuBarWidget, SIGNAL(isEmptyChanged()),
             q, SLOT(updateWidgets()));
@@ -186,29 +213,29 @@ struct AppNameAppletPrivate
     }
 };
 
-AppNameApplet::AppNameApplet()
-: d(new AppNameAppletPrivate)
+AppNameApplet::AppNameApplet(Unity2dPanel* panel)
+: Unity2d::PanelApplet(panel)
+, d(new AppNameAppletPrivate)
 {
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
 
-    QPalette palette;
-    palette.setColor(QPalette::WindowText, Qt::white);
-    palette.setColor(QPalette::ButtonText, Qt::white);
-    setPalette(palette);
-
     d->setupWindowHelper();
     d->setupLabel();
     d->setupWindowButtonWidget();
-    d->setupMenuBarWidget();
+    d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
-    layout->addWidget(d->m_windowButtonWidget, 0, Qt::AlignLeft);
+    layout->addWidget(d->m_windowButtonWidget);
     layout->addWidget(d->m_label);
     layout->addWidget(d->m_menuBarWidget);
+
+    if (panel != NULL) {
+        panel->installEventFilter(this);
+    }
 
     updateWidgets();
 }
@@ -225,39 +252,60 @@ void AppNameApplet::updateWidgets()
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
     bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
-    bool showMenu = (!d->m_menuBarWidget->isEmpty() && isUserVisibleApp && isOnSameScreen)
-        && (rect().contains(mapFromGlobal(QCursor::pos()))
+    bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
+    bool isOpened = isOnSameScreen &&
+        (isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool dashCanResize = d->m_windowHelper->dashCanResize();
+    bool dashIsVisible = d->m_windowHelper->dashIsVisible();
+    bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
+    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showDesktopLabel = !app;
 
-    d->m_windowButtonWidget->setVisible(isOnSameScreen && isMaximized);
+    d->m_windowButtonWidget->setVisible(showWindowButtons);
+    d->m_maximizeButton->setButtonType(isMaximized ?
+                                       PanelStyle::UnmaximizeWindowButton :
+                                       PanelStyle::MaximizeWindowButton);
+    /* disable the minimize button for the dash */
+    d->m_minimizeButton->setEnabled(!dashIsVisible);
+    /* and the maximize button, if the dash is not resizeable */
+    d->m_maximizeButton->setEnabled(!dashIsVisible || dashCanResize);
 
-    d->m_label->setVisible(showLabel);
-    if (showLabel) {
-        // Define text
-        QString text;
-        if (app) {
-            if (isMaximized) {
-                // When maximized, show window title
-                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                if (bamfWindow) {
-                    text = bamfWindow->name();
+    if (showAppLabel || showDesktopLabel || dashIsVisible) {
+        d->m_label->setVisible(true);
+        if (showAppLabel) {
+            // Define text
+            QString text;
+            if (app) {
+                if (isMaximized) {
+                    // When maximized, show window title
+                    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                    if (bamfWindow) {
+                        text = bamfWindow->name();
+                    }
+                } else {
+                    // When not maximized, show application name
+                    text = app->name();
                 }
-            } else {
-                // When not maximized, show application name
-                text = app->name();
             }
+            d->m_label->setText(text);
+        } else if (showDesktopLabel) {
+            d->m_label->setText(u2dTr("Desktop", "nautilus"));
+        } else {
+            d->m_label->setText("");
         }
-        d->m_label->setText(text);
 
-        // Define width
+        // Define label width
         if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(d->m_windowButtonWidget->sizeHint().width());
+            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }
+    } else {
+        d->m_label->setVisible(false);
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
@@ -271,6 +319,61 @@ void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
 
-} // namespace
+void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
+    d->m_windowHelper->unmaximize();
+}
+
+void AppNameApplet::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        d->m_dragStartPosition = event->pos();
+        d->m_dragInProgress = true;
+    } else {
+        Unity2d::PanelApplet::mousePressEvent(event);
+    }
+}
+
+void AppNameApplet::mouseReleaseEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && event->button() == Qt::LeftButton) {
+        d->m_dragInProgress = false;
+    } else {
+        Unity2d::PanelApplet::mouseReleaseEvent(event);
+    }
+}
+
+void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
+    if (d->m_dragInProgress && (event->buttons() & Qt::LeftButton)) {
+        if ((event->pos() - d->m_dragStartPosition).manhattanLength()
+                >= QApplication::startDragDistance()) {
+            d->m_dragInProgress = false;
+            d->m_windowHelper->drag(d->m_dragStartPosition);
+        }
+    } else {
+        Unity2d::PanelApplet::mouseMoveEvent(event);
+    }
+}
+
+bool AppNameApplet::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == Unity2dPanel::SHOW_FIRST_MENU_EVENT) {
+        BamfApplication* app = BamfMatcher::get_default().active_application();
+        bool isActiveAppVisible = app ? app->user_visible() : false;
+        if (isActiveAppVisible) {
+            d->m_menuBarWidget->setOpened(true);
+
+            QList<IndicatorEntryWidget*> list = d->m_menuBarWidget->entries();
+            if (!list.isEmpty()) {
+                IndicatorEntryWidget* el = list.first();
+                if (el != NULL) {
+                    el->showMenu(Qt::NoButton);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return QWidget::eventFilter(watched, event);
+    }
+}
 
 #include "appnameapplet.moc"

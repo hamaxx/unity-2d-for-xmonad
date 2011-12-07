@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 
 /* This component represents a single "tile" in the launcher and the surrounding
@@ -48,12 +48,14 @@ import Unity2d 1.0
 DropItem {
     id: item
 
+    Accessible.role: Accessible.PushButton
+
     anchors.horizontalCenter: parent.horizontalCenter
 
-    property int padding
-    height: tileSize + padding
+    height: selectionOutlineSize
 
     property int tileSize
+    property int selectionOutlineSize
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation
@@ -93,6 +95,10 @@ DropItem {
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
 
+    function isRightToLeft() {
+        return Qt.application.layoutDirection == Qt.RightToLeft
+    }
+
     signal clicked(variant mouse)
     signal entered
     signal exited
@@ -100,11 +106,13 @@ DropItem {
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem
+        LayoutMirroring.enabled: isRightToLeft()
+        LayoutMirroring.childrenInherit: true
         parent: list
         width: item.width
         height: item.height
         x: item.x
-        y: -ListView.view.contentY + item.y
+        y: -item.ListView.view.contentY + item.y
         /* The item is above the list's contentItem.
            Top and bottom gradients, ListViewDragAndDrop and autoscroll areas
            are above the item */
@@ -124,7 +132,8 @@ DropItem {
            the active one */
         Image {
             anchors.right: parent.right
-            y: item.height - item.tileSize / 2 - height / 2
+            y: item.height - item.selectionOutlineSize / 2 - height / 2
+            mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
                   .arg("artwork/launcher_arrow_rtl.png")
@@ -148,7 +157,8 @@ DropItem {
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
+                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
+                mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
                         .arg(pipSource).arg("lightgrey").arg(1.0)
@@ -173,8 +183,7 @@ DropItem {
             id: tile
             width: item.tileSize
             height: item.tileSize
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.centerIn: parent
 
             /* This is the image providing the background image. The
                color blended with this image is obtained from the color of the icon when it's
@@ -243,11 +252,12 @@ DropItem {
                 onWidthChanged: updateColors()
                 onHeightChanged: updateColors()
                 onSourceChanged: updateColors()
+                onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
 
                 function updateColors() {
                     if (!item.backgroundFromIcon) return;
 
-                    var colors = launcherView.getColorsFromIcon(icon.source, icon.sourceSize)
+                    var colors = iconUtilities.getColorsFromIcon(icon.source, icon.sourceSize)
                     if (colors && colors.length > 0) tileBackground.color = colors[0]
                 }
             }
@@ -399,8 +409,8 @@ DropItem {
                      /* do not animate during insertion/removal */
                      && (looseItem.scale == 1)
                      /* do not animate while flicking the list */
-                     && !ListView.view.moving
-                     && !ListView.view.autoScrolling
+                     && !item.ListView.view.moving
+                     && !item.ListView.view.autoScrolling
             NumberAnimation {
                 duration: 250
                 easing.type: Easing.OutBack

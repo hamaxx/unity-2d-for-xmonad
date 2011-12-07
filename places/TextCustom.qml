@@ -17,10 +17,12 @@
  */
 
 import QtQuick 1.0
+import "fontUtils.js" as FontUtils
 
 /* Custom Text factorising the font style. */
 Text {
     color: "#ffffff"
 //    font.family: "UbuntuBeta"
-//    font.pointSize: 10
+    property string fontSize: "medium"
+    font.pixelSize: FontUtils.fontSizeToPixels(fontSize)
 }

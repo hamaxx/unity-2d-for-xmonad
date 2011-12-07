@@ -31,6 +31,10 @@
 
 // Qt
 #include <QEvent>
+#include <QX11Info>
+
+// Others
+#include <X11/Xutil.h>
 
 namespace SystemTray
 {
@@ -46,12 +50,42 @@ FdoTask::FdoTask(WId id, QObject* parent)
 FdoTask::~FdoTask()
 {
     taskDeleted(m_id);
-    m_widget->deleteLater();
+    if (m_widget != NULL) {
+        m_widget->deleteLater();
+    }
 }
 
 void FdoTask::createWidget()
 {
     QMetaObject::invokeMethod(this, "setupXEmbedDelegate", Qt::QueuedConnection);
+}
+
+static void get_xwindow_wmclass(Window xwindow, QString& wmClass, QString& wmName)
+{
+    Display *xdisplay = QX11Info::display();
+
+    XClassHint hint;
+    hint.res_name = NULL;
+    hint.res_class = NULL;
+
+    XGetClassHint (xdisplay, xwindow, &hint);
+
+    if (hint.res_name) {
+        wmName = QString::fromAscii(hint.res_name);
+        XFree (hint.res_name);
+    }
+
+    if (hint.res_class) {
+        wmClass = QString::fromAscii(hint.res_class);
+        XFree (hint.res_class);
+    }
+}
+
+QString FdoTask::name()
+{
+    QString wmName, wmClass;
+    get_xwindow_wmclass(m_id, wmClass, wmName);
+    return wmClass;
 }
 
 void FdoTask::setupXEmbedDelegate()

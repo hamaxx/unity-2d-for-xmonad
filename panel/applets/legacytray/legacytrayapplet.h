@@ -22,10 +22,8 @@
 #ifndef LEGACYTRAYAPPLET_H
 #define LEGACYTRAYAPPLET_H
 
-// Local
-#include <applet.h>
-
-// Qt
+// Unity-2d
+#include <panelapplet.h>
 
 namespace SystemTray
 {
@@ -33,11 +31,11 @@ class FdoSelectionManager;
 class Task;
 }
 
-class LegacyTrayApplet : public Unity2d::Applet
+class LegacyTrayApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:
-    LegacyTrayApplet();
+    LegacyTrayApplet(Unity2dPanel* panel);
     virtual ~LegacyTrayApplet();
 
 private Q_SLOTS:
@@ -48,6 +46,8 @@ private:
     Q_DISABLE_COPY(LegacyTrayApplet)
     
     SystemTray::FdoSelectionManager* m_selectionManager;
+    QStringList m_whitelist;
+    bool m_whitelistAll;
 };
 
 #endif /* LEGACYTRAYAPPLET_H */

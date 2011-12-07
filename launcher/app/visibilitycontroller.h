@@ -28,14 +28,12 @@
 #include <QObject>
 #include <QScopedPointer>
 
-class GConfItemQmlWrapper;
-
 class AbstractVisibilityBehavior;
 class Unity2dPanel;
 class QDBusServiceWatcher;
 
 /**
- * This class monitors the hide_mode gconf key and set up an instance of
+ * This class monitors the hide_mode dconf key and set up an instance of
  * AbstractVisibilityBehavior depending on its value
  *
  * It also tracks requests for forced visibility: the launcher or another
@@ -64,8 +62,14 @@ public:
     Q_INVOKABLE void beginForceVisible(const QString& service = QString());
     Q_INVOKABLE void endForceVisible(const QString& service = QString());
 
+private:
+    enum UpdateReason {
+        RegularUpdate,
+        UpdateFromForceVisibilityEnded
+    };
+    
 private Q_SLOTS:
-    void update();
+    void update(UpdateReason reason = RegularUpdate);
     void slotServiceUnregistered(const QString&);
     void updatePanelVisibility(bool);
 
@@ -77,7 +81,6 @@ private:
     };
     Q_DISABLE_COPY(VisibilityController);
     Unity2dPanel* m_panel;
-    GConfItemQmlWrapper* m_hideModeKey;
     QDBusServiceWatcher* m_dbusWatcher;
     QScopedPointer<AbstractVisibilityBehavior> m_behavior;
 

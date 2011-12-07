@@ -17,7 +17,7 @@
  */
 
 import QtQuick 1.0
-import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons */
+import Unity2d 1.0
 
 /* Renderers typically use a grid layout to render the model. The RendererGrid
    component provides a standard implementation of such a layout where the
@@ -28,134 +28,71 @@ import Unity2d 1.0 /* Necessary for the ImageProvider serving image://icons */
 Renderer {
     id: renderer
 
-    property variant cellRenderer
-    property bool folded
-    folded: {
-        /* Look for the groupId as a complete word inside the list of expanded groups.
-           Examples of ExpandedGroups hint: "2", "1 3 7", "1 2", etc.
-         */
-        var re = RegExp("\\b%1\\b".arg(renderer.groupId))
-        var expandedGroups = placeEntryModel.entryRendererHints["ExpandedGroups"]
-        return !re.test(expandedGroups)
-    }
+    needHeader: true
+    currentItem: focusPath.currentItem
 
+    property int contentHeight: grid.height + grid.anchors.topMargin + grid.anchors.bottomMargin
+    property alias cellsPerRow: grid.columns
+    property variant cellRenderer
+    property bool folded: true
     property int cellWidth: 158
     property int cellHeight: 76
-    property int horizontalSpacing: 26
-    property int verticalSpacing: 26
 
-    /* Using results.contentHeight produces binding loop warnings and potential
-       rendering issues. We compute the height manually.
-    */
-    /* FIXME: tricking the system by making the delegate of height 0 and with
-              an invisible header is no good: the item in the model still
-              exists and some things such as keyboard selection break.
-    */
-    height: results.count > 0 ? header.height + results_layout.anchors.topMargin + results.totalHeight : 0
-    //Behavior on height {NumberAnimation {duration: 200}}
+    property int minHorizontalSpacing: 26
+    property int minVerticalSpacing: 26
 
-    GroupHeader {
-        id: header
+    property bool centered: true
 
-        visible: results.count > 0
-        availableCount: results.count - results.cellsPerRow
-        folded: parent.folded
+    FocusPath {
+        id: focusPath
+
+        item: grid
+        columns: grid.columns
+    }
+
+    Grid {
+        id: grid
+
+        columns: Math.floor(parent.width/(renderer.cellWidth + renderer.minHorizontalSpacing))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 32
-        icon: parent.iconHint
-        label: parent.displayName
-
-        onClicked: parent.folded = !parent.folded
-    }
-
-    Item {
-        id: results_layout
-
-        anchors.top: header.bottom
-        anchors.topMargin: 22
-        anchors.left: parent.left
+        anchors.bottomMargin: 12
         anchors.leftMargin: 2
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
 
-        CenteredGridView {
+        property int itemHorizontalSpacing: renderer.centered ? Math.floor(renderer.width / columns - renderer.cellWidth) : renderer.minHorizontalSpacing
+        Repeater {
             id: results
 
-            /* FIXME: this is a gross hack compensating for the lack of sections
-               in GridView (see ListView.section).
+            FocusPath.skip: true
 
-               We nest GridViews inside a ListView and add headers manually
-               (GroupHeader). The total height of each Group is computed
-               manually and given back to the ListView. However that size cannot
-               be used by the individual GridViews because it would make them
-               load all of their delegates at once using far too much memory and
-               processing power. Instead we constrain the height of the GridViews
-               and compute their position manually to compensate for the position
-               changes when flicking the ListView.
+            FocusScope {
+                id: cell
 
-               We assume that renderer.parentListView is the ListView we nest our
-               GridView into.
-            */
-            property variant flickable: renderer.parentListView.contentItem
-
-            /* flickable.contentY*0 is equal to 0 but is necessary in order to
-               have the entire expression being evaluated at the right moment.
-            */
-            property int inFlickableY: flickable.contentY*0+parent.mapToItem(flickable, 0, 0).y
-            /* note: testing for flickable.height < 0 is probably useless since it is
-               unlikely flickable.height will ever be negative.
-            */
-            property int compensateY: inFlickableY > 0 || flickable.height < 0 || totalHeight < flickable.height ? 0 : -inFlickableY
-
-            /* Synchronise the position and content's position of the GridView
-               with the current position of flickable's visibleArea */
-            function synchronisePosition() {
-                y = compensateY
-                contentY = compensateY
-            }
-
-            onCompensateYChanged: synchronisePosition()
-            /* Any change in content needs to trigger a synchronisation */
-            onCountChanged: synchronisePosition()
-            onModelChanged: synchronisePosition()
-
-            width: flickable.width
-            height: Math.min(totalHeight, flickable.height)
-
-            /* Only display one line of items when folded */
-            property int displayedCount: folded ? cellsPerRow : count
-            property int totalHeight: results.cellHeight*Math.ceil(displayedCount/cellsPerRow)
-
-            minHorizontalSpacing: renderer.horizontalSpacing
-            minVerticalSpacing: renderer.verticalSpacing
-            delegateWidth: renderer.cellWidth
-            delegateHeight: renderer.cellHeight
-
-            interactive: false
-            clip: true
-
-            delegate: Item {
-
-                width: results.cellWidth
-                height: results.cellHeight
+                width: renderer.cellWidth + grid.itemHorizontalSpacing
+                height: renderer.cellHeight + renderer.minVerticalSpacing
                 /* When hovered the item needs to be on top of every other item
                    in order for its label to not be covered */
-                z: loader.item.state == "selected" ? 1 : 0
+                z: ( loader.item.state == "selected" || loader.item.state == "hovered" ) ? 1 : 0
+
+                FocusPath.index: index
+
+                property string uri: column_0
+                property string iconHint: column_1
+                property string categoryId: column_2 // FIXME: rename to categoryIndex
+                property string mimetype: column_3
+                property string displayName: column_4 // FIXME: rename to name
+                property string comment: column_5
+                property string dndUri: column_6
 
                 Loader {
                     id: loader
-                    property string uri: column_0
-                    property string iconHint: column_1
-                    property string groupId: column_2
-                    property string mimetype: column_3
-                    property string displayName: column_4
-                    property string comment: column_5
 
-                    width: results.delegateWidth
-                    height: results.delegateHeight
+                    focus: true
+                    width: renderer.cellWidth
+                    height: renderer.cellHeight
                     anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
 
                     sourceComponent: cellRenderer
                     onLoaded: {
@@ -164,11 +101,17 @@ Renderer {
                         item.mimetype = mimetype
                         item.displayName = displayName
                         item.comment = comment
+                        item.focus = true
+                        item.dndUri = dndUri
                     }
                 }
             }
 
-            model: renderer.model
+            /* Only display one line of items when folded */
+            model: SortFilterProxyModel {
+                model: renderer.category_model != undefined ? renderer.category_model : null
+                limit: renderer.folded ? grid.columns : -1
+            }
         }
     }
 }

@@ -22,37 +22,40 @@
 #ifndef APPNAMEAPPLET_H
 #define APPNAMEAPPLET_H
 
-// Local
-#include <applet.h>
-
-// Qt
-
 class QEvent;
 
-namespace Unity2d
-{
+class IndicatorsManager;
+
+// Unity-2d
+#include <panelapplet.h>
 
 struct AppNameAppletPrivate;
-class AppNameApplet : public Applet
+class AppNameApplet : public Unity2d::PanelApplet
 {
 Q_OBJECT
 public:
-    AppNameApplet();
+    AppNameApplet(Unity2dPanel* panel);
     ~AppNameApplet();
 
 protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
+    void mouseDoubleClickEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
+    bool eventFilter(QObject*, QEvent*);
 
 private Q_SLOTS:
     void updateWidgets();
+
+Q_SIGNALS:
+    void titleBarDblClicked();
 
 private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
 };
-
-} // namespace
 
 #endif /* APPNAMEAPPLET_H */
 

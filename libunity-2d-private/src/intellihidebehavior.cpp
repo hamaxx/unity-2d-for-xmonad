@@ -13,6 +13,7 @@
 #include "intellihidebehavior.h"
 
 // Local
+#include "unity2dpanel.h"
 
 // libunity-2d
 #include <debug_p.h>
@@ -23,6 +24,7 @@
 #include <QEvent>
 #include <QTimer>
 #include <QWidget>
+#include <QDesktopWidget>
 
 // libwnck
 extern "C" {
@@ -131,7 +133,15 @@ void IntelliHideBehavior::updateVisibility()
     // Compute launcherRect, adjust "left" to the position where the launcher
     // is fully visible.
     QRect launcherRect = m_panel->geometry();
-    launcherRect.moveLeft(0);
+    // FIXME: the following code assumes that the launcher is on the left edge
+    // of the screen
+    if (QApplication::isLeftToRight()) {
+        launcherRect.moveLeft(0);
+    } else {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const QRect screen = desktop->screenGeometry(m_panel);
+        launcherRect.moveRight(screen.right());
+    }
 
     WnckScreen* screen = wnck_screen_get_default();
     WnckWorkspace* workspace = wnck_screen_get_active_workspace(screen);
@@ -202,19 +212,23 @@ bool IntelliHideBehavior::isMouseForcingVisibility() const
 
 void IntelliHideBehavior::hidePanel()
 {
-    m_visible = false;
-    Q_EMIT visibleChanged(m_visible);
-    createEdgeHitDetector();
+    if (m_visible) {
+        m_visible = false;
+        Q_EMIT visibleChanged(m_visible);
+        createEdgeHitDetector();
+    }
 }
 
 void IntelliHideBehavior::showPanel()
 {
-    // Delete the edge hit detector so that it does not prevent mouse events
-    // from reaching the panel
-    delete m_edgeHitDetector;
-    m_edgeHitDetector = 0;
-    m_visible = true;
-    Q_EMIT visibleChanged(m_visible);
+    if (!m_visible) {
+        // Delete the edge hit detector so that it does not prevent mouse events
+        // from reaching the panel
+        delete m_edgeHitDetector;
+        m_edgeHitDetector = 0;
+        m_visible = true;
+        Q_EMIT visibleChanged(m_visible);
+    }
 }
 
 void IntelliHideBehavior::createEdgeHitDetector()
