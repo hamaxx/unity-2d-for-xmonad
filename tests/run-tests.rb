@@ -8,6 +8,11 @@
 # Add ./misc/lib to the list of library locations
 $LOAD_PATH.unshift File.expand_path('./misc/lib')
 
+# The following line includes the complete tdriver environment 
+require 'tdriver'
+include TDriverVerify
+
+# Require unit test framework: This enables execution of test cases and also includes assertions (Test::Unit::Assertions)
 require 'testhelper'
 
 # List of directories in which to search for test cases
