@@ -162,6 +162,7 @@ AbstractButton {
 
                 anchors.left: parent.left
                 anchors.right: parent.right
+                elide: Text.ElideRight
                 anchors.verticalCenter: parent.verticalCenter
                 LayoutMirroring.enabled: false
                 horizontalAlignment: isRightToLeft() ? Text.AlignRight : Text.AlignLeft
