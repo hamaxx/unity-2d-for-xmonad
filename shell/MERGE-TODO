@@ -16,8 +16,9 @@ feature set currently available we need to take care of the following tasks (ord
 * Add proper package transition from unity-2d-launcher+unity-2d-places to unity-2d-shell in debian/rules
 * Put back in support for RTL
 * Add cmd line option to choose which root QML file to load
+* Put back support for struts and enable struts automatically when hide-mode is always visible
+  (the dconf setting was already removed by partially merging revision 804 from trunk)
 * Put back in support for 4-finger slide gesture (in a way that's not tied to the panel)
-  - Put back support for struts
   - Put back support for launcher manualSliding
   - Implement locking in place when the slide goes over 240 units (check in unity-3d what should happen in the various hide modes) 
 * We are doing IPC between components in the same process in various cases. This brings back
