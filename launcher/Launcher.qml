@@ -46,12 +46,17 @@ LauncherDropItem {
         main.positionViewAtBeginning()
     }
 
-    GnomeBackground {
-        Accessible.name: "background"
+    Item {
         anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0.66
-        visible: !screen.isCompositingManagerRunning
+        clip: true
+
+        GnomeBackground {
+            Accessible.name: "background"
+            anchors.fill: parent
+            overlay_color: "black"
+            overlay_alpha: 0.66
+            visible: !screen.isCompositingManagerRunning
+        }
     }
 
     Rectangle {
