@@ -28,6 +28,20 @@
 #include <debug_p.h>
 #include <config.h>
 
+// libwnck
+extern "C" {
+#include <libwnck/libwnck.h>
+}
+
+#define GOBJECT_CALLBACK0(callbackName, slot) \
+static void \
+callbackName(GObject* src, void* dummy1, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
+}
+
+GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
+
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
     m_useOpenGL(false),
@@ -39,6 +53,9 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     } else {
         m_useOpenGL = unity2dConfiguration().property("useOpengl").toBool();
     }
+
+    WnckScreen* screen = wnck_screen_get_default();
+    g_signal_connect(G_OBJECT(screen), "active_workspace_changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 
     setupViewport();
 }
@@ -241,6 +258,11 @@ void Unity2DDeclarativeView::saveActiveWindow()
     if( active_window != this->effectiveWinId()){
         m_last_focused_window = active_window;
     }
+}
+
+void Unity2DDeclarativeView::onActiveWorkspaceChanged() 
+{
+    m_last_focused_window = None;
 }
 
 #include <unity2ddeclarativeview.moc>
