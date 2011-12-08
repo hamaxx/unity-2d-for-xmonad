@@ -33,7 +33,22 @@
 #include <QTimer>
 #include <QWidget>
 
+// libwnck
+extern "C" {
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE
+#include <libwnck/libwnck.h>
+}
+
 static const int AUTOHIDE_TIMEOUT = 1000;
+
+#define GOBJECT_CALLBACK0(callbackName, slot) \
+static void \
+callbackName(GObject* src, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
+}
+
+GOBJECT_CALLBACK0(showingDesktopChangedCB, "onShowingDesktopChanged");
 
 AutoHideBehavior::AutoHideBehavior(QWidget* panel)
 : AbstractVisibilityBehavior(panel)
@@ -45,10 +60,15 @@ AutoHideBehavior::AutoHideBehavior(QWidget* panel)
     connect(m_autohideTimer, SIGNAL(timeout()), SLOT(hidePanel()));
 
     setPanel(panel);
+
+    WnckScreen* screen = wnck_screen_get_default();
+    g_signal_connect(G_OBJECT(screen), "showing_desktop_changed", G_CALLBACK(showingDesktopChangedCB), this);
 }
 
 AutoHideBehavior::~AutoHideBehavior()
 {
+    WnckScreen* screen = wnck_screen_get_default();
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(showingDesktopChangedCB), this);
 }
 
 bool AutoHideBehavior::eventFilter(QObject*, QEvent* event)
@@ -85,6 +105,19 @@ void AutoHideBehavior::showPanel()
     m_visible = true;
     Q_EMIT visibleChanged(m_visible);
 }
+
+void AutoHideBehavior::onShowingDesktopChanged()
+{
+    WnckScreen* screen = wnck_screen_get_default();
+    gboolean isShowingDesktop = wnck_screen_get_showing_desktop(screen);
+    if (isShowingDesktop) {
+        showPanel();
+        m_autohideTimer->start();
+    } else {
+        hidePanel();
+    }
+}
+
 
 void AutoHideBehavior::createEdgeHitDetector()
 {

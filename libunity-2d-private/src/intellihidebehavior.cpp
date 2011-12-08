@@ -117,7 +117,12 @@ void IntelliHideBehavior::updateActiveWindowConnections()
         g_signal_connect(G_OBJECT(window), "workspace-changed", G_CALLBACK(workspaceChangedCB), this);
     }
 
-    updateVisibility();
+    gboolean isShowingDesktop = wnck_screen_get_showing_desktop(screen);
+    if (isShowingDesktop) {
+        showPanel();
+    } else {
+        updateVisibility();
+    }
 }
 
 void IntelliHideBehavior::updateVisibility()
