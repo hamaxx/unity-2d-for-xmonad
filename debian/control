@@ -22,7 +22,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgtk-3-dev,
                libutouch-geis-dev,
                libstartup-notification0-dev,
-               libunity-core-4.0-dev (>= 4.14.2),
+               libunity-core-5.0-dev (>= 4.14.2),
                libnux-1.0-dev (>= 1.8),
                libxi-dev,
 Standards-Version: 3.9.2
