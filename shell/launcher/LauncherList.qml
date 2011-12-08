@@ -22,13 +22,15 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 AutoScrollingListView {
     id: list
 
-    /* The spacing is explicitly set to 0 and compensated for
-       by adding some padding to the items because of
-       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
-    spacing: 0
-    property int itemPadding: 5
+    /* The spacing is explicitly set to -7 in order to compensate
+       the space added by selectionOutline and round_corner_54x54.png. */
+    spacing: -7
 
     property int tileSize: 54
+
+    /* selectionOutline tile size, so AutoScrollingList view can calculate
+       the right height. */
+    property int selectionOutlineSize:  66
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -93,7 +95,7 @@ AutoScrollingListView {
 
         width: list.width
         tileSize: list.tileSize
-        padding: list.itemPadding
+        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
@@ -142,11 +144,8 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            // FIXME: The extra 2 pixels are needed to center the menu arrow with
-            // the center of the tile.
-            item.menu.show(width, declarativeView.globalPosition.y + list.y - list.contentY +
-                                  y + height - tileSize / 2 - 2)
-
+            item.menu.show(width, panel.y + list.y - list.contentY +
+                                  y + height - selectionOutlineSize / 2)
         }
 
         onClicked: {
