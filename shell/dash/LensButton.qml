@@ -75,6 +75,7 @@ AbstractButton {
 
         width: sourceSize.width
         height: sourceSize.height
+        smooth: true
         anchors.bottomMargin: (width-height)/2 /* Correct for rotation */
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
