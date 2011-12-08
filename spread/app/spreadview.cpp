@@ -27,7 +27,6 @@
 
 SpreadView::SpreadView()
 : Unity2DDeclarativeView()
-, m_screenInfo(ScreenInfo::instance())
 {
 }
 
@@ -38,7 +37,7 @@ void SpreadView::fitToAvailableSpace(int screen)
 
     if(screen == current_screen)
     {
-        QRect geometry = m_screenInfo->panelsFreeGeometry();
+        QRect geometry = ScreenInfo::instance()->panelsFreeGeometry();
         setGeometry(geometry);
         setFixedSize(geometry.size());
     }
