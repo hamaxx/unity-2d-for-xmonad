@@ -12,6 +12,7 @@ feature set currently available we need to take care of the following tasks (ord
 
 = Medium =
 
+* Merge review 803 from lp:unity-2d ([launcher] Do not hide the launcher immediately after removing an icon. Fixes: https://bugs.launchpad.net/bugs/884410. Reviewed by Tiago Salem Herrmann.)
 * Add proper package transition from unity-2d-launcher+unity-2d-places to unity-2d-shell in debian/rules
 * Put back in support for RTL
 * Add cmd line option to choose which root QML file to load
