@@ -9,6 +9,8 @@ feature set currently available we need to take care of the following tasks (ord
   bottom-right maximize button we have now.
 * Add back this Launcher feature: when alt+f1 is pressed and launcher already has focus, the shell window should be deactivated
   so the WM will give focus back to whatever window had it before.
+* Put back Super+D to show desktop. Also make sure the behaviour from r.808 from trunk is implemented (display launcher when
+  desktop is showing).
 
 = Medium =
 
