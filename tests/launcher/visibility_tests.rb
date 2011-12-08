@@ -1,3 +1,5 @@
+require '../run-tests.rb' unless $INIT_COMPLETED
+
 context "Launcher Tests" do
   setup do
     # Execute the application 
