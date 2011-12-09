@@ -4,7 +4,7 @@ context "Launcher Tests" do
   setup do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => "/home/gerry/dev/testability-integration/launcher/app/unity-2d-launcher", 
+    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
     				 :arguments => "-testability", 
     				 :sleeptime => 1 )
   end
