@@ -23,6 +23,7 @@ LauncherDropItem {
     id: launcher
 
     Accessible.name: "root"
+    focus: true
 
     function clamp(x, min, max) {
         return Math.max(Math.min(x, max), min)
@@ -46,12 +47,17 @@ LauncherDropItem {
         main.positionViewAtBeginning()
     }
 
-    GnomeBackground {
-        Accessible.name: "background"
+    Item {
         anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0.66
-        visible: !screen.isCompositingManagerRunning
+        clip: true
+
+        GnomeBackground {
+            Accessible.name: "background"
+            anchors.fill: parent
+            overlay_color: "black"
+            overlay_alpha: 0.66
+            visible: !screen.isCompositingManagerRunning
+        }
     }
 
     Rectangle {

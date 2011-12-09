@@ -26,6 +26,7 @@ Image {
     source: "artwork/arrow.png"
     width: sourceSize.width
     height: sourceSize.height
+    smooth: true
     fillMode: Image.PreserveAspectFit
 
     Behavior on rotation {NumberAnimation {duration: 100}}
