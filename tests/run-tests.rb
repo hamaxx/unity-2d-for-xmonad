@@ -20,7 +20,7 @@ require 'testhelper'
 # List of directories in which to search for test cases
 test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
 
-# Only run scan for tests if this script is directory called
+# Only run scan for tests if this script is directly called
 if __FILE__ == $0
     $INIT_COMPLETED = true # Prevent this file being included by test cases
 
