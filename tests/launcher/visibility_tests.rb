@@ -1,6 +1,14 @@
 require '../run-tests.rb' unless $INIT_COMPLETED
 
 context "Launcher Tests" do
+  startup do
+    puts "Startup"
+  end
+  
+  shutdown do
+    puts "Shutdown"
+  end
+
   setup do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
