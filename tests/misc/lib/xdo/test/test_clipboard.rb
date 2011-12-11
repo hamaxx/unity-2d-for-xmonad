@@ -31,7 +31,7 @@ class ClipboardTest < Test::Unit::TestCase
     assert_equal("Clipboard!\nNewline", `#{XDo::XSEL} -b`)
     
     XDo::Clipboard.write("XYZ", :primary, :secondary, :clipboard)
-    assert_equal({primary: "XYZ", secondary: "XYZ", clipboard: "XYZ"}, XDo::Clipboard.read)
+    assert_equal({ :primary => "XYZ", :secondary => "XYZ", :clipboard => "XYZ"}, XDo::Clipboard.read)
   end
   
   def test_append
