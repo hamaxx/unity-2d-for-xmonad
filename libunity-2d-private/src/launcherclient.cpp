@@ -21,6 +21,6 @@
 // Self
 #include "launcherclient.h"
 
-const int LauncherClient::MaximumWidth = 66;
+const int LauncherClient::MaximumWidth = 65;
 
 #include "launcherclient.moc"

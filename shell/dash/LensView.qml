@@ -66,7 +66,7 @@ FocusScope {
 
         focus: true
         anchors.fill: parent
-        anchors.leftMargin: 20
+        anchors.leftMargin: 18
 
         /* The category's delegate is chosen dynamically depending on what
            rendererName is returned by the CategoriesModel.
