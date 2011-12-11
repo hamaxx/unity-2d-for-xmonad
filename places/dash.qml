@@ -246,13 +246,13 @@ Item {
             KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: 11
             anchors.left: parent.left
-            anchors.leftMargin: 16
+            anchors.leftMargin: 10
             anchors.right: filterPane.left
-            anchors.rightMargin: 10
+            anchors.rightMargin: 15
 
-            height: 53
+            height: 42
         }
 
         FilterPane {
@@ -268,9 +268,9 @@ Item {
             anchors.topMargin: search_entry.anchors.topMargin
             anchors.bottom: lensBar.top
             headerHeight: search_entry.height
-            width: 310
+            width: 300
             anchors.right: parent.right
-            anchors.rightMargin: 15
+            anchors.rightMargin: 8
         }
 
         Loader {
@@ -285,7 +285,7 @@ Item {
             KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
-            anchors.topMargin: 2
+            anchors.topMargin: 9
             anchors.bottom: lensBar.top
             anchors.left: parent.left
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left
