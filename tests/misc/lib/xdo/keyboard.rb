@@ -306,7 +306,7 @@ module XDo
         tokens = []
         #We need a binary version of our string as StringScanner isn't able to work 
         #with encodings. 
-        ss = StringScanner.new(str.dup.force_encoding("BINARY")) #String#force_encoding always returns self
+        ss = StringScanner.new(RUBY_VERSION >= '1.9' ? str.dup.force_encoding("BINARY") : str.dup) #String#force_encoding always returns self
         until ss.eos?
           pos = ss.pos
           if ss.scan_until(/\{/)
@@ -328,7 +328,7 @@ module XDo
         tokens.map! do |ary|
           #But first, we have to remedy from that insane forced encoding for StringScanner. 
           #Force every string's encoding back to the original encoding. 
-          ary[1].force_encoding(str.encoding)
+          ary[1].force_encoding(str.encoding) if RUBY_VERSION >= '1.9'
           next([ary]) unless ary[0] == :plain #Extra array since we flatten(1) it afterwards
           tokens2 = []
           ss = StringScanner.new(ary[1])
@@ -339,7 +339,11 @@ module XDo
               #I have to put the string into the StringScanner as UTF-8, but because the StringScanner returns positions for 
               #a BINARY-encoded string I have to get the string, grep the position from the BINARY version and then reforce 
               #it to the correct encoding. 
-              tokens2 << [:plain, ss.string.dup.force_encoding("BINARY")[Range.new(pos, ss.pos - 2)].force_encoding(str.encoding)] unless ss.pos == 1
+              if RUBY_VERSION >= '1.9'
+                tokens2 << [:plain, ss.string.dup.force_encoding("BINARY")[Range.new(pos, ss.pos - 2)].force_encoding(str.encoding)] unless ss.pos == 1
+              else
+                tokens2 << [:plain, ss.string.dup[Range.new(pos, ss.pos - 2)]] unless ss.pos == 1
+              end
               tokens2 << [:special, ss.matched]
               pos = ss.pos
             else
