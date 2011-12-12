@@ -32,7 +32,7 @@ abort("Aborted! Ruby 1.9 not supported, use 1.8") unless RUBY_VERSION < '1.9'
 
 # Add ./misc/lib to the list of library locations - need to calculate absolute path
 require 'pathname'
-$library_path = File.dirname(Pathname.new(File.expand_path(__FILE__)).realpath) + '/misc/lib'
+$library_path = File.expand_path(File.dirname(__FILE__)) + '/misc/lib'
 $LOAD_PATH.unshift $library_path
 
 # If cmake was called, obtain the path to the built binary directory. If not, we test the
