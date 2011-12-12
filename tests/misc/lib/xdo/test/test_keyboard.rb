@@ -42,8 +42,7 @@ class TestKeyboard < Test::Unit::TestCase
     20.times{XDo::Keyboard.char("Shift+Right")}
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT, XDo::Clipboard.read_clipboard \
-                , "Text copied to clipboard (#{TESTTEXT}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT, XDo::Clipboard.read_clipboard)
   end
   
   def test_simulate
@@ -51,8 +50,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT2, XDo::Clipboard.read_clipboard \
-                , "Text copied to clipboard (#{TESTTEXT2}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT2, XDo::Clipboard.read_clipboard)
     
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.delete
@@ -60,8 +58,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT_SPECIAL.gsub("{TAB}", "\t"), XDo::Clipboard.read_clipboard \
-                , "Special Text copied to clipboard (#{TESTTEXT_SPECIAL.gsub("{TAB}", "\t")}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT_SPECIAL.gsub("{TAB}", "\t"), XDo::Clipboard.read_clipboard)
     
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.delete
@@ -69,8 +66,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT_RAW, XDo::Clipboard.read_clipboard \
-                , "Raw Text copied to clipboard (#{TESTTEXT_RAW}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT_RAW, XDo::Clipboard.read_clipboard)
   end
   
   def test_type
@@ -78,8 +74,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT2, XDo::Clipboard.read_clipboard \
-                , "Text copied to clipboard (#{TESTTEXT}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT2, XDo::Clipboard.read_clipboard)
   end
 
   def test_window_id
@@ -93,8 +88,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_a
     XDo::Keyboard.ctrl_c
     sleep 0.2
-    assert_equal(TESTTEXT_SPECIAL.gsub("{TAB}", "\t"), XDo::Clipboard.read_clipboard \
-                , "Text copied to clipboard (#{TESTTEXT_SPECIAL.gsub("{TAB}", "\t")}) does not match typed (#{XDo::Clipboard.read_clipboard})")
+    assert_equal(TESTTEXT_SPECIAL.gsub("{TAB}", "\t"), XDo::Clipboard.read_clipboard)
   end
   
   def test_include
@@ -114,7 +108,7 @@ class TestKeyboard < Test::Unit::TestCase
     XDo::Keyboard.ctrl_c
     sleep 0.2
     clip = XDo::Clipboard.read_clipboard
-    assert_equal("Ein String", clip, "Simulated typed string fails to match (#{XDo::Clipboard.read_clipboard})")
+    assert_equal("Ein String", clip, "Simulated typed string fails to match")
   end
   
 end
