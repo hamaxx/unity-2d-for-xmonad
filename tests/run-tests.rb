@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby1.8
 =begin
 /*
  * This file is part of unity-2d
@@ -26,6 +26,9 @@
 # 
 # Run all tests with
 #   $ ruby run-tests.rb
+
+# Check script being run by Ruby 1.8.x, later versions not supported by TDriver
+abort("Aborted! Ruby 1.9 not supported, use 1.8") unless RUBY_VERSION < '1.9'
 
 # Add ./misc/lib to the list of library locations - need to calculate absolute path
 require 'pathname'
