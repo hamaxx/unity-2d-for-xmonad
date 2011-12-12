@@ -93,10 +93,10 @@ particular format.
 
 You can run individual test suites (one per file) by entering the directory and calling:
 $ cd launcher
-$ ruby visibility-test.rb
+$ ruby autohide_show_tests.rb
 
-Single test cases ("Example test case") can be run with
-$ ruby visibility-test.rb --name "test_Example_test_case"
+Single test cases ("Position with Empty Desktop") can be run with
+$ ruby autohide_shot_tests.rb --name "test_Position_with_Empty_Desktop"
 
 
 Test Suite Syntax
