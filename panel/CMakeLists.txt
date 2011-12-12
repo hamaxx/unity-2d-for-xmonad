@@ -1,7 +1,7 @@
 project(unity-2d-panel)
 
 # Dependencies
-pkg_check_modules(UNITYCORE REQUIRED unity-core-4.0)
+pkg_check_modules(UNITYCORE REQUIRED unity-core-5.0)
 
 # Source
 include_directories(

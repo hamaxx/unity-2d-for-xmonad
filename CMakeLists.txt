@@ -9,8 +9,6 @@ set(UNITY_2D_DIR "${CMAKE_INSTALL_DATADIR}/unity-2d")
 set(UNITY_DIR /usr/share/unity/)
 set(UNITY_2D_DATA_DIR "${CMAKE_SOURCE_DIR}/data")
 
-configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
-
 # Configure debian files
 string(SUBSTRING "${CMAKE_INSTALL_PREFIX}" 1 -1 DEBIAN_INSTALL_PREFIX)
 file(GLOB DEBIAN_FILES debian/*.in)
@@ -43,7 +41,7 @@ pkg_check_modules(GTK REQUIRED gtk+-3.0)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(WNCK REQUIRED libwnck-3.0)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
-pkg_check_modules(NUXCORE REQUIRED nux-core-1.0)
+pkg_check_modules(NUXCORE REQUIRED nux-core-2.0)
 pkg_check_modules(PANGO REQUIRED pango)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
@@ -53,6 +51,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 set (UNITY_2D_SCHEMAS "com.canonical.Unity2d.gschema.xml")
 set (UNITY_2D_GCONF_CONVERT "unity-2d.convert")
 set (GSETTINGS_DIR "${CMAKE_INSTALL_PREFIX}/share/glib-2.0/schemas/")
+set (UNITY_2D_SCHEMA_FILE "${GSETTINGS_DIR}${UNITY_2D_SCHEMAS}")
 set (GCONF_CONVERT_DIR "${CMAKE_INSTALL_PREFIX}/share/GConf/gsettings")
 execute_process (COMMAND ${PKG_CONFIG_EXECUTABLE} gio-2.0 --variable glib_compile_schemas  OUTPUT_VARIABLE GLIB_COMPILE_SCHEMAS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -68,6 +67,8 @@ message (STATUS "GSettings schemas will be installed into ${GSETTINGS_DIR}")
 install (FILES ${UNITY_2D_DATA_DIR}/${UNITY_2D_SCHEMAS} DESTINATION ${GSETTINGS_DIR})
 install (CODE "message (STATUS \"Compiling GSettings schemas\")")
 install (CODE "execute_process (COMMAND ${GLIB_COMPILE_SCHEMAS} ${GSETTINGS_DIR})")
+
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 # Install GConf to GSettings conversion file
 install (FILES ${UNITY_2D_DATA_DIR}/${UNITY_2D_GCONF_CONVERT} DESTINATION ${GCONF_CONVERT_DIR})
