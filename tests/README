@@ -4,36 +4,39 @@ User Acceptance Testing
 
 Outline
 -------
-Repeatedly and reliably reproducing the inputs a user and comparing the outputs to
-known good values is an excellent way to maintain the existing functionality of a 
-piece of software. However manually performing these tests is tiresome and prone to
-error.
+Repeatedly and reliably reproducing the inputs a user and comparing the outputs 
+to known good values is an excellent way to maintain the existing functionality 
+of a piece of software. However manually performing these tests is tiresome and 
+prone to error.
 
-Automation is the key! As we use Qt, we are spoiled with a tool called "Testability"
-which is designed to automate this testing process. We make use of this tool for 
-testing Unity 2D.
+Automation is the key! As we use Qt, we are spoiled with a tool called 
+"Testability" which is designed to automate this testing process. We make use of
+this tool for testing Unity 2D.
 
 
 Testability Introduction
 ------------------------
-Testability is a UX testing framework, whose core feature for us is that it allows 
-inspection of the tree of QObjects in a Qt application to read properties (write to 
-some) and call signals, as well as faking mouse/keyboard/gesture inputs, grabbing 
-visual outputs, and measuring both CPU and graphical performance.
+Testability is a UX testing framework, whose core feature for us is that it 
+allows inspection of the tree of QObjects in a Qt application to read properties
+(write to some) and call signals, as well as faking mouse/keyboard/gesture 
+inputs, grabbing visual outputs, and measuring both CPU and graphical 
+performance.
 
 Testability is comprised of the following parts:
 
 On the System Under Test (SUT)
-- A plugin that the Qt-based software to be tested loads - usually with the “-testability” switch.
+- A plugin that the Qt-based software to be tested loads - usually with the 
+  “-testability” switch.
 - A server app that allows inspection and interaction with the SUT [qttasserver]
 
 On the Host machine (can be same as the SUT)
 - Ruby libraries to act as client for qttasserver, so that testing is scriptable 
   [testability-driver & testability-driver-qt-sut-plugin]
-- GUI to allow easy inspection of SUT and writing tests [tdriver-visualizer] - not needed for 
-  running tests.
+- GUI to allow easy inspection of SUT and writing tests [tdriver-visualizer],  
+  but not needed for running tests.
 
-For the moment, the system is designed assuming that the SUT is also the Host machine.
+For the moment, the system is designed assuming that the SUT is also the Host
+machine.
 
 
 Testability installation instructions
@@ -57,10 +60,13 @@ Testability is comprised of the following parts:
 
 To get started, install all these and additional dependencies with:
 
-$ sudo apt-get install rubygems testability-qttas ruby-testability-driver-qt-sut-plugin testability-visualizer librmagick-ruby1.8
+$ sudo apt-get install rubygems testability-qttas \
+  ruby-testability-driver-qt-sut-plugin testability-visualizer \
+  librmagick-ruby1.8
 
-You need to configure Testability for your usage. Assuming you’ll be testing on your host machine, 
-this involves editing /etc/tdriver/tdriver_parameters.xml to just contain:
+You need to configure Testability for your usage. Assuming you’ll be testing on 
+your host machine, this involves editing /etc/tdriver/tdriver_parameters.xml to 
+just contain:
 
 <parameters>
    <sut id="sut_qt" template="qt">
@@ -73,7 +79,8 @@ this involves editing /etc/tdriver/tdriver_parameters.xml to just contain:
    <parameter name="behaviours" value="behaviours.xml"/>
 </parameters>
 
-Also to get log output from these processes, you should create the directory /logs/testability [FIXME]
+Also to get log output from these processes, you should create the directory 
+/logs/testability [FIXME]
 
 
 Running Tests
@@ -81,17 +88,18 @@ Running Tests
 Before any test are run, you must start the qttasserver on the SUT:
 $ qttasserver&
 
-To run tests on this source tree, make sure you run cmake & compile. Otherwise tests will be
-run on the installed applications.
+To run tests on this source tree, make sure you run cmake & compile. Otherwise 
+tests will be run on the installed applications.
 
 You run the entire Unity 2D test suite by executing the run-tests.rb script:
 $ cd tests
 $ ruby run-tests.rb
 
-This script enters specified subdirectories and runs the tests contained in any ruby script with 
-particular format.
+This script enters specified subdirectories and runs the tests contained in any 
+ruby script with particular format.
 
-You can run individual test suites (one per file) by entering the directory and calling:
+You can run individual test suites (one per file) by entering the directory and 
+calling:
 $ cd launcher
 $ ruby autohide_show_tests.rb
 
@@ -107,7 +115,7 @@ Please take a look at this example:
 
 require '../run-tests.rb' unless $INIT_COMPLETED #include necessary libs, etc
 
-############################# Test Suite #############################
+################################# Test Suite ###################################
 context "Test Suite summary" do
   # Run once at the beginning of this test suite
   startup do
@@ -133,7 +141,7 @@ context "Test Suite summary" do
     system "pkill -nf unity-2d-launcher"
   end
 
-  #####################################################################################
+  ##############################################################################
   # Test cases
 
   test "Short description of first test case" do
@@ -156,14 +164,15 @@ First off, ensure you're running the "qttasserver"
 Run
 $ tdriver_visualizer
 
-In the menu bar, open “Applications” and select “Start New Application” and enter the absolute 
-path to the Qt binary you want to inspect. The application will appear, but also will the Visualizer, 
-with a preview of the application in the left pane. In the center is a tree of QObjects in this 
-application, and on the right you can inspect the properties, methods and signals of each QObject 
-as you drill into the tree.
+In the menu bar, open “Applications” and select “Start New Application” and 
+enter the absolute path to the Qt binary you want to inspect. The application 
+will appear, but also will the Visualizer, with a preview of the application in 
+the left pane. In the center is a tree of QObjects in this application, and on 
+the right you can inspect the properties, methods and signals of each QObject as
+you drill into the tree.
 
-Note you should go to “View” -> “Docks and Toolbars” -> “Code Editor” to get a text editor. See 
-that you can right-click QObjects and you get the option to paste a QObject path from the root - 
-saves time!
+Note you should go to “View” -> “Docks and Toolbars” -> “Code Editor” to get a 
+text editor. See that you can right-click QObjects and you get the option to 
+paste a QObject path from the root - saves time!
 
 Hit F9 to execute the test.
