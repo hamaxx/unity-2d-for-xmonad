@@ -50,35 +50,6 @@ Item {
             DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
     }
 
-    /* Unload the current page when closing the dash */
-    Connections {
-        target: dashView
-        onActiveChanged: {
-            if (!dashView.active) {
-                /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                          that is about to be invalidated otherwise a crash
-                          occurs because SearchEntry has a binding that refers
-                          to currentPage and tries to access it.
-                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
-                */
-                deactivateActiveLens()
-                currentPage = undefined
-                // Delay the following instruction by 1 millisecond using a
-                // timer. This is enough to work around a crash that happens
-                // when the layout is mirrored (RTL locales). See QTBUG-22776
-                // for details.
-                //pageLoader.source = ""
-                delayPageLoaderReset.restart()
-            }
-        }
-    }
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.source = ""
-    }
-
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
         search_entry.focus = true
