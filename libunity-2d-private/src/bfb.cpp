@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include "bfb.h"
 
 // libunity-2d
@@ -73,7 +74,7 @@ QString BfbItem::name() const
 
 QString BfbItem::icon() const
 {
-    return "/usr/share/unity/4/launcher_bfb.png";
+    return QString(UNITY_DIR) + "5/launcher_bfb.png";
 }
 
 bool BfbItem::launching() const
