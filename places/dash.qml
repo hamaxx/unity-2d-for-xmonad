@@ -50,35 +50,6 @@ Item {
             DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
     }
 
-    /* Unload the current page when closing the dash */
-    Connections {
-        target: dashView
-        onActiveChanged: {
-            if (!dashView.active) {
-                /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                          that is about to be invalidated otherwise a crash
-                          occurs because SearchEntry has a binding that refers
-                          to currentPage and tries to access it.
-                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
-                */
-                deactivateActiveLens()
-                currentPage = undefined
-                // Delay the following instruction by 1 millisecond using a
-                // timer. This is enough to work around a crash that happens
-                // when the layout is mirrored (RTL locales). See QTBUG-22776
-                // for details.
-                //pageLoader.source = ""
-                delayPageLoaderReset.restart()
-            }
-        }
-    }
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.source = ""
-    }
-
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
         search_entry.focus = true
@@ -179,22 +150,13 @@ Item {
                    is when declarativeView.active becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
-                   'source' also needs to change so that the screenshot is
-                   re-taken as opposed to pulled from QML's image cache.
-                   This workarounds the fact that the image cache cannot be
-                   disabled. A new API to deal with this was introduced in Qt Quick 1.1.
-
                    See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
                 */
-                property variant timeAtActivation
-                Connections {
-                    target: declarativeView
-                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
-                }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: declarativeView.active ? "image://window/root" : ""
+                cache: false
 
                 fillMode: Image.PreserveAspectCrop
                 x: -declarativeView.globalPosition.x
