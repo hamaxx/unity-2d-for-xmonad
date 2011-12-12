@@ -28,8 +28,6 @@ require 'xdo/keyboard'
 require 'xdo/mouse'
 require 'timeout'
 
-WIDTH = 66 #launcher bar width
-
 # Helper function to open window at certain position
 def open_window_at(x,y)
   # Open Terminal with position (x,y)
@@ -40,6 +38,8 @@ end
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
+  WIDTH = 66 #launcher bar width
+
   # Run once at the beginning of this test suite
   startup do
     system 'killall unity-2d-launcher > /dev/null 2>&1'
