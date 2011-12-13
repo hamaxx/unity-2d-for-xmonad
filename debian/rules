@@ -15,4 +15,4 @@ override_dh_auto_test:
 	echo "Tests not working right now as no X server"
 
 %:
-	dh $@ --with translations
+	dh $@ --parallel --with translations
