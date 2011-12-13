@@ -62,7 +62,7 @@ To get started, install all these and additional dependencies with:
 
 $ sudo apt-get install rubygems testability-qttas \
   ruby-testability-driver-qt-sut-plugin testability-visualizer \
-  librmagick-ruby1.8
+  librmagick-ruby1.8 xdotool xsel xkill xwininfo
 
 You need to configure Testability for your usage. Assuming you’ll be testing on 
 your host machine, this involves editing /etc/tdriver/tdriver_parameters.xml to 
