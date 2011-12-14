@@ -43,7 +43,7 @@ Testability installation instructions
 -------------------------------------
 Add this repo to your apt sources:
 
-$ sudo add-apt-repo ppa:gerboland/testability
+$ sudo add-apt-repository ppa:gerboland/testability
 $ sudo apt-get update
 
 Testability is comprised of the following parts:
@@ -62,7 +62,7 @@ To get started, install all these and additional dependencies with:
 
 $ sudo apt-get install rubygems testability-qttas \
   ruby-testability-driver-qt-sut-plugin testability-visualizer \
-  librmagick-ruby1.8 xdotool xsel xkill xwininfo
+  librmagick-ruby1.8 xdotool xsel x11-utils
 
 You need to configure Testability for your usage. Assuming you’ll be testing on 
 your host machine, this involves editing /etc/tdriver/tdriver_parameters.xml to 
@@ -75,8 +75,7 @@ just contain:
    </sut>
 
    <!-- overload default behaviours parameter (see generic.xml in defaults folder) -->
-   <!-- parameter name="tmp_folder" value="C:\tdriver\temp_folder"/ -->
-   <parameter name="behaviours" value="behaviours.xml"/>
+   <parameter name="behaviours" value="behaviours.xml" />
 </parameters>
 
 Also to get log output from these processes, you should create the directory 
