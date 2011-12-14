@@ -131,8 +131,11 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             anchors.right: parent.right
-            y: item.height - item.selectionOutlineSize / 2 - height / 2
+            width: parent.width * 0.15
+            fillMode: Image.PreserveAspectFit
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
@@ -157,7 +160,9 @@ DropItem {
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
+                width: parent.width * 0.15
+                height: width * sourceSize.height / sourceSize.width
+                y: (item.height - height) / 2 + getPipOffset(index) * 0.015 * item.height
                 mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
@@ -204,8 +209,6 @@ DropItem {
                     running: launching
                 }
 
-                sourceSize.width: item.tileSize
-                sourceSize.height: item.tileSize
                 source: {
                     var actualColor = launcherView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
@@ -222,8 +225,6 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                sourceSize.width: item.tileSize
-                sourceSize.height: item.tileSize
                 source: "artwork/round_outline_54x54.png"
 
                 opacity: 0
@@ -241,11 +242,12 @@ DropItem {
             /* This is just the main icon of the tile */
             Image {
                 id: icon
-                anchors.centerIn: parent
+                anchors.fill: parent
+                anchors.margins: parent.width * 0.056
                 smooth: true
 
-                sourceSize.width: 48
-                sourceSize.height: 48
+                sourceSize.width: Math.max(width, 16)
+                sourceSize.height: Math.max(height, 16)
 
                 /* Whenever one of the parameters used in calculating the background color of
                    the icon changes, recalculate its value */
@@ -269,13 +271,13 @@ DropItem {
                 smooth: true
 
                 source: "artwork/round_shine_54x54.png"
-                sourceSize.width: item.tileSize
-                sourceSize.height: item.tileSize
             }
 
             Image {
                 id: selectionOutline
                 anchors.centerIn: parent
+                width: item.width
+                height: item.height
                 smooth: true
                 source: "artwork/round_selected_66x66.png"
                 visible: launcherView.focus && item.activeFocus
@@ -283,22 +285,22 @@ DropItem {
 
             Rectangle {
                 id: counter
-                height: 16 - border.width
-                width: 32
+                height: width / 2 - border.width
+                width: parent.width * 0.59
                 // Using anchors the item will be 1 pixel off with respect to Unity
                 y: 1
                 x: 1
                 radius: height / 2 - 1
                 smooth: true
-                border.width: 2
+                border.width: width / 16
                 border.color: "white"
                 color: "#595959"
                 visible: launcherItem.counterVisible
 
                 Text {
                     anchors.centerIn: parent
-                    font.pixelSize: parent.height - 3
-                    width: parent.width - 5
+                    font.pixelSize: parent.height * 0.79
+                    width: parent.width * 0.84
                     smooth: true
                     elide: Text.ElideRight
                     horizontalAlignment: Text.AlignHCenter
@@ -310,7 +312,8 @@ DropItem {
             Image {
                 id: progressBar
                 source: "artwork/progress_bar_trough.png"
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 width: tile.width
                 smooth: true
@@ -319,9 +322,10 @@ DropItem {
                 Image {
                     id: progressFill
                     source: "artwork/progress_bar_fill.png"
-                    anchors.verticalCenter: parent.verticalCenter
-                    x: 6
-                    width: sourceSize.width * launcherItem.progress
+                    x: parent.width * 0.11
+                    y: (parent.height - height) / 2
+                    width: parent.width * 0.78 * launcherItem.progress
+                    height: parent.height * 0.074
                     smooth: true
 
                     Behavior on width {
@@ -354,8 +358,8 @@ DropItem {
                 anchors.centerIn: parent
                 color: "#B3000000" // 0.7 opacity on black
                 radius: 2
-                width: 22
-                height: 22
+                width: parent.width * 0.41
+                height: parent.height * 0.41
                 smooth: true
 
                 Text {
@@ -363,6 +367,7 @@ DropItem {
                     anchors.centerIn: parent
                     color: "white"
                     smooth: true
+                    font.pixelSize: parent.height * 0.7
                 }
             }
 
