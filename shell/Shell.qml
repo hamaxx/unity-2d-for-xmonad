@@ -49,6 +49,12 @@ Item {
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
+
+        Binding {
+            target: dashLoader.item
+            property: "fullscreenWidth"
+            value: screen.availableGeometry.width - launcher.width
+        }
     }
 
     Connections {

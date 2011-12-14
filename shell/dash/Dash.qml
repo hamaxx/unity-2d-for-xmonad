@@ -379,6 +379,8 @@ FocusScope {
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 606
     property int desktopWidth: 989
+    property int fullscreenWidth: screen.availableGeometry.width
+    property int fullscreenHeight: screen.availableGeometry.height
 
     states: [
         State {
@@ -386,10 +388,8 @@ FocusScope {
             when: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             PropertyChanges {
                 target: dash
-                width: Math.min(desktopWidth, screen.panelsFreeGeometry.width)
-                height: Math.min(screen.availableGeometry.height,
-                                 declarativeView.expanded ? desktopExpandedHeight :
-                                                            desktopCollapsedHeight)
+                width: desktopWidth
+                height: declarativeView.expanded ? desktopExpandedHeight : desktopCollapsedHeight
             }
         },
         State {
@@ -397,8 +397,8 @@ FocusScope {
             when: declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
             PropertyChanges {
                 target: dash
-                width: screen.panelsFreeGeometry.width
-                height: screen.availableGeometry.height
+                width: fullscreenWidth
+                height: fullscreenHeight
             }
         }
     ]
