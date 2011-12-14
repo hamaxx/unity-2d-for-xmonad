@@ -30,8 +30,6 @@ static const char* LAUNCHER_DBUS_SERVICE = "com.canonical.Unity2d.Launcher";
 static const char* LAUNCHER_DBUS_OBJECT_PATH = "/Launcher";
 static const char* LAUNCHER_DBUS_INTERFACE = "com.canonical.Unity2d.Launcher";
 
-const int LauncherClient::MaximumWidth = 66;
-
 struct LauncherClientPrivate
 {
     LauncherClient* q;

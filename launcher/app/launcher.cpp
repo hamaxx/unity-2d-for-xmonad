@@ -37,6 +37,7 @@
 #include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
+#include "propertybinder.h"
 
 // libc
 #include <stdlib.h>
@@ -86,7 +87,6 @@ int main(int argc, char *argv[])
     Unity2dPanel panel(true);
 
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setThickness(LauncherClient::MaximumWidth);
     panel.setAccessibleName("Launcher");
 
     VisibilityController* visibilityController = new VisibilityController(&panel);
@@ -114,6 +114,11 @@ int main(int argc, char *argv[])
     launcherDBus.connectToBus();
 
     launcherView->setSource(QUrl("./Launcher.qml"));
+
+    /* Synchronise panel's "thickness" property with its corresponding DConf key */
+    panel.setThickness(launcher2dConfiguration().property("thickness").toInt());
+    PropertyBinder thicknessBinder;
+    thicknessBinder.bind(&launcher2dConfiguration(), "thickness", &panel, "thickness");
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);
