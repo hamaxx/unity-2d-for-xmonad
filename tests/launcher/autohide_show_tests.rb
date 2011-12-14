@@ -27,12 +27,15 @@ require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
 require 'timeout'
+require 'tmpdir'
 
 # Helper function to open window at certain position
 def open_window_at(x,y)
   # Open Terminal with position (x,y)
-  system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=/dev/disk/"
-  Timeout.timeout(3){XDo::XWindow.wait_for_window("gnome-terminal")}
+  Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
+    system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{dir}"
+    Timeout.timeout(3){XDo::XWindow.wait_for_window(dir)}
+  }
   return XDo::XWindow.from_active
 end
 
