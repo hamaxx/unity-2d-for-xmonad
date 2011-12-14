@@ -141,7 +141,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     Unity2dPanel* panel = new Unity2dPanel;
     panel->setAccessibleName("Top Panel");
     panel->setEdge(Unity2dPanel::TopEdge);
-    panel->setFixedHeight(24);
+    panel->setThickness(24);
 
     QPoint p;
     if (QApplication::isRightToLeft()) {

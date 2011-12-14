@@ -32,7 +32,7 @@ Item {
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: 66
+        width: launcher2dConfiguration.thickness
         x: launcher.shown ? 0 : -width
         showMenus: !dashLoader.item.active
 
