@@ -73,6 +73,13 @@ Item {
         activatePage(pageLoader.item)
     }
 
+    /* Set all Lenses as Hidden when Dash closes */
+    function deactivateAllLenses() {
+        for (var i=0; i<lenses.rowCount(); i++) {
+            lenses.get(i).viewType = Lens.Hidden
+        }
+    }
+
     function activateLens(lensId) {
         var lens = lenses.get(lensId)
         if (lens == null) {
