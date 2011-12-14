@@ -107,8 +107,8 @@ Q_SIGNALS:
     void categoriesChanged();
     void activeChanged(bool);
     void filtersChanged();
-    void searchFinished(std::string const&);
-    void globalSearchFinished(std::string const&);
+    void searchFinished(unity::dash::Lens::Hints const&);
+    void globalSearchFinished(unity::dash::Lens::Hints const&);
     void searchQueryChanged();
     void globalSearchQueryChanged();
 
