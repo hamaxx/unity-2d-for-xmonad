@@ -38,6 +38,7 @@ class Filters;
 class Lens : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(ViewType)
 
     Q_PROPERTY(QString id READ id NOTIFY idChanged)
     Q_PROPERTY(QString dbusName READ dbusName NOTIFY dbusNameChanged)
@@ -53,7 +54,7 @@ class Lens : public QObject
     Q_PROPERTY(DeeListModel* results READ results NOTIFY resultsChanged)
     Q_PROPERTY(DeeListModel* globalResults READ globalResults NOTIFY globalResultsChanged)
     Q_PROPERTY(DeeListModel* categories READ categories NOTIFY categoriesChanged)
-    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(ViewType viewType READ viewType WRITE setViewType NOTIFY viewTypeChanged)
     Q_PROPERTY(Filters* filters READ filters NOTIFY filtersChanged)
 
     Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
@@ -61,6 +62,12 @@ class Lens : public QObject
 
 public:
     explicit Lens(QObject *parent = 0);
+
+    enum ViewType {
+        Hidden,
+        HomeView,
+        LensView
+    };
 
     /* getters */
     QString id() const;
@@ -77,13 +84,13 @@ public:
     DeeListModel* results() const;
     DeeListModel* globalResults() const;
     DeeListModel* categories() const;
-    bool active() const;
+    ViewType viewType() const;
     Filters* filters() const;
     QString searchQuery() const;
     QString globalSearchQuery() const;
 
     /* setters */
-    void setActive(bool active);
+    void setViewType(const ViewType& viewType);
     void setSearchQuery(const QString& search_query);
     void setGlobalSearchQuery(const QString& search_query);
 
@@ -105,7 +112,7 @@ Q_SIGNALS:
     void resultsChanged();
     void globalResultsChanged();
     void categoriesChanged();
-    void activeChanged(bool);
+    void viewTypeChanged(ViewType);
     void filtersChanged();
     void searchFinished(unity::dash::Lens::Hints const&);
     void globalSearchFinished(unity::dash::Lens::Hints const&);
@@ -122,6 +129,7 @@ private:
     void onGlobalResultsChanged(unity::dash::Results::Ptr);
     void onCategoriesSwarmNameChanged(std::string);
     void onCategoriesChanged(unity::dash::Categories::Ptr);
+    void onViewTypeChanged(unity::dash::ViewType);
 
     void onActivated(std::string const& uri, unity::dash::HandledType type, unity::dash::Lens::Hints const&);
     void fallbackActivate(const QString& uri);

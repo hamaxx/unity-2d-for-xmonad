@@ -107,9 +107,9 @@ DeeListModel* Lens::categories() const
     return m_categories;
 }
 
-bool Lens::active() const
+Lens::ViewType Lens::viewType() const
 {
-    return m_unityLens->active();
+    return (Lens::ViewType) m_unityLens->view_type();
 }
 
 Filters* Lens::filters() const
@@ -127,9 +127,9 @@ QString Lens::globalSearchQuery() const
     return m_globalSearchQuery;
 }
 
-void Lens::setActive(bool active)
+void Lens::setViewType(const Lens::ViewType& viewType)
 {
-    m_unityLens->active = active;
+    m_unityLens->view_type = (unity::dash::ViewType) viewType;
 }
 
 void Lens::setSearchQuery(const QString& search_query)
@@ -246,7 +246,7 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     m_unityLens->global_results()->swarm_name.changed.connect(sigc::mem_fun(this, &Lens::onGlobalResultsSwarmNameChanged));
     m_unityLens->categories.changed.connect(sigc::mem_fun(this, &Lens::onCategoriesChanged));
     m_unityLens->categories()->swarm_name.changed.connect(sigc::mem_fun(this, &Lens::onCategoriesSwarmNameChanged));
-    m_unityLens->active.changed.connect(sigc::mem_fun(this, &Lens::activeChanged));
+    m_unityLens->view_type.changed.connect(sigc::mem_fun(this, &Lens::onViewTypeChanged));
 
     /* Signals forwarding */
     m_unityLens->search_finished.connect(sigc::mem_fun(this, &Lens::searchFinished));
@@ -303,6 +303,11 @@ void Lens::onCategoriesSwarmNameChanged(std::string swarm_name)
 void Lens::onCategoriesChanged(unity::dash::Categories::Ptr categories)
 {
     m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
+}
+
+void Lens::onViewTypeChanged(unity::dash::ViewType viewType)
+{
+    Q_EMIT viewTypeChanged( (Lens::ViewType) viewType);
 }
 
 #include "lens.moc"
