@@ -135,6 +135,8 @@ AutoScrollingListView {
         onDragEnter: item.onDragEnter(event)
         onDrop: item.onDrop(event)
 
+        isBfb: (item.toString().indexOf("BfbItem") == 0)
+
         function showMenu() {
             /* Prevent the simultaneous display of multiple menus */
             if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
