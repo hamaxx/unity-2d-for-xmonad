@@ -52,10 +52,7 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
-    height: selectionOutlineSize
-
     property int tileSize
-    property int selectionOutlineSize
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation

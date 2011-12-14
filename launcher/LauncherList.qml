@@ -91,8 +91,8 @@ AutoScrollingListView {
         Accessible.name: accessibleDescription()
 
         width: list.width
+        height: width
         tileSize: list.tileSize
-        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
