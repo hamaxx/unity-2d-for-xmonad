@@ -168,6 +168,7 @@ DashDeclarativeView::setActive(bool value)
         } else {
             hide();
             m_launcherClient->endForceVisible();
+            QMetaObject::invokeMethod( rootObject(), "deactivateAllLenses", Qt::AutoConnection);
         }
         activeChanged(m_active);
     }

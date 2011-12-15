@@ -65,19 +65,19 @@ Item {
         currentPage.visible = true
     }
 
-    function deactivateActiveLens() {
-        if (dashView.activeLens != "") {
-            var lens = lenses.get(dashView.activeLens)
-            lens.active = false
-        }
-    }
-
     function buildLensPage(lens) {
         pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
         pageLoader.item.model = lens
         activatePage(pageLoader.item)
+    }
+
+    /* Set all Lenses as Hidden when Dash closes */
+    function deactivateAllLenses() {
+        for (var i=0; i<lenses.rowCount(); i++) {
+            lenses.get(i).viewType = Lens.Hidden
+        }
     }
 
     function activateLens(lensId) {
@@ -93,14 +93,25 @@ Item {
             return
         }
 
-        deactivateActiveLens()
-        lens.active = true
+        /* To activate lens, we set its viewType to LensView, and then set all
+           other lenses to Hidden */
+        for (var i=0; i<lenses.rowCount(); i++) {
+            var thislens = lenses.get(i)
+            thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+        }
+
         buildLensPage(lens)
         dashView.activeLens = lens.id
     }
 
     function activateHome() {
-        deactivateActiveLens()
+        /* When Home is shown, need to notify all other lenses. Those in the global view
+           (in home search results page) are set to HomeView, all others to Hidden */
+        for (var i=0; i<lenses.rowCount(); i++) {
+            var thislens = lenses.get(i)
+            thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
+        }
+
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
