@@ -82,7 +82,7 @@ context "Launcher Autohide and Show Tests" do
   test "Position with Empty Desktop" do
     # check width before proceeding
     assert_equal( Integer(@app.Unity2dPanel()['width']), WIDTH, 
-                  'Launcher is not 66 pixels wide on screen!' )
+                  "Launcher is not #{WIDTH} pixels wide on screen!" )
 
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
                   'Launcher hiding on empty desktop, should be visible' )
