@@ -41,7 +41,7 @@ end
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
-  WIDTH = 66 #launcher bar width
+  WIDTH = 65 #launcher bar width
 
   # Run once at the beginning of this test suite
   startup do
