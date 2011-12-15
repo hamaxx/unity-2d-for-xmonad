@@ -23,9 +23,9 @@ AutoScrollingListView {
     id: list
     Accessible.name: objectName
 
-    /* The spacing is explicitly set to -7 in order to compensate
+    /* The spacing is explicitly set to -8 in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
-    spacing: -7
+    spacing: -8
 
     property int tileSize: 54
 

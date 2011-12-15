@@ -23,29 +23,26 @@
 
 // Local
 
-// libdconf-qt
-#include "qconf.h"
-
 // Qt
 #include <QMetaEnum>
 #include <QSize>
 #include <QVariant>
 
+#include <config.h>
+
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
-static const char* DASH_DCONF_SCHEMA = "com.canonical.Unity";
 static const char* FORM_FACTOR = "formFactor";
 
 namespace Unity2d {
 
 class DashSettingsPrivate
 {
-    DashSettingsPrivate(DashSettings *dashSettings):
-        conf(new QConf(DASH_DCONF_SCHEMA))
+    DashSettingsPrivate(DashSettings *dashSettings)
     {
         /* proxy the formFactor property signal notifier */
-        QObject::connect(conf, SIGNAL(formFactorChanged(QString)),
+        QObject::connect(&unityConfiguration(), SIGNAL(formFactorChanged(QString)),
                          dashSettings, SIGNAL(formFactorChanged()));
 
         /* Get the QMetaEnum for FormFactor: we will use it when setting and
@@ -58,14 +55,12 @@ class DashSettingsPrivate
 
     ~DashSettingsPrivate()
     {
-        delete conf;
     }
 
 private:
     DashSettings* q_ptr;
     Q_DECLARE_PUBLIC(DashSettings)
 
-    QConf* conf;
     QMetaEnum formFactorEnum;
 };
 
@@ -85,13 +80,13 @@ void DashSettings::setFormFactor(FormFactor formFactor)
     Q_D(DashSettings);
 
     const char* name = d->formFactorEnum.valueToKey(formFactor);
-    d->conf->setProperty(FORM_FACTOR, QVariant(QString::fromLatin1(name)));
+    unityConfiguration().setProperty(FORM_FACTOR, QVariant(QString::fromLatin1(name)));
 }
 
 DashSettings::FormFactor DashSettings::formFactor() const
 {
     Q_D(const DashSettings);
-    QByteArray key = d->conf->property(FORM_FACTOR).toString().toLatin1();
+    QByteArray key = unityConfiguration().property(FORM_FACTOR).toString().toLatin1();
     return FormFactor(d->formFactorEnum.keyToValue(key.constData()));
 }
 

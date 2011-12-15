@@ -119,7 +119,7 @@ FocusScope {
 
                 /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
                 icon: item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint
-                active: item.active
+                active: item.viewType == Lens.LensView
                 onClicked: dash.activateLens(item.id)
                 iconWidth: lensBar.iconWidth
                 iconSpacing: lensBar.iconSpacing
