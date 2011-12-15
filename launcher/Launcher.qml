@@ -91,7 +91,7 @@ LauncherDropItem {
 
         LauncherList {
             id: main
-            Accessible.name: "main"
+            objectName: "main"
 
             /* function to position highlighted tile so that the shadow does not cover it */
             function positionMainViewForIndex(index) {
@@ -153,7 +153,7 @@ LauncherDropItem {
 
         LauncherList {
             id: shelf
-            Accessible.name: "shelf"
+            objectName: "shelf"
 
             anchors.bottom: parent.bottom
             anchors.bottomMargin: main.anchors.bottomMargin
