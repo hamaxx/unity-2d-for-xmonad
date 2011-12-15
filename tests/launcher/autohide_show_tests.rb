@@ -66,7 +66,8 @@ context "Launcher Autohide and Show Tests" do
     @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
-    sleep 1
+    # Make certain application is ready for testing
+    verify(10){ @app.Unity2dPanel() }
   end
 
   # Run after each test case completes
@@ -149,7 +150,7 @@ context "Launcher Autohide and Show Tests" do
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
                   'Launcher visible with window in the way, should be hidden' )
     XDo::Keyboard.key_down('SUPER')
-    sleep 1
+    sleep 2
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
                   'Launcher hiding when Super Key held, should be visible' )
 
