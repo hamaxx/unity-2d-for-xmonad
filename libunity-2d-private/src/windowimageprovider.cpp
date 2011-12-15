@@ -129,7 +129,7 @@ QImage WindowImageProvider::requestImage(const QString &id,
 
     if (!image.isNull()) {
         if (requestedSize.isValid()) {
-            image = image.scaled(requestedSize);
+            image = image.scaled(requestedSize, Qt::KeepAspectRatio);
         }
         size->setWidth(image.width());
         size->setHeight(image.height());

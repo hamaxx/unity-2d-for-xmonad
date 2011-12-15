@@ -71,6 +71,14 @@ Item {
                                   + windowInfo.contentXid
         cache: false
 
+        /* The window is scaled to a rectangle as large as possible inside
+           sourceSize while preserving its aspect ratio.
+           It saves video memory when using the OpenGL backend.
+           It makes scaling cheaper in the spread when using the raster backend.
+        */
+        sourceSize.width: 512
+        sourceSize.height: 512
+
         /* Disabled during animations for performance reasons */
         smooth: !animating
 
