@@ -89,7 +89,7 @@ include_directories(
 # Tests
 enable_testing()
 add_custom_target(check make test)
-configure_file(tests/misc/binary_dir.txt.in tests/misc/binary_dir.txt @ONLY)
+configure_file(tests/misc/binary_dir.txt.in ${CMAKE_CURRENT_SOURCE_DIR}/tests/misc/binary_dir.txt @ONLY)
 
 # Source
 add_subdirectory(libunity-2d-private)
