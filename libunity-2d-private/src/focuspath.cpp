@@ -96,7 +96,7 @@ FocusPath::FocusPath(QObject *parent)
       m_item(0),
       m_columns(0),
       m_rows(0),
-      m_currentPosition(0),
+      m_currentPosition(-1),
       m_flow(FocusPath::LeftToRight),
       m_direction(FocusPath::HorizontalAndVertical)
 {
@@ -278,11 +278,10 @@ void FocusPath::addItem(QDeclarativeItem *item)
                 m_path.insert(i, qMakePair(info->index(), item));
             }
 
-            if (itemPos < m_currentPosition) {
+            if (m_currentPosition == -1) {
+                updatePosition(0);
+            } else if (itemPos <= m_currentPosition) {
                 m_currentPosition++;
-            } else if (itemPos == m_currentPosition) {
-                m_currentPosition = -1;
-                updatePosition(itemPos);
             }
 
             if (m_columns) {
@@ -306,7 +305,14 @@ void FocusPath::removeItem(QDeclarativeItem *item)
         if ((*i).second == item) {
             m_path.erase(i);
             if (itemPos == m_currentPosition) {
-                updatePosition(m_currentPosition - 1);
+                int oldPosition = m_currentPosition;
+                /* Check if this position is the last one */
+                if (oldPosition >= m_path.size()) {
+                    oldPosition = m_path.size() - 1;
+                }
+                /* invalidade current position to allow update */
+                m_currentPosition = -1;
+                updatePosition(oldPosition);
             } else if (itemPos < m_currentPosition) {
                 m_currentPosition--;
             }
