@@ -21,7 +21,6 @@
 #include <gnomesessionclient.h>
 #include <launcherclient.h>
 #include <unity2dapplication.h>
-#include <propertybinder.h>
 
 // Qt
 #include <QApplication>
@@ -115,11 +114,6 @@ int main(int argc, char *argv[])
     launcherDBus.connectToBus();
 
     launcherView->setSource(QUrl("./Launcher.qml"));
-
-    /* Synchronise panel's "useStrut" property with its corresponding DConf key */
-    panel.setUseStrut(launcher2dConfiguration().property("useStrut").toBool());
-    PropertyBinder useStrutBinder;
-    useStrutBinder.bind(&launcher2dConfiguration(), "useStrut", &panel, "useStrut");
 
     /* Composing the QML declarative view inside the panel */
     panel.addWidget(launcherView);

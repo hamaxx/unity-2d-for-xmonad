@@ -59,5 +59,7 @@ install(FILES warty-final-ubuntu.jpg
 #Allow build in different directory
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/GnomeBackground.qml"
                                                               "${CMAKE_CURRENT_BINARY_DIR}/GnomeBackground.qml")
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/AbstractScrollbar.qml"
+                                                              "${CMAKE_CURRENT_BINARY_DIR}/AbstractScrollbar.qml")
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/qmldir"
                                                               "${CMAKE_CURRENT_BINARY_DIR}/qmldir")

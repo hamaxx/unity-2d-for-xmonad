@@ -16,20 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
+import "fontUtils.js" as FontUtils
 
 /* Custom Text factorising the font style. */
 Text {
     color: "#ffffff"
 //    font.family: "UbuntuBeta"
     property string fontSize: "medium"
-    font.pixelSize: {
-        switch (fontSize) {
-            case "small": return 13
-            case "medium": return 15
-            case "large": return 16
-            case "x-large": return 20
-            default: return 14
-        }
-    }
+    font.pixelSize: FontUtils.fontSizeToPixels(fontSize)
 }

@@ -23,6 +23,7 @@ LauncherDropItem {
     id: launcher
 
     Accessible.name: "root"
+    focus: true
 
     function clamp(x, min, max) {
         return Math.max(Math.min(x, max), min)
@@ -37,12 +38,26 @@ LauncherDropItem {
         }
     }
 
-    GnomeBackground {
-        Accessible.name: "background"
+    function focusBFB() {
+        if (!main.activeFocus) {
+            main.focus = true
+        }
+
+        main.currentIndex = 0
+        main.positionViewAtBeginning()
+    }
+
+    Item {
         anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0.66
-        visible: !screen.isCompositingManagerRunning
+        clip: true
+
+        GnomeBackground {
+            Accessible.name: "background"
+            anchors.fill: parent
+            overlay_color: "black"
+            overlay_alpha: 0.66
+            visible: !screen.isCompositingManagerRunning
+        }
     }
 
     Rectangle {
@@ -76,13 +91,13 @@ LauncherDropItem {
 
         LauncherList {
             id: main
-            Accessible.name: "main"
+            objectName: "main"
 
             /* function to position highlighted tile so that the shadow does not cover it */
             function positionMainViewForIndex(index) {
                 /* Tile considered 'visible' if it fully drawn */
-                var numberVisibleTiles = Math.floor(height / (tileSize + itemPadding))
-                var indexFirstVisibleTile = Math.ceil(contentY / (tileSize + itemPadding))
+                var numberVisibleTiles = Math.floor(height / selectionOutlineSize)
+                var indexFirstVisibleTile = Math.ceil(contentY / selectionOutlineSize)
                 var indexLastVisibleTile = indexFirstVisibleTile + numberVisibleTiles - 1
                 var nearestVisibleTile = clamp(index, indexFirstVisibleTile, indexLastVisibleTile)
 
@@ -95,8 +110,10 @@ LauncherDropItem {
             }
 
             anchors.top: parent.top
-            anchors.bottom: shelf.top
-            anchors.bottomMargin: itemPadding
+            anchors.bottomMargin: 0
+            /* the distance from the top of the launcher and the dash tile is 6 instead of 7 */
+            anchors.topMargin: -1
+            height: parent.height - shelf.height + ((selectionOutlineSize - tileSize)) - 4
             width: parent.width
 
             /* Ensure all delegates are cached in order to improve smoothness of
@@ -136,13 +153,13 @@ LauncherDropItem {
 
         LauncherList {
             id: shelf
-            Accessible.name: "shelf"
+            objectName: "shelf"
 
             anchors.bottom: parent.bottom
             anchors.bottomMargin: main.anchors.bottomMargin
-            height: (tileSize + itemPadding) * count
+            anchors.topMargin: main.anchors.topMargin
+            height: selectionOutlineSize * count
             width: parent.width
-            itemPadding: 0
             interactive: false
 
             model: ListAggregatorModel {

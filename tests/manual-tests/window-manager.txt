@@ -1,0 +1,9 @@
+----
+ * Hit Super+S key. Spread is launched.
+
+-> 1) Mouse hovering and 2) Arrow, Enter and Esc keys - are enabled - Hitting arrow 
+   keys or mouse hovering should switch the highlighted workspaces. The Enter key should 
+   zoom the highlighted workspace while Esc key should simply exit from spread with no 
+   changes.(lp:744978)
+
+----

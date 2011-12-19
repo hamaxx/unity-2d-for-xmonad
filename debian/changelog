@@ -1,8 +1,10 @@
 unity-2d (5.2.0-0ubuntu1) UNRELEASED; urgency=low
 
-  * 
+  * debian/control:
+    - bump libunitycore build-dep to 5.0.
+      TODO: update to the real dep version when releasing
 
- -- Florian Boucault <florian@boucault.net>  Mon, 21 Nov 2011 00:17:26 +0000
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Dec 2011 14:04:52 +0100
 
 unity-2d (4.12.0-0ubuntu1) oneiric; urgency=low
 

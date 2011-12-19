@@ -35,8 +35,9 @@ Item {
     id: scrollbar
 
     property variant targetFlickable
-
-    width: 3
+    property alias sliderSource: sliderImage.source
+    property alias sliderAnchors: sliderImage.anchors
+    property alias sliderSmooth: sliderImage.smooth
 
     MouseArea {
         id: scrollMouseArea
@@ -88,17 +89,9 @@ Item {
         Behavior on height {NumberAnimation {duration: 200; easing.type: Easing.InOutQuad}}
 
         BorderImage {
+            id: sliderImage
+
             anchors.fill: parent
-            /* The glow around the slider is 5 pixels wide on the left and right sides
-               and 10 pixels tall on the top and bottom sides. */
-            anchors.rightMargin: -5
-            anchors.leftMargin: -5
-            anchors.topMargin: -10
-            anchors.bottomMargin: -10
-
-            smooth: false
-
-            source: "artwork/scrollbar.sci"
         }
 
         MouseArea {

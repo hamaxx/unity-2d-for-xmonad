@@ -52,10 +52,11 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
-    property int padding
-    height: tileSize + padding
+    height: selectionOutlineSize
 
     property int tileSize
+    property int selectionOutlineSize
+    property alias name: looseItem.objectName
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation
@@ -132,8 +133,9 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
+            objectName: "active"
             anchors.right: parent.right
-            y: item.height - item.tileSize / 2 - height / 2
+            y: item.height - item.selectionOutlineSize / 2 - height / 2
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
@@ -153,12 +155,13 @@ DropItem {
         Repeater {
             model: item.pips
             delegate: Image {
+                objectName: "pips"
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
+                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
                 mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
@@ -185,8 +188,7 @@ DropItem {
             id: tile
             width: item.tileSize
             height: item.tileSize
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.centerIn: parent
 
             /* This is the image providing the background image. The
                color blended with this image is obtained from the color of the icon when it's
@@ -194,6 +196,7 @@ DropItem {
                While the application is launching, this will fade out and in. */
             Image {
                 id: tileBackground
+                objectName: "tileBackground"
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
@@ -244,6 +247,7 @@ DropItem {
             /* This is just the main icon of the tile */
             Image {
                 id: icon
+                objectName: "icon"
                 anchors.centerIn: parent
                 smooth: true
 
@@ -278,6 +282,7 @@ DropItem {
 
             Image {
                 id: selectionOutline
+                objectName: "selectionOutline"
                 anchors.centerIn: parent
                 smooth: true
                 source: "artwork/round_selected_66x66.png"
@@ -312,6 +317,7 @@ DropItem {
 
             Image {
                 id: progressBar
+                objectName: "progressBar"
                 source: "artwork/progress_bar_trough.png"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left

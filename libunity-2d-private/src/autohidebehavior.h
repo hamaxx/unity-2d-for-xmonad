@@ -57,6 +57,7 @@ protected:
 private Q_SLOTS:
     void hidePanel();
     void showPanel();
+    void onShowingDesktopChanged();
 
 private:
     QTimer* m_autohideTimer;

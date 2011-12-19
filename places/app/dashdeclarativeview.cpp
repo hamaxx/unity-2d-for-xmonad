@@ -18,6 +18,7 @@
 #include "dashadaptor.h"
 
 // unity-2d
+#include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
 
@@ -37,9 +38,6 @@
 
 #include <config.h>
 
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
-
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
 static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
@@ -50,7 +48,6 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDeclarativeView::DashDeclarativeView()
 : Unity2DDeclarativeView()
 , m_launcherClient(new LauncherClient(this))
-, m_screenInfo(ScreenInfo::instance())
 , m_mode(DesktopMode)
 , m_expanded(true)
 , m_active(false)
@@ -74,25 +71,14 @@ DashDeclarativeView::onWorkAreaResized(int screen)
     }
 
     updateSize();
-    availableGeometryChanged();
-}
-
-
-static int getenvInt(const char* name, int defaultValue)
-{
-    QByteArray stringValue = qgetenv(name);
-    bool ok;
-    int value = stringValue.toInt(&ok);
-    return ok ? value : defaultValue;
 }
 
 void
 DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
     QRect rect = QApplication::desktop()->screenGeometry(this);
-    static int minWidth = getenvInt("DASH_MIN_SCREEN_WIDTH", DASH_MIN_SCREEN_WIDTH);
-    static int minHeight = getenvInt("DASH_MIN_SCREEN_HEIGHT", DASH_MIN_SCREEN_HEIGHT);
-    if (rect.width() < minWidth && rect.height() < minHeight) {
+    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
+    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
         setDashMode(FullScreenMode);
     } else {
         setDashMode(DesktopMode);
@@ -112,7 +98,7 @@ DashDeclarativeView::updateSize()
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = availableGeometry();
+    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -120,7 +106,7 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = availableGeometry();
+    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
     int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
@@ -182,6 +168,7 @@ DashDeclarativeView::setActive(bool value)
         } else {
             hide();
             m_launcherClient->endForceVisible();
+            QMetaObject::invokeMethod( rootObject(), "deactivateAllLenses", Qt::AutoConnection);
         }
         activeChanged(m_active);
     }
@@ -259,19 +246,6 @@ DashDeclarativeView::activateHome()
     QGraphicsObject* dash = rootObject();
     QMetaObject::invokeMethod(dash, "activateHome", Qt::AutoConnection);
     setActive(true);
-}
-
-const QRect
-DashDeclarativeView::screenGeometry() const
-{
-    QDesktopWidget* desktop = QApplication::desktop();
-    return desktop->screenGeometry(this);
-}
-
-QRect
-DashDeclarativeView::availableGeometry() const
-{
-    return m_screenInfo->availableGeometry();
 }
 
 void

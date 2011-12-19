@@ -62,15 +62,13 @@ void ScreenInfo::updateActiveWindow(WnckScreen *screen)
     }
 }
 
-/* FIXME: This should be removed when we find a cleaner way to bypass the
-   QML Image cache. See SpreadWindow.qml and WindowImageProvider::requestImage
-   for details. */
-QString ScreenInfo::currentTime()
+QRect ScreenInfo::availableGeometry() const
 {
-    return QString::number(time(NULL));
+    int screen = QX11Info::appScreen();
+    return QApplication::desktop()->availableGeometry(screen);
 }
 
-QRect ScreenInfo::availableGeometry() const
+QRect ScreenInfo::panelsFreeGeometry() const
 {
     /* We cannot just return the system's availableGeometry(), because that
      * doesn't consider the Launcher, if it's set to auto-hide. */
@@ -106,6 +104,7 @@ void ScreenInfo::updateAvailableGeometry(int screen)
 {
     if (screen == QX11Info::appScreen()) {
         Q_EMIT availableGeometryChanged(availableGeometry());
+        Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
 }
 
