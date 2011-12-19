@@ -96,7 +96,7 @@ FocusPath::FocusPath(QObject *parent)
       m_item(0),
       m_columns(0),
       m_rows(0),
-      m_currentIndex(0),
+      m_currentPosition(0),
       m_flow(FocusPath::LeftToRight),
       m_direction(FocusPath::HorizontalAndVertical)
 {
@@ -119,13 +119,17 @@ int FocusPath::columns() const
 
 int FocusPath::currentIndex() const
 {
-    return m_currentIndex;
+    if (m_currentPosition >= 0 && m_currentPosition < m_path.size()) {
+        return m_path[m_currentPosition].first;
+    } else {
+        return -1;
+    }
 }
 
 QDeclarativeItem* FocusPath::currentItem() const
 {
-    if (m_currentIndex >= 0 && m_currentIndex < m_path.size()) {
-        return m_path[m_currentIndex].second;
+    if (m_currentPosition >= 0 && m_currentPosition < m_path.size()) {
+        return m_path[m_currentPosition].second;
     }
 
     return 0;
@@ -169,13 +173,27 @@ void FocusPath::setColumns(int columns)
 
 void FocusPath::setCurrentIndex(int index)
 {
-    if ((m_currentIndex != index) &&
+    QList<PathItem>::const_iterator i = m_path.begin();
+    int newPosition = 0;
+    while(i != m_path.end()) {
+        if ((*i).first == index) {
+            updatePosition(newPosition);
+            return;
+        }
+        newPosition++;
+        i++;
+    }
+}
+
+void FocusPath::updatePosition(int index)
+{
+    if ((m_currentPosition != index) &&
         (index >= 0) &&
         (index < m_path.size())) {
         QDeclarativeItem* focus = m_path[index].second;
         Q_ASSERT(focus);
         focus->forceActiveFocus();
-        m_currentIndex = index;
+        m_currentPosition = index;
         Q_EMIT currentIndexChanged();
         Q_EMIT currentItemChanged();
     }
@@ -230,7 +248,7 @@ void FocusPath::reset()
     if (m_columns) {
         m_rows = qCeil(m_path.size() / m_columns);
     }
-    m_currentIndex = 0;
+    m_currentPosition = 0;
     Q_EMIT currentIndexChanged();
     Q_EMIT currentItemChanged();
 }
@@ -243,10 +261,13 @@ void FocusPath::addItem(QDeclarativeItem *item)
 
         if (!info->skip() && item->isVisible()) {
             QList<PathItem>::iterator i = m_path.begin();
+            int itemPos = 0;
+
             for(; i != m_path.end(); i++) {
                 if (info->index() < (*i).first) {
                     break;
                 }
+                itemPos++;
             }
 
             if (i == m_path.begin()) {
@@ -257,7 +278,17 @@ void FocusPath::addItem(QDeclarativeItem *item)
                 m_path.insert(i, qMakePair(info->index(), item));
             }
 
-            reset();
+            if (itemPos < m_currentPosition) {
+                m_currentPosition++;
+            } else if (itemPos == m_currentPosition) {
+                m_currentPosition = -1;
+                updatePosition(itemPos);
+            }
+
+            if (m_columns) {
+                m_rows = qCeil(m_path.size() / m_columns);
+            }
+
         }
 
         m_items << item;
@@ -270,13 +301,22 @@ void FocusPath::addItem(QDeclarativeItem *item)
 void FocusPath::removeItem(QDeclarativeItem *item)
 {
     QList<PathItem>::iterator i = m_path.begin();
+    int itemPos = 0;
     for(int index=0; i != m_path.end(); i++, index++) {
         if ((*i).second == item) {
-            m_currentIndex = 0;
             m_path.erase(i);
-            reset();
+            if (itemPos == m_currentPosition) {
+                updatePosition(m_currentPosition - 1);
+            } else if (itemPos < m_currentPosition) {
+                m_currentPosition--;
+            }
+
+            if (m_columns) {
+                m_rows = qCeil(m_path.size() / m_columns);
+            }
             break;
         }
+        itemPos++;
     }
 
     QObject *attached = qmlAttachedPropertiesObject<FocusPath>(item);
@@ -296,7 +336,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
     if (obj == m_item) {
         switch(event->type()) {
             case QEvent::KeyPress: {
-                int nextFocus = m_currentIndex;
+                int nextFocus = m_currentPosition;
 
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
                 switch(keyEvent->key()) {
@@ -354,7 +394,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                 }
 
                 if ((nextFocus >= 0) && (nextFocus < m_path.size())) {
-                    setCurrentIndex(nextFocus);
+                    updatePosition(nextFocus);
                     return true;
                 }
                 break;

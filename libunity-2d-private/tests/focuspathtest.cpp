@@ -36,6 +36,8 @@ private Q_SLOTS:
     void init();
     void cleanup();
     void testInitialization();
+    void testSetCurrentItemInvisible();
+    void testSetCurrentIndexOnInvisibleItem();
     void testChangeCurrentIndex();
     void testNavigation();
     void testFlow();
@@ -91,6 +93,33 @@ void FocusPathTest::testInitialization()
     /* Tun a item ivisible, it must be removed from the path*/
     path[5].second->setVisible(false);
     QCOMPARE(m_focusPath->path().size(), 8);
+}
+
+void FocusPathTest::testSetCurrentItemInvisible()
+{
+    /* Set an item invisible whose index is different from currentIndex, currentIndex should not change */
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    m_focusPath->path()[5].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+
+    /* Set an item invisible whose index is currentIndex, currentIndex should change */
+    m_focusPath->path()[0].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+}
+
+void FocusPathTest::testSetCurrentIndexOnInvisibleItem()
+{
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+
+    m_focusPath->setCurrentIndex(1);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+
+    m_focusPath->path()[5].second->setVisible(false);
+    m_focusPath->setCurrentIndex(5);
+    /* FIXME: Should it be 1 (ie. the same as before), or 6 (ie. the one after the intended one)?
+       Compare with what ListView is doing.
+    */
+    QCOMPARE(m_focusPath->currentIndex(), 1);
 }
 
 /*
