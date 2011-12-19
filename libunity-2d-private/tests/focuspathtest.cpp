@@ -44,6 +44,12 @@ private Q_SLOTS:
     void testNavigationDirection();
     void testRTLNavigation();
     void testOrderChange();
+    void testMakeFirstInvisible();
+    void testMakeLastInvisibile();
+    void testMakeLastVisible();
+    void testMakeFirstVisible();
+    void testSetPreviousItemInvisible();
+    void testSetNextItemInvisible();
 
 private:
     QDeclarativeView *m_view;
@@ -116,9 +122,6 @@ void FocusPathTest::testSetCurrentIndexOnInvisibleItem()
 
     m_focusPath->path()[5].second->setVisible(false);
     m_focusPath->setCurrentIndex(5);
-    /* FIXME: Should it be 1 (ie. the same as before), or 6 (ie. the one after the intended one)?
-       Compare with what ListView is doing.
-    */
     QCOMPARE(m_focusPath->currentIndex(), 1);
 }
 
@@ -283,6 +286,87 @@ void FocusPathTest::testOrderChange()
     /* Cehck if the item with index 3 is the new item */
     m_focusPath->setCurrentIndex(3);
     QCOMPARE(m_focusPath->currentItem()->property("itemData").toString(), QString("newItem3"));
+}
+
+/*
+ * Test remove the first item from the path
+ */
+void FocusPathTest::testMakeFirstInvisible()
+{
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    m_focusPath->path()[0].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+}
+
+/*
+ * Test remove the last item from the path
+ */
+void FocusPathTest::testMakeLastInvisibile()
+{
+    int lastIndex = m_focusPath->path().size() - 1;
+    m_focusPath->setCurrentIndex(lastIndex);
+    m_focusPath->path()[lastIndex].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), lastIndex-1);
+}
+
+
+/*
+ * Test remove any previous item from the path
+ */
+void FocusPathTest::testSetPreviousItemInvisible()
+{
+    int oldSize = m_focusPath->path().size();
+    m_focusPath->setCurrentIndex(5);
+    m_focusPath->path()[1].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 5);
+    QCOMPARE(m_focusPath->path().size(), oldSize - 1);
+}
+
+/*
+ * Test remove any next item from the path
+ */
+void FocusPathTest::testSetNextItemInvisible()
+{
+    int oldSize = m_focusPath->path().size();
+    m_focusPath->setCurrentIndex(5);
+    m_focusPath->path()[7].second->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 5);
+    QCOMPARE(m_focusPath->path().size(), oldSize - 1);
+}
+
+/*
+ * Teste insert a item in the beginer
+ */
+void FocusPathTest::testMakeFirstVisible()
+{
+    QDeclarativeItem *firstItem = m_focusPath->path()[0].second;
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+    firstItem->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+    m_focusPath->setCurrentIndex(0);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+    firstItem->setVisible(true);
+    QCOMPARE(m_focusPath->currentIndex(), 1);
+    m_focusPath->setCurrentIndex(0);
+    QCOMPARE(m_focusPath->currentIndex(), 0);
+}
+
+/*
+ * Test insert a item in the end of the path
+ */
+void FocusPathTest::testMakeLastVisible()
+{
+    int lastIndex = m_focusPath->path().size() - 1;
+    QDeclarativeItem *lastItem = m_focusPath->path()[lastIndex].second;
+
+    m_focusPath->setCurrentIndex(lastIndex);
+    lastItem->setVisible(false);
+    QCOMPARE(m_focusPath->currentIndex(), lastIndex - 1);
+    m_focusPath->setCurrentIndex(lastIndex);
+    QCOMPARE(m_focusPath->currentIndex(), lastIndex - 1);
+    lastItem->setVisible(true);
+    m_focusPath->setCurrentIndex(lastIndex);
+    QCOMPARE(m_focusPath->currentIndex(), lastIndex);
 }
 
 
