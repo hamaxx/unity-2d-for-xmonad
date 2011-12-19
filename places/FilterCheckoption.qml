@@ -31,12 +31,14 @@ Filter {
         rows: Math.ceil(count/columns)
 
         horizontalSpacing: 10
-        verticalSpacing: 12
+        verticalSpacing: 14
 
         cellWidth: width/columns
         delegateHeight: 30
 
-        height: cellHeight * rows
+        /* Substracting verticalSpacing so that the last row does
+           not have padding below it */
+        height: cellHeight * rows - verticalSpacing
         boundsBehavior: Flickable.StopAtBounds
 
         focus: true
