@@ -58,7 +58,7 @@ AbstractButton {
                       else return "#21ffffff" // 80% opaque
         border.width: ( checked ) ? 2 : 1
         color: ( checked ) ? "#21ffffff" : "transparent"
-        radius: 5
+        radius: 7
     }
 
     TextCustom {
