@@ -101,6 +101,7 @@ DropItem {
     }
 
     signal clicked(variant mouse)
+    signal pressed(variant mouse)
     signal entered
     signal exited
 
@@ -179,6 +180,7 @@ DropItem {
             onClicked: item.clicked(mouse)
             onEntered: item.entered()
             onExited: item.exited()
+            onPressed: item.pressed(mouse)
         }
 
         /* This is the for centering the actual tile in the launcher */
