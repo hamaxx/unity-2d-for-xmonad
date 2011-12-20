@@ -195,7 +195,7 @@ DropItem {
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
-                opacity: 0
+                opacity: 1
 
                 SequentialAnimation on opacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
