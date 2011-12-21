@@ -22,7 +22,7 @@ BaseBehavior {
 
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
+        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 }
