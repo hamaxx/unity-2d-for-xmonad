@@ -99,16 +99,11 @@ QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize)
 {
-    /* Throw away the part of the id after the @ (if any) since it's just a timestamp
-       added to force the QML image cache to request to this image provider
-       a new image instead of re-using the old. See SpreadWindow.qml for more
-       details on the problem. */
-    int atPos = id.indexOf('@');
-    QString windowIds = (atPos == -1) ? id : id.left(atPos);
+    QString windowIds = id;
 
-    /* After doing this, split the rest of the id on the character "|". The first
-       part is the window ID of the decorations, the latter of the actual content. */
-    atPos = windowIds.indexOf('|');
+    /* Split the id on the character "|". The first part is the window ID of
+       the decorations, the latter of the actual content. */
+    int atPos = windowIds.indexOf('|');
     Window frameId = ((atPos == -1) ? windowIds : windowIds.left(atPos)).toULong();
     Window contentId = ((atPos == -1) ? windowIds : windowIds.mid(atPos + 1)).toULong();
 
@@ -134,7 +129,7 @@ QImage WindowImageProvider::requestImage(const QString &id,
 
     if (!image.isNull()) {
         if (requestedSize.isValid()) {
-            image = image.scaled(requestedSize);
+            image = image.scaled(requestedSize, Qt::KeepAspectRatio);
         }
         size->setWidth(image.width());
         size->setHeight(image.height());

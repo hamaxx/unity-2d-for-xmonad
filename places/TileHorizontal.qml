@@ -113,6 +113,7 @@ RendererGrid {
                     text: displayName
                     color: button.state == "pressed" ? "#5e5e5e" : "#ffffff"
                     elide: Text.ElideMiddle
+                    fontSize: "small"
 
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -125,6 +126,7 @@ RendererGrid {
 
                     text: comment
                     color: button.state == "pressed" ? "#888888" : "#cccccc"
+                    fontSize: "small"
 
                     anchors.left: parent.left
                     anchors.right: parent.right

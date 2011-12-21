@@ -3,6 +3,7 @@
 #define INSTALL_BINDIR "@CMAKE_INSTALL_BINDIR@"
 #define UNITY_2D_DIR "@UNITY_2D_DIR@"
 #define UNITY_DIR "@UNITY_DIR@"
+#define UNITY_2D_SCHEMA_FILE "@UNITY_2D_SCHEMA_FILE@"
 
 #include <QCoreApplication>
 #include "qconf.h"

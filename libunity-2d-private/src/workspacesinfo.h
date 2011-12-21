@@ -53,8 +53,14 @@ private:
     static bool globalEventFilter(void* message);
     static void internX11Atoms();
     void updateWorkspaceGeometry();
+    bool getWorkspaceCountFromX(int& workspaceCount);
+    bool getWorkspaceLayoutFromX(Orientation& orientation, int& columns, int& rows, Corner& startingCorner);
+    void setWorkspaceCountToX(int workspaceCount);
+    void setWorkspaceLayoutToX(Orientation orientation, int columns, int rows, Corner startingCorner);
+    void updateWorkspaceGeometryProperties(int workspaceCount, Orientation orientation, int columns, int rows, Corner startingCorner);
     void updateCurrentWorkspace();
     unsigned long * getX11IntProperty(Atom property, long length);
+    void setX11IntProperty(Atom property, unsigned char *data, long length);
 
 private:
     int m_count;

@@ -1,0 +1,104 @@
+----
+ * Mouse over a tile in the launcher (which displays tooltip). 
+ * Press Super+S
+
+-> Tooltip disappears, spread appears (lp:881458)
+
+----
+ * Have Launcher hidden. 
+ * Bring mouse over panel
+ * Move it directly to the left, so it stays over panel
+
+-> Launcher stays hidden - it should not reveal (lp:891636)
+
+----
+ * RTL: Open Dash
+ * perform a simple search
+ * click on an application icon
+
+-> Application launches - should not crash (lp:836498)
+
+----
+ * Press Alt-F1
+
+-> Launcher revealed with Dash button focused - Pressing Alt-F1 again should toggle the focus between launcher and applications (lp:885304)
+
+----
+ * Launcher visible, scrolled down, hit Super
+
+-> Launcher reposition to beginning - and its tooltips/menus should hide. (lp:876632)
+
+----
+ * Press Alt-F1, select the trash icon using the keyboard.
+
+-> Trash icon gets highlighted - The highlight effect should not be truncated on top and bottom (lp:876589)
+
+----
+ * Launch an application. Open the context menu of the same application tile in launcher. Hit Alt-F4
+
+-> The visible context is updated - closing the application should be notified in launcher menu(lp:784541)
+
+----
+ * Right-click on a non running application tile in the launcher. Click the "Remove from Launcher" option.
+
+-> Launcher is still shown for a while - it should not close immediately  (lp:884410)
+
+----
+ * Press Right Mouse Button over an application tile in the launcher. Do not release.
+
+-> Menu is shown - it should not show on button release (lp:813036)
+
+----
+ * Press Right Mouse Button over an application tile in the launcher, do not release, move mouse up/down
+
+-> Launcher does not scroll (lp:813041)
+
+----
+ * Press Left Mouse Button over an application tile in the launcher, do not release
+ * Move mouse up/down, release Left Mouse Button
+ * while the icons are going back to their original position press Right Mouse Button and try to continue the dragging
+
+-> Launcher keeps going back to its original position - you should not be able to continue a dragging with Right Mouse Button
+
+----
+ * Have the Launcher hidden. Move the mouse over the panel. Move mouse to the left edge the panel.
+
+-> Launcher is not revealed - moving the cursor in the top left corner of the panel shouldn't reveal launcher(lp:891636)
+
+----
+ * Start the launcher with a maximized window under it. 
+ * Watch the launcher autohide. 
+ * Alt+Tab to another maximized window. 
+ * Move the mouse to the leftmost part of the screen. 
+ * Watch launcher show. 
+ * Keeping the mouse at the leftmost part of the screen move to the top panel. 
+ * Wait one second
+
+-> Launcher is hidden - The launcher should not still be visible when you have the mouse on the top panel (lp:892004)
+
+----
+ * Open an application & maximize the same
+ * Hit show-desktop shortcut [Ctrl+Alt+D?] key to see the Desktop
+
+--> Launcher is revealed - Showing the Desktop should reveal launcher (lp:898161)
+
+----
+ 
+ * Drag a file(example .txt) onto a tile(gedit) in the launcher
+
+--> The application should be launched - Launch the application, if it can handle the file(s) dragged and Open the files.  If the application can't handle the files then ignore the drag-n-drop action. (lp:676549)
+
+----
+
+ * Reveal launcher
+ * Place mouse over a tile whose application is running
+
+--> Tooltip appears - The tooltip should be displayed at the center of the tile. (lp:898349)
+
+----
+
+ * Show the desktop (Ctrl+Alt+D ?) 
+
+The panel title Ubuntu Desktop is shown - The desktop title is changed from 'Desktop to 'Ubuntu Desktop'(lp:869873)
+
+----

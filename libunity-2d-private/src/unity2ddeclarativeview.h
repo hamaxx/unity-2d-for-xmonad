@@ -53,6 +53,9 @@ protected Q_SLOTS:
     void forceActivateWindow();
     void forceDeactivateWindow();
 
+private Q_SLOTS:
+    void onActiveWorkspaceChanged();
+
 private:
     void saveActiveWindow();
     void forceActivateThisWindow(WId);

@@ -24,6 +24,8 @@
 
 LauncherDropItem::LauncherDropItem(QDeclarativeItem *parent) : DeclarativeDropItem(parent)
 {
+    // Makes the LauncherDropItem a QML FocusScope
+    setFlag(QGraphicsItem::ItemIsFocusScope);
 }
 
 void LauncherDropItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)

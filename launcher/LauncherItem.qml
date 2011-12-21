@@ -52,10 +52,12 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
-    property int padding
-    height: tileSize + padding
+    height: selectionOutlineSize
 
+    property bool isBfb: false
     property int tileSize
+    property int selectionOutlineSize
+    property alias name: looseItem.objectName
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation
@@ -100,6 +102,7 @@ DropItem {
     }
 
     signal clicked(variant mouse)
+    signal pressed(variant mouse)
     signal entered
     signal exited
 
@@ -131,8 +134,9 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
+            objectName: "active"
             anchors.right: parent.right
-            y: item.height - item.tileSize / 2 - height / 2
+            y: item.height - item.selectionOutlineSize / 2 - height / 2
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
@@ -152,12 +156,13 @@ DropItem {
         Repeater {
             model: item.pips
             delegate: Image {
+                objectName: "pips"
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                y: item.height - item.tileSize / 2 - height / 2 + getPipOffset(index)
+                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
                 mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
@@ -176,6 +181,7 @@ DropItem {
             onClicked: item.clicked(mouse)
             onEntered: item.entered()
             onExited: item.exited()
+            onPressed: item.pressed(mouse)
         }
 
         /* This is the for centering the actual tile in the launcher */
@@ -183,8 +189,7 @@ DropItem {
             id: tile
             width: item.tileSize
             height: item.tileSize
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.centerIn: parent
 
             /* This is the image providing the background image. The
                color blended with this image is obtained from the color of the icon when it's
@@ -192,9 +197,11 @@ DropItem {
                While the application is launching, this will fade out and in. */
             Image {
                 id: tileBackground
+                objectName: "tileBackground"
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
+                opacity: 1
 
                 SequentialAnimation on opacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -208,6 +215,13 @@ DropItem {
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
                 source: {
+                    if (isBfb) {
+                        if(launcherView.focus && item.activeFocus) {
+                            return "artwork/squircle_base_selected_54.png"
+                        } else {
+                            return "artwork/squircle_base_54.png"
+                        }
+                    }
                     var actualColor = launcherView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg("artwork/round_corner_54x54.png")
@@ -242,6 +256,7 @@ DropItem {
             /* This is just the main icon of the tile */
             Image {
                 id: icon
+                objectName: "icon"
                 anchors.centerIn: parent
                 smooth: true
 
@@ -269,16 +284,17 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                source: "artwork/round_shine_54x54.png"
+                source: isBfb ? "artwork/squircle_shine_54.png" : "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
             }
 
             Image {
                 id: selectionOutline
+                objectName: "selectionOutline"
                 anchors.centerIn: parent
                 smooth: true
-                source: "artwork/round_selected_66x66.png"
+                source:  isBfb ? "artwork/squircle_glow_54.png" : "artwork/round_selected_66x66.png"
                 visible: launcherView.focus && item.activeFocus
             }
 
@@ -310,6 +326,7 @@ DropItem {
 
             Image {
                 id: progressBar
+                objectName: "progressBar"
                 source: "artwork/progress_bar_trough.png"
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left

@@ -60,13 +60,11 @@ private Q_SLOTS:
     void toggleDash();
     void showCommandsLens();
     void onSuperSPressed();
+    void onAltF1Pressed();
 
 protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
-
-private:
-    void positionAtBeginning();
 
 private:
     bool m_superKeyPressed;

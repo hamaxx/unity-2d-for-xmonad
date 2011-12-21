@@ -21,14 +21,17 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
+    Accessible.name: objectName
 
-    /* The spacing is explicitly set to 0 and compensated for
-       by adding some padding to the items because of
-       http://bugreports.qt.nokia.com/browse/QTBUG-17622. */
-    spacing: 0
-    property int itemPadding: 5
+    /* The spacing is explicitly set to -8 in order to compensate
+       the space added by selectionOutline and round_corner_54x54.png. */
+    spacing: -8
 
     property int tileSize: 54
+
+    /* selectionOutline tile size, so AutoScrollingList view can calculate
+       the right height. */
+    property int selectionOutlineSize:  66
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -87,10 +90,11 @@ AutoScrollingListView {
         }
 
         Accessible.name: accessibleDescription()
+        name: item.name
 
         width: list.width
         tileSize: list.tileSize
-        padding: list.itemPadding
+        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
@@ -133,16 +137,16 @@ AutoScrollingListView {
         onDragEnter: item.onDragEnter(event)
         onDrop: item.onDrop(event)
 
+        isBfb: (item.toString().indexOf("BfbItem") == 0)
+
         function showMenu() {
             /* Prevent the simultaneous display of multiple menus */
             if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            // FIXME: The extra 2 pixels are needed to center the menu arrow with
-            // the center of the tile.
             item.menu.show(width, panel.y + list.y - list.contentY +
-                                  y + height - tileSize / 2 - 2)
+                                  y + height - selectionOutlineSize / 2)
 
         }
 
@@ -151,7 +155,13 @@ AutoScrollingListView {
                 item.menu.hide()
                 item.activate()
             }
-            else if (mouse.button == Qt.RightButton) {
+            else if (mouse.button == Qt.MidButton) {
+                item.launchNewInstance()
+            }
+        }
+        
+        onPressed: {
+            if (mouse.button == Qt.RightButton) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
                    adjusts the position of the menu in case it goes offscreen
@@ -159,9 +169,6 @@ AutoScrollingListView {
                    See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
                 item.menu.folded = false
-            }
-            else if (mouse.button == Qt.MidButton) {
-                item.launchNewInstance()
             }
         }
 

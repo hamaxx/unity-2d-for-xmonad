@@ -53,7 +53,6 @@ AbstractButton {
         anchors.bottom: underline.top
         anchors.bottomMargin: 5
         anchors.left: parent.left
-        anchors.leftMargin: 8
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -74,7 +73,7 @@ AbstractButton {
 
         visible: availableCount > 0
         anchors.left: title.right
-        anchors.leftMargin: 11
+        anchors.leftMargin: 14
         anchors.baseline: title.baseline
 
         opacity: ( categoryHeader.state == "selected" || categoryHeader.state == "pressed"
@@ -109,7 +108,7 @@ AbstractButton {
             folded: categoryHeader.folded
             anchors.left: label.right
             anchors.leftMargin: 10
-            anchors.verticalCenter: label.verticalCenter
+            anchors.bottom: label.baseline
         }
     }
 
