@@ -11,3 +11,9 @@
 --> Dash opens and "Run a command" is shown in the search field - (lp:883392)
 
 ----
+
+ * Hit super key to Open Dash, select the file lens and press right arrow key
+
+--> The text "Filter results" gets highlighted and no underline is shown.
+
+----
