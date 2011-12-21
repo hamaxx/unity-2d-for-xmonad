@@ -27,25 +27,55 @@ Item {
 
     Accessible.name: "shell"
 
-    Launcher {
-        id: launcher
-
+    LauncherLoader {
+        id: launcherLoader
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: launcher2dConfiguration.thickness
-        x: launcher.shown ? 0 : -width
-        showMenus: !dashLoader.item.active
+        x: visibilityController.shown ? 0 : -width
+
+        KeyNavigation.right: dashLoader
+
+        Binding {
+            target: launcherLoader.item
+            property: "showMenus"
+            value: !dashLoader.item.active
+        }
 
         Behavior on x { NumberAnimation { duration: 125 } }
-        KeyNavigation.right: dashLoader
+
+        onLoaded: if (declarativeView.dashActive) {
+            launcherLoader.visibilityController.forceVisibleBegin("dash")
+        }
+
+        Connections {
+            target: declarativeView
+            onDashActiveChanged: {
+                if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
+                else launcherLoader.visibilityController.endForceVisible("dash")
+            }
+        }
+
+        SpreadMonitor {
+            id: spread
+            enabled: true
+            onShownChanged: if (shown) {
+                                /* The the spread grabs input and Qt can't properly
+                                   detect we've lost input, so explicitly hide the menus */
+                                launcherLoader.item.hideMenu()
+                                launcherLoader.visibilityController.beginForceVisible("spread")
+                            }
+                            else launcherLoader.visibilityController.endForceVisible("spread")
+        }
     }
+
 
     Loader {
         id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        x: launcher.width
-        KeyNavigation.left: launcher
+        x: launcherLoader.width
+        KeyNavigation.left: launcherLoader
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
@@ -53,15 +83,15 @@ Item {
         Binding {
             target: dashLoader.item
             property: "fullscreenWidth"
-            value: screen.availableGeometry.width - launcher.width
+            value: screen.availableGeometry.width - launcherLoader.width
         }
     }
 
     Connections {
         target: declarativeView
         onLauncherFocusRequested: {
-            launcher.focus = true
-            launcher.focusBFB()
+            launcherLoader.focus = true
+            launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
@@ -70,7 +100,7 @@ Item {
                Therefore I'm working around this by giving focus to the shell, which is safe since
                the shell doesn't react to activeFocus at all.
                See: https://bugreports.qt.nokia.com/browse/QTBUG-19688 */
-            if (!declarativeView.focus && launcher.activeFocus) shell.focus = true
+            if (!declarativeView.focus && launcherLoader.activeFocus) shell.focus = true
         }
     }
 

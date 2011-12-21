@@ -101,7 +101,6 @@ private Q_SLOTS:
 
     void toggleDash();
     void showCommandsLens();
-    void onSuperSPressed();
     void onAltF1Pressed();
 
 protected:

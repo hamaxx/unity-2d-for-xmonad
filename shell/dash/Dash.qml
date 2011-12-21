@@ -234,7 +234,7 @@ FocusScope {
                 source: dash.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
 
                 fillMode: Image.PreserveAspectCrop
-                x: -launcher.width
+                x: -launcherLoader.width
                 y: -declarativeView.globalPosition.y
             }
 

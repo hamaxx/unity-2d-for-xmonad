@@ -17,7 +17,7 @@ BaseBehavior {
 
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
+        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 

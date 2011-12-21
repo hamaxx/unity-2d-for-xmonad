@@ -25,39 +25,9 @@ LauncherDropItem {
     id: launcher
     Accessible.name: "launcher"
 
-    property bool outerEdgeContainsMouse: outerEdge.containsMouse && outerEdge.enabled
-    property alias shown: visibilityController.shown
+    property bool outerEdgeContainsMouse
+    property bool shown
     property bool showMenus: true
-
-    VisibilityController {
-        id: visibilityController
-        behavior: visibilityBehavior.status == Loader.Ready ? visibilityBehavior.item : null
-    }
-
-    Loader {
-        id: visibilityBehavior
-
-        property variant modesMap: { 0: '../common/AlwaysVisibleBehavior.qml',
-                                     1: 'AutoHideBehavior.qml',
-                                     2: 'IntelliHideBehavior.qml' }
-
-        source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
-    }
-
-    Binding {
-        target: visibilityBehavior
-        property: "item.target"
-        value: launcher
-        when: visibilityBehavior.status == Loader.Ready
-    }
-
-    MouseArea {
-        id: outerEdge
-        anchors.fill: parent
-        anchors.margins: -1
-        hoverEnabled: !visibilityController.shown
-        enabled: !visibilityController.shown
-    }
 
     Binding {
         target: declarativeView
@@ -239,10 +209,6 @@ LauncherDropItem {
         target: declarativeView
         // FIXME: copy methods over
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
-        onSuperKeyHeldChanged: {
-            if (superKeyHeld) visibilityController.beginForceVisible()
-            else visibilityController.endForceVisible()
-        }
     }
 
     Connections {
@@ -255,27 +221,6 @@ LauncherDropItem {
             /* index does not need to be translated because we know that
                applications are always first in the list. */
             main.positionViewAtIndex(index, ListView.Center)
-        }
-    }
-
-    /* FIXME: should be moved to shell; that requires having visibilityController exposed */
-    SpreadMonitor {
-        id: spread
-        enabled: true
-        onShownChanged: if (shown) {
-                            /* The the spread grabs input and Qt can't properly
-                               detect we've lost input, so explicitly hide the menus */
-                            hideMenu()
-                            visibilityController.beginForceVisible("spread")
-                        }
-                        else visibilityController.endForceVisible("spread")
-    }
-
-    Connections {
-        target: declarativeView
-        onDashActiveChanged: {
-            if (declarativeView.dashActive) visibilityController.beginForceVisible("dash")
-            else visibilityController.endForceVisible("dash")
         }
     }
 }
