@@ -7,7 +7,7 @@ BaseBehavior {
 
     property bool shownRegardlessOfFocus: true
 
-    shown: target.activeFocus || shownRegardlessOfFocus
+    shown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
 
     Timer {
         id: edgeHitTimer
