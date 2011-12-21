@@ -5,7 +5,7 @@ BaseBehavior {
     id: autoHide
     property bool shownRegardlessOfFocus: true
 
-    shown: target.activeFocus || shownRegardlessOfFocus
+    shown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
 
     Timer {
         id: autoHideTimer
@@ -22,7 +22,7 @@ BaseBehavior {
 
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = outerEdgeContainsMouse
+        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
         ignoreUnknownSignals: true
     }
 }

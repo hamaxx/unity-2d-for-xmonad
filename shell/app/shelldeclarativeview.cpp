@@ -89,10 +89,6 @@ ShellDeclarativeView::ShellDeclarativeView()
     Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
     connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
 
-    /* Super+S before 'Spread'ing, close all the contextual menus/tooltips in the launcher. */
-    Hotkey* superS = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_S, Qt::MetaModifier);
-    connect(superS, SIGNAL(pressed()), SLOT(onSuperSPressed()));
-
     /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
     for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
@@ -318,15 +314,6 @@ ShellDeclarativeView::showCommandsLens()
     // TODO: do this directly, instead of over dbus
     QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
     dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
-}
-
-/* BUGFIX:881458 */
-void
-ShellDeclarativeView::onSuperSPressed()
-{
-    // TODO: do this via a signal, because the root object is not the launcher anymore
-    QGraphicsObject* launcher = rootObject();
-    QMetaObject::invokeMethod(launcher, "hideMenu", Qt::AutoConnection);
 }
 
 void
