@@ -65,27 +65,14 @@ FocusScope {
 
         TextCustom {
             id: title
-            property int underlineWidth
 
             text: u2d.tr("Filter results")
             font.bold: true
             fontSize: "large"
-            font.underline: parent.state == "selected"
 
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: arrow.left
             anchors.rightMargin: 10
-            /* the font underline adds 1 pixel. lp:893061 */
-            onFontChanged: {
-                if (font.underline == false) {
-                    if( width != 0 )
-                        width = underlineWidth
-                } else {
-                    underlineWidth = width
-                    width = underlineWidth
-                }
-
-            }
         }
 
         FoldingArrow {
