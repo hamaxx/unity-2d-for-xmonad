@@ -54,6 +54,7 @@ DropItem {
 
     height: selectionOutlineSize
 
+    property bool isBfb: false
     property int tileSize
     property int selectionOutlineSize
     property alias name: looseItem.objectName
@@ -200,6 +201,7 @@ DropItem {
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
+                opacity: 1
 
                 SequentialAnimation on opacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -213,6 +215,13 @@ DropItem {
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
                 source: {
+                    if (isBfb) {
+                        if(launcherView.focus && item.activeFocus) {
+                            return "artwork/squircle_base_selected_54.png"
+                        } else {
+                            return "artwork/squircle_base_54.png"
+                        }
+                    }
                     var actualColor = launcherView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg("artwork/round_corner_54x54.png")
@@ -275,7 +284,7 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                source: "artwork/round_shine_54x54.png"
+                source: isBfb ? "artwork/squircle_shine_54.png" : "artwork/round_shine_54x54.png"
                 sourceSize.width: item.tileSize
                 sourceSize.height: item.tileSize
             }
@@ -285,7 +294,7 @@ DropItem {
                 objectName: "selectionOutline"
                 anchors.centerIn: parent
                 smooth: true
-                source: "artwork/round_selected_66x66.png"
+                source:  isBfb ? "artwork/squircle_glow_54.png" : "artwork/round_selected_66x66.png"
                 visible: launcherView.focus && item.activeFocus
             }
 
