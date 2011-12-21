@@ -192,7 +192,7 @@ void FocusPath::updatePosition(int index)
         (index < m_path.size())) {
         QDeclarativeItem* focus = m_path[index].second;
         Q_ASSERT(focus);
-        focus->forceActiveFocus();
+        focus->setFocus(true);
         m_currentPosition = index;
         Q_EMIT currentIndexChanged();
         Q_EMIT currentItemChanged();
