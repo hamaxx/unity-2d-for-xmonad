@@ -457,12 +457,14 @@ module XDo
       end
       alias activate_desktop focus_desktop
       
-      #Minimize all windows (or restore, if already) by sending [CTRL]+[ALT]+[D].
+      #Minimize all windows (or restore, if already) by sending key combination 
+      # either [CTRL]+[ALT]+[D] or [SUPER}+[D]. Check with Metacity which one.
       #Available after requireing  "xdo/keyboard".
       #===Return value
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  #Everything will be minimized:
       #  XDo::XWindow.toggle_minimize_all
@@ -470,7 +472,14 @@ module XDo
       #  XDo::XWindow.toggle_minimize_all
       def toggle_minimize_all
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.ctrl_alt_d
+        #Get Metacity keystroke for minimize all
+        key = '/apps/metacity/global_keybindings/show_desktop'
+        out = ""
+        err = "Unable to determine keyboard shortcut for 'Show Desktop' from Metacity - check the value of #{key} and that gconftool-2 is installed"
+        Open3.popen3("gconftool-2 -g #{key}"){|stdin, stdout, stderr| out << stdout.read.strip; err << stderr.read.strip}
+        Kernel.raise(LoadError, err) unless err.empty? or !out.empty?
+        #Emit keystroke
+        XDo::Keyboard.key(out.to_s.gsub('<','').gsub('>','+'))
       end
       
       #Minimizes the active window. There's no way to restore a specific minimized window.
@@ -479,11 +488,19 @@ module XDo
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  XDo::XWindow.minimize
       def minimize
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.key("Alt+F9")
+        #Get Metacity keystroke to minimize window
+        key = '/apps/metacity/window_keybindings/minimize'
+        out = ""
+        err = "Unable to determine keyboard shortcut for 'Minimize Window' from Metacity - check the value of #{key} and that gconftool-2 is installed"
+        Open3.popen3("gconftool-2 -g #{key}"){|stdin, stdout, stderr| out << stdout.read.strip; err << stderr.read.strip}
+        Kernel.raise(LoadError, err) unless err.empty? or !out.empty?
+        #Emit keystroke
+        XDo::Keyboard.key(out.to_s.gsub('<','').gsub('>','+'))
       end
       
       #Maximize or normalize the active window if already maximized.
@@ -492,12 +509,20 @@ module XDo
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  XDo::XWindow.minimize
       #  XDo::XWindow.toggle_maximize
       def toggle_maximize
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.key("Alt+F10")
+        #Get Metacity keystroke to maximize window
+        key = '/apps/metacity/window_keybindings/maximize'
+        out = ""
+        err = "Unable to determine keyboard shortcut for 'Maximize Window' from Metacity - check the value of #{key} and that gconftool-2 is installed"
+        Open3.popen3("gconftool-2 -g #{key}"){|stdin, stdout, stderr| out << stdout.read.strip; err << stderr.read.strip}
+        Kernel.raise(LoadError, err) unless err.empty? or !out.empty?
+        #Emit keystroke
+        XDo::Keyboard.key(out.to_s.gsub('<','').gsub('>','+'))
       end
       
     end
@@ -883,11 +908,13 @@ module XDo
       XDo::XWindow.id_exists?(@id)
     end
     
-    #Closes a window by activating it and then sending [ALT] + [F4].
+    #Closes a window by activating it and then sending the Window close key combination,
+    #most probably [ALT] + [F4].
     #===Return value
     #nil.
     #===Raises
     #[NotImplementedError] You didn't require "xdo/keyboard".
+    #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
     #===Example
     #  xwin.close
     #===Remarks
@@ -899,7 +926,14 @@ module XDo
     def close
       Kernel.raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
       activate
-      XDo::Keyboard.char("Alt+F4")
+      #Get Metacity keystroke to maximize window
+      key = '/apps/metacity/window_keybindings/close'
+      out = ""
+      err = "Unable to determine keyboard shortcut for 'Close Window' from Metacity - check the value of #{key} and that gconftool-2 is installed"
+      Open3.popen3("gconftool-2 -g #{key}"){|stdin, stdout, stderr| out << stdout.read.strip; err << stderr.read.strip}
+      Kernel.raise(LoadError, err) unless err.empty? or !out.empty?
+      #Emit keystroke
+      XDo::Keyboard.key(out.to_s.gsub('<','').gsub('>','+'))
       sleep 0.5
       nil
     end
