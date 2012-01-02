@@ -85,7 +85,7 @@ void WindowsList::load()
     QList<BamfApplication*> applications;
 
     /* List the windows of all the applications */
-    BamfApplicationList *allapplications = matcher.applications();
+    QScopedPointer<BamfApplicationList> allapplications(matcher.applications());
     for (int i = 0; i < allapplications->size(); i++) {
          applications.append(allapplications->at(i));
     }
@@ -97,7 +97,7 @@ void WindowsList::load()
             continue;
         }
 
-        BamfWindowList *bamfWindows = application->windows();
+        QScopedPointer<BamfWindowList> bamfWindows(application->windows());
         for (int i = 0; i < bamfWindows->size(); i++) {
             BamfWindow* window = bamfWindows->at(i);
             if (!window->user_visible()) {
