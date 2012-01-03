@@ -28,6 +28,7 @@ Item {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+    property variant queuedLensId
 
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
@@ -81,6 +82,12 @@ Item {
     }
 
     function activateLens(lensId) {
+        /* check if lenses variable was populated already */
+        if (lenses.rowCount() == 0) {
+            queuedLensId = lensId
+            return
+        }
+
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
@@ -137,6 +144,25 @@ Item {
     }
 
     property variant lenses: Lenses {}
+
+    /* If unity-2d-places is launched on demand by an activateLens() dbus call,
+       "lenses" is not yet populated, so activating "commands.lens",
+       for example, triggered by Alt+F2 fails.
+       This following connection fixes this issue by checking if any lenses
+       should be activated as long as "lenses" is being populated. lp:883392 */
+    Connections {
+        target: lenses
+        onRowsInserted: {
+            if (queuedLensId != "") {
+                var lens = lenses.get(queuedLensId)
+                if (lens != null) {
+                    activateLens(queuedLensId)
+                    queuedLensId = "";
+                    return
+                }
+            }
+        }
+    }
 
     Item {
         id: background
