@@ -56,6 +56,8 @@ BamfWindow* WindowInfo::getBamfWindowForApplication(BamfApplication *application
         window = windows->at(i);
         if (window->xid() == xid) {
             break;
+        } else {
+            window = NULL;
         }
     }
 
