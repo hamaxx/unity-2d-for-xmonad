@@ -763,7 +763,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
 
     if (compiz.isValid()) {
         Qt::HANDLE root = QX11Info::appRootWindow();
-        BamfUintList* xids = m_application->xids();
+        QScopedPointer<BamfUintList> xids(m_application->xids());
         QStringList fragments;
         for (int i = 0; i < xids->size(); i++) {
             uint xid = xids->at(i);
