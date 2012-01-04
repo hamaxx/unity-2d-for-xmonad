@@ -127,3 +127,18 @@ Description: Unity 2D Spread
  switch to. It is part of Unity 2D and can not run  as a standalone application
  outside of the Unity 2D environment.
 
+Package: unity-2d-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+    unity-2d (= ${binary:Version}),
+    ${misc:Depends}
+Description: Debugging symbols for unity-2d
+ The Unity 2D interface installs a fully usable 2D session and provides the 
+ common configuration files and defaults. Installing this package will 
+ offer a session called Unity 2D in your login manager.
+ .
+ Unity 2D is designed to run smoothly without any graphics acceleration.
+ .
+ This package contains the debugging symbols for giblib1.
