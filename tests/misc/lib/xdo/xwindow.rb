@@ -457,12 +457,14 @@ module XDo
       end
       alias activate_desktop focus_desktop
       
-      #Minimize all windows (or restore, if already) by sending [CTRL]+[ALT]+[D].
+      #Minimize all windows (or restore, if already) by sending key combination 
+      #either [CTRL]+[ALT]+[D] or [SUPER]+[D]. Check with window manager which one.
       #Available after requireing  "xdo/keyboard".
       #===Return value
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  #Everything will be minimized:
       #  XDo::XWindow.toggle_minimize_all
@@ -470,7 +472,8 @@ module XDo
       #  XDo::XWindow.toggle_minimize_all
       def toggle_minimize_all
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.ctrl_alt_d
+        #Emit window manager keystroke for minimize all/show desktop
+        XDo::Keyboard.key(get_window_manager_keystroke('show_desktop'))
       end
       
       #Minimizes the active window. There's no way to restore a specific minimized window.
@@ -479,11 +482,13 @@ module XDo
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  XDo::XWindow.minimize
       def minimize
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.key("Alt+F9")
+        #Emit window manager keystroke to minimize window
+        XDo::Keyboard.key(get_window_manager_keystroke('minimize'))
       end
       
       #Maximize or normalize the active window if already maximized.
@@ -492,14 +497,46 @@ module XDo
       #Undefined.
       #===Raises
       #[NotImplementedError] You didn't require 'xdo/keyboard'.
+      #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
       #===Example
       #  XDo::XWindow.minimize
       #  XDo::XWindow.toggle_maximize
       def toggle_maximize
         raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
-        XDo::Keyboard.key("Alt+F10")
+        #Get window manager keystroke to maximize window
+        XDo::Keyboard.key(get_window_manager_keystroke('maximize'))
       end
-      
+
+    #Returns keystroke string to control window manager (maximise, show desktop...)
+    #Currently only supports Metacity, and hence reads gconf settings.
+    def get_window_manager_keystroke(name)
+      #Get Metacity keystroke from gconf. Need to check 2 directories for keys
+      dirs = ['window_keybindings', 'global_keybindings']
+      root = '/apps/metacity'
+      keystroke = ''
+      out = ''
+      err = ''
+      error_message = "Unable to determine #{name} keyboard shortcut from Metacity - check that gconftool-2 is installed\n"
+
+      dirs.each do |d|
+        key = "#{root}/#{d}/#{name}"
+        Open3.popen3("#{GCONFTOOL} -g #{key}"){|stdin, stdout, stderr| out << stdout.read.strip; err << stderr.read.strip}
+        #If key doesn't exist, gconftool prints a message (including the requested key) saying so.
+        if err.empty? or !out.empty?
+          keystroke = out.to_s
+          break
+        end
+      end
+
+      #Bail if no keystroke found
+      Kernel.raise(LoadError, error_message) if keystroke.empty?
+
+      #+xdotool+ doesn't recognise '<Mod4>', use '<Super>' instead
+      keystroke.gsub!('<Mod4>','<Super>')
+      #Edit keystroke string to suit +xdotool+'s Keyboard.key command
+      keystroke.gsub!('<','').gsub!('>','+')
+      return keystroke
+    end
     end
     
     ##
@@ -883,11 +920,13 @@ module XDo
       XDo::XWindow.id_exists?(@id)
     end
     
-    #Closes a window by activating it and then sending [ALT] + [F4].
+    #Closes a window by activating it, and sending it the close keystroke (obtained
+    #from the window manager's settings, usually [ALT] + [F4]).
     #===Return value
     #nil.
     #===Raises
     #[NotImplementedError] You didn't require "xdo/keyboard".
+    #[LoadError] Unable to get gconf value, check key set and gconftool-2 installed
     #===Example
     #  xwin.close
     #===Remarks
@@ -899,7 +938,7 @@ module XDo
     def close
       Kernel.raise(NotImplementedError, "You have to require 'xdo/keyboard' before you can use #{__method__}!") unless defined? XDo::Keyboard
       activate
-      XDo::Keyboard.char("Alt+F4")
+      XDo::Keyboard.char(self.class.get_window_manager_keystroke('close'))
       sleep 0.5
       nil
     end

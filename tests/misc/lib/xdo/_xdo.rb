@@ -24,6 +24,9 @@ module XDo
   
   #The command to start xkill. 
   XKILL = "xkill"
+
+  #The command to query gconf
+  GCONFTOOL = "gconftool-2"
   
   #Class for errors in this library. 
   class XError < StandardError
