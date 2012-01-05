@@ -291,11 +291,14 @@ module XDo
       
       #Allows you to things like this: 
       #  XDo::Keyboard.ctrl_c
-      #The string will be capitalized and every _ will be replaced by a + and then passed into #char. 
+      #Every _ will be replaced by a +. If more than one character supplied 
+      #the first will be capitalised. The result is then passed into #char. 
       #You can't use this way to send whitespace or _ characters. 
       def method_missing(sym, *args, &block)
         super if args.size > 1 or block
-        char(sym.to_s.capitalize.gsub("_", "+"), args[0].nil? ? 0 : args[0])
+        keycombi = sym.to_s.gsub("_", "+")
+        keycombi[0] = keycombi[0].chr.upcase if keycombi.length > 1
+        char(keycombi, args[0].nil? ? 0 : args[0])
       end
       
       private
