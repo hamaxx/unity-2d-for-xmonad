@@ -139,6 +139,15 @@ void GnomeSessionClient::endSession()
     UQ_DEBUG;
     d->sendEndSessionResponse();
     d->m_waitingForEndSession = false;
+    // This should not be needed because technically QDBusInterface::call
+    // guarantees the dbus message has been delivered, but without this small delay
+    // gnome-session-manager sometimes never receives our EndSessionResponse
+    // ending up in a 30 seconds delay on logout until the timeout of
+    // gnome-session-manager triggers.
+    for (int i = 0; i < 5; ++i) {
+        usleep(100000);
+        QCoreApplication::processEvents();
+    }
     QCoreApplication::quit();
 }
 
