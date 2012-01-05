@@ -166,14 +166,12 @@ context "Launcher Autohide and Show Tests" do
     xid.close!
   end
 
-=begin
-  # Test disabled due to bug in Xdo::Keyboard where function keys are not accepted
   test "Press Alt+F1 to focus Launcher" do
     xid = open_window_at(10,100)
     sleep 0.5
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
                   'Launcher visible with window in the way, should be hidden' )
-    XDo::Keyboard.alt_f1
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
     sleep 0.5
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
                   'Launcher hiding after Alt+F1 pressed, should be visible' )
@@ -182,12 +180,11 @@ context "Launcher Autohide and Show Tests" do
                       .QDeclarativeItem( :name => 'Dash home' ) \
                       .QDeclarativeImage( :name => 'selectionOutline' )['visible'], 'true', \
                   'Dash icon not highlighted after Alt+F1 pressed' )
-    XDo::Keyboard.esc
+    XDo::Keyboard.escape
     sleep 2
     assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
                   'Launcher visible with window in the way and mouse moved out, should be hidden' )
     xid.close!
   end
-=end
 
 end
