@@ -49,33 +49,6 @@ FocusScope {
         value: declarativeView.dashActive
     }
 
-    /* Unload the current page when closing the dash */
-    onActiveChanged: {
-        if (!dash.active) {
-            /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                      that is about to be invalidated otherwise a crash
-                      occurs because SearchEntry has a binding that refers
-                      to currentPage and tries to access it.
-               Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                     https://bugreports.qt.nokia.com/browse/QTBUG-20692
-            */
-            deactivateActiveLens()
-            currentPage = undefined
-            // Delay the following instruction by 1 millisecond using a
-            // timer. This is enough to work around a crash that happens
-            // when the layout is mirrored (RTL locales). See QTBUG-22776
-            // for details.
-            //pageLoader.source = ""
-            delayPageLoaderReset.restart()
-        }
-    }
-
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.setSource("")
-    }
-
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
     }
