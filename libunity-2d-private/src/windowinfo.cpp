@@ -51,11 +51,13 @@ BamfWindow* WindowInfo::getBamfWindowForApplication(BamfApplication *application
     }
 
     BamfWindow *window = NULL;
-    BamfWindowList *windows = application->windows();
+    QScopedPointer<BamfWindowList> windows(application->windows());
     for (int i = 0; i < windows->size(); i++) {
         window = windows->at(i);
         if (window->xid() == xid) {
             break;
+        } else {
+            window = NULL;
         }
     }
 

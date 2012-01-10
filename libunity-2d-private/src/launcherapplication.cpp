@@ -601,8 +601,9 @@ LauncherApplication::windowCountOnCurrentWorkspace()
     int windowCount = 0;
     WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
-    for (int i = 0; i < m_application->windows()->size(); i++) {
-        BamfWindow *window = m_application->windows()->at(i);
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    for (int i = 0; i < windows->size(); i++) {
+        BamfWindow *window = windows->at(i);
         if (window == NULL) {
             continue;
         }
@@ -763,7 +764,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
 
     if (compiz.isValid()) {
         Qt::HANDLE root = QX11Info::appRootWindow();
-        BamfUintList* xids = m_application->xids();
+        QScopedPointer<BamfUintList> xids(m_application->xids());
         QStringList fragments;
         for (int i = 0; i < xids->size(); i++) {
             uint xid = xids->at(i);
