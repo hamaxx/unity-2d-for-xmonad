@@ -29,6 +29,7 @@ feature set currently available we need to take care of the following tasks (ord
 = Minor =
 
 * Remove the LauncherClient as it's now just an empty class
-* Tests were removed, do we need to put them back ?
+* Tests were removed, we need to put them back.
+  * We both need to put back the regular tests and the code in the CMakeLists.txt for the UI tests (see rev 831 from trunk)
 * Move updateDashModeDependingOnScreenGeometry to QML
 * Fix .bzrignore

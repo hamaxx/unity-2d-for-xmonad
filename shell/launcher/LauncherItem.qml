@@ -53,6 +53,7 @@ DropItem {
     anchors.horizontalCenter: parent.horizontalCenter
 
     property int tileSize
+    property alias name: looseItem.objectName
     property string desktopFile: ""
     property alias icon: icon.source
     property alias urgentAnimation: urgentAnimation
@@ -128,9 +129,12 @@ DropItem {
         /* This is the arrow shown at the right of the tile when the application is
            the active one */
         Image {
+            objectName: "active"
+
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.right: parent.right
+
             width: parent.width * 0.15
             fillMode: Image.PreserveAspectFit
             mirror: isRightToLeft()
@@ -152,6 +156,7 @@ DropItem {
         Repeater {
             model: item.pips
             delegate: Image {
+                objectName: "pips"
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
@@ -193,6 +198,7 @@ DropItem {
                While the application is launching, this will fade out and in. */
             Image {
                 id: tileBackground
+                objectName: "tileBackground"
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
@@ -239,6 +245,8 @@ DropItem {
             /* This is just the main icon of the tile */
             Image {
                 id: icon
+                objectName: "icon"
+
                 anchors.fill: parent
                 anchors.margins: parent.width * 0.056
                 smooth: true
@@ -272,6 +280,7 @@ DropItem {
 
             Image {
                 id: selectionOutline
+                objectName: "selectionOutline"
                 anchors.centerIn: parent
                 width: item.width
                 height: item.height
@@ -308,6 +317,7 @@ DropItem {
 
             Image {
                 id: progressBar
+                objectName: "progressBar"
                 source: "artwork/progress_bar_trough.png"
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom

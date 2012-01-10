@@ -21,6 +21,7 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
+    Accessible.name: objectName
 
     /* The spacing is explicitly set in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
@@ -92,6 +93,7 @@ AutoScrollingListView {
         }
 
         Accessible.name: accessibleDescription()
+        name: item.name
 
         width: list.width
         height: width

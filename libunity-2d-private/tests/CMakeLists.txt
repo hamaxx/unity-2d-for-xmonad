@@ -4,7 +4,7 @@ configure_file(config-test.h.in config-test.h)
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     ${libunity-2d-private_SOURCE_DIR}/Unity2d
-    ${CMAKE_SOURCE_DIR}/tests
+    ${CMAKE_SOURCE_DIR}/tests/misc
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GLIB_INCLUDE_DIRS}
     ${QT_QTTEST_INCLUDE_DIR}
@@ -17,7 +17,7 @@ macro(libunity_2d_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
         add_test(NAME ${_test} 
-            COMMAND /bin/bash ${CMAKE_SOURCE_DIR}/tests/run-with-xvfb.sh ./${_test}
+            COMMAND /bin/bash ${CMAKE_SOURCE_DIR}/tests/misc/run-with-xvfb.sh ./${_test}
             )
         add_executable(${_test} ${_test}.cpp ${_test}.moc)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
