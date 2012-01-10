@@ -22,7 +22,7 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 AutoScrollingListView {
     id: list
 
-    /* The spacing is explicitly set to -8 in order to compensate
+    /* The spacing is explicitly set in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
     spacing: -width * 0.12 // FIXME: live update broken by this code
 
