@@ -1,14 +1,10 @@
 config.h
 
-launcher/app/unity-2d-launcher
-launcher/app/launcheradaptor.*
-launcher/app/unity-2d-launcher.service
-launcher/tests/launchermenutest
-launcher/tests/launcherviewtest
-
-places/app/unity-2d-places
-places/app/unity-2d-places.service
-places/app/dashadaptor.*
+shell/app/dashadaptor.*
+shell/app/launcheradaptor.*
+shell/app/unity-2d-launcher.service
+shell/app/unity-2d-places.service
+shell/app/unity-2d-shell
 
 spread/app/unity-2d-spread
 spread/app/unity-2d-spread.service
@@ -37,6 +33,7 @@ libunity-2d-private/tests/focuspathtest
 libunity-2d-private/tests/paneltest
 libunity-2d-private/tests/qsortfilterproxymodeltest
 libunity-2d-private/tests/unity2dtrtest
+libunity-2d-private/tests/unity2dtrtest.sh
 libunity-2d-private/Unity2d/qrc_launchermenu.cxx
 libunity-2d-private/Unity2d/launchermenu/launchermenu.qrc.depends
 
