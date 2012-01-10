@@ -28,6 +28,7 @@ feature set currently available we need to take care of the following tasks (ord
 
 = Minor =
 
+* Remove the LauncherClient as it's now just an empty class
 * Tests were removed, do we need to put them back ?
 * Move updateDashModeDependingOnScreenGeometry to QML
 * Fix .bzrignore
