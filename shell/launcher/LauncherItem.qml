@@ -52,6 +52,7 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
+    property bool isBfb: false
     property int tileSize
     property alias name: looseItem.objectName
     property string desktopFile: ""
@@ -204,6 +205,7 @@ DropItem {
                 property color color: defaultBackgroundColor
                 anchors.fill: parent
                 smooth: true
+                opacity: 1
 
                 SequentialAnimation on opacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
@@ -215,6 +217,14 @@ DropItem {
                 }
 
                 source: {
+                    if (isBfb) {
+                        if (declarativeView.focus && item.activeFocus) {
+                            return "artwork/squircle_base_selected_54.png"
+                        } else {
+                            return "artwork/squircle_base_54.png"
+                        }
+                    }
+
                     var actualColor = declarativeView.focus && item.activeFocus ? selectedBackgroundColor : color
                     return "image://blended/%1color=%2alpha=%3"
                         .arg("launcher/artwork/round_corner_54x54.png")
@@ -277,7 +287,7 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
-                source: "artwork/round_shine_54x54.png"
+                source: isBfb ? "artwork/squircle_shine_54.png" : "artwork/round_shine_54x54.png"
             }
 
             Image {
@@ -287,7 +297,7 @@ DropItem {
                 width: item.width
                 height: item.height
                 smooth: true
-                source: "artwork/round_selected_66x66.png"
+                source: isBfb ? "artwork/squircle_glow_54.png" : "artwork/round_selected_66x66.png"
                 visible: declarativeView.focus && item.activeFocus
             }
 
