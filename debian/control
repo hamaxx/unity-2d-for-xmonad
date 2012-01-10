@@ -143,3 +143,18 @@ Description: Unity 2D Shell
            various categories of applications. 
  * Launcher: displays in a panel at the left of the screen a list of running
              and favorite applications as well as highlighting their notifications.
+
+Package: unity-2d-dbg
+Section: debug
+Priority: extra
+Depends:
+    unity-2d (= ${binary:Version}),
+    ${misc:Depends}
+Description: Debugging symbols for unity-2d
+ The Unity 2D interface installs a fully usable 2D session and provides the 
+ common configuration files and defaults. Installing this package will 
+ offer a session called Unity 2D in your login manager.
+ .
+ Unity 2D is designed to run smoothly without any graphics acceleration.
+ .
+ This package contains the debugging symbols for giblib1.
