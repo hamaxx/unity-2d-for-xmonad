@@ -109,7 +109,7 @@ AbstractButton {
             folded: categoryHeader.folded
             anchors.left: label.right
             anchors.leftMargin: 10
-            anchors.verticalCenter: label.verticalCenter
+            anchors.bottom: label.baseline
         }
     }
 

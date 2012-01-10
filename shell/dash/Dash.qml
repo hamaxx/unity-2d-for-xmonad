@@ -279,7 +279,7 @@ FocusScope {
             headerHeight: search_entry.height
             width: 300
             anchors.right: parent.right
-            anchors.rightMargin: 8
+            anchors.rightMargin: 15
         }
 
         Loader {
@@ -352,8 +352,8 @@ FocusScope {
     }
 
     property int desktopCollapsedHeight: 115
-    property int desktopExpandedHeight: 606
-    property int desktopWidth: 989
+    property int desktopExpandedHeight: 615
+    property int desktopWidth: 996
     property int fullscreenWidth: screen.availableGeometry.width
     property int fullscreenHeight: screen.availableGeometry.height
 
