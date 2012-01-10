@@ -52,7 +52,10 @@ Item {
             target: declarativeView
             onDashActiveChanged: {
                 if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                else launcherLoader.visibilityController.endForceVisible("dash")
+                else {
+                    launcherLoader.visibilityController.endForceVisible("dash")
+                    if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                }
             }
         }
 
