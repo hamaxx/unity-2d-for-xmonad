@@ -76,6 +76,8 @@ set(lib${LIB_NAME}_SRCS
     abstractdbusservicemonitor.cpp
     spreadmonitor.cpp
     focuspath.cpp
+    inputshapemanager.cpp
+    inputshaperectangle.cpp
     )
 
 # Build

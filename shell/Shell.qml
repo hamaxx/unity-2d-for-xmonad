@@ -114,4 +114,15 @@ Item {
             declarativeView.forceDeactivateWindow()
         }
     }
+
+    InputShapeManager {
+        InputShapeRectangle {
+            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+        }
+
+        InputShapeRectangle {
+            rectangle: Qt.rect(launcherLoader.x, launcherLoader.y, launcherLoader.width, launcherLoader.height)
+        }
+    }
 }
