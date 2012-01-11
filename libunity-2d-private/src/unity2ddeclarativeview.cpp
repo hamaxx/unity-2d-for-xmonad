@@ -158,6 +158,12 @@ void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
     Q_EMIT globalPositionChanged(globalPosition());
 }
 
+#include <QShowEvent>
+void Unity2DDeclarativeView::showEvent(QShowEvent *event)
+{
+    Q_EMIT shown();
+}
+
 
 /* Obtaining & Discarding Keyboard Focus for Window on Demand
  *

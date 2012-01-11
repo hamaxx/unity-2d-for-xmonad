@@ -73,6 +73,7 @@
 #include "focuspath.h"
 #include "inputshapemanager.h"
 #include "inputshaperectangle.h"
+#include "unity2ddeclarativeview.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -173,6 +174,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<InputShapeManager>(uri, 0, 1, "InputShapeManager");
     qmlRegisterType<InputShapeRectangle>(uri, 0, 1, "InputShapeRectangle");
+    qmlRegisterType<Unity2DDeclarativeView>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

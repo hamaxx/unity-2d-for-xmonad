@@ -44,6 +44,8 @@
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+#include <X11/Xregion.h>
+#include <X11/extensions/shape.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -72,6 +74,13 @@ ShellDeclarativeView::ShellDeclarativeView()
     move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
 
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
+
+    /* We're assuming the extension is always supported (and it generally is in any modern server).
+       There's not much we can do if it's not supported, anyway. */
+    int shapeEvent, shapeError;
+    if (XShapeQueryExtension(QX11Info::display(), &shapeEvent, &shapeError) != True) {
+        qCritical() << "The required X11 Shape extension is not supported on this server.";
+    }
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -166,7 +175,7 @@ ShellDeclarativeView::isSpreadActive()
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
-    QDeclarativeView::showEvent(event);
+    Unity2DDeclarativeView::showEvent(event);
     /* Note that this has to be called everytime the window is shown, as the WM
        will remove the flags when the window is hidden */
     setWMFlags();
@@ -257,7 +266,7 @@ void
 ShellDeclarativeView::resizeEvent(QResizeEvent* event)
 {
     if (!QX11Info::isCompositingManagerRunning()) {
-        updateMask();
+        //updateMask();
     }
     QDeclarativeView::resizeEvent(event);
 }
@@ -509,4 +518,20 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
+}
+
+void
+ShellDeclarativeView::updateInputShape()
+{
+    if (!isVisible()) {
+        // It's pointless to call XShapeCombineRectangles while the window is unmapped
+        return;
+    }
+    XRectangle rectangle;
+    rectangle.x = 0;
+    rectangle.y = 0;
+    rectangle.height = 1000;
+    rectangle.width = 30;
+//    XShapeCombineRectangles(QX11Info::display(), effectiveWinId(), ShapeInput, 0, 0,
+//                            &rectangle, 1, ShapeSet, 0);
 }

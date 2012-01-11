@@ -116,6 +116,8 @@ Item {
     }
 
     InputShapeManager {
+        target: declarativeView
+
         InputShapeRectangle {
             rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
             enabled: dashLoader.status == Loader.Ready && dashLoader.item.active

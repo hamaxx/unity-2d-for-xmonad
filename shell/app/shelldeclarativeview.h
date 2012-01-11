@@ -118,6 +118,7 @@ private:
     void updateMask();
     void setWMFlags();
     bool isSpreadActive();
+    void updateInputShape();
 
     DashMode m_mode;
     bool m_expanded;
