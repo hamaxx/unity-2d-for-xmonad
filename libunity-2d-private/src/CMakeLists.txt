@@ -78,6 +78,7 @@ set(lib${LIB_NAME}_SRCS
     focuspath.cpp
     inputshapemanager.cpp
     inputshaperectangle.cpp
+    inputshapemask.cpp
     )
 
 # Build

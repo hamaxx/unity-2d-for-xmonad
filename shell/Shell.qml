@@ -119,12 +119,21 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
-            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+            rectangle: Qt.rect(launcherLoader.item.x, launcherLoader.item.y,
+                               launcherLoader.item.width, launcherLoader.item.height)
         }
 
         InputShapeRectangle {
-            rectangle: Qt.rect(launcherLoader.x, launcherLoader.y, launcherLoader.width, launcherLoader.height)
+            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+
+            InputShapeMask {
+                id: shape1
+                source: "shell/dash/artwork/desktop_dash_background_no_transparency.png"
+                color: "red"
+                position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
+                enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            }
         }
     }
 }

@@ -1,7 +1,5 @@
 #include <QDebug>
 #include <QRect>
-#include <QBitmap>
-#include <QPainter>
 #include <QX11Info>
 #include <QRegion>
 
@@ -26,18 +24,15 @@ void InputShapeManager::updateManagedShape()
         return;
     }
 
-    QBitmap mask(m_target->width(), m_target->height());
-    mask.fill(Qt::color0);
-
-    QPainter painter(&mask);
+    QRegion region;
     Q_FOREACH(InputShapeRectangle* shape, m_shapes) {
         if (shape->enabled()) {
-            painter.fillRect(shape->rectangle(), Qt::color1);
+            region += shape->region();
         }
     }
 
-    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(), ShapeInput, 0, 0,
-                        QRegion(mask).handle(), ShapeSet);
+    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(), ShapeInput,
+                        0, 0, region.handle(), ShapeSet);
 }
 
 Unity2DDeclarativeView* InputShapeManager::target() const
@@ -74,7 +69,7 @@ void InputShapeManager::appendShape(QDeclarativeListProperty<InputShapeRectangle
     InputShapeManager* instance = qobject_cast<InputShapeManager*>(list->object);
     if (instance != NULL) {
         instance->m_shapes.append(shape);
-        instance->connect(shape, SIGNAL(rectangleChanged()), SLOT(updateManagedShape()));
+        instance->connect(shape, SIGNAL(regionChanged()), SLOT(updateManagedShape()));
         instance->connect(shape, SIGNAL(enabledChanged()), SLOT(updateManagedShape()));
         instance->updateManagedShape();
     }
