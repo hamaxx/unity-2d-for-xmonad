@@ -1,7 +1,6 @@
 #include "inputshapemask.h"
 #include "config.h"
 
-#include <QPixmap>
 #include <QBitmap>
 #include <QDebug>
 
@@ -11,22 +10,22 @@ InputShapeMask::InputShapeMask(QObject *parent) :
 {
 }
 
-void InputShapeMask::updateRegion()
+void InputShapeMask::updateShape()
 {
-    QRegion region;
+    QBitmap newShape;
 
     if (!m_source.isEmpty() && m_color.isValid()) {
         QPixmap image;
         QString path = unity2dDirectory() + m_source;
         if (image.load(path)) {
-            region = QRegion(image.createMaskFromColor(m_color.rgb(), Qt::MaskOutColor));
+            newShape = image.createMaskFromColor(m_color.rgb(), Qt::MaskInColor);
         } else {
             qWarning() << "Failed to load input shape mask image from" << path;
         }
     }
 
-    m_region = region;
-    Q_EMIT regionChanged();
+    m_shape = newShape;
+    Q_EMIT shapeChanged();
 }
 
 QString InputShapeMask::source() const
@@ -49,16 +48,16 @@ bool InputShapeMask::enabled() const
     return m_enabled;
 }
 
-QRegion InputShapeMask::region() const
+QBitmap InputShapeMask::shape() const
 {
-    return m_region;
+    return m_shape;
 }
 
 void InputShapeMask::setSource(const QString &source)
 {
     if (m_source != source) {
         m_source = source;
-        updateRegion();
+        updateShape();
     }
 }
 
@@ -66,7 +65,7 @@ void InputShapeMask::setColor(const QColor &color)
 {
     if (m_color != color) {
         m_color = color;
-        updateRegion();
+        updateShape();
     }
 }
 
@@ -74,7 +73,7 @@ void InputShapeMask::setPosition(const QPoint &position)
 {
     if (m_position != position) {
         m_position = position;
-        updateRegion();
+        Q_EMIT positionChanged();
     }
 }
 

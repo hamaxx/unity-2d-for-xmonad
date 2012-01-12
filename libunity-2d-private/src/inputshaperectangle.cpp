@@ -13,18 +13,24 @@ InputShapeRectangle::InputShapeRectangle(QObject *parent) :
 {
 }
 
-void InputShapeRectangle::updateRegion()
+void InputShapeRectangle::updateShape()
 {
-    QRegion newRegion(m_rectangle);
+    QBitmap newShape(m_rectangle.width(), m_rectangle.height());
+    newShape.fill(Qt::color1);
 
-    Q_FOREACH (InputShapeMask* mask, m_masks) {
-        if (mask->enabled()) {
-            newRegion -= mask->region().translated(mask->position());
+    if (!m_rectangle.isEmpty() && m_masks.count() > 0) {
+        QPainter painter(&newShape);
+        painter.setBackgroundMode(Qt::OpaqueMode);
+
+        Q_FOREACH (InputShapeMask* mask, m_masks) {
+            if (mask->enabled()) {
+                painter.drawPixmap(mask->position(), mask->shape());
+            }
         }
     }
 
-    m_region = newRegion;
-    Q_EMIT regionChanged();
+    m_shape = newShape;
+    Q_EMIT shapeChanged();
 }
 
 QRect InputShapeRectangle::rectangle() const
@@ -36,7 +42,7 @@ void InputShapeRectangle::setRectangle(QRect rectangle)
 {
     if (rectangle != m_rectangle) {
         m_rectangle = rectangle;
-        updateRegion();
+        updateShape();
         Q_EMIT rectangleChanged();
     }
 }
@@ -55,9 +61,9 @@ void InputShapeRectangle::setEnabled(bool enabled)
     }
 }
 
-QRegion InputShapeRectangle::region() const
+QBitmap InputShapeRectangle::shape() const
 {
-    return m_region;
+    return m_shape;
 }
 
 QDeclarativeListProperty<InputShapeMask> InputShapeRectangle::masks()
@@ -70,16 +76,11 @@ void InputShapeRectangle::appendMask(QDeclarativeListProperty<InputShapeMask> *l
     InputShapeRectangle* instance = qobject_cast<InputShapeRectangle*>(list->object);
     if (instance != NULL) {
         instance->m_masks.append(mask);
-        instance->connect(mask, SIGNAL(enabledChanged()), SLOT(foo()));
-        instance->connect(mask, SIGNAL(regionChanged()), SLOT(updateRegion()));
-        instance->updateRegion();
+        instance->connect(mask, SIGNAL(enabledChanged()), SLOT(updateShape()));
+        instance->connect(mask, SIGNAL(shapeChanged()), SLOT(updateShape()));
+        instance->connect(mask, SIGNAL(positionChanged()), SLOT(updateShape()));
+        instance->updateShape();
     }
-}
-
-void InputShapeRectangle::foo()
-{
-    qDebug() << "ENABLE changed" << qobject_cast<InputShapeMask*>(sender())->enabled();
-    updateRegion();
 }
 
 #include "inputshaperectangle.moc"

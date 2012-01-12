@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QRect>
-#include <QRegion>
+#include <QBitmap>
 #include <QDeclarativeListProperty>
 #include <QList>
 
@@ -14,7 +14,7 @@ class InputShapeRectangle : public QObject
     Q_OBJECT
     Q_PROPERTY(QRect rectangle READ rectangle WRITE setRectangle NOTIFY rectangleChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QRegion region READ region NOTIFY regionChanged)
+    Q_PROPERTY(QBitmap shape READ shape NOTIFY shapeChanged)
     Q_PROPERTY(QDeclarativeListProperty<InputShapeMask> masks READ masks)
     Q_CLASSINFO("DefaultProperty", "masks")
 
@@ -25,25 +25,24 @@ public:
     void setRectangle(QRect rectangle);
     bool enabled() const;
     void setEnabled(bool enabled);
-    QRegion region() const;
+    QBitmap shape() const;
     QDeclarativeListProperty<InputShapeMask> masks();
 
 protected:
     static void appendMask(QDeclarativeListProperty<InputShapeMask> *list, InputShapeMask *mask);
 
 protected Q_SLOTS:
-    void updateRegion();
-    void foo();
+    void updateShape();
 
 Q_SIGNALS:
     void rectangleChanged();
     void enabledChanged();
-    void regionChanged();
+    void shapeChanged();
 
 private:
     QRect m_rectangle;
     bool m_enabled;
-    QRegion m_region;
+    QBitmap m_shape;
     QList<InputShapeMask*> m_masks;
 };
 

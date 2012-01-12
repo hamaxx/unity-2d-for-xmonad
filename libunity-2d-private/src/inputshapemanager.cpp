@@ -24,15 +24,23 @@ void InputShapeManager::updateManagedShape()
         return;
     }
 
-    QRegion region;
+    QBitmap inputShape(m_target->width(), m_target->height());
+    inputShape.fill(Qt::color0);
+    QPainter painter(&inputShape);
+
     Q_FOREACH(InputShapeRectangle* shape, m_shapes) {
         if (shape->enabled()) {
-            region += shape->region();
+            painter.drawPixmap(shape->rectangle().x(), shape->rectangle().y(),
+                               shape->shape());
         }
     }
 
+    // FIXME: A more efficient way of doing this would be to call XShapeCombineMask passing an X11
+    // pixmap created from the mask bitmap. However for some reason I wasn't able to figure out yet
+    // I get a lot of warnings when calling QBitmap::handle, so for now I'm passing a region as a
+    // workaround.
     XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(), ShapeInput,
-                        0, 0, region.handle(), ShapeSet);
+                        0, 0, QRegion(inputShape).handle(), ShapeSet);
 }
 
 Unity2DDeclarativeView* InputShapeManager::target() const
@@ -53,6 +61,7 @@ void InputShapeManager::setTarget(Unity2DDeclarativeView *target)
             // due to the way xshape works we need to re-apply the shaping every time the target window
             // is mapped again.
             connect(m_target, SIGNAL(shown()), SLOT(updateManagedShape()));
+            connect(m_target, SIGNAL(sceneResized(QSize)), SLOT(updateManagedShape()));
         }
         Q_EMIT targetChanged();
         updateManagedShape();
@@ -69,7 +78,7 @@ void InputShapeManager::appendShape(QDeclarativeListProperty<InputShapeRectangle
     InputShapeManager* instance = qobject_cast<InputShapeManager*>(list->object);
     if (instance != NULL) {
         instance->m_shapes.append(shape);
-        instance->connect(shape, SIGNAL(regionChanged()), SLOT(updateManagedShape()));
+        instance->connect(shape, SIGNAL(shapeChanged()), SLOT(updateManagedShape()));
         instance->connect(shape, SIGNAL(enabledChanged()), SLOT(updateManagedShape()));
         instance->updateManagedShape();
     }

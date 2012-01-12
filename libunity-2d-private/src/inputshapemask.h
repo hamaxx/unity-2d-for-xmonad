@@ -4,16 +4,16 @@
 #include <QObject>
 #include <QColor>
 #include <QPoint>
-#include <QRegion>
+#include <QBitmap>
 
 class InputShapeMask : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource)
     Q_PROPERTY(QColor color READ color WRITE setColor)
-    Q_PROPERTY(QPoint position READ position WRITE setPosition)
+    Q_PROPERTY(QPoint position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(QBitmap shape READ shape NOTIFY shapeChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QRegion region READ region NOTIFY regionChanged)
 
 public:
     explicit InputShapeMask(QObject *parent = 0);
@@ -22,7 +22,7 @@ public:
     QColor color() const;
     QPoint position() const;
     bool enabled() const;
-    QRegion region() const;
+    QBitmap shape() const;
 
     void setSource(const QString& source);
     void setColor(const QColor& color);
@@ -31,17 +31,18 @@ public:
 
 Q_SIGNALS:
     void enabledChanged();
-    void regionChanged();
+    void shapeChanged();
+    void positionChanged();
 
 protected:
-    void updateRegion();
+    void updateShape();
 
 private:
     QString m_source;
     QColor m_color;
     QPoint m_position;
     bool m_enabled;
-    QRegion m_region;
+    QBitmap m_shape;
 };
 
 #endif // INPUTSHAPEMASK_H

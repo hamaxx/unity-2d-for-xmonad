@@ -119,8 +119,9 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            rectangle: Qt.rect(launcherLoader.item.x, launcherLoader.item.y,
-                               launcherLoader.item.width, launcherLoader.item.height)
+            rectangle: Qt.rect(launcherLoader.x, launcherLoader.y,
+                               launcherLoader.width, launcherLoader.height)
+            enabled: launcherLoader.status == Loader.Ready
         }
 
         InputShapeRectangle {
