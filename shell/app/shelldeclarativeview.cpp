@@ -44,8 +44,6 @@
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#include <X11/Xregion.h>
-#include <X11/extensions/shape.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -74,13 +72,6 @@ ShellDeclarativeView::ShellDeclarativeView()
     move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
 
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
-
-    /* We're assuming the extension is always supported (and it generally is in any modern server).
-       There's not much we can do if it's not supported, anyway. */
-    int shapeEvent, shapeError;
-    if (XShapeQueryExtension(QX11Info::display(), &shapeEvent, &shapeError) != True) {
-        qCritical() << "The required X11 Shape extension is not supported on this server.";
-    }
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -260,51 +251,6 @@ const QString&
 ShellDeclarativeView::activeLens() const
 {
     return m_activeLens;
-}
-
-void
-ShellDeclarativeView::resizeEvent(QResizeEvent* event)
-{
-    if (!QX11Info::isCompositingManagerRunning()) {
-        //updateMask();
-    }
-    QDeclarativeView::resizeEvent(event);
-}
-
-static QBitmap
-createCornerMask()
-{
-    QPixmap pix(unity2dDirectory() + "/shell/dash/artwork/desktop_dash_background_no_transparency.png");
-    return pix.createMaskFromColor(Qt::red, Qt::MaskOutColor);
-}
-
-void
-ShellDeclarativeView::updateMask()
-{
-    if (m_mode == FullScreenMode) {
-        clearMask();
-        return;
-    }
-    QBitmap bmp(size());
-    {
-        static QBitmap corner = createCornerMask();
-        static QBitmap top = corner.copy(0, 0, corner.width(), 1);
-        static QBitmap left = corner.copy(0, 0, 1, corner.height());
-
-        const int cornerX = bmp.width() - corner.width();
-        const int cornerY = bmp.height() - corner.height();
-
-        QPainter painter(&bmp);
-        painter.fillRect(bmp.rect(), Qt::color1);
-        painter.setBackgroundMode(Qt::OpaqueMode);
-        painter.setBackground(Qt::color1);
-        painter.setPen(Qt::color0);
-        painter.drawPixmap(cornerX, cornerY, corner);
-
-        painter.drawTiledPixmap(cornerX, 0, top.width(), cornerY, top);
-        painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
-    }
-    setMask(bmp);
 }
 
 void
@@ -518,20 +464,4 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
-}
-
-void
-ShellDeclarativeView::updateInputShape()
-{
-    if (!isVisible()) {
-        // It's pointless to call XShapeCombineRectangles while the window is unmapped
-        return;
-    }
-    XRectangle rectangle;
-    rectangle.x = 0;
-    rectangle.y = 0;
-    rectangle.height = 1000;
-    rectangle.width = 30;
-//    XShapeCombineRectangles(QX11Info::display(), effectiveWinId(), ShapeInput, 0, 0,
-//                            &rectangle, 1, ShapeSet, 0);
 }
