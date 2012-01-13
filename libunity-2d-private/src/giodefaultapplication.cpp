@@ -35,9 +35,6 @@ static const QString MIMEAPPS_FILE = QDir::homePath() + QString("/.local/share/a
 
 GioDefaultApplication::GioDefaultApplication(QObject* parent)
     : QObject(parent),
-      m_contentType(""),
-      m_desktopFile(""),
-      m_defaultDesktopFile(""),
       m_mimeappsWatcher(new QFileSystemWatcher(this))
 {
     /* GIO does not have any signal to inform us of changes in default
@@ -125,7 +122,7 @@ void GioDefaultApplication::updateDesktopFile()
     if (!app_info.isNull()) {
         m_desktopFile = QString::fromUtf8(g_desktop_app_info_get_filename((GDesktopAppInfo*)app_info.data()));
     } else {
-        m_desktopFile = "";
+        m_desktopFile = QString();
     }
 
     Q_EMIT desktopFileChanged();

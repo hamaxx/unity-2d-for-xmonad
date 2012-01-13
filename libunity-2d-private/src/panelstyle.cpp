@@ -105,7 +105,7 @@ public:
 
         switch (state) {
         case PanelStyle::NormalState:
-            stateString = "";
+            // stateString = QString(); no need since we just declared and noone assigned anything to it
             break;
         case PanelStyle::PrelightState:
             stateString = "_focused_prelight";
