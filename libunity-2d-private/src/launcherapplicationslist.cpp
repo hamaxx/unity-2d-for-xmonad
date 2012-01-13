@@ -306,7 +306,7 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 }
 
 void
-LauncherApplicationsList::insertFavoriteApplication(QString desktop_file)
+LauncherApplicationsList::insertFavoriteApplication(const QString& desktop_file)
 {
     if (m_applicationForDesktopFile.contains(desktop_file)) {
         return;
