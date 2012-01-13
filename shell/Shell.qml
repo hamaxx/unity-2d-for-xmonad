@@ -23,7 +23,7 @@ import "launcher"
 Item {
     id: shell
     height: screen.availableGeometry.height
-    width: shell.childrenRect.width
+    width: screen.availableGeometry.width
 
     Accessible.name: "shell"
 
