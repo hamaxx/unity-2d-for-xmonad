@@ -77,13 +77,12 @@ unity-2d (5.2.0-0ubuntu1) precise; urgency=low
     - Dash- More fixes to layout and alignments (LP: #906235)
   * debian/control:
     - bump libunitycore build-dep to 5.0.
-      TODO: update to the real dep version when releasing
 
   [ Aurélien Gâteau ]
   * debian/control:
     - bump build-dep versions.
 
- -- Aurélien Gâteau <aurelien.gateau@ubuntu.com>  Thu, 12 Jan 2012 18:31:24 +0100
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 13 Jan 2012 09:12:36 +0100
 
 unity-2d (4.12.0-0ubuntu1) oneiric; urgency=low
 
