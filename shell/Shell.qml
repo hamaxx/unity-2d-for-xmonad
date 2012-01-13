@@ -119,8 +119,11 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            rectangle: Qt.rect(launcherLoader.x, launcherLoader.y,
-                               launcherLoader.width, launcherLoader.height)
+            // Prevent the launcher mask to ever go to negative values or be less than 1 pixel
+            // (to preserve the autohide/intellihide edge detection)
+            rectangle: Qt.rect(Math.max(launcherLoader.x, 0), launcherLoader.y,
+                               Math.max(launcherLoader.width + launcherLoader.x, 1),
+                               launcherLoader.height)
             enabled: launcherLoader.status == Loader.Ready
         }
 
