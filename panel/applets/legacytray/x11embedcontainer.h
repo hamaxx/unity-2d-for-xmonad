@@ -38,7 +38,7 @@ public:
 
     void embedSystemTrayClient(WId id);
     void setUpdatesEnabled(bool enabled);
-    void setBackgroundPixmap(QPixmap background);
+    void setBackgroundPixmap(const QPixmap& background);
 
 protected:
     void paintEvent(QPaintEvent *event);
