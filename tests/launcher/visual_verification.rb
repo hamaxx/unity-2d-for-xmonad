@@ -30,8 +30,8 @@ context "Launcher Autohide and Show Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'killall unity-2d-shell > /dev/null 2>&1'
+    system 'killall unity-2d-shell > /dev/null 2>&1'
   end
   
   # Run once at the end of this test suite
@@ -42,7 +42,7 @@ context "Launcher Autohide and Show Tests" do
   setup do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    @app = @sut.run( :name => UNITY_2D_SHELL, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
   end
@@ -51,7 +51,7 @@ context "Launcher Autohide and Show Tests" do
   teardown do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
+    system "pkill -nf unity-2d-shell"
   end
 
   #####################################################################################
@@ -60,7 +60,7 @@ context "Launcher Autohide and Show Tests" do
   test "Visually compare Dash tile with reference" do
     expected_image = pwd + 'verification/dash-tile.png'
     
-    dash_tile = @app.Unity2dPanel() \
+    dash_tile = @app.Launcher() \
         .LauncherList( :name => 'main' ) \
         .QDeclarativeItem( :name => 'Dash home' ) \
         .QDeclarativeItem()
@@ -73,7 +73,7 @@ context "Launcher Autohide and Show Tests" do
   test "Check Dash Tile location in Launcher" do
     expected_image = pwd + 'verification/dash-tile.png'
     
-    tile_list = @app.Unity2dPanel().LauncherList( :name => 'main' )
+    tile_list = @app.Launcher().LauncherList( :name => 'main' )
   
     # Given the reference image, locate the matching visual in the LauncherList
     coordinates = tile_list.find_on_screen(expected_image, 4)

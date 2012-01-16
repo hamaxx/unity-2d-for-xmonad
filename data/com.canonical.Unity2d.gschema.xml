@@ -25,7 +25,7 @@
        </description>
     </key>
     <key name="thickness" type="i">
-      <default>66</default>
+      <default>65</default>
       <summary>Thickness of the launcher</summary>
       <description>Size of the small side (typically the horizontal side) of the launcher</description>
     </key>
