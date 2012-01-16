@@ -260,7 +260,7 @@ DropItem {
                 objectName: "icon"
 
                 anchors.fill: parent
-                anchors.margins: parent.width * 0.056
+                anchors.margins: Math.round(parent.width * 0.056)
                 smooth: true
 
                 sourceSize.width: Math.max(width, 16)
