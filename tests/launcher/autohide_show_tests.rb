@@ -177,7 +177,7 @@ context "Launcher Autohide and Show Tests" do
                   'Launcher hiding after Alt+F1 pressed, should be visible' )
 
     assert_equal( @app.LauncherList( :name => 'main' ) \
-                      .QDeclarativeItem( :name => 'Tauler' ) \
+                      .QDeclarativeItem( :name => 'Dash home' ) \
                       .QDeclarativeImage( :name => 'selectionOutline' )['visible'], 'true', \
                   'Dash icon not highlighted after Alt+F1 pressed' )
     XDo::Keyboard.escape
