@@ -213,5 +213,22 @@ context "Launcher Autohide and Show Tests" do
                   'terminal does not have focus when it should' )
     xid.close!
   end
+  
+  test "Launcher visible on show-desktop" do
+    xid = open_window_at(10,100)
+    sleep 0.5
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way, should be hidden' )
+    XDo::XWindow.toggle_minimize_all # This is effectively the show-desktop shortcut
+    sleep 2
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
+                  'Launcher hiding after triggering show-desktop, should be visible' )
+
+    XDo::XWindow.toggle_minimize_all
+    sleep 2
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way, should be hidden' )
+    xid.close!
+  end
 
 end
