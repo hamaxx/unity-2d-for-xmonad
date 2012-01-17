@@ -116,36 +116,38 @@ void WindowsIntersectMonitor::updateIntersect()
 
     // Check whether a window is crossing our rect
     bool crossWindow = false;
-    GList* list = wnck_screen_get_windows(screen);
-    for (; list; list = g_list_next(list)) {
-        WnckWindow* window = WNCK_WINDOW(list->data);
-        if (wnck_window_is_on_workspace(window, workspace) &&
-            wnck_window_get_pid(window) != thisProcessPid) {
-            WnckWindowType type = wnck_window_get_window_type(window);
+    if (!wnck_screen_get_showing_desktop(screen)) {
+        GList* list = wnck_screen_get_windows(screen);
+        for (; list; list = g_list_next(list)) {
+            WnckWindow* window = WNCK_WINDOW(list->data);
+            if (wnck_window_is_on_workspace(window, workspace) &&
+                wnck_window_get_pid(window) != thisProcessPid) {
+                WnckWindowType type = wnck_window_get_window_type(window);
 
-            // Only take into account typical application windows
-            if (type != WNCK_WINDOW_NORMAL  &&
-                type != WNCK_WINDOW_DIALOG  &&
-                type != WNCK_WINDOW_TOOLBAR &&
-                type != WNCK_WINDOW_MENU    &&
-                type != WNCK_WINDOW_UTILITY) {
-                continue;
-            }
+                // Only take into account typical application windows
+                if (type != WNCK_WINDOW_NORMAL  &&
+                    type != WNCK_WINDOW_DIALOG  &&
+                    type != WNCK_WINDOW_TOOLBAR &&
+                    type != WNCK_WINDOW_MENU    &&
+                    type != WNCK_WINDOW_UTILITY) {
+                    continue;
+                }
 
-            WnckWindowState state = wnck_window_get_state(window);
+                WnckWindowState state = wnck_window_get_state(window);
 
-            // Skip hidden (==minimized and other states) windows
-            if (state & WNCK_WINDOW_STATE_HIDDEN) {
-                continue;
-            }
+                // Skip hidden (==minimized and other states) windows
+                if (state & WNCK_WINDOW_STATE_HIDDEN) {
+                    continue;
+                }
 
-            // Check the window rect
-            int x, y, width, height;
-            wnck_window_get_geometry(window, &x, &y, &width, &height);
-            QRectF rect(x, y, width, height);
-            if (rect.intersects(m_monitoredArea)) {
-                crossWindow = true;
-                break;
+                // Check the window rect
+                int x, y, width, height;
+                wnck_window_get_geometry(window, &x, &y, &width, &height);
+                QRectF rect(x, y, width, height);
+                if (rect.intersects(m_monitoredArea)) {
+                    crossWindow = true;
+                    break;
+                }
             }
         }
     }
