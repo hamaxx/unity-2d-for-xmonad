@@ -29,16 +29,6 @@ require 'xdo/mouse'
 require 'timeout'
 require 'tmpdir'
 
-# Helper function to open window at certain position
-def open_window_at(x,y)
-  # Open Terminal with position (x,y)
-  Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
-    system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{dir} &"
-    Timeout.timeout(30){XDo::XWindow.wait_for_window(dir)}
-  }
-  return XDo::XWindow.from_active
-end
-
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   WIDTH = 65 #launcher bar width
@@ -72,6 +62,7 @@ context "Launcher Autohide and Show Tests" do
 
   # Run after each test case completes
   teardown do
+    close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-launcher"
@@ -94,11 +85,11 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Position with Empty Desktop" do
     # check width before proceeding
-    verify_equal( WIDTH, 30, "Launcher is not #{WIDTH} pixels wide on screen!" ) {
+    verify_equal( WIDTH, 10, "Launcher is not #{WIDTH} pixels wide on screen!" ) {
       @app.Unity2dPanel()['width'].to_i
     }
 
-    verify_equal( 0, 30,'Launcher hiding on empty desktop, should be visible' ) {
+    verify_equal( 0, 10,'Launcher hiding on empty desktop, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
   end
@@ -118,7 +109,7 @@ context "Launcher Autohide and Show Tests" do
   test "Position with Window not in the way" do
     # Open Terminal with position 100x100
     xid = open_window_at(100,100)
-    verify_equal( 0, 30, 'Launcher hiding when window not in the way, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -139,7 +130,7 @@ context "Launcher Autohide and Show Tests" do
   test "Position with Window in the way" do
     # Open Terminal with position 40x100
     xid = open_window_at(40,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible when window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible when window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -164,17 +155,17 @@ context "Launcher Autohide and Show Tests" do
   test "Move window positioning to check launcher action" do
     # Open Terminal with position 100x100
     xid = open_window_at(100,100)
-    verify_equal( 0, 30, 'Launcher hiding when window not in the way, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     xid.move(WIDTH-1,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible when window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible when window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     xid.move(WIDTH,100)
-    verify_equal( 0, 30, 'Launcher hiding when window not in the way, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -200,22 +191,22 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Reveal hidden Launcher with mouse" do
     xid = open_window_at(10,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::Mouse.move(0,200)
-    verify_equal( 0, 30, 'Launcher hiding when mouse at left edge of screen' ) {
+    verify_equal( 0, 10, 'Launcher hiding when mouse at left edge of screen' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::Mouse.move(WIDTH-1,200)
-    verify_equal( 0, 30, 'Launcher should still be visible as mouse over it' ) {
+    verify_equal( 0, 10, 'Launcher should still be visible as mouse over it' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::Mouse.move(WIDTH,200)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -240,15 +231,15 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Hold Super key down to reveal launcher and shortcut keys" do
     xid = open_window_at(10,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::Keyboard.key_down('SUPER')
-    verify_equal( 0, 30, 'Launcher hiding when Super Key held, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding when Super Key held, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
-    verify_equal( 'true', 30, 'Shortcut on Home Folder icon not displaying with Super key held' ) {
+    verify_equal( 'true', 10, 'Shortcut on Home Folder icon not displaying with Super key held' ) {
       @app.LauncherList( :name => 'main' ) \
           .QDeclarativeItem( :name => 'Home Folder' ) \
           .QDeclarativeRectangle() \
@@ -256,7 +247,7 @@ context "Launcher Autohide and Show Tests" do
     }  
 
     XDo::Keyboard.key_up('SUPER')
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -281,22 +272,22 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Alt+F1 to focus Launcher" do
     xid = open_window_at(10,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 0, 30, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
-    verify_equal( 'true', 30, 'Dash icon not highlighted after Alt+F1 pressed' ){
+    verify_equal( 'true', 10, 'Dash icon not highlighted after Alt+F1 pressed' ){
       @app.LauncherList( :name => 'main' ) \
           .QDeclarativeItem( :name => 'Dash home' ) \
           .QDeclarativeImage( :name => 'selectionOutline' )['visible']
     }
 
     XDo::Keyboard.escape
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -324,17 +315,17 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Alt+F1 to focus/unfocus Launcher" do
     xid = open_window_at(10,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
                   'terminal should have focus after starting it' )
 
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 0, 30, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
-    verify_equal( 'true', 30, 'Dash icon not highlighted after Alt+F1 pressed' ) {
+    verify_equal( 'true', 10, 'Dash icon not highlighted after Alt+F1 pressed' ) {
       @app.LauncherList( :name => 'main' ) \
           .QDeclarativeItem( :name => 'Dash home' ) \
           .QDeclarativeImage( :name => 'selectionOutline' )['visible']
@@ -343,7 +334,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.alt_F1
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -369,20 +360,57 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Launcher visible on show-desktop" do
     xid = open_window_at(10,100)
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::XWindow.toggle_minimize_all # This is effectively the show-desktop shortcut
-    verify_equal( 0, 30, 'Launcher hiding after triggering show-desktop, should be visible' ) {
+    verify_equal( 0, 10, 'Launcher hiding after triggering show-desktop, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     XDo::XWindow.toggle_minimize_all
-    verify_equal( -WIDTH, 30, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
+  end
+
+private
+
+  # Helper function to open window at certain position
+  def open_window_at(x,y)
+    window_id = -1
+    # Open Terminal with position (x,y)
+    Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
+      system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{dir} &"
+      Timeout.timeout(30){ window_id = XDo::XWindow.wait_for_window(dir)}
+    }
+    Kernel.raise(SystemCallError, "Unable to open gnome-terminal") if window_id == -1
+    xid = XDo::XWindow.new(window_id)
+    # create list of windows opened
+    @xid_list = [] if @xid_list == nil
+    @xid_list << xid
+    xid
+  end
+
+  # Close all windows opened
+  def close_all_windows
+    return if @xid_list.nil?
+    # loop through list of opened windows, check if they exist, try close then kill
+    @xid_list.each do |xid|
+      need_to_kill = true
+      if xid.exists?
+        window_title = xid.title
+        xid.close!
+        Timeout.timeout(10){ 
+          XDo::XWindow.wait_for_close(window_title)
+          need_to_kill = false
+        }
+        xid.kill! if need_to_kill
+      end
+    end
+    @xid_list = []
   end
 
 end
