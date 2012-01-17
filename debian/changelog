@@ -1,10 +1,88 @@
-unity-2d (5.2.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (5.2.0-0ubuntu1) precise; urgency=low
 
+  [ Didier Roche ]
+  * New upstream release:
+    - Select quicklist items with just one right click (LP: #688830)
+    - Launcher - Dragging and dropping a running application in to the Trash
+      should quit the application and (if the app is pinned to the Launcher)
+      un-pin the application from the Launcher (LP: #870143)
+    - Dash - "See more..." line should be base-aligned with section header
+      (LP: #748101)
+    - right click on the dash icon should display a list of the lenses
+      (LP: #868452)
+    - Top Bar - rename the "Desktop" title in the Top Bar (displayed when no
+      window has focus)  to "Ubuntu Desktop" (LP: #869873)
+    - Application title on quicklist should be bold (or more visible)
+      (LP: #900400)
+    - unity-2d-launcher crashed with SIGSEGV  when opening a folder on a CD
+      (LP: #831868)
+    - unity-2d-places crashed with SIGSEGV in QScriptValue::call()
+      (LP: #836498)
+    - unity-2d-launcher crashed with SIGSEGV in geis_finish() (LP: #850893)
+    - unity-2d-places crashed with SIGABRT in raise() (LP: #857575)
+    - unity-2d-launcher crashed with SIGSEGV in exit() (LP: #859596)
+    - [spread] layout broken since bzr revision 799 of lp:unity-2d
+      (LP: #900895)
+    - [workspace switcher] keyboard navigation of workspace switcher broken
+      for accessibility (LP: #744978)
+    - [spread] workspace switcher performance is poor, especially on low
+      powered CPUs (LP: #745764)
+    - Launcher - the rendering of the BFB and Lens squircle does not match the
+      design (LP: #838708)
+    - [dash] Huge performance hit when scrolling search results with
+      accessibility enabled (LP: #862956)
+    - DBUS_STARTER_ADDRESS and DBUS_STARTER_BUS_TYPE aren't always unset from
+      environment making gedit and possibly others fail to start (LP: #873027)
+    - Win Key can not be disabled in Unity-2d (LP: #873580)
+    - [dash] Unity-2d dash very slow to open (LP: #881756)
+    - [tests] LauncherViewTest hanging (LP: #894380)
+    - [tests] Unit tests failing due to lack of Xserver (LP: #894381)
+    - [launcher] Alt+F1 broken: does not give the focus to the launcher's
+      content (LP: #901505)
+    - [tests] Add Automated User Experience testing (LP: #903495)
+    - [workspace switcher] Performance can be poor when using the opengl
+      backend because of window texture sizes that are not limited
+      (LP: #808716)
+    - [dash] no way to unmaximize (LP: #860400)
+    - [launcher] In non-composite mode, background is black (LP: #879288)
+    - [dash] Unity 2D shows 'Search' instead of 'Run Command' on ALT + F2
+      (LP: #883392)
+    - [launcher] Removing icon from launcher makes it hide immediately
+      (LP: #884410)
+    - OpenGL disabled regardless of use-opengl setting (LP: #887957)
+    - if libdir does not equal lib (LP: #888164)
+    - [launcher] Launcher stuck open while mouse moved to left corner of panel
+      (LP: #892004)
+    - [dash] Long results label are truncated instead of elided and a few
+      pixels of the next line is visible (LP: #901491)
+    - [launcher] Dash icon missing in PPA (LP: #903182)
+    - [launcher] Tile context menu should appear at mouse click down event
+      (LP: #813036)
+    - [launcher] Trash tile highlight is truncated top and bottom
+      (LP: #876589)
+    - [dash] Text highlighting color is wrong (LP: #880222)
+    - [launcher] left edge of panel should not reveal launcher (LP: #891636)
+    - [dash] Word "Filter results" has underline when highlighted
+      (LP: #893061)
+    - [launcher] Alt+F1, change desktop, Alt+F1, hit Esc: launcher doesn't
+      give away focus (LP: #897640)
+    - Top Bar - rename the "Desktop" title in the Top Bar (displayed when no
+      window has focus)  to "Ubuntu Desktop" (LP: #869873)
+    - [launcher] Show desktop doesn't show launcher (LP: #898161)
+    - [launcher] Context menu/tooltip not positioned at Tile center
+      (LP: #898349)
+    - The QT_LAYOUT_DIRECTION string needs a translator comment (LP: #863058)
+    - unity panel menus don't stay open when clicked on second monitor
+      (LP: #869196)
+    - Dash- More fixes to layout and alignments (LP: #906235)
   * debian/control:
     - bump libunitycore build-dep to 5.0.
-      TODO: update to the real dep version when releasing
 
- -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Dec 2011 14:04:52 +0100
+  [ Aurélien Gâteau ]
+  * debian/control:
+    - bump build-dep versions.
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 13 Jan 2012 09:12:36 +0100
 
 unity-2d (4.12.0-0ubuntu1) oneiric; urgency=low
 
