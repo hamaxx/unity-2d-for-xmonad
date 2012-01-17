@@ -25,13 +25,13 @@ AutoScrollingListView {
 
     /* The spacing is explicitly set in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
-    spacing: -width * 0.12 // FIXME: live update broken by this code
+    spacing: -8
 
-    property int tileSize: width * 0.82
+    property int tileSize: 54
 
     /* selectionOutline tile size, so AutoScrollingList view can calculate
        the right height. */
-    property int selectionOutlineSize: width // this is the size of an item; items are square
+    property int selectionOutlineSize:  65
 
     /* Keep a reference to the currently visible contextual menu */
     property variant visibleMenu
@@ -96,8 +96,8 @@ AutoScrollingListView {
         name: item.name
 
         width: list.width
-        height: width
         tileSize: list.tileSize
+        selectionOutlineSize: list.selectionOutlineSize
 
         desktopFile: item.desktop_file ? item.desktop_file : ""
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"

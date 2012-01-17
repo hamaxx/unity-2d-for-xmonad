@@ -14,7 +14,6 @@ extern "C" {
 #include <QX11Info>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QVariant>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent),
@@ -30,8 +29,6 @@ ScreenInfo::ScreenInfo(QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
-    connect(&launcher2dConfiguration(), SIGNAL(thicknessChanged(int)),
-                                        SLOT(onLauncherThicknessChanged()));
 }
 
 
@@ -79,11 +76,10 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(screen);
     QRect availableRect = QApplication::desktop()->availableGeometry(screen);
 
-    int launcherThickness = launcher2dConfiguration().property("thickness").toInt();
     QRect availableGeometry(
-        launcherThickness,
+        LauncherClient::MaximumWidth,
         availableRect.top(),
-        screenRect.width() - launcherThickness,
+        screenRect.width() - LauncherClient::MaximumWidth,
         availableRect.height()
         );
     if (QApplication::isRightToLeft()) {
@@ -110,11 +106,6 @@ void ScreenInfo::updateAvailableGeometry(int screen)
         Q_EMIT availableGeometryChanged(availableGeometry());
         Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
-}
-
-void ScreenInfo::onLauncherThicknessChanged()
-{
-    Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
 }
 
 bool ScreenInfo::isCompositingManagerRunning() const
