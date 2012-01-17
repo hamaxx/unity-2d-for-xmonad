@@ -54,7 +54,6 @@ private:
 private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
-    void onLauncherThicknessChanged();
 
 private:
     WorkspacesInfo m_workspacesInfo;

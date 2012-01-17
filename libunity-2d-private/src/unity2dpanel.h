@@ -45,7 +45,6 @@ class Unity2dPanel : public QWidget
      */
     Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
-    Q_PROPERTY(int thickness READ thickness WRITE setThickness NOTIFY thicknessChanged)
 
 public:
     enum Edge {
@@ -77,8 +76,7 @@ public:
     int delta() const;
     void setDelta(int);
 
-    int thickness() const;
-    void setThickness(int);
+    int panelSize() const;
 
     bool manualSliding() const;
     void setManualSliding(bool);
@@ -92,7 +90,6 @@ public Q_SLOTS:
 Q_SIGNALS:
     void manualSlidingChanged(bool);
     void useStrutChanged(bool);
-    void thicknessChanged(int);
 
 protected:
     virtual void showEvent(QShowEvent*);

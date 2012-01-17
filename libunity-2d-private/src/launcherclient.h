@@ -32,6 +32,7 @@
 class LauncherClient
 {
 public:
+    static const int MaximumWidth;
 };
 
 #endif /* LAUNCHERCLIENT_H */

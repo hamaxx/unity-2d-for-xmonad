@@ -55,7 +55,6 @@
 #include <QPoint>
 
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
-static const int APPNAME_WINDOW_BUTTONS_WIDTH = 66;
 
 class WindowButton : public QAbstractButton
 {
@@ -183,7 +182,7 @@ struct AppNameAppletPrivate
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
-        m_windowButtonWidget->setFixedWidth(APPNAME_WINDOW_BUTTONS_WIDTH);
+        m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
         QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(toggleMaximize()));
@@ -301,7 +300,7 @@ void AppNameApplet::updateWidgets()
 
         // Define label width
         if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(APPNAME_WINDOW_BUTTONS_WIDTH);
+            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }

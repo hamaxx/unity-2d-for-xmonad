@@ -117,9 +117,10 @@ LauncherDropItem {
             }
 
             anchors.top: parent.top
-            anchors.bottom: shelf.top
+            anchors.bottomMargin: 0
             /* the distance from the top of the launcher and the dash tile is 6 instead of 7 */
             anchors.topMargin: -1
+            height: parent.height - shelf.height + ((selectionOutlineSize - tileSize)) - 4
             width: parent.width
 
             /* Ensure all delegates are cached in order to improve smoothness of
@@ -163,7 +164,8 @@ LauncherDropItem {
             objectName: "shelf"
 
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: main.anchors.topMargin
+            anchors.bottomMargin: main.anchors.bottomMargin
+            anchors.topMargin: main.anchors.topMargin
             height: selectionOutlineSize * count
             width: parent.width
             interactive: false
