@@ -26,8 +26,7 @@ require '../run-tests.rb' unless $INIT_COMPLETED
 require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
-require 'timeout'
-require 'tmpdir'
+require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
@@ -62,7 +61,7 @@ context "Launcher Autohide and Show Tests" do
 
   # Run after each test case completes
   teardown do
-    close_all_windows
+    TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-launcher"
@@ -108,7 +107,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Position with Window not in the way" do
     # Open Terminal with position 100x100
-    xid = open_window_at(100,100)
+    xid = TmpWindow.open_window_at(100,100)
     verify_equal( 0, 10, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -129,7 +128,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Position with Window in the way" do
     # Open Terminal with position 40x100
-    xid = open_window_at(40,100)
+    xid = TmpWindow.open_window_at(40,100)
     verify_equal( -WIDTH, 10, 'Launcher visible when window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -154,7 +153,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Move window positioning to check launcher action" do
     # Open Terminal with position 100x100
-    xid = open_window_at(100,100)
+    xid = TmpWindow.open_window_at(100,100)
     verify_equal( 0, 10, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -190,7 +189,7 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Reveal hidden Launcher with mouse" do
-    xid = open_window_at(10,100)
+    xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -230,7 +229,7 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Hold Super key down to reveal launcher and shortcut keys" do
-    xid = open_window_at(10,100)
+    xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -271,7 +270,7 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Press Alt+F1 to focus Launcher" do
-    xid = open_window_at(10,100)
+    xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -314,7 +313,7 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Press Alt+F1 to focus/unfocus Launcher" do
-    xid = open_window_at(10,100)
+    xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -359,7 +358,7 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Launcher visible on show-desktop" do
-    xid = open_window_at(10,100)
+    xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, 10, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
@@ -374,43 +373,6 @@ context "Launcher Autohide and Show Tests" do
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
-  end
-
-private
-
-  # Helper function to open window at certain position
-  def open_window_at(x,y)
-    window_id = -1
-    # Open Terminal with position (x,y)
-    Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
-      system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{dir} &"
-      Timeout.timeout(30){ window_id = XDo::XWindow.wait_for_window(dir)}
-    }
-    Kernel.raise(SystemCallError, "Unable to open gnome-terminal") if window_id == -1
-    xid = XDo::XWindow.new(window_id)
-    # create list of windows opened
-    @xid_list = [] if @xid_list == nil
-    @xid_list << xid
-    xid
-  end
-
-  # Close all windows opened
-  def close_all_windows
-    return if @xid_list.nil?
-    # loop through list of opened windows, check if they exist, try close then kill
-    @xid_list.each do |xid|
-      need_to_kill = true
-      if xid.exists?
-        window_title = xid.title
-        xid.close!
-        Timeout.timeout(10){ 
-          XDo::XWindow.wait_for_close(window_title)
-          need_to_kill = false
-        }
-        xid.kill! if need_to_kill
-      end
-    end
-    @xid_list = []
   end
 
 end
