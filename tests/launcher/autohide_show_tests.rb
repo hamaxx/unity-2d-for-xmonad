@@ -187,4 +187,21 @@ context "Launcher Autohide and Show Tests" do
     xid.close!
   end
 
+  test "Press Ctrl+Alt+d for desktop" do
+    xid = open_window_at(10,100)
+    sleep 0.5
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way, should be hidden' )
+    XDo::Keyboard.char("ctrl+alt+d")
+    sleep 2
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
+                  'Launcher hiding after Ctrl+Alt+d pressed, should be visible' )
+
+    XDo::Keyboard.char("ctrl+alt+d")
+    sleep 2
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way, should be hidden' )
+    xid.close!
+  end
+
 end
