@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Unity2d 1.0
 import "../common"
 
 BaseBehavior {
@@ -9,15 +10,27 @@ BaseBehavior {
 
     Timer {
         id: autoHideTimer
+        property bool oneTimeTrigger: false
+
         interval: 1000
-        running: (target !== undefined) ? !target.containsMouse : false
-        onTriggered: shownRegardlessOfFocus = false
+        running: oneTimeTrigger || ((target !== undefined) ? !target.containsMouse : false)
+        onTriggered: {
+            oneTimeTrigger = false
+            shownRegardlessOfFocus = false
+        }
     }
 
     Timer {
         id: edgeHitTimer
         interval: 500
         onTriggered: shownRegardlessOfFocus = true
+    }
+
+    ShowDesktopMonitor {
+        onShownChanged: {
+            autoHideTimer.oneTimeTrigger = shown
+            shownRegardlessOfFocus = shown
+        }
     }
 
     Connections {
