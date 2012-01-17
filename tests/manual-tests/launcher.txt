@@ -77,12 +77,6 @@
 -> Launcher is hidden - The launcher should not still be visible when you have the mouse on the top panel (lp:892004)
 
 ----
- * Open an application & maximize the same
- * Hit show-desktop shortcut [Ctrl+Alt+D?] key to see the Desktop
-
---> Launcher is revealed - Showing the Desktop should reveal launcher (lp:898161)
-
-----
  
  * Drag a file(example .txt) onto a tile(gedit) in the launcher
 
