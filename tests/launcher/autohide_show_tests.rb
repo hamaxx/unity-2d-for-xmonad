@@ -187,4 +187,31 @@ context "Launcher Autohide and Show Tests" do
     xid.close!
   end
 
+  test "Press Alt+F1 to focus/unfocus Launcher" do
+    xid = open_window_at(10,100)
+    sleep 0.5
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way, should be hidden' )
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal should have focus after starting it' )
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    sleep 0.5
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), 0, \
+                  'Launcher hiding after Alt+F1 pressed, should be visible' )
+
+    assert_equal( @app.LauncherList( :name => 'main' ) \
+                      .QDeclarativeItem( :name => 'Dash home' ) \
+                      .QDeclarativeImage( :name => 'selectionOutline' )['visible'], 'true', \
+                  'Dash icon not highlighted after Alt+F1 pressed' )
+    assert_not_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal has focus when it should be in the launcher' )
+    XDo::Keyboard.alt_F1
+    sleep 2
+    assert_equal( Integer(@app.Unity2dPanel()['x_absolute']), -WIDTH, \
+                  'Launcher visible with window in the way and mouse moved out, should be hidden' )
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal does not have focus when it should' )
+    xid.close!
+  end
+
 end
