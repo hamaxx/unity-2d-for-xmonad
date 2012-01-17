@@ -101,7 +101,7 @@ void IntelliHideBehavior::disconnectFromGSignals()
         g_signal_handlers_disconnect_by_func(m_activeWindow, gpointer(workspaceChangedCB), this);
     }
 }
-#include <QFile>
+
 void IntelliHideBehavior::updateActiveWindowConnections()
 {
     WnckScreen* screen = wnck_screen_get_default();
