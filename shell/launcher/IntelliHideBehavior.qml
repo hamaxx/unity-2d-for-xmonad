@@ -9,6 +9,12 @@ BaseBehavior {
 
     shown: target !== undefined && (target.activeFocus || shownBecauseOfMousePosition || !windows.intersects)
 
+    function forcedVisibiliyEnded()
+    {
+        shownBecauseOfMousePosition = true
+        mouseLeaveTimer.restart()
+    }
+
     Timer {
         id: edgeHitTimer
         interval: 500

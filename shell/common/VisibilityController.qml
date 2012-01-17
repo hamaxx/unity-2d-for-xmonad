@@ -41,6 +41,9 @@ Item {
                            "\" called without matching startForceVisible")
 
         controller.forceVisibleStack = stack
-        if (Utils.hashEmpty(stack)) forceVisible = false
+        if (Utils.hashEmpty(stack)) {
+            behavior.forcedVisibiliyEnded()
+            forceVisible = false
+        }
     }
 }
