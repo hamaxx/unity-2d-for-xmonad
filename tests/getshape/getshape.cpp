@@ -1,0 +1,89 @@
+/*
+ * Copyright (C) 2010 Canonical, Ltd.
+ *
+ * Authors:
+ *  Florian Boucault <florian.boucault@canonical.com>
+ *  Ugo Riboni <ugo.riboni@canonical.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// QT
+#include <QApplication>
+#include <QX11Info>
+#include <QDebug>
+#include <QStringList>
+
+#include <QBitmap>
+#include <QRegion>
+#include <QPainter>
+#include <QPainterPath>
+
+// X11
+#include <X11/Xlib.h>
+#include <X11/extensions/shape.h>
+
+void printUsage()
+{
+    qDebug() << "ARGUMENTS: window_id [output_file]";
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication application(argc, argv);
+    QStringList arguments = application.arguments();
+
+    if (arguments.length() < 2) {
+        printUsage();
+        return 1;
+    }
+
+    bool ok;
+    Window windowId = arguments.at(1).toLongLong(&ok, 0);
+    if (!ok) {
+        qWarning() << "Window ID is not a valid integer:" << arguments.at(1);
+        return 2;
+    }
+
+    QString outputFile;
+    if (arguments.length() > 2) {
+        outputFile = arguments.at(2);
+    }
+
+    QRegion region;
+    int count, ordering;
+    XRectangle *rects = XShapeGetRectangles(QX11Info::display(), windowId,
+                                            ShapeInput, &count, &ordering);
+    for (int i = 0; i < count; i++) {
+        region = region.united(QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height));
+
+        qDebug().nospace() << rects[i].width << "x" << rects[i].height << "@" <<
+                              rects[i].x << "," << rects[i].y;
+    }
+
+    if (!outputFile.isEmpty()) {
+        QBitmap bitmap(region.boundingRect().width(), region.boundingRect().height());
+        bitmap.fill(Qt::color0);
+        QPainter painter(&bitmap);
+        QPainterPath path;
+        path.addRegion(region);
+        painter.fillPath(path, Qt::color1);
+        painter.end();
+        if (!bitmap.save(outputFile)) {
+            qWarning() << "Failed to save file with path:" << outputFile;
+            return 3;
+        }
+    }
+
+    return 0;
+}

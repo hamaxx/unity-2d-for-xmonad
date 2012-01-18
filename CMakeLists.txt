@@ -97,6 +97,7 @@ add_subdirectory(panel)
 add_subdirectory(spread)
 add_subdirectory(shell)
 add_subdirectory(po)
+add_subdirectory(tests/getshape)
 
 # uninstall target
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
