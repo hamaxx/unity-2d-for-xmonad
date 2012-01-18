@@ -37,7 +37,7 @@ class TmpWindow
   #===Return value
   # XDo::XWindow id of the temporary window
   #===Raises
-  #[SystemCallError] Error executing +xkill+.
+  #[SystemCallError] Error executing +gnome-terminal+.
   #===Example
   #  TmpWindow.open_window_at(200, 300)
   def self.open_window_at(x=100,y=100)
@@ -59,7 +59,7 @@ class TmpWindow
   #===Return value
   # nil
   #===Raises
-  #[SystemCallError] Error executing +xkill+.
+  #[XError] kill! fails to execute +xkill+.
   #===Example
   #  TmpWindow.close_all_windows
   def self.close_all_windows
