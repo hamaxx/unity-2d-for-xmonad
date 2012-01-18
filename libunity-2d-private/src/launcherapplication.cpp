@@ -988,8 +988,8 @@ LauncherApplication::onQuitTriggered()
 }
 
 template<typename T>
-bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
-                                             QString propertyName, T* member)
+bool LauncherApplication::updateOverlayState(const QMap<QString, QVariant>& properties,
+                                             const QString& propertyName, T* member)
 {
     if (properties.contains(propertyName)) {
         T value = properties.value(propertyName).value<T>();
@@ -1002,7 +1002,7 @@ bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
 }
 
 void
-LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties)
+LauncherApplication::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);
