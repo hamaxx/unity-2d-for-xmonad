@@ -130,7 +130,7 @@ context "Launcher Autohide and Show Tests" do
     comparepath = tempfilename('shape', '.png')
     %x{convert xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} #{comparepath}}
 
-    # Compare the two files with imagemagick and return discard the difference image, just
+    # Compare the two files with imagemagick and discard the difference image, just
     # use numeric comparison result. Metric "AE" returns the amount of different pixels.
     # Also redirect stderr to stdout since the result of the comparison will be output to stderr.
     out = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}
@@ -146,7 +146,7 @@ context "Launcher Autohide and Show Tests" do
     maskpath = get_shell_shape()
 
     # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
-    # then paint it as a black rectangle at the left side of the dash verification image.
+    # then draw a black rectangle and compose it at the left side of the dash verification image.
 
     screen_width, screen_height = desktop_geometry()
     screen_height -= PANEL_HEIGHT
@@ -162,9 +162,7 @@ context "Launcher Autohide and Show Tests" do
        \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
        -gravity northwest -compose over -composite #{comparepath}}
 
-    # Compare the two files with imagemagick and return discard the difference image, just
-    # use numeric comparison result. Metric "AE" returns the amount of different pixels.
-    # Also redirect stderr to stdout since the result of the comparison will be output to stderr.
+    # Compare the two files
     difference = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}.chop.to_i
 
     File.unlink(maskpath)
