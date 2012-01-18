@@ -202,4 +202,39 @@ context "Launcher Autohide and Show Tests" do
 
     assert(identical, "The actual shape does not match the expected shape")
   end
+
+  test "Shape of launcher and collapsed desktop mode dash" do
+    XDo::Keyboard.simulate('{SUPER}')
+
+    # Ideally we request this via DBUS, but this should do too
+    @app.ShellDeclarativeView()['expanded'] = false
+    sleep 1
+
+    maskpath = get_shell_shape()
+
+    # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
+    # then draw a black rectangle and compose it at the left side of the dash verification image.
+
+    screen_width, screen_height = desktop_geometry()
+    screen_height -= PANEL_HEIGHT
+
+    verifypath = "#{pwd}/verification/dash_collapsed.png"
+    out = %x{identify -format "%wx%h" #{verifypath}}
+    verify_width = out.split("x")[0].to_i
+    verify_width += LAUNCHER_WIDTH
+
+    comparepath = tempfilename('shape', '.png')
+
+    %x{convert #{verifypath} \
+       -gravity northeast -extent #{verify_width}x#{screen_height}! \
+       \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
+       -gravity northwest -compose over -composite #{comparepath}}
+
+    identical = compare_images(maskpath, comparepath)
+
+    File.unlink(maskpath)
+    File.unlink(comparepath)
+
+    assert(identical, "The actual shape does not match the expected shape")
+  end
 end
