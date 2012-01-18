@@ -395,18 +395,10 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Launcher hide delay on tile removal" do
     xid = TmpWindow.open_window_at(10,100)
-    tile = ""
-    found_tile = false
-    launcher_favorites[1..-3].split(',').each { |i|
-      if !found_tile
-        tile = @app.LauncherList( :name => 'main' ).LauncherList( :desktopFile => '/usr/share/applications/' + i.strip[1..-2] )
-        if tile['running'] == "false"
-          found_tile = true
-        end
-      end
-    }
-    verify( 0, 'Could not find any non running application tile to remove' ) { found_tile }
-    if found_tile
+    tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
+    verify( 0, 'Could not find any non running application tile to remove' ) { !tiles.empty? }
+    if !tiles.empty?
+      tile = tiles[0]
       XDo::Mouse.move(0, 200, 0, true)
       verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
         @app.Unity2dPanel()['x_absolute'].to_i
