@@ -162,13 +162,14 @@ context "Launcher Autohide and Show Tests" do
     screen_width, screen_height = desktop_geometry()
     screen_height -= PANEL_HEIGHT
 
-    out = %x{identify -format "%wx%h" #{pwd}/verification/dash_desktop.png}
+    verifypath = "#{pwd}/verification/dash_desktop.png"
+    out = %x{identify -format "%wx%h" #{verifypath}}
     verify_width = out.split("x")[0].to_i
     verify_width += LAUNCHER_WIDTH
 
     comparepath = tempfilename('shape', '.png')
 
-    %x{convert #{pwd}/verification/dash_desktop.png \
+    %x{convert #{verifypath} \
        -gravity northeast -extent #{verify_width}x#{screen_height}! \
        \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
        -gravity northwest -compose over -composite #{comparepath}}
