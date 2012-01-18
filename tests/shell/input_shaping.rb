@@ -172,4 +172,26 @@ context "Launcher Autohide and Show Tests" do
 
     assert_equal(0, difference, "The shape is wrong")
   end
+
+  test "Shape of launcher and fullscreen mode dash" do
+    XDo::Keyboard.simulate('{SUPER}')
+
+    # I could've clicked in the bottom-right corner, but this seems more future-proof
+    @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
+
+    maskpath = get_shell_shape()
+
+    # Compare with just one big rectangle filling the entire screen minus the panel area
+    screen_width, screen_height = desktop_geometry()
+    screen_height -= PANEL_HEIGHT
+    comparepath = tempfilename('shape', '.png')
+    %x{convert xc:black -background black -extent #{screen_width}x#{screen_height} #{comparepath}}
+
+    difference = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}.chop.to_i
+
+    File.unlink(maskpath)
+    File.unlink(comparepath)
+
+    assert_equal(0, difference, "The shape is wrong")
+  end
 end
