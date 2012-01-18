@@ -38,6 +38,15 @@ void printUsage()
     qDebug() << "ARGUMENTS: window_id [output_file]";
 }
 
+int handle_x11_errors(Display *display, XErrorEvent *theEvent)
+{
+    qWarning() << "Failed to call X11 function XShapeGetRectangles.";
+    qWarning() << "The window ID that was passed to it was probably not valid anymore.";
+    qWarning() << "X error code:" << theEvent->error_code;
+    qWarning() << "X Request code" << theEvent->request_code;
+    exit(4);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
@@ -60,15 +69,19 @@ int main(int argc, char *argv[])
         outputFile = arguments.at(2);
     }
 
+    XErrorHandler old_handler = XSetErrorHandler(handle_x11_errors) ;
+
     QRegion region;
     int count, ordering;
     XRectangle *rects = XShapeGetRectangles(QX11Info::display(), windowId,
                                             ShapeInput, &count, &ordering);
+    XSync(QX11Info::display(), False);
+    XSetErrorHandler(old_handler);
+
     for (int i = 0; i < count; i++) {
         region = region.united(QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height));
 
-        qDebug().nospace() << rects[i].width << "x" << rects[i].height << "@" <<
-                              rects[i].x << "," << rects[i].y;
+        printf("%dx%d@%d,%d", rects[i].width, rects[i].height, rects[i].x, rects[i].y);
     }
 
     if (!outputFile.isEmpty()) {
