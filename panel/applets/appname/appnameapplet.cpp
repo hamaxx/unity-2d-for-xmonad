@@ -295,7 +295,7 @@ void AppNameApplet::updateWidgets()
         } else if (showDesktopLabel) {
             d->m_label->setText(u2dTr("Ubuntu Desktop"));
         } else {
-            d->m_label->setText("");
+            d->m_label->setText(QString());
         }
 
         // Define label width
