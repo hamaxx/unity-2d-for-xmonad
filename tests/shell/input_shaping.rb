@@ -71,6 +71,20 @@ def get_shell_shape
     return maskpath
 end
 
+# Compare two images using ImageMagick. Perform a pixel-by-pixel comparison and return true
+# only if all the pixels are identical.
+# Before checking the pixels make sure the two images are the same size, otherwise IM will choke.
+def compare_images(image1, image2)
+    size1 = %x{identify -format '%wx%h' #{image1}}
+    size2 = %x{identify -format '%wx%h' #{image2}}
+    return false if size1 != size2
+
+    # Discard the difference image and redirect stderr to stdout as IM will output the number of
+    # different pixels there for some reason.
+    difference = %x{compare #{image1} #{image2} -metric AE /dev/null 2>&1}.chop.to_i
+    return difference == 0
+end
+
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
@@ -130,15 +144,12 @@ context "Launcher Autohide and Show Tests" do
     comparepath = tempfilename('shape', '.png')
     %x{convert xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} #{comparepath}}
 
-    # Compare the two files with imagemagick and discard the difference image, just
-    # use numeric comparison result. Metric "AE" returns the amount of different pixels.
-    # Also redirect stderr to stdout since the result of the comparison will be output to stderr.
-    out = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}
+    identical = compare_images(maskpath, comparepath)
 
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert( out.chop == "0", "The shape is wrong")
+    assert(identical, "The actual shape does not match the expected shape")
   end
 
   test "Shape of launcher and desktop mode dash" do
@@ -162,19 +173,18 @@ context "Launcher Autohide and Show Tests" do
        \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
        -gravity northwest -compose over -composite #{comparepath}}
 
-    # Compare the two files
-    difference = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}.chop.to_i
+    identical = compare_images(maskpath, comparepath)
 
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert_equal(0, difference, "The shape is wrong")
+    assert(identical, "The actual shape does not match the expected shape")
   end
 
   test "Shape of launcher and fullscreen mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
 
-    # I could've clicked in the bottom-right corner, but this seems more future-proof
+    # Ideally we request this via DBUS, but this should do too
     @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
 
     maskpath = get_shell_shape()
@@ -185,11 +195,11 @@ context "Launcher Autohide and Show Tests" do
     comparepath = tempfilename('shape', '.png')
     %x{convert xc:black -background black -extent #{screen_width}x#{screen_height} #{comparepath}}
 
-    difference = %x{compare #{maskpath} #{comparepath} -metric AE /dev/null 2>&1}.chop.to_i
+    identical = compare_images(maskpath, comparepath)
 
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert_equal(0, difference, "The shape is wrong")
+    assert(identical, "The actual shape does not match the expected shape")
   end
 end
