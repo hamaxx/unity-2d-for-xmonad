@@ -9,10 +9,12 @@ BaseBehavior {
 
     shown: target !== undefined && (target.activeFocus || shownBecauseOfMousePosition || !windows.intersects)
 
-    function forcedVisibiliyEnded()
+    onForcedVisibleChanged:
     {
-        shownBecauseOfMousePosition = true
-        mouseLeaveTimer.restart()
+        if (!forcedVisible) {
+            shownBecauseOfMousePosition = true
+            mouseLeaveTimer.restart()
+        }
     }
 
     Timer {
