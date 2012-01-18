@@ -67,7 +67,7 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
     PlaceEntry* findPlaceEntry(const QString& groupName);
-    Q_INVOKABLE void activate(QString uri);
+    Q_INVOKABLE void activate(const QString& uri);
 
 Q_SIGNALS:
     void entryAdded(PlaceEntry*);
