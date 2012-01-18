@@ -30,6 +30,9 @@
 # Check script being run by Ruby 1.8.x, later versions not supported by TDriver
 abort("Aborted! Ruby 1.9 not supported, use 1.8") unless RUBY_VERSION < '1.9'
 
+# Time verify_* assertions should wait until they throw exception 
+TIMEOUT = 10
+
 # Add ./misc/lib to the list of library locations - need to calculate absolute path
 require 'pathname'
 $library_path = File.expand_path(File.dirname(__FILE__)) + '/misc/lib'
