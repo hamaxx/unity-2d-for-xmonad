@@ -252,7 +252,7 @@ void X11EmbedContainer::paintEvent(QPaintEvent *event)
     }
 }
 
-void X11EmbedContainer::setBackgroundPixmap(QPixmap background)
+void X11EmbedContainer::setBackgroundPixmap(const QPixmap& background)
 {
     if (!clientWinId()) {
         return;

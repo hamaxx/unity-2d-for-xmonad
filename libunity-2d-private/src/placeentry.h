@@ -148,39 +148,37 @@ public:
     QMap<QString, QVariant> globalRendererHints() const;
 
     /* setters */
-    /* FIXME: all setters of type QString should be optimized
-       by having the argument as cont QString& */
-    void setName(QString);
-    void setIcon(QString);
-    void setFileName(QString);
-    void setGroupName(QString);
-    void setDbusName(QString);
-    void setDbusObjectPath(QString);
+    void setName(const QString &);
+    void setIcon(const QString &);
+    void setFileName(const QString &);
+    void setGroupName(const QString &);
+    void setDbusName(const QString &);
+    void setDbusObjectPath(const QString &);
     void setPosition(uint);
-    void setMimetypes(QStringList);
+    void setMimetypes(const QStringList &);
     void setSensitive(bool);
     void setSections(DeeListModel*);
-    void setHints(QMap<QString, QVariant>);
+    void setHints(const QMap<QString, QVariant> &);
     void setSearchHint(const QString&);
     void setShowEntry(bool);
     void setActiveSection(int);
     void setActive(bool);
 
-    void setEntrySearchQuery(QString);
-    void setEntryRendererName(QString);
-    void setEntryGroupsModelName(QString);
+    void setEntrySearchQuery(const QString &);
+    void setEntryRendererName(const QString &);
+    void setEntryGroupsModelName(const QString &);
     void setEntryGroupsModel(DeeListModel*);
-    void setEntryResultsModelName(QString);
+    void setEntryResultsModelName(const QString &);
     void setEntryResultsModel(DeeListModel*);
-    void setEntryRendererHints(QMap<QString, QVariant>);
+    void setEntryRendererHints(const QMap<QString, QVariant> &);
 
-    void setGlobalSearchQuery(QString);
-    void setGlobalRendererName(QString);
-    void setGlobalGroupsModelName(QString);
+    void setGlobalSearchQuery(const QString &);
+    void setGlobalRendererName(const QString &);
+    void setGlobalGroupsModelName(const QString &);
     void setGlobalGroupsModel(DeeListModel*);
-    void setGlobalResultsModelName(QString);
+    void setGlobalResultsModelName(const QString &);
     void setGlobalResultsModel(DeeListModel*);
-    void setGlobalRendererHints(QMap<QString, QVariant>);
+    void setGlobalRendererHints(const QMap<QString, QVariant>&);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
