@@ -10,7 +10,6 @@ BaseBehavior {
 
     Timer {
         id: autoHideTimer
-
         interval: 1000
         onTriggered: shownRegardlessOfFocus = false
     }
