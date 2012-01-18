@@ -2,6 +2,7 @@ project(unity-2d-shell)
 
 # Source
 add_subdirectory(app)
+add_subdirectory(tests)
 
 file(GLOB shell_QML *.qml *.js)
 
