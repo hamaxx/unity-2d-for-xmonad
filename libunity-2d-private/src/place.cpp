@@ -409,7 +409,7 @@ Place::findPlaceEntry(const QString& groupName)
 }
 
 void
-Place::activate(QString uri)
+Place::activate(const QString& uri)
 {
     /* Tries various methods to trigger a sensible action for the given 'uri'.
        First it asks the place backend via its 'Activate' method. If that fails

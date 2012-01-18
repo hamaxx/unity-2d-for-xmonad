@@ -238,7 +238,7 @@ PlaceEntry::name() const
 }
 
 void
-PlaceEntry::setName(QString name)
+PlaceEntry::setName(const QString& name)
 {
     m_name = name;
 }
@@ -250,7 +250,7 @@ PlaceEntry::icon() const
 }
 
 void
-PlaceEntry::setIcon(QString icon)
+PlaceEntry::setIcon(const QString& icon)
 {
     m_icon = icon;
 }
@@ -270,7 +270,7 @@ PlaceEntry::fileName() const
 }
 
 void
-PlaceEntry::setFileName(QString fileName)
+PlaceEntry::setFileName(const QString& fileName)
 {
     m_fileName = fileName;
 }
@@ -282,7 +282,7 @@ PlaceEntry::groupName() const
 }
 
 void
-PlaceEntry::setGroupName(QString groupName)
+PlaceEntry::setGroupName(const QString& groupName)
 {
     m_groupName = groupName;
 }
@@ -468,13 +468,13 @@ PlaceEntry::globalRendererHints() const
 }
 
 void
-PlaceEntry::setDbusName(QString dbusName)
+PlaceEntry::setDbusName(const QString& dbusName)
 {
     m_dbusName = dbusName;
 }
 
 void
-PlaceEntry::setDbusObjectPath(QString dbusObjectPath)
+PlaceEntry::setDbusObjectPath(const QString& dbusObjectPath)
 {
     m_dbusObjectPath = dbusObjectPath;
 }
@@ -489,7 +489,7 @@ PlaceEntry::setPosition(uint position)
 }
 
 void
-PlaceEntry::setMimetypes(QStringList mimetypes)
+PlaceEntry::setMimetypes(const QStringList& mimetypes)
 {
     m_mimetypes = mimetypes;
     Q_EMIT mimetypesChanged();
@@ -518,7 +518,7 @@ PlaceEntry::setSections(DeeListModel* sections)
 }
 
 void
-PlaceEntry::setHints(QMap<QString, QVariant> hints)
+PlaceEntry::setHints(const QMap<QString, QVariant>& hints)
 {
     m_hints = hints;
     Q_EMIT hintsChanged();
@@ -575,7 +575,7 @@ PlaceEntry::setActive(bool active)
 }
 
 void
-PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
+PlaceEntry::setEntrySearchQuery(const QString& entrySearchQuery)
 {
     if (entrySearchQuery != m_entrySearchQuery) {
         m_entrySearchQuery = entrySearchQuery;
@@ -588,7 +588,7 @@ PlaceEntry::setEntrySearchQuery(QString entrySearchQuery)
 }
 
 void
-PlaceEntry::setEntryRendererName(QString entryRendererName)
+PlaceEntry::setEntryRendererName(const QString& entryRendererName)
 {
     if (entryRendererName != m_entryRendererName) {
         m_entryRendererName = entryRendererName;
@@ -597,7 +597,7 @@ PlaceEntry::setEntryRendererName(QString entryRendererName)
 }
 
 void
-PlaceEntry::setEntryGroupsModelName(QString entryGroupsModelName)
+PlaceEntry::setEntryGroupsModelName(const QString& entryGroupsModelName)
 {
     if (entryGroupsModelName != m_entryGroupsModelName) {
         m_entryGroupsModelName = entryGroupsModelName;
@@ -622,7 +622,7 @@ PlaceEntry::setEntryGroupsModel(DeeListModel* entryGroupsModel)
 }
 
 void
-PlaceEntry::setEntryResultsModelName(QString entryResultsModelName)
+PlaceEntry::setEntryResultsModelName(const QString& entryResultsModelName)
 {
     if (entryResultsModelName != m_entryResultsModelName) {
         m_entryResultsModelName = entryResultsModelName;
@@ -647,14 +647,14 @@ PlaceEntry::setEntryResultsModel(DeeListModel* entryResultsModel)
 }
 
 void
-PlaceEntry::setEntryRendererHints(QMap<QString, QVariant> entryRendererHints)
+PlaceEntry::setEntryRendererHints(const QMap<QString, QVariant>& entryRendererHints)
 {
     m_entryRendererHints = entryRendererHints;
     Q_EMIT entryRendererHintsChanged();
 }
 
 void
-PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
+PlaceEntry::setGlobalSearchQuery(const QString& globalSearchQuery)
 {
     if (globalSearchQuery != m_globalSearchQuery) {
         m_globalSearchQuery = globalSearchQuery;
@@ -667,7 +667,7 @@ PlaceEntry::setGlobalSearchQuery(QString globalSearchQuery)
 }
 
 void
-PlaceEntry::setGlobalRendererName(QString globalRendererName)
+PlaceEntry::setGlobalRendererName(const QString& globalRendererName)
 {
     if (globalRendererName != m_globalRendererName) {
         m_globalRendererName = globalRendererName;
@@ -676,7 +676,7 @@ PlaceEntry::setGlobalRendererName(QString globalRendererName)
 }
 
 void
-PlaceEntry::setGlobalGroupsModelName(QString globalGroupsModelName)
+PlaceEntry::setGlobalGroupsModelName(const QString& globalGroupsModelName)
 {
     if (globalGroupsModelName != m_globalGroupsModelName) {
         m_globalGroupsModelName = globalGroupsModelName;
@@ -701,7 +701,7 @@ PlaceEntry::setGlobalGroupsModel(DeeListModel* globalGroupsModel)
 }
 
 void
-PlaceEntry::setGlobalResultsModelName(QString globalResultsModelName)
+PlaceEntry::setGlobalResultsModelName(const QString& globalResultsModelName)
 {
     if (globalResultsModelName != m_globalResultsModelName) {
         m_globalResultsModelName = globalResultsModelName;
@@ -726,7 +726,7 @@ PlaceEntry::setGlobalResultsModel(DeeListModel* globalResultsModel)
 }
 
 void
-PlaceEntry::setGlobalRendererHints(QMap<QString, QVariant> globalRendererHints)
+PlaceEntry::setGlobalRendererHints(const QMap<QString, QVariant>& globalRendererHints)
 {
     m_globalRendererHints = globalRendererHints;
     Q_EMIT globalRendererHintsChanged();

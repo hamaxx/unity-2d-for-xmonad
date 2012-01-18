@@ -170,7 +170,7 @@ QPixmap WindowImageProvider::getWindowPixmap(Window frameWindowId,
    into a QImage (since we use the rester paint engine). This conversion will
    throw std::bad_alloc if the drawable is not valid, so we need to catch it.
 */
-QImage WindowImageProvider::convertWindowPixmap(QPixmap windowPixmap,
+QImage WindowImageProvider::convertWindowPixmap(const QPixmap& windowPixmap,
                                                 Window frameWindowId)
 {
     if (m_x11supportsShape) {
