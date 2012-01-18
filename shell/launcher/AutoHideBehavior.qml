@@ -4,20 +4,15 @@ import "../common"
 
 BaseBehavior {
     id: autoHide
-    property bool shownRegardlessOfFocus: true
+    property bool shownRegardlessOfFocus: false
 
     shown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
 
     Timer {
         id: autoHideTimer
-        property bool oneTimeTrigger: false
 
         interval: 1000
-        running: oneTimeTrigger || ((target !== undefined) ? !target.containsMouse : false)
-        onTriggered: {
-            oneTimeTrigger = false
-            shownRegardlessOfFocus = false
-        }
+        onTriggered: shownRegardlessOfFocus = false
     }
 
     Timer {
@@ -28,14 +23,22 @@ BaseBehavior {
 
     ShowDesktopMonitor {
         onShownChanged: {
-            autoHideTimer.oneTimeTrigger = shown
-            shownRegardlessOfFocus = shown
+            if (shown) {
+                shownRegardlessOfFocus = true
+                autoHideTimer.restart()
+            }
         }
     }
 
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
+        ignoreUnknownSignals: true
+    }
+
+    Connections {
+        target: autoHide.target !== undefined ? autoHide.target : null
+        onContainsMouseChanged: autoHideTimer.running = !target.containsMouse
         ignoreUnknownSignals: true
     }
 }
