@@ -52,8 +52,11 @@ DropItem {
 
     anchors.horizontalCenter: parent.horizontalCenter
 
+    height: selectionOutlineSize
+
     property bool isBfb: false
     property int tileSize
+    property int selectionOutlineSize
     property alias name: looseItem.objectName
     property string desktopFile: ""
     property alias icon: icon.source
@@ -132,13 +135,8 @@ DropItem {
            the active one */
         Image {
             objectName: "active"
-
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
             anchors.right: parent.right
-
-            width: parent.width * 0.15
-            fillMode: Image.PreserveAspectFit
+            y: item.height - item.selectionOutlineSize / 2 - height / 2
             mirror: isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
@@ -164,9 +162,7 @@ DropItem {
                    printed for the following two anchor assignements. This fixes the
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
-                width: parent.width * 0.15
-                height: width * sourceSize.height / sourceSize.width
-                y: (item.height - height) / 2 + getPipOffset(index) * 0.015 * item.height
+                y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
                 mirror: isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
@@ -216,6 +212,8 @@ DropItem {
                     running: launching
                 }
 
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
                 source: {
                     if (isBfb) {
                         if (declarativeView.focus && item.activeFocus) {
@@ -240,6 +238,8 @@ DropItem {
                 anchors.fill: parent
                 smooth: true
 
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
                 source: "artwork/round_outline_54x54.png"
 
                 opacity: 0
@@ -258,13 +258,11 @@ DropItem {
             Image {
                 id: icon
                 objectName: "icon"
-
-                anchors.fill: parent
-                anchors.margins: Math.round(parent.width * 0.056)
+                anchors.centerIn: parent
                 smooth: true
 
-                sourceSize.width: Math.max(width, 16)
-                sourceSize.height: Math.max(height, 16)
+                sourceSize.width: 48
+                sourceSize.height: 48
 
                 /* Whenever one of the parameters used in calculating the background color of
                    the icon changes, recalculate its value */
@@ -288,14 +286,14 @@ DropItem {
                 smooth: true
 
                 source: isBfb ? "artwork/squircle_shine_54.png" : "artwork/round_shine_54x54.png"
+                sourceSize.width: item.tileSize
+                sourceSize.height: item.tileSize
             }
 
             Image {
                 id: selectionOutline
                 objectName: "selectionOutline"
                 anchors.centerIn: parent
-                width: item.width
-                height: item.height
                 smooth: true
                 source: isBfb ? "artwork/squircle_glow_54.png" : "artwork/round_selected_66x66.png"
                 visible: declarativeView.focus && item.activeFocus
@@ -303,22 +301,22 @@ DropItem {
 
             Rectangle {
                 id: counter
-                height: width / 2 - border.width
-                width: parent.width * 0.59
+                height: 16 - border.width
+                width: 32
                 // Using anchors the item will be 1 pixel off with respect to Unity
                 y: 1
                 x: 1
                 radius: height / 2 - 1
                 smooth: true
-                border.width: width / 16
+                border.width: 2
                 border.color: "white"
                 color: "#595959"
                 visible: launcherItem.counterVisible
 
                 Text {
                     anchors.centerIn: parent
-                    font.pixelSize: parent.height * 0.79
-                    width: parent.width * 0.84
+                    font.pixelSize: parent.height - 3
+                    width: parent.width - 5
                     smooth: true
                     elide: Text.ElideRight
                     horizontalAlignment: Text.AlignHCenter
@@ -331,8 +329,7 @@ DropItem {
                 id: progressBar
                 objectName: "progressBar"
                 source: "artwork/progress_bar_trough.png"
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 width: tile.width
                 smooth: true
@@ -341,10 +338,9 @@ DropItem {
                 Image {
                     id: progressFill
                     source: "artwork/progress_bar_fill.png"
-                    x: parent.width * 0.11
-                    y: (parent.height - height) / 2
-                    width: parent.width * 0.78 * launcherItem.progress
-                    height: parent.height * 0.074
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: 6
+                    width: sourceSize.width * launcherItem.progress
                     smooth: true
 
                     Behavior on width {
@@ -377,8 +373,8 @@ DropItem {
                 anchors.centerIn: parent
                 color: "#B3000000" // 0.7 opacity on black
                 radius: 2
-                width: parent.width * 0.41
-                height: parent.height * 0.41
+                width: 22
+                height: 22
                 smooth: true
 
                 Text {
@@ -386,7 +382,6 @@ DropItem {
                     anchors.centerIn: parent
                     color: "white"
                     smooth: true
-                    font.pixelSize: parent.height * 0.7
                 }
             }
 

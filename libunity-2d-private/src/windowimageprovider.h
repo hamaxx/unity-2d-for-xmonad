@@ -33,7 +33,7 @@ public:
 
 private:
     QPixmap getWindowPixmap(Window frameWindowId, Window contentWindowId);
-    QImage convertWindowPixmap(QPixmap windowPixmap, Window frameWindowId);
+    QImage convertWindowPixmap(const QPixmap& windowPixmap, Window frameWindowId);
 
     bool m_x11supportsShape;
 };

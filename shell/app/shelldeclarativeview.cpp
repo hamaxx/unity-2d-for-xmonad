@@ -274,8 +274,12 @@ ShellDeclarativeView::showCommandsLens()
 void
 ShellDeclarativeView::onAltF1Pressed()
 {
-    Q_EMIT launcherFocusRequested();
-    forceActivateWindow();
+    if (!isActiveWindow()) {
+        Q_EMIT launcherFocusRequested();
+        forceActivateWindow();
+    } else {
+        forceDeactivateWindow();
+    }
 }
 
 /* ----------------- super key handling ---------------- */

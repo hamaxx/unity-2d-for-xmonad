@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2011 Canonical Ltd.
+ * Copyright 2010 Canonical Ltd.
  *
  * Authors:
  * - Aurélien Gâteau <aurelien.gateau@canonical.com>
@@ -18,9 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// Self
-#include "launcherclient.h"
 
-const int LauncherClient::MaximumWidth = 65;
+// Local
+#include <unitytestmacro.h>
+#include <launcherview.h>
 
-#include "launcherclient.moc"
+// Qt
+#include <QtTestGui>
+
+class LauncherViewTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void testCreate()
+    {
+        LauncherView view;
+    }
+};
+
+QAPP_TEST_MAIN(LauncherViewTest)
+
+#include "launcherviewtest.moc"
+

@@ -1,0 +1,4 @@
+----
+ * Logout of a Unity-2d session
+
+-> Logout is "fast", with "fast" meaning it is not 30 seconds (gnome-session timeout) nor 10 (Qt clipboard manager timeout on app shutdown)

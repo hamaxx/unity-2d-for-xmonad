@@ -49,7 +49,6 @@ struct Unity2dPanelPrivate
     bool m_useStrut;
     int m_delta;
     bool m_manualSliding;
-    int m_thickness;
 
     void setStrut(ulong* struts)
     {
@@ -105,15 +104,15 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top(), m_thickness, available.height());
+                rect = QRect(screen.left(), available.top(), q->width(), available.height());
                 rect.moveLeft(m_delta);
             } else {
-                rect = QRect(screen.right() - m_thickness, available.top(), m_thickness, available.height());
+                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
                 rect.moveRight(screen.right() - m_delta);
             }
             break;
         case Unity2dPanel::TopEdge:
-            rect = QRect(screen.left(), screen.top(), screen.width(), m_thickness);
+            rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
             rect.moveTop(m_delta);
             break;
         }
@@ -158,7 +157,6 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
-    d->m_thickness = 0;
 
     d->m_slideInAnimation = new QPropertyAnimation(this);
     d->m_slideInAnimation->setTargetObject(this);
@@ -170,7 +168,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_slideOutAnimation->setTargetObject(this);
     d->m_slideOutAnimation->setPropertyName("delta");
     d->m_slideOutAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideOutAnimation->setEndValue(-thickness());
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
@@ -219,13 +217,13 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
-    d->m_slideOutAnimation->setEndValue(-thickness());
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 void Unity2dPanel::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
-    d->m_slideOutAnimation->setEndValue(-thickness());
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
@@ -279,32 +277,16 @@ int Unity2dPanel::delta() const
 void Unity2dPanel::setDelta(int delta)
 {
     /* Clamp delta to be between 0 and minus its size */
-    int minDelta = -thickness();
+    int minDelta = -panelSize();
     int maxDelta = 0;
 
     d->m_delta = qMax(qMin(delta, maxDelta), minDelta);
     d->updateGeometry();
 }
 
-int Unity2dPanel::thickness() const
+int Unity2dPanel::panelSize() const
 {
     return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
-}
-
-void Unity2dPanel::setThickness(int thickness)
-{
-    if (thickness == d->m_thickness) {
-        return;
-    }
-
-    d->m_thickness = thickness;
-
-    /* Update variables that depend on thickness' value */
-    setDelta(d->m_delta);
-    d->m_slideOutAnimation->setEndValue(-thickness);
-    d->updateGeometry();
-
-    Q_EMIT thicknessChanged(thickness);
 }
 
 void Unity2dPanel::slideIn()

@@ -31,7 +31,7 @@ Item {
         id: launcherLoader
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        width: launcher2dConfiguration.thickness
+        width: 65
         x: visibilityController.shown ? 0 : -width
 
         KeyNavigation.right: dashLoader

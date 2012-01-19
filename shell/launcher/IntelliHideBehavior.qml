@@ -5,19 +5,39 @@ import "../common"
 BaseBehavior {
     id: intellihide
 
-    property bool shownRegardlessOfFocus: true
+    property bool shownBecauseOfMousePosition: false
 
-    shown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
+    shown: target !== undefined && (target.activeFocus || shownBecauseOfMousePosition || !windows.intersects)
+
+    onForcedVisibleChanged:
+    {
+        if (!forcedVisible) {
+            shownBecauseOfMousePosition = true
+            mouseLeaveTimer.restart()
+        }
+    }
 
     Timer {
         id: edgeHitTimer
         interval: 500
-        onTriggered: shownRegardlessOfFocus = true
+        onTriggered: shownBecauseOfMousePosition = true
+    }
+
+    Timer {
+        id: mouseLeaveTimer
+        interval: 1000
+        onTriggered: shownBecauseOfMousePosition = false
     }
 
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
+        ignoreUnknownSignals: true
+    }
+
+    Connections {
+        target: (intellihide.target !== undefined) ? intellihide.target : null
+        onContainsMouseChanged: mouseLeaveTimer.running = !target.containsMouse
         ignoreUnknownSignals: true
     }
 
@@ -27,13 +47,5 @@ BaseBehavior {
                                                     intellihide.target.width,
                                                     intellihide.target.height)
                                           : Qt.rect(0, 0, 0, 0)
-    }
-
-    /* For some reason this requires a Binding, assigning directly to the property
-       won't work in certain cases. */
-    Binding {
-        target: intellihide
-        property: "shownRegardlessOfFocus"
-        value: intellihide.target ? intellihide.target.containsMouse || !windows.intersects : true
     }
 }

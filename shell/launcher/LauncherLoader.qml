@@ -30,6 +30,12 @@ Loader {
         when: launcherBehavior.status == Loader.Ready
     }
 
+    Binding {
+        target: launcherBehavior.item
+        property: "forcedVisible"
+        value: visibilityController.forceVisible
+    }
+
     Connections {
         target: declarativeView
         onSuperKeyHeldChanged: {

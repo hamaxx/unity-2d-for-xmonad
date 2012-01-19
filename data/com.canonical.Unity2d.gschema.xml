@@ -24,11 +24,6 @@
         2: intellihide; same as auto hide but the launcher will disappear if a window is placed on top of it
        </description>
     </key>
-    <key name="thickness" type="i">
-      <default>65</default>
-      <summary>Thickness of the launcher</summary>
-      <description>Size of the small side (typically the horizontal side) of the launcher</description>
-    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
     <key type="as" name="applets">
