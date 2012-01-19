@@ -39,6 +39,8 @@ libunity-2d-private/Unity2d/launchermenu/launchermenu.qrc.depends
 
 po/*.gmo
 
+tests/misc/binary_dir.txt
+
 # Cmake files and generated files
 Makefile
 .bzr-repo

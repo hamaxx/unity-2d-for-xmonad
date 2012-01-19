@@ -179,11 +179,11 @@ context "Launcher Autohide and Show Tests" do
   #   * Open application in position overlapping Launcher
   #   * Verify Launcher hiding
   #   * Move mouse to left of screen to reveal Launcher
-  #   * Verify Launcher shows
+  #   * Verify Launcher shows but not immediately
   #   * Move mouse to the right, but still over the Launcher
   #   * Verify Launcher still showing
   #   * Move mouse further right to not overlap Launcher
-  #   * Verify Launcher hides
+  #   * Verify Launcher hides but not immediately
   # Post-conditions
   #   * None
   # References
@@ -195,6 +195,10 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::Mouse.move(0,200)
+    sleep 0.4
+    verify_equal( -WIDTH, 0, 'Launcher should not be visible immediately after mouse moves to the left edge, has to wait 0.5 seconds to show' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
     verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
       @app.Launcher()['x_absolute'].to_i
     }
@@ -205,6 +209,10 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::Mouse.move(WIDTH,200)
+    sleep 0.9
+    verify_equal( 0, 0, 'Launcher should still be visible as it should take 1 second to hide after mouse is not over it' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
     verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
