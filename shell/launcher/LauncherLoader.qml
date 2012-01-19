@@ -31,10 +31,9 @@ Loader {
     }
 
     Binding {
-        target: launcherBehavior
-        property: "item.forcedVisible"
+        target: launcherBehavior.item
+        property: "forcedVisible"
         value: visibilityController.forceVisible
-        when: launcherBehavior.status == Loader.Ready
     }
 
     Connections {
