@@ -401,23 +401,22 @@ context "Launcher Autohide and Show Tests" do
   test "Launcher visible after toggling dash" do
     xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
+      @app.Unity2dPanel()['x_absolute'].to_i
     }
 
     bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
     XDo::Mouse.move(0, 200, 0, true)
     verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
-      @app.Launcher()['x_absolute'].to_i
+      @app.Unity2dPanel()['x_absolute'].to_i
     }
-    XDo::Mouse.move(bfb['x_absolute'].to_i + 1, bfb['y_absolute'].to_i + 1, 0, true)
+    bfb.move_mouse()
     bfb.tap()
     bfb.tap()
-    (1..15).each do |i|
-      verify_equal( 0, 0, 'Launcher hiding after clicking twice in the bfb' ) {
-        @app.Launcher()['x_absolute'].to_i
+    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
+      verify_equal( -WIDTH, 2 ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
       }
-      sleep 0.1
-    end
+    }
 
     xid.close!
   end
