@@ -56,8 +56,8 @@ context "Launcher Autohide and Show Tests" do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
     @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
-                     :arguments => "-testability", 
-                     :sleeptime => 2 )
+    		         :arguments => "-testability", 
+    		         :sleeptime => 2 )
     # Make certain application is ready for testing
     verify{ @app.Unity2dPanel() }
   end
