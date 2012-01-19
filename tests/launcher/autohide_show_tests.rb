@@ -51,7 +51,7 @@ context "Launcher Autohide and Show Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)    
 
-    launcher_favorites = `dconf read /desktop/unity/launcher/favorites`
+    launcher_favorites = `gsettings get com.canonical.Unity.Launcher favorites`
 
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
@@ -68,7 +68,7 @@ context "Launcher Autohide and Show Tests" do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-launcher"
-    system "dconf write /desktop/unity/launcher/favorites \"" + launcher_favorites + "\""
+    system "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
   #####################################################################################
