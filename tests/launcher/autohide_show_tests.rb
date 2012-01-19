@@ -415,6 +415,7 @@ context "Launcher Autohide and Show Tests" do
       XDo::Mouse.click(nil, nil, :right)
       menu = @app.LauncherContextualMenu( :folded => false );
       XDo::Mouse.move(menu['x_absolute'].to_i + 20, menu['y_absolute'].to_i + menu['height'].to_i - 10, 0, true)
+      sleep 1.5
       XDo::Mouse.click()
       sleep 0.9
       verify_equal( 0, 0, 'Launcher hiding after icon removal, should be visible for 1 second' ) {
