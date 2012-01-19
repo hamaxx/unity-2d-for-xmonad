@@ -405,8 +405,10 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Launcher hide delay on tile removal" do
     xid = TmpWindow.open_window_at(10,100)
-    tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
-    verify( 0, 'Could not find any non running application tile to remove' ) { !tiles.empty? }
+    tiles = ""
+    verify( 0, 'Could not find any non running application tile to remove' ) {
+        tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
+    }
     if !tiles.empty?
       tile = tiles[0]
       XDo::Mouse.move(0, 200, 0, true)
