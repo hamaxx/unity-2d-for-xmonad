@@ -16,7 +16,7 @@ void InputShapeMask::updateShape()
 
     if (!m_source.isEmpty() && m_color.isValid()) {
         QPixmap image;
-        QString path = unity2dDirectory() + m_source;
+        QString path = unity2dDirectory() + "/" + m_source;
         if (image.load(path)) {
             newShape = image.createMaskFromColor(m_color.rgb(), Qt::MaskInColor);
         } else {
