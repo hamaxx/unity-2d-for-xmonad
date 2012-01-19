@@ -51,13 +51,13 @@ def get_shell_shape
 
     # Try to find the shell window
     shell_ids = XDo::XWindow::search('unity-2d-shell')
-    verify_not(10, "Failed to retrieve the shell window id") { shell_ids.empty? }
+    assert(!shell_ids.empty?, "Failed to retrieve the shell window id")
     shell_id = shell_ids[0]
 
     # Get the shape of the shell window using our custom tool
     maskpath = tempfilename('shape', '.png')
     out = %x{#{pwd}/../getshape/getshape #{shell_id} #{maskpath}}
-    verify_equal(0, 10, "Failed to call getshape to get the shape of the window") { $?.exitstatus }
+    assert($?.exitstatus == 0, "Failed to call getshape to get the shape of the window")
     return maskpath
 end
 
