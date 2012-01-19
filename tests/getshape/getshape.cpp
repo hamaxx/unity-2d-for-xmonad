@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
         outputFile = arguments.at(2);
     }
 
-    XErrorHandler old_handler = XSetErrorHandler(handle_x11_errors) ;
+    XErrorHandler old_handler = XSetErrorHandler(handle_x11_errors);
 
     QRegion region;
     int count, ordering;

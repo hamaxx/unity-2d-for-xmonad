@@ -6,6 +6,7 @@
  * Copyright 2011 Canonical Ltd.
  *
  * Authors:
+ * - Ugo Riboni <ugo.riboni@canonical.com>
  * - Gerry Boland <gerry.boland@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,16 +32,6 @@ require 'tmpdir'
 require 'tempfile'
 include TDriverVerify
 
-# Helper function to open window at certain position
-def open_window_at(x, y, w = 100, h = 30)
-  # Open Terminal with position (x,y)
-  Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
-    system "gnome-terminal --geometry=#{w}x#{h}+#{x}+#{y} --working-directory=#{dir} &"
-    Timeout.timeout(3){XDo::XWindow.wait_for_window(dir)}
-  }
-  return XDo::XWindow.from_active
-end
-
 def desktop_geometry
     out = %x{xdotool getdisplaygeometry}
     return out.split.collect { |coord| coord.to_i }
@@ -60,14 +51,13 @@ def get_shell_shape
 
     # Try to find the shell window
     shell_ids = XDo::XWindow::search('unity-2d-shell')
-    assert( !shell_ids.empty?, "Failed to retrieve the shell window id");
+    verify_not(10, "Failed to retrieve the shell window id") { shell_ids.empty? }
     shell_id = shell_ids[0]
 
     # Get the shape of the shell window using our custom tool
     maskpath = tempfilename('shape', '.png')
     out = %x{#{pwd}/../getshape/getshape #{shell_id} #{maskpath}}
-    assert( $?.exitstatus == 0, "Failed to call getshape to get the shape of the window")
-
+    verify_equal(0, 10, "Failed to call getshape to get the shape of the window") { $?.exitstatus }
     return maskpath
 end
 
@@ -86,14 +76,11 @@ def compare_images(image1, image2)
 end
 
 ############################# Test Suite #############################
-context "Launcher Autohide and Show Tests" do
+context "Shell input shape tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
 
   PANEL_HEIGHT = 24
   LAUNCHER_WIDTH = 65
-  DASH_HEIGHT_COLLAPSED = 115
-  DASH_HEIGHT = 615
-  DASH_WIDTH = 996
 
   # Run once at the beginning of this test suite
   startup do
@@ -149,7 +136,7 @@ context "Launcher Autohide and Show Tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert(identical, "The actual shape does not match the expected shape")
+    verify(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and desktop mode dash" do
@@ -179,13 +166,11 @@ context "Launcher Autohide and Show Tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert(identical, "The actual shape does not match the expected shape")
+    verify(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and fullscreen mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
-
-    # Ideally we request this via DBUS, but this should do too
     @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
 
     maskpath = get_shell_shape()
@@ -201,7 +186,7 @@ context "Launcher Autohide and Show Tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert(identical, "The actual shape does not match the expected shape")
+    verify(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and collapsed desktop mode dash" do
@@ -236,6 +221,6 @@ context "Launcher Autohide and Show Tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    assert(identical, "The actual shape does not match the expected shape")
+    verify(10, "The actual shape does not match the expected shape") { identical }
   end
 end
