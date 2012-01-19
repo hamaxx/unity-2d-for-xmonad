@@ -51,10 +51,22 @@ int main(int argc, char *argv[])
     Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
 
+    QUrl rootFileUrl;
+    const QStringList arguments = application.arguments();
+    const int rootFileArgumentIndex = arguments.indexOf("-rootfile");
+    if (rootFileArgumentIndex != -1) {
+        if (rootFileArgumentIndex + 1 < arguments.count()) {
+            rootFileUrl = arguments[rootFileArgumentIndex + 1];
+        } else {
+            qCritical() << "-rootfile argument given without file";
+            return -1;
+        }
+    } else {
+        rootFileUrl = QUrl("Shell.qml");
+    }
+
     application.setApplicationName("Unity 2D Shell");
     application.setQuitOnLastWindowClosed(false);
-
-    QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");
     client.connectToSessionManager();
@@ -83,7 +95,7 @@ int main(int argc, char *argv[])
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
-    view.setSource(QUrl("Shell.qml"));
+    view.setSource(rootFileUrl);
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.
