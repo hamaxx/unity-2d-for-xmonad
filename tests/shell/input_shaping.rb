@@ -86,6 +86,12 @@ context "Shell input shape tests" do
   startup do
     system 'killall unity-2d-shell > /dev/null 2>&1'
     system 'killall unity-2d-shell > /dev/null 2>&1'
+    system 'killall unity-2d-panel > /dev/null 2>&1'
+
+    # Need panel running as position of shell depends on it
+    @@sut = TDriver.sut(:Id => "sut_qt")
+    @@panel = @@sut.run(:name => UNITY_2D_PANEL,
+                        :arguments => "-testability" )
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -102,17 +108,15 @@ context "Shell input shape tests" do
 
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_SHELL, 
-    		         :arguments => "-testability", 
-    		         :sleeptime => 2 )
+    @app = @sut.run(:name => UNITY_2D_SHELL,
+                    :arguments => "-testability",
+                    :sleeptime => 2)
     # Make certain application is ready for testing
     verify(10){ @app.Launcher() }
   end
 
   # Run after each test case completes
   teardown do
-    #@app.close        
-    #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-shell"
   end
 
