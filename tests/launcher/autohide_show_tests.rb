@@ -31,6 +31,7 @@ require 'tmpwindow'
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   WIDTH = 65 #launcher bar width
+  launcher_favorites = ""
 
   # Run once at the beginning of this test suite
   startup do
@@ -50,11 +51,13 @@ context "Launcher Autohide and Show Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)    
 
+    launcher_favorites = `gsettings get com.canonical.Unity.Launcher favorites`
+
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
     @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
-    		         :arguments => "-testability", 
-    		         :sleeptime => 2 )
+                     :arguments => "-testability", 
+                     :sleeptime => 2 )
     # Make certain application is ready for testing
     verify{ @app.Unity2dPanel() }
   end
@@ -65,6 +68,7 @@ context "Launcher Autohide and Show Tests" do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-launcher"
+    system "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
   #####################################################################################
@@ -384,26 +388,71 @@ context "Launcher Autohide and Show Tests" do
   end
 
   # Test case objectives:
-  #   * Launcher does not hide after toggling the dash
+  #   * Launcher is around for 1 second after removing a tile
   # Pre-conditions
-  #   * Desktop with no running applications
+  #   * Desktop with at least one application not running
   # Test steps
   #   * Open application in position overlapping Launcher
   #   * Verify Launcher hiding
-  #   * Move mouse to the left
-  #   * Verify Launcher showing
-  #   * Click twice in the bfb
-  #   * Verify Launcher showing during 1.5 seconds
+  #   * Right click on a non running application tile
+  #   * Wait enough time ( > 1 sec) so that the timer that would close the launcher
+  #     if the menu was not open triggers
+  #   * Click on the last menu item (Remove)
+  #   * Verify Launcher stays away for a second
   # Post-conditions
   #   * None
   # References
   #   * None
+  test "Launcher hide delay on tile removal" do
+    xid = TmpWindow.open_window_at(10,100)
+    tiles = ""
+    verify( 0, 'Could not find any non running application tile to remove' ) {
+        tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
+    }
+    if !tiles.empty?
+      tile = tiles[0]
+      XDo::Mouse.move(0, 200, 0, true)
+      verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
+      }
+      XDo::Mouse.move(tile['x_absolute'].to_i + 1, tile['y_absolute'].to_i + 1, 0, true)
+      XDo::Mouse.click(nil, nil, :right)
+      menu = @app.LauncherContextualMenu( :folded => false );
+      XDo::Mouse.move(menu['x_absolute'].to_i + 20, menu['y_absolute'].to_i + menu['height'].to_i - 10, 0, true)
+      sleep 1.5
+      XDo::Mouse.click()
+      sleep 0.9
+      verify_equal( 0, 0, 'Launcher hiding after icon removal, should be visible for 1 second' ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
+      }
+      verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
+      }
+      xid.close!
+    end
+  end
+
+  # Test case objectives:
+  # * Launcher does not hide after toggling the dash
+  # Pre-conditions
+  # * Desktop with no running applications
+  # Test steps
+  # * Open application in position overlapping Launcher
+  # * Verify Launcher hiding
+  # * Move mouse to the left
+  # * Verify Launcher showing
+  # * Click twice in the bfb
+  # * Verify Launcher showing during 1.5 seconds
+  # Post-conditions
+  # * None
+  # References
+  # * None
   test "Launcher visible after toggling dash" do
     xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
-
+ 
     bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
     XDo::Mouse.move(0, 200, 0, true)
     verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
@@ -417,7 +466,7 @@ context "Launcher Autohide and Show Tests" do
         @app.Unity2dPanel()['x_absolute'].to_i
       }
     }
-
+ 
     xid.close!
   end
 
