@@ -383,4 +383,43 @@ context "Launcher Autohide and Show Tests" do
     xid.close!
   end
 
+  # Test case objectives:
+  #   * Launcher does not hide after toggling the dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Move mouse to the left
+  #   * Verify Launcher showing
+  #   * Click twice in the bfb
+  #   * Verify Launcher showing during 1.5 seconds
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Launcher visible after toggling dash" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+
+    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    XDo::Mouse.move(0, 200, 0, true)
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    XDo::Mouse.move(bfb['x_absolute'].to_i + 1, bfb['y_absolute'].to_i + 1, 0, true)
+    bfb.tap()
+    bfb.tap()
+    (1..15).each do |i|
+      verify_equal( 0, 0, 'Launcher hiding after clicking twice in the bfb' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      sleep 0.1
+    end
+
+    xid.close!
+  end
+
 end
