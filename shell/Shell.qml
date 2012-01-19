@@ -121,8 +121,8 @@ Item {
         InputShapeRectangle {
             // Prevent the launcher mask to ever go to negative values or be less than 1 pixel
             // (to preserve the autohide/intellihide edge detection)
-            rectangle: Qt.rect(Math.max(launcherLoader.x, 0), launcherLoader.y,
-                               Math.max(launcherLoader.width + launcherLoader.x, 1),
+            rectangle: Qt.rect(0, launcherLoader.y,
+                               launcherLoader.visibilityController.shown ? launcherLoader.width : 1,
                                launcherLoader.height)
             enabled: launcherLoader.status == Loader.Ready
         }
