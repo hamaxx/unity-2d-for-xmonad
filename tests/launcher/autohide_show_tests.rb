@@ -395,6 +395,8 @@ context "Launcher Autohide and Show Tests" do
   #   * Open application in position overlapping Launcher
   #   * Verify Launcher hiding
   #   * Right click on a non running application tile
+  #   * Wait enough time ( > 1 sec) so that the timer that would close the launcher
+  #     if the menu was not open triggers
   #   * Click on the last menu item (Remove)
   #   * Verify Launcher stays away for a second
   # Post-conditions
