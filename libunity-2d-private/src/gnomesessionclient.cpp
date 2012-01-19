@@ -50,6 +50,7 @@ struct GnomeSessionClientPrivate
     QString m_applicationId;
     QString m_clientPath;
     bool m_waitingForEndSession;
+    bool m_waitingForQuitEvent;
 
     bool sendEndSessionResponse()
     {
@@ -73,8 +74,10 @@ GnomeSessionClient::GnomeSessionClient(const QString& applicationId, QObject* pa
 , d(new GnomeSessionClientPrivate(applicationId))
 {
     d->m_waitingForEndSession = false;
+    d->m_waitingForQuitEvent = true;
     connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
         SLOT(waitForEndSession()));
+    QCoreApplication::instance()->installEventFilter(this);
 }
 
 GnomeSessionClient::~GnomeSessionClient()
@@ -97,6 +100,14 @@ void GnomeSessionClient::connectToSessionManager()
     QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
         SLOT(slotRegisterClientFinished(QDBusPendingCallWatcher*)));
+}
+
+bool GnomeSessionClient::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() == QEvent::Quit) {
+        d->m_waitingForQuitEvent = false;
+    }
+    return false;
 }
 
 void GnomeSessionClient::slotRegisterClientFinished(QDBusPendingCallWatcher* watcher)
@@ -139,23 +150,21 @@ void GnomeSessionClient::endSession()
     UQ_DEBUG;
     d->sendEndSessionResponse();
     d->m_waitingForEndSession = false;
-    QCoreApplication::quit();
 }
 
 void GnomeSessionClient::waitForEndSession()
 {
-    if (!d->m_waitingForEndSession) {
-        return;
-    }
-
     UQ_DEBUG << "Application is about to quit, waiting for gnome-session to call us back";
     QTime watchDog;
     watchDog.start();
-    while (d->m_waitingForEndSession && watchDog.elapsed() < MAX_END_SESSION_WAIT * 1000) {
+    while ((d->m_waitingForEndSession || d->m_waitingForQuitEvent) && watchDog.elapsed() < MAX_END_SESSION_WAIT * 1000) {
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
     if (d->m_waitingForEndSession) {
         UQ_WARNING << "gnome-session did not call back after" << MAX_END_SESSION_WAIT << "seconds, leaving";
+    }
+    if (d->m_waitingForQuitEvent) {
+        UQ_WARNING << "did not get the Quit event after" << MAX_END_SESSION_WAIT << "seconds, leaving";
     }
 }
 
