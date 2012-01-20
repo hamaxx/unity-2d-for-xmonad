@@ -63,15 +63,16 @@ end
 
 # Compare two images using ImageMagick. Perform a pixel-by-pixel comparison and return true
 # only if all the pixels are identical.
-# Before checking the pixels make sure the two images are the same size, otherwise IM will choke.
 def compare_images(image1, image2)
-    size1 = %x{identify -format '%wx%h' #{image1}}
-    size2 = %x{identify -format '%wx%h' #{image2}}
-    return false if size1 != size2
-
-    # Discard the difference image and redirect stderr to stdout as IM will output the number of
+# Discard the difference image and redirect stderr to stdout as IM will output the number of
     # different pixels there for some reason.
     difference = %x{compare #{image1} #{image2} -metric AE /dev/null 2>&1}.chop.to_i
+
+    # If the images are too different or have different sizes IM will exit with return code 1.
+    # Unfortunately it's the same code we have when there is any error (like a wrong filename),
+    # so the best we can do is just return false
+    return false if $?.exitstatus != 0
+
     return difference == 0
 end
 
