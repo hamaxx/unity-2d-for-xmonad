@@ -197,8 +197,7 @@ context "Shell input shape tests" do
   test "Shape of launcher and collapsed desktop mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
 
-    # Ideally we request this via DBUS, but this should do too
-    @app.ShellDeclarativeView()['expanded'] = false
+    @app.AbstractButton(:name => 'closeShortcutsButton').tap
     sleep 1
 
     maskpath = get_shell_shape()
@@ -226,6 +225,6 @@ context "Shell input shape tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(10, "The actual shape does not match the expected shape") { identical }
   end
 end
