@@ -152,6 +152,7 @@ context "Shell input shape tests" do
 
   test "Shape of launcher and desktop mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
+    sleep 1
     maskpath = get_shell_shape()
 
     # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
@@ -182,7 +183,9 @@ context "Shell input shape tests" do
 
   test "Shape of launcher and fullscreen mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
+    sleep 1
     @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
+    sleep 1
 
     maskpath = get_shell_shape()
 
@@ -202,7 +205,7 @@ context "Shell input shape tests" do
 
   test "Shape of launcher and collapsed desktop mode dash" do
     XDo::Keyboard.simulate('{SUPER}')
-
+    sleep 1
     @app.AbstractButton(:name => 'closeShortcutsButton').tap
     sleep 1
 
