@@ -24,15 +24,12 @@
 
 #include "dashsettings.h"
 #include "launcherapplication.h"
-#include "place.h"
-#include "placeentry.h"
 #include "launcherdevice.h"
 #include "trash.h"
 #include "workspaces.h"
 #include "listaggregatormodel.h"
 #include "launcherapplicationslist.h"
 #include "launcherdeviceslist.h"
-#include "launcherplaceslist.h"
 #include "iconimageprovider.h"
 #include "blendedimageprovider.h"
 #include "qsortfilterproxymodelqml.h"
@@ -130,10 +127,6 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
     qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
 
-    qmlRegisterType<LauncherPlacesList>(uri, 0, 1, "LauncherPlacesList");
-    qmlRegisterType<Place>(uri, 0, 1, "Place");
-    qmlRegisterType<PlaceEntry>(uri, 0, 1, "PlaceEntry");
-    /* DeeListModel is exposed to QML by PlaceEntry */
     qmlRegisterType<DeeListModel>(uri, 0, 1, "DeeListModel");
 
     qmlRegisterType<LauncherDevicesList>(uri, 0, 1, "LauncherDevicesList");
