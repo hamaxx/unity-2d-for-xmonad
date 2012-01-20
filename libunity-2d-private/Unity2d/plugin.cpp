@@ -69,6 +69,11 @@
 #include "spreadmonitor.h"
 #include "focuspath.h"
 
+#include "unity2ddeclarativeview.h"
+#include "inputshapemanager.h"
+#include "inputshaperectangle.h"
+#include "inputshapemask.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -161,6 +166,11 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<GestureHandler>(uri, 0, 1, "GestureHandler");
     qmlRegisterType<WindowsIntersectMonitor>(uri, 0, 1, "WindowsIntersectMonitor");
     qmlRegisterType<SpreadMonitor>(uri, 0, 1, "SpreadMonitor");
+
+    qmlRegisterType<InputShapeManager>(uri, 0, 1, "InputShapeManager");
+    qmlRegisterType<InputShapeRectangle>(uri, 0, 1, "InputShapeRectangle");
+    qmlRegisterType<InputShapeMask>(uri, 0, 1, "InputShapeMask");
+    qmlRegisterType<Unity2DDeclarativeView>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

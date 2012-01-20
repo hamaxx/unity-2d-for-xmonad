@@ -155,6 +155,7 @@ FocusScope {
 
         AbstractButton {
             id: closeShortcutsButton
+            objectName: "closeShortcutsButton"
 
             anchors.left: parent.left
             anchors.top: parent.top
