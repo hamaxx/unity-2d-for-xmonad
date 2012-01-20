@@ -64,7 +64,13 @@ end
 # Compare two images using ImageMagick. Perform a pixel-by-pixel comparison and return true
 # only if all the pixels are identical.
 def compare_images(image1, image2)
-# Discard the difference image and redirect stderr to stdout as IM will output the number of
+    # Before checking the pixels make sure the two images are the same size, otherwise some times
+    # IM will hang for a long time (probably trying to do some super clever subimage matching).
+    size1 = %x{identify -format '%wx%h' #{image1}}
+    size2 = %x{identify -format '%wx%h' #{image2}}
+    return false if size1 != size2
+
+    # Discard the difference image and redirect stderr to stdout as IM will output the number of
     # different pixels there for some reason.
     difference = %x{compare #{image1} #{image2} -metric AE /dev/null 2>&1}.chop.to_i
 
@@ -141,7 +147,7 @@ context "Shell input shape tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and desktop mode dash" do
@@ -171,7 +177,7 @@ context "Shell input shape tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and fullscreen mode dash" do
@@ -191,7 +197,7 @@ context "Shell input shape tests" do
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(10, "The actual shape does not match the expected shape") { identical }
   end
 
   test "Shape of launcher and collapsed desktop mode dash" do
