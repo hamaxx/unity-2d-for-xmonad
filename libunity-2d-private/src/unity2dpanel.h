@@ -45,6 +45,7 @@ class Unity2dPanel : public QWidget
      */
     Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
+    Q_ENUMS(Edge)
 
 public:
     enum Edge {

@@ -73,6 +73,8 @@
 #include "inputshapemanager.h"
 #include "inputshaperectangle.h"
 #include "inputshapemask.h"
+#include "unity2dpanel.h"
+#include "strutmanager.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -171,6 +173,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<InputShapeRectangle>(uri, 0, 1, "InputShapeRectangle");
     qmlRegisterType<InputShapeMask>(uri, 0, 1, "InputShapeMask");
     qmlRegisterType<Unity2DDeclarativeView>();
+
+    qmlRegisterType<Unity2dPanel>(uri, 0, 1, "Unity2dPanel");
+    qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

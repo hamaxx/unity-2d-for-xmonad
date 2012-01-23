@@ -76,6 +76,7 @@ set(lib${LIB_NAME}_SRCS
     inputshapemanager.cpp
     inputshaperectangle.cpp
     inputshapemask.cpp
+    strutmanager.cpp
     )
 
 # Build

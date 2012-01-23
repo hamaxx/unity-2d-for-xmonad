@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Unity2d 1.0
 import "../common"
 import "../common/utils.js" as Utils
 
@@ -21,6 +22,19 @@ Loader {
                                      2: 'IntelliHideBehavior.qml' }
 
         source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
+    }
+
+    StrutManager {
+        id: strutManager
+        edge: Unity2dPanel.LeftEdge
+        widget: declarativeView
+        height: item.height
+        width: item.width
+        enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+
+        Component.onCompleted: {
+            strutManager.updateStrut()
+        }
     }
 
     Binding {
