@@ -98,6 +98,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     }
 
     //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
 }
 
 // TODO: this is probably expressed more nicely in QML.
@@ -110,6 +111,14 @@ ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
         setDashMode(FullScreenMode);
     } else {
         setDashMode(DesktopMode);
+    }
+}
+
+void
+ShellDeclarativeView::updateShellPosition(int screen)
+{
+    if (screen == QX11Info::appScreen()) {
+        move(QApplication::desktop()->availableGeometry(screen).topLeft());
     }
 }
 
