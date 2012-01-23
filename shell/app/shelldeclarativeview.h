@@ -104,7 +104,6 @@ private Q_SLOTS:
     void onAltF1Pressed();
 
 protected:
-    void resizeEvent(QResizeEvent*);
     virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
@@ -118,6 +117,7 @@ private:
     void updateMask();
     void setWMFlags();
     bool isSpreadActive();
+    void updateInputShape();
 
     DashMode m_mode;
     bool m_expanded;

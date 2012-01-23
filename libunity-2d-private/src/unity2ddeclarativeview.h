@@ -44,10 +44,12 @@ Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
+    void shown();
 
 protected:
     void setupViewport();
     virtual void moveEvent(QMoveEvent* event);
+    virtual void showEvent(QShowEvent *event);
 
 protected Q_SLOTS:
     void forceActivateWindow();
