@@ -92,6 +92,16 @@ AutoScrollingListView {
             }
         }
 
+        function updatePipSource() {
+            if (item.belongsToDifferentWorkspace()) {
+                launcherItem.pips = 1
+                launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
+            } else {
+                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
+            }
+        }
+
         Accessible.name: accessibleDescription()
         name: item.name
 
@@ -106,6 +116,7 @@ AutoScrollingListView {
         urgent: item.urgent
         launching: item.launching
         pips: Math.min(item.windowCount, 3)
+        pipSource: updatePipSource()
 
         counter: item.counter
         counterVisible: item.counterVisible
@@ -292,6 +303,8 @@ AutoScrollingListView {
             onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
                                                 y + declarativeView.globalPosition.y,
                                                 width, height, xid)
+			onWindowCountChanged: updatePipSource()
+            onWindowWorkspaceChanged: updatePipSource()
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }

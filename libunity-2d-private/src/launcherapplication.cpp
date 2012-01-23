@@ -501,6 +501,8 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
         wnck_window_set_icon_geometry(window, x, y, width, height);
+        g_signal_connect(G_OBJECT(window), "workspace-changed",
+             G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
     }
 }
 
@@ -599,6 +601,11 @@ int
 LauncherApplication::windowCountOnCurrentWorkspace()
 {
     int windowCount = 0;
+
+    if (!m_application) {
+        return windowCount;
+    }
+
     WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
     QScopedPointer<BamfWindowList> windows(m_application->windows());
@@ -937,6 +944,18 @@ LauncherApplication::createStaticMenuActions()
     } 
 }
 
+bool
+LauncherApplication::belongsToDifferentWorkspace()
+{
+    int totalWindows = windowCount();
+    int windowsInCurrentWorkspace = windowCountOnCurrentWorkspace();
+    if (totalWindows > 0 && windowsInCurrentWorkspace == 0) {
+        return true;
+    }
+
+    return false;
+}
+
 void
 LauncherApplication::onIndicatorMenuUpdated()
 {
@@ -1051,6 +1070,19 @@ LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& 
 {
     m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
     setDynamicQuicklistImporter(newOwner);
+}
+
+void
+LauncherApplication::windowWorkspaceChangedCB(WnckWindow *window, gpointer user_data)
+{
+    Q_UNUSED(window);
+    ((LauncherApplication*)user_data)->updateWindowWorkspaceChanged();
+}
+
+void
+LauncherApplication::updateWindowWorkspaceChanged()
+{
+    Q_EMIT windowWorkspaceChanged();
 }
 
 #include "launcherapplication.moc"
