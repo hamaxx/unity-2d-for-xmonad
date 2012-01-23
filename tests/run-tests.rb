@@ -63,6 +63,9 @@ include TDriverVerify
 # Require unit test framework: This enables execution of test cases and also includes assertions (Test::Unit::Assertions)
 require 'testhelper'
 
+# Enable reports only with -report switch
+include TDriverReportTestUnit if ARGV.delete('-report')
+
 # List of directories in which to search for test cases
 test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
 
