@@ -3,10 +3,10 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2011 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * Authors:
- * - Gerry Boland <gerry.boland@canonical.com>
+ * - Albert Astals Cid <albert.astals@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
