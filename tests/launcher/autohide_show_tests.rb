@@ -245,6 +245,7 @@ context "Launcher Autohide and Show Tests" do
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
+    sleep 1 #launcher seems not ready to accept Super key, need a pause
     XDo::Keyboard.key_down('SUPER')
     verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key held, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
