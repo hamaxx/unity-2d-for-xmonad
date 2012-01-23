@@ -29,8 +29,6 @@ class Unity2dApplication;
 
 class PlatformFontTracker;
 
-class TestabilityInterface;
-
 class AbstractX11EventFilter
 {
 public:
@@ -71,7 +69,6 @@ private:
     void loadTestabilityPlugin();
     QList<AbstractX11EventFilter*> m_x11EventFilters;
     PlatformFontTracker* m_platformFontTracker;
-    TestabilityInterface* testabilityInterface;
 };
 
 #endif // UNITY2DAPPLICATION_H
