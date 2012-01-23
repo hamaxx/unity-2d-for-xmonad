@@ -432,4 +432,42 @@ context "Launcher Autohide and Show Tests" do
     end
   end
 
+  # Test case objectives:
+  # * Launcher does not hide after toggling the dash
+  # Pre-conditions
+  # * Desktop with no running applications
+  # Test steps
+  # * Open application in position overlapping Launcher
+  # * Verify Launcher hiding
+  # * Move mouse to the left
+  # * Verify Launcher showing
+  # * Click twice in the bfb
+  # * Verify Launcher showing during 1.5 seconds
+  # Post-conditions
+  # * None
+  # References
+  # * None
+  test "Launcher visible after toggling dash" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Unity2dPanel()['x_absolute'].to_i
+    }
+ 
+    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    XDo::Mouse.move(0, 200, 0, true)
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+      @app.Unity2dPanel()['x_absolute'].to_i
+    }
+    bfb.move_mouse()
+    bfb.tap()
+    bfb.tap()
+    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
+      verify_equal( -WIDTH, 2 ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
+      }
+    }
+ 
+    xid.close!
+  end
+
 end
