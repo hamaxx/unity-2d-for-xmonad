@@ -1,7 +1,7 @@
 require 'test/unit'
 
 dir = File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH.unshift dir + '/../lib'
+$LOAD_PATH.unshift File.expand_path(dir + '/../lib')
 $TEST_DIR = File.dirname(File.expand_path(__FILE__))
 
 # Enable a startup and shutdwn method for each test case 
