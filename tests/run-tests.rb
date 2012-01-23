@@ -62,7 +62,7 @@ include TDriverVerify
 require 'testhelper'
 
 # List of directories in which to search for test cases
-test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
+test_directories = ['launcher', 'panel', 'places', 'spread', 'shell', 'window-manager', 'other']
 
 # Only run scan for tests if this script is directly called
 if __FILE__ == $0

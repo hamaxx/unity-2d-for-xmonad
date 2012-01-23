@@ -23,7 +23,7 @@ import "launcher"
 Item {
     id: shell
     height: screen.availableGeometry.height
-    width: shell.childrenRect.width
+    width: screen.availableGeometry.width
 
     Accessible.name: "shell"
 
@@ -112,6 +112,32 @@ Item {
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape) {
             declarativeView.forceDeactivateWindow()
+        }
+    }
+
+    InputShapeManager {
+        target: declarativeView
+
+        InputShapeRectangle {
+            // Prevent the launcher mask to ever go to negative values or be less than 1 pixel
+            // (to preserve the autohide/intellihide edge detection)
+            rectangle: Qt.rect(0, launcherLoader.y,
+                               launcherLoader.visibilityController.shown ? launcherLoader.width : 1,
+                               launcherLoader.height)
+            enabled: launcherLoader.status == Loader.Ready
+        }
+
+        InputShapeRectangle {
+            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+
+            InputShapeMask {
+                id: shape1
+                source: "shell/dash/artwork/desktop_dash_background_no_transparency.png"
+                color: "red"
+                position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
+                enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            }
         }
     }
 }
