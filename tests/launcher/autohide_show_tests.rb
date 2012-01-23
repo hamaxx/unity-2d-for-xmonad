@@ -31,6 +31,7 @@ require 'tmpwindow'
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   WIDTH = 65 #launcher bar width
+  launcher_favorites = ""
 
   # Run once at the beginning of this test suite
   startup do
@@ -50,6 +51,8 @@ context "Launcher Autohide and Show Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)    
 
+    launcher_favorites = `gsettings get com.canonical.Unity.Launcher favorites`
+
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
     @app = @sut.run( :name => UNITY_2D_SHELL,
@@ -65,6 +68,7 @@ context "Launcher Autohide and Show Tests" do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-shell"
+    system "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
   #####################################################################################
@@ -221,6 +225,40 @@ context "Launcher Autohide and Show Tests" do
 
 
   # Test case objectives:
+  #   * Check Launcher reveal when dash is invoked
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Press Super key
+  #   * Verify Launcher shows
+  #   * Press Super key
+  #   * Verify Launcher hides
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Press Super key to reveal launcher, press again to hide" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+
+    XDo::Keyboard.simulate('{SUPER}')
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key pressed, should be visible' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+
+    XDo::Keyboard.simulate('{SUPER}')
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    xid.close!
+  end
+
+
+  # Test case objectives:
   #   * Check Launcher reveal with Super key works
   # Pre-conditions
   #   * None
@@ -351,6 +389,112 @@ context "Launcher Autohide and Show Tests" do
 
 
   # Test case objectives:
+  #   * Alt+F1 gives keyboard focus to the Launcher when dash was open, escape removes it
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Verify application has keyboard focus
+  #   * Press Super to invoke the Dash
+  #   * Verify Launcher is shown
+  #   * Press Alt+F1
+  #   * Verify Launcher shows
+  #   * Verify Dash icon is highlighted
+  #   * Verify application does not have keyboard focus
+  #   * Press Escape
+  #   * Verify Launcher hides
+  #   * Verify application has keyboard focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  xtest "Press Alt+F1 to focus/unfocus Launcher when dash is open" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal should have focus after starting it' )
+
+    XDo::Keyboard.simulate('{SUPER}')
+    verify_equal( 0, TIMEOUT, 'Launcher hiding after Super pressed, should be visible' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
+      @app.LauncherList( :name => 'main' ) \
+          .QDeclarativeItem( :name => 'Dash home' ) \
+          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    }
+    assert_not_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal has focus when it should be in the launcher' )
+
+    XDo::Keyboard.escape
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+      @app.Launcher()['x_absolute'].to_i
+    }
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal does not have focus when it should' )
+    xid.close!
+  end
+
+
+  # Test case objectives:
+  #   * Alt+F1 takes & gives keyboard focus to the Launcher when dash was open
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Verify application has keyboard focus
+  #   * Press Super to invoke the Dash
+  #   * Verify Launcher is shown
+  #   * Press Alt+F1
+  #   * Verify Launcher shows
+  #   * Verify Dash icon is highlighted
+  #   * Verify application does not have keyboard focus
+  #   * Press Alt+F1
+  #   * Verify Launcher hides
+  #   * Verify application has keyboard focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  xtest "Press Alt+F1 to focus Launcher when dash is open, escape to unfocus" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal should have focus after starting it' )
+
+    XDo::Keyboard.simulate('{SUPER}')
+    verify_equal( 0, TIMEOUT, 'Launcher hiding after Super pressed, should be visible' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
+      @app.LauncherList( :name => 'main' ) \
+          .QDeclarativeItem( :name => 'Dash home' ) \
+          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    }
+    assert_not_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal has focus when it should be in the launcher' )
+
+    XDo::Keyboard.alt_F1
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+      @app.Launcher()['x_absolute'].to_i
+    }
+    assert_equal( xid.id, XDo::XWindow.active_window, \
+                  'terminal does not have focus when it should' )
+    xid.close!
+  end
+
+
+  # Test case objectives:
   #   * Launcher displays when 'show desktop' engages
   # Pre-conditions
   #   * Desktop with no running applications
@@ -381,6 +525,51 @@ context "Launcher Autohide and Show Tests" do
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
+  end
+
+  # Test case objectives:
+  #   * Launcher is around for 1 second after removing a tile
+  # Pre-conditions
+  #   * Desktop with at least one application not running
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Right click on a non running application tile
+  #   * Wait enough time ( > 1 sec) so that the timer that would close the launcher
+  #     if the menu was not open triggers
+  #   * Click on the last menu item (Remove)
+  #   * Verify Launcher stays away for a second
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Launcher hide delay on tile removal" do
+    xid = TmpWindow.open_window_at(10,100)
+    tiles = ""
+    verify( 0, 'Could not find any non running application tile to remove' ) {
+        tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
+    }
+    if !tiles.empty?
+      tile = tiles[0]
+      XDo::Mouse.move(0, 200, 0, true)
+      verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      XDo::Mouse.move(tile['x_absolute'].to_i + 1, tile['y_absolute'].to_i + 1, 0, true)
+      XDo::Mouse.click(nil, nil, :right)
+      menu = @app.LauncherContextualMenu( :folded => false );
+      XDo::Mouse.move(menu['x_absolute'].to_i + 20, menu['y_absolute'].to_i + menu['height'].to_i - 10, 0, true)
+      sleep 1.5
+      XDo::Mouse.click()
+      sleep 0.9
+      verify_equal( 0, 0, 'Launcher hiding after icon removal, should be visible for 1 second' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      xid.close!
+    end
   end
 
 end

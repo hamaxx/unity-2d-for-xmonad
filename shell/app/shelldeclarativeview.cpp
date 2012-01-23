@@ -166,7 +166,7 @@ ShellDeclarativeView::isSpreadActive()
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
-    QDeclarativeView::showEvent(event);
+    Unity2DDeclarativeView::showEvent(event);
     /* Note that this has to be called everytime the window is shown, as the WM
        will remove the flags when the window is hidden */
     setWMFlags();
@@ -251,51 +251,6 @@ const QString&
 ShellDeclarativeView::activeLens() const
 {
     return m_activeLens;
-}
-
-void
-ShellDeclarativeView::resizeEvent(QResizeEvent* event)
-{
-    if (!QX11Info::isCompositingManagerRunning()) {
-        updateMask();
-    }
-    QDeclarativeView::resizeEvent(event);
-}
-
-static QBitmap
-createCornerMask()
-{
-    QPixmap pix(unity2dDirectory() + "/shell/dash/artwork/desktop_dash_background_no_transparency.png");
-    return pix.createMaskFromColor(Qt::red, Qt::MaskOutColor);
-}
-
-void
-ShellDeclarativeView::updateMask()
-{
-    if (m_mode == FullScreenMode) {
-        clearMask();
-        return;
-    }
-    QBitmap bmp(size());
-    {
-        static QBitmap corner = createCornerMask();
-        static QBitmap top = corner.copy(0, 0, corner.width(), 1);
-        static QBitmap left = corner.copy(0, 0, 1, corner.height());
-
-        const int cornerX = bmp.width() - corner.width();
-        const int cornerY = bmp.height() - corner.height();
-
-        QPainter painter(&bmp);
-        painter.fillRect(bmp.rect(), Qt::color1);
-        painter.setBackgroundMode(Qt::OpaqueMode);
-        painter.setBackground(Qt::color1);
-        painter.setPen(Qt::color0);
-        painter.drawPixmap(cornerX, cornerY, corner);
-
-        painter.drawTiledPixmap(cornerX, 0, top.width(), cornerY, top);
-        painter.drawTiledPixmap(0, cornerY, cornerX, left.height(), left);
-    }
-    setMask(bmp);
 }
 
 void

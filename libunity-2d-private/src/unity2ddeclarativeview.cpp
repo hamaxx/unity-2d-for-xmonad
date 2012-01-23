@@ -21,6 +21,7 @@
 #include <QVariant>
 #include <QX11Info>
 #include <QFileInfo>
+#include <QShowEvent>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -156,6 +157,11 @@ void Unity2DDeclarativeView::setupViewport()
 void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
 {
     Q_EMIT globalPositionChanged(globalPosition());
+}
+
+void Unity2DDeclarativeView::showEvent(QShowEvent *event)
+{
+    Q_EMIT shown();
 }
 
 

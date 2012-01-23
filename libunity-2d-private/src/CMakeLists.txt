@@ -47,9 +47,6 @@ set(lib${LIB_NAME}_SRCS
     launcherdevice.cpp
     launcherdeviceslist.cpp
     launcherutility.cpp
-    placeentry.cpp
-    place.cpp
-    launcherplaceslist.cpp
     trash.cpp
     launchermenu.cpp
     webfavorite.cpp
@@ -76,6 +73,9 @@ set(lib${LIB_NAME}_SRCS
     abstractdbusservicemonitor.cpp
     spreadmonitor.cpp
     focuspath.cpp
+    inputshapemanager.cpp
+    inputshaperectangle.cpp
+    inputshapemask.cpp
     )
 
 # Build
