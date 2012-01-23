@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby1.8
+=begin
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2011 Canonical Ltd.
+ *
+ * Authors:
+ * - Gerry Boland <gerry.boland@canonical.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+=end
+
+require '../run-tests.rb' unless $INIT_COMPLETED
+require 'xdo/xwindow'
+require 'xdo/keyboard'
+require 'xdo/mouse'
+require 'tmpwindow'
+
+############################# Test Suite #############################
+context "Sizing tests" do
+  PANEL_HEIGHT=24
+  # Run once at the beginning of this test suite
+  startup do
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+
+    # Minimize all windows
+    XDo::XWindow.toggle_minimize_all
+  end
+  
+  # Run once at the end of this test suite
+  shutdown do
+  end
+
+  # Run before each test case begins
+  setup do
+    # Make sure the panel is running
+    system "pkill -nf unity-2d-panel"
+    system "unity-2d-panel &"
+    # Execute the application 
+    @sut = TDriver.sut(:Id => "sut_qt")    
+    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    		         :arguments => "-testability", 
+    		         :sleeptime => 2 )
+    # Make certain application is ready for testing
+    verify{ @app.Unity2dPanel() }
+  end
+
+  # Run after each test case completes
+  teardown do
+    TmpWindow.close_all_windows
+    #Need to kill Launcher as it does not shutdown when politely asked
+    system "pkill -nf unity-2d-launcher"
+    # Make sure the panel is running
+    system "pkill -nf unity-2d-panel"
+    system "unity-2d-panel &"
+  end
+
+  #####################################################################################
+  # Test cases
+
+  # Test case objectives:
+  #   * Check the Launcher updates size and position on free desktop space change
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify Launcher y position is the panel height
+  #   * Kill panel
+  #   * Verify Launcher y position is zero
+  #   * Verify Launcher height is old height + panel height
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Launcher updates size and position on free desktop space change" do
+    # check width before proceeding
+    verify_equal( PANEL_HEIGHT, TIMEOUT, "Launcher is not just under the panel" ) {
+      @app.Unity2dPanel()['y_absolute'].to_i
+    }
+    old_height = @app.Unity2dPanel()['height'].to_i
+    system "pkill -nf unity-2d-panel"
+    verify_equal( 0, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
+      @app.Unity2dPanel()['y_absolute'].to_i
+    }
+    verify_equal( old_height + PANEL_HEIGHT, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
+      @app.Unity2dPanel()['height'].to_i
+    }
+  end
+end
