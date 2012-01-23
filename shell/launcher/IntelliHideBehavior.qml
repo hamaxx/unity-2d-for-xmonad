@@ -12,8 +12,10 @@ BaseBehavior {
     onForcedVisibleChanged:
     {
         if (!forcedVisible) {
-            shownBecauseOfMousePosition = true
-            mouseLeaveTimer.restart()
+            if (!target.containsMouse) {
+                shownBecauseOfMousePosition = true
+                mouseLeaveTimer.restart()
+            }
         }
     }
 
