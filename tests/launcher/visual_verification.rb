@@ -30,8 +30,8 @@ context "Launcher Autohide and Show Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
   end
   
   # Run once at the end of this test suite
@@ -41,8 +41,7 @@ context "Launcher Autohide and Show Tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    @app = $SUT.run( :name => UNITY_2D_LAUNCHER, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
   end
@@ -51,7 +50,7 @@ context "Launcher Autohide and Show Tests" do
   teardown do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
   end
 
   #####################################################################################
