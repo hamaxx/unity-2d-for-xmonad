@@ -32,11 +32,11 @@ require 'tmpwindow'
 context "Launcher Autohide and Show Tests" do
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-places > /dev/null 2>&1'
-    system 'killall unity-2d-places > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-places'
+    $SUT.execute_shell_command 'killall unity-2d-places'
 
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -49,12 +49,11 @@ context "Launcher Autohide and Show Tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")
-    @app_launcher = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    @app_launcher = $SUT.run( :name => UNITY_2D_LAUNCHER, 
                               :arguments => "-testability", 
                               :sleeptime => 2 )
 
-    @app_places = @sut.run( :name => UNITY_2D_PLACES, 
+    @app_places = $SUT.run( :name => UNITY_2D_PLACES, 
                               :arguments => "-testability", 
                               :sleeptime => 2 )
 
@@ -64,8 +63,8 @@ context "Launcher Autohide and Show Tests" do
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
-    system "pkill -nf unity-2d-places"
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-places'
   end
 
   #####################################################################################
