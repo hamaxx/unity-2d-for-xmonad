@@ -21,6 +21,7 @@
 
 // Self
 #include "unity2dpanel.h"
+#include "strutmanager.h"
 #include <debug_p.h>
 #include <indicatorsmanager.h>
 
@@ -32,10 +33,6 @@
 #include <QHBoxLayout>
 #include <QX11Info>
 
-// X
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-
 static const int SLIDE_DURATION = 125;
 
 struct Unity2dPanelPrivate
@@ -44,53 +41,9 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
-    bool m_useStrut;
     int m_delta;
     bool m_manualSliding;
-
-    void setStrut(ulong* struts)
-    {
-        static Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
-        XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
-                        XA_CARDINAL, 32, PropModeReplace,
-                        (unsigned char *) struts, 12);
-    }
-
-    void reserveStrut()
-    {
-        QDesktopWidget* desktop = QApplication::desktop();
-        const QRect screen = desktop->screenGeometry(q);
-        const QRect available = desktop->availableGeometry(q);
-
-        ulong struts[12] = {};
-        switch (m_edge) {
-        case Unity2dPanel::LeftEdge:
-            if (QApplication::isLeftToRight()) {
-                struts[0] = q->width();
-                struts[4] = available.top();
-                struts[5] = available.y() + available.height();
-            } else {
-                struts[1] = q->width();
-                struts[6] = available.top();
-                struts[7] = available.y() + available.height();
-            }
-            break;
-        case Unity2dPanel::TopEdge:
-            struts[2] = q->height();
-            struts[8] = screen.left();
-            struts[9] = screen.x() + screen.width();
-            break;
-        }
-
-        setStrut(struts);
-    }
-
-    void releaseStrut()
-    {
-        ulong struts[12];
-        memset(struts, 0, sizeof struts);
-        setStrut(struts);
-    }
+    StrutManager m_strutManager;
 
     void updateGeometry()
     {
@@ -134,9 +87,7 @@ struct Unity2dPanelPrivate
 
     void updateEdge()
     {
-        if (m_useStrut) {
-            reserveStrut();
-        }
+        m_strutManager.updateStrut();
         updateGeometry();
         updateLayoutDirection();
     }
@@ -146,10 +97,11 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
 : QWidget(parent)
 , d(new Unity2dPanelPrivate)
 {
+    d->m_strutManager.setWidget(this);
+    d->m_strutManager.setEdge(Unity2dPanel::TopEdge);
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
     d->m_indicatorsManager = 0;
-    d->m_useStrut = true;
     d->m_delta = 0;
     d->m_manualSliding = false;
     d->m_layout = new QHBoxLayout(this);
@@ -166,19 +118,18 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     }
     
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
+    connect(&d->m_strutManager, SIGNAL(enabledChanged(bool)), SIGNAL(useStrutChanged(bool)));
 }
 
 Unity2dPanel::~Unity2dPanel()
 {
-    if (d->m_useStrut) {
-        d->releaseStrut();
-    }
     delete d;
 }
 
 void Unity2dPanel::setEdge(Unity2dPanel::Edge edge)
 {
     d->m_edge = edge;
+    d->m_strutManager.setEdge(edge);
     if (isVisible()) {
         d->updateEdge();
     }
@@ -232,20 +183,12 @@ void Unity2dPanel::addSpacer()
 
 bool Unity2dPanel::useStrut() const
 {
-    return d->m_useStrut;
+    return d->m_strutManager.enabled();
 }
 
 void Unity2dPanel::setUseStrut(bool value)
 {
-    if (d->m_useStrut != value) {
-        if (value) {
-            d->reserveStrut();
-        } else {
-            d->releaseStrut();
-        }
-        d->m_useStrut = value;
-        Q_EMIT useStrutChanged(value);
-    }
+    d->m_strutManager.setEnabled(value);
 }
 
 int Unity2dPanel::delta() const
