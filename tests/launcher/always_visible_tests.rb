@@ -59,7 +59,7 @@ context "Launcher Always Visible Behaviour Tests" do
                      :arguments => "-testability", 
                      :sleeptime => 2 )
     # Make certain application is ready for testing
-    verify{ @app.Launcher() }
+    verify{ @app.Unity2dPanel() }
   end
 
   # Run after each test case completes
@@ -91,7 +91,7 @@ context "Launcher Always Visible Behaviour Tests" do
       system "gsettings set com.canonical.Unity2d.Launcher hide-mode 2"
       xid = TmpWindow.open_window_at(WIDTH / 2, 10)
       system "gsettings set com.canonical.Unity2d.Launcher hide-mode 0"
-      verify_equal( WIDTH + 1, TIMEOUT, 'Launcher hiding when window not in the way, should be visible' ) {
+      verify_equal( WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
         xid.position[0]
       }
       xid.close!
