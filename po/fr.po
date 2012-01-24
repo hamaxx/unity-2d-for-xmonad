@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/unity-2d/+filebug\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-20 09:52+0000\n"
+"Last-Translator: anonymous <Unknown>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+"Language: \n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Afficher un résultat de plus"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Voir %1 résultats de plus"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Voir moins de résultats"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Applications multimédia"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Applications Internet"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Plus d'applications"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Trouver des fichiers"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Naviguer sur le Web"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Regarder des photos"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Relever le courriel"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Écouter de la musique"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Préciser la recherche"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Type"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Éjecter"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Corbeille"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n élément dans la corbeille"
+msgstr[1] "%n éléments dans la corbeille"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Vider la corbeille"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Espaces de travail"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Conserver dans le lanceur"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Retirer du lanceur"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Quitter"

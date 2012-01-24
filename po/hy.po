@@ -1,0 +1,110 @@
+# Armenian translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-03-11 18:24+0000\n"
+"Last-Translator: Serj Safarian <serjsafarian@gmail.com>\n"
+"Language-Team: Armenian <hy@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Եւս մեկ արդյունք"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Տեսնել %1 լրացուցիչ արդյունք"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Տեսնել ավելի պակաս արդյունքներ"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Միջանքային հավելվածներ"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Համացանցային հավելվածներ"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Այլ հավելվածներ"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Գտնել նշոցներ"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Զննել ոստայնում"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Դիտել նկարները"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Ստուգել էլ. փոստը"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Երաժշտություն լսել"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Դյուրանցումներ"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Ճշտել որոնումը"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Տեսակ"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Հանել"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Աղբարկղ"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "Աղբարկղում գտնվում է %n տարր"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Դատարկել աղբարկղը"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Աշխատատարածքներ"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Գամել գործարկչին"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Հեռացնել գործարկչից"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Ելք"

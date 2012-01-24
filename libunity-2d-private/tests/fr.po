@@ -1,0 +1,15 @@
+msgid "Hello"
+msgstr "Bonjour"
+
+msgctxt "Closing a door"
+msgid "Close"
+msgstr "Fermer"
+
+msgctxt "Not far"
+msgid "Close"
+msgstr "Près"
+
+msgid "%n file"
+msgid_plural "%n files"
+msgstr[0] "%n fichier"
+msgstr[1] "%n fichiers"

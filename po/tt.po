@@ -1,0 +1,110 @@
+# Tatar translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-06-01 13:43+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Tatar <tt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Тагын бер нәтиҗә, барлыгы %d"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Тагын %1 нәтиҗә"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Азрак нәтиҗәләр"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Мультимедия кушымталары"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Интернет-кушымталар"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Башка кушымталар"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Файллар эзләү"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Интернетка чыгу"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Фотосүрәтләр карау"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Почтаны тикшерү"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Музыка тыңлау"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Ярлыклар"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Эзләүне ачыгайту"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Тип"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Чыгару"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Чүп савыты"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n җисем чүп савынтында"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Чүп савытын чистарту"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Эш өлкәләре"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Панельгә урнаштыру"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Панельдән алу"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Чыгу"

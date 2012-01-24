@@ -1,0 +1,21 @@
+Compiling unity-2d
+==================
+
+cmake . && make
+
+
+Running separate components
+===========================
+
+./launcher/app/unity-2d-launcher
+./panel/app/unity-2d-panel
+./places/app/unity-2d-places
+
+
+Notes on the dash (places)
+==========================
+
+The dash exposes a D-Bus property for activation and deactivation:
+
+com.canonical.Unity2d /Dash com.canonical.Unity2d.Dash.active true|false
+

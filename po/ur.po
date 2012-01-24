@@ -1,0 +1,111 @@
+# Urdu translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-03-26 20:24+0000\n"
+"Last-Translator: rizvi <Unknown>\n"
+"Language-Team: Urdu <ur@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "ایک نتیجہ اور دیکھیں"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "مزید %1 نتائج دیکھیں"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "دیکھیی کم نتایج"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "میڈیا پروگرام"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "اِنٹرنیٹ مروگرام"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "مزید پروگرام"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "فایل تلاش کریی"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "بروس  انٹرنیٹ"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "تصویریی دیکھے"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "چیک عی-میل"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "موسیقی سونیی"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "حوالے"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "تلاش کو مزید بہتر بنائیں"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "قسم"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "نکالیں"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "کوڑا"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "چیژ کوڑھدان میی %n"
+msgstr[1] "چیژیی کوڑھدان میی %n"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "کوڑھدان خالی کریں"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "کام کی جگہ"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "لانچر میں رکھیں"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "لونچر سے نکلایں"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "ترک کریں"
