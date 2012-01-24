@@ -78,6 +78,15 @@ def change_user_workspace
     }
 end
 
+def close_all_test_windows
+    @@xid_list.each {
+        |xid|
+        if (xid.exists?)
+            xid.close!
+        end
+    }
+end
+
 ############################# Test Suite #############################
 context "Launcher pips tests" do
   # Run once at the beginning of this test suite
@@ -92,14 +101,13 @@ context "Launcher pips tests" do
     @number_of_workspaces = XDo::XWindow.desktop_num
     @reset_num_workspaces = false
     if @number_of_workspaces < 2
-        puts ("Setting number of workspaces to minimum(two) to enable the test suite")
+        # Setting number of workspaces to minimum(two) to enable the test suite
         XDo::XWindow.desktop_num = 2
         @reset_num_workspaces = true
     end
 
     system 'killall xman > /dev/null 2>&1'
     @@current_workspace = XDo::XWindow.desktop
-    @@title_string = ""
     @@xid_list=Array.new
 
   end
@@ -107,33 +115,25 @@ context "Launcher pips tests" do
   # Run once at the end of this test suite
   shutdown do
     if @reset_num_workspaces == true
-        puts ("\nResetting number of workspaces to " + @number_of_workspaces.to_s )
+        # Resetting number of workspaces to " + @number_of_workspaces.to_s
         XDo::XWindow.desktop_num=@number_of_workspaces
     end
-    @@xid_list.each {
-        |xid|
-        if (xid.exists?)
-            xid.close!
-        end
-    }
   end
 
   # Run before each test case begins
   setup do
-    #Ensure mouse out of the way
-
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
     @app = @sut.run( :name => UNITY_2D_SHELL,
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
+    @@title_string = ""
   end
 
   # Run after each test case completes
   teardown do
+    close_all_test_windows
     reset_current_workspace
-    #@app.close        
-    #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-shell"
   end
 
@@ -142,24 +142,17 @@ context "Launcher pips tests" do
 
     # Test case objectives:
     #   * Check pips are updated properly when the app is in current workspace
-    #   *
     # Pre-conditions
     #   * This test case assumes that the test app will have only one window
     #   * For eg, xman is choosen
-    #   * To ensure there is calculator windows running, kill all the calculator windows if any
-    #   *
+    #   * To ensure there is no xman windows running, kill all the xman windows if any
     # Test steps
-    #   * Open a calculator window
+    #   * Open a xman window
     #   * Verify the launcher tile pip image matches with the expected one
-    #   *
     # Post-conditions
-    #   *   Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-
-    test "Update launcher pips to indicate a window in current workspace" do
+    test "Check pips are updated properly when the app is in current workspace" do
         xid = open_window()
         @@xid_list << xid
 
@@ -173,24 +166,19 @@ context "Launcher pips tests" do
         }
     end
 
+
     # Test case objectives:
     #   * Check pips are updated properly when the app is moved to different workspace
-    #   *
     # Pre-conditions
-    #   * The same window created in above test-case is re-used
-    #   *
     # Test steps
-    #   * Move the window to a differnt workspace
+    #   * Move the window to a different workspace
     #   * Verify the launcher tile pip image matches with the expected one
-    #   *
     # Post-conditions
-    #   * Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-    test "Update launcher pips to indicate an app that belongs to different workspace" do
-        xid = @@xid_list[0]
+    test "Check pips are updated properly when the app is moved to different workspace" do
+        xid = open_window()
+        @@xid_list << xid
 
         change_window_workspace(xid)
 
@@ -204,24 +192,20 @@ context "Launcher pips tests" do
         }
     end
 
+
     # Test case objectives:
-    #   * Check pips are updated properly with app with more than one window
-    #   *
+    #   * Check launcher pips to indicate an app with two windows each on two different workspaces
     # Pre-conditions
-    #   * The same window created in first test case is re-used
-    #   *
     # Test steps
-    #   * Open another window alogn with first window from the testcase one.
+    #   * Open another window along with first window from the first testcase.
     #   * Verify the launcher tile pip images matches with the expected one
-    #   *
     # Post-conditions
     #   * Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-
-    test "Update launcher pips to indicate an app with two windows on two different workspaces" do
+    test "Check launcher pips to indicate an app with two windows each on two different workspaces" do
+        xid = open_window()
+        @@xid_list << xid
         xid = open_window()
         @@xid_list << xid
 
@@ -235,26 +219,25 @@ context "Launcher pips tests" do
         }
     end
 
+
     # Test case objectives:
-    #   * "Update launcher pips to indicate an app completely belonging to different workspace
-    #   *
+    #   * Check launcher pips to indicate an app completely belonging to different workspace
     # Pre-conditions
-    #   * The same windows created above are re-used
-    #   *
     # Test steps
-    #   * Move the second window too to a differnt workspace
+    #   * Move the second window too to a different workspace
     #   * Verify the launcher tile pip image matches with the expected one
-    #   *
     # Post-conditions
     #   * Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-    test "Update launcher pips to indicate an app completely belonging to different workspace." do
-        xid1= @@xid_list[1]
+    test "Check launcher pips to indicate an app completely belonging to different workspace" do
+        xid = open_window()
+        @@xid_list << xid
+        change_window_workspace(xid)
 
-        change_window_workspace(xid1)
+        xid = open_window()
+        @@xid_list << xid
+        change_window_workspace(xid)
 
         expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
@@ -266,28 +249,25 @@ context "Launcher pips tests" do
         }
     end
 
+
     # Test case objectives:
-    #   * Update launcher pips to indicate when a app window is closed.
-    #   *
+    #   * Check launcher pips when an app window is closed.
     # Pre-conditions
-    #   * The same windows created above are resued.
-    #   *
     # Test steps
     #   * Close one of the app windows and move the last window back to its original workspace
     #   * Verify the launcher tile pip image matches with the expected one
-    #   *
     # Post-conditions
     #   * Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-    test "Update launcher pips to indicate when a app window is closed." do
-        xid0 = @@xid_list[0]
-        xid1 = @@xid_list[1]
+    test "Check launcher pips when an app window is closed" do
+        xid = open_window()
+        @@xid_list << xid
+        xid = open_window()
+        @@xid_list << xid
 
-        xid1.close!
-        change_window_workspace(xid0)
+        xid.close!
+        change_window_workspace(@@xid_list[0])
 
         expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
@@ -299,23 +279,21 @@ context "Launcher pips tests" do
         }
     end
 
+
     # Test case objectives:
-    #   * Update launcher pips to indicate when the user workspace changed
-    #   *
+    #   * Check launcher pips to indicate when the user workspace changed
     # Pre-conditions
-    #   * The same windows created above are resued.
-    #   *
     # Test steps
     #   * Change the user workspace to other than app workspace
     #   * Verify that the pips are updated properly
-    #   *
     # Post-conditions
     #   * Reset the current workspace to initial workspace
-    #   *
     # References
     #   * lp:#883172
-    #   *
-    test "Update launcher pips to indicate when the user workspace changed." do
+    test "Check launcher pips to indicate when the user workspace changed" do
+        xid = open_window()
+        @@xid_list << xid
+
         change_user_workspace
 
         expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
@@ -327,33 +305,4 @@ context "Launcher pips tests" do
             .QDeclarativeImage( :name => 'pips-0')['source']
         }
     end
-
-
-    # Test case objectives:
-    #   * Check pips are updated properly for the app in current workspace
-    #   *
-    # Pre-conditions
-    #   * The same windows created above are resued.
-    #   *
-    # Test steps
-    #   * Finally, check the app in the current workspace only
-    #   * Verify that the pips are updated properly
-    #   *
-    # Post-conditions
-    #   * Reset the current workspace to initial workspace
-    #   *
-    # References
-    #   * lp:#883172
-    #   *
-    test "Check pips are updated properly for the app in current workspace" do
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
-
-        verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_ltr.png'){
-             @app.Launcher() \
-            .LauncherList( :name => 'main' ) \
-            .QDeclarativeItem( :name => @@title_string ) \
-            .QDeclarativeImage( :name => 'pips-0')['source']
-        }
-    end
-
 end

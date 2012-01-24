@@ -176,7 +176,6 @@ private:
                             const QString& propertyName, T* member);
 
     static void windowWorkspaceChangedCB(WnckWindow *window, gpointer user_data);
-    void updateWindowWorkspaceChanged();
 
     QString m_dynamicQuicklistPath;
     QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;

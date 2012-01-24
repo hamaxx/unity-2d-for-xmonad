@@ -1076,13 +1076,7 @@ void
 LauncherApplication::windowWorkspaceChangedCB(WnckWindow *window, gpointer user_data)
 {
     Q_UNUSED(window);
-    ((LauncherApplication*)user_data)->updateWindowWorkspaceChanged();
-}
-
-void
-LauncherApplication::updateWindowWorkspaceChanged()
-{
-    Q_EMIT windowWorkspaceChanged();
+    ((LauncherApplication*)user_data)->windowWorkspaceChanged();
 }
 
 #include "launcherapplication.moc"
