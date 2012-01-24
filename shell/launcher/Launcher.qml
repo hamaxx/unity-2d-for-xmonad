@@ -181,6 +181,7 @@ LauncherDropItem {
 
     BfbModel {
         id: bfbModel
+        dashView: declarativeView
     }
 
     LauncherApplicationsList {

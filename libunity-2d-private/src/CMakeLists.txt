@@ -14,7 +14,6 @@ set(lib${LIB_NAME}_SRCS
     hotkey.cpp
     keymonitor.cpp
     launcherclient.cpp
-    mousearea.cpp
     unity2dapplication.cpp
     unity2ddebug.cpp
     unity2dpanel.cpp
@@ -23,7 +22,6 @@ set(lib${LIB_NAME}_SRCS
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
-    edgehitdetector.cpp
     gesturehandler.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp

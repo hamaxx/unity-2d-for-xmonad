@@ -47,10 +47,6 @@
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_PATH = "/Dash";
-static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
-
 static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* SPREAD_DBUS_PATH = "/Spread";
 static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
@@ -98,6 +94,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     }
 
     //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
 }
 
 // TODO: this is probably expressed more nicely in QML.
@@ -110,6 +107,14 @@ ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
         setDashMode(FullScreenMode);
     } else {
         setDashMode(DesktopMode);
+    }
+}
+
+void
+ShellDeclarativeView::updateShellPosition(int screen)
+{
+    if (screen == QX11Info::appScreen()) {
+        move(QApplication::desktop()->availableGeometry(screen).topLeft());
     }
 }
 
@@ -266,9 +271,7 @@ ShellDeclarativeView::toggleDash()
 void
 ShellDeclarativeView::showCommandsLens()
 {
-    // TODO: do this directly, instead of over dbus
-    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
+    Q_EMIT activateLens(COMMANDS_LENS_ID);
 }
 
 void

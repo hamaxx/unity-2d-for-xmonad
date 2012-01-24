@@ -41,8 +41,6 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
-    QPropertyAnimation* m_slideInAnimation;
-    QPropertyAnimation* m_slideOutAnimation;
     int m_delta;
     bool m_manualSliding;
     StrutManager m_strutManager;
@@ -110,18 +108,6 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
 
-    d->m_slideInAnimation = new QPropertyAnimation(this);
-    d->m_slideInAnimation->setTargetObject(this);
-    d->m_slideInAnimation->setPropertyName("delta");
-    d->m_slideInAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideInAnimation->setEndValue(0);
-
-    d->m_slideOutAnimation = new QPropertyAnimation(this);
-    d->m_slideOutAnimation->setTargetObject(this);
-    d->m_slideOutAnimation->setPropertyName("delta");
-    d->m_slideOutAnimation->setDuration(SLIDE_DURATION);
-    d->m_slideOutAnimation->setEndValue(-panelSize());
-
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
 
@@ -168,13 +154,6 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
-    d->m_slideOutAnimation->setEndValue(-panelSize());
-}
-
-void Unity2dPanel::resizeEvent(QResizeEvent* event)
-{
-    QWidget::resizeEvent(event);
-    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
@@ -232,24 +211,6 @@ int Unity2dPanel::panelSize() const
     return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
 }
 
-void Unity2dPanel::slideIn()
-{
-    d->m_slideOutAnimation->stop();
-    if (d->m_slideInAnimation->state() != QAbstractAnimation::Running) {
-        d->m_slideInAnimation->setStartValue(d->m_delta);
-        d->m_slideInAnimation->start();
-    }
-}
-
-void Unity2dPanel::slideOut()
-{
-    d->m_slideInAnimation->stop();
-    if (d->m_slideOutAnimation->state() != QAbstractAnimation::Running) {
-        d->m_slideOutAnimation->setStartValue(d->m_delta);
-        d->m_slideOutAnimation->start();
-    }
-}
-
 bool Unity2dPanel::manualSliding() const
 {
     return d->m_manualSliding;
@@ -259,10 +220,6 @@ void Unity2dPanel::setManualSliding(bool manualSliding)
 {
     if (d->m_manualSliding != manualSliding) {
         d->m_manualSliding = manualSliding;
-        if (manualSliding) {
-            d->m_slideInAnimation->stop();
-            d->m_slideOutAnimation->stop();
-        }
         Q_EMIT manualSlidingChanged(d->m_manualSliding);
     }
 }
