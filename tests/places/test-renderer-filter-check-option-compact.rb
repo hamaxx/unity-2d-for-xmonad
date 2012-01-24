@@ -57,6 +57,19 @@ context "Dash Lense Filter Results renderer tests" do
   #####################################################################################
   # Test cases
 
+  # Test case objectives:
+  #   * Check Filter results list view having renderer as filter-checkoption is displayed with two columns
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open Dash
+  #   * Goto Apps Lense
+  #   * Open Filter Results
+  #   * Check that filter-checkoption renderer is having two columns
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
   test "Verify renderer filter-check-option" do
     XDo::Keyboard.super
     verify (TIMEOUT) { @app.Dash() }
@@ -89,6 +102,19 @@ context "Dash Lense Filter Results renderer tests" do
 
   end
 
+  # Test case objectives:
+  #   * Check Filter results list view having renderer as filter-checkoption-compact is displayed with three columns
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open Dash
+  #   * Goto Music Lense
+  #   * Open Filter-Results
+  #   * Check that filter-checkoption-compact renderer is having three columns
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
   test "Verify renderer filter-check-option-compact" do
     XDo::Keyboard.super
     verify (TIMEOUT) { @app.Dash() }
@@ -118,6 +144,5 @@ context "Dash Lense Filter Results renderer tests" do
     verify( TIMEOUT, 'FilterCheckOptionCompact don\'t have three columns' ) {
         loader.GridViewWithSpacing()['columns'] == '3'
     }
-
   end
 end
