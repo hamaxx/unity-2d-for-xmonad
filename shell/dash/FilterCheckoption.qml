@@ -26,6 +26,9 @@ Filter {
     GridViewWithSpacing {
         id: filters
 
+        /* Note : Since filter-checkoption-compact and filter-checkoption are same, except
+           the number of columns, we are using the same QML file.
+         */
         columns: (filterView.filterModel.rendererName == "filter-checkoption-compact") ? 3 : 2
 
         rows: Math.ceil(count/columns)
