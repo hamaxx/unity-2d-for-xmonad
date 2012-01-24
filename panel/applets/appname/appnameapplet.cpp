@@ -28,6 +28,7 @@
 #include "panelstyle.h"
 #include "unity2dpanel.h"
 #include "windowhelper.h"
+#include "dashclient.h"
 
 // Unity-2d
 #include <debug_p.h>
@@ -226,6 +227,8 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
 
+    connect(DashClient::instance(), SIGNAL(alwaysFullScreenChanged()), SLOT(updateWidgets()));
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
@@ -259,7 +262,7 @@ void AppNameApplet::updateWidgets()
         || d->m_menuBarWidget->isOpened()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
-    bool dashCanResize = d->m_windowHelper->dashCanResize();
+    bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
     bool dashIsVisible = d->m_windowHelper->dashIsVisible();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;

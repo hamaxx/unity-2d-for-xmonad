@@ -55,27 +55,9 @@ extern "C" {
 
 struct WindowHelperPrivate
 {
-    void updateDashCanResize()
-    {
-        WnckScreen* screen = wnck_window_get_screen(m_window);
-        int screenNumber = wnck_screen_get_number(screen);
-        QRect rect = QApplication::desktop()->screenGeometry(screenNumber);
-
-        /* If the screen size too small, we don't allow the Dash to be used
-         * in Desktop mode (not fullscreen) */
-        QSize minSize = DashClient::minimumSizeForDesktop();
-        if (rect.width() < minSize.width() &&
-            rect.height() < minSize.height()) {
-            m_dashCanResize = false;
-        } else {
-            m_dashCanResize = true;
-        }
-    }
-
     WnckWindow* m_window;
     GConnector m_connector;
     bool m_activeWindowIsDash;
-    bool m_dashCanResize;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -135,9 +117,6 @@ void WindowHelper::update()
 
         const char *name = wnck_window_get_name(d->m_window);
         d->m_activeWindowIsDash = qstrcmp(name, "unity-2d-places") == 0;
-        if (d->m_activeWindowIsDash) {
-            d->updateDashCanResize();
-        }
 
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
@@ -184,11 +163,6 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 bool WindowHelper::dashIsVisible() const
 {
     return d->m_window != 0 && d->m_activeWindowIsDash;
-}
-
-bool WindowHelper::dashCanResize() const
-{
-    return d->m_dashCanResize;
 }
 
 void WindowHelper::close()
