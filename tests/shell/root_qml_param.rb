@@ -88,7 +88,7 @@ context "Shell root file param test" do
   test "Verify app does not start without a rootqml parameter" do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")
-    verify_not() { @app = @sut.run( :name => UNITY_2D_SHELL,
+    verify_not(0) { @app = @sut.run( :name => UNITY_2D_SHELL,
                                     :arguments => "-testability,-rootqml", 
                                     :sleeptime => 2 ) }
   end
