@@ -83,10 +83,6 @@ public:
 
     QString id() const;
 
-public Q_SLOTS:
-    void slideIn();
-    void slideOut();
-
 Q_SIGNALS:
     void manualSlidingChanged(bool);
     void useStrutChanged(bool);
