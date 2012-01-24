@@ -57,7 +57,8 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top(), q->width(), available.height());
+                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
+                rect.moveLeft(m_delta);
             } else {
                 rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
             }

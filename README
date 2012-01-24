@@ -1,4 +1,12 @@
-Compiling Unity 2D
+Changes from unity-2d
+============================
+
+- Display application name and window title in panel
+- Load panel only on primary screen
+- Don't filter apps for lagacy tray
+- Move launcher under panel so it doesn't cover it
+
+Compiling unity-2d
 ==================
 
 cmake . && make
