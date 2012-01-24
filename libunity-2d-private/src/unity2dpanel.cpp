@@ -205,11 +205,6 @@ void Unity2dPanel::showEvent(QShowEvent* event)
     d->updateEdge();
 }
 
-void Unity2dPanel::resizeEvent(QResizeEvent* event)
-{
-    QWidget::resizeEvent(event);
-}
-
 void Unity2dPanel::slotWorkAreaResized(int screen)
 {
     if (x11Info().screen() == screen) {

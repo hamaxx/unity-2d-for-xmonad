@@ -89,7 +89,6 @@ Q_SIGNALS:
 
 protected:
     virtual void showEvent(QShowEvent*);
-    virtual void resizeEvent(QResizeEvent*);
     virtual void paintEvent(QPaintEvent*);
 
 private Q_SLOTS:
