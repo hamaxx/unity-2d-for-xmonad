@@ -25,6 +25,7 @@
 
 // Qt
 #include <QObject>
+#include <QSize>
 
 class QDBusInterface;
 
@@ -46,6 +47,7 @@ public:
     QString activePage() const;
 
     void setActivePage(const QString& page, const QString& lensId=QString());
+    static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
     void activePageChanged(const QString&);

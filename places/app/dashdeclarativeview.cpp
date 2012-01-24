@@ -18,9 +18,9 @@
 #include "dashadaptor.h"
 
 // unity-2d
-#include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
+#include <dashclient.h>
 
 // Qt
 #include <QDesktopWidget>
@@ -77,7 +77,7 @@ void
 DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
 {
     QRect rect = QApplication::desktop()->screenGeometry(this);
-    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
+    QSize minSize = DashClient::minimumSizeForDesktop();
     if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
         setDashMode(FullScreenMode);
     } else {

@@ -37,6 +37,9 @@ static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
 DashClient::DashClient(QObject* parent)
 : QObject(parent)
 , m_dashDbusIface(0)
@@ -150,6 +153,11 @@ void DashClient::updateActivePage()
         m_activePage = activePage;
         activePageChanged(m_activePage);
     }
+}
+
+QSize DashClient::minimumSizeForDesktop()
+{
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
 }
 
 #include "dashclient.moc"

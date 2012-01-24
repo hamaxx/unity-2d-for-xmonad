@@ -26,7 +26,7 @@
 #include "config.h"
 
 // unity-2d
-#include <dashsettings.h>
+#include <dashclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
 #include <screeninfo.h>
@@ -53,8 +53,6 @@ extern "C" {
 #include <X11/Xatom.h>
 #include <QX11Info>
 
-using namespace Unity2d;
-
 struct WindowHelperPrivate
 {
     void updateDashCanResize()
@@ -65,7 +63,7 @@ struct WindowHelperPrivate
 
         /* If the screen size too small, we don't allow the Dash to be used
          * in Desktop mode (not fullscreen) */
-        QSize minSize = DashSettings::minimumSizeForDesktop();
+        QSize minSize = DashClient::minimumSizeForDesktop();
         if (rect.width() < minSize.width() &&
             rect.height() < minSize.height()) {
             m_dashCanResize = false;
@@ -74,7 +72,6 @@ struct WindowHelperPrivate
         }
     }
 
-    DashSettings* m_dashSettings;
     WnckWindow* m_window;
     GConnector m_connector;
     bool m_activeWindowIsDash;
@@ -86,7 +83,6 @@ WindowHelper::WindowHelper(QObject* parent)
 , d(new WindowHelperPrivate)
 {
     d->m_window = 0;
-    d->m_dashSettings = new DashSettings(this);
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
