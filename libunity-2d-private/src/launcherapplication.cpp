@@ -632,11 +632,15 @@ LauncherApplication::activate()
 {
     if (urgent()) {
         show();
+	/*
     } else if (active()) {
         if (windowCountOnCurrentWorkspace() > 0 && windowCount() > 1) {
             spread(windowCount() > windowCountOnCurrentWorkspace());
         }
-    } else if (running() && has_visible_window()) {
+    */
+	} else if (windowCount() > 1) {
+		spread(windowCount() > windowCountOnCurrentWorkspace());
+	} else if (running() && has_visible_window()) {
         show();
     } else {
         launch();
