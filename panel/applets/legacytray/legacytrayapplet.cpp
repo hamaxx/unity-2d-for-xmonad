@@ -69,9 +69,11 @@ void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
        classes to allow in the Panel's systray implementation." but here we only
        support matching on WM_CLASS.
     */
-    if (!m_whitelist.contains(task->name())) {
-        return;
-    }
+
+    //dont filter applications
+    //if (!m_whitelist.contains(task->name())) {
+    //    return;
+    //}
 
     task->createWidget();
     connect(task, SIGNAL(widgetCreated(QWidget*)), SLOT(slotWidgetCreated(QWidget*)));

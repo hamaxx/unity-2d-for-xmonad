@@ -244,7 +244,7 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool showWindowButtons = isOpened && isMaximized;
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
 
@@ -253,14 +253,11 @@ void AppNameApplet::updateWidgets()
         // Define text
         QString text;
         if (app) {
-            if (isMaximized) {
-                // When maximized, show window title
-                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                if (bamfWindow) {
-                    text = bamfWindow->name();
-                }
+            //Display application name and window title
+            BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+            if (bamfWindow) {
+                text.sprintf("%s :: %s", app->name().toUtf8().constData(), bamfWindow->name().toUtf8().constData());
             } else {
-                // When not maximized, show application name
                 text = app->name();
             }
         }
