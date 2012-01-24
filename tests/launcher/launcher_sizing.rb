@@ -36,24 +36,30 @@ context "Sizing tests" do
     system 'killall unity-2d-launcher > /dev/null 2>&1'
     system 'killall unity-2d-launcher > /dev/null 2>&1'
 
+    system 'killall unity-2d-panel > /dev/null 2>&1'
+    system 'killall unity-2d-panel > /dev/null 2>&1'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
-  
+
   # Run once at the end of this test suite
   shutdown do
   end
 
   # Run before each test case begins
   setup do
-    # Make sure the panel is running
-    system "pkill -nf unity-2d-panel"
-    system "unity-2d-panel &"
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")    
     @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
+
+    # Make sure the panel is running
+    @app_panel = @sut.run( :name => UNITY_2D_PANEL, 
+                           :arguments => "-testability", 
+                           :sleeptime => 2 )
+
     # Make certain application is ready for testing
     verify{ @app.Unity2dPanel() }
   end
@@ -61,11 +67,9 @@ context "Sizing tests" do
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
-    #Need to kill Launcher as it does not shutdown when politely asked
+    #Need to kill Launcher and Panel as it does not shutdown when politely asked
     system "pkill -nf unity-2d-launcher"
-    # Make sure the panel is running
     system "pkill -nf unity-2d-panel"
-    system "unity-2d-panel &"
   end
 
   #####################################################################################
