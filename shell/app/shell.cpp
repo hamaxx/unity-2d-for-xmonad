@@ -53,12 +53,12 @@ int main(int argc, char *argv[])
 
     QUrl rootFileUrl;
     const QStringList arguments = application.arguments();
-    const int rootFileArgumentIndex = arguments.indexOf("-rootfile");
+    const int rootFileArgumentIndex = arguments.indexOf("-rootqml");
     if (rootFileArgumentIndex != -1) {
         if (rootFileArgumentIndex + 1 < arguments.count()) {
             rootFileUrl = arguments[rootFileArgumentIndex + 1];
         } else {
-            qCritical() << "-rootfile argument given without file";
+            qCritical() << "-rootqml argument given without file";
             return -1;
         }
     } else {

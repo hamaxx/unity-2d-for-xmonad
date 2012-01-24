@@ -76,7 +76,7 @@ context "Shell root file param test" do
 
 
   # Test case objectives:
-  #   * Check the app does not start with the -rootfile parameter but without path for the file
+  #   * Check the app does not start with the -rootqml parameter but without path for the file
   # Pre-conditions
   #   * None
   # Test steps
@@ -85,16 +85,16 @@ context "Shell root file param test" do
   #   * None
   # References
   #   * None
-  test "Verify app does not start without a rootfile parameter" do
+  test "Verify app does not start without a rootqml parameter" do
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")
     verify_not() { @app = @sut.run( :name => UNITY_2D_SHELL,
-                                    :arguments => "-testability,-rootfile", 
+                                    :arguments => "-testability,-rootqml", 
                                     :sleeptime => 2 ) }
   end
 
   # Test case objectives:
-  #   * Check the app loads the qml file specified in the -rootfile parameter
+  #   * Check the app loads the qml file specified in the -rootqml parameter
   # Pre-conditions
   #   * None
   # Test steps
@@ -104,16 +104,16 @@ context "Shell root file param test" do
   #   * None
   # References
   #   * None
-  test "Verify app starts with a valid rootfile parameter" do
+  test "Verify app starts with a valid rootqml parameter" do
     # Execute the application 
-    testQmlFile = File.expand_path(File.dirname(__FILE__)) + "/rootfiletest.qml"
+    testQmlFile = File.expand_path(File.dirname(__FILE__)) + "/rootqmlparamtest.qml"
     @sut = TDriver.sut(:Id => "sut_qt")
     @app = @sut.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability,-rootfile," + testQmlFile, 
+                     :arguments => "-testability,-rootqml," + testQmlFile, 
                      :sleeptime => 2 )
     # Make certain application is ready for testing
     verify{ @app }
-    verify{ @app.QDeclarativeText( :text => 'This is the rootfile.qml test' ) }
+    verify{ @app.QDeclarativeText( :text => 'This is rootqmlparamtest.qml' ) }
   end
 
 end

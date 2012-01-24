@@ -6,7 +6,7 @@ Rectangle {
     color: "white"
 
     Text {
-        text: "This is the rootfile.qml test"
+        text: "This is rootqmlparamtest.qml"
     }
     Component.onCompleted: declarativeView.show()
 }
