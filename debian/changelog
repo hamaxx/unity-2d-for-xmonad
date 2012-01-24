@@ -1,4 +1,4 @@
-unity-2d (5.2.0-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (5.2.0-0ubuntu2) precise; urgency=low
 
   * debian/control: Fix Vcs-Bzr: to point to precise/trunk branch.
   * data/unity-2d.convert: Drop invalid "use-strut". This gsettings key does
@@ -8,7 +8,7 @@ unity-2d (5.2.0-0ubuntu2) UNRELEASED; urgency=low
     with the full code being branched from trunk. Current dpkg makes it
     impossible to build a source package with 3.0 now.
 
- -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 24 Jan 2012 13:44:26 +0100
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 24 Jan 2012 14:11:16 +0100
 
 unity-2d (5.2.0-0ubuntu1) precise; urgency=low
 
