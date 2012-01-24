@@ -53,28 +53,6 @@ context "Shell root file param test" do
   #####################################################################################
   # Test cases
 
-
-  # Test case objectives:
-  #   * Check the app starts without any parameter (except the required testability one)
-  # Pre-conditions
-  #   * None
-  # Test steps
-  #   * Verify app starts
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
-  test "Verify app starts without any parameter" do
-    # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")
-    @app = @sut.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability", 
-                     :sleeptime => 2 )
-    # Make certain application is ready for testing
-    verify{ @app }
-  end
-
-
   # Test case objectives:
   #   * Check the app does not start with the -rootqml parameter but without path for the file
   # Pre-conditions
