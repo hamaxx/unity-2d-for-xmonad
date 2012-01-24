@@ -144,5 +144,5 @@ context "Dash Lense Filter Results renderer tests" do
     verify( TIMEOUT, 'FilterCheckOptionCompact don\'t have three columns' ) {
         loader.GridViewWithSpacing()['columns'] == '3'
     }
-  end
+    end
 end
