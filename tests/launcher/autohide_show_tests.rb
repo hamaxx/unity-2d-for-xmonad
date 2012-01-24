@@ -471,7 +471,7 @@ context "Launcher Autohide and Show Tests" do
   end
 
   # Test case objectives:
-  # * Launcher does not hide on Esc after Alt+F1
+  # * Launcher does not hide on Esc after Alt+F1 with overlapping window
   # Pre-conditions
   # * Desktop with no running applications
   # Test steps
@@ -486,7 +486,7 @@ context "Launcher Autohide and Show Tests" do
   # * None
   # References
   # * None
-  test "Launcher does not hide on Esc after Alt+F1" do
+  test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
     xid = TmpWindow.open_window_at(10,100)
     verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
