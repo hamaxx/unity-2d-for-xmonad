@@ -49,6 +49,7 @@
 #include "launcherdropitem.h"
 
 #include "config.h"
+#include "dashclient.h"
 
 #include "autohidebehavior.h"
 #include "intellihidebehavior.h"
@@ -156,6 +157,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<MultiRangeFilter>();
     qmlRegisterType<FilterOption>();
     qmlRegisterType<FilterOptions>();
+
+    qmlRegisterType<DashClient>(uri, 0, 1, "DashClient");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
