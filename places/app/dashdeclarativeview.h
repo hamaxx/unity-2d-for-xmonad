@@ -68,7 +68,6 @@ protected:
 
 private Q_SLOTS:
     void onWorkAreaResized(int screen);
-    void updateDashModeDependingOnScreenGeometry();
     void updateSize();
 
 private:

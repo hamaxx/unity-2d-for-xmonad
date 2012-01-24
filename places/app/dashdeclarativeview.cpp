@@ -57,7 +57,6 @@ DashDeclarativeView::DashDeclarativeView()
 
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 
     updateSize();
@@ -71,18 +70,6 @@ DashDeclarativeView::onWorkAreaResized(int screen)
     }
 
     updateSize();
-}
-
-void
-DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
-{
-    QRect rect = QApplication::desktop()->screenGeometry(this);
-    QSize minSize = DashClient::minimumSizeForDesktop();
-    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
-        setDashMode(FullScreenMode);
-    } else {
-        setDashMode(DesktopMode);
-    }
 }
 
 void
