@@ -29,6 +29,15 @@ FocusScope {
 
     height: childrenRect.height
 
+    function getSource() {
+        if (filterModel.rendererName == "filter-checkoption-compact") {
+            return "filter-checkoption"
+        } else {
+            return filterModel.rendererName
+        }
+    }
+
+
     FocusScope {
         id: header
 
@@ -96,6 +105,7 @@ FocusScope {
 
     Loader {
         id: filterView
+        objectName: filterModel.rendererName
 
         KeyNavigation.up: header
         anchors.top: header.bottom
@@ -103,7 +113,7 @@ FocusScope {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        source: Utils.convertToCamelCase(filterModel.rendererName) + ".qml"
+        source: Utils.convertToCamelCase(/*filterModel.rendererName*/getSource()) + ".qml"
         onStatusChanged: {
             if (status == Loader.Error) {
                 console.log("Failed to load filter renderer", filterModel.rendererName)
