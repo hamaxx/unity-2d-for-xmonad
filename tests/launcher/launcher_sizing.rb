@@ -33,11 +33,11 @@ context "Sizing tests" do
   PANEL_HEIGHT=24
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
 
-    system 'killall unity-2d-panel > /dev/null 2>&1'
-    system 'killall unity-2d-panel > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-panel'
+    $SUT.execute_shell_command 'killall unity-2d-panel'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -50,13 +50,12 @@ context "Sizing tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    @app = $SUT.run( :name => UNITY_2D_LAUNCHER, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
 
     # Make sure the panel is running
-    @app_panel = @sut.run( :name => UNITY_2D_PANEL, 
+    @app_panel = $SUT.run( :name => UNITY_2D_PANEL, 
                            :arguments => "-testability", 
                            :sleeptime => 2 )
 
@@ -68,8 +67,8 @@ context "Sizing tests" do
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher and Panel as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
-    system "pkill -nf unity-2d-panel"
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
   end
 
   #####################################################################################
@@ -94,7 +93,7 @@ context "Sizing tests" do
       @app.Unity2dPanel()['y_absolute'].to_i
     }
     old_height = @app.Unity2dPanel()['height'].to_i
-    system "pkill -nf unity-2d-panel"
+    $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
     verify_equal( 0, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
       @app.Unity2dPanel()['y_absolute'].to_i
     }
