@@ -179,6 +179,9 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
     engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
+    /* Expose QConf objects as a context property not to initialize it multiple times */
+    engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
+
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.
        Window managers tend to respect orders from pagers to the letter by

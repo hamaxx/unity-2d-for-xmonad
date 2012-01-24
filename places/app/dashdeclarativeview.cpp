@@ -159,7 +159,6 @@ DashDeclarativeView::setActive(bool value)
     if (value != m_active) {
         m_active = value;
         if (value) {
-            updateDashModeDependingOnScreenGeometry();
             show();
             raise();
             // We need a delay, otherwise the window may not be visible when we try to activate it
