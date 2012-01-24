@@ -35,8 +35,7 @@ On the Host machine (can be same as the SUT)
 - GUI to allow easy inspection of SUT and writing tests [tdriver-visualizer],  
   but not needed for running tests.
 
-For the moment, the system is designed assuming that the SUT is also the Host
-machine.
+For all tests, the SUT is assumed to *not* be the Host machine.
 
 
 Testability installation instructions
@@ -131,8 +130,7 @@ context "Test Suite summary" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => "/absolute/path/to/application", 
+    @app = $SUT.run( :name => "/absolute/path/to/application", 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
   end
@@ -141,18 +139,20 @@ context "Test Suite summary" do
   teardown do
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
+    $SUT.execute_shell_command "pkill -nf unity-2d-launcher"
   end
 
   ##############################################################################
   # Test cases
 
   test "Short description of first test case" do
-    assert_equal( Integer(@app.Unity2dPanel()['width']), 66, 
-                  'These two values are not equal' )
+    verify_equal( 66, TIMEOUT, 'These two values are not equal'){
+      @app.Unity2dPanel()['width']).to_i 
+    }
 
-    assert( @app.Unity2dPanel()['x_absolute'], \
-                  'This quantity is not true' )
+    verify_equal( 'true', TIMEOUT, 'This quantity is not true'){
+      @app.Unity2dPanel()['x_absolute']
+    }
   end
 
   test "Another test case description" do

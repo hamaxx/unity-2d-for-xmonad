@@ -35,8 +35,8 @@ context "Launcher Autohide and Show Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -51,11 +51,10 @@ context "Launcher Autohide and Show Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)    
 
-    launcher_favorites = `gsettings get com.canonical.Unity.Launcher favorites`
+    launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_LAUNCHER, 
+    @app = $SUT.run( :name => UNITY_2D_LAUNCHER, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
     # Make certain application is ready for testing
@@ -67,8 +66,8 @@ context "Launcher Autohide and Show Tests" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
-    system "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
   #####################################################################################
@@ -246,6 +245,7 @@ context "Launcher Autohide and Show Tests" do
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
+    sleep 1 #launcher seems not ready to accept Super key, need a pause
     XDo::Keyboard.key_down('SUPER')
     verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key held, should be visible' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
