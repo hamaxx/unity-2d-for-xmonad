@@ -470,4 +470,37 @@ context "Launcher Autohide and Show Tests" do
     xid.close!
   end
 
+  # Test case objectives:
+  # * Launcher does not hide on Esc after Alt+F1 with overlapping window
+  # Pre-conditions
+  # * Desktop with no running applications
+  # Test steps
+  # * Open application in position overlapping Launcher
+  # * Verify Launcher hiding
+  # * Press Alt+F1
+  # * Verify Launcher showing
+  # * Move mouse over the launcher
+  # * Press Esc
+  # * Verify Launcher does not hide
+  # Post-conditions
+  # * None
+  # References
+  # * None
+  test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Unity2dPanel()['x_absolute'].to_i
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    bfb.move_mouse()
+    XDo::Keyboard.escape
+    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
+      verify_equal( -WIDTH, 2 ) {
+        @app.Unity2dPanel()['x_absolute'].to_i
+      }
+    }
+    xid.close!
+  end
+
 end
