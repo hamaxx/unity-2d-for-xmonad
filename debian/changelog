@@ -4,6 +4,9 @@ unity-2d (5.2.0-0ubuntu2) UNRELEASED; urgency=low
   * data/unity-2d.convert: Drop invalid "use-strut". This gsettings key does
     not exist and causes gsettings-data-convert to crash, making the whole
     settings migration fail. This cleans up after r804. (LP: #920894)
+  * debian/source/format: Move back to 1.0, as we have inline code changes
+    with the full code being branched from trunk. Current dpkg makes it
+    impossible to build a source package with 3.0 now.
 
  -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 24 Jan 2012 13:44:26 +0100
 
