@@ -64,7 +64,7 @@ HotkeyMonitor::~HotkeyMonitor()
 
 
 Hotkey*
-HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers)
+HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers, bool isX11keysym)
 {
     Q_FOREACH(Hotkey* currentHotkey, m_hotkeys) {
         if (currentHotkey->key() == key &&
@@ -73,7 +73,7 @@ HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers)
         }
     }
 
-    Hotkey *hotkey = new Hotkey(key, modifiers, this);
+    Hotkey *hotkey = new Hotkey(key, modifiers, this, isX11keysym);
     m_hotkeys.append(hotkey);
     return hotkey;
 }
