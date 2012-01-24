@@ -98,6 +98,7 @@ FocusScope {
             id: homeLens
 
             Accessible.name: u2d.tr("home")
+            objectName: "home"
 
             focus: true
             icon: "artwork/lens-nav-home.svg"
@@ -116,6 +117,7 @@ FocusScope {
             model: visibleLenses
             delegate: LensButton {
                 Accessible.name: u2d.tr(item.name)
+                objectName: item.name
 
                 /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
                 icon: item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint

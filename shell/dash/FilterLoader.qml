@@ -22,6 +22,7 @@ import "../common/utils.js" as Utils
 
 FocusScope {
     id: filterLoader
+    objectName: filterModel.rendererName
 
     property variant lens
     property variant filterModel
