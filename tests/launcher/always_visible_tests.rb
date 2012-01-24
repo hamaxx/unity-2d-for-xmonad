@@ -35,8 +35,8 @@ context "Launcher Always Visible Behaviour Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -51,11 +51,10 @@ context "Launcher Always Visible Behaviour Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)
 
-    hide_mode = `gsettings get com.canonical.Unity2d.Launcher hide-mode`
+    hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
 
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")
-    @app = @sut.run( :name => UNITY_2D_LAUNCHER,
+    @app = $SUT.run( :name => UNITY_2D_LAUNCHER,
                      :arguments => "-testability", 
                      :sleeptime => 2 )
     # Make certain application is ready for testing
@@ -67,8 +66,8 @@ context "Launcher Always Visible Behaviour Tests" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-launcher"
-    system "gsettings set com.canonical.Unity2d.Launcher hide-mode " + hide_mode
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 
   #####################################################################################
@@ -88,9 +87,9 @@ context "Launcher Always Visible Behaviour Tests" do
   # References
   #   * None
   test "Launcher pushes windows" do
-      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 2"
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
       xid = TmpWindow.open_window_at(WIDTH / 2, 10)
-      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 0"
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
       verify_equal( WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
         xid.position[0]
       }
