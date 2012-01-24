@@ -101,6 +101,35 @@ class TestCase < Test::Unit::TestCase
       @order = order
     end
   end
+
+  # Runs the individual test method represented by this
+  # instance of the fixture, collecting statistics, failures
+  # and errors in result. Also catches MobyBase::VerificationError
+  # and considers them fails, not errors.
+  def run(result)
+    yield(STARTED, name)
+    @_result = result
+    begin
+      setup
+      __send__(@method_name)
+    rescue Test::Unit::AssertionFailedError, MobyBase::VerificationError => e
+      add_failure(e.message, e.backtrace)
+    rescue Exception
+      raise if PASSTHROUGH_EXCEPTIONS.include? $!.class
+      add_error($!)
+    ensure
+      begin
+        teardown
+      rescue Test::Unit::AssertionFailedError, MobyBase::VerificationError => e
+        add_failure(e.message, e.backtrace)
+      rescue Exception
+        raise if PASSTHROUGH_EXCEPTIONS.include? $!.class
+        add_error($!)
+      end
+    end
+    result.add_run
+    yield(FINISHED, name)
+  end
 end
 
 
