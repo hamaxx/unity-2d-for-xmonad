@@ -33,7 +33,7 @@
 
 int main(int argc, char *argv[])
 {
-    Unity2dApplication::earlySetup(argc, argv);
+	Unity2dApplication::earlySetup(argc, argv);
     Unity2dApplication application(argc, argv);
     application.setApplicationName("Unity 2D Workspace Switcher");
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
@@ -70,9 +70,9 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("./Workspaces.qml"));
 
     /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
+    //int current_screen = QApplication::desktop()->screenNumber(&view);
+    view.fitToAvailableSpace(0); //always on primary screen
+    //QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     return application.exec();
 }
