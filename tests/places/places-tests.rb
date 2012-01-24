@@ -35,6 +35,9 @@ context "Launcher Autohide and Show Tests" do
     system 'killall unity-2d-places > /dev/null 2>&1'
     system 'killall unity-2d-places > /dev/null 2>&1'
 
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
@@ -45,22 +48,23 @@ context "Launcher Autohide and Show Tests" do
 
   # Run before each test case begins
   setup do
-    # Make sure the launcher is running
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'unity-2d-launcher &'
-
     # Execute the application 
     @sut = TDriver.sut(:Id => "sut_qt")
-    @app = @sut.run( :name => UNITY_2D_PLACES, 
-    		         :arguments => "-testability", 
-    		         :sleeptime => 2 )
+    @app_launcher = @sut.run( :name => UNITY_2D_LAUNCHER, 
+                              :arguments => "-testability", 
+                              :sleeptime => 2 )
+
+    @app_places = @sut.run( :name => UNITY_2D_PLACES, 
+                              :arguments => "-testability", 
+                              :sleeptime => 2 )
+
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
+    system "pkill -nf unity-2d-launcher"
     system "pkill -nf unity-2d-places"
   end
 
@@ -68,24 +72,54 @@ context "Launcher Autohide and Show Tests" do
   # Test casess
 
   # Test case objectives:
-  #   * Check the Launcher position on Empty desktop
+  #   * Check that Alt+F2 shows dash
   # Pre-conditions
   #   * Desktop with no running applications
   # Test steps
-  #   * Verify Launcher is #{WIDTH} pixels wide
-  #   * Verify Launcher showing
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
   # Post-conditions
   #   * None
   # References
   #   * None
-  test "Position with Empty Desktop" do
+  test "Alt+F2 shows the Dash" do
     # check width before proceeding
-    verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F2') {
-      @app.DashDeclarativeView()
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
-    verify(0, 'There should be a Dash declarative view after pressing Alt+F2') {
-        @app.DashDeclarativeView()
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app_places.DashDeclarativeView()
+    }
+  end
+
+  # Test case objectives:
+  #   * Check that pressing the bfb shows the dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Click on the bfb
+  #   * Verify dash is showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Pressing the bfb shows the Dash" do
+    # check width before proceeding
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    bfb = @app_launcher.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    XDo::Mouse.move(0, 200, 0, true)
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+    }
+    bfb.move_mouse()
+    bfb.tap()
+    verify(TIMEOUT, 'There should be a Dash declarative view after activating the bfb') {
+        @app_places.DashDeclarativeView()
     }
   end
 end
