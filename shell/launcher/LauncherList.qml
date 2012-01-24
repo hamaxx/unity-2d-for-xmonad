@@ -348,5 +348,10 @@ AutoScrollingListView {
                 }
             }
         }
+
+        Connections {
+            target: declarativeView
+            onActiveWorkspaceChanged: updatePipSource()
+        }
     }
 }

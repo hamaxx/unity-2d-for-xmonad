@@ -64,6 +64,20 @@ def reset_current_workspace
     }
 end
 
+def change_user_workspace
+    new_workspace = 0
+    if @@current_workspace > 0
+        new_workspace = 0
+    else
+        new_workspace = 1
+    end
+
+    XDo::XWindow.desktop=new_workspace
+    verify_true(TIMEOUT, 'Change user workspace failed') {
+        XDo::XWindow.desktop==new_workspace
+    }
+end
+
 ############################# Test Suite #############################
 context "Launcher pips tests" do
   # Run once at the beginning of this test suite
@@ -222,7 +236,7 @@ context "Launcher pips tests" do
     end
 
     # Test case objectives:
-    #   * Check pips are updated properly when the app is moved to another workspace
+    #   * "Update launcher pips to indicate an app completely belonging to different workspace
     #   *
     # Pre-conditions
     #   * The same windows created above are re-used
@@ -253,13 +267,13 @@ context "Launcher pips tests" do
     end
 
     # Test case objectives:
-    #   * Check pips are updated properly when the app is moved to another workspace
+    #   * Update launcher pips to indicate when a app window is closed.
     #   *
     # Pre-conditions
     #   * The same windows created above are resued.
     #   *
     # Test steps
-    #   * Close one of the app window and move the last window back to its original workspace
+    #   * Close one of the app windows and move the last window back to its original workspace
     #   * Verify the launcher tile pip image matches with the expected one
     #   *
     # Post-conditions
@@ -284,4 +298,62 @@ context "Launcher pips tests" do
             .QDeclarativeImage( :name => 'pips-0')['source']
         }
     end
+
+    # Test case objectives:
+    #   * Update launcher pips to indicate when the user workspace changed
+    #   *
+    # Pre-conditions
+    #   * The same windows created above are resued.
+    #   *
+    # Test steps
+    #   * Change the user workspace to other than app workspace
+    #   * Verify that the pips are updated properly
+    #   *
+    # Post-conditions
+    #   * Reset the current workspace to initial workspace
+    #   *
+    # References
+    #   * lp:#883172
+    #   *
+    test "Update launcher pips to indicate when the user workspace changed." do
+        change_user_workspace
+
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+
+        verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
+             @app.Launcher() \
+            .LauncherList( :name => 'main' ) \
+            .QDeclarativeItem( :name => @@title_string ) \
+            .QDeclarativeImage( :name => 'pips-0')['source']
+        }
+    end
+
+
+    # Test case objectives:
+    #   * Check pips are updated properly for the app in current workspace
+    #   *
+    # Pre-conditions
+    #   * The same windows created above are resued.
+    #   *
+    # Test steps
+    #   * Finally, check the app in the current workspace only
+    #   * Verify that the pips are updated properly
+    #   *
+    # Post-conditions
+    #   * Reset the current workspace to initial workspace
+    #   *
+    # References
+    #   * lp:#883172
+    #   *
+    test "Check pips are updated properly for the app in current workspace" do
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
+
+        verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_ltr.png'){
+             @app.Launcher() \
+            .LauncherList( :name => 'main' ) \
+            .QDeclarativeItem( :name => @@title_string ) \
+            .QDeclarativeImage( :name => 'pips-0')['source']
+        }
+    end
+
 end
