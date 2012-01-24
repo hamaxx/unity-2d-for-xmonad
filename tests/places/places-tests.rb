@@ -45,8 +45,13 @@ context "Launcher Autohide and Show Tests" do
 
   # Run before each test case begins
   setup do
+    # Make sure the launcher is running
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'unity-2d-launcher &'
+
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
+    @sut = TDriver.sut(:Id => "sut_qt")
     @app = @sut.run( :name => UNITY_2D_PLACES, 
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
