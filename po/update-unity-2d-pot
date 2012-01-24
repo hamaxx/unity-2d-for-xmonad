@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+cd $(dirname $0)
+PO_DIR=$PWD
+
+PROGNAME=$(basename $0)
+
+# Create a list of files to scan
+GETTEXT_FILES=$(mktemp --tmpdir unity-2d.lst.XXXXX)
+trap 'rm -f "$GETTEXT_FILES"' EXIT
+cd ..
+find \( -name '*.cpp' -o -name '*.qml' \) \
+    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*'  -o -path './libunity-2d-private/tests/*' \) \
+> $GETTEXT_FILES
+
+# Generate pot from our list
+# Note: we use --keyword=tr for QML files because --keyword=u2d.tr does not
+# work
+xgettext \
+    --output $PO_DIR/unity-2d.pot \
+    --files-from $GETTEXT_FILES \
+    --qt --c++ \
+    --keyword=u2dTr:1,1t --keyword=u2dTr:1,2,3t \
+    --keyword=tr:1,1t --keyword=tr:1,2,3t \
+    --package-name unity-2d \
+    --copyright-holder "Canonical Ltd" \
+    --msgid-bugs-address "https://bugs.launchpad.net/unity-2d/+filebug"
+
+echo "$PROGNAME: $PO_DIR/unity-2d.pot updated"

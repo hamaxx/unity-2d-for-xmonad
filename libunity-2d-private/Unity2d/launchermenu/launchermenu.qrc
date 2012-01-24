@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/launchermenu">
+        <file>arrow.png</file>
+        <file>arrow_no_transparency.png</file>
+        <file>background.png</file>
+        <file>background_no_transparency.png</file>
+        <file>check_default.png</file>
+        <file>check_selected.png</file>
+        <file>launchermenu.css</file>
+
+        <file>arrow_rtl.png</file>
+        <file>arrow_no_transparency_rtl.png</file>
+        <file>background_rtl.png</file>
+        <file>background_no_transparency_rtl.png</file>
+        <file>launchermenu_rtl.css</file>
+    </qresource>
+</RCC>

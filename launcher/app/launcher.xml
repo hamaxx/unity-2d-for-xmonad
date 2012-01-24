@@ -1,0 +1,36 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+    <dox:d><![CDATA[
+      @mainpage
+
+      An interface to activate the launcher in Unity2d.
+    ]]></dox:d>
+    <interface name="com.canonical.Unity2d.Launcher" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <dox:d>
+          An interface to activate the launcher in Unity2d.
+        </dox:d>
+        <method name="AddWebFavorite">
+            <dox:d><![CDATA[
+               Request a URL to be added to the launcher as a web favorite.
+            ]]></dox:d>
+            <arg name="url" type="s" direction="in">
+                <dox:d>The URL to be favorited.</dox:d>
+            </arg>
+        </method>
+        <method name="BeginForceVisible">
+            <dox:d><![CDATA[
+               Ask the launcher to become visible and stay visible. Call
+               EndForceVisible() when you don't need the launcher to stay
+               visible anymore.
+            ]]></dox:d>
+        </method>
+        <method name="EndForceVisible">
+            <dox:d><![CDATA[
+               Tells the launcher you don't need it to stay visible anymore.
+               Please note this does not mean the launcher will necessarily
+               hide.
+            ]]></dox:d>
+        </method>
+    </interface>
+</node>
+

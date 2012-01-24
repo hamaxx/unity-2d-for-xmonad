@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Unity 2d Launcher
+Comment=A Qt-based applications launcher
+Icon=gnome-fs-desktop
+Exec=unity-2d-launcher
+Terminal=false
+Type=Application
+Categories=Utility;
+NoDisplay=true
+X-Ubuntu-Gettext-Domain=unity-2d-launcher
+X-GNOME-Autostart-Notify=false
+X-GNOME-Autostart-Phase=Panel
+X-GNOME-AutoRestart=true

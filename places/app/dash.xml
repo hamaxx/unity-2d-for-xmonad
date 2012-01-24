@@ -1,0 +1,41 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+    <dox:d><![CDATA[
+      @mainpage
+
+      An interface to control the dash in Unity-2d.
+    ]]></dox:d>
+    <interface name="com.canonical.Unity2d.Dash" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <dox:d>
+          An interface to control the dash in Unity-2d.
+        </dox:d>
+        <method name="activateHome">
+            <dox:d>Activates the Dash and shows the home section</dox:d>
+        </method>
+        <method name="activateLens">
+            <dox:d>Activates the Dash and shows the specified lens</dox:d>
+            <arg name="lensId" type="s" direction="in">
+                    <dox:d>The id of the lens that should be activated</dox:d>
+            </arg>
+        </method>
+        <property name="active" type="b" access="readwrite">
+            <dox:d>True if the Dash is active</dox:d>
+        </property>
+        <property name="activeLens" type="s" access="readwrite">
+            <dox:d>The currently active lens</dox:d>
+        </property>
+        <signal name="activeChanged">
+                <dox:d>Signals when the active status of the Dash changes</dox:d>
+                <arg name="active" type="b" direction="out">
+                        <dox:d>True if the Dash is active</dox:d>
+                </arg>
+        </signal>
+        <signal name="activeLensChanged">
+                <dox:d>Signals when the currently lens in the Dash changes</dox:d>
+                <arg name="activeLens" type="s" direction="out">
+                        <dox:d>The currently active lens</dox:d>
+                </arg>
+        </signal>
+    </interface>
+</node>
+

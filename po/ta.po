@@ -1,0 +1,111 @@
+# Tamil translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-07-03 04:17+0000\n"
+"Last-Translator: Mel C <melwin.a3@gmail.com>\n"
+"Language-Team: Tamil <ta@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:21+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "மேன்பட்ட விவரங்கள்"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr ""
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "குறைந்த பட்ச தேடல் விவரங்கள்"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "பல்லுடக மென்பொருள்கள்"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "இணையம் சார்ந்த மென்பொருள்கள்"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "இன்னும் பிற மென்பொருள்கள்"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "கோப்புகளைத் தேடு"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "இணையத்தில் உலாவ"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "படங்களைப் பார்க்க"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "மின்னஞ்சலைப் பார்க்க"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "இசையைக் கேட்க"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "சுருக்குவழிகள்"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "தேடலை மாற்றி அமை"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "வகை"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "வெளித்தள்ளு"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "குப்பைதொட்டி"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n பொருள்  குப்பைதொட்டியில் உள்ளது"
+msgstr[1] "%n பொருட்கள்  குப்பைதொட்டியில் உள்ளது"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "குப்பையை காலி செய்"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "பணியிடங்கள்"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "தெடர்ந்து உள்ளே வைக்க"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr ""
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "மூடு"

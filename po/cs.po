@@ -1,0 +1,112 @@
+# Czech translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-20 07:17+0000\n"
+"Last-Translator: Vojtěch Trefný <vojtech.trefny@gmail.com>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Zobrazit jeden další výsledek"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Zobrazit %1 dalších výsledků"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Zobrazit méně výsledků"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Mediální aplikace"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Internetové aplikace"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Více aplikací"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Najít soubory"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Prohlížet web"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Prohlédnout fotografie"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Zkontrolovat e-maily"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Poslouchat hudbu"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Rychlý přístup"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Upřesnit vyhledávání"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Kategorie"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Vysunout"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Koš"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n položka v koši"
+msgstr[1] "%n položky v koši"
+msgstr[2] "%n položek v koši"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Vyprázdnit koš"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Pracovní plochy"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Ponechat ve spouštěči"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Odstranit ze spouštěče"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Ukončit"

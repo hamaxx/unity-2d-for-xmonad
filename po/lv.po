@@ -1,0 +1,114 @@
+# Latvian translation for unity-2d
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the unity-2d package.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Rudolfs <rudolfs.mazurs@gmail.com>, 2011.
+# Rūdofls Mazurs <rudolfs.mazurs@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-06-07 18:21+0200\n"
+"PO-Revision-Date: 2011-04-20 13:16+0000\n"
+"Last-Translator: Rūdolfs Mazurs <Unknown>\n"
+"Language-Team: Latvian <lv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
+"X-Generator: Launchpad (build 13388)\n"
+
+#: places/GroupHeader.qml:88
+msgid "See one more result"
+msgstr "Redzēt vēl vienu rezultātu"
+
+#: places/GroupHeader.qml:90
+#, qt-format
+msgid "See %1 more results"
+msgstr "Skatīt vēl %1 rezultātus"
+
+#: places/GroupHeader.qml:93
+msgid "See fewer results"
+msgstr "Skatīt mazāk rezultātu"
+
+#: places/HomeShortcuts.qml:32
+msgid "Media Apps"
+msgstr "Multimediju lietotnes"
+
+#: places/HomeShortcuts.qml:38
+msgid "Internet Apps"
+msgstr "Interneta lietotnes"
+
+#: places/HomeShortcuts.qml:44
+msgid "More Apps"
+msgstr "Vairāk lietotņu"
+
+#: places/HomeShortcuts.qml:50
+msgid "Find Files"
+msgstr "Meklēt failus"
+
+#: places/HomeShortcuts.qml:57
+msgid "Browse the Web"
+msgstr "Pārlūkot tīmekli"
+
+#: places/HomeShortcuts.qml:62
+msgid "View Photos"
+msgstr "Skatīt bildes"
+
+#: places/HomeShortcuts.qml:67
+msgid "Check Email"
+msgstr "Lasīt e-pastu"
+
+#: places/HomeShortcuts.qml:72
+msgid "Listen to Music"
+msgstr "Klausīties mūziku"
+
+#: places/Home.qml:79
+msgid "Shortcuts"
+msgstr "Saīsnes"
+
+#: places/SearchRefine.qml:61
+msgid "Refine search"
+msgstr "Rafinēt meklēšanu"
+
+#: places/SearchRefine.qml:84
+msgid "Type"
+msgstr "Tips"
+
+#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
+msgid "Eject"
+msgstr "Izgrūst"
+
+#: libunity-2d-private/Unity2d/trash.cpp:125
+msgid "Trash"
+msgstr "Miskaste"
+
+#: libunity-2d-private/Unity2d/trash.cpp:255
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] "%n vienība miskastē"
+msgstr[1] "%n vienības miskastē"
+msgstr[2] "%n vienību miskastē"
+
+#: libunity-2d-private/Unity2d/trash.cpp:262
+msgid "Empty Trash"
+msgstr "Iztukšot miskasti"
+
+#: libunity-2d-private/Unity2d/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Darbvirsmas"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Keep in launcher"
+msgstr "Paturēt palaidējā"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
+msgid "Remove from launcher"
+msgstr "Izņemt no palaidēja"
+
+#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
+msgid "Quit"
+msgstr "Iziet"

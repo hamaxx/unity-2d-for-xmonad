@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Unity 2D Places
+Comment=A Qt-based implementation of Unity Places
+Icon=gnome-fs-desktop
+Exec=unity-2d-places
+Terminal=false
+Type=Application
+Categories=Utility;
+NoDisplay=true
+X-Ubuntu-Gettext-Domain=unity-2d-places
+X-GNOME-Autostart-Notify=false
+X-GNOME-Autostart-Delay=10
