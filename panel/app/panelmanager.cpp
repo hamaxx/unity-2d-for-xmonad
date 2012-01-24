@@ -119,14 +119,11 @@ PanelManager::PanelManager(QObject* parent)
 , m_conf(PANEL_DCONF_SCHEMA)
 {
     QDesktopWidget* desktop = QApplication::desktop();
-    for(int i = 0; i < desktop->screenCount(); ++i) {
-        Unity2dPanel* panel = instantiatePanel(i);
-        m_panels.append(panel);
-        panel->show();
-        panel->move(desktop->screenGeometry(i).topLeft());
-    }
-    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
-
+    //panel is always only on first screen
+    Unity2dPanel* panel = instantiatePanel(0);
+    m_panels.append(panel);
+    panel->show();
+    panel->move(desktop->screenGeometry(0).topLeft());
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
     Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);

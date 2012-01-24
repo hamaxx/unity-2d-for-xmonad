@@ -1,3 +1,10 @@
+Changes from unity-2d 4.12.0
+============================
+
+- Display application name and window title in panel
+- Load panel only on primary screen
+- Don't filter apps for lagacy tray
+
 Compiling unity-2d
 ==================
 

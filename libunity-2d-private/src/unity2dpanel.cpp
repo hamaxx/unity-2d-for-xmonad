@@ -80,7 +80,7 @@ struct Unity2dPanelPrivate
         case Unity2dPanel::TopEdge:
             struts[2] = q->height();
             struts[8] = screen.left();
-            struts[9] = screen.x() + screen.width();
+            struts[9] = screen.x() + screen.width() - 1; //otherwise xmonad thinks panel is on all screens
             break;
         }
 
