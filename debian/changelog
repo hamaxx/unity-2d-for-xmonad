@@ -1,3 +1,9 @@
+unity-2d (5.2.0-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/control: Fix Vcs-Bzr: to point to precise/trunk branch.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 24 Jan 2012 13:44:26 +0100
+
 unity-2d (5.2.0-0ubuntu1) precise; urgency=low
 
   [ Didier Roche ]
