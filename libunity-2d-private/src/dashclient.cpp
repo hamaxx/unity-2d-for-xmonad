@@ -22,6 +22,7 @@
 #include "dashclient.h"
 
 // Local
+#include "config.h"
 
 // libunity-2d
 #include <debug_p.h>
@@ -67,6 +68,11 @@ DashClient::DashClient(QObject* parent)
     }
 
     connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateAlwaysFullScreen()));
+
+    // NOTE: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do).
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateAlwaysFullScreen()), Qt::QueuedConnection);
     updateAlwaysFullScreen();
 }
 
@@ -168,9 +174,15 @@ QSize DashClient::minimumSizeForDesktop()
 
 void DashClient::updateAlwaysFullScreen()
 {
-    QRect rect = QApplication::desktop()->screenGeometry();
-    QSize minSize = minimumSizeForDesktop();
-    bool alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    bool alwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        alwaysFullScreen = true;
+    } else {
+        QRect rect = QApplication::desktop()->screenGeometry();
+        QSize minSize = minimumSizeForDesktop();
+        alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    }
+
     if (m_alwaysFullScreen != alwaysFullScreen) {
         m_alwaysFullScreen = alwaysFullScreen;
         Q_EMIT alwaysFullScreenChanged();
