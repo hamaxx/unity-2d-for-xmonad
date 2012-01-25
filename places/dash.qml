@@ -43,8 +43,8 @@ Item {
     Binding {
         target: dashView
         property: "dashMode"
-        value: return dash2dConfiguration.fullScreen ? DashDeclarativeView.FullScreenMode :
-                                                       DashDeclarativeView.DesktopMode
+        value: dash2dConfiguration.fullScreen ? DashDeclarativeView.FullScreenMode :
+                                                DashDeclarativeView.DesktopMode
     }
 
     function activatePage(page) {
