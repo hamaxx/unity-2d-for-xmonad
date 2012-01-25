@@ -11,6 +11,11 @@ Compiling unity-2d
 
 cmake . && make
 
+Installing unity-2d-for-xmonad
+==============================
+
+sudo apt-get install unity-2d
+sudo make install
 
 Running
 =======
