@@ -30,6 +30,7 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Dash Tests" do
+    WIDTH = 65
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-places'
@@ -119,4 +120,41 @@ context "Dash Tests" do
         @app_places.DashDeclarativeView()
     }
   end
+
+  # Test case objectives:
+  #   * Check Super and Alt+F1 interaction
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Press Alt+F1
+  #   * Verify dash is not showing
+  #   * Verify launcher does not hide
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Super and Alt+F1 interaction" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.super
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+      verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+      @app_places.DashDeclarativeView()
+    }
+    verify_not(0, 'Launcher should not hide after pressing Alt+F1') {
+      verify_equal( -WIDTH, 2 ) {
+        @app_launcher.Unity2dPanel()['x_absolute'].to_i
+      }
+    }
+    xid.close!
+  end
+
 end
