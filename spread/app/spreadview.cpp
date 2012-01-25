@@ -27,7 +27,8 @@
 #include "screeninfo.h"
 
 SpreadView::SpreadView(int screen)
-: Unity2DDeclarativeView()
+  : Unity2DDeclarativeView()
+#include <debug_p.h>
 {
     m_screenInfo = new ScreenInfo(screen, this);
     connect(m_screenInfo, SIGNAL(panelsFreeGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
