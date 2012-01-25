@@ -32,16 +32,13 @@ require 'tmpdir'
 require 'tempfile'
 include TDriverVerify
 
-def desktop_geometry
-    out = %x{xdotool getdisplaygeometry}
-    return out.split.collect { |coord| coord.to_i }
-end
-
 ############################# Test Suite #############################
 context "Dash fullscreen tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
 
   DASH_FULLSCREEN_KEY = '/com/canonical/unity-2d/dash/full-screen'
+  DASH_MIN_SCREEN_WIDTH = 1280;
+  DASH_MIN_SCREEN_HEIGHT = 1084;
 
   # Run once at the beginning of this test suite
   startup do
@@ -80,6 +77,12 @@ context "Dash fullscreen tests" do
     system "pkill -nf unity-2d-places"
   end
 
+  def dash_always_fullscreen
+    out = %x{xdotool getdisplaygeometry}
+    width, height = out.split.collect { |coord| coord.to_i }
+    return width < DASH_MIN_SCREEN_WIDTH || height < DASH_MIN_SCREEN_HEIGHT
+  end
+
   #####################################################################################
   # Test cases
 
@@ -91,7 +94,9 @@ context "Dash fullscreen tests" do
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
         @dash.DashDeclarativeView()['active']
     }
-    verify_equal('DesktopMode', TIMEOUT, 'Dash is fullscreen but should not be') {
+
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state') {
         @dash.DashDeclarativeView()['dashMode']
     }
 
@@ -119,13 +124,18 @@ context "Dash fullscreen tests" do
     verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
         @dash.DashDeclarativeView()['dashMode']
     }
-    verify_equal('true', TIMEOUT, 'Dash fullscreen key was not set') {
+
+    # When always fullscreen tapping the max button does nothing, so the key should remain set to
+    # false.
+    expected = dash_always_fullscreen ? 'false' : 'true'
+    verify_equal(expected, TIMEOUT, 'Dash fullscreen key has the wrong value after maximize') {
         %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
     }
 
     maxbutton.tap if maxbutton
     sleep 1
-    verify_equal('DesktopMode', TIMEOUT, 'Dash should not be fullsceen, but it is' ) {
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state' ) {
         @dash.DashDeclarativeView()['dashMode']
     }
     verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
