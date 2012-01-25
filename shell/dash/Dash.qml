@@ -23,6 +23,7 @@ import "../common"
 
 FocusScope {
     id: dash
+    objectName: "Dash"
     Accessible.name: "dash"
 
     LayoutMirroring.enabled: isRightToLeft()

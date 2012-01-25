@@ -42,7 +42,8 @@ module XDo
       #===Example
       #  p XDo::Mouse.position #=> [12, 326]
       def position
-        out = `#{XDOTOOL} getmouselocation`.match(/x:(\d+) y:(\d+)/)
+        return_code, out, err = XDo.execute("#{XDOTOOL} getmouselocation")
+        out.match(/x:(\d+) y:(\d+)/)
         [$1.to_i, $2.to_i]
       end
       
@@ -68,7 +69,7 @@ module XDo
         if set
           opts = []
           opts << "--sync" if sync
-          `#{XDOTOOL} mousemove #{opts.join(" ")} #{x} #{y}`
+          XDo.execute("#{XDOTOOL} mousemove #{opts.join(' ')} #{x} #{y}")
           return [x, y]
         else
           raise(ArgumentError, "speed has to be > 0 (default is 2), was #{speed}!") if speed <= 0
@@ -140,7 +141,7 @@ module XDo
         if x and y
           move(x, y, speed, set)
         end
-        `#{XDOTOOL} click #{BUTTON2XDOTOOL[button]}`
+        XDo.execute("#{XDOTOOL} click #{BUTTON2XDOTOOL[button]}")
       end
       
       #Scroll with the mouse wheel. +amount+ is the time of steps to scroll. 
@@ -188,7 +189,7 @@ module XDo
           warn("#{caller.first}: Deprecation warning: Use symbols such as :left for the button parameter.")
           button = BUTTON2XDOTOOL.keys[button - 1] #indices are 0-based
         end
-        `#{XDOTOOL} mousedown #{BUTTON2XDOTOOL[button]}`
+        XDo.execute("#{XDOTOOL} mousedown #{BUTTON2XDOTOOL[button]}")
       end
       
       #Releases a mouse button. Probably it's a good idea to call #down first?
@@ -210,7 +211,7 @@ module XDo
           warn("#{caller.first}: Deprecation warning: Use symbols such as :left for the button parameter.")
           button = BUTTON2XDOTOOL.keys[button - 1] #indices are 0-based
         end
-        `#{XDOTOOL} mouseup #{BUTTON2XDOTOOL[button]}`
+        XDo.execute("#{XDOTOOL} mouseup #{BUTTON2XDOTOOL[button]}")
       end
       
       #Executs a drag&drop operation. 
