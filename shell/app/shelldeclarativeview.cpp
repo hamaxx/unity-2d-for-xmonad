@@ -263,6 +263,7 @@ ShellDeclarativeView::toggleDash()
 {
     if (dashActive()) {
         setDashActive(false);
+        forceDeactivateWindow();
     } else {
         Q_EMIT activateHome();
     }
