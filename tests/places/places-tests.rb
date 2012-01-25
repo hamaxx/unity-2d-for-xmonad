@@ -119,4 +119,40 @@ context "Dash Tests" do
         @app_places.DashDeclarativeView()
     }
   end
+
+  # Test case objectives:
+  #   * Check that Super+s does not type s
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Verify there is no text in the search entry
+  #   * Press Super+s
+  #   * Verify there is no text in the search entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Super+s does not type s" do
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app_places.DashDeclarativeView()
+    }
+    verify_equal("", TIMEOUT, 'There should be no text in the Search Entry') {
+      @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+    }
+    XDo::Keyboard.super_s
+    verify_not(0, "Text of the Search Entry should not be an 's'") {
+      verify_equal( "s", 1 ) {
+        @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+      }
+    }
+    sleep 1
+    XDo::Keyboard.escape
+  end
 end
