@@ -83,7 +83,6 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Alt+F2 shows the Dash" do
-    # check width before proceeding
     verify_not(0, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
@@ -106,7 +105,6 @@ context "Launcher Autohide and Show Tests" do
   # References
   #   * None
   test "Pressing the bfb shows the Dash" do
-    # check width before proceeding
     verify_not(0, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
