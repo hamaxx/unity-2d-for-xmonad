@@ -157,4 +157,53 @@ context "Dash Tests" do
     xid.close!
   end
 
+  # Test case objectives:
+  #   * Check Super, Super and Alt+F1 interaction
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Verify terminal has focus
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Press Super
+  #   * Verify dash is not showing
+  #   * Verify terminal has focus
+  #   * Press Alt+F1
+  #   * Verify dash is not showing
+  #   * Verify launcher shows
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Super, Super and Alt+F1 interaction" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {
+      XDo::XWindow.active_window
+    }
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.super
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.super
+    verify_not(0, 'There should not be a Dash declarative view after pressing Super again') {
+      @app_places.DashDeclarativeView()
+    }
+    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting toggling the dash' ) {
+      XDo::XWindow.active_window
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+      @app_places.DashDeclarativeView()
+    }
+    verify_not(0, 'Launcher should be showing after pressing Alt+F1') {
+      verify_true( 1 ) {
+        @app_launcher.Unity2dPanel()['x_absolute'].to_i != 0
+      }
+    }
+    xid.close!
+  end
 end
