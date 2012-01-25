@@ -281,7 +281,12 @@ ShellDeclarativeView::onAltF1Pressed()
         Q_EMIT launcherFocusRequested();
         forceActivateWindow();
     } else {
-        forceDeactivateWindow();
+        if (dashActive()) {
+            setDashActive(false);
+            Q_EMIT launcherFocusRequested();
+        } else {
+            forceDeactivateWindow();
+        }
     }
 }
 
