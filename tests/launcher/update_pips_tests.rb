@@ -30,6 +30,7 @@ require 'timeout'
 require 'tmpdir'
 
 def open_window()
+    # FIXME : Need to choose a better test application in future?
     window_id = -1
     o =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten;
     title_string  =  (0..50).map{ o[rand(o.length)]  }.join;
@@ -150,6 +151,7 @@ context "Launcher pips tests" do
     #   * Open a xman window
     #   * Verify the launcher tile pip image matches with the expected one
     # Post-conditions
+    #   * None
     # References
     #   * lp:#883172
     test "Check pips are updated properly when the app is in current workspace" do
@@ -170,10 +172,12 @@ context "Launcher pips tests" do
     # Test case objectives:
     #   * Check pips are updated properly when the app is moved to different workspace
     # Pre-conditions
+    #   * None
     # Test steps
     #   * Move the window to a different workspace
     #   * Verify the launcher tile pip image matches with the expected one
     # Post-conditions
+    #   * None
     # References
     #   * lp:#883172
     test "Check pips are updated properly when the app is moved to different workspace" do
@@ -196,11 +200,12 @@ context "Launcher pips tests" do
     # Test case objectives:
     #   * Check launcher pips to indicate an app with two windows each on two different workspaces
     # Pre-conditions
+    #   * None
     # Test steps
     #   * Open another window along with first window from the first testcase.
     #   * Verify the launcher tile pip images matches with the expected one
     # Post-conditions
-    #   * Reset the current workspace to initial workspace
+    #   * None
     # References
     #   * lp:#883172
     test "Check launcher pips to indicate an app with two windows each on two different workspaces" do
@@ -223,11 +228,12 @@ context "Launcher pips tests" do
     # Test case objectives:
     #   * Check launcher pips to indicate an app completely belonging to different workspace
     # Pre-conditions
+    #   * None
     # Test steps
     #   * Move the second window too to a different workspace
     #   * Verify the launcher tile pip image matches with the expected one
     # Post-conditions
-    #   * Reset the current workspace to initial workspace
+    #   * None
     # References
     #   * lp:#883172
     test "Check launcher pips to indicate an app completely belonging to different workspace" do
@@ -253,11 +259,12 @@ context "Launcher pips tests" do
     # Test case objectives:
     #   * Check launcher pips when an app window is closed.
     # Pre-conditions
+    #   * None
     # Test steps
     #   * Close one of the app windows and move the last window back to its original workspace
     #   * Verify the launcher tile pip image matches with the expected one
     # Post-conditions
-    #   * Reset the current workspace to initial workspace
+    #   * None
     # References
     #   * lp:#883172
     test "Check launcher pips when an app window is closed" do
@@ -283,11 +290,12 @@ context "Launcher pips tests" do
     # Test case objectives:
     #   * Check launcher pips to indicate when the user workspace changed
     # Pre-conditions
+    #   * None
     # Test steps
     #   * Change the user workspace to other than app workspace
     #   * Verify that the pips are updated properly
     # Post-conditions
-    #   * Reset the current workspace to initial workspace
+    #   * None
     # References
     #   * lp:#883172
     test "Check launcher pips to indicate when the user workspace changed" do
