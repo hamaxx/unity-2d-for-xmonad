@@ -110,11 +110,11 @@ context "Launcher Always Visible Behaviour Tests" do
   # References
   #   * None
   test "Launcher does not push itself" do
-      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 2"
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
       verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop, should be visible' ) {
         @app.Launcher()['x_absolute'].to_i
       }
-      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 0"
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
       verify_not(0, 'Launcher x should be 0 after setting the always visible mode') {
         verify_true( 1 ) {
           @app.Launcher()['x_absolute'].to_i != 0
