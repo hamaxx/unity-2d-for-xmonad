@@ -25,9 +25,7 @@ require 'xdo/keyboard'
 require 'xdo/mouse'
 
 ############################# Test Suite #############################
-context "Dash Lense Filter Results renderer tests" do
-  pwd = File.expand_path(File.dirname(__FILE__)) + '/'
-
+context "Dash - Filter Results renderer tests" do
   # Run once at the beginning of this test suite
   startup do
     system 'killall unity-2d-shell > /dev/null 2>&1'
@@ -49,8 +47,6 @@ context "Dash Lense Filter Results renderer tests" do
 
   # Run after each test case completes
   teardown do
-    #@app.close
-    #Need to kill Launcher as it does not shutdown when politely asked
     system "pkill -nf unity-2d-shell"
   end
 
@@ -58,14 +54,14 @@ context "Dash Lense Filter Results renderer tests" do
   # Test cases
 
   # Test case objectives:
-  #   * Check Filter results list view having renderer as filter-checkoption is displayed with two columns
+  #   * Verify renderer filter-check-option is displayed with two columns
   # Pre-conditions
   #   * None
   # Test steps
   #   * Open Dash
-  #   * Goto Apps Lense
+  #   * Goto Applications Lens
   #   * Open Filter Results
-  #   * Check that filter-checkoption renderer is having two columns
+  #   * verify that filter-checkoption renderer is having two columns
   # Post-conditions
   #   * None
   # References
@@ -75,42 +71,38 @@ context "Dash Lense Filter Results renderer tests" do
     verify (TIMEOUT) { @app.Dash() }
 
     button = ""
-    verify( TIMEOUT, 'Could not find AppLensButton' ) {
+    verify( TIMEOUT, 'Could not find Applications Lens. Did you install it?' ) {
         button = @app.Dash().LensBar().LensButton( :name => 'Applications' )
     }
 
-    XDo::Mouse.move(button['x_absolute'].to_i + 1, button['y_absolute'].to_i + 1, 0, true)
-    XDo::Mouse.click(nil, nil, :left)
+    button.tap
 
-    button = ""
     verify( TIMEOUT, 'Could not find filterResults button' ) {
         button = @app.Dash().FilterPane().AbstractButton( :name => 'filterResults' )
     }
 
-    XDo::Mouse.move(button['x_absolute'].to_i + 1, button['y_absolute'].to_i + 1, 0, true)
-    XDo::Mouse.click(nil, nil, :left)
-
+    button.tap
 
     loader = ""
     verify( TIMEOUT, 'Could not find FilterCheckOption Loader' ) {
         loader = @app.Dash().FilterPane().FilterLoader(:name => 'filter-checkoption').QDeclarativeLoader( :name => 'filter-checkoption' )
     }
 
-    verify( TIMEOUT, 'FilterCheckOption don\'t have two columns' ) {
-        loader.GridViewWithSpacing()['columns'] == '2'
+    verify_equal(2, TIMEOUT, 'FilterCheckOption don\'t have two columns' ) {
+        loader.GridViewWithSpacing()['columns'].to_i
     }
 
   end
 
   # Test case objectives:
-  #   * Check Filter results list view having renderer as filter-checkoption-compact is displayed with three columns
+  #   * Verify renderer filter-check-option-compact is displayed with three columns
   # Pre-conditions
   #   * None
   # Test steps
   #   * Open Dash
-  #   * Goto Music Lense
+  #   * Goto Music Lens
   #   * Open Filter-Results
-  #   * Check that filter-checkoption-compact renderer is having three columns
+  #   * verify that filter-checkoption-compact renderer is having three columns
   # Post-conditions
   #   * None
   # References
@@ -120,29 +112,25 @@ context "Dash Lense Filter Results renderer tests" do
     verify (TIMEOUT) { @app.Dash() }
 
     button = ""
-    verify( TIMEOUT, 'Could not find AppLensButton' ) {
+    verify( TIMEOUT, 'Could not find Music Lens. Did you install it?' ) {
         button = @app.Dash().LensBar().LensButton( :name => 'Music' )
     }
 
-    XDo::Mouse.move(button['x_absolute'].to_i + 1, button['y_absolute'].to_i + 1, 0, true)
-    XDo::Mouse.click(nil, nil, :left)
+    button.tap
 
-    button = ""
     verify( TIMEOUT, 'Could not find filterResults button' ) {
         button = @app.Dash().FilterPane().AbstractButton( :name => 'filterResults' )
     }
 
-    XDo::Mouse.move(button['x_absolute'].to_i + 1, button['y_absolute'].to_i + 1, 0, true)
-    XDo::Mouse.click(nil, nil, :left)
-
+    button.tap
 
     loader = ""
-    verify( TIMEOUT, 'Could not find FilterCheckOption Loader' ) {
+    verify( TIMEOUT, 'Could not find FilterCheckOptionCompact Loader' ) {
         loader = @app.Dash().FilterPane().FilterLoader(:name => 'filter-checkoption-compact').QDeclarativeLoader( :name => 'filter-checkoption-compact' )
     }
 
-    verify( TIMEOUT, 'FilterCheckOptionCompact don\'t have three columns' ) {
-        loader.GridViewWithSpacing()['columns'] == '3'
+    verify_equal(3, TIMEOUT, 'FilterCheckOptionCompact don\'t have three columns' ) {
+        loader.GridViewWithSpacing()['columns'].to_i
     }
     end
 end
