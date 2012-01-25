@@ -95,4 +95,30 @@ context "Launcher Always Visible Behaviour Tests" do
       }
       xid.close!
   end
+
+  # Test case objectives:
+  #   * Check the Launcher does not push itself
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Set the visibility behaviour to intellihide
+  #   * Verify launcher x is 0
+  #   * Set the visibility behaviour to always visible
+  #   * Verify launcher x is not different than 0 for 1 continued second
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Launcher does not push itself" do
+      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 2"
+      verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop, should be visible' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      system "gsettings set com.canonical.Unity2d.Launcher hide-mode 0"
+      verify_not(0, 'Launcher x should be 0 after setting the always visible mode') {
+        verify_true( 1 ) {
+          @app.Launcher()['x_absolute'].to_i != 0
+        }
+      }
+  end
 end
