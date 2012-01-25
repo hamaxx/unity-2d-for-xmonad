@@ -28,6 +28,7 @@
 #include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
+#include <strutmanager.h>
 
 // Qt
 #include <QApplication>
@@ -114,7 +115,23 @@ void
 ShellDeclarativeView::updateShellPosition(int screen)
 {
     if (screen == QX11Info::appScreen()) {
-        move(QApplication::desktop()->availableGeometry(screen).topLeft());
+        QPoint posToMove = QApplication::desktop()->availableGeometry(screen).topLeft();
+
+        StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
+        if (strutManager && strutManager->enabled()) {
+            // Do not push ourselves
+            switch (strutManager->edge()) {
+                case Unity2dPanel::TopEdge:
+                    posToMove.ry() -= strutManager->realHeight();
+                break;
+
+                case Unity2dPanel::LeftEdge:
+                    posToMove.rx() -= strutManager->realWidth();
+                break;
+            }
+        }
+
+        move(posToMove);
     }
 }
 
