@@ -33,11 +33,11 @@ SpreadView::SpreadView() : Unity2DDeclarativeView()
 void SpreadView::fitToAvailableSpace(int screen)
 {
     //QDesktopWidget *desktop = QApplication::desktop();
-	//QRect geometry = desktop->availableGeometry(this);
-	//geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
-	setGeometry(QRect(64, 24, 1024, 800));
-	//setFixedSize(geometry.size());
-	setFixedSize(QSize(1024, 800));
+    //QRect geometry = desktop->availableGeometry(this);
+    //geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
+    setGeometry(QRect(64, 24, 1024, 800));
+    //setFixedSize(geometry.size());
+    setFixedSize(QSize(1024 - 64, 768 - 24));
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did

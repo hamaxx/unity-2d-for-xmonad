@@ -34,14 +34,6 @@ FocusScope {
 
     signal clicked
 
-    GnomeBackground {
-        anchors.fill: parent
-        overlay_color: "black"
-        overlay_alpha: 0
-
-        clip: true
-        cached: false
-    }
 
     Windows {
         state: workspace.state == "screen" ? "screen" : "spread"
@@ -65,9 +57,9 @@ FocusScope {
             name: "unzoomed"
             PropertyChanges {
                 target: workspace
-                scale: unzoomedScale
-                x: unzoomedX
-                y: unzoomedY
+                scale: 0//unzoomedScale
+                x: 0//unzoomedX
+                y: 0//unzoomedY
                 z: 0
             }
         },
@@ -75,9 +67,9 @@ FocusScope {
             name: "zoomed"
             PropertyChanges {
                 target: workspace
-                scale: zoomedScale
-                x: zoomedX
-                y: zoomedY
+                scale: 1.0//zoomedScale
+                x: 0//zoomedX
+                y: 0//zoomedY
                 z: 2
             }
         },
@@ -96,10 +88,12 @@ FocusScope {
     transitions: [
         Transition {
             NumberAnimation {
+                /*
                 target: workspace
                 properties: "x,y,scale"
                 duration: Utils.transitionDuration
                 easing.type: Easing.InOutQuad
+                */
             }
         },
         Transition {
@@ -108,6 +102,7 @@ FocusScope {
                 /* When going to default state put the workspace underneath the
                    workspace in zoomed state but not on the same plane as the
                    workspaces also in the default state until the end of the transition. */
+                /*
                 PropertyAction { property: "z"; value: 1 }
                 NumberAnimation {
                     target: workspace
@@ -116,6 +111,7 @@ FocusScope {
                     easing.type: Easing.InOutQuad
                 }
                 PropertyAction { property: "z" }
+                */
             }
         }
     ]

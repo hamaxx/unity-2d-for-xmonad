@@ -96,6 +96,8 @@ Item {
 
         border.width: 1
         border.color: "black"
+        color: "black"
+
 
         visible: (shot.status == Image.Error)
 
@@ -108,8 +110,8 @@ Item {
 
             /* Please note that sourceSize is necessary, otherwise the
                IconImageProvider will crash when loading the icon */
-            height: 48
-            width: 48
+            height: 64
+            width: 64
             sourceSize { width: width; height: height }
         }
     }
@@ -153,7 +155,7 @@ Item {
                opaque instead */
             color: "#99000000"
             radius: 3
-            visible: window.isSelected
+            visible: true//always show lable
 
             Text {
                 id: label
