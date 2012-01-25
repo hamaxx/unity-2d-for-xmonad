@@ -97,7 +97,7 @@ context "Sizing tests" do
     verify_equal( 0, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
       @app.Unity2dPanel()['y_absolute'].to_i
     }
-    verify_equal( old_height + PANEL_HEIGHT, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
+    verify_equal( old_height + PANEL_HEIGHT, TIMEOUT, "Launcher did not grow vertically when killing the panel" ) {
       @app.Unity2dPanel()['height'].to_i
     }
   end
