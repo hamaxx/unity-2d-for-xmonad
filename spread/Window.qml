@@ -55,6 +55,27 @@ Item {
 
     property bool enableBehaviors: false
 
+    Rectangle {
+        id: border
+        width: parent.width + 4
+        height: parent.height + 4
+        anchors.centerIn: parent
+
+        color: "#666666"
+        radius: 3
+        visible: true
+    }
+    Rectangle {
+        id: glow
+        width: parent.width + 4
+        height: parent.height + 4
+        anchors.centerIn: parent
+
+        color: "#dddddd"
+        radius: 3
+        visible: window.isSelected
+    }
+
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
        Please note that the screenshot is taken at the moment the source property is
@@ -96,7 +117,7 @@ Item {
 
         border.width: 1
         border.color: "black"
-        color: "black"
+        color: "#333"
 
 
         visible: (shot.status == Image.Error)
@@ -155,7 +176,7 @@ Item {
                opaque instead */
             color: "#99000000"
             radius: 3
-            visible: true//always show lable
+            visible: true //always show label
 
             Text {
                 id: label
