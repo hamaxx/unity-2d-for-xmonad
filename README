@@ -2,9 +2,11 @@ Changes from unity-2d
 ============================
 
 - Display application name and window title in panel
-- Load panel only on primary screen
-- Don't filter apps for lagacy tray
 - Move launcher under panel so it doesn't cover it
+- Load panel only on primary screen
+- Don't filter apps in lagacy tray
+- Changed spread(aplication switcher) so it's useful in xmonad.
+- Removed animations in spread
 
 Compiling unity-2d
 ==================
