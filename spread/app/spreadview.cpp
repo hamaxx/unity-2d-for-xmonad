@@ -72,7 +72,7 @@ void SpreadView::focusInEvent(QFocusEvent * event)
     this->viewport()->grabKeyboard();
     this->viewport()->grabMouse();
 
-    QDeclarativeView::focusInEvent(event);
+    Unity2DDeclarativeView::focusInEvent(event);
 }
 
 /* This is not strictly necessary as X11 will cancel any grabs when the
@@ -85,7 +85,7 @@ void SpreadView::focusOutEvent(QFocusEvent * event)
     this->viewport()->releaseMouse();
     this->viewport()->removeEventFilter(this);
 
-    QDeclarativeView::focusOutEvent(event);
+    Unity2DDeclarativeView::focusOutEvent(event);
 }
 
 bool SpreadView::eventFilter(QObject *obj, QEvent *event) {

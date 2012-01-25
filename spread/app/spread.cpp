@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("control", &control);
 
     /* Load the QML UI, focus and show the window */
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Workspaces.qml"));

@@ -71,8 +71,10 @@ int main(int argc, char *argv[])
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");
     client.connectToSessionManager();
 
-    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+    qmlRegisterUncreatableType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView",
+                                                     "The view can only be created from c++");
     ShellDeclarativeView view;
+
     view.setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view.setUseOpenGL(true);
@@ -93,8 +95,7 @@ int main(int argc, char *argv[])
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     /* Load the QML UI, focus and show the window */
-    view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
-    view.rootContext()->setContextProperty("declarativeView", &view);
+    view.engine()->rootContext()->setContextProperty("declarativeView", &view);
     view.setSource(rootFileUrl);
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched

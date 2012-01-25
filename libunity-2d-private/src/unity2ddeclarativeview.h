@@ -17,9 +17,12 @@
 #ifndef UNITY2DDECLARATIVEVIEW_H
 #define UNITY2DDECLARATIVEVIEW_H
 
-#include <QDeclarativeView>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QDeclarativeItem>
+#include <QGraphicsView>
 
-class Unity2DDeclarativeView : public QDeclarativeView
+class Unity2DDeclarativeView : public QGraphicsView
 {
     Q_OBJECT
 
@@ -39,12 +42,17 @@ public:
     // setters
     void setUseOpenGL(bool);
     void setTransparentBackground(bool);
+    void setSource(const QUrl& source);
+
+    static QDeclarativeEngine *engine();
+    QDeclarativeContext* rootContext() const;
 
 Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
     void shown();
+    void sceneResized(QSize size);
 
 protected:
     void setupViewport();
@@ -57,6 +65,7 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void onActiveWorkspaceChanged();
+    void resizeToRootObject();
 
 private:
     void saveActiveWindow();
@@ -65,6 +74,9 @@ private:
     bool m_useOpenGL;
     bool m_transparentBackground;
     WId m_last_focused_window;
+
+    QGraphicsScene m_scene;
+    QDeclarativeItem* m_rootItem;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)
