@@ -146,7 +146,7 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-      verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+    verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
       @app_places.DashDeclarativeView()
     }
     verify_not(0, 'Launcher should not hide after pressing Alt+F1') {
