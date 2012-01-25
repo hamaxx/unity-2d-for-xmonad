@@ -138,13 +138,14 @@ Rectangle {
             /* Setup application pre-filtering and initially zoomed desktop, if any
                were specified as arguments */
             applicationFilter = applicationDesktopFile
-            zoomedWorkspace = screen.workspaces.current
+            //zoomedWorkspace = screen.workspaces.current
+            zoomedWorkspace = 0 //all workspaces are the same so show one
             show()
         }
 
         onShowAllWorkspaces: {
             applicationFilter = applicationDesktopFile
-            zoomedWorkspace = -1
+            zoomedWorkspace = 0 //all workspaces are the same so show one
             show()
         }
 
