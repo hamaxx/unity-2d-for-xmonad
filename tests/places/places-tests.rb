@@ -142,7 +142,9 @@ context "Dash Tests" do
   #   * None
   # References
   #   * None
-  test "Super+s does not type s" do
+  # FIXME This does not work reliably because the spread clears the search entry
+  #       and thus sometimes we ask for the contents too late
+  xtest "Super+s does not type s" do
     verify_not(0, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
