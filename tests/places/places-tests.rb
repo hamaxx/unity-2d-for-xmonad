@@ -38,6 +38,9 @@ context "Dash Tests" do
     $SUT.execute_shell_command 'killall unity-2d-launcher'
     $SUT.execute_shell_command 'killall unity-2d-launcher'
 
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
@@ -57,14 +60,18 @@ context "Dash Tests" do
                               :arguments => "-testability", 
                               :sleeptime => 2 )
 
+    @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
+                            :arguments => "-testability", 
+                            :sleeptime => 2 )
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
     $SUT.execute_shell_command 'pkill -nf unity-2d-places'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
   end
 
   #####################################################################################
@@ -152,7 +159,5 @@ context "Dash Tests" do
         @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
       }
     }
-    sleep 1
-    XDo::Keyboard.escape
   end
 end
