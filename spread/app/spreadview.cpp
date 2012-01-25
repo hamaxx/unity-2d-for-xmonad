@@ -25,6 +25,8 @@
 
 #include "launcherclient.h"
 
+#include <debug_p.h>
+
 SpreadView::SpreadView() : Unity2DDeclarativeView()
 {
 }
@@ -35,9 +37,9 @@ void SpreadView::fitToAvailableSpace(int screen)
     //QDesktopWidget *desktop = QApplication::desktop();
     //QRect geometry = desktop->availableGeometry(this);
     //geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
-    setGeometry(QRect(64, 24, 1024, 800));
+    setGeometry(QRect(LauncherClient::MaximumWidth, 24, 1024, 800));
     //setFixedSize(geometry.size());
-    setFixedSize(QSize(1024 - 64, 768 - 24));
+    setFixedSize(QSize(1024 - LauncherClient::MaximumWidth, 768 - 24));
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did
@@ -86,8 +88,10 @@ void SpreadView::focusOutEvent(QFocusEvent * event)
 }
 
 bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
-    if (event->type() == QEvent::MouseButtonPress) {
-        if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
+    if (event->type() == QEvent::MouseMove) {
+        QPoint pos = ((QMouseEvent*)event)->pos();
+
+        if (!this->viewport()->geometry().contains(pos) && pos.x() > 0) {
             Q_EMIT outsideClick();
         }
     }
