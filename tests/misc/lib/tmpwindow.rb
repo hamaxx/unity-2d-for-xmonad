@@ -42,16 +42,20 @@ class TmpWindow
   #  TmpWindow.open_window_at(200, 300)
   def self.open_window_at(x=100,y=100)
     window_id = -1
+    # Generate a temporary directory (used to generate unique window title to help Xdo get window ID)
+    t = Time.now.strftime("%Y%m%d")
+    path = "/tmp/#{t}-#{$$}-#{rand(0x100000000).to_s(36)}"
+    $SUT.execute_shell_command('mkdir -p ' + path)
     # Open Terminal with position (x,y)
-    Dir.mktmpdir {|dir| # use this to generate unique window title to help Xdo get window ID
-      system "gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{dir} &"
-      Timeout.timeout(30){ window_id = XDo::XWindow.wait_for_window(dir)}
-    }
+    $SUT.execute_shell_command("gnome-terminal --geometry=100x30+#{x}+#{y} --working-directory=#{path}", :detached => true)
+    Timeout.timeout(30){ window_id = XDo::XWindow.wait_for_window(path)}
     Kernel.raise(SystemCallError, "Unable to open gnome-terminal") if window_id == -1
     xid = XDo::XWindow.new(window_id)
     # create list of windows opened
     @xid_list = [] if @xid_list == nil
     @xid_list << xid
+    # remove temporary directory
+    $SUT.execute_shell_command('rmdir ' + path)
     xid
   end
 
