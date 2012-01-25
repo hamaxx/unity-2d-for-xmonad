@@ -29,7 +29,7 @@ require 'xdo/mouse'
 require 'tmpwindow'
 
 ############################# Test Suite #############################
-context "Launcher Autohide and Show Tests" do
+context "Dash Tests" do
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-places'
