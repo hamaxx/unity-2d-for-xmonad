@@ -171,7 +171,7 @@ context "Dash Tests" do
   #   * Verify terminal has focus
   #   * Press Alt+F1
   #   * Verify dash is not showing
-  #   * Verify launcher shows
+  #   * Verify launcher does not hide
   # Post-conditions
   #   * None
   # References
