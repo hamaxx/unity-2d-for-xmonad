@@ -94,7 +94,11 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
         if (!this->viewport()->geometry().contains(pos) && pos.x() > 0) {
             Q_EMIT outsideClick();
         }
-    }
+    } else if (event->type() == QEvent::MouseButtonPress) {
+		if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
+			Q_EMIT outsideClick();
+		}
+	}
 
     return false;
 }
