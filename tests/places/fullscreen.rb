@@ -80,8 +80,8 @@ context "Dash fullscreen tests" do
 
   # Run after each test case completes
   teardown do
-    %x{dconf write #{DASH_FULLSCREEN_KEY} #{@fullscreen_old}}
-    %x{dconf write #{DASH_FORMFACTOR_KEY} #{@formfactor_old}}
+    %x{dconf write #{DASH_FULLSCREEN_KEY} #{'"'}#{@fullscreen_old}#{'"'}}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'"'}#{@formfactor_old}#{'"'}}
 
     system "pkill -nf unity-2d-panel"
     system "pkill -nf unity-2d-places"
@@ -99,7 +99,7 @@ context "Dash fullscreen tests" do
 
   test "Dash fullscreens on dconf key change" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
-    %x{dconf write #{DASH_FORMFACTOR_KEY} "desktop"}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
 
@@ -122,7 +122,7 @@ context "Dash fullscreen tests" do
 
   test "Dash reacts correctly to panel buttons" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
-    %x{dconf write #{DASH_FORMFACTOR_KEY} "desktop"}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
@@ -160,7 +160,7 @@ context "Dash fullscreen tests" do
 
   test "Dash fullscreen initially" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} true}
-    %x{dconf write #{DASH_FORMFACTOR_KEY} "desktop"}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
 
@@ -174,7 +174,7 @@ context "Dash fullscreen tests" do
 
   test "Dash always fullscreen if not desktop form factor" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
-    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'"tv"'}}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"tv\"'}}
     XDo::Keyboard.super
     sleep 1
 
