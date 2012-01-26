@@ -30,7 +30,6 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Launcher Always Visible Behaviour Tests" do
-  WIDTH = 65 #launcher bar width
   hide_mode = 0
 
   # Run once at the beginning of this test suite
@@ -88,11 +87,37 @@ context "Launcher Always Visible Behaviour Tests" do
   #   * None
   test "Launcher pushes windows" do
       $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
-      xid = TmpWindow.open_window_at(WIDTH / 2, 10)
+      xid = TmpWindow.open_window_at(LAUNCHER_WIDTH / 2, 10)
       $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
-      verify_equal( WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
+      verify_equal( LAUNCHER_WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
         xid.position[0]
       }
       xid.close!
+  end
+
+  # Test case objectives:
+  #   * Check the Launcher does not push itself
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Set the visibility behaviour to intellihide
+  #   * Verify launcher x is 0
+  #   * Set the visibility behaviour to always visible
+  #   * Verify launcher x is not different than 0 for 1 continued second
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Launcher does not push itself" do
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
+      verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop, should be visible' ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
+      verify_not(0, 'Launcher x should be 0 after setting the always visible mode') {
+        verify_true( 1 ) {
+          @app.Launcher()['x_absolute'].to_i != 0
+        }
+      }
   end
 end
