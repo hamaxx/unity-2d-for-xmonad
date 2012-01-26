@@ -87,7 +87,7 @@ context "Dash fullscreen tests" do
   def dash_always_fullscreen
     out = %x{xdotool getdisplaygeometry}
     width, height = out.split.collect { |coord| coord.to_i }
-    return width < DASH_MIN_SCREEN_WIDTH || height < DASH_MIN_SCREEN_HEIGHT
+    return width < DASH_MIN_SCREEN_WIDTH && height < DASH_MIN_SCREEN_HEIGHT
   end
 
   #####################################################################################
