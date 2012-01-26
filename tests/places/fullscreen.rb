@@ -93,59 +93,59 @@ context "Dash fullscreen tests" do
   #####################################################################################
   # Test cases
 
-#  test "Dash fullscreens on dconf key change" do
-#    %x{dconf write #{DASH_FULLSCREEN_KEY} false}
-#    XDo::Keyboard.super
-#    sleep 1
+  test "Dash fullscreens on dconf key change" do
+    %x{dconf write #{DASH_FULLSCREEN_KEY} false}
+    XDo::Keyboard.super
+    sleep 1
 
-#    verify_equal('true', TIMEOUT, 'Dash did not appear') {
-#        @dash.DashDeclarativeView()['active']
-#    }
-#    verify_equal('DesktopMode', TIMEOUT, 'Dash is fullscreen but should not be') {
-#        @dash.DashDeclarativeView()['dashMode']
-#    }
+    verify_equal('true', TIMEOUT, 'Dash did not appear') {
+        @dash.DashDeclarativeView()['active']
+    }
+    verify_equal('DesktopMode', TIMEOUT, 'Dash is fullscreen but should not be') {
+        @dash.DashDeclarativeView()['dashMode']
+    }
 
-#    %x{dconf write #{DASH_FULLSCREEN_KEY} true}
-#    sleep 1
+    %x{dconf write #{DASH_FULLSCREEN_KEY} true}
+    sleep 1
 
-#    verify_equal('FullScreenMode', TIMEOUT, 'Dash is not fullscreen but should be') {
-#        @dash.DashDeclarativeView()['dashMode']
-#    }
-#  end
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash is not fullscreen but should be') {
+        @dash.DashDeclarativeView()['dashMode']
+    }
+  end
 
-#  test "Dash reacts correctly to panel buttons" do
-#    oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}
+  test "Dash reacts correctly to panel buttons" do
+    oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}
 
-#    %x{dconf write #{DASH_FULLSCREEN_KEY} false}
-#    XDo::Keyboard.super
-#    sleep 1
-#    verify_equal('true', TIMEOUT, 'Dash did not appear') {
-#        @dash.DashDeclarativeView()['active']
-#    }
+    %x{dconf write #{DASH_FULLSCREEN_KEY} false}
+    XDo::Keyboard.super
+    sleep 1
+    verify_equal('true', TIMEOUT, 'Dash did not appear') {
+        @dash.DashDeclarativeView()['active']
+    }
 
-#    maxbutton = nil
-#    verify(TIMEOUT, 'The "maximize" button did not appear when the dash was visible' ) {
-#        maxbutton = @panel.AppNameApplet().children( :type => 'QAbstractButton' )[2]
-#    }
+    maxbutton = nil
+    verify(TIMEOUT, 'The "maximize" button did not appear when the dash was visible' ) {
+        maxbutton = @panel.AppNameApplet().children( :type => 'QAbstractButton' )[2]
+    }
 
-#    maxbutton.tap if maxbutton
-#    sleep 1
-#    verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
-#        @dash.DashDeclarativeView()['dashMode']
-#    }
-#    verify_equal('true', TIMEOUT, 'Dash fullscreen key was not set') {
-#        %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
-#    }
+    maxbutton.tap if maxbutton
+    sleep 1
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
+        @dash.DashDeclarativeView()['dashMode']
+    }
+    verify_equal('true', TIMEOUT, 'Dash fullscreen key was not set') {
+        %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
+    }
 
-#    maxbutton.tap if maxbutton
-#    sleep 1
-#    verify_equal('DesktopMode', TIMEOUT, 'Dash should not be fullsceen, but it is' ) {
-#        @dash.DashDeclarativeView()['dashMode']
-#    }
-#    verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
-#        %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
-#    }
-#  end
+    maxbutton.tap if maxbutton
+    sleep 1
+    verify_equal('DesktopMode', TIMEOUT, 'Dash should not be fullsceen, but it is' ) {
+        @dash.DashDeclarativeView()['dashMode']
+    }
+    verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
+        %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
+    }
+  end
 
   test "Dash fullscreen initially" do
     # The initial startup mode ignores the dconf key and only decides based on the screen
