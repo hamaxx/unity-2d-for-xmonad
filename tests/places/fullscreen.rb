@@ -155,20 +155,14 @@ context "Dash fullscreen tests" do
   end
 
   test "Dash fullscreen initially" do
-    # The initial startup mode ignores the dconf key and only decides based on the screen
-    # resolution. It's a bug and will be fixed, but as long as it's there let's test for it.
-
-    expect = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
-    initial = dash_always_fullscreen ? 'false' : 'true'
-    %x{dconf write #{DASH_FULLSCREEN_KEY} #{initial}}
+    %x{dconf write #{DASH_FULLSCREEN_KEY} true}
     XDo::Keyboard.super
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
         @dash.DashDeclarativeView()['active']
     }
-
-    verify_equal(expect, TIMEOUT, 'Dash initial state is wrong') {
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
         @dash.DashDeclarativeView()['dashMode']
     }
   end
