@@ -169,6 +169,7 @@ context "Dash Tests" do
   #   * Press Super
   #   * Verify dash is not showing
   #   * Verify terminal has focus
+  #   * Verify launcher is hidden
   #   * Press Alt+F1
   #   * Verify dash is not showing
   #   * Verify launcher shows
