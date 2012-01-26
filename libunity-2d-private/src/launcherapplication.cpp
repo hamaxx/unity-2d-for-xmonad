@@ -651,9 +651,13 @@ LauncherApplication::windowCountOnCurrentWorkspace()
             }
         }
 
-        WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
-        if (workspace == current) {
+        if (wnck_window_is_pinned(wnck_window)) {
             windowCount++;
+        } else {
+            WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
+            if (workspace == current) {
+                windowCount++;
+            }
         }
     }
     return windowCount;
