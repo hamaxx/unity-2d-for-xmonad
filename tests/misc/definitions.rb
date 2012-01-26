@@ -1,0 +1,2 @@
+
+LAUNCHER_WIDTH = 65

@@ -27,10 +27,10 @@ require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
 require 'tmpwindow'
+require '../misc/definitions.rb'
 
 ############################# Test Suite #############################
 context "Launcher Always Visible Behaviour Tests" do
-  WIDTH = 65 #launcher bar width
   hide_mode = 0
 
   # Run once at the beginning of this test suite
@@ -88,9 +88,9 @@ context "Launcher Always Visible Behaviour Tests" do
   #   * None
   test "Launcher pushes windows" do
       $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
-      xid = TmpWindow.open_window_at(WIDTH / 2, 10)
+      xid = TmpWindow.open_window_at(LAUNCHER_WIDTH / 2, 10)
       $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
-      verify_equal( WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
+      verify_equal( LAUNCHER_WIDTH + 1, TIMEOUT, 'Window was not pushed by setting Launcher to always visible' ) {
         xid.position[0]
       }
       xid.close!
