@@ -38,7 +38,7 @@ def open_window()
         @@title_string = title_string
     end
     # Open xman with random title
-    $SUT.execute_shell_command "xman -geometry 300x90+100+100 -title #{title_string} &"
+    $SUT.execute_shell_command("xman -geometry 300x90+100+100 -title #{title_string}", :detached => true)
     Timeout.timeout(30){ window_id = XDo::XWindow.wait_for_window(title_string)}
     Kernel.raise(SystemCallError, "Unable to open xman") if window_id == -1
     return XDo::XWindow.new(window_id)
@@ -92,9 +92,9 @@ end
 context "Launcher pips tests" do
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher > /dev/null 2>&1'
-    $SUT.execute_shell_command 'killall unity-2d-shell > /dev/null 2>&1'
-    $SUT.execute_shell_command 'killall unity-2d-shell > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -107,7 +107,7 @@ context "Launcher pips tests" do
         @reset_num_workspaces = true
     end
 
-    $SUT.execute_shell_command 'killall xman > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall xman'
     @@current_workspace = XDo::XWindow.desktop
     @@xid_list=Array.new
 
@@ -124,7 +124,7 @@ context "Launcher pips tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = @sut.run( :name => UNITY_2D_SHELL,
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
     @@title_string = ""
