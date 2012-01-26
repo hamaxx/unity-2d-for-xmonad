@@ -30,7 +30,6 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Dash Tests" do
-    WIDTH = 65
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-places'
@@ -150,7 +149,7 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     verify_not(0, 'Launcher should not hide after pressing Alt+F1') {
-      verify_equal( -WIDTH, 2 ) {
+      verify_equal( -LAUNCHER_WIDTH, 2 ) {
         @app_launcher.Unity2dPanel()['x_absolute'].to_i
       }
     }
@@ -196,7 +195,7 @@ context "Dash Tests" do
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after toggling the dash' ) {
       XDo::XWindow.active_window
     }
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher should be hiding after toggling the dash' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher should be hiding after toggling the dash' ) {
       @app_launcher.Unity2dPanel()['x_absolute'].to_i
     }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
