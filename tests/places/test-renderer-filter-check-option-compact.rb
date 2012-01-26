@@ -46,7 +46,7 @@ context "Dash - Filter Results renderer tests" do
 
   # Run after each test case completes
   teardown do
-    system "pkill -nf unity-2d-shell"
+    $SUT.execute_shell_command "pkill -nf unity-2d-shell"
   end
 
   #####################################################################################
