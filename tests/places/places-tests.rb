@@ -84,7 +84,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Alt+F2 shows the Dash" do
-    verify_not(0, 'There should not be a Dash declarative view on startup') {
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
@@ -106,7 +106,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Pressing the bfb shows the Dash" do
-    verify_not(0, 'There should not be a Dash declarative view on startup') {
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     bfb = @app_launcher.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
@@ -138,7 +138,7 @@ context "Dash Tests" do
   #   * None
   test "Super and Alt+F1 interaction" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_not(0, 'There should not be a Dash declarative view on startup') {
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.super
@@ -146,7 +146,7 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+    verify_not(2, 'There should not be a Dash declarative view after pressing Alt+F1') {
       @app_places.DashDeclarativeView()
     }
     verify_not(0, 'Launcher should not hide after pressing Alt+F1') {
@@ -171,7 +171,7 @@ context "Dash Tests" do
   #   * Verify terminal has focus
   #   * Press Alt+F1
   #   * Verify dash is not showing
-  #   * Verify launcher does not hide
+  #   * Verify launcher shows
   # Post-conditions
   #   * None
   # References
@@ -181,7 +181,7 @@ context "Dash Tests" do
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {
       XDo::XWindow.active_window
     }
-    verify_not(0, 'There should not be a Dash declarative view on startup') {
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.super
@@ -189,20 +189,21 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.super
-    verify_not(0, 'There should not be a Dash declarative view after pressing Super again') {
+    verify_not(2, 'There should not be a Dash declarative view after pressing Super again') {
       @app_places.DashDeclarativeView()
     }
-    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting toggling the dash' ) {
+    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after toggling the dash' ) {
       XDo::XWindow.active_window
     }
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher should be hiding after toggling the dash' ) {
+      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+    }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_not(0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+    verify_not(2, 'There should not be a Dash declarative view after pressing Alt+F1') {
       @app_places.DashDeclarativeView()
     }
-    verify_not(0, 'Launcher should be showing after pressing Alt+F1') {
-      verify_true( 1 ) {
-        @app_launcher.Unity2dPanel()['x_absolute'].to_i != 0
-      }
+    verify_equal( 0, TIMEOUT, 'Launcher should be showing after pressing Alt+F1' ) {
+      @app_launcher.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
   end
