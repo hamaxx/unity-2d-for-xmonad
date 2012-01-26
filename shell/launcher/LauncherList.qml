@@ -289,7 +289,8 @@ AutoScrollingListView {
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: false }
         }
 
-        onRunningChanged: { setIconGeometry()
+        onRunningChanged: {
+            setIconGeometry()
             item.connectWindowSignals()
         }
         /* Note: this doesn’t work as expected for the first favorite

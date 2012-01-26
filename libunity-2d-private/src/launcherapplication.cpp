@@ -504,12 +504,12 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
     }
 }
 
-void LauncherApplication::connectWindowSignals()
+void
+LauncherApplication::connectWindowSignals()
 {
     if (m_application == NULL || m_application->running() == false) {
         return;
     }
-
 
     QScopedPointer<BamfUintList> xids(m_application->xids());
     int size = xids->size();
