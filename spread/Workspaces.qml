@@ -97,13 +97,12 @@ Rectangle {
     }
 
     function cancelAndExit() {
-		spreadView.hide()
-		allWindows.unload()
-		zoomedWorkspace = 0
+        spreadView.hide()
+        //allWindows.unload() //caused segfault :(
+        zoomedWorkspace = 0
     }
 
     function activateWindow(windowInfo) {
-        screen.workspaces.changeCurrent(zoomedWorkspace)
         windowInfo.activate()
         cancelAndExit()
     }
