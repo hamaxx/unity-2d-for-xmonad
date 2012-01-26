@@ -47,6 +47,8 @@ context "Dash fullscreen tests" do
   startup do
     system 'killall unity-2d-places > /dev/null 2>&1'
     system 'killall unity-2d-panel > /dev/null 2>&1'
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
+    system 'killall unity-2d-launcher > /dev/null 2>&1'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -61,15 +63,19 @@ context "Dash fullscreen tests" do
     @oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
 
     # Execute the application
-    @sut = TDriver.sut(:Id => "sut_qt")    
+    @sut = TDriver.sut(:Id => "sut_qt")
     @dash = @sut.run(:name => UNITY_2D_PLACES,
                     :arguments => "-testability",
                     :sleeptime => 2)
     @panel = @sut.run(:name => UNITY_2D_PANEL,
                     :arguments => "-testability",
                     :sleeptime => 2)
+    @launcher = @sut.run(:name => UNITY_2D_LAUNCHER,
+                         :arguments => "-testability",
+                         :sleeptime => 2)
 
     verify(10){ @panel.Unity2dPanel() }
+    verify(10){ @launcher.Unity2dPanel() }
     # Dash can't be verified here as the declarative view is hidden until we make it active
   end
 
@@ -78,6 +84,7 @@ context "Dash fullscreen tests" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} #{@oldvalue}}
     system "pkill -nf unity-2d-panel"
     system "pkill -nf unity-2d-places"
+    system "pkill -nf unity-2d-launcher"
   end
 
   #####################################################################################
@@ -109,6 +116,10 @@ context "Dash fullscreen tests" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
     XDo::Keyboard.super
     sleep 1
+    verify_equal('true', TIMEOUT, 'Dash did not appear') {
+        @dash.DashDeclarativeView()['active']
+    }
+
     maxbutton = nil
     verify(TIMEOUT, 'The "maximize" button did not appear when the dash was visible' ) {
         maxbutton = @panel.AppNameApplet().children( :type => 'QAbstractButton' )[2]
