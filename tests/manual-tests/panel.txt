@@ -1,0 +1,6 @@
+----
+ * Hit Alt-F10.
+
+--> Panel main menu should be activated. The shortcut key F10 is changed to Alt-F10 now (lp:878492)
+
+----
