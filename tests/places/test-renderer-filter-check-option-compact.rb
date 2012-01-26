@@ -28,8 +28,8 @@ require 'xdo/mouse'
 context "Dash - Filter Results renderer tests" do
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-shell > /dev/null 2>&1'
-    system 'killall unity-2d-shell > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-shell > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-shell > /dev/null 2>&1'
   end
 
   # Run once at the end of this test suite
