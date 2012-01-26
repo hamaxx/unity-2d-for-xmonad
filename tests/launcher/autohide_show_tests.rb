@@ -27,7 +27,6 @@ require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
 require 'tmpwindow'
-require '../misc/definitions.rb'
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
