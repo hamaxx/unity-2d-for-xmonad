@@ -523,7 +523,7 @@ LauncherApplication::connectWindowSignals()
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
         g_signal_connect(G_OBJECT(window), "workspace-changed",
-            G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
+            G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
     }
 }
 
@@ -534,7 +534,7 @@ LauncherApplication::onWindowAdded(BamfWindow* window)
         windowAdded(window->xid());
         WnckWindow* wnck_window = wnck_window_get(window->xid());
         g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
-             G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
+             G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
     }
 }
 
@@ -1101,7 +1101,7 @@ LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& 
 }
 
 void
-LauncherApplication::windowWorkspaceChangedCB(WnckWindow *window, gpointer user_data)
+LauncherApplication::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
 {
     Q_UNUSED(window);
     ((LauncherApplication*)user_data)->windowWorkspaceChanged();

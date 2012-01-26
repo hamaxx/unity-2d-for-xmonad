@@ -176,7 +176,7 @@ private:
     bool updateOverlayState(const QMap<QString, QVariant>& properties,
                             const QString& propertyName, T* member);
 
-    static void windowWorkspaceChangedCB(WnckWindow *window, gpointer user_data);
+    static void onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data);
 
     QString m_dynamicQuicklistPath;
     QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;
