@@ -25,3 +25,9 @@ Running separate components
     ./launcher/app/unity-2d-launcher
     ./panel/app/unity-2d-panel
     ./places/app/unity-2d-places
+
+WHat it looks like
+==================
+
+![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss1.png)
+![Screen shot 2](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss2.png)
