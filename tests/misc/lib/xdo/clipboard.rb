@@ -103,9 +103,9 @@ module XDo
         from.concat([:clipboard, :primary, :secondary]) if from.empty?
         
         hsh = {}
-        hsh[:primary] = `#{XSEL}` if from.include? :primary
-        hsh[:clipboard] = `#{XSEL} -b` if from.include? :clipboard
-        hsh[:secondary] = `#{XSEL} -s` if from.include? :secondary
+        r, hsh[:primary], e = XDo.execute("#{XSEL}") if from.include? :primary
+        r, hsh[:clipboard], e = XDo.execute("#{XSEL} -b") if from.include? :clipboard
+        r, hsh[:secondary], e = XDo.execute("#{XSEL} -s") if from.include? :secondary
         hsh
       end
         
@@ -127,10 +127,11 @@ module XDo
           to = to.first.keys
         end
         to << :clipboard if to.empty?
+        text.gsub("'", "\'").gsub("\n", '\n').gsub("\t", '\t')
         
-        IO.popen("xsel -i", "w"){|io| io.write(text)} if to.include? :primary
-        IO.popen("xsel -b -i", "w"){|io| io.write(text)} if to.include? :clipboard
-        IO.popen("xsel -s -i", "w"){|io| io.write(text)} if to.include? :secondary
+        XDo.execute("echo -n '#{text}' | xsel -i") if to.include? :primary
+        XDo.execute("echo -n '#{text}' | xsel -b -i") if to.include? :clipboard
+        XDo.execute("echo -n '#{text}' | xsel -s -i") if to.include? :secondary
         text
       end
       
@@ -156,10 +157,11 @@ module XDo
           to = to.first.keys
         end
         to << :clipboard if to.empty?
-        
-        IO.popen("xsel -a -i", "w"){|io| io.write(text)} if to.include? :primary
-        IO.popen("xsel -b -a -i", "w"){|io| io.write(text)} if to.include? :clipboard
-        IO.popen("xsel -s -a -i", "w"){|io| io.write(text)} if to.include? :secondary
+        text.gsub("'", "\'").gsub("\n", '\n').gsub("\t", '\t')
+
+        XDo.execute("echo -n '#{text}' | xsel -a -i") if to.include? :primary
+        XDo.execute("echo -n '#{text}' | xsel -b -a -i") if to.include? :clipboard
+        XDo.execute("echo -n '#{text}' | xsel -s -a -i") if to.include? :secondary
       end
       
       #Clears the specified clipboards. 
@@ -182,9 +184,9 @@ module XDo
         end
         clips.concat([:primary, :clipboard, :secondary]) if clips.empty?
         
-        `#{XSEL} -c` if clips.include? :primary
-        `#{XSEL} -b -c` if clips.include? :clipboard
-        `#{XSEL} -s -c` if clips.include? :secondary
+        XDo.execute("#{XSEL} -c") if clips.include? :primary
+        XDo.execute("#{XSEL} -b -c") if clips.include? :clipboard
+        XDo.execute("#{XSEL} -s -c") if clips.include? :secondary
         nil
       end
       

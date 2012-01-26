@@ -19,6 +19,7 @@
 import QtQuick 1.1
 import Unity2d 1.0
 import "launcher"
+import "common/utils.js" as Utils
 
 Item {
     id: shell
@@ -138,6 +139,19 @@ Item {
                 position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             }
+        }
+    }
+
+    StrutManager {
+        id: strutManager
+        edge: Unity2dPanel.LeftEdge
+        widget: declarativeView
+        height: launcherLoader.height
+        width: launcherLoader.width
+        enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+
+        Component.onCompleted: {
+            strutManager.updateStrut()
         }
     }
 }

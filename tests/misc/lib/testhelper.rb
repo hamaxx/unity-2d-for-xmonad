@@ -1,7 +1,7 @@
 require 'test/unit'
 
 dir = File.dirname(File.expand_path(__FILE__))
-$LOAD_PATH.unshift dir + '/../lib'
+$LOAD_PATH.unshift File.expand_path(dir + '/../lib')
 $TEST_DIR = File.dirname(File.expand_path(__FILE__))
 
 # Enable a startup and shutdwn method for each test case 
@@ -100,6 +100,35 @@ class TestCase < Test::Unit::TestCase
     def execute order
       @order = order
     end
+  end
+
+  # Runs the individual test method represented by this
+  # instance of the fixture, collecting statistics, failures
+  # and errors in result. Also catches MobyBase::VerificationError
+  # and considers them fails, not errors.
+  def run(result)
+    yield(STARTED, name)
+    @_result = result
+    begin
+      setup
+      __send__(@method_name)
+    rescue Test::Unit::AssertionFailedError, MobyBase::VerificationError => e
+      add_failure(e.message, e.backtrace)
+    rescue Exception
+      raise if PASSTHROUGH_EXCEPTIONS.include? $!.class
+      add_error($!)
+    ensure
+      begin
+        teardown
+      rescue Test::Unit::AssertionFailedError, MobyBase::VerificationError => e
+        add_failure(e.message, e.backtrace)
+      rescue Exception
+        raise if PASSTHROUGH_EXCEPTIONS.include? $!.class
+        add_error($!)
+      end
+    end
+    result.add_run
+    yield(FINISHED, name)
   end
 end
 

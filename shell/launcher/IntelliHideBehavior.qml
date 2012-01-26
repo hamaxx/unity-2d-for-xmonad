@@ -12,8 +12,10 @@ BaseBehavior {
     onForcedVisibleChanged:
     {
         if (!forcedVisible) {
-            shownBecauseOfMousePosition = true
-            mouseLeaveTimer.restart()
+            if (!target.containsMouse) {
+                shownBecauseOfMousePosition = true
+                mouseLeaveTimer.restart()
+            }
         }
     }
 
@@ -37,7 +39,12 @@ BaseBehavior {
 
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
-        onContainsMouseChanged: mouseLeaveTimer.running = !target.containsMouse
+        onContainsMouseChanged: {
+            if (shown && target.containsMouse) {
+                shownBecauseOfMousePosition = true
+            }
+            mouseLeaveTimer.running = !target.containsMouse
+        }
         ignoreUnknownSignals: true
     }
 

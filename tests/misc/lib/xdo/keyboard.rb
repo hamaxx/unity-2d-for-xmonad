@@ -94,11 +94,9 @@ module XDo
       #===Remarks
       #This function is a bit faster then #simulate. 
       def type(str, w_id = 0)
-        out = Open3.popen3("#{XDOTOOL} type #{w_id.nonzero? ? "--window #{w_id.to_i} " : ""}'#{str}'") do |stdin, stdout, stderr|
-          stdin.close_write
-          str = stderr.read
-          warn(str) unless str.empty?
-        end
+        return nil if str == "\303" and RUBY_VERSION < '1.9' #deliberately work around Ruby 1.8's bad handling of UTF-8 characters
+        return_code, out, err = XDo.execute("#{XDOTOOL} type #{w_id.nonzero? ? "--window #{w_id.to_i} " : ""}'#{str}'")
+        warn(err) unless err.empty?
         nil
       end
       
@@ -224,10 +222,8 @@ module XDo
       #  XDo::Keyboard.char("A") #=> A
       #  XDo::Keyboard.char("ctrl+c")
       def char(c, w_id = 0)
-        Open3.popen3("#{XDOTOOL} key #{w_id.nonzero? ? "--window #{w_id.to_i} " : ""}#{c}") do |stdin, stdout, stderr|
-          stdin.close_write
-          raise(XDo::XError, "Invalid character '#{c}'!") if stderr.read =~ /No such key name/
-        end
+        return_code, out, err = XDo.execute("#{XDOTOOL} key #{w_id.nonzero? ? "--window #{w_id.to_i} " : ""}#{c}")
+        raise(XDo::XError, "Invalid character '#{c}'!") if err =~ /No such key name/
         c
       end
       alias key char
@@ -247,10 +243,8 @@ module XDo
       #===Remarks
       #You should release the key sometime via Keyboard.key_up. 
       def key_down(key, w_id = 0)
-        Open3.popen3("#{XDOTOOL} keydown #{w_id.nonzero? ? "--window #{w_id.to_i} " : "" }#{check_for_special_key(key)}") do |stdin, stdout, stderr|
-          stdin.close_write
-          raise(XDo::XError, "Invalid character '#{key}'!") if stderr.read =~ /No such key name/
-        end
+        return_code, out, err = XDo.execute("#{XDOTOOL} keydown #{w_id.nonzero? ? "--window #{w_id.to_i} " : "" }#{check_for_special_key(key)}")
+        raise(XDo::XError, "Invalid character '#{key}'!") if err =~ /No such key name/
         key
       end
       
@@ -269,10 +263,8 @@ module XDo
       #===Remarks
       #This has no effect on already released keys. 
       def key_up(key, w_id = 0)
-        Open3.popen3("#{XDOTOOL} keyup #{w_id.nonzero? ? "--window #{w_id.to_i} " : "" }#{check_for_special_key(key)}") do |stdin, stdout, stderr|
-          stdin.close_write
-          raise(XDo::XError, "Invalid character '#{key}'!") if stderr.read =~ /No such key name/
-        end
+        return_code, out, err = XDo.execute("#{XDOTOOL} keyup #{w_id.nonzero? ? "--window #{w_id.to_i} " : "" }#{check_for_special_key(key)}")
+        raise(XDo::XError, "Invalid character '#{key}'!") if err =~ /No such key name/
         key
       end
       
