@@ -36,4 +36,14 @@
       </description>
     </key>
   </schema>
+  <schema path="/com/canonical/unity-2d/dash/" id="com.canonical.Unity2d.Dash" gettext-domain="unity-2d">
+    <key type="b" name="full-screen">
+      <default>false</default>
+      <summary>The current fullscreen status of the dash</summary>
+      <description>
+        Describe if the dash should be fullscreen or not. If the dash is already running this setting
+        is applied immediately, otherwise it is applied as soon as the dash is activated again.
+      </description>
+    </key>
+  </schema>
 </schemalist>
