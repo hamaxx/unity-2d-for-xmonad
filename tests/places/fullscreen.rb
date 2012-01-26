@@ -101,7 +101,9 @@ context "Dash fullscreen tests" do
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
         @dash.DashDeclarativeView()['active']
     }
-    verify_equal('DesktopMode', TIMEOUT, 'Dash is fullscreen but should not be') {
+
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state') {
         @dash.DashDeclarativeView()['dashMode']
     }
 
@@ -133,13 +135,18 @@ context "Dash fullscreen tests" do
     verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
         @dash.DashDeclarativeView()['dashMode']
     }
-    verify_equal('true', TIMEOUT, 'Dash fullscreen key was not set') {
+
+    # When always fullscreen tapping the max button does nothing, so the key should remain set to
+    # false.
+    expected = dash_always_fullscreen ? 'false' : 'true'
+    verify_equal(expected, TIMEOUT, 'Dash fullscreen key has the wrong value after maximize') {
         %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
     }
 
     maxbutton.tap if maxbutton
     sleep 1
-    verify_equal('DesktopMode', TIMEOUT, 'Dash should not be fullsceen, but it is' ) {
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state' ) {
         @dash.DashDeclarativeView()['dashMode']
     }
     verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
@@ -148,20 +155,14 @@ context "Dash fullscreen tests" do
   end
 
   test "Dash fullscreen initially" do
-    # The initial startup mode ignores the dconf key and only decides based on the screen
-    # resolution. It's a bug and will be fixed, but as long as it's there let's test for it.
-
-    expect = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
-    initial = dash_always_fullscreen ? 'false' : 'true'
-    %x{dconf write #{DASH_FULLSCREEN_KEY} #{initial}}
+    %x{dconf write #{DASH_FULLSCREEN_KEY} true}
     XDo::Keyboard.super
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
         @dash.DashDeclarativeView()['active']
     }
-
-    verify_equal(expect, TIMEOUT, 'Dash initial state is wrong') {
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
         @dash.DashDeclarativeView()['dashMode']
     }
   end

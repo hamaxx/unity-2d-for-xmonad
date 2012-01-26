@@ -18,9 +18,9 @@
 #include "dashadaptor.h"
 
 // unity-2d
-#include <dashsettings.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
+#include <dashclient.h>
 
 // Qt
 #include <QDesktopWidget>
@@ -57,7 +57,6 @@ DashDeclarativeView::DashDeclarativeView()
 
     QDesktopWidget* desktop = QApplication::desktop();
     connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
     connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
 
     updateSize();
@@ -71,18 +70,6 @@ DashDeclarativeView::onWorkAreaResized(int screen)
     }
 
     updateSize();
-}
-
-void
-DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
-{
-    QRect rect = QApplication::desktop()->screenGeometry(this);
-    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
-    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
-        setDashMode(FullScreenMode);
-    } else {
-        setDashMode(DesktopMode);
-    }
 }
 
 void
@@ -159,7 +146,6 @@ DashDeclarativeView::setActive(bool value)
     if (value != m_active) {
         m_active = value;
         if (value) {
-            updateDashModeDependingOnScreenGeometry();
             show();
             raise();
             // We need a delay, otherwise the window may not be visible when we try to activate it

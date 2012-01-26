@@ -22,7 +22,6 @@
 */
 #include "plugin.h"
 
-#include "dashsettings.h"
 #include "launcherapplication.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -50,6 +49,7 @@
 #include "launcherdropitem.h"
 
 #include "config.h"
+#include "dashclient.h"
 
 #include "autohidebehavior.h"
 #include "intellihidebehavior.h"
@@ -81,8 +81,6 @@
 
 #include <X11/Xlib.h>
 
-using namespace Unity2d;
-
 /* FIXME: This should be done more properly, it's just an hack this way.
           We should silence only the errors that we know we can produce.
           We could probably also learn something from gdk-error-trap-push.
@@ -99,8 +97,6 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
-
-    qmlRegisterType<DashSettings>(uri, 0, 1, "DashSettings");
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -162,6 +158,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<FilterOption>();
     qmlRegisterType<FilterOptions>();
 
+    qmlRegisterType<DashClient>();
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -181,6 +178,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
     engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
+    engine->rootContext()->setContextProperty("dashClient", DashClient::instance());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.
