@@ -501,8 +501,29 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
         wnck_window_set_icon_geometry(window, x, y, width, height);
+    }
+}
+
+void LauncherApplication::connectWindowSignals()
+{
+    if (m_application == NULL || m_application->running() == false) {
+        return;
+    }
+
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+
+    for (int i = 0; i < size; ++i) {
+        WnckWindow* window = wnck_window_get(xids->at(i));
         g_signal_connect(G_OBJECT(window), "workspace-changed",
-             G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
+            G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
     }
 }
 
@@ -511,6 +532,9 @@ LauncherApplication::onWindowAdded(BamfWindow* window)
 {
     if (window != NULL) {
         windowAdded(window->xid());
+        WnckWindow* wnck_window = wnck_window_get(window->xid());
+        g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
+             G_CALLBACK(LauncherApplication::windowWorkspaceChangedCB), this);
     }
 }
 

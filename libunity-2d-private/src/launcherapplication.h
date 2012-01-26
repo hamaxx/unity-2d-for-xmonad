@@ -105,6 +105,7 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
     Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
+    Q_INVOKABLE void connectWindowSignals();
 
     void updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties);
 
