@@ -354,5 +354,6 @@ AutoScrollingListView {
             target: declarativeView
             onActiveWorkspaceChanged: updatePips()
         }
+        Component.onCompleted: updatePips()
     }
 }
