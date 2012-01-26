@@ -42,16 +42,20 @@ public:
     virtual QString icon() const;
     virtual bool launching() const;
 
+    QObject* dashView() const;
+    void setDashView(QObject* view);
+
     /* methods */
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE virtual void createMenuActions();
 
 private Q_SLOTS:
-    void slotActivePageChanged(const QString&);
+    void slotDashActiveChanged(bool active);
 
 private:
     Q_DISABLE_COPY(BfbItem)
     bool m_active;
+    QObject* m_view;
 };
 
 Q_DECLARE_METATYPE(BfbItem*)
@@ -60,12 +64,16 @@ Q_DECLARE_METATYPE(BfbItem*)
 class BfbModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(QObject* dashView READ dashView WRITE setDashView)
 public:
     BfbModel(QObject* parent = 0);
     ~BfbModel();
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
+
+    QObject* dashView() const;
+    void setDashView(QObject* view);
 
 private:
     Q_DISABLE_COPY(BfbModel)

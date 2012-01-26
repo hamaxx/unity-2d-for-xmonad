@@ -45,7 +45,6 @@
 #include <QtPlugin>
 #include <QPluginLoader>
 #include <QLibraryInfo>
-#include "testabilityinterface.h"
 
 // libc
 #include <stdlib.h>
@@ -163,11 +162,6 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
 : QApplication(argc, argv)
 , m_platformFontTracker(new PlatformFontTracker)
 {
-    /* Load Testability Plugin on startup if requested */
-    if (arrayContains(argv, argv + argc, "-testability")) {
-        loadTestabilityPlugin();
-    }
-
     /* Configure translations */
     Unity2dTr::init("unity-2d", INSTALL_PREFIX "/share/locale");
 
@@ -217,37 +211,6 @@ bool Unity2dApplication::x11EventFilter(XEvent* event)
         }
     }
     return QApplication::x11EventFilter(event);
-}
-
-/*
- * Load the Testability Plugin if available
- *
- * Testability is a tool required for UI testing. See tests/ directory.
- */
-void Unity2dApplication::loadTestabilityPlugin()
-{
-     QString testabilityPlugin = "testability/libtestability";
-     QString testabilityPluginPostfix = ".so";
-
-     testabilityPlugin = QLibraryInfo::location(QLibraryInfo::PluginsPath)
-                         + QObject::tr("/") + testabilityPlugin + testabilityPluginPostfix;
-     QPluginLoader loader(testabilityPlugin.toLatin1().data());
-
-     QObject *plugin = loader.instance();
-     if (plugin) {
-         qDebug("Testability plugin loaded successfully!");
-         testabilityInterface = qobject_cast<TestabilityInterface *>(plugin);
-
-         if (testabilityInterface) {
-             qDebug("Testability interface obtained!");
-             testabilityInterface->Initialize();
-         } else {
-             qDebug("Failed to get testability interface!");
-         }
-     } else {
-         qDebug("Testability plugin %s load failed with error:%s",
-                testabilityPlugin.toLatin1().data(), loader.errorString().toLatin1().data());
-     }
 }
 
 #include <unity2dapplication.moc>

@@ -35,8 +35,8 @@ context "Launcher Autohide and Show Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-shell > /dev/null 2>&1'
-    system 'killall unity-2d-shell > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -51,13 +51,12 @@ context "Launcher Autohide and Show Tests" do
     #Ensure mouse out of the way
     XDo::Mouse.move(200,200,10,true)    
 
-    launcher_favorites = `gsettings get com.canonical.Unity.Launcher favorites`
+    launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run( :name => UNITY_2D_SHELL,
-    		         :arguments => "-testability", 
-    		         :sleeptime => 2 )
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
+                     :arguments => "-testability",
+                     :sleeptime => 2 )
     # Make certain application is ready for testing
     verify{ @app.Launcher() }
   end
@@ -67,8 +66,8 @@ context "Launcher Autohide and Show Tests" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    system "pkill -nf unity-2d-shell"
-    system "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
+    $SUT.execute_shell_command "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
   #####################################################################################
@@ -280,6 +279,7 @@ context "Launcher Autohide and Show Tests" do
       @app.Launcher()['x_absolute'].to_i
     }
 
+    sleep 1 #launcher seems not ready to accept Super key, need a pause
     XDo::Keyboard.key_down('SUPER')
     verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key held, should be visible' ) {
       @app.Launcher()['x_absolute'].to_i
@@ -570,6 +570,77 @@ context "Launcher Autohide and Show Tests" do
       }
       xid.close!
     end
+  end
+
+  # Test case objectives:
+  # * Launcher does not hide after toggling the dash
+  # Pre-conditions
+  # * Desktop with no running applications
+  # Test steps
+  # * Open application in position overlapping Launcher
+  # * Verify Launcher hiding
+  # * Move mouse to the left
+  # * Verify Launcher showing
+  # * Click twice in the bfb
+  # * Verify Launcher showing during 1.5 seconds
+  # Post-conditions
+  # * None
+  # References
+  # * None
+  test "Launcher visible after toggling dash" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+ 
+    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    XDo::Mouse.move(0, 200, 0, true)
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    bfb.move_mouse()
+    bfb.tap()
+    bfb.tap()
+    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
+      verify_equal( -WIDTH, 2 ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+    }
+ 
+    xid.close!
+  end
+
+  # Test case objectives:
+  # * Launcher does not hide on Esc after Alt+F1 with overlapping window
+  # Pre-conditions
+  # * Desktop with no running applications
+  # Test steps
+  # * Open application in position overlapping Launcher
+  # * Verify Launcher hiding
+  # * Press Alt+F1
+  # * Verify Launcher showing
+  # * Move mouse over the launcher
+  # * Press Esc
+  # * Verify Launcher does not hide
+  # Post-conditions
+  # * None
+  # References
+  # * None
+  test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+    bfb.move_mouse()
+    XDo::Keyboard.escape
+    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
+      verify_equal( -WIDTH, 2 ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+    }
+    xid.close!
   end
 
 end
