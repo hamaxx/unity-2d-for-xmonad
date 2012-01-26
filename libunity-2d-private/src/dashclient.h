@@ -38,7 +38,6 @@ class DashClient : public QObject
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
 
 public:
-    DashClient(QObject* parent = 0);
     static DashClient* instance();
 
     /**
@@ -63,6 +62,7 @@ private Q_SLOTS:
     void updateAlwaysFullScreen();
 
 private:
+    DashClient(QObject* parent = 0);
     void updateActivePage();
 
     QDBusInterface* m_dashDbusIface;

@@ -40,10 +40,6 @@ Item {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
-    DashClient {
-        id: dashClient
-    }
-
     Binding {
         target: dashView
         property: "dashMode"
