@@ -89,7 +89,10 @@ WindowHelper::WindowHelper(QObject* parent)
     connect(DashClient::instance(), SIGNAL(activePageChanged(QString)), SLOT(updateDashVisible(QString)));
     d->m_dashIsVisible = !DashClient::instance()->activePage().isEmpty();
 
-    connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(updateDashFullScreen(bool)));
+    // FIXME: the queued connection should not be needed, however if it's not used when
+    // (un)maximizing the dash, the panel will deadlock for some reason.
+    connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(updateDashFullScreen(bool)),
+            Qt::QueuedConnection);
     d->m_dashIsFullScreen = dash2dConfiguration().property("fullScreen").toBool();
 }
 
