@@ -35,6 +35,9 @@ context "Dash Tests" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
@@ -50,12 +53,16 @@ context "Dash Tests" do
                      :arguments => "-testability",
                      :sleeptime => 2 )
 
+    @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
+                            :arguments => "-testability", 
+                            :sleeptime => 2 )
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
+    $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
@@ -109,6 +116,42 @@ context "Dash Tests" do
     bfb.tap()
     verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after activating the bfb') {
         @app.Dash()['active']
+    }
+  end
+
+  # Test case objectives:
+  #   * Check that Super+s does not type s
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Verify there is no text in the search entry
+  #   * Press Super+s
+  #   * Verify there is no text in the search entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  # FIXME This does not work reliably because the spread clears the search entry
+  #       and thus sometimes we ask for the contents too late
+  xtest "Super+s does not type s" do
+    verify_equal("false", 0, 'Dash should be inactive on startup') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
+    verify(TIMEOUT, 'Dash should be active after pressing Alt+F2') {
+      @app.Dash()['active']
+    }
+    verify_equal("", TIMEOUT, 'There should be no text in the Search Entry') {
+      @app.Dash().SearchEntry().QDeclarativeTextInput()['text']
+    }
+    XDo::Keyboard.super_s
+    verify_not(0, "Text of the Search Entry should not be an 's'") {
+      verify_equal( "s", 1 ) {
+        @app.Dash().SearchEntry().QDeclarativeTextInput()['text']
+      }
     }
   end
 end
