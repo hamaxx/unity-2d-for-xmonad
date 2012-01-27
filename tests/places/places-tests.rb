@@ -220,6 +220,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Super, Super and Alt+F1 interaction" do
+    XDo::Mouse.move(200, 200, 0, true)
     xid = TmpWindow.open_window_at(10,100)
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {
       XDo::XWindow.active_window
