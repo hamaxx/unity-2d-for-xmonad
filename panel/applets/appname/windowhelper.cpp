@@ -23,6 +23,7 @@
 #include "windowhelper.h"
 
 // Local
+#include "config.h"
 
 // unity-2d
 #include <dashsettings.h>
@@ -45,6 +46,7 @@ extern "C" {
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
+#include <QVariant>
 
 // X11
 #include <X11/Xlib.h>
@@ -123,12 +125,6 @@ static void nameChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
-static void geometryChangedCB(GObject* window,
-    WindowHelper*  watcher)
-{
-    QMetaObject::invokeMethod(watcher, "stateChanged");
-}
-
 void WindowHelper::update()
 {
     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
@@ -144,13 +140,6 @@ void WindowHelper::update()
         const char *name = wnck_window_get_name(d->m_window);
         d->m_activeWindowIsDash = qstrcmp(name, "unity-2d-places") == 0;
         if (d->m_activeWindowIsDash) {
-            /* Since we are not really minimizing and maximizing the dash we
-             * cannot rely on the wnck "state-changed" signal to be emitted;
-             * instead, listen for the "geometry-changed" and emit our
-             * stateChanged() from that. */
-            d->m_connector.connect(G_OBJECT(d->m_window), "geometry-changed",
-                                   G_CALLBACK(geometryChangedCB), this);
-
             d->updateDashCanResize();
         }
 
@@ -167,11 +156,7 @@ bool WindowHelper::isMaximized() const
         return false;
     }
     if (d->m_activeWindowIsDash) {
-        int x, y, width, height;
-        wnck_window_get_geometry(d->m_window, &x, &y, &width, &height);
-        const QRect windowGeometry(x, y, width, height);
-        ScreenInfo* screenInfo = ScreenInfo::instance();
-        return screenInfo->panelsFreeGeometry() == windowGeometry;
+        return dash2dConfiguration().property("fullScreen").toBool();
     } else {
         return wnck_window_is_maximized(d->m_window);
     }
@@ -226,7 +211,7 @@ void WindowHelper::minimize()
 void WindowHelper::maximize()
 {
     if (d->m_activeWindowIsDash) {
-        d->m_dashSettings->setFormFactor(DashSettings::Netbook);
+        dash2dConfiguration().setProperty("fullScreen", QVariant(true));
     } else {
         /* This currently cannot happen, because the window buttons are not
          * shown in the panel for non maximized windows. It's here just for
@@ -238,7 +223,7 @@ void WindowHelper::maximize()
 void WindowHelper::unmaximize()
 {
     if (d->m_activeWindowIsDash) {
-        d->m_dashSettings->setFormFactor(DashSettings::Desktop);
+        dash2dConfiguration().setProperty("fullScreen", QVariant(false));
     } else {
         wnck_window_unmaximize(d->m_window);
     }
