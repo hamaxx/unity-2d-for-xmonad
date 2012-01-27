@@ -54,6 +54,9 @@ else
     UNITY_2D_SPREAD = 'unity-2d-spread'
 end
 
+# Require a file with some common constants
+require $library_path+ '/definitions.rb'
+
 # The following line includes the complete tdriver environment 
 require 'tdriver'
 include TDriverVerify

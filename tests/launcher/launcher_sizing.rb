@@ -30,7 +30,6 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Sizing tests" do
-  PANEL_HEIGHT=24
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-shell'
