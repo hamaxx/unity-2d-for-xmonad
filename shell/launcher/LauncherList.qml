@@ -92,6 +92,16 @@ AutoScrollingListView {
             }
         }
 
+        function updatePips() {
+            if (item.belongsToDifferentWorkspace()) {
+                launcherItem.pips = 1
+                launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
+            } else {
+                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
+            }
+        }
+
         Accessible.name: accessibleDescription()
         name: item.name
 
@@ -279,7 +289,10 @@ AutoScrollingListView {
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: false }
         }
 
-        onRunningChanged: setIconGeometry()
+        onRunningChanged: {
+            setIconGeometry()
+            item.connectWindowSignals()
+        }
         /* Note: this doesn’t work as expected for the first favorite
            application in the list if it is already running when the
            launcher is started, because its y property doesn’t change.
@@ -292,6 +305,8 @@ AutoScrollingListView {
             onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
                                                 y + declarativeView.globalPosition.y,
                                                 width, height, xid)
+            onWindowCountChanged: updatePips()
+            onWindowWorkspaceChanged: updatePips()
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }
@@ -335,5 +350,11 @@ AutoScrollingListView {
                 }
             }
         }
+
+        Connections {
+            target: declarativeView
+            onActiveWorkspaceChanged: updatePips()
+        }
+        Component.onCompleted: updatePips()
     }
 }
