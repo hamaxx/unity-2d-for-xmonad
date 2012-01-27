@@ -40,6 +40,7 @@ Renderer {
 
     property int minHorizontalSpacing: 26
     property int minVerticalSpacing: 26
+    property string lensId 
 
     property bool centered: true
 
@@ -77,14 +78,6 @@ Renderer {
 
                 FocusPath.index: index
 
-                property string uri: column_0
-                property string iconHint: column_1
-                property string categoryId: column_2 // FIXME: rename to categoryIndex
-                property string mimetype: column_3
-                property string displayName: column_4 // FIXME: rename to name
-                property string comment: column_5
-                property string dndUri: column_6
-
                 Loader {
                     id: loader
 
@@ -96,13 +89,13 @@ Renderer {
 
                     sourceComponent: cellRenderer
                     onLoaded: {
-                        item.uri = uri
-                        item.iconHint = iconHint
-                        item.mimetype = mimetype
-                        item.displayName = displayName
-                        item.comment = comment
+                        item.uri = lensId == "home.lens" ? display : column_0
+                        item.iconHint = lensId == "home.lens" ? decoration : column_1
+                        item.mimetype = lensId == "home.lens" ? toolTip : column_3
+                        item.displayName = lensId == "home.lens" ? statusTip : column_4
+                        item.comment = lensId == "home.lens" ? whatsThis : column_5
                         item.focus = true
-                        item.dndUri = dndUri
+                        item.dndUri = lensId == "home.lens" ? "" : column_6
                     }
                 }
             }

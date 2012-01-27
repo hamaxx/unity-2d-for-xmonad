@@ -38,8 +38,8 @@ FocusScope {
                 var firstResult = firstCategoryModel.get(0)
                 /* Lenses give back the uri of the item in 'column_0' and the
                    mimetype in 'column_3' per specification */
-                var uri = firstResult.column_0
-                var mimetype = firstResult.column_3
+                var uri = lensView.model.id == "home.lens" ? firstResult.display : firstResult.column_0
+                var mimetype = lensView.model.id == "home.lens" ? firstResult.whatThis : firstResult.column_3
                 dash.activateUriWithLens(model, uri, mimetype)
                 return;
             }
@@ -83,9 +83,9 @@ FocusScope {
             width: parent.width
             height: visible ? item.contentHeight : 0
 
-            property string name: model.column_0
-            property string iconHint: model.column_1
-            property string rendererName: model.column_2
+            property string name: lensView.model.id == "home.lens" ? model.display : model.column_0
+            property string iconHint: lensView.model.id == "home.lens" ? model.decoration : model.column_1
+            property string rendererName: lensView.model.id == "home.lens" ?  model.edit : model.column_2
             property int categoryId: index
 
             source: rendererName ? Utils.convertToCamelCase(rendererName) + ".qml" : ""
@@ -119,6 +119,7 @@ FocusScope {
             Binding { target: item; property: "categoryId"; value: categoryId }
             Binding { target: item; property: "category_model"; value: category_model }
             Binding { target: item; property: "lens"; value: lensView.model }
+            Binding { target: item; property: "lensId"; value: lensView.model.id }
 
             onLoaded: item.focus = true
         }

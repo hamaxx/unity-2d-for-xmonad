@@ -104,6 +104,7 @@ FocusScope {
         for (var i=0; i<lenses.rowCount(); i++) {
             lenses.get(i).viewType = Lens.Hidden
         }
+        declarativeView.activeLens = ""
     }
 
     function activateLens(lensId) {
@@ -125,11 +126,19 @@ FocusScope {
             return
         }
 
-        /* To activate lens, we set its viewType to LensView, and then set all
-           other lenses to Hidden */
         for (var i=0; i<lenses.rowCount(); i++) {
             var thislens = lenses.get(i)
-            thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+            if (lensId == "home.lens") {
+                if (thislens.id == lensId) {
+                    thislens.viewType = Lens.LensView
+                    continue
+                }
+                /* When Home is shown, need to notify all other lenses. Those in the global view
+                    (in home search results page) are set to HomeView, all others to Hidden */
+                thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
+            } else {
+                thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+            }
         }
 
         buildLensPage(lens)
@@ -138,19 +147,7 @@ FocusScope {
     }
 
     function activateHome() {
-        /* When Home is shown, need to notify all other lenses. Those in the global view
-           (in home search results page) are set to HomeView, all others to Hidden */
-        for (var i=0; i<lenses.rowCount(); i++) {
-            var thislens = lenses.get(i)
-            thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
-        }
-
-        pageLoader.setSource("Home.qml")
-        /* Take advantage of the fact that the loaded qml is local and setting
-           the source loads it immediately making pageLoader.item valid */
-        activatePage(pageLoader.item)
-        declarativeView.activeLens = ""
-        dash.active = true
+        activateLens("home.lens")
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
@@ -294,7 +291,7 @@ FocusScope {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
+            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top

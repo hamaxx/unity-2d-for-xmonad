@@ -224,9 +224,15 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 
     m_filters = new Filters(m_unityLens->filters, this);
 
-    m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
-    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
-    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
+    if (QString::fromStdString(m_unityLens->results()->swarm_name) == QString(":local")) {
+            m_results->setModel((void*)m_unityLens->results()->model());
+            m_globalResults->setModel((void*)m_unityLens->global_results()->model());
+            m_categories->setModel((void*)m_unityLens->categories()->model());
+    } else {
+        m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
+        m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
+        m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
+    }
 
     /* Property change signals */
     m_unityLens->id.changed.connect(sigc::mem_fun(this, &Lens::idChanged));
