@@ -56,12 +56,25 @@ else
     UNITY_2D_SPREAD = 'unity-2d-spread'
 end
 
+# Require a file with some common constants
+require $library_path+ '/definitions.rb'
+
 # The following line includes the complete tdriver environment 
 require 'tdriver'
 include TDriverVerify
 
 # Require unit test framework: This enables execution of test cases and also includes assertions (Test::Unit::Assertions)
 require 'testhelper'
+
+#Establish connection to qttasserver
+$SUT = TDriver.sut(:Id => "sut_qt")
+
+#Include the XDo common library
+require $library_path + '/xdo/_xdo'
+XDo.sut = $SUT
+
+# Enable reports only with -report switch
+include TDriverReportTestUnit if ARGV.delete('-report')
 
 # List of directories in which to search for test cases
 test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
