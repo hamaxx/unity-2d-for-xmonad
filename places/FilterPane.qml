@@ -69,7 +69,6 @@ FocusScope {
             text: u2d.tr("Filter results")
             font.bold: true
             fontSize: "large"
-            font.underline: parent.state == "selected"
 
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: arrow.left
@@ -82,6 +81,7 @@ FocusScope {
             folded: filterPane.folded
 
             anchors.verticalCenter: title.verticalCenter
+            anchors.verticalCenterOffset: 1
             anchors.right: parent.right
         }
     }
@@ -101,7 +101,7 @@ FocusScope {
         anchors.topMargin: 7
         anchors.bottom: parent.bottom
         orientation: ListView.Vertical
-        spacing: 12
+        spacing: 13
 
         /* Make sure the first section is selected when getting the focus */
         currentIndex: 0

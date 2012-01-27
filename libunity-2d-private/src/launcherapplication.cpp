@@ -184,7 +184,7 @@ LauncherApplication::name() const
         return QString::fromUtf8(sn_startup_sequence_get_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -208,7 +208,7 @@ LauncherApplication::icon() const
         return QString::fromUtf8(sn_startup_sequence_get_icon_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -218,7 +218,7 @@ LauncherApplication::application_type() const
         return m_application->application_type();
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -232,7 +232,7 @@ LauncherApplication::desktop_file() const
         return QString::fromUtf8(g_desktop_app_info_get_filename((GDesktopAppInfo*)m_appInfo.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -246,7 +246,7 @@ LauncherApplication::executable() const
         return QString::fromUtf8(sn_startup_sequence_get_binary_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 void
@@ -603,8 +603,9 @@ LauncherApplication::windowCountOnCurrentWorkspace()
     int windowCount = 0;
     WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
-    for (int i = 0; i < m_application->windows()->size(); i++) {
-        BamfWindow *window = m_application->windows()->at(i);
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    for (int i = 0; i < windows->size(); i++) {
+        BamfWindow *window = windows->at(i);
         if (window == NULL) {
             continue;
         }
@@ -765,7 +766,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
 
     if (compiz.isValid()) {
         Qt::HANDLE root = QX11Info::appRootWindow();
-        BamfUintList* xids = m_application->xids();
+        QScopedPointer<BamfUintList> xids(m_application->xids());
         QStringList fragments;
         for (int i = 0; i < xids->size(); i++) {
             uint xid = xids->at(i);
@@ -989,8 +990,8 @@ LauncherApplication::onQuitTriggered()
 }
 
 template<typename T>
-bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
-                                             QString propertyName, T* member)
+bool LauncherApplication::updateOverlayState(const QMap<QString, QVariant>& properties,
+                                             const QString& propertyName, T* member)
 {
     if (properties.contains(propertyName)) {
         T value = properties.value(propertyName).value<T>();
@@ -1003,7 +1004,7 @@ bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
 }
 
 void
-LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties)
+LauncherApplication::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);

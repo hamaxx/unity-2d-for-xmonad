@@ -28,6 +28,7 @@ Item {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
+    property variant queuedLensId
 
     function isRightToLeft() {
         return Qt.application.layoutDirection == Qt.RightToLeft
@@ -50,35 +51,6 @@ Item {
             DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
     }
 
-    /* Unload the current page when closing the dash */
-    Connections {
-        target: dashView
-        onActiveChanged: {
-            if (!dashView.active) {
-                /* FIXME: currentPage needs to stop pointing to pageLoader.item
-                          that is about to be invalidated otherwise a crash
-                          occurs because SearchEntry has a binding that refers
-                          to currentPage and tries to access it.
-                   Ref.: https://bugs.launchpad.net/ubuntu/+source/unity-2d/+bug/817896
-                         https://bugreports.qt.nokia.com/browse/QTBUG-20692
-                */
-                deactivateActiveLens()
-                currentPage = undefined
-                // Delay the following instruction by 1 millisecond using a
-                // timer. This is enough to work around a crash that happens
-                // when the layout is mirrored (RTL locales). See QTBUG-22776
-                // for details.
-                //pageLoader.source = ""
-                delayPageLoaderReset.restart()
-            }
-        }
-    }
-    Timer {
-        id: delayPageLoaderReset
-        interval: 1
-        onTriggered: pageLoader.source = ""
-    }
-
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
         search_entry.focus = true
@@ -94,13 +66,6 @@ Item {
         currentPage.visible = true
     }
 
-    function deactivateActiveLens() {
-        if (dashView.activeLens != "") {
-            var lens = lenses.get(dashView.activeLens)
-            lens.active = false
-        }
-    }
-
     function buildLensPage(lens) {
         pageLoader.source = "LensView.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
@@ -109,7 +74,20 @@ Item {
         activatePage(pageLoader.item)
     }
 
+    /* Set all Lenses as Hidden when Dash closes */
+    function deactivateAllLenses() {
+        for (var i=0; i<lenses.rowCount(); i++) {
+            lenses.get(i).viewType = Lens.Hidden
+        }
+    }
+
     function activateLens(lensId) {
+        /* check if lenses variable was populated already */
+        if (lenses.rowCount() == 0) {
+            queuedLensId = lensId
+            return
+        }
+
         var lens = lenses.get(lensId)
         if (lens == null) {
             console.log("No match for lens: %1".arg(lensId))
@@ -122,14 +100,25 @@ Item {
             return
         }
 
-        deactivateActiveLens()
-        lens.active = true
+        /* To activate lens, we set its viewType to LensView, and then set all
+           other lenses to Hidden */
+        for (var i=0; i<lenses.rowCount(); i++) {
+            var thislens = lenses.get(i)
+            thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+        }
+
         buildLensPage(lens)
         dashView.activeLens = lens.id
     }
 
     function activateHome() {
-        deactivateActiveLens()
+        /* When Home is shown, need to notify all other lenses. Those in the global view
+           (in home search results page) are set to HomeView, all others to Hidden */
+        for (var i=0; i<lenses.rowCount(); i++) {
+            var thislens = lenses.get(i)
+            thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
+        }
+
         pageLoader.source = "Home.qml"
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
@@ -156,6 +145,25 @@ Item {
 
     property variant lenses: Lenses {}
 
+    /* If unity-2d-places is launched on demand by an activateLens() dbus call,
+       "lenses" is not yet populated, so activating "commands.lens",
+       for example, triggered by Alt+F2 fails.
+       This following connection fixes this issue by checking if any lenses
+       should be activated as long as "lenses" is being populated. lp:883392 */
+    Connections {
+        target: lenses
+        onRowsInserted: {
+            if (queuedLensId != "") {
+                var lens = lenses.get(queuedLensId)
+                if (lens != null) {
+                    activateLens(queuedLensId)
+                    queuedLensId = "";
+                    return
+                }
+            }
+        }
+    }
+
     Item {
         id: background
 
@@ -179,22 +187,13 @@ Item {
                    is when declarativeView.active becomes true, so that a
                    screenshot of the windows behind the dash is taken at that
                    point.
-                   'source' also needs to change so that the screenshot is
-                   re-taken as opposed to pulled from QML's image cache.
-                   This workarounds the fact that the image cache cannot be
-                   disabled. A new API to deal with this was introduced in Qt Quick 1.1.
-
                    See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
                 */
-                property variant timeAtActivation
-                Connections {
-                    target: declarativeView
-                    onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
-                }
 
                 /* Use an image of the root window which essentially is a
                    capture of the entire screen */
-                source: declarativeView.active ? "image://window/root@" + blurredBackground.timeAtActivation : ""
+                source: declarativeView.active ? "image://window/root" : ""
+                cache: false
 
                 fillMode: Image.PreserveAspectCrop
                 x: -declarativeView.globalPosition.x
@@ -246,13 +245,13 @@ Item {
             KeyNavigation.down: pageLoader
 
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: 11
             anchors.left: parent.left
-            anchors.leftMargin: 16
+            anchors.leftMargin: 10
             anchors.right: filterPane.left
-            anchors.rightMargin: 10
+            anchors.rightMargin: 15
 
-            height: 53
+            height: 42
         }
 
         FilterPane {
@@ -268,7 +267,7 @@ Item {
             anchors.topMargin: search_entry.anchors.topMargin
             anchors.bottom: lensBar.top
             headerHeight: search_entry.height
-            width: 310
+            width: 300
             anchors.right: parent.right
             anchors.rightMargin: 15
         }
@@ -285,7 +284,7 @@ Item {
             KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
-            anchors.topMargin: 2
+            anchors.topMargin: 9
             anchors.bottom: lensBar.top
             anchors.left: parent.left
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left

@@ -41,6 +41,11 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 
+// Testability
+#include <QtPlugin>
+#include <QPluginLoader>
+#include <QLibraryInfo>
+
 // libc
 #include <stdlib.h>
 

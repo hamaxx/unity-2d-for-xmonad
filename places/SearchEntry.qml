@@ -44,6 +44,7 @@ AbstractButton {
 
     BorderImage {
         anchors.fill: parent
+        anchors.margins: -5
         source: "artwork/search_background.sci"
         smooth: false
     }
@@ -59,10 +60,10 @@ AbstractButton {
             id: search_icon
 
             anchors.left: parent.left
-            anchors.leftMargin: -5
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
+            anchors.leftMargin: -9
+            anchors.verticalCenter: parent.verticalCenter
             width: sourceSize.width
+            height: sourceSize.height
 
             smooth: true
 
@@ -161,6 +162,7 @@ AbstractButton {
 
                 anchors.left: parent.left
                 anchors.right: parent.right
+                elide: Text.ElideRight
                 anchors.verticalCenter: parent.verticalCenter
                 LayoutMirroring.enabled: false
                 horizontalAlignment: isRightToLeft() ? Text.AlignRight : Text.AlignLeft

@@ -38,9 +38,9 @@
 
 #include <config.h>
 
-static const int DASH_DESKTOP_WIDTH = 989;
+static const int DASH_DESKTOP_WIDTH = 996;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
-static const int DASH_DESKTOP_EXPANDED_HEIGHT = 606;
+static const int DASH_DESKTOP_EXPANDED_HEIGHT = 615;
 
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
@@ -168,6 +168,7 @@ DashDeclarativeView::setActive(bool value)
         } else {
             hide();
             m_launcherClient->endForceVisible();
+            QMetaObject::invokeMethod( rootObject(), "deactivateAllLenses", Qt::AutoConnection);
         }
         activeChanged(m_active);
     }

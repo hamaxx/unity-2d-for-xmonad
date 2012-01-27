@@ -14,5 +14,8 @@ override_dh_install:
 override_dh_auto_test:
 	echo "Tests not working right now as no X server"
 
+override_dh_strip:
+	dh_strip --dbg-package=unity-2d-dbg
+
 %:
-	dh $@ --with translations
+	dh $@ --parallel --with translations

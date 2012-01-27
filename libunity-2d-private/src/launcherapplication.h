@@ -105,7 +105,7 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
 
-    void updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties);
+    void updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties);
 
 Q_SIGNALS:
     void stickyChanged(bool);
@@ -174,8 +174,8 @@ private:
     void createStaticMenuActions();
     int windowCountOnCurrentWorkspace();
     template<typename T>
-    bool updateOverlayState(QMap<QString, QVariant> properties,
-                            QString propertyName, T* member);
+    bool updateOverlayState(const QMap<QString, QVariant>& properties,
+                            const QString& propertyName, T* member);
     QList<QUrl> validateUrisForLaunch(DeclarativeMimeData* mimedata);
     QStringList supportedTypes();
 

@@ -21,10 +21,11 @@ import Unity2d 1.0 /* required for drag’n’drop handling */
 
 AutoScrollingListView {
     id: list
+    Accessible.name: objectName
 
-    /* The spacing is explicitly set to -7 in order to compensate
+    /* The spacing is explicitly set to -8 in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
-    spacing: -7
+    spacing: -8
 
     property int tileSize: 54
 
@@ -89,6 +90,7 @@ AutoScrollingListView {
         }
 
         Accessible.name: accessibleDescription()
+        name: item.name
 
         width: list.width
         tileSize: list.tileSize
@@ -135,6 +137,8 @@ AutoScrollingListView {
         onDragEnter: item.onDragEnter(event)
         onDrop: item.onDrop(event)
 
+        isBfb: (item.toString().indexOf("BfbItem") == 0)
+
         function showMenu() {
             /* Prevent the simultaneous display of multiple menus */
             if (list.visibleMenu != item.menu && list.visibleMenu != undefined) {
@@ -151,7 +155,13 @@ AutoScrollingListView {
                 item.menu.hide()
                 item.activate()
             }
-            else if (mouse.button == Qt.RightButton) {
+            else if (mouse.button == Qt.MidButton) {
+                item.launchNewInstance()
+            }
+        }
+        
+        onPressed: {
+            if (mouse.button == Qt.RightButton) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
                    adjusts the position of the menu in case it goes offscreen
@@ -159,9 +169,6 @@ AutoScrollingListView {
                    See FIXME in LauncherContextualMenu::show(…). */
                 showMenu()
                 item.menu.folded = false
-            }
-            else if (mouse.button == Qt.MidButton) {
-                item.launchNewInstance()
             }
         }
 

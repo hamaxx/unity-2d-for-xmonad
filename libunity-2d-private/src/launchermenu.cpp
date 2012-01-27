@@ -177,7 +177,7 @@ LauncherContextualMenu::show(int x, int y)
         x = QApplication::desktop()->width() - x - sizeHint().width();
     }
 
-    move(x, y - minimumSize().height() / 2);
+    move(x, y - sizeHint().height() / 2 );
     QMenu::show();
 
     /* FIXME: adjust the position of the menu if it goes offscreen,

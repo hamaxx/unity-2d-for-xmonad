@@ -16,22 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 
 TextCustom {
     id: text
 
-    clip: true
     wrapMode: Text.Wrap
     verticalAlignment: Text.AlignTop
+    maximumLineCount: 2
+    elide: Text.ElideRight
 
     states: [
         State {
             name: "expanded"
             PropertyChanges {
                 target: text
-                clip: false
-                height: paintedHeight
+                maximumLineCount: 5
             }
         }
     ]
