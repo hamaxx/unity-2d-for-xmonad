@@ -1097,9 +1097,14 @@ LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
     }
 
     if (error) {
-        g_warning("%s\n", error->message);
+        g_warning("Failed to launch application: %s\n", error->message);
         g_error_free(error);
     }
+
+    /* 'launching' property becomes true for a few seconds and becomes
+       false as soon as the application is launched */
+    m_launching_timer.start();
+    launchingChanged(true);
 }
 
 
