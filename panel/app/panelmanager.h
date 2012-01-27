@@ -45,7 +45,7 @@ private:
 
 private Q_SLOTS:
     void onScreenCountChanged(int newCount);
-    void onF10Pressed();
+    void onAltF10Pressed();
 };
 
 #endif // PanelManager_H

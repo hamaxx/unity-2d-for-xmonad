@@ -38,6 +38,9 @@ context "Dash Tests" do
     $SUT.execute_shell_command 'killall unity-2d-launcher'
     $SUT.execute_shell_command 'killall unity-2d-launcher'
 
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
@@ -57,14 +60,18 @@ context "Dash Tests" do
                               :arguments => "-testability", 
                               :sleeptime => 2 )
 
+    @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
+                            :arguments => "-testability", 
+                            :sleeptime => 2 )
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
     $SUT.execute_shell_command 'pkill -nf unity-2d-places'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
   end
 
   #####################################################################################
@@ -83,7 +90,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Alt+F2 shows the Dash" do
-    verify_not(2, 'There should not be a Dash declarative view on startup') {
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
@@ -105,7 +112,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Pressing the bfb shows the Dash" do
-    verify_not(2, 'There should not be a Dash declarative view on startup') {
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
       @app_places.DashDeclarativeView()
     }
     bfb = @app_launcher.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
@@ -117,6 +124,42 @@ context "Dash Tests" do
     bfb.tap()
     verify(TIMEOUT, 'There should be a Dash declarative view after activating the bfb') {
         @app_places.DashDeclarativeView()
+    }
+  end
+
+  # Test case objectives:
+  #   * Check that Super+s does not type s
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Verify there is no text in the search entry
+  #   * Press Super+s
+  #   * Verify there is no text in the search entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  # FIXME This does not work reliably because the spread clears the search entry
+  #       and thus sometimes we ask for the contents too late
+  xtest "Super+s does not type s" do
+    verify_not(0, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app_places.DashDeclarativeView()
+    }
+    verify_equal("", TIMEOUT, 'There should be no text in the Search Entry') {
+      @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+    }
+    XDo::Keyboard.super_s
+    verify_not(0, "Text of the Search Entry should not be an 's'") {
+      verify_equal( "s", 1 ) {
+        @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+      }
     }
   end
 
@@ -207,4 +250,5 @@ context "Dash Tests" do
     }
     xid.close!
   end
+
 end

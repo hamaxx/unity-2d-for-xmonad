@@ -40,15 +40,11 @@ Item {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
-    DashSettings {
-        id: settings
-    }
-
     Binding {
         target: dashView
         property: "dashMode"
-        value: (settings.formFactor == DashSettings.Desktop) ?
-            DashDeclarativeView.DesktopMode : DashDeclarativeView.FullScreenMode
+        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+               DashDeclarativeView.FullScreenMode : DashDeclarativeView.DesktopMode
     }
 
     function activatePage(page) {

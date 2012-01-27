@@ -11,6 +11,7 @@
 static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
 static const char* LAUNCHER2D_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 static const char* PANEL2D_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* DASH2D_DCONF_SCHEMA = "com.canonical.Unity2d.Dash";
 
 static const char* UNITY_DCONF_SCHEMA = "com.canonical.Unity";
 static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity.Launcher";
@@ -28,6 +29,11 @@ inline QConf& launcher2dConfiguration() {
 
 inline QConf& panel2dConfiguration() {
     static QConf configuration(PANEL2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& dash2dConfiguration() {
+    static QConf configuration(DASH2D_DCONF_SCHEMA);
     return configuration;
 }
 
