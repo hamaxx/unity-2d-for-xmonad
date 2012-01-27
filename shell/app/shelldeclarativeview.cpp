@@ -25,7 +25,7 @@
 #include <hotkeymonitor.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
-#include <dashsettings.h>
+#include <dashclient.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
 #include <strutmanager.h>
@@ -92,21 +92,7 @@ ShellDeclarativeView::ShellDeclarativeView()
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
-    //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
-}
-
-// TODO: this is probably expressed more nicely in QML.
-void
-ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
-{
-    QRect rect = ScreenInfo::instance()->geometry();
-    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
-    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
-        setDashMode(FullScreenMode);
-    } else {
-        setDashMode(DesktopMode);
-    }
 }
 
 void
@@ -220,10 +206,6 @@ ShellDeclarativeView::setDashActive(bool value)
                 return;
             }
 
-            /* FIXME: should not be called here; it is unrelated to the dash being active or not
-               It should be called at the shell instantiation and whenever
-               ScreenInfo::instance()->geometry() changes */
-            updateDashModeDependingOnScreenGeometry();
             // FIXME: should be moved to Shell.qml
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));

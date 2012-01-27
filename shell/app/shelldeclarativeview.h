@@ -110,7 +110,6 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
-    void updateDashModeDependingOnScreenGeometry();
     void updateShellPosition(int screen);
 
 private:

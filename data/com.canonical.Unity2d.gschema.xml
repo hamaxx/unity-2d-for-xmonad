@@ -8,6 +8,13 @@
         When set to false, the raster engine is used.
       </description>
     </key>
+    <key type="s" name="form-factor">
+      <default>"desktop"</default>
+      <summary>What sort of device Unity is running on.</summary>
+      <description>
+        Unity will adapt its shape and form to the device it is running on.
+      </description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">
