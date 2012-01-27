@@ -116,9 +116,7 @@ context "Dash fullscreen tests" do
     }
   end
 
-  # FIXME: this test is temporarily disabled until we add back the panel buttons for the dash in
-  # the shell branch.
-  xtest "Dash reacts correctly to panel buttons" do
+  test "Dash reacts correctly to panel buttons" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
     %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
@@ -128,7 +126,7 @@ context "Dash fullscreen tests" do
     }
 
     maxbutton = nil
-    verify(TIMEOUT, 'The "maximize" button did not appear when the dash was visible' ) {
+    verify(1, 'The "maximize" button did not appear when the dash was visible' ) {
         maxbutton = @panel.AppNameApplet().children( :type => 'QAbstractButton' )[2]
     }
 
