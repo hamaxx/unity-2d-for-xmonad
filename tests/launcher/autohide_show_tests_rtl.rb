@@ -174,23 +174,23 @@ context "Launcher Autohide and Show Tests on RTL" do
   end
 
 
-  Test case objectives:
-    * Check Launcher reveal using mouse works
-  Pre-conditions
-    * Desktop with no running applications
-  Test steps
-    * Open application in position overlapping Launcher
-    * Verify Launcher hiding
-    * Move mouse to left of screen to reveal Launcher
-    * Verify Launcher shows but not immediately
-    * Move mouse to the right, but still over the Launcher
-    * Verify Launcher still showing
-    * Move mouse further right to not overlap Launcher
-    * Verify Launcher hides but not immediately
-  Post-conditions
-    * None
-  References
-    * None
+  # Test case objectives:
+  #    * Check Launcher reveal using mouse works
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Move mouse to left of screen to reveal Launcher
+  #   * Verify Launcher shows but not immediately
+  #   * Move mouse to the right, but still over the Launcher
+  #   * Verify Launcher still showing
+  #   * Move mouse further right to not overlap Launcher
+  #   * Verify Launcher hides but not immediately
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
   test "Reveal hidden Launcher with mouse" do
     xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
@@ -211,21 +211,21 @@ context "Launcher Autohide and Show Tests on RTL" do
   end
 
 
-  Test case objectives:
-    * Check Launcher reveal when dash is invoked
-  Pre-conditions
-    * None
-  Test steps
-    * Open application in position overlapping Launcher
-    * Verify Launcher hiding
-    * Press Super key
-    * Verify Launcher shows
-    * Press Super key
-    * Verify Launcher hides
-  Post-conditions
-    * None
-  References
-    * None
+  # Test case objectives:
+  #   * Check Launcher reveal when dash is invoked
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open application in position overlapping Launcher
+  #   * Verify Launcher hiding
+  #   * Press Super key
+  #   * Verify Launcher shows
+  #   * Press Super key
+  #   * Verify Launcher hides
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
   test "Press Super key to reveal launcher, press again to hide" do
     xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
