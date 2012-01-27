@@ -69,8 +69,9 @@ DashClient::DashClient(QObject* parent)
 
     connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateAlwaysFullScreen()));
 
-    // NOTE: we need to use a queued connection here otherwise QConf will deadlock for some reason
-    // when we read any property from the slot (which we need to do).
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
     connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
                                      SLOT(updateAlwaysFullScreen()), Qt::QueuedConnection);
     updateAlwaysFullScreen();
