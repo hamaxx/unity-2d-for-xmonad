@@ -109,7 +109,6 @@ protected:
     virtual void leaveEvent(QEvent *event);
 
 private Q_SLOTS:
-    void updateDashModeDependingOnScreenGeometry();
     void updateShellPosition(int screen);
 
 private:

@@ -65,8 +65,8 @@ FocusScope {
     Binding {
         target: declarativeView
         property: "dashMode"
-        value: dash2dConfiguration.fullScreen ? DashDeclarativeView.FullScreenMode :
-                                                DashDeclarativeView.DesktopMode
+        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+               ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
     }
 
     Connections {

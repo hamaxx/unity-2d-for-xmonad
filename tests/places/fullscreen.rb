@@ -42,10 +42,10 @@ context "Dash fullscreen tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-places > /dev/null 2>&1'
+    @oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
+
+    system 'killall unity-2d-shell > /dev/null 2>&1'
     system 'killall unity-2d-panel > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
-    system 'killall unity-2d-launcher > /dev/null 2>&1'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -53,35 +53,30 @@ context "Dash fullscreen tests" do
   
   # Run once at the end of this test suite
   shutdown do
+      %x{dconf write #{DASH_FULLSCREEN_KEY} #{@oldvalue}}
+      XDo::XWindow.toggle_minimize_all
   end
 
   # Run before each test case begins
   setup do
-    @oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
-
     # Execute the application
     @sut = TDriver.sut(:Id => "sut_qt")
-    @dash = @sut.run(:name => UNITY_2D_PLACES,
-                    :arguments => "-testability",
-                    :sleeptime => 2)
     @panel = @sut.run(:name => UNITY_2D_PANEL,
                     :arguments => "-testability",
                     :sleeptime => 2)
-    @launcher = @sut.run(:name => UNITY_2D_LAUNCHER,
-                         :arguments => "-testability",
-                         :sleeptime => 2)
+    @shell = @sut.run(:name => UNITY_2D_SHELL,
+                    :arguments => "-testability",
+                    :sleeptime => 2)
 
     verify(10){ @panel.Unity2dPanel() }
-    verify(10){ @launcher.Unity2dPanel() }
-    # Dash can't be verified here as the declarative view is hidden until we make it active
+    verify(10){ @shell.ShellDeclarativeView() }
   end
 
   # Run after each test case completes
   teardown do
     %x{dconf write #{DASH_FULLSCREEN_KEY} #{@oldvalue}}
     system "pkill -nf unity-2d-panel"
-    system "pkill -nf unity-2d-places"
-    system "pkill -nf unity-2d-launcher"
+    system "pkill -nf unity-2d-shell"
   end
 
   def dash_always_fullscreen
@@ -99,28 +94,33 @@ context "Dash fullscreen tests" do
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @dash.DashDeclarativeView()['active']
+        @shell.ShellDeclarativeView()['dashActive']
     }
-    verify_equal('DesktopMode', TIMEOUT, 'Dash is fullscreen but should not be') {
-        @dash.DashDeclarativeView()['dashMode']
+
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state') {
+        @shell.ShellDeclarativeView()['dashMode']
     }
 
     %x{dconf write #{DASH_FULLSCREEN_KEY} true}
     sleep 1
+    puts %x{dconf read #{DASH_FULLSCREEN_KEY}}
 
     verify_equal('FullScreenMode', TIMEOUT, 'Dash is not fullscreen but should be') {
-        @dash.DashDeclarativeView()['dashMode']
+        @shell.ShellDeclarativeView()['dashMode']
     }
   end
 
-  test "Dash reacts correctly to panel buttons" do
+  # FIXME: this test is temporarily disabled until we add back the panel buttons for the dash in
+  # the shell branch.
+  xtest "Dash reacts correctly to panel buttons" do
     oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}
 
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
     XDo::Keyboard.super
     sleep 1
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @dash.DashDeclarativeView()['active']
+        @shell.ShellDeclarativeView()['dashActive']
     }
 
     maxbutton = nil
@@ -131,16 +131,21 @@ context "Dash fullscreen tests" do
     maxbutton.tap if maxbutton
     sleep 1
     verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
-        @dash.DashDeclarativeView()['dashMode']
+        @shell.ShellDeclarativeView()['dashMode']
     }
-    verify_equal('true', TIMEOUT, 'Dash fullscreen key was not set') {
+
+    # When always fullscreen tapping the max button does nothing, so the key should remain set to
+    # false.
+    expected = dash_always_fullscreen ? 'false' : 'true'
+    verify_equal(expected, TIMEOUT, 'Dash fullscreen key has the wrong value after maximize') {
         %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
     }
 
     maxbutton.tap if maxbutton
     sleep 1
-    verify_equal('DesktopMode', TIMEOUT, 'Dash should not be fullsceen, but it is' ) {
-        @dash.DashDeclarativeView()['dashMode']
+    expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
+    verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state' ) {
+        @shell.ShellDeclarativeView()['dashMode']
     }
     verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
         %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
@@ -148,21 +153,15 @@ context "Dash fullscreen tests" do
   end
 
   test "Dash fullscreen initially" do
-    # The initial startup mode ignores the dconf key and only decides based on the screen
-    # resolution. It's a bug and will be fixed, but as long as it's there let's test for it.
-
-    expect = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
-    initial = dash_always_fullscreen ? 'false' : 'true'
-    %x{dconf write #{DASH_FULLSCREEN_KEY} #{initial}}
+    %x{dconf write #{DASH_FULLSCREEN_KEY} true}
     XDo::Keyboard.super
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @dash.DashDeclarativeView()['active']
+        @shell.ShellDeclarativeView()['dashActive']
     }
-
-    verify_equal(expect, TIMEOUT, 'Dash initial state is wrong') {
-        @dash.DashDeclarativeView()['dashMode']
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
+        @shell.ShellDeclarativeView()['dashMode']
     }
   end
 end
