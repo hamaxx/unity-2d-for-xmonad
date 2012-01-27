@@ -28,6 +28,9 @@ Item {
 
     Grid {
         id: buttons
+        
+        // TODO The alignment here is broken in RTL but Gerry says it's going away so we
+        //      do not care about it
 
         anchors.fill: parent
         spacing: 51
