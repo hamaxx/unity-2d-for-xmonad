@@ -81,7 +81,7 @@ LauncherDropItem {
 
         width: 1
         height: parent.height
-        anchors.right: parent.right
+        anchors.right: Utils.isLeftToRight() ? parent.right : parent.left
         fillMode: Image.TileVertically
         source: "artwork/background.png"
     }
