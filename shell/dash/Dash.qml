@@ -62,15 +62,11 @@ FocusScope {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
-    DashSettings {
-        id: dashSettings
-    }
-
     Binding {
         target: declarativeView
         property: "dashMode"
-        value: (dashSettings.formFactor == DashSettings.Desktop) ?
-               ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
+        value: dash2dConfiguration.fullScreen ? DashDeclarativeView.FullScreenMode :
+                                                DashDeclarativeView.DesktopMode
     }
 
     Connections {

@@ -29,9 +29,12 @@ require 'xdo/mouse'
 require 'tmpwindow'
 
 ############################# Test Suite #############################
-context "Sizing tests" do
+context "Spread Tests" do
   # Run once at the beginning of this test suite
   startup do
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
@@ -46,49 +49,57 @@ context "Sizing tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability",
-                     :sleeptime => 2 )
+    @app_shell = $SUT.run( :name => UNITY_2D_SHELL,
+                           :arguments => "-testability",
+                           :sleeptime => 2 )
 
-    # Make certain application is ready for testing
-    verify{ @app.Launcher() }
+    @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
+                              :arguments => "-testability", 
+                              :sleeptime => 2 )
+
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
-    #Need to kill Launcher and Panel as it does not shutdown when politely asked
+    #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
   end
 
   #####################################################################################
-  # Test cases
+  # Test casess
 
   # Test case objectives:
-  #   * Check the Launcher updates size and position on free desktop space change
+  #   * Check that Super+s shows the launcher and the spread
   # Pre-conditions
   #   * Desktop with no running applications
   # Test steps
-  #   * Verify Launcher y position is the panel height
-  #   * Kill panel
-  #   * Verify Launcher y position is zero
-  #   * Verify Launcher height is old height + panel height
+  #   * Verify spread is not showing
+  #   * Open application that overlaps with the launcher
+  #   * Verify launcher is not showing
+  #   * Press Super+s
+  #   * Verify spread is showing
+  #   * Verify launcher is showing
   # Post-conditions
   #   * None
   # References
   #   * None
-  test "Launcher updates size and position on free desktop space change" do
-    # check width before proceeding
-    verify_equal( PANEL_HEIGHT, TIMEOUT, "Launcher is not just under the panel" ) {
-      @app.Launcher()['y_absolute'].to_i
+  test "Super+s shows the launcher and the spread" do
+    verify_not(2, 'There should not be a Spread declarative view on startup') {
+      @app_spread.SpreadView()
     }
-    old_height = @app.Launcher()['height'].to_i
-    $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
-    verify_equal( 0, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
-      @app.Launcher()['y_absolute'].to_i
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal(-LAUNCHER_WIDTH, TIMEOUT, 'The launcher should not be visible with an overlapping window') {
+      @app_shell.Launcher()['x_absolute'].to_i
     }
-    verify_equal( old_height + PANEL_HEIGHT, TIMEOUT, "Launcher did not grow vertically when killing the panel" ) {
-      @app.Launcher()['height'].to_i
+    XDo::Keyboard.super_s
+    verify_equal("true", TIMEOUT, 'There should be a visible Spread declarative view after pressing Alt+F2') {
+      @app_spread.SpreadView()['visible']
     }
+    verify_equal(0, TIMEOUT, 'The launcher should be visible when spread is invoked') {
+      @app_shell.Launcher()['x_absolute'].to_i
+    }
+    xid.close!
   end
 end

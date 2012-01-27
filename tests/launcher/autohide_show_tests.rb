@@ -30,7 +30,6 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
-  WIDTH = 65 #launcher bar width
   launcher_favorites = ""
 
   # Run once at the beginning of this test suite
@@ -79,7 +78,7 @@ context "Launcher Autohide and Show Tests" do
   # Pre-conditions
   #   * Desktop with no running applications
   # Test steps
-  #   * Verify Launcher is #{WIDTH} pixels wide
+  #   * Verify Launcher is #{LAUNCHER_WIDTH} pixels wide
   #   * Verify Launcher showing
   # Post-conditions
   #   * None
@@ -87,7 +86,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Position with Empty Desktop" do
     # check width before proceeding
-    verify_equal( WIDTH, TIMEOUT, "Launcher is not #{WIDTH} pixels wide on screen!" ) {
+    verify_equal( LAUNCHER_WIDTH, TIMEOUT, "Launcher is not #{LAUNCHER_WIDTH} pixels wide on screen!" ) {
       @app.Launcher()['width'].to_i
     }
 
@@ -132,7 +131,7 @@ context "Launcher Autohide and Show Tests" do
   test "Position with Window in the way" do
     # Open Terminal with position 40x100
     xid = TmpWindow.open_window_at(40,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -161,12 +160,12 @@ context "Launcher Autohide and Show Tests" do
       @app.Launcher()['x_absolute'].to_i
     }
 
-    xid.move(WIDTH-1,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
+    xid.move(LAUNCHER_WIDTH-1,100)
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
-    xid.move(WIDTH,100)
+    xid.move(LAUNCHER_WIDTH,100)
     verify_equal( 0, TIMEOUT, 'Launcher hiding when window not in the way, should be visible' ) {
       @app.Launcher()['x_absolute'].to_i
     }
@@ -193,30 +192,30 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Reveal hidden Launcher with mouse" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
     XDo::Mouse.move(0,200)
     sleep 0.4
-    verify_equal( -WIDTH, 0, 'Launcher should not be visible immediately after mouse moves to the left edge, has to wait 0.5 seconds to show' ) {
+    verify_equal( -LAUNCHER_WIDTH, 0, 'Launcher should not be visible immediately after mouse moves to the left edge, has to wait 0.5 seconds to show' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
-    XDo::Mouse.move(WIDTH-1,200)
+    XDo::Mouse.move(LAUNCHER_WIDTH-1,200)
     verify_equal( 0, TIMEOUT, 'Launcher should still be visible as mouse over it' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
-    XDo::Mouse.move(WIDTH,200)
+    XDo::Mouse.move(LAUNCHER_WIDTH,200)
     sleep 0.9
     verify_equal( 0, 0, 'Launcher should still be visible as it should take 1 second to hide after mouse is not over it' ) {
       @app.Launcher()['x_absolute'].to_i
     }
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -240,7 +239,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Super key to reveal launcher, press again to hide" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
@@ -250,7 +249,7 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -275,7 +274,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Hold Super key down to reveal launcher and shortcut keys" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
@@ -292,7 +291,7 @@ context "Launcher Autohide and Show Tests" do
     }  
 
     XDo::Keyboard.key_up('SUPER')
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -317,7 +316,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Alt+F1 to focus Launcher" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
@@ -332,7 +331,7 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::Keyboard.escape
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -360,7 +359,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Alt+F1 to focus/unfocus Launcher" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -379,7 +378,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.alt_F1
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -411,7 +410,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   xtest "Press Alt+F1 to focus/unfocus Launcher when dash is open" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -432,7 +431,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.escape
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -464,7 +463,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   xtest "Press Alt+F1 to focus Launcher when dash is open, escape to unfocus" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -485,7 +484,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.alt_F1
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Launcher()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -511,7 +510,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Launcher visible on show-desktop" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
 
@@ -521,7 +520,7 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::XWindow.toggle_minimize_all
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     xid.close!
@@ -565,7 +564,7 @@ context "Launcher Autohide and Show Tests" do
       verify_equal( 0, 0, 'Launcher hiding after icon removal, should be visible for 1 second' ) {
         @app.Launcher()['x_absolute'].to_i
       }
-      verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+      verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
         @app.Launcher()['x_absolute'].to_i
       }
       xid.close!
@@ -589,7 +588,7 @@ context "Launcher Autohide and Show Tests" do
   # * None
   test "Launcher visible after toggling dash" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
  
@@ -602,7 +601,7 @@ context "Launcher Autohide and Show Tests" do
     bfb.tap()
     bfb.tap()
     verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
-      verify_equal( -WIDTH, 2 ) {
+      verify_equal( -LAUNCHER_WIDTH, 2 ) {
         @app.Launcher()['x_absolute'].to_i
       }
     }
@@ -628,7 +627,7 @@ context "Launcher Autohide and Show Tests" do
   # * None
   test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
@@ -636,7 +635,7 @@ context "Launcher Autohide and Show Tests" do
     bfb.move_mouse()
     XDo::Keyboard.escape
     verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
-      verify_equal( -WIDTH, 2 ) {
+      verify_equal( -LAUNCHER_WIDTH, 2 ) {
         @app.Launcher()['x_absolute'].to_i
       }
     }

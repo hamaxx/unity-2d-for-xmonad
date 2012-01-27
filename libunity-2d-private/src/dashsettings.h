@@ -23,11 +23,9 @@
 
 // Qt
 #include <QObject>
-#include <QMetaType>
+#include <QSize>
 
 namespace Unity2d {
-
-class DashSettingsPrivate;
 
 /**
  * Provide easy access to the Dash settings (from Qt and QML)
@@ -36,37 +34,15 @@ class DashSettings: public QObject
 {
     Q_OBJECT
 
-    Q_ENUMS(FormFactor)
-
-    Q_PROPERTY(FormFactor formFactor READ formFactor WRITE setFormFactor NOTIFY formFactorChanged)
-
 public:
     explicit DashSettings(QObject* parent = 0);
-    ~DashSettings();
-
-    enum FormFactor
-    {
-        Automatic = 0,
-        Desktop,
-        Netbook
-    };
-
-    void setFormFactor(FormFactor formFactor);
-    FormFactor formFactor() const;
 
     static QSize minimumSizeForDesktop();
 
-Q_SIGNALS:
-    void formFactorChanged();
-
 private:
     Q_DISABLE_COPY(DashSettings)
-    DashSettingsPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(DashSettings)
 };
 
 } // namespace Unity2d
-
-Q_DECLARE_METATYPE(Unity2d::DashSettings::FormFactor)
 
 #endif /* DASHSETTINGS_H */
