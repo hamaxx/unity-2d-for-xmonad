@@ -37,6 +37,7 @@ context "Dash fullscreen tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
 
   DASH_FULLSCREEN_KEY = '/com/canonical/unity-2d/dash/full-screen'
+  DASH_FORMFACTOR_KEY = '/com/canonical/unity-2d/form-factor'
   DASH_MIN_SCREEN_WIDTH = 1280;
   DASH_MIN_SCREEN_HEIGHT = 1084;
 
@@ -57,7 +58,8 @@ context "Dash fullscreen tests" do
 
   # Run before each test case begins
   setup do
-    @oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
+    @fullscreen_old = %x{dconf read #{DASH_FULLSCREEN_KEY}}.chop
+    @formfactor_old = %x{dconf read #{DASH_FORMFACTOR_KEY}}.chop
 
     # Execute the application
     @sut = TDriver.sut(:Id => "sut_qt")
@@ -78,7 +80,9 @@ context "Dash fullscreen tests" do
 
   # Run after each test case completes
   teardown do
-    %x{dconf write #{DASH_FULLSCREEN_KEY} #{@oldvalue}}
+    %x{dconf write #{DASH_FULLSCREEN_KEY} #{'"'}#{@fullscreen_old}#{'"'}}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'"'}#{@formfactor_old}#{'"'}}
+
     system "pkill -nf unity-2d-panel"
     system "pkill -nf unity-2d-places"
     system "pkill -nf unity-2d-launcher"
@@ -95,6 +99,7 @@ context "Dash fullscreen tests" do
 
   test "Dash fullscreens on dconf key change" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
 
@@ -116,9 +121,8 @@ context "Dash fullscreen tests" do
   end
 
   test "Dash reacts correctly to panel buttons" do
-    oldvalue = %x{dconf read #{DASH_FULLSCREEN_KEY}}
-
     %x{dconf write #{DASH_FULLSCREEN_KEY} false}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
@@ -156,6 +160,7 @@ context "Dash fullscreen tests" do
 
   test "Dash fullscreen initially" do
     %x{dconf write #{DASH_FULLSCREEN_KEY} true}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"desktop\"'}}
     XDo::Keyboard.super
     sleep 1
 
@@ -166,4 +171,19 @@ context "Dash fullscreen tests" do
         @dash.DashDeclarativeView()['dashMode']
     }
   end
+
+  test "Dash always fullscreen if not desktop form factor" do
+    %x{dconf write #{DASH_FULLSCREEN_KEY} false}
+    %x{dconf write #{DASH_FORMFACTOR_KEY} #{'\"tv\"'}}
+    XDo::Keyboard.super
+    sleep 1
+
+    verify_equal('true', TIMEOUT, 'Dash did not appear') {
+        @dash.DashDeclarativeView()['active']
+    }
+    verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
+        @dash.DashDeclarativeView()['dashMode']
+    }
+  end
+
 end
