@@ -1,6 +1,7 @@
 import QtQuick 1.0
 import Unity2d 1.0
 import "../common"
+import "../common/utils.js" as Utils
 
 BaseBehavior {
     id: intellihide
@@ -50,9 +51,22 @@ BaseBehavior {
 
     WindowsIntersectMonitor {
         id: windows
-        monitoredArea: intellihide.target ? Qt.rect(0, intellihide.target.y,
-                                                    intellihide.target.width,
-                                                    intellihide.target.height)
-                                          : Qt.rect(0, 0, 0, 0)
+        monitoredArea: {
+            if (intellihide.target) {
+                if (Utils.isLeftToRight()) {
+                    return Qt.rect(0,
+                                   intellihide.target.y,
+                                   intellihide.target.width,
+                                   intellihide.target.height)
+                } else {
+                    return Qt.rect(screen.availableGeometry.width - intellihide.target.width,
+                                   intellihide.target.y,
+                                   intellihide.target.width,
+                                   intellihide.target.height)
+                }
+            } else {
+                return Qt.rect(0, 0, 0, 0)
+            }
+        }
     }
 }

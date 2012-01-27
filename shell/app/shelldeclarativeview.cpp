@@ -64,9 +64,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-    /* Respect the struts manually because the window manager does not enforce struts
-       on dock windows */
-    move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
+    updateShellPosition(QX11Info::appScreen());
 
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
@@ -115,7 +113,11 @@ void
 ShellDeclarativeView::updateShellPosition(int screen)
 {
     if (screen == QX11Info::appScreen()) {
-        QPoint posToMove = QApplication::desktop()->availableGeometry(screen).topLeft();
+        const QRect availableGeometry = QApplication::desktop()->availableGeometry(screen);
+        QPoint posToMove = availableGeometry.topLeft();
+        if (qApp->isRightToLeft()) {
+            posToMove.setX(availableGeometry.width() - width());
+        }
 
         StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
         if (strutManager && strutManager->enabled()) {
@@ -126,7 +128,11 @@ ShellDeclarativeView::updateShellPosition(int screen)
                 break;
 
                 case Unity2dPanel::LeftEdge:
-                    posToMove.rx() -= strutManager->realWidth();
+                    if (qApp->isLeftToRight()) {
+                        posToMove.rx() -= strutManager->realWidth();
+                    } else {
+                        posToMove.rx() += strutManager->realWidth();
+                    }
                 break;
             }
         }
@@ -148,6 +154,13 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusInEvent(event);
     Q_EMIT focusChanged();
+}
+
+void
+ShellDeclarativeView::resizeEvent(QResizeEvent *event)
+{
+    updateShellPosition(QX11Info::appScreen());
+    Unity2DDeclarativeView::resizeEvent(event);
 }
 
 void

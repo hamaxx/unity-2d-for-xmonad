@@ -32,7 +32,7 @@ LauncherDropItem {
     Binding {
         target: declarativeView
         property: "monitoredArea"
-        value: Qt.rect(launcher.x, launcher.y, launcher.width, launcher.height)
+        value: Qt.rect(launcherLoader.x, launcher.y, launcher.width, launcher.height)
     }
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
 

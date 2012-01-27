@@ -33,7 +33,13 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 65
-        x: visibilityController.shown ? 0 : -width
+        x: {
+            if (Utils.isLeftToRight()) {
+                return visibilityController.shown ? 0 : -width
+            } else {
+                return visibilityController.shown ? screen.availableGeometry.width - width : screen.availableGeometry.width
+            }
+        }
 
         KeyNavigation.right: dashLoader
 
@@ -120,11 +126,21 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            // Prevent the launcher mask to ever go to negative values or be less than 1 pixel
-            // (to preserve the autohide/intellihide edge detection)
-            rectangle: Qt.rect(0, launcherLoader.y,
-                               launcherLoader.visibilityController.shown ? launcherLoader.width : 1,
-                               launcherLoader.height)
+            rectangle: {
+                if (launcherLoader.visibilityController.shown) {
+                    return Qt.rect(launcherLoader.x,
+                                   launcherLoader.y,
+                                   launcherLoader.width,
+                                   launcherLoader.height)
+                } else {
+                    // The outerEdgeMouseArea is one pixel bigger on each side so use it
+                    // when the launcher is hidden to have that extra pixel in the border
+                    return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
+                                   launcherLoader.y,
+                                   launcherLoader.outerEdgeMouseArea.width,
+                                   launcherLoader.height)
+                }
+            }
             enabled: launcherLoader.status == Loader.Ready
         }
 

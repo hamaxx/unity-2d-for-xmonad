@@ -8,6 +8,7 @@ Loader {
     source: "Launcher.qml"
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
+    property alias outerEdgeMouseArea: outerEdge
 
     VisibilityController {
         id: visibilityController
