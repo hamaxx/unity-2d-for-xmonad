@@ -391,7 +391,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
     verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
       @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Tauler' ) \
+          .QDeclarativeItem( :name => 'Dash home' ) \
           .QDeclarativeImage( :name => 'selectionOutline' )['visible']
     }
     assert_not_equal( xid.id, XDo::XWindow.active_window, \
@@ -438,7 +438,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
     verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
       @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Tauler' ) \
+          .QDeclarativeItem( :name => 'Dash home' ) \
           .QDeclarativeImage( :name => 'selectionOutline' )['visible']
     }
     assert_not_equal( xid.id, XDo::XWindow.active_window, \
