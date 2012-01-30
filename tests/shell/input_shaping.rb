@@ -140,7 +140,7 @@ context "Shell input shape tests" do
     screen_width, screen_height = desktop_geometry()
     screen_height -= PANEL_HEIGHT
     comparepath = tempfilename('shape', '.png')
-    %x{convert xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} #{comparepath}}
+    %x{convert -size #{screen_width}x#{screen_height} xc:white -background white -draw 'rectangle 0,0 #{LAUNCHER_WIDTH-1},#{screen_height}' #{comparepath}}
 
     identical = compare_images(maskpath, comparepath)
 
@@ -162,14 +162,10 @@ context "Shell input shape tests" do
     screen_height -= PANEL_HEIGHT
 
     verifypath = "#{pwd}/verification/dash_desktop.png"
-    out = %x{identify -format "%wx%h" #{verifypath}}
-    verify_width = out.split("x")[0].to_i
-    verify_width += LAUNCHER_WIDTH
 
     comparepath = tempfilename('shape', '.png')
 
-    %x{convert #{verifypath} \
-       -gravity northeast -extent #{verify_width}x#{screen_height}! \
+    %x{convert xc:white -extent #{screen_width}x#{screen_height} #{verifypath} -geometry +#{LAUNCHER_WIDTH}+0 -composite  \
        \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
        -gravity northwest -compose over -composite #{comparepath}}
 
@@ -218,14 +214,10 @@ context "Shell input shape tests" do
     screen_height -= PANEL_HEIGHT
 
     verifypath = "#{pwd}/verification/dash_collapsed.png"
-    out = %x{identify -format "%wx%h" #{verifypath}}
-    verify_width = out.split("x")[0].to_i
-    verify_width += LAUNCHER_WIDTH
 
     comparepath = tempfilename('shape', '.png')
 
-    %x{convert #{verifypath} \
-       -gravity northeast -extent #{verify_width}x#{screen_height}! \
+    %x{convert xc:white -extent #{screen_width}x#{screen_height} #{verifypath} -geometry +#{LAUNCHER_WIDTH}+0 -composite  \
        \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
        -gravity northwest -compose over -composite #{comparepath}}
 
