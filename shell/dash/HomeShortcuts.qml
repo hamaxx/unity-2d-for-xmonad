@@ -28,9 +28,13 @@ Item {
 
     Grid {
         id: buttons
-        
+
         // TODO The alignment here is broken in RTL but Gerry says it's going away so we
-        //      do not care about it
+        //      do not care about it. Don't ask me why this transparent rectangle fixes it
+        Rectangle {
+            anchors.fill: parent
+            opacity: 0
+        }
 
         anchors.fill: parent
         spacing: 51
