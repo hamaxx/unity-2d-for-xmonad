@@ -58,6 +58,17 @@ static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
+static const int XK_KP_0 = 0xffb0;
+static const int XK_KP_1 = 0xffb1;
+static const int XK_KP_2 = 0xffb2;
+static const int XK_KP_3 = 0xffb3;
+static const int XK_KP_4 = 0xffb4;
+static const int XK_KP_5 = 0xffb5;
+static const int XK_KP_6 = 0xffb6;
+static const int XK_KP_7 = 0xffb7;
+static const int XK_KP_8 = 0xffb8;
+static const int XK_KP_9 = 0xffb9;
+
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
@@ -101,7 +112,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     /* Qt won't distinguish between keys[0-9] below the Functionkeys and keypad keys[0-9] on the Keypad.
        Reference: <X11/keysymdef.h>
     */
-    for (Qt::Key key = (Qt::Key)(0xffb0); key <= (Qt::Key)(0xffb9); key = (Qt::Key) (key + 1)) {
+    for (Qt::Key key = (Qt::Key)(XK_KP_0); key <= (Qt::Key)(XK_KP_9); key = (Qt::Key) (key + 1)) {
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier, true);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
         hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier | Qt::ShiftModifier, true);
@@ -393,9 +404,9 @@ ShellDeclarativeView::forwardNumericHotkey()
         Qt::Key key = hotkey->key();
         int index = 0;
         if (hotkey->isX11Keysym()) {
-            if (key >= 0xffb1 && key <= 0xffb9) {
-                index = key - 0xffb0;
-            } else if (key == 0xffb0) {
+            if (key >= XK_KP_1 && key <= XK_KP_9) {
+                index = key - XK_KP_0;
+            } else if (key == XK_KP_0) {
                index = 10;
             }
         } else {
