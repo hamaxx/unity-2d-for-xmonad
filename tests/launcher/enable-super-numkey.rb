@@ -40,15 +40,13 @@ context "Launcher Super+NUM key support Tests" do
   # Run before each test case begins
   setup do
     # Execute the application
-    @app = @sut.run( :name => UNITY_2D_SHELL,
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
                      :arguments => "-testability",
                      :sleeptime => 2 )
   end
 
   # Run after each test case completes
   teardown do
-    #@app.close
-    #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command "pkill -nf unity-2d-launcher"
   end
 
