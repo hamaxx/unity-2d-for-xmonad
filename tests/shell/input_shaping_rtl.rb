@@ -32,11 +32,6 @@ require 'tmpdir'
 require 'tempfile'
 include TDriverVerify
 
-def desktop_geometry
-    out = %x{xdotool getdisplaygeometry}
-    return out.split.collect { |coord| coord.to_i }
-end
-
 # We just need a temp file name but ruby insist on creating it, so we just delete it first.
 def tempfilename(base, extension = ".tmp")
     maskfile = Tempfile.new([base, extension])
@@ -91,13 +86,12 @@ context "Shell input shape tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    system 'killall unity-2d-shell > /dev/null 2>&1'
-    system 'killall unity-2d-shell > /dev/null 2>&1'
-    system 'killall unity-2d-panel > /dev/null 2>&1'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-panel'
 
     # Need panel running as position of shell depends on it
-    @@sut = TDriver.sut(:Id => "sut_qt")
-    @@panel = @@sut.run(:name => UNITY_2D_PANEL,
+    @@panel = $SUT.run(:name => UNITY_2D_PANEL,
                         :arguments => "-testability" )
 
     # Minimize all windows
@@ -114,8 +108,7 @@ context "Shell input shape tests" do
     XDo::Mouse.move(200,200,10,true)    
 
     # Execute the application 
-    @sut = TDriver.sut(:Id => "sut_qt")    
-    @app = @sut.run(:name => UNITY_2D_SHELL,
+    @app = $SUT.run(:name => UNITY_2D_SHELL,
                     :arguments => "-testability,-reverse",
                     :sleeptime => 2)
     # Make certain application is ready for testing
@@ -124,7 +117,7 @@ context "Shell input shape tests" do
 
   # Run after each test case completes
   teardown do
-    system "pkill -nf unity-2d-shell"
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
   #####################################################################################
@@ -137,7 +130,7 @@ context "Shell input shape tests" do
     # Since the shape of the launcher is dependent on screen geometry, calculate what it should be
     # then use imagemagick to create an image that contains only a black rectangle where the
     # launcher should be.
-    screen_width, screen_height = desktop_geometry()
+    screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
     comparepath = tempfilename('shape', '.png')
     %x{convert -size #{screen_width}x#{screen_height} xc:white -background white -draw 'rectangle 0,0 #{LAUNCHER_WIDTH-1},#{screen_height}' -flop #{comparepath}}
@@ -158,7 +151,7 @@ context "Shell input shape tests" do
     # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
     # then draw a black rectangle and compose it at the left side of the dash verification image.
 
-    screen_width, screen_height = desktop_geometry()
+    screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
 
     verifypath = "#{pwd}/verification/dash_desktop.png"
@@ -171,8 +164,8 @@ context "Shell input shape tests" do
 
     identical = compare_images(maskpath, comparepath)
 
-    puts maskpath
-    puts comparepath
+    File.unlink(maskpath)
+    File.unlink(comparepath)
 
     verify_true(10, "The actual shape does not match the expected shape") { identical }
   end
@@ -186,7 +179,7 @@ context "Shell input shape tests" do
     maskpath = get_shell_shape()
 
     # Compare with just one big rectangle filling the entire screen minus the panel area
-    screen_width, screen_height = desktop_geometry()
+    screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
     comparepath = tempfilename('shape', '.png')
     %x{convert xc:black -background black -extent #{screen_width}x#{screen_height} -flop #{comparepath}}
@@ -210,7 +203,7 @@ context "Shell input shape tests" do
     # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
     # then draw a black rectangle and compose it at the left side of the dash verification image.
 
-    screen_width, screen_height = desktop_geometry()
+    screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
 
     verifypath = "#{pwd}/verification/dash_collapsed.png"
