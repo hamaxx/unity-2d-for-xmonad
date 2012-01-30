@@ -26,6 +26,8 @@
 
 #include <QBitmap>
 #include <QDesktopWidget>
+#include <QFile>
+#include <QImageWriter>
 #include <QRegion>
 #include <QPainter>
 #include <QPainterPath>
@@ -82,7 +84,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < count; i++) {
         region = region.united(QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height));
 
-        printf("%dx%d@%d,%d", rects[i].width, rects[i].height, rects[i].x, rects[i].y);
+//         printf("%dx%d@%d,%d", rects[i].width, rects[i].height, rects[i].x, rects[i].y);
     }
 
     if (!outputFile.isEmpty()) {
@@ -111,7 +113,17 @@ int main(int argc, char *argv[])
         path.addRegion(region);
         painter.fillPath(path, Qt::color1);
         painter.end();
-        if (!bitmap.save(outputFile)) {
+
+        if (outputFile == "-") {
+            QFile f;
+            if (!f.open(stdout, QIODevice::WriteOnly)) {
+                return 4;
+            }
+            QImageWriter writer(&f, "PNG");
+            if (!writer.write(bitmap.toImage())) {
+                return 5;
+            }
+        } else if (!bitmap.save(outputFile)) {
             qWarning() << "Failed to save file with path:" << outputFile;
             return 3;
         }
