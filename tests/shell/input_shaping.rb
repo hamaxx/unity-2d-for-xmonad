@@ -56,7 +56,7 @@ def get_shell_shape
 
     # Get the shape of the shell window using our custom tool
     maskpath = tempfilename('shape', '.png')
-    out = %x{#{pwd}/../getshape/getshape #{shell_id} #{maskpath}}
+    out = %x{#{BINARY_DIR}/tests/getshape/getshape #{shell_id} #{maskpath}}
     assert($?.exitstatus == 0, "Failed to call getshape to get the shape of the window")
     return maskpath
 end
