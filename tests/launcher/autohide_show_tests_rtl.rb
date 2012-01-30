@@ -43,6 +43,12 @@ context "Launcher Autohide and Show Tests on RTL" do
       @app.Launcher()['x_absolute'].to_i
     }
   end
+  
+  def open_overlapping_window()
+      xid = TmpWindow.open_window_at(100, 100)
+      xid.move(XDo::XWindow.display_geometry[0] - xid.size[0] - 10 , 100)
+      return xid
+  end
 
   # Run once at the beginning of this test suite
   startup do
@@ -137,8 +143,8 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Position with Window in the way" do
-    # Open Terminal with position 40x100
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 40, 100)
+    # Open Terminal overlapping with the launcher
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible when window in the way, should be hidden')
     xid.close!
   end
@@ -192,7 +198,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Reveal hidden Launcher with mouse" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
     XDo::Mouse.move(XDo::XWindow.display_geometry[0], 200, 0, true)
@@ -227,7 +233,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Press Super key to reveal launcher, press again to hide" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
     XDo::Keyboard.simulate('{SUPER}')
@@ -256,7 +262,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Hold Super key down to reveal launcher and shortcut keys" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
     sleep 1 #launcher seems not ready to accept Super key, need a pause
@@ -292,7 +298,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Press Alt+F1 to focus Launcher" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
@@ -329,7 +335,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Press Alt+F1 to focus/unfocus Launcher" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
     assert_equal( xid.id, XDo::XWindow.active_window, \
                   'terminal should have focus after starting it' )
@@ -374,7 +380,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
     assert_equal( xid.id, XDo::XWindow.active_window, \
                   'terminal should have focus after starting it' )
@@ -421,7 +427,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
     assert_equal( xid.id, XDo::XWindow.active_window, \
                   'terminal should have focus after starting it' )
@@ -462,7 +468,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Launcher visible on show-desktop" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
     XDo::XWindow.toggle_minimize_all # This is effectively the show-desktop shortcut
@@ -490,7 +496,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   #   * None
   test "Launcher hide delay on tile removal" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     tiles = ""
     verify( 0, 'Could not find any non running application tile to remove' ) {
         tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
@@ -528,7 +534,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   # * None
   test "Launcher visible after toggling dash" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
  
     bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
@@ -561,7 +567,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # References
   # * None
   test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
-    xid = TmpWindow.open_window_at(XDo::XWindow.display_geometry[0] - 10,100)
+    xid = open_overlapping_window()
     verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
     bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
