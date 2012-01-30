@@ -83,10 +83,3 @@ configure_file(gnomesessionclienttest.sh.in
 #    COMMAND /bin/sh gnomesessionclienttest.sh
 #    )
 
-# mouseareademo
-add_executable(mouseareademo
-    mouseareademo.cpp
-    )
-target_link_libraries(mouseareademo
-    unity-2d-private
-    )

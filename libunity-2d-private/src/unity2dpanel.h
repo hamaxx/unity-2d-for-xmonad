@@ -45,6 +45,7 @@ class Unity2dPanel : public QWidget
      */
     Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
+    Q_ENUMS(Edge)
 
 public:
     enum Edge {
@@ -83,17 +84,12 @@ public:
 
     QString id() const;
 
-public Q_SLOTS:
-    void slideIn();
-    void slideOut();
-
 Q_SIGNALS:
     void manualSlidingChanged(bool);
     void useStrutChanged(bool);
 
 protected:
     virtual void showEvent(QShowEvent*);
-    virtual void resizeEvent(QResizeEvent*);
     virtual void paintEvent(QPaintEvent*);
 
 private Q_SLOTS:

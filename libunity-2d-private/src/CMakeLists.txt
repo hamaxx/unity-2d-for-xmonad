@@ -4,7 +4,6 @@ set (LIB_NAME "unity-2d-private")
 set(lib${LIB_NAME}_SRCS
     bfb.cpp
     dashclient.cpp
-    dashsettings.cpp
     debug.cpp
     gconnector.cpp
     gimageutils.cpp
@@ -14,7 +13,6 @@ set(lib${LIB_NAME}_SRCS
     hotkey.cpp
     keymonitor.cpp
     launcherclient.cpp
-    mousearea.cpp
     unity2dapplication.cpp
     unity2ddebug.cpp
     unity2dpanel.cpp
@@ -23,7 +21,6 @@ set(lib${LIB_NAME}_SRCS
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
-    edgehitdetector.cpp
     gesturehandler.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp
@@ -76,6 +73,7 @@ set(lib${LIB_NAME}_SRCS
     inputshapemanager.cpp
     inputshaperectangle.cpp
     inputshapemask.cpp
+    strutmanager.cpp
     )
 
 # Build

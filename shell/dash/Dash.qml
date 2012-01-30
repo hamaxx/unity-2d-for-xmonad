@@ -23,6 +23,7 @@ import "../common"
 
 FocusScope {
     id: dash
+    objectName: "Dash"
     Accessible.name: "dash"
 
     LayoutMirroring.enabled: isRightToLeft()
@@ -61,15 +62,11 @@ FocusScope {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
-    DashSettings {
-        id: dashSettings
-    }
-
     Binding {
         target: declarativeView
         property: "dashMode"
-        value: (dashSettings.formFactor == DashSettings.Desktop) ?
-               ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
+        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+               ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
     }
 
     Connections {

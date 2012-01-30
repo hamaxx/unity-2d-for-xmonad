@@ -127,8 +127,8 @@ PanelManager::PanelManager(QObject* parent)
 
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
-    Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
-    connect(F10, SIGNAL(released()), SLOT(onF10Pressed()));
+    Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::AltModifier);
+    connect(F10, SIGNAL(released()), SLOT(onAltF10Pressed()));
 }
 
 PanelManager::~PanelManager()
@@ -223,7 +223,7 @@ PanelManager::onScreenCountChanged(int newCount)
     }
 }
 
-void PanelManager::onF10Pressed()
+void PanelManager::onAltF10Pressed()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     int screen = desktop->screenNumber(QCursor::pos());

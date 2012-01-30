@@ -156,7 +156,7 @@ DropItem {
         Repeater {
             model: item.pips
             delegate: Image {
-                objectName: "pips"
+                objectName: "pips-" + index
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the

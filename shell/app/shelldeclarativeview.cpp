@@ -25,9 +25,10 @@
 #include <hotkeymonitor.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
-#include <dashsettings.h>
+#include <dashclient.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
+#include <strutmanager.h>
 
 // Qt
 #include <QApplication>
@@ -46,10 +47,6 @@
 #include <X11/Xatom.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
-
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_PATH = "/Dash";
-static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
 static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* SPREAD_DBUS_PATH = "/Spread";
@@ -119,19 +116,30 @@ ShellDeclarativeView::ShellDeclarativeView()
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
-    //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
 }
 
-// TODO: this is probably expressed more nicely in QML.
 void
-ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
+ShellDeclarativeView::updateShellPosition(int screen)
 {
-    QRect rect = ScreenInfo::instance()->geometry();
-    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
-    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
-        setDashMode(FullScreenMode);
-    } else {
-        setDashMode(DesktopMode);
+    if (screen == QX11Info::appScreen()) {
+        QPoint posToMove = QApplication::desktop()->availableGeometry(screen).topLeft();
+
+        StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
+        if (strutManager && strutManager->enabled()) {
+            // Do not push ourselves
+            switch (strutManager->edge()) {
+                case Unity2dPanel::TopEdge:
+                    posToMove.ry() -= strutManager->realHeight();
+                break;
+
+                case Unity2dPanel::LeftEdge:
+                    posToMove.rx() -= strutManager->realWidth();
+                break;
+            }
+        }
+
+        move(posToMove);
     }
 }
 
@@ -207,10 +215,6 @@ ShellDeclarativeView::setDashActive(bool value)
                 return;
             }
 
-            /* FIXME: should not be called here; it is unrelated to the dash being active or not
-               It should be called at the shell instantiation and whenever
-               ScreenInfo::instance()->geometry() changes */
-            updateDashModeDependingOnScreenGeometry();
             // FIXME: should be moved to Shell.qml
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
@@ -280,6 +284,7 @@ ShellDeclarativeView::toggleDash()
 {
     if (dashActive()) {
         setDashActive(false);
+        forceDeactivateWindow();
     } else {
         Q_EMIT activateHome();
     }
@@ -288,9 +293,7 @@ ShellDeclarativeView::toggleDash()
 void
 ShellDeclarativeView::showCommandsLens()
 {
-    // TODO: do this directly, instead of over dbus
-    QDBusInterface dashInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    dashInterface.asyncCall("activateLens", COMMANDS_LENS_ID);
+    Q_EMIT activateLens(COMMANDS_LENS_ID);
 }
 
 void
@@ -300,7 +303,12 @@ ShellDeclarativeView::onAltF1Pressed()
         Q_EMIT launcherFocusRequested();
         forceActivateWindow();
     } else {
-        forceDeactivateWindow();
+        if (dashActive()) {
+            setDashActive(false);
+            Q_EMIT launcherFocusRequested();
+        } else {
+            forceDeactivateWindow();
+        }
     }
 }
 

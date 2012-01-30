@@ -42,7 +42,7 @@ private:
     HotkeyMonitor(QObject* parent=0);
 
     static bool keyEventFilter(void* message);
-    void processKeyEvent(uint x11Keycode, uint x11Modifiers,
+    bool processKeyEvent(uint x11Keycode, uint x11Modifiers,
                          bool isPressEvent);
 
     QList<Hotkey*> m_hotkeys;

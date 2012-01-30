@@ -79,6 +79,7 @@ public:
     Q_INVOKABLE virtual void activate() = 0;
     Q_INVOKABLE virtual void createMenuActions() = 0;
     Q_INVOKABLE virtual void launchNewInstance();
+    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
 
 protected:
     LauncherContextualMenu* m_menu;
@@ -100,6 +101,7 @@ Q_SIGNALS:
     void counterChanged(int);
     void emblemVisibleChanged(bool);
     void emblemChanged(QString);
+    void windowWorkspaceChanged();
 
 public Q_SLOTS:
     /* Default implementation of drag’n’drop handling, should be overridden in

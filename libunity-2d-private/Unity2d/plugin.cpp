@@ -22,7 +22,7 @@
 */
 #include "plugin.h"
 
-#include "dashsettings.h"
+#include "dashclient.h"
 #include "launcherapplication.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -73,6 +73,8 @@
 #include "inputshapemanager.h"
 #include "inputshaperectangle.h"
 #include "inputshapemask.h"
+#include "unity2dpanel.h"
+#include "strutmanager.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -85,8 +87,6 @@
 #include "deelistmodel.h"
 
 #include <X11/Xlib.h>
-
-using namespace Unity2d;
 
 /* FIXME: This should be done more properly, it's just an hack this way.
           We should silence only the errors that we know we can produce.
@@ -105,7 +105,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
-    qmlRegisterType<DashSettings>(uri, 0, 1, "DashSettings");
+    qmlRegisterType<DashClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -171,6 +171,9 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<InputShapeRectangle>(uri, 0, 1, "InputShapeRectangle");
     qmlRegisterType<InputShapeMask>(uri, 0, 1, "InputShapeMask");
     qmlRegisterType<Unity2DDeclarativeView>();
+
+    qmlRegisterType<Unity2dPanel>(uri, 0, 1, "Unity2dPanel");
+    qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -191,6 +194,8 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     /* Expose QConf objects as a context property not to initialize it multiple times */
     engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
     engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
+    engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
+    engine->rootContext()->setContextProperty("dashClient", DashClient::instance());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.
