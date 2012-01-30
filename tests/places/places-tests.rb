@@ -253,35 +253,34 @@ context "Dash Tests" do
   end
 
   # Test case objectives:
-  #   * Check navigation left from lens panel is disabled
+  #   * Check navigation left from dash is disabled
   # Pre-conditions
   #   * Desktop with no running applications
   # Test steps
   #   * Invoke dash
-  #   * Focus first lens bar entry, go left
+  #   * Focus dash contents, press left
   #   * Check that focus is still on the first lens bar entry
   # Post-conditions
   #   * None
   # References
   #   * None
-  test "Check navigation left from lens panel is disabled" do
+  test "Check navigation left from dash is disabled" do
     XDo::Keyboard.super
     verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
       @app_places.DashDeclarativeView()
     }
-    buttons = ""
-    verify(0, 'Could not find any LensButtons') {
-      buttons = @app_places.LensBar().children( { :type => "LensButton" } )
+    loader = ""
+    verify(0, 'Could not find the DashLoader') {
+      loader = @app_places.QDeclarativeLoader( { :objectName => "pageLoader" } )
     }
-    button = buttons[0]
-    button.call_method('forceActiveFocus()')
-    verify_equal("true", 0, 'The lens button doesn\'t have focus') {
-        button['activeFocus']
+    loader.call_method('forceActiveFocus()')
+    verify_equal("true", 0, 'Dash loader doesn\'t have focus') {
+        loader['activeFocus']
     }
     XDo::Keyboard.left
-    verify_not(TIMEOUT, 'The lens button lost focus after pressing left') {
+    verify_not(TIMEOUT, 'Dash loader lost focus after pressing left') {
         verify_equal("false", 2) {
-            button['activeFocus']
+            loader['activeFocus']
         }
     }
   end
