@@ -84,7 +84,7 @@ Item {
         id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : screen.availableGeometry.width - width - launcherLoader.width - 1
+        x: Utils.isLeftToRight() ? launcherLoader.width : screen.availableGeometry.width - width - launcherLoader.width
         KeyNavigation.left: launcherLoader
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
@@ -147,6 +147,7 @@ Item {
         InputShapeRectangle {
             rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
             enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+            mirrorHorizontally: Utils.isRightToLeft()
 
             InputShapeMask {
                 id: shape1

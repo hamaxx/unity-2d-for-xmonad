@@ -9,7 +9,8 @@
 
 InputShapeRectangle::InputShapeRectangle(QObject *parent) :
     QObject(parent),
-    m_enabled(true)
+    m_enabled(true),
+    m_mirrorHorizontally(false)
 {
 }
 
@@ -28,6 +29,11 @@ void InputShapeRectangle::updateShape()
             }
         }
     }
+
+    if (m_mirrorHorizontally) {
+        newShape = QBitmap::fromImage(newShape.toImage().mirrored(true, false));
+    }
+
 
     m_shape = newShape;
     Q_EMIT shapeChanged();
@@ -69,6 +75,16 @@ QBitmap InputShapeRectangle::shape() const
 QDeclarativeListProperty<InputShapeMask> InputShapeRectangle::masks()
 {
     return QDeclarativeListProperty<InputShapeMask>(this, this, &InputShapeRectangle::appendMask);
+}
+
+bool InputShapeRectangle::mirrorHorizontally() const
+{
+    return m_mirrorHorizontally;
+}
+
+void InputShapeRectangle::setMirrorHorizontally(bool mirror)
+{
+    m_mirrorHorizontally = mirror;
 }
 
 void InputShapeRectangle::appendMask(QDeclarativeListProperty<InputShapeMask> *list, InputShapeMask *mask)
