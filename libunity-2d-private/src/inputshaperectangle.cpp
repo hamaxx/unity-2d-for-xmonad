@@ -34,7 +34,6 @@ void InputShapeRectangle::updateShape()
         newShape = QBitmap::fromImage(newShape.toImage().mirrored(true, false));
     }
 
-
     m_shape = newShape;
     Q_EMIT shapeChanged();
 }
