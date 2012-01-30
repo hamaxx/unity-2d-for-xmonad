@@ -134,7 +134,7 @@ Item {
 
             InputShapeMask {
                 id: shape1
-                source: "shell/dash/artwork/desktop_dash_background_no_transparency.png"
+                source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
                 position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
