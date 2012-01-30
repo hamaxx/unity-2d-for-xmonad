@@ -31,8 +31,6 @@ def tempfilename(base, extension = ".tmp")
 end
 
 def get_shell_shape
-    pwd = File.expand_path(File.dirname(__FILE__))
-
     # Try to find the shell window
     shell_ids = XDo::XWindow::search('unity-2d-shell')
     assert(!shell_ids.empty?, "Failed to retrieve the shell window id")
@@ -103,7 +101,8 @@ def test_shape_of_launcher_and_desktop_mode_dash(isRTL = false)
     screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
 
-    verifypath = "verification/dash_desktop.png"
+    pwd = File.expand_path(File.dirname(__FILE__))
+    verifypath = pwd + "/verification/dash_desktop.png"
 
     comparepath = tempfilename('shape', '.png')
 
@@ -163,7 +162,8 @@ def test_shape_of_launcher_and_collapsed_desktop_mode_dash(isRTL = false)
     screen_width, screen_height = XDo::XWindow.display_geometry()
     screen_height -= PANEL_HEIGHT
 
-    verifypath = "verification/dash_collapsed.png"
+    pwd = File.expand_path(File.dirname(__FILE__))
+    verifypath = pwd + "/verification/dash_collapsed.png"
 
     comparepath = tempfilename('shape', '.png')
 

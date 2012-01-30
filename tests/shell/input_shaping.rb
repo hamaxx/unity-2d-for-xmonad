@@ -30,7 +30,7 @@ require 'xdo/mouse'
 require 'timeout'
 require 'tmpdir'
 require 'tempfile'
-require 'input_shaping_tests.rb'
+require $library_path + '/../../launcher/autohide_show_tests_common.rb'
 
 include TDriverVerify
 
