@@ -252,4 +252,37 @@ context "Dash Tests" do
     xid.close!
   end
 
+  # Test case objectives:
+  #   * Check navigation left from lens panel is disabled
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Invoke dash
+  #   * Focus first lens bar entry, go left
+  #   * Check that focus is still on the first lens bar entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check navigation left from lens panel is disabled" do
+    XDo::Keyboard.super
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app_places.DashDeclarativeView()
+    }
+    buttons = ""
+    verify(0, 'Could not find any LensButtons') {
+      buttons = @app_places.LensBar().children( { :type => "LensButton" } )
+    }
+    button = buttons[0]
+    button.call_method('forceActiveFocus()')
+    verify_equal("true", 0, 'The lens button doesn\'t have focus') {
+        button['activeFocus']
+    }
+    XDo::Keyboard.left
+    verify_not(TIMEOUT, 'The lens button lost focus after pressing left') {
+        verify_equal("false", 2) {
+            button['activeFocus']
+        }
+    }
+  end
 end
