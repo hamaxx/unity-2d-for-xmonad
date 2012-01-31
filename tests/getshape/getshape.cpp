@@ -83,8 +83,6 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < count; i++) {
         region = region.united(QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height));
-
-//         printf("%dx%d@%d,%d", rects[i].width, rects[i].height, rects[i].x, rects[i].y);
     }
 
     if (!outputFile.isEmpty()) {
