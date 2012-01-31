@@ -140,6 +140,7 @@ Description: Unity 2D Shell
              and favorite applications as well as highlighting their notifications.
 
 Package: unity-2d-dbg
+Architecture: any
 Section: debug
 Priority: extra
 Depends:
