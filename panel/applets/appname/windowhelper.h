@@ -53,7 +53,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void update();
-    void updateDashVisible(QString);
+    void updateDashVisible(bool);
     void updateDashFullScreen(bool);
 
 Q_SIGNALS:

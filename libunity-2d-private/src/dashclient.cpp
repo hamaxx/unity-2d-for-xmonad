@@ -92,7 +92,7 @@ void DashClient::connectToDash()
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
-        m_dashActive = value.toBool();
+        slotDashActiveChanged(value.toBool());
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
@@ -117,6 +117,7 @@ void DashClient::slotDashActiveChanged(bool value)
     if (m_dashActive != value) {
         m_dashActive = value;
         updateActivePage();
+        Q_EMIT activeChanged(value);
     }
 }
 
@@ -126,6 +127,11 @@ void DashClient::slotDashActiveLensChanged(const QString& lens)
         m_dashActiveLens = lens;
         updateActivePage();
     }
+}
+
+bool DashClient::active() const
+{
+  return m_dashActive;
 }
 
 QString DashClient::activePage() const

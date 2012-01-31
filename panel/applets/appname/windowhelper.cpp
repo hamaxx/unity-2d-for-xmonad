@@ -86,8 +86,8 @@ WindowHelper::WindowHelper(QObject* parent)
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
         SLOT(update()));
 
-    connect(DashClient::instance(), SIGNAL(activePageChanged(QString)), SLOT(updateDashVisible(QString)));
-    d->m_dashIsVisible = !DashClient::instance()->activePage().isEmpty();
+    connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(updateDashVisible(bool)));
+    d->m_dashIsVisible = DashClient::instance()->active();
 
     // FIXME: the queued connection should not be needed, however if it's not used when
     // (un)maximizing the dash, the panel will deadlock for some reason.
@@ -115,9 +115,9 @@ static void nameChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
-void WindowHelper::updateDashVisible(QString page)
+void WindowHelper::updateDashVisible(bool visible)
 {
-    d->m_dashIsVisible = !page.isEmpty();
+    d->m_dashIsVisible = visible;
     update();
 }
 
