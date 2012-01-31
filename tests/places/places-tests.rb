@@ -270,11 +270,11 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     loader = ""
-    verify(0, 'Could not find the DashLoader') {
+    verify(TIMEOUT, 'Could not find the DashLoader') {
       loader = @app_places.QDeclarativeLoader( { :objectName => "pageLoader" } )
     }
     loader.call_method('forceActiveFocus()')
-    verify_equal("true", 0, 'Dash loader doesn\'t have focus') {
+    verify_equal("true", TIMEOUT, 'Dash loader doesn\'t have focus') {
         loader['activeFocus']
     }
     XDo::Keyboard.left
