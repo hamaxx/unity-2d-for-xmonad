@@ -72,7 +72,7 @@ context "Launcher Contextual Menu Tests" do
   # Test steps
   #   * Hover the cursor over the first application entry
   #   * Check that the hint is displayed
-  #   * Check that there's only one action
+  #   * Check that there are two QActions (there is a "ghost" QAction there)
   # Post-conditions
   #   * None
   # References
@@ -103,7 +103,7 @@ context "Launcher Contextual Menu Tests" do
   # Test steps
   #   * Right click the first application entry
   #   * Check that the menu is displayed
-  #   * Check that there are at least two actions
+  #   * Check that there are at least four QActions (two actions and separator, plus a "ghost" one)
   # Post-conditions
   #   * None
   # References
@@ -135,7 +135,7 @@ context "Launcher Contextual Menu Tests" do
   # Test steps
   #   * Focus the launcher, go down and right
   #   * Check that the menu is displayed
-  #   * Check that there are at least two actions
+  #   * Check that there are at least four QActions (two actions and separator, plus a "ghost" one)
   # Post-conditions
   #   * None
   # References
