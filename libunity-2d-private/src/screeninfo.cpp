@@ -70,6 +70,7 @@ void ScreenInfo::updateScreen()
 {
     int screen = QApplication::desktop()->screenNumber(m_widget);
     if (screen != m_screen) {
+        m_screen = screen;
         Q_EMIT geometryChanged(geometry());
         Q_EMIT availableGeometryChanged(availableGeometry());
         Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
