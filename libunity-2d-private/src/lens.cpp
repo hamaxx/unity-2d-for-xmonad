@@ -225,17 +225,17 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     m_filters = new Filters(m_unityLens->filters, this);
 
     if (QString::fromStdString(m_unityLens->results()->swarm_name) == QString(":local")) {
-        m_results->setModel((void*)m_unityLens->results()->model());
+        m_results->setModel(m_unityLens->results()->model());
     } else {
         m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
     }
     if (QString::fromStdString(m_unityLens->global_results()->swarm_name) == QString(":local")) {
-        m_globalResults->setModel((void*)m_unityLens->global_results()->model());
+        m_globalResults->setModel(m_unityLens->global_results()->model());
     } else {
         m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
     }
     if (QString::fromStdString(m_unityLens->categories()->swarm_name) == QString(":local")) {
-        m_categories->setModel((void*)m_unityLens->categories()->model());
+        m_categories->setModel(m_unityLens->categories()->model());
     } else {
         m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
     }
