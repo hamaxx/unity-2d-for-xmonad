@@ -101,7 +101,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
-    qmlRegisterType<ScreenInfo>(uri, 0, 1, "ScreenInfo");
+    qmlRegisterType<ScreenInfo>(); // Register the type as non creatable
     qmlRegisterType<DesktopInfo>(); // Register the type as non creatable
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 

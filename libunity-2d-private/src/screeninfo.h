@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QRect>
 
+class QEvent;
+class QWidget;
+
 class ScreenInfo : public QObject
 {
     Q_OBJECT
@@ -14,10 +17,14 @@ class ScreenInfo : public QObject
 
 public:
     /* Getters */
-    explicit ScreenInfo(QObject *parent = 0);
+    explicit ScreenInfo(QWidget* widget, QObject *parent = 0);
+    ~ScreenInfo();
     QRect availableGeometry() const;
     QRect panelsFreeGeometry() const;
     QRect geometry() const;
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
 
 Q_SIGNALS:
     void geometryChanged(QRect geometry);
@@ -27,6 +34,11 @@ Q_SIGNALS:
 private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
+
+private:
+    void updateScreen();
+    int m_screen;
+    QWidget* m_widget;
 };
 
 #endif // SCREENINFO_H

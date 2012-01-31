@@ -160,7 +160,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
-    d->m_screenInfo = new ScreenInfo();
+    d->m_screenInfo = new ScreenInfo(this);
 
     d->m_slideInAnimation = new QPropertyAnimation(this);
     d->m_slideInAnimation->setTargetObject(this);
