@@ -36,6 +36,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+// unity-2d
+#include "screeninfo.h"
+
 static const int SLIDE_DURATION = 125;
 
 struct Unity2dPanelPrivate
@@ -49,6 +52,7 @@ struct Unity2dPanelPrivate
     bool m_useStrut;
     int m_delta;
     bool m_manualSliding;
+    ScreenInfo* m_screenInfo;
 
     void setStrut(ulong* struts)
     {
@@ -96,9 +100,8 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
-        QDesktopWidget* desktop = QApplication::desktop();
-        const QRect screen = desktop->screenGeometry(q);
-        const QRect available = desktop->availableGeometry(q);
+        const QRect screen = m_screenInfo->geometry();
+        const QRect available = m_screenInfo->availableGeometry();
 
         QRect rect;
         switch (m_edge) {
@@ -157,6 +160,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
+    d->m_screenInfo = new ScreenInfo();
 
     d->m_slideInAnimation = new QPropertyAnimation(this);
     d->m_slideInAnimation->setTargetObject(this);

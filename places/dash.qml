@@ -206,7 +206,7 @@ Item {
         BorderImage {
             anchors.fill: parent
             visible: dashView.dashMode == DashDeclarativeView.DesktopMode
-            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+            source: desktop.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
     }

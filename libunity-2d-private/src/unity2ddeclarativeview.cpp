@@ -28,6 +28,8 @@
 #include <debug_p.h>
 #include <config.h>
 
+#include "screeninfo.h"
+
 // libwnck
 extern "C" {
 #include <libwnck/libwnck.h>
@@ -44,6 +46,7 @@ GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
+    m_screenInfo(new ScreenInfo()),
     m_useOpenGL(false),
     m_transparentBackground(false),
     m_last_focused_window(None)
@@ -263,6 +266,12 @@ void Unity2DDeclarativeView::saveActiveWindow()
 void Unity2DDeclarativeView::onActiveWorkspaceChanged() 
 {
     m_last_focused_window = None;
+}
+
+ScreenInfo*
+Unity2DDeclarativeView::screen() const
+{
+    return m_screenInfo;
 }
 
 #include <unity2ddeclarativeview.moc>

@@ -36,6 +36,7 @@
 #include "windowinfo.h"
 #include "windowslist.h"
 #include "screeninfo.h"
+#include "desktopinfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
 #include "iconutilities.h"
@@ -100,7 +101,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
-    qmlRegisterType<ScreenInfo>(); // Register the type as non creatable
+    qmlRegisterType<ScreenInfo>(uri, 0, 1, "ScreenInfo");
+    qmlRegisterType<DesktopInfo>(); // Register the type as non creatable
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
@@ -173,7 +175,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     /* ScreenInfo is exposed as a context property as it's a singleton and therefore
        not creatable directly in QML */
-    engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
+    engine->rootContext()->setContextProperty("desktop", DesktopInfo::instance());
     engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
