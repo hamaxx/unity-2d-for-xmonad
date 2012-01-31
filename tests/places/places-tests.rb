@@ -273,12 +273,12 @@ context "Dash Tests" do
     verify(TIMEOUT, 'Could not find the DashLoader') {
       loader = @app_places.QDeclarativeLoader( { :objectName => "pageLoader" } )
     }
-    loader.call_method('forceActiveFocus()')
+    XDo::Keyboard.down
     verify_equal("true", TIMEOUT, 'Dash loader doesn\'t have focus') {
         loader['activeFocus']
     }
     XDo::Keyboard.left
-    verify_not(TIMEOUT, 'Dash loader lost focus after pressing left') {
+    verify_not(0, 'Dash loader lost focus after pressing left') {
         verify_equal("false", 2) {
             loader['activeFocus']
         }
