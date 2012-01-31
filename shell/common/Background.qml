@@ -21,7 +21,6 @@ import Unity2d 1.0
 import Effects 1.0
 
 Item {
-    id: background
     property bool active: false
     property bool fullscreen: false
     property int horizontalOffset: 0
@@ -32,9 +31,8 @@ Item {
     effect: CacheEffect {}
 
     Item {
+        id: background
         anchors.fill: parent
-        anchors.bottomMargin: 39
-        anchors.rightMargin: 37
         clip: true
 
         Image {
@@ -65,9 +63,38 @@ Item {
     }
 
     BorderImage {
+        id: border
         anchors.fill: parent
-        visible: !fullscreen
         source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
         mirror: isRightToLeft()
     }
+
+    states: [
+        State {
+            name: "normal"
+            when: !fullscreen
+            PropertyChanges {
+                target: background
+                anchors.bottomMargin: 39
+                anchors.rightMargin: 37
+            }
+            PropertyChanges {
+                target: border
+                visible: true
+            }
+        },
+        State {
+            name: "fullscreen"
+            when: fullscreen
+            PropertyChanges {
+                target: dash
+                anchors.bottomMargin: 39
+                anchors.rightMargin: 37
+            }
+            PropertyChanges {
+                target: border
+                visible: false
+            }
+        }
+    ]
 }
