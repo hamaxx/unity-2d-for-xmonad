@@ -23,7 +23,10 @@ import Effects 1.0
 Item {
     property bool active: false
     property bool fullscreen: false
-    property int horizontalOffset: 0
+
+    /* coordinates of top left corner needed to capture correct segment of background */
+    property int xPosition: 0
+    property int yPosition: 0
 
     anchors.fill: parent
 
@@ -51,8 +54,8 @@ Item {
             cache: false
 
             fillMode: Image.PreserveAspectCrop
-            x: -horizontalOffset
-            y: -declarativeView.globalPosition.y
+            x: -xPosition
+            y: -yPosition
         }
 
         Image {
@@ -87,9 +90,9 @@ Item {
             name: "fullscreen"
             when: fullscreen
             PropertyChanges {
-                target: dash
-                anchors.bottomMargin: 39
-                anchors.rightMargin: 37
+                target: background
+                anchors.bottomMargin: 0
+                anchors.rightMargin: 0
             }
             PropertyChanges {
                 target: border
