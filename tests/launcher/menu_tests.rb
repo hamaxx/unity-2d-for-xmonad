@@ -48,18 +48,24 @@ context "Launcher Contextual Menu Tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER,
-                     :arguments => "-testability", 
-                     :sleeptime => 2 )
+    @app_launcher = $SUT.run( :name => UNITY_2D_LAUNCHER,
+                              :arguments => "-testability",
+                              :sleeptime => 2 )
+
+    @app_places = $SUT.run( :name => UNITY_2D_PLACES,
+                            :arguments => "-testability",
+                            :sleeptime => 2 )
     # Make certain application is ready for testing
-    verify{ @app.Unity2dPanel() }
+    verify{ @app_launcher.Unity2dPanel() }
   end
 
   # Run after each test case completes
   teardown do
-    #@app.close        
+    #@app_launcher.close
+    #@app_places.close
     #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-places'
   end
 
   #####################################################################################
@@ -80,16 +86,16 @@ context "Launcher Contextual Menu Tests" do
   test "Display launcher item hint" do
     tiles = ""
     verify( 0, 'Could not find any application tile' ) {
-        tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
+      tiles = @app_launcher.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
     tile.move_mouse()
     verify(TIMEOUT, 'The launcher item hint is not visible' ) {
-      @app.LauncherContextualMenu()
+      @app_launcher.LauncherContextualMenu()
     }
     actions = ""
     verify( 0, 'Could not find any actions in the menu' ) {
-      actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
+      actions = @app_launcher.LauncherContextualMenu().children( { :type => "QAction" } )
     }
     verify_equal( 2, 0, 'There was an unexpected number of actions in the menu' ) {
       actions.count
@@ -111,17 +117,17 @@ context "Launcher Contextual Menu Tests" do
   test "Display launcher menu after right click" do
     tiles = ""
     verify( 0, 'Could not find any application tile' ) {
-        tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
+      tiles = @app_launcher.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
     tile.move_mouse()
     tile.tap(1, :Right)
     verify(TIMEOUT, 'The launcher menu is not visible' ) {
-      @app.LauncherContextualMenu()
+      @app_launcher.LauncherContextualMenu()
     }
     actions = ""
     verify( 0, 'Could not find any actions in the menu' ) {
-      actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
+      actions = @app_launcher.LauncherContextualMenu().children( { :type => "QAction" } )
     }
     verify_true( 0, 'There was not enough actions in the menu' ) {
       actions.count >= 4
@@ -145,11 +151,11 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.down
     XDo::Keyboard.right
     verify(TIMEOUT, 'The launcher menu is not visible' ) {
-      @app.LauncherContextualMenu()
+      @app_launcher.LauncherContextualMenu()
     }
     actions = ""
     verify( 0, 'Could not find any actions in the menu' ) {
-      actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
+      actions = @app_launcher.LauncherContextualMenu().children( { :type => "QAction" } )
     }
     verify_true( 0, 'There was not enough actions in the menu' ) {
       actions.count >= 4
@@ -173,7 +179,7 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.right
     XDo::Keyboard.escape
     verify_not(TIMEOUT, 'The launcher menu is not visible' ) {
-      @app.LauncherContextualMenu()
+      @app_launcher.LauncherContextualMenu()
     }
   end
 
@@ -194,7 +200,7 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.right
     XDo::Keyboard.left
     verify_not(TIMEOUT, 'The launcher menu is not visible' ) {
-      @app.LauncherContextualMenu()
+      @app_launcher.LauncherContextualMenu()
     }
   end
 
@@ -216,11 +222,11 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.escape
     tiles = ""
     verify( 0, 'Could not find any application tile' ) {
-        tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
+      tiles = @app_launcher.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
     verify_equal( "true", 0, 'Launcher item didn\'t regain focus' ) {
-        tile['activeFocus']
+      tile['activeFocus']
     }
   end
 
@@ -242,11 +248,31 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.left
     tiles = ""
     verify( 0, 'Could not find any application tile' ) {
-        tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
+      tiles = @app_launcher.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
     verify_equal( "true", 0, 'Launcher item didn\'t regain focus' ) {
-        tile['activeFocus']
+      tile['activeFocus']
+    }
+  end
+
+  # Test case objectives:
+  #   * Check that the focus goes from launcher menu to dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Focus the launcher, go right, press Super
+  #   * Check that the dash search entry has focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Verify dash search entry gets focus after dismissing the menu with Super" do
+    XDo::Keyboard.alt_F1
+    XDo::Keyboard.right
+    XDo::Keyboard.super
+    verify_equal( "true", TIMEOUT, 'Dash search entry doesn\'t have focus' ) {
+      @app_places.SearchEntry()['activeFocus']
     }
   end
 end
