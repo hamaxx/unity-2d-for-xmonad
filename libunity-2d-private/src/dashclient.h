@@ -41,6 +41,7 @@ public:
     static DashClient* instance();
 
     bool active() const;
+    void setActive(bool active);
     /**
      * Returns the active page. This is either:
      * - The lens id of the active lens

@@ -131,7 +131,20 @@ void DashClient::slotDashActiveLensChanged(const QString& lens)
 
 bool DashClient::active() const
 {
-  return m_dashActive;
+    return m_dashActive;
+}
+
+void DashClient::setActive(bool active)
+{
+    if (!active) {
+        // Use m_dashDbusIface to close the dash, but only if it is running
+        if (m_dashDbusIface) {
+            m_dashDbusIface->setProperty("active", false);
+        }
+    } else {
+        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        iface.setProperty("active", true);
+    }
 }
 
 QString DashClient::activePage() const
@@ -145,10 +158,7 @@ void DashClient::setActivePage(const QString& page, const QString& lensId)
         return;
     }
     if (page.isEmpty()) {
-        // Use m_dashDbusIface to close the dash, but only if it is running
-        if (m_dashDbusIface) {
-            m_dashDbusIface->setProperty("active", false);
-        }
+        setActive(false);
         return;
     }
     // Use a separate QDBusInterface so that the dash is started if it is not

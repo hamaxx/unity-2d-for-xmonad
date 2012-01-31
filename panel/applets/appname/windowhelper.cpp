@@ -195,7 +195,7 @@ void WindowHelper::close()
         guint32 timestamp = QDateTime::currentDateTime().toTime_t();
         wnck_window_close(d->m_window, timestamp);
     } else {
-        DashClient::instance()->setActivePage("");
+        DashClient::instance()->setActive(false);
     }
 }
 
