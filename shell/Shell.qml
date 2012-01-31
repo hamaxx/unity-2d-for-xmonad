@@ -85,7 +85,6 @@ Item {
         source: "dash/Dash.qml"
         anchors.top: parent.top
         x: Utils.isLeftToRight() ? launcherLoader.width : screen.availableGeometry.width - width - launcherLoader.width
-        KeyNavigation.left: launcherLoader
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
