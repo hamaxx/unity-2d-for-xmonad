@@ -57,13 +57,6 @@ static const char* COMMANDS_LENS_ID = "commands.lens";
 
 static const int XK_KP_0 = 0xffb0;
 static const int XK_KP_1 = 0xffb1;
-static const int XK_KP_2 = 0xffb2;
-static const int XK_KP_3 = 0xffb3;
-static const int XK_KP_4 = 0xffb4;
-static const int XK_KP_5 = 0xffb5;
-static const int XK_KP_6 = 0xffb6;
-static const int XK_KP_7 = 0xffb7;
-static const int XK_KP_8 = 0xffb8;
 static const int XK_KP_9 = 0xffb9;
 
 ShellDeclarativeView::ShellDeclarativeView()
