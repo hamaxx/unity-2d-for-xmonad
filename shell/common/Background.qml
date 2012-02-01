@@ -30,8 +30,6 @@ Item {
     property int xPosition: 0
     property int yPosition: 0
 
-    anchors.fill: parent
-
     /* Avoid redraw at rendering */
     effect: CacheEffect {}
 
