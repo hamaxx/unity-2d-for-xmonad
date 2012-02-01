@@ -9,7 +9,8 @@
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent),
     m_screen(QX11Info::appScreen()),
-    m_widget(NULL)
+    m_widget(NULL),
+    m_corner(InvalidCorner)
 {
     connect(QApplication::desktop(), SIGNAL(resized(int)),
                                      SLOT(updateGeometry(int)));
@@ -20,7 +21,8 @@ ScreenInfo::ScreenInfo(QObject *parent) :
 ScreenInfo::ScreenInfo(int screen, QObject *parent) :
     QObject(parent),
     m_screen(screen),
-    m_widget(NULL)
+    m_widget(NULL),
+    m_corner(InvalidCorner)
 {
     connect(QApplication::desktop(), SIGNAL(resized(int)),
                                      SLOT(updateGeometry(int)));
@@ -31,9 +33,22 @@ ScreenInfo::ScreenInfo(int screen, QObject *parent) :
 ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
     QObject(parent),
     m_screen(QApplication::desktop()->screenNumber(widget)),
-    m_widget(widget)
+    m_widget(widget),
+    m_corner(InvalidCorner)
 {
     m_widget->installEventFilter(this);
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+                                     SLOT(updateGeometry(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                                     SLOT(updateAvailableGeometry(int)));
+}
+
+ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
+    QObject(parent),
+    m_screen(cornerScreen(corner)),
+    m_widget(NULL),
+    m_corner(corner)
+{
     connect(QApplication::desktop(), SIGNAL(resized(int)),
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
@@ -78,6 +93,13 @@ QRect ScreenInfo::geometry() const
 
 void ScreenInfo::updateGeometry(int screen)
 {
+    if (m_corner != InvalidCorner) {
+        int screenCorner = cornerScreen(m_corner);
+        if (m_screen != screenCorner) {
+            setScreen(screenCorner);
+            return;
+        }
+    }
     if (screen == m_screen) {
         Q_EMIT geometryChanged(geometry());
     }
@@ -93,9 +115,31 @@ void ScreenInfo::updateAvailableGeometry(int screen)
 
 void ScreenInfo::updateScreen()
 {
-    if (m_widget) {
-        int screen = QApplication::desktop()->screenNumber(m_widget);
+    int screen;
+    if (m_corner != InvalidCorner) {
+        screen = cornerScreen(m_corner);
         setScreen(screen);
+    } else if (m_widget) {
+        screen = QApplication::desktop()->screenNumber(m_widget);
+        setScreen(screen);
+    }
+}
+
+int
+ScreenInfo::cornerScreen(Corner corner)
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    switch(corner) {
+        case TopLeft:
+            return desktop->screenNumber(QPoint());
+        case TopRight:
+            return desktop->screenNumber(QPoint(desktop->width(), 0));
+        case BottomLeft:
+            return desktop->screenNumber(QPoint(0, desktop->height()));
+        case BottomRight:
+            return desktop->screenNumber(QPoint(desktop->width(), desktop->height()));
+        default:
+            return desktop->screenNumber(QPoint());
     }
 }
 
@@ -144,6 +188,22 @@ ScreenInfo::setWidget(QWidget *widget)
             m_widget->installEventFilter(this);
         }
         Q_EMIT widgetChanged(m_widget);
+        updateScreen();
+    }
+}
+
+ScreenInfo::Corner
+ScreenInfo::corner() const
+{
+    return m_corner;
+}
+
+void
+ScreenInfo::setCorner(Corner corner)
+{
+    if (m_corner != corner) {
+        m_corner = corner;
+        Q_EMIT cornerChanged(corner);
         updateScreen();
     }
 }

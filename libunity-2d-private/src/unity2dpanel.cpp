@@ -147,7 +147,7 @@ struct Unity2dPanelPrivate
     }
 };
 
-Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, QWidget* parent)
+Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Corner corner, QWidget* parent)
 : QWidget(parent)
 , d(new Unity2dPanelPrivate)
 {
@@ -160,7 +160,9 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, QWidget* paren
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
-    if (screen >= 0) {
+    if (corner != ScreenInfo::InvalidCorner) {
+        d->m_screenInfo = new ScreenInfo(corner);
+    } else if (screen >= 0) {
         d->m_screenInfo = new ScreenInfo(screen);
     } else {
         d->m_screenInfo = new ScreenInfo(this);

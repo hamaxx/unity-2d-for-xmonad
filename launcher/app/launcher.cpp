@@ -37,6 +37,7 @@
 #include "unity2ddebug.h"
 #include "unity2dpanel.h"
 #include "gesturehandler.h"
+#include "screeninfo.h"
 
 // libc
 #include <stdlib.h>
@@ -82,8 +83,8 @@ int main(int argc, char *argv[])
        with that prefix resolves properly. */
     QDir::addSearchPath("artwork", unity2dDirectory() + "/launcher/artwork");
 
-    /* Panel containing the QML declarative view */
-    Unity2dPanel panel(true);
+    /* Panel containing the QML declarative view, topleft screen */
+    Unity2dPanel panel(true, -1, ScreenInfo::TopLeft);
 
     panel.setEdge(Unity2dPanel::LeftEdge);
     panel.setFixedWidth(LauncherClient::MaximumWidth);
