@@ -4,9 +4,6 @@
  *
  * Copyright 2011 Canonical Ltd.
  *
- * Authors:
- * - Gerry Boland <gerry.boland@canonical.com>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
@@ -87,7 +84,7 @@ def test_shape_of_launcher_alone(isRTL = false)
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify_true(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(0, "The actual shape does not match the expected shape") { identical }
 end
 
 def test_shape_of_launcher_and_desktop_mode_dash(isRTL = false)
@@ -119,7 +116,7 @@ def test_shape_of_launcher_and_desktop_mode_dash(isRTL = false)
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify_true(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(0, "The actual shape does not match the expected shape") { identical }
 end
 
 def test_shape_of_launcher_and_fullscreen_mode_dash(isRTL = false)
@@ -145,7 +142,7 @@ def test_shape_of_launcher_and_fullscreen_mode_dash(isRTL = false)
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify_true(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(0, "The actual shape does not match the expected shape") { identical }
 end
 
 def test_shape_of_launcher_and_collapsed_desktop_mode_dash(isRTL = false)
@@ -180,5 +177,5 @@ def test_shape_of_launcher_and_collapsed_desktop_mode_dash(isRTL = false)
     File.unlink(maskpath)
     File.unlink(comparepath)
 
-    verify_true(10, "The actual shape does not match the expected shape") { identical }
+    verify_true(0, "The actual shape does not match the expected shape") { identical }
 end

@@ -5,10 +5,6 @@
  *
  * Copyright 2011 Canonical Ltd.
  *
- * Authors:
- * - Ugo Riboni <ugo.riboni@canonical.com>
- * - Gerry Boland <gerry.boland@canonical.com>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
@@ -30,7 +26,7 @@ require 'xdo/mouse'
 require 'timeout'
 require 'tmpdir'
 require 'tempfile'
-require $library_path + '/../../launcher/autohide_show_tests_common.rb'
+require $library_path + '/../../shell/autohide_show_tests_common.rb'
 
 include TDriverVerify
 
