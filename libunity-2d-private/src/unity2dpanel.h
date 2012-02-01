@@ -54,7 +54,7 @@ public:
 
     static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
 
-    Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
+    Unity2dPanel(bool requiresTransparency = false, int screen = -1, QWidget* parent = 0);
     ~Unity2dPanel();
 
     void setEdge(Edge);
