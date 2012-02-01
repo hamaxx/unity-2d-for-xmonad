@@ -45,9 +45,9 @@ static int _x_grabkey_errhandler(Display *display, XErrorEvent *event)
     return 0;
 }
 
-Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
+Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent, bool isX11keysym) :
     QObject(parent), m_connections(0),
-    m_key(key), m_modifiers(modifiers),
+    m_key(key), m_modifiers(modifiers), m_isX11keysym(isX11keysym),
     m_x11key(0), m_x11modifiers(0)
 {
     /* Translate the QT modifiers to X11 modifiers */
@@ -65,23 +65,29 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
         m_x11modifiers |= Mod4Mask;
     }
 
-    /* Translate the QT key to X11 keycode */
-
-    /* QKeySequence can be used to translate a Qt::Key in a format that is
-       understood by XStringToKeysym if the sequence is composed only by the key */
-    QString keyString = QKeySequence(key).toString();
-    KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
-    if (keysym == NoSymbol) {
-        /* XStringToKeysym doesn’t work well with exotic characters (such as
-          'É'). Note that this fallback code path looks much simpler but doesn’t
-          work for special keys such as the function keys (e.g. F1), which is
-          why the translation with XStringToKeysym is attempted first. */
-        keysym = (ushort) key;
+    if (isX11keysym) {
+        m_x11key = XKeysymToKeycode(QX11Info::display(), key);
     }
-    m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
-    if (m_x11key == 0) {
-        UQ_WARNING << "Could not get keycode for keysym" << keysym
-                   << "(" << keyString << ")";
+    else  {
+        /* Translate the QT key to X11 keycode */
+
+        /* QKeySequence can be used to translate a Qt::Key in a format that is
+           understood by XStringToKeysym if the sequence is composed only by the key */
+        QString keyString = QKeySequence(key).toString();
+        KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
+
+        if (keysym == NoSymbol) {
+            /* XStringToKeysym doesn’t work well with exotic characters (such as
+              'É'). Note that this fallback code path looks much simpler but doesn’t
+              work for special keys such as the function keys (e.g. F1), which is
+              why the translation with XStringToKeysym is attempted first. */
+            keysym = (ushort) key;
+        }
+        m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
+        if (m_x11key == 0) {
+            UQ_WARNING << "Could not get keycode for keysym" << keysym
+                       << "(" << keyString << ")";
+        }
     }
 }
 
