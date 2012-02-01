@@ -28,6 +28,7 @@
 SpreadView::SpreadView()
 : Unity2DDeclarativeView()
 {
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft);
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
 
     fitToAvailableSpace();

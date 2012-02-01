@@ -46,7 +46,6 @@ GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
-    m_screenInfo(new ScreenInfo(this)),
     m_useOpenGL(false),
     m_transparentBackground(false),
     m_last_focused_window(None)

@@ -54,6 +54,7 @@ DashDeclarativeView::DashDeclarativeView()
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft);
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(onWorkAreaResized()));
 
     updateSize();
