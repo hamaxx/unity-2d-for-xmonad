@@ -219,8 +219,8 @@ FocusScope {
         /* Margins in DesktopMode set song that the content does not overlap with
            the border defined by the background image.
         */
-        anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
+        anchors.bottomMargin: background.bottomBorderThickness
+        anchors.rightMargin: background.rightBorderThickness
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without

@@ -21,9 +21,11 @@ import Unity2d 1.0
 import Effects 1.0
 
 Item {
+    id: background
     property bool active: false
     property bool fullscreen: false
-
+    property int bottomBorderThickness
+    property int rightBorderThickness
     /* coordinates of top left corner needed to capture correct segment of background */
     property int xPosition: 0
     property int yPosition: 0
@@ -34,8 +36,9 @@ Item {
     effect: CacheEffect {}
 
     Item {
-        id: background
         anchors.fill: parent
+        anchors.bottomMargin: bottomBorderThickness
+        anchors.rightMargin: rightBorderThickness
         clip: true
 
         Image {
@@ -67,6 +70,11 @@ Item {
 
     BorderImage {
         id: border
+
+        /* Define properties of border here */
+        property int bottomThickness: 39
+        property int rightThickness: 37
+
         anchors.fill: parent
         source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
         mirror: isRightToLeft()
@@ -78,8 +86,8 @@ Item {
             when: !fullscreen
             PropertyChanges {
                 target: background
-                anchors.bottomMargin: 39
-                anchors.rightMargin: 37
+                bottomBorderThickness: border.bottomThickness
+                rightBorderThickness: border.rightThickness
             }
             PropertyChanges {
                 target: border
@@ -91,8 +99,8 @@ Item {
             when: fullscreen
             PropertyChanges {
                 target: background
-                anchors.bottomMargin: 0
-                anchors.rightMargin: 0
+                bottomBorderThickness: 0
+                rightBorderThickness: 0
             }
             PropertyChanges {
                 target: border
