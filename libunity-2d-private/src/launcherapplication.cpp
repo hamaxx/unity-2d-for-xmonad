@@ -1098,7 +1098,7 @@ LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
     }
 
     if (error) {
-        g_warning("Failed to launch application: %s\n", error->message);
+        UQ_WARNING << "Failed to launch application: " << error->message;
         g_error_free(error);
     }
 
