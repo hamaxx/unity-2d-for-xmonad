@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+typedef unsigned long KeySym;
+
 class Hotkey : public QObject
 {
     friend class HotkeyMonitor;
@@ -33,6 +35,7 @@ class Hotkey : public QObject
 public:
     Qt::Key key() const { return m_key; }
     Qt::KeyboardModifiers modifiers() const { return m_modifiers; }
+    bool isX11Keysym() const { return m_isX11keysym; }
 
 Q_SIGNALS:
     void keyChanged(Qt::Key key);
@@ -45,13 +48,14 @@ protected:
     virtual void disconnectNotify(const char * signal);
 
 private:
-    Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent);
+    Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent, bool isX11keysym = false);
     bool processNativeEvent(uint x11Keycode, uint x11Modifiers, bool isPressEvent);
 
 private:
     uint m_connections;
     Qt::Key m_key;
     Qt::KeyboardModifiers m_modifiers;
+    bool m_isX11keysym;
     uint m_x11key;
     uint m_x11modifiers;
 };
