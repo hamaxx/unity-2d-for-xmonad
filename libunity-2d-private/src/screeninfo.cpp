@@ -148,7 +148,7 @@ ScreenInfo::eventFilter(QObject *object, QEvent *event)
 {
     Q_UNUSED(object);
 
-    if (event->type() == QEvent::Move) {
+    if (event->type() == QEvent::Move || event->type() == QEvent::Show) {
         updateScreen();
     }
     return QObject::eventFilter(object, event);
