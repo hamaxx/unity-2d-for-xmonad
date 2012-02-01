@@ -1077,21 +1077,22 @@ LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
 
     if (g_app_info_supports_uris(m_appInfo.data())) {
         GList* list = NULL;
-        Q_FOREACH(QUrl url, urls)
+        Q_FOREACH(QUrl url, urls) {
             list = g_list_prepend(list, g_strdup(qPrintable(url.toString())));
+        }
 
         g_app_info_launch_uris(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
         g_list_free_full(list, g_free);
     } else if (g_app_info_supports_files(G_APP_INFO(m_appInfo.data()))) {
         GList* list = NULL, *l;
         Q_FOREACH(QUrl url, urls) {
-          GFile* file = g_file_new_for_uri(qPrintable(url.toString()));
-          list = g_list_prepend(list, file);
+            GFile* file = g_file_new_for_uri(qPrintable(url.toString()));
+            list = g_list_prepend(list, file);
         }
         g_app_info_launch(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
-        for (l = list; l; l = l->next)
+        for (l = list; l; l = l->next) {
             g_object_unref(G_FILE(list->data));
-
+        }
         g_list_free(list);
     } else {
         g_app_info_launch(G_APP_INFO(m_appInfo.data()), NULL, NULL, &error);
