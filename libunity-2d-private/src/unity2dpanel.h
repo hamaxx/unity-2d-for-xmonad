@@ -63,6 +63,9 @@ public:
     void setEdge(Edge);
     Edge edge() const;
 
+    void setScreen(int);
+    int screen() const;
+
     void addWidget(QWidget*);
 
     void addSpacer();

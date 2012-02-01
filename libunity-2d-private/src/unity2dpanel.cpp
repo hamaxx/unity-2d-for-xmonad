@@ -213,6 +213,16 @@ Unity2dPanel::Edge Unity2dPanel::edge() const
     return d->m_edge;
 }
 
+void Unity2dPanel::setScreen(int screen)
+{
+    d->m_screenInfo->setScreen(screen);
+}
+
+int Unity2dPanel::screen() const
+{
+    d->m_screenInfo->screen();
+}
+
 IndicatorsManager* Unity2dPanel::indicatorsManager() const
 {
     if (d->m_indicatorsManager == 0) {

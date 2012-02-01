@@ -197,7 +197,7 @@ PanelManager::onScreenCountChanged(int newCount)
             m_panels.append(panel);
         }
         panel->show();
-        panel->move(desktop->screenGeometry(leftmost).topLeft());
+        panel->setScreen(leftmost);
 
         /* Update the position of other existing panels, and instantiate new
            panels as needed. */
@@ -213,7 +213,7 @@ PanelManager::onScreenCountChanged(int newCount)
                 m_panels.append(panel);
             }
             panel->show();
-            panel->move(desktop->screenGeometry(screen).topLeft());
+            panel->setScreen(screen);
             ++i;
         }
     }
