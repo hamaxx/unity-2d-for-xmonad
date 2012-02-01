@@ -1139,9 +1139,7 @@ LauncherApplication::validateUrisForLaunch(DeclarativeMimeData* mimedata)
     Q_FOREACH(QString urlType, urlTypes) {
         Q_FOREACH(QString appSupportType, appSupportedTypes) {
             if (g_content_type_is_a(qPrintable(urlType), qPrintable(appSupportType))) {
-                Q_FOREACH(QUrl url, typesToUris.value(urlType)) {
-                    result.append(url);
-                }
+                result.append(typesToUris.value(urlType));
             }
         }
     }
