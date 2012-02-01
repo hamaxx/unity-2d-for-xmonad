@@ -18,28 +18,22 @@
 
 import QtQuick 1.1
 import Effects 1.0
-import "../common/fontUtils.js" as FontUtils
-import "../common"
+import "fontUtils.js" as FontUtils
 
 AbstractButton {
     property string searchQuery
+    property string instructions
+    property bool active: false
+
+    signal activateFirstResult
 
     Accessible.name: "Search Entry"
 
-    /* Cancels current search when the dash becomes invisible */
-    Connections {
-        target: dash
-        onActiveChanged: if (!dash.active) search_input.text = ""
-    }
-
-    Binding {
-        target: dash.currentPage != undefined ? dash.currentPage.model : null
-        property: "searchQuery"
-        value: searchQuery
-    }
+    /* Delete search when set in-active */
+    onActiveChanged: if (!active) searchInput.text = ""
 
     /* Keys forwarded to the search entry are forwarded to the text input. */
-    Keys.forwardTo: [search_input]
+    Keys.forwardTo: [searchInput]
 
     opacity: ( state == "selected" || state == "hovered" ) ? 1.0 : 0.7
 
@@ -58,7 +52,7 @@ AbstractButton {
         anchors.rightMargin: 16
 
         Image {
-            id: search_icon
+            id: searchIcon
 
             anchors.left: parent.left
             anchors.leftMargin: -9
@@ -68,28 +62,28 @@ AbstractButton {
 
             smooth: true
 
-            source: search_input.text ? "artwork/cross.png" : "artwork/search_icon.png"
+            source: searchInput.text ? "artwork/cross.png" : "artwork/search_icon.png"
             fillMode: Image.PreserveAspectFit
         }
 
         MouseArea {
-            id: clear_button
+            id: clearButton
 
             Accessible.name: "Clear"
             Accessible.role: Accessible.PushButton
 
-            anchors.fill: search_icon
+            anchors.fill: searchIcon
 
             onClicked: {
-                search_input.forceActiveFocus()
-                search_input.text = ""
+                searchInput.forceActiveFocus()
+                searchInput.text = ""
             }
         }
 
         TextInput {
-            id: search_input
+            id: searchInput
 
-            Accessible.name: search_instructions.text
+            Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
 
             effect: DropShadow {
@@ -99,10 +93,10 @@ AbstractButton {
                     offset.x: 0
                     offset.y: 0
                     color: "white"
-                    enabled: search_input.text != "" || search_input.inputMethodComposing
+                    enabled: searchInput.text != "" || searchInput.inputMethodComposing
                 }
 
-            anchors.left: search_icon.right
+            anchors.left: searchIcon.right
             anchors.leftMargin: -5
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
@@ -115,17 +109,17 @@ AbstractButton {
             cursorDelegate: cursor
             selectionColor: "gray"
 
-            onTextChanged: live_search_timeout.restart()
+            onTextChanged: liveSearchTimeout.restart()
 
             Timer {
-                id: live_search_timeout
+                id: liveSearchTimeout
                 interval: 200
-                onTriggered: searchQuery = search_input.text
+                onTriggered: searchQuery = searchInput.text
             }
 
             Keys.onPressed: {
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
-                    dash.currentPage.activateFirstResult()
+                    activateFirstResult()
                     event.accepted = true;
                 }
             }
@@ -159,7 +153,7 @@ AbstractButton {
             }
 
             TextCustom {
-                id: search_instructions
+                id: searchInstructions
 
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -173,12 +167,10 @@ AbstractButton {
                 fontSize: "x-large"
                 font.italic: true
                 text: {
-                    if(search_input.text || search_input.inputMethodComposing)
+                    if(searchInput.text || searchInput.inputMethodComposing)
                         return ""
-                    else if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
-                        return dash.currentPage.model.searchHint
                     else
-                        return u2d.tr("Search")
+                        return instructions
                 }
             }
         }
