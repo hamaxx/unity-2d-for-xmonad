@@ -235,13 +235,10 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
-    bool isOpened = isOnSameScreen &&
-        (isUnderMouse
+    bool isOpened = isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
-        || d->m_menuBarWidget->isOpened()
-        );
+        || d->m_menuBarWidget->isOpened();
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool showWindowButtons = isOpened && isMaximized;
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
