@@ -41,6 +41,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <keymonitor.h>
+#include <screeninfo.h>
 #include <debug_p.h>
 #include <config.h>
 
@@ -68,6 +69,8 @@ LauncherView::LauncherView(QWidget* parent) :
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
     connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
     connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
+
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft);
 
     connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
