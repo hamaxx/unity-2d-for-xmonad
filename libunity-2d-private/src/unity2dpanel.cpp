@@ -220,7 +220,7 @@ void Unity2dPanel::setScreen(int screen)
 
 int Unity2dPanel::screen() const
 {
-    d->m_screenInfo->screen();
+    return d->m_screenInfo->screen();
 }
 
 IndicatorsManager* Unity2dPanel::indicatorsManager() const
