@@ -332,6 +332,8 @@ void AppNameApplet::updateWidgets()
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
+    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
+
     d->m_windowButtonWidget->setVisible(showWindowButtons);
     d->m_windowButtonWidget->setEnabled(showWindowButtons);
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
