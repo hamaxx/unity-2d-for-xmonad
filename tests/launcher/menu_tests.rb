@@ -34,8 +34,8 @@ context "Launcher Contextual Menu Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-{launcher,places}'
+    $SUT.execute_shell_command 'killall unity-2d-{launcher,places}'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
