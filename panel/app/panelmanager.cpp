@@ -116,14 +116,31 @@ QStringList PanelManager::loadPanelConfiguration() const
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
 {
+    Unity2dPanel* panel;
     QDesktopWidget* desktop = QApplication::desktop();
+
+    QPoint p;
+    if (QApplication::isRightToLeft()) {
+        p = QPoint(desktop->width() - 1, 0);
+    }
+    int leftmost = desktop->screenNumber(p);
+
+    panel = instantiatePanel(leftmost);
+    m_panels.append(panel);
+    panel->show();
+    panel->move(desktop->screenGeometry(leftmost).topLeft());
+
     for(int i = 0; i < desktop->screenCount(); ++i) {
-        Unity2dPanel* panel = instantiatePanel(i);
+        if (i == leftmost) {
+            continue;
+        }
+        panel = instantiatePanel(i);
         m_panels.append(panel);
         panel->show();
         panel->move(desktop->screenGeometry(i).topLeft());
     }
-    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(updateScreenLayout(int)));
+    connect(desktop, SIGNAL(resized(int)), SLOT(onScreenResized(int)));
 
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
@@ -181,7 +198,25 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
 }
 
 void
-PanelManager::onScreenCountChanged(int newCount)
+PanelManager::onScreenResized(int screen)
+{
+    QPoint p;
+    QDesktopWidget* desktop = QApplication::desktop();
+    if (QApplication::isRightToLeft()) {
+        p = QPoint(desktop->width() - 1, 0);
+    }
+    int leftmost = desktop->screenNumber(p);
+
+    /*  We only care about the leftmost screen being resized,
+        because there is no screenLayoutChanged signal, we're
+        abusing it here so that we update the panels  */
+    if (screen == leftmost) {
+        updateScreenLayout(desktop->screenCount());
+    }
+}
+
+void
+PanelManager::updateScreenLayout(int newCount)
 {
     if (newCount > 0) {
         QDesktopWidget* desktop = QApplication::desktop();

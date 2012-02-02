@@ -44,8 +44,9 @@ private:
     QStringList loadPanelConfiguration() const;
 
 private Q_SLOTS:
-    void onScreenCountChanged(int newCount);
+    void updateScreenLayout(int newCount);
     void onAltF10Pressed();
+    void onScreenResized(int screen);
 };
 
 #endif // PanelManager_H
