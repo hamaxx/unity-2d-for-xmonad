@@ -26,7 +26,7 @@ Running separate components
     ./panel/app/unity-2d-panel
     ./places/app/unity-2d-places
 
-WHat it looks like
+What it looks like
 ==================
 
 ![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss1.png)
