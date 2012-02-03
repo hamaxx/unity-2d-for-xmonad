@@ -44,6 +44,7 @@ Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
+    void activeWorkspaceChanged();
 
 protected:
     void setupViewport();

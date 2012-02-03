@@ -87,6 +87,12 @@ LauncherItem::launchNewInstance()
 }
 
 bool
+LauncherItem::belongsToDifferentWorkspace()
+{
+    return false;
+}
+
+bool
 LauncherItem::progressBarVisible() const
 {
     return false;
