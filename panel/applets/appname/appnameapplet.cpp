@@ -224,8 +224,11 @@ struct AppNameAppletPrivate
         layout->setMargin(0);
         layout->setSpacing(0);
         m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
+        m_closeButton->setObjectName("AppNameApplet::CloseButton");
         m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
+        m_minimizeButton->setObjectName("AppNameApplet::MinimizeButton");
         m_maximizeButton = new WindowButton(PanelStyle::UnmaximizeWindowButton);
+        m_maximizeButton->setObjectName("AppNameApplet::MaximizeButton");
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
