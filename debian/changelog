@@ -1,6 +1,8 @@
 unity-2d (5.2.1-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release
+  * debian/control:
+    - build-dep on latest libunity-core-5.0-dev
 
  -- Didier Roche <didrocks@ubuntu.com>  Fri, 03 Feb 2012 10:46:05 +0100
 
