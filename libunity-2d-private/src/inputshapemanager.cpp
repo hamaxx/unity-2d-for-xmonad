@@ -60,7 +60,7 @@ void InputShapeManager::setTarget(Unity2DDeclarativeView *target)
         if (m_target != NULL) {
             // due to the way xshape works we need to re-apply the shaping every time the target window
             // is mapped again.
-            connect(m_target, SIGNAL(shown()), SLOT(updateManagedShape()));
+            connect(m_target, SIGNAL(visibleChanged(bool)), SLOT(updateManagedShape()));
             connect(m_target, SIGNAL(sceneResized(QSize)), SLOT(updateManagedShape()));
         }
         Q_EMIT targetChanged();
