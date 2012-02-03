@@ -29,11 +29,6 @@ LauncherDropItem {
     property bool shown
     property bool showMenus: true
 
-    Binding {
-        target: declarativeView
-        property: "monitoredArea"
-        value: Qt.rect(launcherLoader.x, launcher.y, launcher.width, launcher.height)
-    }
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
 
     function hideMenu() {
