@@ -161,11 +161,11 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
     if (corner != ScreenInfo::InvalidCorner) {
-        d->m_screenInfo = new ScreenInfo(corner);
+        d->m_screenInfo = new ScreenInfo(corner, this);
     } else if (screen >= 0) {
-        d->m_screenInfo = new ScreenInfo(screen);
+        d->m_screenInfo = new ScreenInfo(screen, this);
     } else {
-        d->m_screenInfo = new ScreenInfo(this);
+        d->m_screenInfo = new ScreenInfo(this, this);
     }
 
     d->m_slideInAnimation = new QPropertyAnimation(this);

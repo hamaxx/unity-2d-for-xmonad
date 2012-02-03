@@ -48,7 +48,8 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
     m_useOpenGL(false),
     m_transparentBackground(false),
-    m_last_focused_window(None)
+    m_last_focused_window(None),
+    m_screenInfo(NULL)
 {
     if (!QFileInfo(UNITY_2D_SCHEMA_FILE).exists()) {
         m_useOpenGL = false;
