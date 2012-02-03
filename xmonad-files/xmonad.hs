@@ -20,8 +20,8 @@ myManageHook = composeAll (
 
 main = withConnection Session $ \ dbus -> do
   xmonad gnomeConfig {
-    logHook    = dynamicLogWithPP (myPrettyPrinter dbus)
-  , manageHook = myManageHook
+    manageHook = myManageHook
+  , logHook    = logHook gnomeConfig >> dynamicLogWithPP (myPrettyPrinter dbus)
   }
 
 myPrettyPrinter dbus = defaultPP {
