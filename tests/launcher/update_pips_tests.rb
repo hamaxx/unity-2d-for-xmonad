@@ -139,6 +139,8 @@ context "Launcher pips tests" do
     #####################################################################################
     # Test cases
 
+    # FIXME We need some visual tests for this too
+
     # Test case objectives:
     #   * Check pips are updated properly when the app is in current workspace
     # Pre-conditions
