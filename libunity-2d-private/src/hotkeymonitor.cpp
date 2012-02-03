@@ -95,13 +95,15 @@ HotkeyMonitor::keyEventFilter(void* message)
     if (event->type == KeyRelease || event->type == KeyPress)
     {
         XKeyEvent* key = (XKeyEvent*) event;
-        HotkeyMonitor::instance().processKeyEvent(key->keycode, key->state,
-                                                  event->type == KeyPress);
+        if (HotkeyMonitor::instance().processKeyEvent(key->keycode, key->state,
+                                                      event->type == KeyPress)) {
+            return true;
+        }
     }
     return false;
 }
 
-void
+bool
 HotkeyMonitor::processKeyEvent(uint x11Keycode, uint x11Modifiers,
                                bool isPressEvent)
 {
@@ -113,9 +115,11 @@ HotkeyMonitor::processKeyEvent(uint x11Keycode, uint x11Modifiers,
         }
 
         if (hotkey->processNativeEvent(x11Keycode, x11Modifiers, isPressEvent)) {
-            return;
+            return true;
         }
     }
+
+    return false;
 }
 
 #include "hotkeymonitor.moc"
