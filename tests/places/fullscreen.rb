@@ -109,7 +109,6 @@ context "Dash fullscreen tests" do
 
     %x{dconf write #{DASH_FULLSCREEN_KEY} true}
     sleep 1
-    puts %x{dconf read #{DASH_FULLSCREEN_KEY}}
 
     verify_equal('FullScreenMode', TIMEOUT, 'Dash is not fullscreen but should be') {
         @shell.ShellDeclarativeView()['dashMode']

@@ -55,10 +55,6 @@ static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
-static const int NumPad_Key_0 = 0xffb0;
-static const int NumPad_Key_1 = 0xffb1;
-static const int NumPad_Key_9 = 0xffb9;
-
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
@@ -93,17 +89,6 @@ ShellDeclarativeView::ShellDeclarativeView()
         Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-    }
-
-    /* Super+NUMKEY{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10.*/
-    /* Qt won't distinguish between keys[0-9] below the Functionkeys and keypad keys[0-9] on the Keypad.
-       Reference: <X11/keysymdef.h>
-    */
-    for (Qt::Key key = (Qt::Key)(NumPad_Key_0); key <= (Qt::Key)(NumPad_Key_9); key = (Qt::Key) (key + 1)) {
-        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier, true);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-        hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier | Qt::ShiftModifier, true);
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
@@ -416,25 +401,19 @@ ShellDeclarativeView::forwardNumericHotkey()
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
         Qt::Key key = hotkey->key();
-        int index = 0;
-        if (hotkey->isX11Keysym()) {
-            if (key >= NumPad_Key_1 && key <= NumPad_Key_9) {
-                index = key - NumPad_Key_0;
-            } else if (key == NumPad_Key_0) {
-               index = 10;
+        if (key >= Qt::Key_1 && key <= Qt::Key_9) {
+            int index = key - Qt::Key_0;
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(index);
+            } else {
+                Q_EMIT activateShortcutPressed(index);
             }
-        } else {
-            if (key >= Qt::Key_1 && key <= Qt::Key_9) {
-                index = key - Qt::Key_0;
-            } else if (key == Qt::Key_0) {
-                index = 10;
+        } else if (key == Qt::Key_0) {
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(10);
+            } else {
+                Q_EMIT activateShortcutPressed(10);
             }
-        }
-
-        if (hotkey->modifiers() & Qt::ShiftModifier) {
-            Q_EMIT newInstanceShortcutPressed(index);
-        } else {
-            Q_EMIT activateShortcutPressed(index);
         }
     }
 }

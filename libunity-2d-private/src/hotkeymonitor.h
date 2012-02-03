@@ -33,7 +33,7 @@ public:
     static HotkeyMonitor& instance();
     ~HotkeyMonitor();
 
-    Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers, bool isX11keysym = false);
+    Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers);
 
     void disableModifiers(Qt::KeyboardModifiers modifiers);
     void enableModifiers(Qt::KeyboardModifiers modifiers);
