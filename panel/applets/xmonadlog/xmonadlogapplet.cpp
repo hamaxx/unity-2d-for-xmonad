@@ -33,7 +33,7 @@ void XmonadLogApplet::logReceived(const QDBusMessage &msg)
 {
     QString text = msg.arguments().at(0).toString();
     x_log->setText(text);
-    qDebug() << "dbus : " << text;
+    //qDebug() << "dbus : " << text;
 }
 
 XmonadLogApplet::XmonadLogApplet(Unity2dPanel* panel) :
@@ -43,7 +43,6 @@ XmonadLogApplet::XmonadLogApplet(Unity2dPanel* panel) :
     x_log->setText("<font color=\"white\">Waiting for xmonad...</font>");
 
     QHBoxLayout* layout = new QHBoxLayout(this);
-    //layout->setMargin(0);
     layout->setContentsMargins(10, 0, 5, 0);
     layout->addWidget(x_log);
 
