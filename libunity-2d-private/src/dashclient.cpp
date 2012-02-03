@@ -92,7 +92,7 @@ void DashClient::connectToDash()
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
-        m_dashActive = value.toBool();
+        slotDashActiveChanged(value.toBool());
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
@@ -117,6 +117,7 @@ void DashClient::slotDashActiveChanged(bool value)
     if (m_dashActive != value) {
         m_dashActive = value;
         updateActivePage();
+        Q_EMIT activeChanged(value);
     }
 }
 
@@ -125,6 +126,24 @@ void DashClient::slotDashActiveLensChanged(const QString& lens)
     if (m_dashActiveLens != lens) {
         m_dashActiveLens = lens;
         updateActivePage();
+    }
+}
+
+bool DashClient::active() const
+{
+    return m_dashActive;
+}
+
+void DashClient::setActive(bool active)
+{
+    if (!active) {
+        // Use m_dashDbusIface to close the dash, but only if it is running
+        if (m_dashDbusIface) {
+            m_dashDbusIface->setProperty("active", false);
+        }
+    } else {
+        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        iface.setProperty("active", true);
     }
 }
 
@@ -139,10 +158,7 @@ void DashClient::setActivePage(const QString& page, const QString& lensId)
         return;
     }
     if (page.isEmpty()) {
-        // Use m_dashDbusIface to close the dash, but only if it is running
-        if (m_dashDbusIface) {
-            m_dashDbusIface->setProperty("active", false);
-        }
+        setActive(false);
         return;
     }
     // Use a separate QDBusInterface so that the dash is started if it is not

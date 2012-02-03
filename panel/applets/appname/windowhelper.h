@@ -53,6 +53,8 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void update();
+    void updateDashVisible(bool);
+    void updateDashFullScreen(bool);
 
 Q_SIGNALS:
     void nameChanged();
