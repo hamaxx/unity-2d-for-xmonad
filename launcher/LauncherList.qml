@@ -92,10 +92,10 @@ AutoScrollingListView {
         function updatePips() {
             if (item.belongsToDifferentWorkspace()) {
                 launcherItem.pips = 1
-                launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
+                launcherItem.pipSource = "artwork/launcher_arrow_outline_ltr.png";
             } else {
                 launcherItem.pips = Math.min(item.windowCount, 3)
-                launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
+                launcherItem.pipSource = ("artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
             }
         }
 
