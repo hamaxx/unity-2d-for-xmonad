@@ -291,9 +291,7 @@ context "Launcher Autohide and Show Tests" do
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ){
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+      @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
     }
 
     XDo::Keyboard.escape
@@ -336,9 +334,7 @@ context "Launcher Autohide and Show Tests" do
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+      @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
     }
     assert_not_equal( xid.id, XDo::XWindow.active_window, \
                   'terminal has focus when it should be in the launcher' )
