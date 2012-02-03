@@ -25,6 +25,7 @@
 require '../run-tests.rb' unless $INIT_COMPLETED
 require 'xdo/keyboard'
 require 'xdo/mouse'
+require 'xdo/xwindow'
 
 ############################# Test Suite #############################
 context "Panel visual verification tests" do
@@ -46,8 +47,8 @@ context "Panel visual verification tests" do
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-panel'
 
-    $SUT.execute_shell_command 'killall unity-2d-shell'
-    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-launcher'
   end
 
   # Run once at the end of this test suite
@@ -62,7 +63,7 @@ context "Panel visual verification tests" do
                      :arguments => "-testability",
                      :sleeptime => 2 )
 
-    @shell = $SUT.run( :name => UNITY_2D_SHELL,
+    @launcher = $SUT.run( :name => UNITY_2D_LAUNCHER,
                        :arguments => "-testability",
                        :sleeptime => 2 )
 
@@ -71,7 +72,7 @@ context "Panel visual verification tests" do
   # Run after each test case completes
   teardown do
     $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
-    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
   end
 
   #####################################################################################
