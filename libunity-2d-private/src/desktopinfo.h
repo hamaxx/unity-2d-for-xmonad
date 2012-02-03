@@ -14,9 +14,6 @@ class DesktopInfo : public QObject
 {
     Q_OBJECT
 
-    Q_ENUMS(WorkspacesOrientation)
-    Q_ENUMS(WorkspacesCorner)
-
     Q_PROPERTY(WorkspacesInfo *workspaces READ workspaces NOTIFY workspacesChanged)
     Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning
                                                 NOTIFY isCompositingManagerRunningChanged)
