@@ -39,10 +39,11 @@ context "Shell input shape tests" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-panel'
+    $SUT.execute_shell_command 'killall unity-2d-panel'
 
     # Need panel running as position of shell depends on it
     @@panel = $SUT.run(:name => UNITY_2D_PANEL,
-                        :arguments => "-testability" )
+                       :arguments => "-testability" )
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
