@@ -39,13 +39,10 @@ public Q_SLOTS:
 protected:
     virtual void focusInEvent( QFocusEvent * event );
     virtual void focusOutEvent( QFocusEvent * event );
-    virtual void showEvent(QShowEvent *event);
-    virtual void hideEvent(QHideEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
 
 Q_SIGNALS:
     void outsideClick();
-    void visibleChanged(bool visible);
 };
 
 #endif // SPREADVIEW_H

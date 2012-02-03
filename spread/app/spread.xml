@@ -52,5 +52,11 @@
                             <dox:d>True if the workspace switcher is visible.</dox:d>
                         </arg>
                 </method>
+                <signal name="IsShownChanged">
+                        <dox:d>Signals when the workspaces switcher appears or disappears</dox:d>
+                        <arg name="IsShown" type="b" direction="out">
+                                <dox:d>True if the workspace switcher is visible</dox:d>
+                        </arg>
+                </signal>
         </interface>
 </node>
