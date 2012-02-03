@@ -44,7 +44,7 @@ XmonadLogApplet::XmonadLogApplet(Unity2dPanel* panel) :
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     //layout->setMargin(0);
-    layout->setContentsMargins(5, 0, 5, 0);
+    layout->setContentsMargins(10, 0, 5, 0);
     layout->addWidget(x_log);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
