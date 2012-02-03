@@ -19,7 +19,6 @@
  */
 
 #include "spreadmanager.h"
-
 #include <unity2dapplication.h>
 
 int main(int argc, char *argv[])

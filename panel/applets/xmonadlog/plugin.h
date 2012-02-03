@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 #ifndef XMONADLOG_PLUGIN_H
 #define XMONADLOG_PLUGIN_H
 

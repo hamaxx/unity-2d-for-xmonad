@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
+import QtQuick 1.0
 import "utils.js" as Utils
 
 /*
@@ -88,17 +93,17 @@ Item {
         anchors.fill: parent
         fillMode: Image.Stretch
 
-        source: "image://window/" + windowInfo.decoratedXid + "|"
-                                  + windowInfo.contentXid
-        cache: false
-
-        /* The window is scaled to a rectangle as large as possible inside
-           sourceSize while preserving its aspect ratio.
-           It saves video memory when using the OpenGL backend.
-           It makes scaling cheaper in the spread when using the raster backend.
+        /* HACK: QML uses an internal cache for Image objects that seems to use as
+           key the source property of the image.
+           This is great for normal images but in this case we really want the
+           screenshot to reload everytime.
+           Since I could not find any way to disable this cache, I am using this
+           hack which essentially appends the current time to the source URL of the
+           Image, tricking the cache into doing a request to the image provider.
         */
-        sourceSize.width: 512
-        sourceSize.height: 512
+        source: "image://window/" + windowInfo.decoratedXid + "|"
+                                  + windowInfo.contentXid + "@"
+                                  + screen.currentTime()
 
         /* Disabled during animations for performance reasons */
         smooth: !animating
