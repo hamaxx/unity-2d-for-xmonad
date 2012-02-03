@@ -24,6 +24,7 @@
 
 // Qt
 #include <QLabel>
+#include <QtDBus>
 
 // Unity-2d
 #include <panelapplet.h>
@@ -36,8 +37,11 @@ Q_OBJECT
 public:
     XmonadLogApplet(Unity2dPanel* panel);
 
+public Q_SLOTS:
+    void logReceived(const QDBusMessage &msg);
+
 private:
-    Q_DISABLE_COPY(XmonadLogApplet)
+    Q_DISABLE_COPY(XmonadLogApplet);
     QLabel* x_log;
 };
 
