@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import "utils.js" as Utils
 
 Item {
     id: ratingStars
@@ -36,16 +37,12 @@ Item {
     width: stars.width
     height: stars.height
 
-    function clamp(x, min, max) {
-        return Math.max(Math.min(x, max), min)
-    }
-
     function incrementRating() {
-        rating = clamp(Math.floor(rating) + 1, 1, size)
+        rating = Utils.clamp(Math.floor(rating) + 1, 1, size)
     }
 
     function decrementRating() {
-        rating = clamp(Math.ceil(rating) - 1, 1, size)
+        rating = Utils.clamp(Math.ceil(rating) - 1, 1, size)
     }
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
@@ -68,7 +65,7 @@ Item {
             model: size
             Star {
                 fill: if(!enabled){ /* If read-only, display any Star rating */
-                          return clamp(rating - index, 0, size)
+                          return Utils.clamp(rating - index, 0, size)
                       }
                       else{ /* If user selectable, restrict to integer selections */
                           return (rating - index > 0) ? 1 : 0
@@ -99,7 +96,7 @@ Item {
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
             var rating = (posX - posXOverUnit) / unitWidth + 1
 
-            return clamp( rating, 0, size )
+            return Utils.clamp( rating, 0, size )
         }
 
         anchors.fill: stars

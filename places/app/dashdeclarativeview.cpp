@@ -134,7 +134,7 @@ DashDeclarativeView::setWMFlags()
 void
 DashDeclarativeView::showEvent(QShowEvent *event)
 {
-    QDeclarativeView::showEvent(event);
+    Unity2DDeclarativeView::showEvent(event);
     /* Note that this has to be called everytime the window is shown, as the WM
        will remove the flags when the window is hidden */
     setWMFlags();
