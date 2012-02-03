@@ -156,7 +156,7 @@ context "Launcher pips tests" do
         xid = open_window()
         @@xid_list << xid
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching with launcher_arrow_ltr.png'){
              @app.Unity2dPanel() \
@@ -184,7 +184,7 @@ context "Launcher pips tests" do
 
         change_window_workspace(xid)
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching with launcher_arrow_outline_ltr.png'){
              @app.Unity2dPanel() \
@@ -212,7 +212,7 @@ context "Launcher pips tests" do
         xid = open_window()
         @@xid_list << xid
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_pip_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_pip_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'Pip not matching expected image launcher_pip_ltr.png'){
              @app.Unity2dPanel() \
@@ -243,7 +243,7 @@ context "Launcher pips tests" do
         @@xid_list << xid
         change_window_workspace(xid)
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
              @app.Unity2dPanel() \
@@ -274,7 +274,7 @@ context "Launcher pips tests" do
         xid.close!
         change_window_workspace(@@xid_list[0])
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
              @app.Unity2dPanel() \
@@ -302,7 +302,7 @@ context "Launcher pips tests" do
 
         change_user_workspace
 
-        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
              @app.Unity2dPanel() \
