@@ -43,7 +43,8 @@ XmonadLogApplet::XmonadLogApplet(Unity2dPanel* panel) :
     x_log->setText("<font color=\"white\">Waiting for xmonad...</font>");
 
     QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->setMargin(0);
+    //layout->setMargin(0);
+    layout->setContentsMargins(5, 0, 5, 0);
     layout->addWidget(x_log);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
