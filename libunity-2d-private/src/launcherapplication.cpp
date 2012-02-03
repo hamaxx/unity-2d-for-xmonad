@@ -28,6 +28,11 @@
    set it again here.
 */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 #include "launcherapplication.h"
 #include "launchermenu.h"
 #include "launcherutility.h"
