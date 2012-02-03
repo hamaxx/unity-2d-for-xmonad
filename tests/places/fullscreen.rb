@@ -38,8 +38,6 @@ context "Dash fullscreen tests" do
 
   DASH_FULLSCREEN_KEY = '/com/canonical/unity-2d/dash/full-screen'
   DASH_FORMFACTOR_KEY = '/com/canonical/unity-2d/form-factor'
-  DASH_MIN_SCREEN_WIDTH = 1280;
-  DASH_MIN_SCREEN_HEIGHT = 1084;
 
   # Run once at the beginning of this test suite
   startup do

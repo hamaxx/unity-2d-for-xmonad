@@ -31,6 +31,13 @@ context "Panel visual verification tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
   old_value = ""
 
+  def dash_always_fullscreen
+    out = XDo::XWindow.display_geometry()
+    width = out[0]
+    height = out[1]
+    return width < DASH_MIN_SCREEN_WIDTH && height < DASH_MIN_SCREEN_HEIGHT
+  end
+
   # Run once at the beginning of this test suite
   startup do
     old_value = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Dash full-screen'
@@ -84,27 +91,33 @@ context "Panel visual verification tests" do
     }
 
     maximizeButton = @app.AppNameApplet().QAbstractButton( :name => 'AppNameApplet::MaximizeButton' )
-    verify_true( TIMEOUT, 'maximize button not matching reference image' ) {
-      maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button.png') != nil
-    }
+    if dash_always_fullscreen
+      verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
+        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen.png') != nil
+      }
+    else
+      verify_true( TIMEOUT, 'maximize button not matching reference image' ) {
+        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button.png') != nil
+      }
 
-    maximizeButton.move_mouse()
-    XDo::Mouse.down()
-    verify_true( TIMEOUT, 'maximize button pressed not matching reference image' ) {
-      maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_pressed.png') != nil
-    }
-    XDo::Mouse.up()
+      maximizeButton.move_mouse()
+      XDo::Mouse.down()
+      verify_true( TIMEOUT, 'maximize button pressed not matching reference image' ) {
+        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_pressed.png') != nil
+      }
+      XDo::Mouse.up()
 
-    verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-      maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen.png') != nil
-    }
+      verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
+        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen.png') != nil
+      }
 
-    maximizeButton.move_mouse()
-    XDo::Mouse.down()
-    verify_true( TIMEOUT, 'maximize button fullscreen pressed not matching reference image' ) {
-      maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen_pressed.png') != nil
-    }
-    XDo::Mouse.up()
+      maximizeButton.move_mouse()
+      XDo::Mouse.down()
+      verify_true( TIMEOUT, 'maximize button fullscreen pressed not matching reference image' ) {
+        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen_pressed.png') != nil
+      }
+      XDo::Mouse.up()
+    end
 
     closeButton.move_mouse()
     XDo::Mouse.down()
