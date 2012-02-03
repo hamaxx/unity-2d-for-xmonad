@@ -29,9 +29,13 @@ require 'xdo/mouse'
 ############################# Test Suite #############################
 context "Panel visual verification tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
+  old_value = ""
 
   # Run once at the beginning of this test suite
   startup do
+    old_value = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Dash full-screen'
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Dash full-screen false'
+
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-panel'
 
@@ -41,6 +45,7 @@ context "Panel visual verification tests" do
 
   # Run once at the end of this test suite
   shutdown do
+      $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Dash full-screen ' + old_value
   end
 
   # Run before each test case begins
@@ -66,8 +71,6 @@ context "Panel visual verification tests" do
   # Test cases
 
   test "Visually compare dash buttons with reference" do
-    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Dash full-screen false'
-
     XDo::Keyboard.simulate('{SUPER}')
 
     closeButton = @app.AppNameApplet().QAbstractButton( :name => 'AppNameApplet::CloseButton' )
