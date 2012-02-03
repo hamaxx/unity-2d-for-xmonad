@@ -21,6 +21,7 @@
 #include <QVariant>
 #include <QX11Info>
 #include <QFileInfo>
+#include <QShowEvent>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -158,6 +159,17 @@ void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
     Q_EMIT globalPositionChanged(globalPosition());
 }
 
+void Unity2DDeclarativeView::showEvent(QShowEvent* event)
+{
+    QDeclarativeView::showEvent(event);
+    Q_EMIT visibleChanged(true);
+}
+
+void Unity2DDeclarativeView::hideEvent(QHideEvent* event)
+{
+    QDeclarativeView::hideEvent(event);
+    Q_EMIT visibleChanged(false);
+}
 
 /* Obtaining & Discarding Keyboard Focus for Window on Demand
  *

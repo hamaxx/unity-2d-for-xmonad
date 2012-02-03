@@ -144,6 +144,34 @@ end
 
 
 # Test case objectives:
+#   * Check Launcher reveal when dash is invoked
+# Pre-conditions
+#   * None
+# Test steps
+#   * Open application in position overlapping Launcher
+#   * Verify Launcher hiding
+#   * Press Super key
+#   * Verify Launcher shows
+#   * Press Super key
+#   * Verify Launcher hides
+# Post-conditions
+#   * None
+# References
+#   * None
+def test_press_super_to_toggle_launcher()
+  xid = open_overlapping_window()
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
+
+  XDo::Keyboard.simulate('{SUPER}')
+  verify_launcher_visible(TIMEOUT, 'Launcher hiding when Super Key pressed, should be visible')
+
+  XDo::Keyboard.simulate('{SUPER}')
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden')
+  xid.close!
+end
+
+
+# Test case objectives:
 #   * Check Launcher reveal with Super key works
 # Pre-conditions
 #   * None
@@ -238,6 +266,96 @@ def test_alt_f1_focus_unfocus_launcher()
 
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_launcher_visible(TIMEOUT, 'Launcher hiding after Alt+F1 pressed, should be visible')
+  verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
+  }
+  assert_not_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal has focus when it should be in the launcher' )
+
+  XDo::Keyboard.alt_F1
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden')
+  assert_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal does not have focus when it should' )
+  xid.close!
+end
+
+
+# Test case objectives:
+#   * Alt+F1 gives keyboard focus to the Launcher when dash was open, escape removes it
+# Pre-conditions
+#   * Desktop with no running applications
+# Test steps
+#   * Open application in position overlapping Launcher
+#   * Verify Launcher hiding
+#   * Verify application has keyboard focus
+#   * Press Super to invoke the Dash
+#   * Verify Launcher is shown
+#   * Press Alt+F1
+#   * Verify Launcher shows
+#   * Verify Dash icon is highlighted
+#   * Verify application does not have keyboard focus
+#   * Press Escape
+#   * Verify Launcher hides
+#   * Verify application has keyboard focus
+# Post-conditions
+#   * None
+# References
+#   * None
+def test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
+  xid = open_overlapping_window()
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
+  assert_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal should have focus after starting it' )
+
+  XDo::Keyboard.simulate('{SUPER}')
+  verify_launcher_visible(TIMEOUT, 'Launcher hiding after Super pressed, should be visible')
+
+  XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+  verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
+  }
+  assert_not_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal has focus when it should be in the launcher' )
+
+  XDo::Keyboard.escape
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden')
+  assert_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal does not have focus when it should' )
+  xid.close!
+end
+
+
+# Test case objectives:
+#   * Alt+F1 takes & gives keyboard focus to the Launcher when dash was open
+# Pre-conditions
+#   * Desktop with no running applications
+# Test steps
+#   * Open application in position overlapping Launcher
+#   * Verify Launcher hiding
+#   * Verify application has keyboard focus
+#   * Press Super to invoke the Dash
+#   * Verify Launcher is shown
+#   * Press Alt+F1
+#   * Verify Launcher shows
+#   * Verify Dash icon is highlighted
+#   * Verify application does not have keyboard focus
+#   * Press Alt+F1
+#   * Verify Launcher hides
+#   * Verify application has keyboard focus
+# Post-conditions
+#   * None
+# References
+#   * None
+def test_alt_f1_toggle_focus_launcher_when_dash_open()
+  xid = open_overlapping_window()
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
+  assert_equal( xid.id, XDo::XWindow.active_window, \
+                'terminal should have focus after starting it' )
+
+  XDo::Keyboard.simulate('{SUPER}')
+  verify_launcher_visible(TIMEOUT, 'Launcher hiding after Super pressed, should be visible')
+
+  XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
     @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
