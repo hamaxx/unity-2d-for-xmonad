@@ -33,7 +33,7 @@ Architecture: all
 Depends: ${misc:Depends},
          unity-2d-panel,
          unity-2d-spread,
-	 unity-2d-shell,
+         unity-2d-shell,
          metacity (>= 2.30.3-0ubuntu5)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
@@ -71,22 +71,13 @@ Description: Unity 2D shared library - development files
  This package contains the development header files.
 
 Package: unity-2d-launcher
-Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         unity-asset-pool,
-         libunity-2d-private0 (= ${binary:Version}),
-         libqt4-svg,
-Recommends: unity-lens-files,
-            unity-lens-applications,
-            unity-lens-music,
-Description: Unity 2D Launcher
- The Unity 2D launcher displays a list of running applications as well as a
- list of favorite applications in a panel at the left of the screen.
- Notifications from individual applications are also highlighted in the
- launcher.
- This package does not install anything anymore, it was replaced by unity-2d-shell.
- 
+Architecture: all
+Depends: ${misc:Depends},
+         unity-2d-shell,
+Description: Transitional package for unity-2d-launcher
+ This is a transitional package for unity-2d-launcher, and can be safely removed
+ after the installation is complete.
+
 Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -105,16 +96,12 @@ Description: Unity 2D Panel
  application outside of the Unity 2D environment.
 
 Package: unity-2d-places
-Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         libunity-2d-private0 (= ${binary:Version}),
-         libqt4-svg
-Description: Unity 2D Places
- The Unity 2D places overlay over the desktop to provide quick access to
- various categories of applications. It is part of Unity 2D and can not run
- as a standalone application outside of the Unity 2D environment.
- This package does not install anything anymore, it was replaced by unity-2d-shell.
+Architecture: all
+Depends: ${misc:Depends},
+         unity-2d-shell,
+Description: Transitional package for unity-2d-places
+ This is a transitional package for unity-2d-places, and can be safely removed
+ after the installation is complete.
 
 Package: unity-2d-spread
 Architecture: any
@@ -132,19 +119,26 @@ Package: unity-2d-shell
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         unity-asset-pool,
          libunity-2d-private0 (= ${binary:Version}),
-         libqt4-svg
-Description: Unity 2D Shell
- The Unity 2D shell include various Unity 2D components.
- It is part of Unity 2D and can not run as a standalone application outside
- of the Unity 2D environment.
- The components are:
- * Places: an overlay over the desktop to provide quick access to
-           various categories of applications. 
+         libqt4-svg,
+Recommends: unity-lens-files,
+            unity-lens-applications,
+            unity-lens-music,
+Replaces: unity-2d-launcher (<< 5.4~),
+          unity-2d-places (<< 5.4~),
+Breaks: unity-2d-launcher (<< 5.4~),
+        unity-2d-places (<< 5.4~),
+Description: Dash and Launcher for the Unity 2D environment
+ This is part of Unity 2D and can not run as a standalone application outside
+ of the Unity 2D environment. The components included are:
+ * Dash: an overlay over the desktop to provide quick access to
+         various categories of applications.
  * Launcher: displays in a panel at the left of the screen a list of running
              and favorite applications as well as highlighting their notifications.
 
 Package: unity-2d-dbg
+Architecture: any
 Section: debug
 Priority: extra
 Depends:
