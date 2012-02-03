@@ -14,6 +14,7 @@ myManageHook = composeAll (
   [ manageHook gnomeConfig
   , className =? "Unity-2d-panel" --> doIgnore
   , className =? "Unity-2d-launcher" --> doIgnore
+  , className =? "Unity-2d-places" --> doFloat
   , className =? "Do" --> doIgnore
   ])
 
@@ -26,8 +27,8 @@ main = withConnection Session $ \ dbus -> do
 myPrettyPrinter dbus = defaultPP {
     ppOutput  = outputThroughDBus dbus
   , ppTitle   = returnBlank
-  , ppCurrent = pangoColor "#dddddd" . wrap "[" "]" . pangoSanitize
-  , ppVisible = pangoColor "#ffffff" . wrap "(" ")" . pangoSanitize
+  , ppCurrent = pangoColor "#ffffff" . wrap "[" "]" . pangoSanitize
+  , ppVisible = pangoColor "#dddddd" . wrap "(" ")" . pangoSanitize
   , ppHidden  = wrap " " " "
   , ppUrgent  = pangoColor "red"
   }
