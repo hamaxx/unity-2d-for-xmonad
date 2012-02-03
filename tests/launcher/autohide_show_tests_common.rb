@@ -202,9 +202,7 @@ def test_alt_f1_focus_launcher()
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_launcher_visible(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ){
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
 
   XDo::Keyboard.escape
@@ -241,9 +239,7 @@ def test_alt_f1_focus_unfocus_launcher()
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_launcher_visible(TIMEOUT, 'Launcher hiding after Alt+F1 pressed, should be visible')
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
   assert_not_equal( xid.id, XDo::XWindow.active_window, \
                 'terminal has focus when it should be in the launcher' )
