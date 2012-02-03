@@ -239,7 +239,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   test "Press Super key to reveal launcher, press again to hide" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
 
@@ -249,7 +249,7 @@ context "Launcher Autohide and Show Tests" do
     }
 
     XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     xid.close!
@@ -410,7 +410,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   xtest "Press Alt+F1 to focus/unfocus Launcher when dash is open" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -431,7 +431,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.escape
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -463,7 +463,7 @@ context "Launcher Autohide and Show Tests" do
   #   * None
   xtest "Press Alt+F1 to focus Launcher when dash is open, escape to unfocus" do
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
@@ -484,7 +484,7 @@ context "Launcher Autohide and Show Tests" do
                   'terminal has focus when it should be in the launcher' )
 
     XDo::Keyboard.alt_F1
-    verify_equal( -WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
       @app.Unity2dPanel()['x_absolute'].to_i
     }
     assert_equal( xid.id, XDo::XWindow.active_window, \
