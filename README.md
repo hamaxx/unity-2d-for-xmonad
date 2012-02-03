@@ -1,7 +1,7 @@
 ## Changes from standard unity-2d
 
-* Xmonad workspace indicator!
-* Display both application name and window title in panel
+* __Xmonad workspace indicator!__
+* __Display both application name and window title in panel__
 * Move launcher under panel so it doesn't cover it
 * Load panel only on the primary screen
 * Don't filter apps in lagacy tray
@@ -44,8 +44,8 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
 ## What it looks like
 
-![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss1.png)
-![Screen shot 2](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss2.png)
+![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss2.png)
+![Screen shot 2](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss3.png)
 
 ## Notes on the Dash
 
