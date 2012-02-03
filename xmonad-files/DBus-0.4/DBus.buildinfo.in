@@ -1,0 +1,2 @@
+cc-options: @DBUS_CFLAGS@
+ld-options: @DBUS_LIBS@
