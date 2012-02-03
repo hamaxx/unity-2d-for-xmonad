@@ -20,7 +20,7 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
     sudo apt-get install unity-2d
 
-### Compile unity-2d-for-wmonad
+### Compile unity-2d-for-xmonad
 
     cd unity-2d-for-xmonad
     cmake . && make
