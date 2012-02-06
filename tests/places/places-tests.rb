@@ -347,7 +347,7 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.escape
-    verify_not(2, 'There should not be a Dash declarative view on startup') {
+    verify_not(2, 'There should not be a Dash declarative view after pressing Escape') {
       @app_places.DashDeclarativeView()
     }
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
