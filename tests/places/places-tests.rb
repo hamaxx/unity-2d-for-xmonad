@@ -294,23 +294,23 @@ context "Dash Tests" do
   #   * None
   # References
   #   * None
-  test "Check focus goes to dash on Super when launcher menu is open" do
+  xtest "Check focus goes to dash on Super when launcher menu is open" do
     XDo::Keyboard.alt_F1
     verify_equal( 0, TIMEOUT, 'Launcher hiding when Alt+F1 pressed' ) {
-      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+      @app.Launcher()['x_absolute'].to_i
     }
     XDo::Keyboard.right
     verify(TIMEOUT, 'There should be an unfolded menu after pressing Right') {
-      @app_launcher.LauncherContextualMenu( :folded => false );
+      @app.LauncherContextualMenu( :folded => false );
     }
     XDo::Keyboard.super
-    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
-      @app_places.DashDeclarativeView()
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
     }
     XDo::Keyboard.a
     XDo::Keyboard.s
     verify_equal( "as", TIMEOUT, 'Text in the search field should be "as"' ) {
-      @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+      @app.Dash().SearchEntry().QDeclarativeTextInput()['text']
     }
   end
 end
