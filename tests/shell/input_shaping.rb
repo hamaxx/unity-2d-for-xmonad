@@ -86,9 +86,6 @@ end
 context "Shell input shape tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
 
-  PANEL_HEIGHT = 24
-  LAUNCHER_WIDTH = 65
-
   # Run once at the beginning of this test suite
   startup do
     system 'killall unity-2d-shell > /dev/null 2>&1'
