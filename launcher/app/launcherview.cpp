@@ -19,6 +19,13 @@
 
 #include "launcherview.h"
 
+#include <config.h>
+#include <keyboardmodifiersmonitor.h>
+#include <hotkey.h>
+#include <hotkeymonitor.h>
+#include <keymonitor.h>
+#include <debug_p.h>
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QX11Info>
@@ -36,13 +43,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-#include <keyboardmodifiersmonitor.h>
-#include <hotkey.h>
-#include <hotkeymonitor.h>
-#include <keymonitor.h>
-#include <debug_p.h>
-#include <config.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
