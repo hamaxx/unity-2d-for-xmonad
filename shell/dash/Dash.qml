@@ -119,7 +119,7 @@ FocusScope {
             return
         }
 
-        if (lensId == declarativeView.activeLens) {
+        if (lensId == declarativeView.activeLens && dash.active) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
