@@ -35,10 +35,9 @@ def get_shell_shape
 
     # Get the shape of the shell window using our custom tool
     maskpath = tempfilename('shape', '.png')
-    get_shape_command = BINARY_DIR + "/tests/getshape/getshape #{shell_id} -"
-    out = $SUT.execute_shell_command get_shape_command
-    File.open(maskpath, 'w') { |f| f.write(out) }
-    assert(out != "", "Failed to call getshape to get the shape of the window")
+    get_shape_command = BINARY_DIR + "/tests/getshape/getshape #{shell_id} #{maskpath}"
+    $SUT.execute_shell_command get_shape_command
+    $SUT.copy_from_sut(:from => '/tmp/', :file => maskpath, :to => '/tmp/')
     return maskpath
 end
 
