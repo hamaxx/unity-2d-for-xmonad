@@ -59,10 +59,7 @@ context "Launcher Autohide and Show Tests" do
   test "Visually compare Dash tile with reference" do
     expected_image = pwd + 'verification/dash-tile.png'
     
-    dash_tile = @app.Launcher() \
-        .LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeItem()
+    dash_tile = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeItem()
 
     #Check tile visual matches reference image, with some tolerance.
     assert( dash_tile.find_on_screen(expected_image, 4), \

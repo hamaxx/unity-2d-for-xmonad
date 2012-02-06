@@ -30,44 +30,45 @@ require 'tmpwindow'
 require $library_path + '/../../launcher/autohide_show_tests_common.rb'
 
 ############################# Test Suite #############################
-context "Launcher Autohide and Show Tests" do
+context "Launcher Autohide and Show Tests on RTL" do
   launcher_favorites = ""
 
   def verify_launcher_visible(timeout, message = '')
-    verify_equal( 0, timeout, message ) {
+    verify_equal( XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH, timeout, message ) {
       @app.Launcher()['x_absolute'].to_i
     }
   end
 
   def verify_launcher_hidden(timeout, message = '')
-    verify_equal( -LAUNCHER_WIDTH, timeout, message ) {
+    verify_equal( XDo::XWindow.display_geometry[0], timeout, message ) {
       @app.Launcher()['x_absolute'].to_i
     }
   end
 
   def open_overlapping_window()
-    xid = TmpWindow.open_window_at(10,100)
+    xid = TmpWindow.open_window_at(100, 100)
+    xid.move(XDo::XWindow.display_geometry[0] - xid.size[0] - 10 , 100)
     return xid
   end
 
   def move_mouse_to_screen_edge()
-    XDo::Mouse.move(0, 200, 0, true)
+    XDo::Mouse.move(XDo::XWindow.display_geometry[0], 200, 0, true)
   end
 
   def move_mouse_to_launcher_inner_border()
-    XDo::Mouse.move(LAUNCHER_WIDTH-1,200)
+    XDo::Mouse.move(XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH, 200)
   end
 
   def move_mouse_to_just_outside_launcher()
-    XDo::Mouse.move(LAUNCHER_WIDTH,200)
+    XDo::Mouse.move(XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH - 1, 200)
   end
 
   def move_window_just_overlapping(xid)
-    xid.move(LAUNCHER_WIDTH - 1 , 100)
+    xid.move(XDo::XWindow.display_geometry[0] - xid.size[0] - LAUNCHER_WIDTH - 1 , 100)
   end
 
   def move_window_just_not_overlapping(xid)
-    xid.move(LAUNCHER_WIDTH, 100)
+    xid.move(XDo::XWindow.display_geometry[0] - xid.size[0]- LAUNCHER_WIDTH - 2, 100)
   end
 
   # Run once at the beginning of this test suite
@@ -92,7 +93,7 @@ context "Launcher Autohide and Show Tests" do
 
     # Execute the application 
     @app = $SUT.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability",
+                     :arguments => "-testability,-reverse",
                      :sleeptime => 2 )
     # Make certain application is ready for testing
     verify{ @app.Launcher() }
@@ -110,39 +111,39 @@ context "Launcher Autohide and Show Tests" do
   #####################################################################################
   # Test cases
 
-  test "Position with Empty Desktop" do
+  xtest "Position with Empty Desktop" do
     test_position_with_empty_desktop()
   end
 
-  test "Position with Window not in the way" do
+  xtest "Position with Window not in the way" do
     test_position_width_window_not_in_the_way()
   end
 
-  test "Position with Window in the way" do
+  xtest "Position with Window in the way" do
     test_position_with_window_in_the_way()
   end
 
-  test "Move window positioning to check launcher action" do
+  xtest "Move window positioning to check launcher action" do
     test_move_window_positioning_to_check_launcher_action()
   end
 
-  test "Reveal hidden Launcher with mouse" do
+  xtest "Reveal hidden Launcher with mouse" do
     test_reveal_hidden_launcher_with_mouse()
   end
 
-  test "Press Super key to toggle launcher" do
+  xtest "Press Super key to toggle launcher" do
     test_press_super_to_toggle_launcher()
   end
 
-  test "Hold Super key down to reveal launcher and shortcut keys" do
+  xtest "Hold Super key down to reveal launcher and shortcut keys" do
     test_hold_super_launcher_shortcuts()
   end
 
-  test "Press Alt+F1 to focus Launcher" do
+  xtest "Press Alt+F1 to focus Launcher" do
     test_alt_f1_focus_launcher()
   end
 
-  test "Press Alt+F1 to focus/unfocus Launcher" do
+  xtest "Press Alt+F1 to focus/unfocus Launcher" do
     test_alt_f1_focus_unfocus_launcher()
   end
 
@@ -154,19 +155,19 @@ context "Launcher Autohide and Show Tests" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 
-  test "Launcher visible on show-desktop" do
+  xtest "Launcher visible on show-desktop" do
     test_launcher_visible_show_desktop()
   end
 
-  test "Launcher hide delay on tile removal" do
+  xtest "Launcher hide delay on tile removal" do
     test_launcher_hide_delay_on_tile_removal()
   end
 
-  test "Launcher visible after toggling dash" do
+  xtest "Launcher visible after toggling dash" do
     test_launcher_visible_after_toggling_dash()
   end
 
-  test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
+  xtest "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
     test_launcher_does_not_hide_on_esc_after_alt_f1_with_overlapping_window()
   end
 
