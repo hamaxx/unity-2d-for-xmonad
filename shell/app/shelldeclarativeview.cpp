@@ -264,6 +264,7 @@ ShellDeclarativeView::toggleDash()
         setDashActive(false);
         forceDeactivateWindow();
     } else {
+        setFocus();
         Q_EMIT activateHome();
     }
 }
