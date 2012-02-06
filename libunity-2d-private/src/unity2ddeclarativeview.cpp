@@ -275,6 +275,7 @@ void Unity2DDeclarativeView::saveActiveWindow()
 void Unity2DDeclarativeView::onActiveWorkspaceChanged() 
 {
     m_last_focused_window = None;
+    Q_EMIT activeWorkspaceChanged();
 }
 
 #include <unity2ddeclarativeview.moc>
