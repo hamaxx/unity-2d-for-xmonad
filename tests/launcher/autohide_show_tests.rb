@@ -46,12 +46,12 @@ context "Launcher Autohide and Show Tests" do
   end
 
   def open_overlapping_window()
-      xid = TmpWindow.open_window_at(10,100)
-      return xid
+    xid = TmpWindow.open_window_at(10,100)
+    return xid
   end
 
   def move_mouse_to_screen_edge()
-      XDo::Mouse.move(0, 200, 0, true)
+    XDo::Mouse.move(0, 200, 0, true)
   end
 
   def move_mouse_to_launcher_inner_border()
@@ -86,7 +86,7 @@ context "Launcher Autohide and Show Tests" do
   # Run before each test case begins
   setup do
     #Ensure mouse out of the way
-    XDo::Mouse.move(200,200,10,true)    
+    XDo::Mouse.move(200,200,10,true)
 
     launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
@@ -115,7 +115,7 @@ context "Launcher Autohide and Show Tests" do
   end
 
   test "Position with Window not in the way" do
-    test_position_width_window_no_in_the_way()
+    test_position_width_window_not_in_the_way()
   end
 
   test "Position with Window in the way" do

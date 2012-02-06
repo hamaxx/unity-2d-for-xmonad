@@ -4,9 +4,6 @@
  *
  * Copyright 2011 Canonical Ltd.
  *
- * Authors:
- * - Gerry Boland <gerry.boland@canonical.com>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
@@ -53,7 +50,7 @@ end
 #   * None
 # References
 #   * None
-def test_position_width_window_no_in_the_way()
+def test_position_width_window_not_in_the_way()
   # Open Terminal with position 100x100
   xid = TmpWindow.open_window_at(100,100)
   verify_launcher_visible(TIMEOUT, 'Launcher hiding when window not in the way, should be visible')
@@ -233,9 +230,7 @@ def test_alt_f1_focus_launcher()
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_launcher_visible(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ){
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
 
   XDo::Keyboard.escape
@@ -272,9 +267,7 @@ def test_alt_f1_focus_unfocus_launcher()
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_launcher_visible(TIMEOUT, 'Launcher hiding after Alt+F1 pressed, should be visible')
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
   assert_not_equal( xid.id, XDo::XWindow.active_window, \
                 'terminal has focus when it should be in the launcher' )
@@ -319,9 +312,7 @@ def test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
 
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
   assert_not_equal( xid.id, XDo::XWindow.active_window, \
                 'terminal has focus when it should be in the launcher' )
@@ -366,9 +357,7 @@ def test_alt_f1_toggle_focus_launcher_when_dash_open()
 
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
   verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-    @app.LauncherList( :name => 'main' ) \
-        .QDeclarativeItem( :name => 'Dash home' ) \
-        .QDeclarativeImage( :name => 'selectionOutline' )['visible']
+    @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true ).QDeclarativeImage( :name => 'selectionOutline' )['visible']
   }
   assert_not_equal( xid.id, XDo::XWindow.active_window, \
                 'terminal has focus when it should be in the launcher' )

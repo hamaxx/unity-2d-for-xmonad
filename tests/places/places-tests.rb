@@ -141,7 +141,7 @@ context "Dash Tests" do
       @app.Dash()['active']
     }
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
-    verify(TIMEOUT, 'Dash should be active after pressing Alt+F2') {
+    verify_equal("true", TIMEOUT, 'Dash should be active after pressing Alt+F2') {
       @app.Dash()['active']
     }
     verify_equal("", TIMEOUT, 'There should be no text in the Search Entry') {
@@ -152,6 +152,165 @@ context "Dash Tests" do
       verify_equal( "s", 1 ) {
         @app.Dash().SearchEntry().QDeclarativeTextInput()['text']
       }
+    }
+  end
+
+  # Test case objectives:
+  #   * Check Super and Alt+F1 interaction
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Press Alt+F1
+  #   * Verify dash is not showing
+  #   * Verify launcher does not hide
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Super and Alt+F1 interaction" do
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal("false", 2, 'There should not be a Dash declarative view on startup') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    verify_equal("false", 0, 'There should not be a Dash declarative view after pressing Alt+F1') {
+      @app.Dash()['active']
+    }
+    verify_not(0, 'Launcher should not hide after pressing Alt+F1') {
+      verify_equal( -LAUNCHER_WIDTH, 2 ) {
+        @app.Launcher()['x_absolute'].to_i
+      }
+    }
+    xid.close!
+  end
+
+  # Test case objectives:
+  #   * Check Super, Super and Alt+F1 interaction
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Verify terminal has focus
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Press Super
+  #   * Verify dash is not showing
+  #   * Verify terminal has focus
+  #   * Verify launcher is hidden
+  #   * Press Alt+F1
+  #   * Verify dash is not showing
+  #   * Verify launcher shows
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Super, Super and Alt+F1 interaction" do
+    XDo::Mouse.move(200, 200, 0, true)
+    xid = TmpWindow.open_window_at(10,100)
+    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {
+      XDo::XWindow.active_window
+    }
+    verify_equal("false", 2, 'There should not be a Dash declarative view on startup') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.super
+    verify_equal("false", 2, 'There should not be a Dash declarative view after pressing Super again') {
+      @app.Dash()['active']
+    }
+    verify_equal( xid.id, TIMEOUT, 'terminal should have focus after toggling the dash' ) {
+      XDo::XWindow.active_window
+    }
+    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher should be hiding after toggling the dash' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+    verify_equal("false", 2, 'There should not be a Dash declarative view after pressing Alt+F1') {
+      @app.Dash()['active']
+    }
+    verify_equal( 0, TIMEOUT, 'Launcher should be showing after pressing Alt+F1' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    xid.close!
+  end
+
+  # Test case objectives:
+  #   * Check navigation left from dash is disabled
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Invoke dash
+  #   * Focus dash contents, press left
+  #   * Check that focus is still on the first lens bar entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check navigation left from dash is disabled" do
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    loader = ""
+    verify(TIMEOUT, 'Could not find the DashLoader') {
+      loader = @app.QDeclarativeLoader( { :objectName => "pageLoader" } )
+    }
+    XDo::Keyboard.down
+    verify_equal("true", TIMEOUT, 'Dash loader doesn\'t have focus') {
+        loader['activeFocus']
+    }
+    XDo::Keyboard.left
+    verify_not(0, 'Dash loader lost focus after pressing left') {
+        verify_equal("false", 2) {
+            loader['activeFocus']
+        }
+    }
+  end
+
+  # Test case objectives:
+  #   * Check focus goes to dash on Super when launcher menu is open
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Invoke launcher with Alt+F1
+  #   * Check the launcher is shown
+  #   * Show the menu with Right arrow
+  #   * Check the menu is shown
+  #   * Invoke the dash with Super
+  #   * Check the dash is shown
+  #   * Type "as"
+  #   * Check the dash search contains "as"
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  xtest "Check focus goes to dash on Super when launcher menu is open" do
+    XDo::Keyboard.alt_F1
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when Alt+F1 pressed' ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+    XDo::Keyboard.right
+    verify(TIMEOUT, 'There should be an unfolded menu after pressing Right') {
+      @app.LauncherContextualMenu( :folded => false );
+    }
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.a
+    XDo::Keyboard.s
+    verify_equal( "as", TIMEOUT, 'Text in the search field should be "as"' ) {
+      @app.Dash().SearchEntry().QDeclarativeTextInput()['text']
     }
   end
 end

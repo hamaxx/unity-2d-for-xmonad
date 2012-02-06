@@ -43,7 +43,6 @@ protected:
 
 Q_SIGNALS:
     void outsideClick();
-    void visibleChanged(bool visible);
 };
 
 #endif // SPREADVIEW_H
