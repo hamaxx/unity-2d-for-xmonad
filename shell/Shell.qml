@@ -121,14 +121,20 @@ Item {
         InputShapeRectangle {
             // Prevent the launcher mask to ever go to negative values or be less than 1 pixel
             // (to preserve the autohide/intellihide edge detection)
+            // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
+            //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
             rectangle: Qt.rect(0, launcherLoader.y,
-                               launcherLoader.visibilityController.shown ? launcherLoader.width : 1,
+                               -launcherLoader.x < launcherLoader.width ? launcherLoader.x + launcherLoader.width : 1,
                                launcherLoader.height)
             enabled: launcherLoader.status == Loader.Ready
         }
 
         InputShapeRectangle {
-            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            rectangle: if (screen.isCompositingManagerRunning) {
+                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            } else {
+                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+            }
             enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
 
             InputShapeMask {
