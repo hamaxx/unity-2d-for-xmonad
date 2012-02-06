@@ -321,4 +321,38 @@ context "Dash Tests" do
       @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
     }
   end
+
+  # Test case objectives:
+  #   * Check that Alt+F2, Esc, Alt+F2 shows dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Press Esc
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Alt+F2, Esc, Alt+F2 shows dash" do
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.escape
+    verify_not(2, 'There should not be a Dash declarative view on startup') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app_places.DashDeclarativeView()
+    }
+  end
 end
