@@ -46,6 +46,7 @@ Q_SIGNALS:
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
     void visibleChanged(bool);
+    void activeWorkspaceChanged();
 
 protected:
     void setupViewport();
