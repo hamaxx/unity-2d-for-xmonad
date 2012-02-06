@@ -126,7 +126,10 @@ Item {
 
         InputShapeRectangle {
             rectangle: {
-                if (launcherLoader.visibilityController.shown) {
+                // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
+                //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
+                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < screen.availableGeometry.width
+                if (somewhatShown) {
                     return Qt.rect(launcherLoader.x,
                                    launcherLoader.y,
                                    launcherLoader.width,
@@ -144,7 +147,11 @@ Item {
         }
 
         InputShapeRectangle {
-            rectangle: Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            rectangle: if (screen.isCompositingManagerRunning) {
+                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+            } else {
+                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+            }
             enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
             mirrorHorizontally: Utils.isRightToLeft()
 

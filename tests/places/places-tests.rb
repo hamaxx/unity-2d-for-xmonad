@@ -294,7 +294,7 @@ context "Dash Tests" do
   #   * None
   # References
   #   * None
-  xtest "Check focus goes to dash on Super when launcher menu is open" do
+  test "Check focus goes to dash on Super when launcher menu is open" do
     XDo::Keyboard.alt_F1
     verify_equal( 0, TIMEOUT, 'Launcher hiding when Alt+F1 pressed' ) {
       @app.Launcher()['x_absolute'].to_i

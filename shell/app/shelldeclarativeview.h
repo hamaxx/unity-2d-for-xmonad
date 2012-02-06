@@ -115,7 +115,6 @@ private Q_SLOTS:
 private:
     void focusOutEvent(QFocusEvent* event);
     void focusInEvent(QFocusEvent* event);
-    void updateMask();
     void setWMFlags();
     bool isSpreadActive();
     void updateInputShape();
