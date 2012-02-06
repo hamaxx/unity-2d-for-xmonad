@@ -95,15 +95,3 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
 
     return false;
 }
-
-void SpreadView::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-    Q_EMIT visibleChanged(true);
-}
-
-void SpreadView::hideEvent(QHideEvent *event)
-{
-    Q_UNUSED(event);
-    Q_EMIT visibleChanged(false);
-}

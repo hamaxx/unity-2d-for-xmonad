@@ -104,6 +104,8 @@ public:
     Q_INVOKABLE virtual void launchNewInstance();
 
     Q_INVOKABLE virtual void createMenuActions();
+    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
+    Q_INVOKABLE void connectWindowSignals();
 
     void updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties);
 
@@ -146,6 +148,9 @@ private Q_SLOTS:
 
     void dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner);
 
+    void onDragEnter(DeclarativeDragDropEvent*);
+    void onDrop(DeclarativeDragDropEvent*);
+
 private:
     QPointer<BamfApplication> m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
@@ -173,6 +178,10 @@ private:
     template<typename T>
     bool updateOverlayState(const QMap<QString, QVariant>& properties,
                             const QString& propertyName, T* member);
+    QList<QUrl> validateUrisForLaunch(DeclarativeMimeData* mimedata);
+    QStringList supportedTypes();
+
+    static void onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data);
 
     QString m_dynamicQuicklistPath;
     QScopedPointer<DBusMenuImporter> m_dynamicQuicklistImporter;

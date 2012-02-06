@@ -252,4 +252,73 @@ context "Dash Tests" do
     xid.close!
   end
 
+  # Test case objectives:
+  #   * Check navigation left from dash is disabled
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Invoke dash
+  #   * Focus dash contents, press left
+  #   * Check that focus is still on the first lens bar entry
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check navigation left from dash is disabled" do
+    XDo::Keyboard.super
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app_places.DashDeclarativeView()
+    }
+    loader = ""
+    verify(TIMEOUT, 'Could not find the DashLoader') {
+      loader = @app_places.QDeclarativeLoader( { :objectName => "pageLoader" } )
+    }
+    XDo::Keyboard.down
+    verify_equal("true", TIMEOUT, 'Dash loader doesn\'t have focus') {
+        loader['activeFocus']
+    }
+    XDo::Keyboard.left
+    verify_not(0, 'Dash loader lost focus after pressing left') {
+        verify_equal("false", 2) {
+            loader['activeFocus']
+        }
+    }
+  end
+
+  # Test case objectives:
+  #   * Check focus goes to dash on Super when launcher menu is open
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Invoke launcher with Alt+F1
+  #   * Check the launcher is shown
+  #   * Show the menu with Right arrow
+  #   * Check the menu is shown
+  #   * Invoke the dash with Super
+  #   * Check the dash is shown
+  #   * Type "as"
+  #   * Check the dash search contains "as"
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check focus goes to dash on Super when launcher menu is open" do
+    XDo::Keyboard.alt_F1
+    verify_equal( 0, TIMEOUT, 'Launcher hiding when Alt+F1 pressed' ) {
+      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+    }
+    XDo::Keyboard.right
+    verify(TIMEOUT, 'There should be an unfolded menu after pressing Right') {
+      @app_launcher.LauncherContextualMenu( :folded => false );
+    }
+    XDo::Keyboard.super
+    verify(TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app_places.DashDeclarativeView()
+    }
+    XDo::Keyboard.a
+    XDo::Keyboard.s
+    verify_equal( "as", TIMEOUT, 'Text in the search field should be "as"' ) {
+      @app_places.DashDeclarativeView().SearchEntry().QDeclarativeTextInput()['text']
+    }
+  end
 end

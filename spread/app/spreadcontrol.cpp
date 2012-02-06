@@ -36,7 +36,10 @@ SpreadControl::SpreadControl(QObject *parent) :
 void
 SpreadControl::setIsShown(bool isShown)
 {
-    m_isShown = isShown;
+    if (isShown != m_isShown) {
+        m_isShown = isShown;
+        Q_EMIT IsShownChanged(isShown);
+    }
     if (m_isShown) {
         m_launcherClient->beginForceVisible();
     } else {

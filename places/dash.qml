@@ -270,6 +270,7 @@ Item {
 
         Loader {
             id: pageLoader
+            objectName: "pageLoader"
 
             Accessible.name: "loader"
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1

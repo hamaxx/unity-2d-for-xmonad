@@ -29,6 +29,7 @@ class Unity2DDeclarativeView : public QDeclarativeView
     Q_PROPERTY(bool transparentBackground READ transparentBackground WRITE setTransparentBackground NOTIFY transparentBackgroundChanged)
     Q_PROPERTY(QPoint globalPosition READ globalPosition NOTIFY globalPositionChanged)
     Q_PROPERTY(ScreenInfo* screen READ screen NOTIFY screenChanged)
+    Q_PROPERTY(bool visible READ isVisible NOTIFY visibleChanged)
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
@@ -49,10 +50,15 @@ Q_SIGNALS:
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
     void screenChanged(ScreenInfo*);
+    void visibleChanged(bool);
+    void activeWorkspaceChanged();
 
 protected:
     void setupViewport();
     virtual void moveEvent(QMoveEvent* event);
+    virtual void showEvent(QShowEvent *event);
+    virtual void hideEvent(QHideEvent* event);
+
     ScreenInfo* m_screenInfo;
 
 protected Q_SLOTS:
