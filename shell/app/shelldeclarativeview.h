@@ -107,6 +107,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
     void updateShellPosition(int screen);

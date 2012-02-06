@@ -60,7 +60,7 @@ context "Shell input shape tests" do
 
     # Execute the application 
     @app = $SUT.run(:name => UNITY_2D_SHELL,
-                    :arguments => "-testability",
+                    :arguments => "-testability,-reverse",
                     :sleeptime => 2)
     # Make certain application is ready for testing
     verify(10){ @app.Launcher() }
@@ -75,18 +75,18 @@ context "Shell input shape tests" do
   # Test cases
 
   test "Shape of launcher alone" do
-    test_shape_of_launcher_alone()
+    test_shape_of_launcher_alone(true)
   end
 
   test "Shape of launcher and desktop mode dash" do
-    test_shape_of_launcher_and_desktop_mode_dash()
+    test_shape_of_launcher_and_desktop_mode_dash(true)
   end
 
   test "Shape of launcher and fullscreen mode dash" do
-    test_shape_of_launcher_and_fullscreen_mode_dash()
+    test_shape_of_launcher_and_fullscreen_mode_dash(true)
   end
 
   test "Shape of launcher and collapsed desktop mode dash" do
-      test_shape_of_launcher_and_collapsed_desktop_mode_dash()
+      test_shape_of_launcher_and_collapsed_desktop_mode_dash(true)
   end
 end

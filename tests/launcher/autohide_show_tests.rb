@@ -146,11 +146,11 @@ context "Launcher Autohide and Show Tests" do
     test_alt_f1_focus_unfocus_launcher()
   end
 
-  xtest "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
+  test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
     test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
   end
 
-  xtest "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
+  test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 

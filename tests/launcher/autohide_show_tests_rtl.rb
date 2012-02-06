@@ -111,63 +111,63 @@ context "Launcher Autohide and Show Tests on RTL" do
   #####################################################################################
   # Test cases
 
-  xtest "Position with Empty Desktop" do
+  test "Position with Empty Desktop" do
     test_position_with_empty_desktop()
   end
 
-  xtest "Position with Window not in the way" do
+  test "Position with Window not in the way" do
     test_position_width_window_not_in_the_way()
   end
 
-  xtest "Position with Window in the way" do
+  test "Position with Window in the way" do
     test_position_with_window_in_the_way()
   end
 
-  xtest "Move window positioning to check launcher action" do
+  test "Move window positioning to check launcher action" do
     test_move_window_positioning_to_check_launcher_action()
   end
 
-  xtest "Reveal hidden Launcher with mouse" do
+  test "Reveal hidden Launcher with mouse" do
     test_reveal_hidden_launcher_with_mouse()
   end
 
-  xtest "Press Super key to toggle launcher" do
+  test "Press Super key to toggle launcher" do
     test_press_super_to_toggle_launcher()
   end
 
-  xtest "Hold Super key down to reveal launcher and shortcut keys" do
+  test "Hold Super key down to reveal launcher and shortcut keys" do
     test_hold_super_launcher_shortcuts()
   end
 
-  xtest "Press Alt+F1 to focus Launcher" do
+  test "Press Alt+F1 to focus Launcher" do
     test_alt_f1_focus_launcher()
   end
 
-  xtest "Press Alt+F1 to focus/unfocus Launcher" do
+  test "Press Alt+F1 to focus/unfocus Launcher" do
     test_alt_f1_focus_unfocus_launcher()
   end
 
-  xtest "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
+  test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
     test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
   end
 
-  xtest "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
+  test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 
-  xtest "Launcher visible on show-desktop" do
+  test "Launcher visible on show-desktop" do
     test_launcher_visible_show_desktop()
   end
 
-  xtest "Launcher hide delay on tile removal" do
+  test "Launcher hide delay on tile removal" do
     test_launcher_hide_delay_on_tile_removal()
   end
 
-  xtest "Launcher visible after toggling dash" do
+  test "Launcher visible after toggling dash" do
     test_launcher_visible_after_toggling_dash()
   end
 
-  xtest "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
+  test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
     test_launcher_does_not_hide_on_esc_after_alt_f1_with_overlapping_window()
   end
 
