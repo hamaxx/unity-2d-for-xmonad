@@ -21,6 +21,7 @@
 #include <unity2ddeclarativeview.h>
 
 class LauncherClient;
+class ScreenInfo;
 
 class DashDeclarativeView : public Unity2DDeclarativeView
 {
@@ -67,7 +68,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private Q_SLOTS:
-    void onWorkAreaResized(int screen);
+    void onWorkAreaResized();
     void updateSize();
 
 private:

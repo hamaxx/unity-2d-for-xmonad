@@ -66,10 +66,5 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Workspaces.qml"));
 
-    /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
-
     return application.exec();
 }

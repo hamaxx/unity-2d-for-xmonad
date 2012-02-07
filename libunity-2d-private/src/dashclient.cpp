@@ -179,7 +179,7 @@ void DashClient::updateAlwaysFullScreen()
     if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
         alwaysFullScreen = true;
     } else {
-        QRect rect = QApplication::desktop()->screenGeometry();
+        QRect rect = QApplication::desktop()->screenGeometry(QPoint());
         QSize minSize = minimumSizeForDesktop();
         alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
     }

@@ -19,6 +19,8 @@
 #include <debug_p.h>
 #include <config.h>
 
+#include "screeninfo.h"
+
 #include <QDebug>
 #include <QGLWidget>
 #include <QVariant>
@@ -45,6 +47,7 @@ GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
+    m_screenInfo(NULL),
     m_useOpenGL(false),
     m_transparentBackground(false),
     m_last_focused_window(None)
@@ -276,6 +279,12 @@ void Unity2DDeclarativeView::onActiveWorkspaceChanged()
 {
     m_last_focused_window = None;
     Q_EMIT activeWorkspaceChanged();
+}
+
+ScreenInfo*
+Unity2DDeclarativeView::screen() const
+{
+    return m_screenInfo;
 }
 
 #include <unity2ddeclarativeview.moc>

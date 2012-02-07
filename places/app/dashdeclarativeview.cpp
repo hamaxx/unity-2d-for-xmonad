@@ -23,7 +23,6 @@
 #include <dashclient.h>
 
 // Qt
-#include <QDesktopWidget>
 #include <QApplication>
 #include <QBitmap>
 #include <QCloseEvent>
@@ -55,20 +54,15 @@ DashDeclarativeView::DashDeclarativeView()
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
-    QDesktopWidget* desktop = QApplication::desktop();
-    connect(desktop, SIGNAL(resized(int)), SIGNAL(screenGeometryChanged()));
-    connect(desktop, SIGNAL(workAreaResized(int)), SLOT(onWorkAreaResized(int)));
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
+    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(onWorkAreaResized()));
 
     updateSize();
 }
 
 void
-DashDeclarativeView::onWorkAreaResized(int screen)
+DashDeclarativeView::onWorkAreaResized()
 {
-    if (QApplication::desktop()->screenNumber(this) != screen) {
-        return;
-    }
-
     updateSize();
 }
 
@@ -85,7 +79,7 @@ DashDeclarativeView::updateSize()
 void
 DashDeclarativeView::fitToAvailableSpace()
 {
-    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
     move(rect.topLeft());
     setFixedSize(rect.size());
 }
@@ -93,7 +87,7 @@ DashDeclarativeView::fitToAvailableSpace()
 void
 DashDeclarativeView::resizeToDesktopModeSize()
 {
-    QRect rect = ScreenInfo::instance()->panelsFreeGeometry();
+    QRect rect = m_screenInfo->panelsFreeGeometry();
     int screenRight = rect.right();
 
     rect.setWidth(qMin(DASH_DESKTOP_WIDTH, rect.width()));
