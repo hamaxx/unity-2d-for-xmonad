@@ -59,7 +59,8 @@ ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
-    , m_active(false)
+    , m_dashActive(false)
+    , m_hudActive(false)
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
 {
@@ -130,7 +131,12 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
-    setDashActive(false);
+    if (m_dashActive) {
+        setDashActive(false);
+    }
+    if (m_hudActive) {
+        setHudActive(false);
+    }
     Q_EMIT focusChanged();
 }
 
@@ -195,7 +201,7 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
 void
 ShellDeclarativeView::setDashActive(bool value)
 {
-    if (value != m_active) {
+    if (value != m_dashActive) {
         if (value) {
             /* Check if the spread is active before activating the dash.
                We need to do this since the spread can't prevent the launcher from
@@ -205,19 +211,24 @@ ShellDeclarativeView::setDashActive(bool value)
                 return;
             }
 
+            /* If HUD is open, close it */
+            if (m_hudActive) {
+                setHudActive(false);
+            }
+
             // FIXME: should be moved to Shell.qml
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
         }
-        m_active = value;
-        Q_EMIT dashActiveChanged(m_active);
+        m_dashActive = value;
+        Q_EMIT dashActiveChanged(m_dashActive);
     }
 }
 
 bool
 ShellDeclarativeView::dashActive() const
 {
-    return m_active;
+    return m_dashActive;
 }
 
 void
@@ -301,6 +312,35 @@ ShellDeclarativeView::onAltF1Pressed()
             forceDeactivateWindow();
         }
     }
+}
+
+void
+ShellDeclarativeView::setHudActive(bool value)
+{
+    if (value != m_hudActive) {
+        if (value) {
+            /* Check if the spread is active before activating the dash.*/
+            if (isSpreadActive()) {
+                return;
+            }
+            /* If Dash is open, close it */
+            if (m_dashActive) {
+                setDashActive(false);
+            }
+
+            // FIXME: should be moved to Shell.qml
+            // We need a delay, otherwise the window may not be visible when we try to activate it
+            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
+        }
+        m_hudActive = value;
+        Q_EMIT hudActiveChanged(m_hudActive);
+    }
+}
+
+bool
+ShellDeclarativeView::hudActive() const
+{
+    return m_hudActive;
 }
 
 /* ----------------- super key handling ---------------- */

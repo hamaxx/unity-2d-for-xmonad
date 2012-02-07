@@ -37,6 +37,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
+    Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
@@ -62,6 +63,7 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
+    bool hudActive() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
@@ -71,6 +73,7 @@ public:
     Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
+    Q_SLOT void setHudActive(bool active);
     void setMonitoredArea(QRect monitoredArea);
 
     virtual bool x11EventFilter(XEvent* event);
@@ -82,6 +85,7 @@ Q_SIGNALS:
     void activeLensChanged(const QString&);
     void activateLens(const QString& lensId);
     void activateHome();
+    void hudActiveChanged(bool);
     void focusChanged();
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
@@ -123,7 +127,8 @@ private:
     DashMode m_mode;
     bool m_expanded;
     QString m_activeLens; /* Lens id of the active lens */
-    bool m_active;
+    bool m_dashActive;
+    bool m_hudActive;
 
     bool m_superKeyPressed;
     bool m_superKeyHeld;
