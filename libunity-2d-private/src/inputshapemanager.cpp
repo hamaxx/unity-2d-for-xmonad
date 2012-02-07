@@ -5,7 +5,7 @@
 
 #include "inputshapemanager.h"
 #include "unity2ddeclarativeview.h"
-#include "screeninfo.h"
+#include "desktopinfo.h"
 
 // X11
 #include <X11/Xlib.h>
@@ -39,7 +39,8 @@ void InputShapeManager::updateManagedShape()
     // pixmap created from the mask bitmap. However for some reason I wasn't able to figure out yet
     // I get a lot of warnings when calling QBitmap::handle, so for now I'm passing a region as a
     // workaround.
-    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(), ShapeBounding,
+    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(),
+                        DesktopInfo::instance()->isCompositingManagerRunning() ? ShapeInput : ShapeBounding,
                         0, 0, QRegion(inputShape).handle(), ShapeSet);
 }
 
