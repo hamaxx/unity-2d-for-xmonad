@@ -56,10 +56,6 @@ void InputShapeManager::updateManagedShape()
         }
     }
 
-    // FIXME: A more efficient way of doing this would be to call XShapeCombineMask passing an X11
-    // pixmap created from the mask bitmap. However for some reason I wasn't able to figure out yet
-    // I get a lot of warnings when calling QBitmap::handle, so for now I'm passing a region as a
-    // workaround.
     XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(),
                         DesktopInfo::instance()->isCompositingManagerRunning() ? ShapeInput : ShapeBounding,
                         0, 0, QRegion(inputShape).handle(), ShapeSet);
