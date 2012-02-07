@@ -13,7 +13,7 @@ BaseBehavior {
     onForcedVisibleChanged:
     {
         if (!forcedVisible) {
-            if (!target.containsMouse) {
+            if (!target.containsMouse && forcedVisibleChangeId != "dash") {
                 shownBecauseOfMousePosition = true
                 mouseLeaveTimer.restart()
             }
