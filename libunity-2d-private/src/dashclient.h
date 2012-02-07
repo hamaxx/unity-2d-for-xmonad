@@ -40,8 +40,6 @@ class DashClient : public QObject
 public:
     static DashClient* instance();
 
-    bool active() const;
-    void setActive(bool active);
     /**
      * Returns the active page. This is either:
      * - The lens id of the active lens
@@ -54,7 +52,6 @@ public:
     static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
-    void activeChanged(bool active);
     void activePageChanged(const QString&);
     void alwaysFullScreenChanged();
 

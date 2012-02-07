@@ -56,9 +56,7 @@ struct WindowHelperPrivate
 {
     WnckWindow* m_window;
     GConnector m_connector;
-    bool m_activeWindowIsShell;
-    bool m_dashIsVisible;
-    bool m_dashIsFullScreen;
+    bool m_activeWindowIsDash;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -83,15 +81,6 @@ WindowHelper::WindowHelper(QObject* parent)
     // last window is closed. Should be removed when this bug is fixed.
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
         SLOT(update()));
-
-    connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(updateDashVisible(bool)));
-    d->m_dashIsVisible = DashClient::instance()->active();
-
-    // FIXME: the queued connection should not be needed, however if it's not used when
-    // (un)maximizing the dash, the panel will deadlock for some reason.
-    connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(updateDashFullScreen(bool)),
-            Qt::QueuedConnection);
-    d->m_dashIsFullScreen = dash2dConfiguration().property("fullScreen").toBool();
 }
 
 WindowHelper::~WindowHelper()
@@ -113,18 +102,6 @@ static void nameChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
-void WindowHelper::updateDashVisible(bool visible)
-{
-    d->m_dashIsVisible = visible;
-    update();
-}
-
-void WindowHelper::updateDashFullScreen(bool fullScreen)
-{
-    d->m_dashIsFullScreen = fullScreen;
-    update();
-}
-
 void WindowHelper::update()
 {
     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
@@ -138,7 +115,8 @@ void WindowHelper::update()
         d->m_window = wnck_window_get(xid);
 
         const char *name = wnck_window_get_name(d->m_window);
-        d->m_activeWindowIsShell = qstrcmp(name, "unity-2d-shell") == 0;
+        d->m_activeWindowIsDash = qstrcmp(name, "unity-2d-places") == 0;
+
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
@@ -151,9 +129,8 @@ bool WindowHelper::isMaximized() const
     if (!d->m_window) {
         return false;
     }
-
-    if (d->m_activeWindowIsShell) {
-        return d->m_dashIsVisible && d->m_dashIsFullScreen;
+    if (d->m_activeWindowIsDash) {
+        return dash2dConfiguration().property("fullScreen").toBool();
     } else {
         return wnck_window_is_maximized(d->m_window);
     }
@@ -184,46 +161,40 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 
 bool WindowHelper::dashIsVisible() const
 {
-    return d->m_window != 0 && d->m_activeWindowIsShell && d->m_dashIsVisible;
+    return d->m_window != 0 && d->m_activeWindowIsDash;
 }
 
 void WindowHelper::close()
 {
-    if (d->m_window != 0 && !d->m_activeWindowIsShell) {
-        guint32 timestamp = QDateTime::currentDateTime().toTime_t();
-        wnck_window_close(d->m_window, timestamp);
-    } else {
-        DashClient::instance()->setActive(false);
-    }
+    guint32 timestamp = QDateTime::currentDateTime().toTime_t();
+    wnck_window_close(d->m_window, timestamp);
 }
 
 void WindowHelper::minimize()
 {
-    if (d->m_window != 0 && !d->m_activeWindowIsShell) {
+    if (!d->m_activeWindowIsDash) {
         wnck_window_minimize(d->m_window);
     }
-    // If the dash is up, we can't get here, since the minimize button
-    // should be greyed out or hidden in that case.
 }
 
 void WindowHelper::maximize()
 {
-    if (d->m_window != 0 && !d->m_activeWindowIsShell) {
+    if (d->m_activeWindowIsDash) {
+        dash2dConfiguration().setProperty("fullScreen", QVariant(true));
+    } else {
         /* This currently cannot happen, because the window buttons are not
          * shown in the panel for non maximized windows. It's here just for
          * completeness. */
         wnck_window_maximize(d->m_window);
-    } else {
-        dash2dConfiguration().setProperty("fullScreen", QVariant(true));
     }
 }
 
 void WindowHelper::unmaximize()
 {
-    if (d->m_window != 0 && !d->m_activeWindowIsShell) {
-        wnck_window_unmaximize(d->m_window);
-    } else {
+    if (d->m_activeWindowIsDash) {
         dash2dConfiguration().setProperty("fullScreen", QVariant(false));
+    } else {
+        wnck_window_unmaximize(d->m_window);
     }
 }
 
