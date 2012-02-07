@@ -36,9 +36,13 @@ class DashClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
 public:
     static DashClient* instance();
+
+    bool active() const;
+    void setActive(bool active);
 
     /**
      * Returns the active page. This is either:
@@ -52,6 +56,7 @@ public:
     static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
+    void activeChanged(bool);
     void activePageChanged(const QString&);
     void alwaysFullScreenChanged();
 
