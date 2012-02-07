@@ -46,11 +46,25 @@
 #include <QPluginLoader>
 #include <QProcessEnvironment>
 #include <QVariant>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusPendingCall>
+#include <QtDBus/QDBusReply>
+#include <QtDBus/QDBusConnectionInterface>
 
 using namespace Unity2d;
 
 static const char* PANEL_DCONF_PROPERTY_APPLETS = "applets";
 static const char* PANEL_PLUGINS_DEV_DIR_ENV = "UNITY2D_PANEL_PLUGINS_PATH";
+
+static const char* HUD_DBUS_SERVICE = "com.canonical.Unity2d.Hud";
+static const char* HUD_DBUS_PATH = "/Hud";
+static const char* HUD_DBUS_INTERFACE = "com.canonical.Unity2d.Hud";
+static const char* HUD_DBUS_PROPERTY_ACTIVE = "active";
+
+static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
+static const char* SPREAD_DBUS_PATH = "/Spread";
+static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
+static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
@@ -290,6 +304,46 @@ void PanelManager::onAltF10Pressed()
     }
 }
 
+void PanelManager::toggleHud()
+{
+    QDBusInterface hudInterface(HUD_DBUS_SERVICE, HUD_DBUS_PATH, HUD_DBUS_INTERFACE);
+
+    QVariant hudActiveResult = hudInterface.property(HUD_DBUS_PROPERTY_ACTIVE);
+    if (!hudActiveResult.isValid()) {
+        UQ_WARNING << "Can't read the DBUS Hud property" << HUD_DBUS_PROPERTY_ACTIVE
+                   << "on" << HUD_DBUS_SERVICE << HUD_DBUS_PATH << HUD_DBUS_INTERFACE;
+        return;
+    }
+
+    bool hudActive = hudActiveResult.toBool();
+
+    if (hudActive) {
+        /* Check if the spread is active before activating the hud.
+           We need to do this since the spread can't prevent the shell from
+           monitoring the alt key and therefore getting to this point if
+           it's tapped. */
+
+        /* Check if the spread is present on DBUS first, as we don't want to have DBUS
+           activate it if it's not running yet */
+        QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
+        QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
+        if (reply.isValid() && reply.value() == true) {
+            QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
+                                           SPREAD_DBUS_INTERFACE);
+
+            QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
+            if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
+                return;
+            }
+        }
+    }
+
+    if (!hudInterface.setProperty(HUD_DBUS_PROPERTY_ACTIVE, !hudActive)) {
+        UQ_WARNING << "Can't set the DBUS Hud property" << HUD_DBUS_PROPERTY_ACTIVE
+                   << "on" << HUD_DBUS_SERVICE << HUD_DBUS_PATH << HUD_DBUS_INTERFACE;
+    }
+}
+
 /* ----------------- alt key handling ---------------- */
 
 void PanelManager::onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -323,7 +377,7 @@ void PanelManager::onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers)
             /* If the key is released, and was not being held, it means that the user just
                performed a "tap". Unless we're told to ignore that tap, that is. */
             if (!m_altKeyHeld && !m_altPressIgnored) {
-                /* TODO: Alt-key tapped */
+                toggleHud();
             }
             /* Otherwise the user just terminated a hold. */
             else if(m_altKeyHeld){

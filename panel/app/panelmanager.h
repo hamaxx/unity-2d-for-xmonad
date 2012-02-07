@@ -47,6 +47,8 @@ private:
     Unity2dPanel* instantiatePanel(int screen);
     QStringList loadPanelConfiguration() const;
 
+    void toggleHud();
+
 private Q_SLOTS:
     void updateScreenLayout(int newCount);
     void onAltF10Pressed();
