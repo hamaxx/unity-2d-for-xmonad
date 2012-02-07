@@ -41,7 +41,7 @@ BaseBehavior {
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
         onContainsMouseChanged: {
-            if (shown && target.containsMouse) {
+            if ((shown || forcedVisible) && target.containsMouse) {
                 shownBecauseOfMousePosition = true
             }
             mouseLeaveTimer.running = !target.containsMouse
