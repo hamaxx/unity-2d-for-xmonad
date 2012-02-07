@@ -16,6 +16,11 @@
 
 #include "unity2ddeclarativeview.h"
 
+#include <debug_p.h>
+#include <config.h>
+
+#include "screeninfo.h"
+
 #include <QDebug>
 #include <QGLWidget>
 #include <QVariant>
@@ -25,11 +30,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-#include <debug_p.h>
-#include <config.h>
-
-#include "screeninfo.h"
 
 // libwnck
 extern "C" {
