@@ -73,7 +73,6 @@ Rectangle {
        screen. Each workspace will individually filter them to select only those that
        belong to it. */
     property variant allWindows: WindowsList { }
-    property int lastActiveWindow: 0
 
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
@@ -209,10 +208,6 @@ Rectangle {
     }
 
     function show() {
-        /* Save the currently active window before showing and activating the switcher,
-           so that we can use it to pre-select the active window on the workspace */
-        lastActiveWindow = desktop.activeWindow
-
         allWindows.load()
 
         spreadView.show()
