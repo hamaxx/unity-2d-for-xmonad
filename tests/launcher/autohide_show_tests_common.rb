@@ -469,7 +469,7 @@ def test_launcher_visible_after_toggling_dash()
 end
 
 # Test case objectives:
-# * Launcher does not hide on Esc after Alt+F1 with overlapping window
+# * Launcher does not hide on Esc after Alt+F1 with overlapping window and mouse on the bfb
 # Pre-conditions
 # * Desktop with no running applications
 # Test steps
@@ -488,6 +488,65 @@ def test_launcher_does_not_hide_on_esc_after_alt_f1_with_overlapping_window()
   xid = open_overlapping_window()
   verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+  bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+  bfb.move_mouse()
+  XDo::Keyboard.escape
+  verify_not(0, 'Launcher hiding after on Esc after Alt+F1 with mouse over bfb') {
+    verify_launcher_hidden(2)
+  }
+  xid.close!
+end
+
+# Test case objectives:
+# * Launcher hides immediately on Esc after Alt+F1 with overlapping window
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Move mouse outside the launcher
+# * Open application in position overlapping Launcher
+# * Verify Launcher hiding
+# * Press Super
+# * Verify Launcher showing
+# * Press Esc
+# * Verify Launcher hides in less than 1 second
+# Post-conditions
+# * None
+# References
+# * None
+def test_launcher_hides_immediatel_on_esc_after_super_with_overlapping_window
+  XDo::Mouse.move(300, 300, 0, true)
+  xid = open_overlapping_window()
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
+  XDo::Keyboard.simulate('{SUPER}')
+  verify_launcher_visible(TIMEOUT, 'Launcher hidden after pressing Supper, should be visible')
+  XDo::Keyboard.escape
+  sleep 0.8
+  verify_launcher_hidden(0, 'Launcher visible after 0.8 seconds, should be hidden immediately')
+  xid.close!
+end
+
+# Test case objectives:
+# * Launcher does not hide on Esc after Super with overlapping window and mouse on the bfb
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Move mouse outside the launcher
+# * Open application in position overlapping Launcher
+# * Verify Launcher hiding
+# * Press Super
+# * Verify Launcher showing
+# * Move mouse to the bfb
+# * Press Esc
+# * Verify Launcher does not hide
+# Post-conditions
+# * None
+# References
+# * None
+def test_launcher_does_not_hide_on_esc_after_Super_with_overlapping_window_mouse_on_bfb
+  XDo::Mouse.move(300, 300, 0, true)
+  xid = open_overlapping_window()
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
+  XDo::Keyboard.simulate('{SUPER}')
   bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
   bfb.move_mouse()
   XDo::Keyboard.escape
