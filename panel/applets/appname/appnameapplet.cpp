@@ -263,7 +263,7 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
-    bool dashIsVisible = d->m_windowHelper->dashIsVisible();
+    bool dashIsVisible = DashClient::instance()->active();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;
