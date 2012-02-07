@@ -45,6 +45,12 @@ Loader {
         value: visibilityController.forceVisible
     }
 
+    Binding {
+        target: launcherBehavior.item
+        property: "forcedVisibleChangeId"
+        value: visibilityController.forceVisibleChangeId
+    }
+
     Connections {
         target: declarativeView
         onSuperKeyHeldChanged: {

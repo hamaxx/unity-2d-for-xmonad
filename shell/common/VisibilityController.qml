@@ -6,6 +6,7 @@ Item {
     property bool shown: true
     property variant behavior: null
     property bool forceVisible: false
+    property variant forceVisibleChangeId
     property variant forceVisibleStack: {}
 
     Binding {
@@ -28,7 +29,10 @@ Item {
         else stack[id] = 1
         controller.forceVisibleStack = stack
 
-        if (wasEmpty) forceVisible = true
+        if (wasEmpty) {
+            forceVisibleChangeId = id
+            forceVisible = true
+        }
     }
 
     function endForceVisible(id) {
@@ -41,6 +45,9 @@ Item {
                            "\" called without matching startForceVisible")
 
         controller.forceVisibleStack = stack
-        if (Utils.hashEmpty(stack)) forceVisible = false
+        if (Utils.hashEmpty(stack)) {
+            forceVisibleChangeId = id
+            forceVisible = false
+        }
     }
 }
