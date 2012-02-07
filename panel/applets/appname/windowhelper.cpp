@@ -29,8 +29,6 @@
 #include <dashclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
-#include <screeninfo.h>
-#include <dashclient.h>
 
 // Bamf
 #include <bamf-matcher.h>

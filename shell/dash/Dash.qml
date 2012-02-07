@@ -247,7 +247,7 @@ FocusScope {
         BorderImage {
             anchors.fill: parent
             visible: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
-            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+            source: desktop.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
             mirror: isRightToLeft()
         }
     }
@@ -379,8 +379,8 @@ FocusScope {
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: screen.availableGeometry.width
-    property int fullscreenHeight: screen.availableGeometry.height
+    property int fullscreenWidth: declarativeView.screen.availableGeometry.width
+    property int fullscreenHeight: declarativeView.screen.availableGeometry.height
 
     states: [
         State {

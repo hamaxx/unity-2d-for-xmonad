@@ -29,6 +29,7 @@ set(lib${LIB_NAME}_SRCS
     windowinfo.cpp
     windowslist.cpp
     screeninfo.cpp
+    desktopinfo.cpp
     cacheeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp

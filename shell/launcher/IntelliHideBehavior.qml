@@ -59,7 +59,7 @@ BaseBehavior {
                                    intellihide.target.width,
                                    intellihide.target.height)
                 } else {
-                    return Qt.rect(screen.availableGeometry.width - intellihide.target.width,
+                    return Qt.rect(declarativeView.screen.availableGeometry.width - intellihide.target.width,
                                    intellihide.target.y,
                                    intellihide.target.width,
                                    intellihide.target.height)

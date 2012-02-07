@@ -58,7 +58,7 @@ LauncherDropItem {
             anchors.fill: parent
             overlay_color: "black"
             overlay_alpha: 0.66
-            visible: !screen.isCompositingManagerRunning
+            visible: !desktop.isCompositingManagerRunning
         }
     }
 
@@ -67,7 +67,7 @@ LauncherDropItem {
         anchors.fill: parent
         color: "black"
         opacity: 0.66
-        visible: screen.isCompositingManagerRunning
+        visible: desktop.isCompositingManagerRunning
     }
     
     Image {

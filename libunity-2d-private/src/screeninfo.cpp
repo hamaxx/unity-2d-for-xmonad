@@ -1,80 +1,78 @@
-extern "C" {
-#include <libwnck/libwnck.h>
-}
-
-#include "bamf-matcher.h"
-#include "bamf-application.h"
-#include "bamf-window.h"
-
 #include "config.h"
 #include "launcherclient.h"
 #include "screeninfo.h"
-#include "workspacesinfo.h"
 
-#include <QX11Info>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QX11Info>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent),
-    m_activeWindow(0)
+    m_screen(QX11Info::appScreen()),
+    m_widget(NULL),
+    m_corner(InvalidCorner)
 {
-    WnckScreen *screen = wnck_screen_get_default();
-    g_signal_connect(G_OBJECT(screen), "active-window-changed",
-                     G_CALLBACK(ScreenInfo::onActiveWindowChanged), NULL);
-
-    updateActiveWindow(screen);
-
     connect(QApplication::desktop(), SIGNAL(resized(int)),
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
 }
 
-
-ScreenInfo* ScreenInfo::instance()
+ScreenInfo::ScreenInfo(int screen, QObject *parent) :
+    QObject(parent),
+    m_screen(screen),
+    m_widget(NULL),
+    m_corner(InvalidCorner)
 {
-    static ScreenInfo* singleton = new ScreenInfo();
-    return singleton;
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+                                     SLOT(updateGeometry(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                                     SLOT(updateAvailableGeometry(int)));
 }
 
-void ScreenInfo::onActiveWindowChanged(WnckScreen *screen,
-                                       WnckWindow *previously_active_window,
-                                       gpointer    user_data)
+ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
+    QObject(parent),
+    m_screen(QApplication::desktop()->screenNumber(widget)),
+    m_widget(widget),
+    m_corner(InvalidCorner)
 {
-    Q_UNUSED(previously_active_window);
-    Q_UNUSED(user_data);
-
-    ScreenInfo::instance()->updateActiveWindow(screen);
+    m_widget->installEventFilter(this);
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+                                     SLOT(updateGeometry(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                                     SLOT(updateAvailableGeometry(int)));
 }
 
-void ScreenInfo::updateActiveWindow(WnckScreen *screen)
+ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
+    QObject(parent),
+    m_screen(cornerScreen(corner)),
+    m_widget(NULL),
+    m_corner(corner)
 {
-    unsigned int activeWindow = 0;
-    WnckWindow *wnckActiveWindow = wnck_screen_get_active_window(screen);
-    if (wnckActiveWindow != NULL) {
-        activeWindow = wnck_window_get_xid(wnckActiveWindow);
-    }
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+                                     SLOT(updateGeometry(int)));
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
+                                     SLOT(updateAvailableGeometry(int)));
+}
 
-    if (activeWindow != m_activeWindow) {
-        m_activeWindow = activeWindow;
-        Q_EMIT activeWindowChanged(m_activeWindow);
+ScreenInfo::~ScreenInfo()
+{
+    if (m_widget) {
+        m_widget->removeEventFilter(this);
     }
 }
 
 QRect ScreenInfo::availableGeometry() const
 {
-    int screen = QX11Info::appScreen();
-    return QApplication::desktop()->availableGeometry(screen);
+    return QApplication::desktop()->availableGeometry(m_screen);
 }
 
 QRect ScreenInfo::panelsFreeGeometry() const
 {
     /* We cannot just return the system's availableGeometry(), because that
      * doesn't consider the Launcher, if it's set to auto-hide. */
-    int screen = QX11Info::appScreen();
-    QRect screenRect = QApplication::desktop()->screenGeometry(screen);
-    QRect availableRect = QApplication::desktop()->availableGeometry(screen);
+    QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
+    QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
     QRect availableGeometry(
         LauncherClient::MaximumWidth,
@@ -90,27 +88,124 @@ QRect ScreenInfo::panelsFreeGeometry() const
 
 QRect ScreenInfo::geometry() const
 {
-    return QApplication::desktop()->screenGeometry(QX11Info::appScreen());
+    return QApplication::desktop()->screenGeometry(m_screen);
 }
 
 void ScreenInfo::updateGeometry(int screen)
 {
-    if (screen == QX11Info::appScreen()) {
+    if (m_corner != InvalidCorner) {
+        int screenCorner = cornerScreen(m_corner);
+        if (m_screen != screenCorner) {
+            setScreen(screenCorner);
+            return;
+        }
+    }
+    if (screen == m_screen) {
         Q_EMIT geometryChanged(geometry());
     }
 }
 
 void ScreenInfo::updateAvailableGeometry(int screen)
 {
-    if (screen == QX11Info::appScreen()) {
+    if (screen == m_screen) {
         Q_EMIT availableGeometryChanged(availableGeometry());
         Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
 }
 
-bool ScreenInfo::isCompositingManagerRunning() const
+void ScreenInfo::updateScreen()
 {
-    return QX11Info::isCompositingManagerRunning();
+    int screen;
+    if (m_corner != InvalidCorner) {
+        screen = cornerScreen(m_corner);
+        setScreen(screen);
+    } else if (m_widget) {
+        screen = QApplication::desktop()->screenNumber(m_widget);
+        setScreen(screen);
+    }
+}
+
+int
+ScreenInfo::cornerScreen(Corner corner)
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    switch(corner) {
+        case TopLeft:
+            return desktop->screenNumber(QPoint());
+        case TopRight:
+            return desktop->screenNumber(QPoint(desktop->width(), 0));
+        case BottomLeft:
+            return desktop->screenNumber(QPoint(0, desktop->height()));
+        case BottomRight:
+            return desktop->screenNumber(QPoint(desktop->width(), desktop->height()));
+        default:
+            return desktop->screenNumber(QPoint());
+    }
+}
+
+bool
+ScreenInfo::eventFilter(QObject *object, QEvent *event)
+{
+    Q_UNUSED(object);
+
+    if (event->type() == QEvent::Move || event->type() == QEvent::Show) {
+        updateScreen();
+    }
+    return QObject::eventFilter(object, event);
+}
+
+int
+ScreenInfo::screen() const
+{
+    return m_screen;
+}
+
+void
+ScreenInfo::setScreen(int screen)
+{
+    if (m_screen != screen) {
+        m_screen = screen;
+        Q_EMIT screenChanged(m_screen);
+        Q_EMIT geometryChanged(geometry());
+        Q_EMIT availableGeometryChanged(availableGeometry());
+        Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
+    }
+}
+
+QWidget*
+ScreenInfo::widget() const
+{
+    return m_widget;
+}
+
+void
+ScreenInfo::setWidget(QWidget *widget)
+{
+    if (m_widget != widget) {
+        m_widget->removeEventFilter(this);
+        m_widget = widget;
+        if (m_widget) {
+            m_widget->installEventFilter(this);
+        }
+        Q_EMIT widgetChanged(m_widget);
+        updateScreen();
+    }
+}
+
+ScreenInfo::Corner
+ScreenInfo::corner() const
+{
+    return m_corner;
+}
+
+void
+ScreenInfo::setCorner(Corner corner)
+{
+    if (m_corner != corner) {
+        m_corner = corner;
+        Q_EMIT cornerChanged(corner);
+        updateScreen();
+    }
 }
 
 #include "screeninfo.moc"

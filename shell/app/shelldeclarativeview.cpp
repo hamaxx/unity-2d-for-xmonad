@@ -64,9 +64,9 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-    updateShellPosition(QX11Info::appScreen());
-
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
+
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -92,39 +92,38 @@ ShellDeclarativeView::ShellDeclarativeView()
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
+    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
+    updateShellPosition();
 }
 
 void
-ShellDeclarativeView::updateShellPosition(int screen)
+ShellDeclarativeView::updateShellPosition()
 {
-    if (screen == QX11Info::appScreen()) {
-        const QRect availableGeometry = QApplication::desktop()->availableGeometry(screen);
-        QPoint posToMove = availableGeometry.topLeft();
-        if (qApp->isRightToLeft()) {
-            posToMove.setX(availableGeometry.width() - width());
-        }
-
-        StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
-        if (strutManager && strutManager->enabled()) {
-            // Do not push ourselves
-            switch (strutManager->edge()) {
-                case Unity2dPanel::TopEdge:
-                    posToMove.ry() -= strutManager->realHeight();
-                break;
-
-                case Unity2dPanel::LeftEdge:
-                    if (qApp->isLeftToRight()) {
-                        posToMove.rx() -= strutManager->realWidth();
-                    } else {
-                        posToMove.rx() += strutManager->realWidth();
-                    }
-                break;
-            }
-        }
-
-        move(posToMove);
+    const QRect availableGeometry = m_screenInfo->availableGeometry();
+    QPoint posToMove = availableGeometry.topLeft();
+    if (qApp->isRightToLeft()) {
+        posToMove.setX(availableGeometry.width() - width());
     }
+
+    StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
+    if (strutManager && strutManager->enabled()) {
+        // Do not push ourselves
+        switch (strutManager->edge()) {
+            case Unity2dPanel::TopEdge:
+                posToMove.ry() -= strutManager->realHeight();
+            break;
+
+            case Unity2dPanel::LeftEdge:
+                if (qApp->isLeftToRight()) {
+                    posToMove.rx() -= strutManager->realWidth();
+                } else {
+                    posToMove.rx() += strutManager->realWidth();
+                }
+            break;
+        }
+    }
+
+    move(posToMove);
 }
 
 void
@@ -145,7 +144,7 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 void
 ShellDeclarativeView::resizeEvent(QResizeEvent *event)
 {
-    updateShellPosition(QX11Info::appScreen());
+    updateShellPosition();
     Unity2DDeclarativeView::resizeEvent(event);
 }
 

@@ -23,8 +23,8 @@ import "common/utils.js" as Utils
 
 Item {
     id: shell
-    height: screen.availableGeometry.height
-    width: screen.availableGeometry.width
+    height: declarativeView.screen.availableGeometry.height
+    width: declarativeView.screen.availableGeometry.width
 
     Accessible.name: "shell"
 
@@ -37,7 +37,7 @@ Item {
             if (Utils.isLeftToRight()) {
                 return visibilityController.shown ? 0 : -width
             } else {
-                return visibilityController.shown ? screen.availableGeometry.width - width : screen.availableGeometry.width
+                return visibilityController.shown ? declarativeView.screen.availableGeometry.width - width : declarativeView.screen.availableGeometry.width
             }
         }
 
@@ -84,7 +84,7 @@ Item {
         id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : screen.availableGeometry.width - width - launcherLoader.width
+        x: Utils.isLeftToRight() ? launcherLoader.width : declarativeView.screen.availableGeometry.width - width - launcherLoader.width
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
@@ -92,7 +92,7 @@ Item {
         Binding {
             target: dashLoader.item
             property: "fullscreenWidth"
-            value: screen.availableGeometry.width - launcherLoader.width
+            value: declarativeView.screen.availableGeometry.width - launcherLoader.width
         }
     }
 
@@ -128,7 +128,7 @@ Item {
             rectangle: {
                 // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
                 //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < screen.availableGeometry.width
+                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < declarativeView.screen.availableGeometry.width
                 if (somewhatShown) {
                     return Qt.rect(launcherLoader.x,
                                    launcherLoader.y,
@@ -147,7 +147,7 @@ Item {
         }
 
         InputShapeRectangle {
-            rectangle: if (screen.isCompositingManagerRunning) {
+            rectangle: if (desktop.isCompositingManagerRunning) {
                 Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
             } else {
                 Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
