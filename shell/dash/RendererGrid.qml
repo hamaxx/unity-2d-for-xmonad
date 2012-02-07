@@ -89,17 +89,13 @@ Renderer {
 
                     sourceComponent: cellRenderer
                     onLoaded: {
-                        if ((lensId == "home.lens" && typeof( display ) == 'undefined')
-                            || (lensId != "home.lens" && typeof( column_0 ) == 'undefined') ) {
-                            return
-                        }
-                        item.uri = lensId == "home.lens" ? display : column_0
-                        item.iconHint = lensId == "home.lens" ? decoration : column_1
-                        item.mimetype = lensId == "home.lens" ? toolTip : column_3
-                        item.displayName = lensId == "home.lens" ? statusTip : column_4
-                        item.comment = lensId == "home.lens" ? whatsThis : column_5
+                        item.uri = column_0
+                        item.iconHint = column_1
+                        item.mimetype = column_3
+                        item.displayName = column_4
+                        item.comment = column_5
                         item.focus = true
-                        item.dndUri = lensId == "home.lens" ? "" : column_6
+                        item.dndUri = column_6
                     }
                 }
             }
