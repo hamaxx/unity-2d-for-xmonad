@@ -43,6 +43,7 @@
 #include "config.h"
 #include "shelldeclarativeview.h"
 #include "dashdbus.h"
+#include "huddbus.h"
 #include "gesturehandler.h"
 #include "launcherdbus.h"
 
@@ -83,6 +84,8 @@ int main(int argc, char *argv[])
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
+    HudDBus hudDBus(&view);
+    hudDBus.connectToBus();
 
     LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
