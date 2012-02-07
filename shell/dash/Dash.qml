@@ -352,30 +352,6 @@ FocusScope {
         }
     }
 
-    AbstractButton {
-        id: fullScreenButton
-
-        Accessible.name: "Full Screen"
-
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 15
-        anchors.bottomMargin: 15
-        width: fullScreenButtonImage.sourceSize.width
-        height: fullScreenButtonImage.sourceSize.height
-        visible: declarativeView.dashMode != ShellDeclarativeView.FullScreenMode
-
-        Image {
-            id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
-            mirror: isRightToLeft()
-        }
-
-        onClicked: {
-            declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
-        }
-    }
-
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
