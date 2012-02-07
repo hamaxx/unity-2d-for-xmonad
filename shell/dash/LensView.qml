@@ -39,7 +39,7 @@ FocusScope {
                 /* Lenses give back the uri of the item in 'column_0' and the
                    mimetype in 'column_3' per specification */
                 var uri = lensView.model.id == "home.lens" ? firstResult.display : firstResult.column_0
-                var mimetype = lensView.model.id == "home.lens" ? firstResult.whatThis : firstResult.column_3
+                var mimetype = lensView.model.id == "home.lens" ? firstResult.toolTip : firstResult.column_3
                 dash.activateUriWithLens(model, uri, mimetype)
                 return;
             }
@@ -81,11 +81,11 @@ FocusScope {
         bodyDelegate: Loader {
             visible: category_model.count > 0
             width: parent.width
-            height: visible ? item.contentHeight : 0
+            height: item ? visible ? item.contentHeight : 0 : 0
 
-            property string name: lensView.model.id == "home.lens" ? model.display : model.column_0
-            property string iconHint: lensView.model.id == "home.lens" ? model.decoration : model.column_1
-            property string rendererName: lensView.model.id == "home.lens" ?  model.edit : model.column_2
+            property string name: lensView.model.id == "home.lens" ? model.display != undefined ? model.display : "" : model.column_0 != undefined ? model.column_0 : ""
+            property string iconHint: lensView.model.id == "home.lens" ? model.decoration != undefined ? model.decoration : "" : model.column_1 != undefined ? model.column_1 : ""
+            property string rendererName: lensView.model.id == "home.lens" ? model.edit != undefined ? model.edit : "" : model.column_2 != undefined ? model.column_2 : ""
             property int categoryId: index
 
             source: rendererName ? Utils.convertToCamelCase(rendererName) + ".qml" : ""
@@ -111,8 +111,8 @@ FocusScope {
             /* Required by ListViewWithHeaders when the loaded Renderer is a Flickable.
                In that case the list view scrolls the Flickable appropriately.
             */
-            property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
-            property variant currentItem: item.currentItem
+            property int totalHeight: item ? item.totalHeight != undefined ? item.totalHeight : 0 : 0
+            property variant currentItem: item ? item.currentItem : ""
 
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }
@@ -125,13 +125,13 @@ FocusScope {
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.item.needHeader && body.visible
+            visible: body.item ? body.item.needHeader && body.visible : false
             height: visible ? 32 : 0
 
-            property bool foldable: body.item.folded != undefined
-            availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
-            folded: foldable ? body.item.folded : false
-            onClicked: if(foldable) body.item.folded = !body.item.folded
+            property bool foldable: body.item ? body.item.folded != undefined : false
+            availableCount: body.item ? foldable ? body.category_model.count - body.item.cellsPerRow : 0 : 0
+            folded: body.item ? foldable ? body.item.folded : false : false
+            onClicked: if(foldable && body.item) body.item.folded = !body.item.folded
             moving: flickerMoving
 
             icon: body.iconHint

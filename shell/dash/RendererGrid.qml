@@ -89,6 +89,10 @@ Renderer {
 
                     sourceComponent: cellRenderer
                     onLoaded: {
+                        if ((lensId == "home.lens" && typeof( display ) == 'undefined')
+                            || (lensId != "home.lens" && typeof( column_0 ) == 'undefined') ) {
+                            return
+                        }
                         item.uri = lensId == "home.lens" ? display : column_0
                         item.iconHint = lensId == "home.lens" ? decoration : column_1
                         item.mimetype = lensId == "home.lens" ? toolTip : column_3
