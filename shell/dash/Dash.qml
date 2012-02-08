@@ -256,7 +256,7 @@ FocusScope {
         id: content
 
         anchors.fill: parent
-        /* Margins in DesktopMode set song that the content does not overlap with
+        /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
         anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
