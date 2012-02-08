@@ -40,7 +40,7 @@ AbstractDBusServiceMonitor::AbstractDBusServiceMonitor(QString service, QString 
     QDBusReply<bool> reply = sessionBus->isServiceRegistered(m_service);
     if (reply.isValid() && reply.value()) {
         // Use a Qt::QueuedConnection to give people a chance to attach to our
-        // serviceStateChanged signal that will be emmited from createInterface
+        // serviceAvailableChanged signal that will be emmited from createInterface
         QMetaObject::invokeMethod(this, "createInterface", Qt::QueuedConnection);
     }
 }
@@ -62,7 +62,7 @@ void AbstractDBusServiceMonitor::createInterface()
 
     m_dbusInterface = new QDBusInterface(m_service, m_path, m_interface,
                                          QDBusConnection::sessionBus());
-    Q_EMIT serviceStateChanged(true);
+    Q_EMIT serviceAvailableChanged(true);
 }
 
 void AbstractDBusServiceMonitor::destroyInterface()
@@ -72,7 +72,7 @@ void AbstractDBusServiceMonitor::destroyInterface()
         m_dbusInterface = 0;
     }
 
-    Q_EMIT serviceStateChanged(false);
+    Q_EMIT serviceAvailableChanged(false);
 }
 
 QDBusInterface* AbstractDBusServiceMonitor::dbusInterface() const
@@ -80,7 +80,7 @@ QDBusInterface* AbstractDBusServiceMonitor::dbusInterface() const
     return m_dbusInterface;
 }
 
-bool AbstractDBusServiceMonitor::serviceState() const
+bool AbstractDBusServiceMonitor::serviceAvailable() const
 {
     return m_dbusInterface != 0;
 }

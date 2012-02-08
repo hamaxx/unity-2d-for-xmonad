@@ -30,10 +30,10 @@ SpreadMonitor::SpreadMonitor(QObject *parent)
     : AbstractDBusServiceMonitor("com.canonical.Unity2d.Spread", "/Spread",
                                 "com.canonical.Unity2d.Spread", parent)
 {
-    connect(this, SIGNAL(serviceStateChanged(bool)), SLOT(onServiceStateChanged(bool)));
+    connect(this, SIGNAL(serviceAvailableChanged(bool)), SLOT(onServiceAvailableChanged(bool)));
 }
 
-void SpreadMonitor::onServiceStateChanged(bool available)
+void SpreadMonitor::onServiceAvailableChanged(bool available)
 {
     if (available) {
         connect(dbusInterface(), SIGNAL(IsShownChanged(bool)), SIGNAL(shownChanged(bool)));

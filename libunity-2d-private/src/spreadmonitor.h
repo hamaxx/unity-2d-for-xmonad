@@ -37,7 +37,7 @@ public:
     bool shown() const;
 
 protected Q_SLOTS:
-    void onServiceStateChanged(bool available);
+    void onServiceAvailableChanged(bool available);
 
 Q_SIGNALS:
     void shownChanged(bool visible);

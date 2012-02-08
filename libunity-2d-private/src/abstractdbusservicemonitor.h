@@ -30,7 +30,7 @@
 class AbstractDBusServiceMonitor : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool serviceState READ serviceState NOTIFY serviceStateChanged)
+    Q_PROPERTY(bool serviceAvailable READ serviceAvailable NOTIFY serviceAvailableChanged)
 
 public:
     explicit AbstractDBusServiceMonitor(QString service, QString path, QString interface,
@@ -39,10 +39,10 @@ public:
 
     QDBusInterface* dbusInterface() const;
 
-    bool serviceState() const;
+    bool serviceAvailable() const;
 
 Q_SIGNALS:
-    void serviceStateChanged(bool available);
+    void serviceAvailableChanged(bool available);
 
 private Q_SLOTS:
     void createInterface();
