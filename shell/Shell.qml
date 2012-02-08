@@ -40,7 +40,7 @@ Item {
             if (Utils.isLeftToRight()) {
                 return visibilityController.shown ? 0 : -width
             } else {
-                return visibilityController.shown ? declarativeView.screen.availableGeometry.width - width : declarativeView.screen.availableGeometry.width
+                return visibilityController.shown ? shell.width - width : shell.width
             }
         }
 
@@ -83,7 +83,7 @@ Item {
         id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : declarativeView.screen.availableGeometry.width - width - launcherLoader.width
+        x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
@@ -127,7 +127,7 @@ Item {
             rectangle: {
                 // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
                 //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < declarativeView.screen.availableGeometry.width
+                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
                 if (somewhatShown) {
                     return Qt.rect(launcherLoader.x,
                                    launcherLoader.y,
