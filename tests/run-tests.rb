@@ -76,7 +76,7 @@ XDo.sut = $SUT
 include TDriverReportTestUnit if ARGV.delete('-report')
 
 # List of directories in which to search for test cases
-test_directories = ['launcher', 'panel', 'places', 'spread', 'shell', 'window-manager', 'other']
+test_directories = ['launcher', 'panel', 'dash', 'spread', 'shell', 'window-manager', 'other']
 
 # Only run scan for tests if this script is directly called
 if __FILE__ == $0

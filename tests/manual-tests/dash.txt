@@ -34,7 +34,7 @@
   # References
   #   * There is a test case for this called "Super+s does not type s"
   #     but it does not work realiably because of the reasons explained
-  #     in the places-tests.rb file
+  #     in the dash-tests.rb file
 
 ----
 
