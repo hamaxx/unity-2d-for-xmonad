@@ -30,8 +30,8 @@
 class InputShapeMask : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource)
-    Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QPoint position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QBitmap shape READ shape NOTIFY shapeChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
@@ -51,6 +51,8 @@ public:
     void setEnabled(bool enabled);
 
 Q_SIGNALS:
+    void sourceChanged(const QString& source);
+    void colorChanged(const QColor& color);
     void enabledChanged();
     void shapeChanged();
     void positionChanged();

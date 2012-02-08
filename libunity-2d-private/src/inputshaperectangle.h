@@ -35,7 +35,7 @@ class InputShapeRectangle : public QObject
     Q_OBJECT
     Q_PROPERTY(QRect rectangle READ rectangle WRITE setRectangle NOTIFY rectangleChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(bool mirrorHorizontally READ mirrorHorizontally WRITE setMirrorHorizontally)
+    Q_PROPERTY(bool mirrorHorizontally READ mirrorHorizontally WRITE setMirrorHorizontally NOTIFY mirrorHorizontallyChanged)
     Q_PROPERTY(QBitmap shape READ shape NOTIFY shapeChanged)
     Q_PROPERTY(QDeclarativeListProperty<InputShapeMask> masks READ masks)
     Q_CLASSINFO("DefaultProperty", "masks")
@@ -62,6 +62,7 @@ Q_SIGNALS:
     void rectangleChanged();
     void enabledChanged();
     void shapeChanged();
+    void mirrorHorizontallyChanged(bool mirrorHorizontally);
 
 private:
     QRect m_rectangle;

@@ -104,7 +104,11 @@ bool InputShapeRectangle::mirrorHorizontally() const
 
 void InputShapeRectangle::setMirrorHorizontally(bool mirror)
 {
-    m_mirrorHorizontally = mirror;
+    if (mirror != m_mirrorHorizontally) {
+        m_mirrorHorizontally = mirror;
+        updateShape();
+        Q_EMIT mirrorHorizontallyChanged(m_mirrorHorizontally);
+    }
 }
 
 void InputShapeRectangle::appendMask(QDeclarativeListProperty<InputShapeMask> *list, InputShapeMask *mask)

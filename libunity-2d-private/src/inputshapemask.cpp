@@ -78,6 +78,7 @@ void InputShapeMask::setSource(const QString &source)
 {
     if (m_source != source) {
         m_source = source;
+        Q_EMIT sourceChanged(m_source);
         updateShape();
     }
 }
@@ -86,6 +87,7 @@ void InputShapeMask::setColor(const QColor &color)
 {
     if (m_color != color) {
         m_color = color;
+        Q_EMIT colorChanged(m_color);
         updateShape();
     }
 }
