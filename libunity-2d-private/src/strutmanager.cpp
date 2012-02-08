@@ -81,7 +81,10 @@ QObject *StrutManager::widget() const
 
 void StrutManager::setWidget(QObject *widget)
 {
-    m_widget = qobject_cast<QWidget*>(widget);
+    if (m_widget != widget) {
+        m_widget = qobject_cast<QWidget*>(widget);
+        Q_EMIT widgetChanged(m_widget);
+    }
     Q_ASSERT(m_widget != NULL);
 }
 
@@ -92,8 +95,11 @@ Unity2dPanel::Edge StrutManager::edge() const
 
 void StrutManager::setEdge(Unity2dPanel::Edge edge)
 {
-    m_edge = edge;
-    updateStrut();
+    if (m_edge != edge) {
+        m_edge = edge;
+        Q_EMIT edgeChanged(m_edge);
+        updateStrut();
+    }
 }
 
 int StrutManager::width() const
@@ -103,7 +109,10 @@ int StrutManager::width() const
 
 void StrutManager::setWidth(int width)
 {
-    m_width = width;
+    if (m_width != width) {
+        m_width = width;
+        Q_EMIT widthChanged(m_width);
+    }
 }
 
 int StrutManager::realWidth() const
@@ -124,7 +133,10 @@ int StrutManager::height() const
 
 void StrutManager::setHeight(int height)
 {
-    m_height = height;
+    if (m_height != height) {
+        m_height = height;
+        Q_EMIT heightChanged(m_height);
+    }
 }
 
 int StrutManager::realHeight() const

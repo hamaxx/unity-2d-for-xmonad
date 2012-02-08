@@ -30,10 +30,10 @@ class StrutManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QObject* widget READ widget WRITE setWidget)
-    Q_PROPERTY(Unity2dPanel::Edge edge READ edge WRITE setEdge)
-    Q_PROPERTY(int width READ width WRITE setWidth)
-    Q_PROPERTY(int height READ height WRITE setHeight)
+    Q_PROPERTY(QObject* widget READ widget WRITE setWidget NOTIFY widgetChanged)
+    Q_PROPERTY(Unity2dPanel::Edge edge READ edge WRITE setEdge NOTIFY edgeChanged)
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
 
 public:
     StrutManager();
@@ -77,6 +77,10 @@ public:
 
 Q_SIGNALS:
     void enabledChanged(bool enabled);
+    void widgetChanged(QObject *widget);
+    void edgeChanged(Unity2dPanel::Edge edge);
+    void widthChanged(int width);
+    void heightChanged(int height);
 
 private:
     void reserveStrut();
