@@ -67,6 +67,8 @@ public:
     void setScreen(int);
     int screen() const;
 
+    void setPointerBarrier(Edge);
+
     void addWidget(QWidget*);
 
     void addSpacer();

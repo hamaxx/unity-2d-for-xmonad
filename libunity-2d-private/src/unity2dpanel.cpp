@@ -150,6 +150,11 @@ Unity2dPanel::Edge Unity2dPanel::edge() const
     return d->m_edge;
 }
 
+void Unity2dPanel::setPointerBarrier(Unity2dPanel::Edge edge)
+{
+    /* set barrier */
+}
+
 void Unity2dPanel::setScreen(int screen)
 {
     d->m_screenInfo->setScreen(screen);

@@ -38,6 +38,7 @@
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
 #include <unity2ddebug.h>
+#include <pointerbarrier.h>
 
 // Local
 #include "config.h"
@@ -86,6 +87,8 @@ int main(int argc, char *argv[])
 
     LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
+
+    PointerBarrierWrapper barrier(QLine(20, 20, 20, 600), 1000);
 
     application.installX11EventFilter(&view);
 

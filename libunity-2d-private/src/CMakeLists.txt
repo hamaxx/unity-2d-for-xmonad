@@ -75,6 +75,7 @@ set(lib${LIB_NAME}_SRCS
     inputshaperectangle.cpp
     inputshapemask.cpp
     strutmanager.cpp
+    pointerbarrier.cpp
     )
 
 # Build
@@ -103,6 +104,7 @@ include_directories(
     ${DEE_INCLUDE_DIRS}
     ${XINPUT_INCLUDE_DIRS}
     ${GEIS_INCLUDE_DIRS}
+    ${XFIXES_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS} listmodelwrapper.h)
@@ -139,6 +141,7 @@ target_link_libraries(${LIB_NAME}
     ${DEE_LDFLAGS}
     ${XINPUT_LDFLAGS}
     ${GEIS_LDFLAGS}
+    ${XFIXES_LDFLAGS}
     )
 
 # Install
