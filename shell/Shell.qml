@@ -67,7 +67,6 @@ Item {
 
         SpreadMonitor {
             id: spread
-            enabled: true
             onShownChanged: if (shown) {
                                 /* The the spread grabs input and Qt can't properly
                                    detect we've lost input, so explicitly hide the menus */
