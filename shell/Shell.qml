@@ -23,8 +23,11 @@ import "common/utils.js" as Utils
 
 Item {
     id: shell
-    height: declarativeView.screen.availableGeometry.height
-    width: declarativeView.screen.availableGeometry.width
+    /* Space reserved by strutManager is taken off screen.availableGeometry but
+       we want the shell to take all the available space, including the one we
+       reserved ourselves via strutManager. */
+    height: declarativeView.screen.availableGeometry.height + (strutManager.enabled ? strutManager.height : 0)
+    width: declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0)
 
     Accessible.name: "shell"
 
@@ -92,7 +95,7 @@ Item {
         Binding {
             target: dashLoader.item
             property: "fullscreenWidth"
-            value: declarativeView.screen.availableGeometry.width - launcherLoader.width
+            value: shell.width - launcherLoader.width
         }
     }
 
