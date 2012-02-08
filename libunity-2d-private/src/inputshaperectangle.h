@@ -62,7 +62,7 @@ Q_SIGNALS:
     void rectangleChanged();
     void enabledChanged();
     void shapeChanged();
-    void mirrorHorizontallyChanged();
+    void mirrorHorizontallyChanged(bool mirrorHorizontally);
 
 private:
     QRect m_rectangle;

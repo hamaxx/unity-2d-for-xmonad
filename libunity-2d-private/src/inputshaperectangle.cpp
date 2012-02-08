@@ -107,7 +107,7 @@ void InputShapeRectangle::setMirrorHorizontally(bool mirror)
     if (mirror != m_mirrorHorizontally) {
         m_mirrorHorizontally = mirror;
         updateShape();
-        Q_EMIT mirrorHorizontallyChanged();
+        Q_EMIT mirrorHorizontallyChanged(m_mirrorHorizontally);
     }
 }
 
