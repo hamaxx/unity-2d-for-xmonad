@@ -30,6 +30,10 @@ SpreadMonitor::SpreadMonitor(QObject *parent)
     : AbstractDBusServiceMonitor("com.canonical.Unity2d.Spread", "/Spread",
                                 "com.canonical.Unity2d.Spread", parent)
 {
+    if (serviceAvailable()) {
+        onServiceAvailableChanged(true);
+    }
+
     connect(this, SIGNAL(serviceAvailableChanged(bool)), SLOT(onServiceAvailableChanged(bool)));
 }
 

@@ -39,9 +39,7 @@ AbstractDBusServiceMonitor::AbstractDBusServiceMonitor(QString service, QString 
     QDBusConnectionInterface* sessionBus = QDBusConnection::sessionBus().interface();
     QDBusReply<bool> reply = sessionBus->isServiceRegistered(m_service);
     if (reply.isValid() && reply.value()) {
-        // Use a Qt::QueuedConnection to give people a chance to attach to our
-        // serviceAvailableChanged signal that will be emmited from createInterface
-        QMetaObject::invokeMethod(this, "createInterface", Qt::QueuedConnection);
+        createInterface();
     }
 }
 
