@@ -206,7 +206,6 @@ LauncherDropItem {
 
     Connections {
         target: declarativeView
-        // FIXME: copy methods over
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
     }
 
