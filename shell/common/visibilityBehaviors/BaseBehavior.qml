@@ -18,6 +18,16 @@
 
 import QtQuick 1.0
 
-BaseBehavior {
-    property bool shown: true
+Item {
+    // true if the behaviour wants the target to be shown, false otherwise
+    property bool shown
+
+    // The target the behavior will be deciding if has to be shown or not
+    property variant target
+
+    // Wheter the target has been shown by an external reason
+    property bool forcedVisible: false
+
+    // The id that triggered the last forcedVisible change
+    property variant forcedVisibleChangeId
 }

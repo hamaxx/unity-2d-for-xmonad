@@ -18,9 +18,8 @@
 
 import QtQuick 1.0
 
-Item {
-    property bool shown
-    property variant target
-    property bool forcedVisible: false
-    property variant forcedVisibleChangeId
+// shown is always true in this behaviour
+
+BaseBehavior {
+    property bool shown: true
 }

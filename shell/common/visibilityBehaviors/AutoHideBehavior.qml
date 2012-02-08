@@ -17,7 +17,14 @@
  */
 
 import QtQuick 1.0
-import "../common"
+
+// Shows the target when it has the focus or when you move the
+// mouse for 500 msec to the edge of the target
+// Hides the target when none of the above conditions are met
+// and you have not had the mouse over it during more than 1000 msec
+// To use this Behavior your target needs to provide two properties
+//  - containsMouse: Defines if the mouse is inside the target
+//  - outerEdgeContainsMouse: Defines if the mouse is in the edge of the target
 
 BaseBehavior {
     id: autoHide
