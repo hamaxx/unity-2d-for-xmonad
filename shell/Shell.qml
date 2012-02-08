@@ -54,10 +54,6 @@ Item {
 
         Behavior on x { NumberAnimation { duration: 125 } }
 
-        onLoaded: if (declarativeView.dashActive) {
-            launcherLoader.visibilityController.forceVisibleBegin("dash")
-        }
-
         Connections {
             target: declarativeView
             onDashActiveChanged: {
