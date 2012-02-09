@@ -257,17 +257,18 @@ ShellDeclarativeView::showCommandsLens()
 void
 ShellDeclarativeView::onAltF1Pressed()
 {
-    if (!isActiveWindow()) {
-        Q_EMIT launcherFocusRequested();
-        forceActivateWindow();
-    } else {
-        if (dashActive()) {
-            setDashActive(false);
-            Q_EMIT launcherFocusRequested();
-        } else {
-            forceDeactivateWindow();
-        }
+    // hide the dash if shown
+    if (dashActive()) {
+        setDashActive(false);
     }
+
+    // focus the shell window if not focused
+    if (!isActiveWindow()) {
+        forceActivateWindow();
+    }
+
+    // focus the launcher
+    Q_EMIT launcherFocusRequested();
 }
 
 /* ----------------- super key handling ---------------- */
