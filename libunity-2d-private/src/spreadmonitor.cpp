@@ -42,8 +42,14 @@ void SpreadMonitor::onServiceAvailableChanged(bool available)
     if (available) {
         connect(dbusInterface(), SIGNAL(IsShownChanged(bool)), SIGNAL(shownChanged(bool)));
 
-        Q_EMIT shownChanged(shown());
+        /* In SpreadMonitor::shown() we assume shown is false if the service is not
+           available therefore there is no need to emit shownChanged if it is still false */
+        if (shown()) {
+            Q_EMIT shownChanged(true);
+        }
     } else {
+        /* At this point we cannot know for sure that the spread was shown so
+           we emit the changed signal unconditionally */
         Q_EMIT shownChanged(false);
     }
 }
