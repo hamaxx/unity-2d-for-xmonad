@@ -48,11 +48,6 @@
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
-static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_PATH = "/Spread";
-static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
-
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
 ShellDeclarativeView::ShellDeclarativeView()
@@ -164,25 +159,6 @@ ShellDeclarativeView::setWMFlags()
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
 
-bool
-ShellDeclarativeView::isSpreadActive()
-{
-    /* Check if the spread is present on DBUS first, as we don't want to have DBUS
-       activate it if it's not running yet */
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
-    if (reply.isValid() && reply.value() == true) {
-        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
-                                       SPREAD_DBUS_INTERFACE);
-
-        QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
-        if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
@@ -196,19 +172,6 @@ void
 ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
-        if (value) {
-            /* Check if the spread is active before activating the dash.
-               We need to do this since the spread can't prevent the launcher from
-               monitoring the super key and therefore getting to this point if
-               it's tapped. */
-            if (isSpreadActive()) {
-                return;
-            }
-
-            // FIXME: should be moved to Shell.qml
-            // We need a delay, otherwise the window may not be visible when we try to activate it
-            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-        }
         m_active = value;
         Q_EMIT dashActiveChanged(m_active);
     }
@@ -276,7 +239,6 @@ ShellDeclarativeView::toggleDash()
         setDashActive(false);
         forceDeactivateWindow();
     } else {
-        setFocus();
         Q_EMIT activateHome();
     }
 }
@@ -291,13 +253,15 @@ void
 ShellDeclarativeView::onAltF1Pressed()
 {
     if (!isActiveWindow()) {
-        Q_EMIT launcherFocusRequested();
         forceActivateWindow();
+        Q_EMIT launcherFocusRequested();
     } else {
         if (dashActive()) {
+            // focus the launcher instead of the dash
             setDashActive(false);
             Q_EMIT launcherFocusRequested();
         } else {
+            // we assume that the launcher is focused; unfocus it by deactivating the shell window
             forceDeactivateWindow();
         }
     }
