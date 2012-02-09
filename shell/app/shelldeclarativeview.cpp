@@ -164,25 +164,6 @@ ShellDeclarativeView::setWMFlags()
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
 
-bool
-ShellDeclarativeView::isSpreadActive()
-{
-    /* Check if the spread is present on DBUS first, as we don't want to have DBUS
-       activate it if it's not running yet */
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
-    if (reply.isValid() && reply.value() == true) {
-        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
-                                       SPREAD_DBUS_INTERFACE);
-
-        QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
-        if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
@@ -197,14 +178,6 @@ ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
         if (value) {
-            /* Check if the spread is active before activating the dash.
-               We need to do this since the spread can't prevent the launcher from
-               monitoring the super key and therefore getting to this point if
-               it's tapped. */
-            if (isSpreadActive()) {
-                return;
-            }
-
             // FIXME: should be moved to Shell.qml
             // We need a delay, otherwise the window may not be visible when we try to activate it
             QTimer::singleShot(0, this, SLOT(forceActivateWindow()));

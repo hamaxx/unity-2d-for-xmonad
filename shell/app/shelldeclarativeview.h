@@ -117,7 +117,6 @@ private:
     void focusOutEvent(QFocusEvent* event);
     void focusInEvent(QFocusEvent* event);
     void setWMFlags();
-    bool isSpreadActive();
     void updateInputShape();
 
     DashMode m_mode;
