@@ -197,7 +197,6 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
     engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
     engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
-    engine->rootContext()->setContextProperty("dashClient", DashClient::instance());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.

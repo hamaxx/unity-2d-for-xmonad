@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010-2011 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@ import "common/utils.js" as Utils
 
 Item {
     id: shell
+    /* Space reserved by strutManager is taken off screen.availableGeometry but
+       we want the shell to take all the available space, including the one we
+       reserved ourselves via strutManager. */
     height: declarativeView.screen.availableGeometry.height
-    width: declarativeView.screen.availableGeometry.width
+    width: declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0)
 
     Accessible.name: "shell"
 
@@ -37,7 +40,7 @@ Item {
             if (Utils.isLeftToRight()) {
                 return visibilityController.shown ? 0 : -width
             } else {
-                return visibilityController.shown ? declarativeView.screen.availableGeometry.width - width : declarativeView.screen.availableGeometry.width
+                return visibilityController.shown ? shell.width - width : shell.width
             }
         }
 
@@ -50,10 +53,6 @@ Item {
         }
 
         Behavior on x { NumberAnimation { duration: 125 } }
-
-        onLoaded: if (declarativeView.dashActive) {
-            launcherLoader.visibilityController.forceVisibleBegin("dash")
-        }
 
         Connections {
             target: declarativeView
@@ -68,7 +67,6 @@ Item {
 
         SpreadMonitor {
             id: spread
-            enabled: true
             onShownChanged: if (shown) {
                                 /* The the spread grabs input and Qt can't properly
                                    detect we've lost input, so explicitly hide the menus */
@@ -84,7 +82,7 @@ Item {
         id: dashLoader
         source: "dash/Dash.qml"
         anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : declarativeView.screen.availableGeometry.width - width - launcherLoader.width
+        x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
         onLoaded: item.focus = true
         opacity: item.active ? 1.0 : 0.0
         focus: item.active
@@ -92,7 +90,7 @@ Item {
         Binding {
             target: dashLoader.item
             property: "fullscreenWidth"
-            value: declarativeView.screen.availableGeometry.width - launcherLoader.width
+            value: shell.width - launcherLoader.width
         }
     }
 
@@ -128,7 +126,7 @@ Item {
             rectangle: {
                 // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
                 //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < declarativeView.screen.availableGeometry.width
+                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
                 if (somewhatShown) {
                     return Qt.rect(launcherLoader.x,
                                    launcherLoader.y,
@@ -172,9 +170,5 @@ Item {
         height: launcherLoader.height
         width: launcherLoader.width
         enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
-
-        Component.onCompleted: {
-            strutManager.updateStrut()
-        }
     }
 }

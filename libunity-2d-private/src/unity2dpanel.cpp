@@ -90,7 +90,6 @@ struct Unity2dPanelPrivate
 
     void updateEdge()
     {
-        m_strutManager.updateStrut();
         updateGeometry();
         updateLayoutDirection();
     }

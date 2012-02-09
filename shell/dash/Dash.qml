@@ -106,7 +106,13 @@ FocusScope {
         }
     }
 
+    SpreadMonitor {
+        id: spreadMonitor
+    }
+
     function activateLens(lensId) {
+        if (spreadMonitor.shown) return
+
         /* check if lenses variable was populated already */
         if (lenses.rowCount() == 0) {
             queuedLensId = lensId
@@ -138,6 +144,8 @@ FocusScope {
     }
 
     function activateHome() {
+        if (spreadMonitor.shown) return
+
         /* When Home is shown, need to notify all other lenses. Those in the global view
            (in home search results page) are set to HomeView, all others to Hidden */
         for (var i=0; i<lenses.rowCount(); i++) {
@@ -256,7 +264,7 @@ FocusScope {
         id: content
 
         anchors.fill: parent
-        /* Margins in DesktopMode set song that the content does not overlap with
+        /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
         anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0

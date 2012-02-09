@@ -29,8 +29,9 @@ Item {
     Grid {
         id: buttons
 
-        // TODO The alignment here is broken in RTL but Gerry says it's going away so we
-        //      do not care about it. Don't ask me why this transparent rectangle fixes it
+        // FIXME Need this invisible Rectangle so that alignment in RTL is not broken and tests pass.
+        //       Gerry says the Home lens is going away so we do not care about a better fix
+        //       Don't ask me why the transparent Rectangle fixes the alignment though
         Rectangle {
             anchors.fill: parent
             opacity: 0
