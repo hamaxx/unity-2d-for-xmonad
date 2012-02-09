@@ -26,7 +26,7 @@ Item {
     /* Space reserved by strutManager is taken off screen.availableGeometry but
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */
-    height: declarativeView.screen.availableGeometry.height + (strutManager.enabled ? strutManager.height : 0)
+    height: declarativeView.screen.availableGeometry.height
     width: declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0)
 
     Accessible.name: "shell"
@@ -170,9 +170,5 @@ Item {
         height: launcherLoader.height
         width: launcherLoader.width
         enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
-
-        Component.onCompleted: {
-            strutManager.updateStrut()
-        }
     }
 }
