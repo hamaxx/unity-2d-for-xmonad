@@ -54,8 +54,8 @@ FocusScope {
 
             clip: true
             cached: false
-            offsetX: -screen.panelsFreeGeometry.x
-            offsetY: -screen.panelsFreeGeometry.y
+            offsetX: -declarativeView.screen.panelsFreeGeometry.x
+            offsetY: -declarativeView.screen.panelsFreeGeometry.y
         }
 
         Windows {

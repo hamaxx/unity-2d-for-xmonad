@@ -55,6 +55,7 @@ callbackName(GObject* src, void* dummy1, void* dummy2, QObject* dst) \
 // Screen callbacks
 GOBJECT_CALLBACK1(activeWindowChangedCB, "updateActiveWindowConnections");
 GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "updateIntersect");
+GOBJECT_CALLBACK0(showingDesktopChangedCB, "updateIntersect");
 
 // Window callbacks
 GOBJECT_CALLBACK2(stateChangedCB, "updateIntersect");
@@ -68,6 +69,7 @@ WindowsIntersectMonitor::WindowsIntersectMonitor()
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_connect(G_OBJECT(screen), "active-window-changed", G_CALLBACK(activeWindowChangedCB), this);
     g_signal_connect(G_OBJECT(screen), "active-workspace-changed", G_CALLBACK(activeWorkspaceChangedCB), this);
+    g_signal_connect(G_OBJECT(screen), "showing-desktop-changed", G_CALLBACK(showingDesktopChangedCB), this);
 
     updateActiveWindowConnections();
 }
@@ -78,6 +80,7 @@ WindowsIntersectMonitor::~WindowsIntersectMonitor()
     WnckScreen* screen = wnck_screen_get_default();
     g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWindowChangedCB), this);
     g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWorkspaceChangedCB), this);
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(showingDesktopChangedCB), this);
 }
 
 void WindowsIntersectMonitor::disconnectFromGSignals()

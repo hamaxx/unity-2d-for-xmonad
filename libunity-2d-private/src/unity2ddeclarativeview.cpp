@@ -16,6 +16,11 @@
 
 #include "unity2ddeclarativeview.h"
 
+#include <debug_p.h>
+#include <config.h>
+
+#include "screeninfo.h"
+
 #include <QDebug>
 #include <QGLWidget>
 #include <QVariant>
@@ -25,9 +30,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-#include <debug_p.h>
-#include <config.h>
 
 // libwnck
 extern "C" {
@@ -45,6 +47,7 @@ GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QDeclarativeView(parent),
+    m_screenInfo(NULL),
     m_useOpenGL(false),
     m_transparentBackground(false),
     m_last_focused_window(None)
@@ -159,11 +162,17 @@ void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
     Q_EMIT globalPositionChanged(globalPosition());
 }
 
-void Unity2DDeclarativeView::showEvent(QShowEvent *event)
+void Unity2DDeclarativeView::showEvent(QShowEvent* event)
 {
-    Q_EMIT shown();
+    QDeclarativeView::showEvent(event);
+    Q_EMIT visibleChanged(true);
 }
 
+void Unity2DDeclarativeView::hideEvent(QHideEvent* event)
+{
+    QDeclarativeView::hideEvent(event);
+    Q_EMIT visibleChanged(false);
+}
 
 /* Obtaining & Discarding Keyboard Focus for Window on Demand
  *
@@ -270,6 +279,12 @@ void Unity2DDeclarativeView::onActiveWorkspaceChanged()
 {
     m_last_focused_window = None;
     Q_EMIT activeWorkspaceChanged();
+}
+
+ScreenInfo*
+Unity2DDeclarativeView::screen() const
+{
+    return m_screenInfo;
 }
 
 #include <unity2ddeclarativeview.moc>

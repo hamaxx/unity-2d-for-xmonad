@@ -25,8 +25,8 @@ Rectangle {
 
     color: "black"
 
-    property int columns: screen.workspaces.columns
-    property int rows: screen.workspaces.rows
+    property int columns: desktop.workspaces.columns
+    property int rows: desktop.workspaces.rows
 
     property int margin: 35
     property int spacing: 4
@@ -57,7 +57,7 @@ Rectangle {
 
     /* Scale of a workspace when the user zooms on it (fills most of the switcher, leaving a margin to see
        the corners of the other workspaces below it) */
-    property bool isDesktopHorizontal: screen.panelsFreeGeometry.width > screen.panelsFreeGeometry.height
+    property bool isDesktopHorizontal: declarativeView.screen.panelsFreeGeometry.width > declarativeView.screen.panelsFreeGeometry.height
     property real zoomedScale: (isDesktopHorizontal) ? ((width - 2*margin) / switcher.width) :
                                                        ((height - 2*margin) / switcher.height)
 
@@ -73,7 +73,6 @@ Rectangle {
        screen. Each workspace will individually filter them to select only those that
        belong to it. */
     property variant allWindows: WindowsList { }
-    property int lastActiveWindow: 0
 
     /* Group all Workspace elements into a single Item to help workspaceByNumber
        iterate over less items than it would need to if the Repeater was adding children
@@ -85,7 +84,7 @@ Rectangle {
         width: cellWidth * columns
         height: cellHeight * rows
 
-        model: screen.workspaces.count
+        model: desktop.workspaces.count
         cellWidth: parent.cellWidth + spacing
         cellHeight: parent.cellHeight + spacing
         keyNavigationWraps: true
@@ -136,7 +135,7 @@ Rectangle {
             }
             state: {
                 if (initial) {
-                    if (screen.workspaces.current == workspaceNumber) {
+                    if (desktop.workspaces.current == workspaceNumber) {
                         return "screen"
                     } else {
                         return "unzoomed"
@@ -189,12 +188,12 @@ Rectangle {
             /* Setup application pre-filtering and initially zoomed desktop, if any
                were specified as arguments */
             applicationFilter = applicationDesktopFile
-            zoomedWorkspace = screen.workspaces.current
+            zoomedWorkspace = desktop.workspaces.current
             show()
         }
 
         onShowAllWorkspaces: {
-            if (screen.workspaces.count > 1) {
+            if (desktop.workspaces.count > 1) {
                 applicationFilter = applicationDesktopFile
                 zoomedWorkspace = -1
                 show()
@@ -209,15 +208,11 @@ Rectangle {
     }
 
     function show() {
-        /* Save the currently active window before showing and activating the switcher,
-           so that we can use it to pre-select the active window on the workspace */
-        lastActiveWindow = screen.activeWindow
-
         allWindows.load()
 
         spreadView.show()
         spreadView.forceActivateWindow()
-        workspaces.currentIndex = screen.workspaces.current
+        workspaces.currentIndex = desktop.workspaces.current
         /* This is necessary otherwise we don't get keypresses until the user does a
            mouse over on a window */
         workspaces.forceActiveFocus()
@@ -280,13 +275,13 @@ Rectangle {
     }
 
     function activateWindow(windowInfo) {
-        screen.workspaces.changeCurrent(zoomedWorkspace)
+        desktop.workspaces.changeCurrent(zoomedWorkspace)
         windowInfo.activate()
         cancelAndExit()
     }
 
     function activateWorkspace(workspaceNumber) {
-        screen.workspaces.changeCurrent(workspaceNumber)
+        desktop.workspaces.changeCurrent(workspaceNumber)
         cancelAndExit()
     }
 }

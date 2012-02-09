@@ -29,6 +29,8 @@ class IndicatorsManager;
 #include <QWidget>
 #include <QEvent>
 
+#include "screeninfo.h"
+
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
@@ -55,11 +57,15 @@ public:
 
     static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
 
-    Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
+    Unity2dPanel(bool requiresTransparency = false, int screen = -1,
+                 ScreenInfo::Corner corner = ScreenInfo::InvalidCorner, QWidget* parent = 0);
     ~Unity2dPanel();
 
     void setEdge(Edge);
     Edge edge() const;
+
+    void setScreen(int);
+    int screen() const;
 
     void addWidget(QWidget*);
 
