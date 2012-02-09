@@ -94,27 +94,32 @@ ShellDeclarativeView::ShellDeclarativeView()
 void
 ShellDeclarativeView::updateShellPosition()
 {
+    // ShellDeclarativeView is a dock window (Qt::WA_X11NetWmWindowTypeDock) this means it does not respect struts.
+    // We use availableGeometry to get the geometry with the struts applied and from there
+    // we remove any strut that we might be applying ourselves
     const QRect availableGeometry = m_screenInfo->availableGeometry();
     QPoint posToMove = availableGeometry.topLeft();
     if (qApp->isRightToLeft()) {
         posToMove.setX(availableGeometry.width() - width());
     }
 
-    StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
-    if (strutManager && strutManager->enabled()) {
-        // Do not push ourselves
-        switch (strutManager->edge()) {
-            case Unity2dPanel::TopEdge:
-                posToMove.ry() -= strutManager->realHeight();
-            break;
+    QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
+    Q_FOREACH(StrutManager *strutManager, strutManagers) {
+        if (strutManager->enabled()) {
+            // Do not push ourselves
+            switch (strutManager->edge()) {
+                case Unity2dPanel::TopEdge:
+                    posToMove.ry() -= strutManager->realHeight();
+                break;
 
-            case Unity2dPanel::LeftEdge:
-                if (qApp->isLeftToRight()) {
-                    posToMove.rx() -= strutManager->realWidth();
-                } else {
-                    posToMove.rx() += strutManager->realWidth();
-                }
-            break;
+                case Unity2dPanel::LeftEdge:
+                    if (qApp->isLeftToRight()) {
+                        posToMove.rx() -= strutManager->realWidth();
+                    } else {
+                        posToMove.rx() += strutManager->realWidth();
+                    }
+                break;
+            }
         }
     }
 
