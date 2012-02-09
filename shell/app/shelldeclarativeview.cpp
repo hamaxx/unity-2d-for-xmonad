@@ -253,13 +253,15 @@ void
 ShellDeclarativeView::onAltF1Pressed()
 {
     if (!isActiveWindow()) {
-        Q_EMIT launcherFocusRequested();
         forceActivateWindow();
+        Q_EMIT launcherFocusRequested();
     } else {
         if (dashActive()) {
+            // focus the launcher instead of the dash
             setDashActive(false);
             Q_EMIT launcherFocusRequested();
         } else {
+            // we assume that the launcher is focused; unfocus it by deactivating the shell window
             forceDeactivateWindow();
         }
     }
