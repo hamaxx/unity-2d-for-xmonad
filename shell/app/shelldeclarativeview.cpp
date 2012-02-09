@@ -48,11 +48,6 @@
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
-static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_PATH = "/Spread";
-static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
-
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
 ShellDeclarativeView::ShellDeclarativeView()
