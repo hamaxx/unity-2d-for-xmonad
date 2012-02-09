@@ -55,10 +55,6 @@ static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
-static const int NumPad_Key_0 = 0xffb0;
-static const int NumPad_Key_1 = 0xffb1;
-static const int NumPad_Key_9 = 0xffb9;
-
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
@@ -68,11 +64,9 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-    /* Respect the struts manually because the window manager does not enforce struts
-       on dock windows */
-    move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
-
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
+
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -98,42 +92,38 @@ ShellDeclarativeView::ShellDeclarativeView()
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
-    /* Super+NUMKEY{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10.*/
-    /* Qt won't distinguish between keys[0-9] below the Functionkeys and keypad keys[0-9] on the Keypad.
-       Reference: <X11/keysymdef.h>
-    */
-    for (Qt::Key key = (Qt::Key)(NumPad_Key_0); key <= (Qt::Key)(NumPad_Key_9); key = (Qt::Key) (key + 1)) {
-        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier, true);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-        hotkey = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)(key), Qt::MetaModifier | Qt::ShiftModifier, true);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-    }
-
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
+    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
+    updateShellPosition();
 }
 
 void
-ShellDeclarativeView::updateShellPosition(int screen)
+ShellDeclarativeView::updateShellPosition()
 {
-    if (screen == QX11Info::appScreen()) {
-        QPoint posToMove = QApplication::desktop()->availableGeometry(screen).topLeft();
-
-        StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
-        if (strutManager && strutManager->enabled()) {
-            // Do not push ourselves
-            switch (strutManager->edge()) {
-                case Unity2dPanel::TopEdge:
-                    posToMove.ry() -= strutManager->realHeight();
-                break;
-
-                case Unity2dPanel::LeftEdge:
-                    posToMove.rx() -= strutManager->realWidth();
-                break;
-            }
-        }
-
-        move(posToMove);
+    const QRect availableGeometry = m_screenInfo->availableGeometry();
+    QPoint posToMove = availableGeometry.topLeft();
+    if (qApp->isRightToLeft()) {
+        posToMove.setX(availableGeometry.width() - width());
     }
+
+    StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
+    if (strutManager && strutManager->enabled()) {
+        // Do not push ourselves
+        switch (strutManager->edge()) {
+            case Unity2dPanel::TopEdge:
+                posToMove.ry() -= strutManager->realHeight();
+            break;
+
+            case Unity2dPanel::LeftEdge:
+                if (qApp->isLeftToRight()) {
+                    posToMove.rx() -= strutManager->realWidth();
+                } else {
+                    posToMove.rx() += strutManager->realWidth();
+                }
+            break;
+        }
+    }
+
+    move(posToMove);
 }
 
 void
@@ -149,6 +139,13 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusInEvent(event);
     Q_EMIT focusChanged();
+}
+
+void
+ShellDeclarativeView::resizeEvent(QResizeEvent *event)
+{
+    updateShellPosition();
+    Unity2DDeclarativeView::resizeEvent(event);
 }
 
 void
@@ -279,6 +276,7 @@ ShellDeclarativeView::toggleDash()
         setDashActive(false);
         forceDeactivateWindow();
     } else {
+        setFocus();
         Q_EMIT activateHome();
     }
 }
@@ -403,25 +401,19 @@ ShellDeclarativeView::forwardNumericHotkey()
            In other words, the indexes are activated in the same order as
            the keys appear on a standard keyboard. */
         Qt::Key key = hotkey->key();
-        int index = 0;
-        if (hotkey->isX11Keysym()) {
-            if (key >= NumPad_Key_1 && key <= NumPad_Key_9) {
-                index = key - NumPad_Key_0;
-            } else if (key == NumPad_Key_0) {
-               index = 10;
+        if (key >= Qt::Key_1 && key <= Qt::Key_9) {
+            int index = key - Qt::Key_0;
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(index);
+            } else {
+                Q_EMIT activateShortcutPressed(index);
             }
-        } else {
-            if (key >= Qt::Key_1 && key <= Qt::Key_9) {
-                index = key - Qt::Key_0;
-            } else if (key == Qt::Key_0) {
-                index = 10;
+        } else if (key == Qt::Key_0) {
+            if (hotkey->modifiers() & Qt::ShiftModifier) {
+                Q_EMIT newInstanceShortcutPressed(10);
+            } else {
+                Q_EMIT activateShortcutPressed(10);
             }
-        }
-
-        if (hotkey->modifiers() & Qt::ShiftModifier) {
-            Q_EMIT newInstanceShortcutPressed(index);
-        } else {
-            Q_EMIT activateShortcutPressed(index);
         }
     }
 }

@@ -80,8 +80,8 @@ Item {
             else
                 return filename
         }
-        width: screen.geometry.width
-        height: screen.geometry.height
+        width: declarativeView.screen.geometry.width
+        height: declarativeView.screen.geometry.height
 
         smooth: true
 

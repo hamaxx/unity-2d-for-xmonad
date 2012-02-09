@@ -106,7 +106,13 @@ FocusScope {
         }
     }
 
+    SpreadMonitor {
+        id: spreadMonitor
+    }
+
     function activateLens(lensId) {
+        if (spreadMonitor.shown) return
+
         /* check if lenses variable was populated already */
         if (lenses.rowCount() == 0) {
             queuedLensId = lensId
@@ -119,7 +125,7 @@ FocusScope {
             return
         }
 
-        if (lensId == declarativeView.activeLens) {
+        if (lensId == declarativeView.activeLens && dash.active) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
@@ -138,6 +144,8 @@ FocusScope {
     }
 
     function activateHome() {
+        if (spreadMonitor.shown) return
+
         /* When Home is shown, need to notify all other lenses. Those in the global view
            (in home search results page) are set to HomeView, all others to Hidden */
         for (var i=0; i<lenses.rowCount(); i++) {
@@ -216,7 +224,7 @@ FocusScope {
         id: content
 
         anchors.fill: parent
-        /* Margins in DesktopMode set song that the content does not overlap with
+        /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
         anchors.bottomMargin: background.bottomBorderThickness
@@ -268,6 +276,7 @@ FocusScope {
 
         Loader {
             id: pageLoader
+            objectName: "pageLoader"
 
             Accessible.name: "loader"
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
@@ -311,35 +320,11 @@ FocusScope {
         }
     }
 
-    AbstractButton {
-        id: fullScreenButton
-
-        Accessible.name: "Full Screen"
-
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 15
-        anchors.bottomMargin: 15
-        width: fullScreenButtonImage.sourceSize.width
-        height: fullScreenButtonImage.sourceSize.height
-        visible: declarativeView.dashMode != ShellDeclarativeView.FullScreenMode
-
-        Image {
-            id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
-            mirror: isRightToLeft()
-        }
-
-        onClicked: {
-            declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
-        }
-    }
-
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: screen.availableGeometry.width
-    property int fullscreenHeight: screen.availableGeometry.height
+    property int fullscreenWidth: declarativeView.screen.availableGeometry.width
+    property int fullscreenHeight: declarativeView.screen.availableGeometry.height
 
     states: [
         State {

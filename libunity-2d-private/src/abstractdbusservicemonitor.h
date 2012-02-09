@@ -30,28 +30,25 @@
 class AbstractDBusServiceMonitor : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool serviceAvailable READ serviceAvailable NOTIFY serviceAvailableChanged)
 
 public:
     explicit AbstractDBusServiceMonitor(QString service, QString path, QString interface,
                                         QObject *parent = 0);
     ~AbstractDBusServiceMonitor();
 
-    void setEnabled(bool enabled);
-    bool enabled() const;
-
     QDBusInterface* dbusInterface() const;
 
+    bool serviceAvailable() const;
+
 Q_SIGNALS:
-    void enabledChanged(bool enabled);
-    void serviceStateChanged(bool available);
+    void serviceAvailableChanged(bool available);
 
 private Q_SLOTS:
-    void createInterface(QString);
-    void destroyInterface(QString);
+    void createInterface();
+    void destroyInterface();
 
 protected:
-    bool m_enabled;
     QString m_service;
     QString m_path;
     QString m_interface;

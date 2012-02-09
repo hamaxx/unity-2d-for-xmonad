@@ -74,7 +74,7 @@ Item {
         property int rightThickness: 37
 
         anchors.fill: parent
-        source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
+        source: desktop.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
         mirror: isRightToLeft()
     }
 
