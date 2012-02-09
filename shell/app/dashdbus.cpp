@@ -34,7 +34,6 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 , m_view(view)
 {
     connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
-    connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 }
 
 DashDBus::~DashDBus()
@@ -55,18 +54,6 @@ DashDBus::connectToBus()
     return true;
 }
 
-void
-DashDBus::activateHome()
-{
-    Q_EMIT m_view->activateHome();
-}
-
-void
-DashDBus::activateLens(const QString& lensId)
-{
-    Q_EMIT m_view->activateLens(lensId);
-}
-
 bool
 DashDBus::active() const
 {
@@ -79,14 +66,3 @@ DashDBus::setActive(bool active)
     m_view->setDashActive(active);
 }
 
-QString
-DashDBus::activeLens() const
-{
-    return m_view->activeLens();
-}
-
-void
-DashDBus::setActiveLens(QString activeLens)
-{
-    m_view->setActiveLens(activeLens);
-}
