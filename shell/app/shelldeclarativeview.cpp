@@ -177,11 +177,6 @@ void
 ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
-        if (value) {
-            // FIXME: should be moved to Shell.qml
-            // We need a delay, otherwise the window may not be visible when we try to activate it
-            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-        }
         m_active = value;
         Q_EMIT dashActiveChanged(m_active);
     }

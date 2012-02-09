@@ -50,6 +50,8 @@ FocusScope {
         value: declarativeView.dashActive
     }
 
+    onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
+
     property variant queuedLensId
 
     function isRightToLeft() {
