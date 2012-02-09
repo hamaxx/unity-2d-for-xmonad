@@ -47,6 +47,9 @@ StrutManager::StrutManager()
    m_width(-1),
    m_height(-1)
 {
+    QDesktopWidget* desktop = QApplication::desktop();
+    connect(desktop, SIGNAL(resized(int)), SLOT(updateStrut()));
+    connect(desktop, SIGNAL(workAreaResized(int)), SLOT(updateStrut()));
 }
 
 StrutManager::~StrutManager()
@@ -82,10 +85,16 @@ QObject *StrutManager::widget() const
 void StrutManager::setWidget(QObject *widget)
 {
     if (m_widget != widget) {
+        if (m_widget) {
+            m_widget->removeEventFilter(this);
+            releaseStrut();
+        }
         m_widget = qobject_cast<QWidget*>(widget);
+        Q_ASSERT(m_widget != NULL);
+        m_widget->installEventFilter(this);
+        updateStrut();
         Q_EMIT widgetChanged(m_widget);
     }
-    Q_ASSERT(m_widget != NULL);
 }
 
 Unity2dPanel::Edge StrutManager::edge() const
@@ -97,8 +106,8 @@ void StrutManager::setEdge(Unity2dPanel::Edge edge)
 {
     if (m_edge != edge) {
         m_edge = edge;
-        Q_EMIT edgeChanged(m_edge);
         updateStrut();
+        Q_EMIT edgeChanged(m_edge);
     }
 }
 
@@ -111,6 +120,7 @@ void StrutManager::setWidth(int width)
 {
     if (m_width != width) {
         m_width = width;
+        updateStrut();
         Q_EMIT widthChanged(m_width);
     }
 }
@@ -135,6 +145,7 @@ void StrutManager::setHeight(int height)
 {
     if (m_height != height) {
         m_height = height;
+        updateStrut();
         Q_EMIT heightChanged(m_height);
     }
 }
@@ -156,7 +167,6 @@ void StrutManager::updateStrut()
         reserveStrut();
     }
 }
-
 
 void StrutManager::reserveStrut()
 {
@@ -198,6 +208,16 @@ void StrutManager::releaseStrut()
     ulong struts[12];
     memset(struts, 0, sizeof struts);
     setStrut(struts, m_widget->effectiveWinId());
+}
+
+bool StrutManager::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_ASSERT(watched == m_widget);
+
+    if (event->type() == QEvent::Show || event->type() == QEvent::Resize) {
+        updateStrut();
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 #include "strutmanager.moc"

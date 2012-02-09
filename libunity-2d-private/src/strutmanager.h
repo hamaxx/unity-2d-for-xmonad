@@ -73,14 +73,18 @@ public:
      */
     int realHeight() const;
 
-    Q_INVOKABLE void updateStrut();
-
 Q_SIGNALS:
     void enabledChanged(bool enabled);
     void widgetChanged(QObject *widget);
     void edgeChanged(Unity2dPanel::Edge edge);
     void widthChanged(int width);
     void heightChanged(int height);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
+
+private Q_SLOTS:
+    void updateStrut();
 
 private:
     void reserveStrut();
