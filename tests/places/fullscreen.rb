@@ -78,7 +78,7 @@ context "Dash fullscreen tests" do
   # Run after each test case completes
   teardown do
     $SUT.execute_shell_command "dconf write #{DASH_FULLSCREEN_KEY} #{@fullscreen_old}"
-    $SUT.execute_shell_command "dconf write #{DASH_FORMFACTOR_KEY} '#{@formfactor_old}"
+    $SUT.execute_shell_command "dconf write #{DASH_FORMFACTOR_KEY} #{@formfactor_old}"
 
     $SUT.execute_shell_command "pkill -nf unity-2d-panel"
     $SUT.execute_shell_command "pkill -nf unity-2d-places"
