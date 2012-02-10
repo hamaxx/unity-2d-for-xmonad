@@ -85,7 +85,7 @@ RendererGrid {
                 height: 48
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: 3
+                anchors.leftMargin: 15
                 fillMode: Image.PreserveAspectFit
                 sourceSize.width: width
                 sourceSize.height: height
@@ -98,14 +98,12 @@ RendererGrid {
             Item {
                 id: labels
 
-                anchors.top: parent.top
-                anchors.topMargin: 3
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 3
+                anchors.top: icon.top
+                anchors.bottom: icon.bottom
                 anchors.left: icon.right
                 anchors.leftMargin: 15
                 anchors.right: parent.right
-                anchors.rightMargin: 3
+                anchors.rightMargin: 15
 
                 TextCustom {
                     id: firstLine
