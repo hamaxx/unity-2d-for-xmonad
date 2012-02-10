@@ -119,7 +119,7 @@ void Hud::setSearchQuery(const QString& searchQuery)
     if (searchQuery != m_searchQuery) {
         m_searchQuery = searchQuery;
         m_unityHud->RequestQuery(m_searchQuery.toStdString());
-        Q_EMIT beginResetModel();
+        beginResetModel();
         Q_EMIT searchQueryChanged();
     }
 }
@@ -153,7 +153,7 @@ void Hud::closeQuery()
 void Hud::onQueriesUpdated(const unity::hud::Hud::Queries queries)
 {
     m_unityHudQueries = queries;
-    Q_EMIT endResetModel();
+    endResetModel();
 }
 
 QString Hud::target() const {
