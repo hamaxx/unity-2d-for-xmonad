@@ -31,6 +31,10 @@ Item {
 
     Accessible.name: "shell"
 
+    GestureHandler {
+        id: gestureHandler
+    }
+
     LauncherLoader {
         id: launcherLoader
         anchors.top: parent.top
