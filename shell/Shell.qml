@@ -27,7 +27,7 @@ Item {
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */
     height: declarativeView.screen.availableGeometry.height
-    width: declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0)
+    width: Math.min(declarativeView.screen.geometry.width, declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0))
 
     Accessible.name: "shell"
 
