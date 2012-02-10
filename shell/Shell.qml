@@ -51,7 +51,9 @@ Item {
             if (visibilityController.shown) {
                 value = shownX
             } else {
-                if (gestureHandler.isDragging) {
+                /* FIXME: it would be better to have gestureHandler disabled
+                   for dragging when hideMode is set to 0 */
+                if (launcher2dConfiguration.hideMode != 0 && gestureHandler.isDragging) {
                     value = hiddenX + delta
                 } else {
                     value = hiddenX
