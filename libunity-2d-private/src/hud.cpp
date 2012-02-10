@@ -36,7 +36,7 @@ static const char* HUD_DBUS_PATH = "/com/canonical/hud";
 
 Hud::Hud(QObject *parent) :
     QAbstractListModel(parent),
-    m_connected(false),
+    m_connected(false)
 {
     QHash<int, QByteArray> names;
     names[QueryIdRole] = "queryId";
