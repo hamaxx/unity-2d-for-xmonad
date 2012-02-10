@@ -166,11 +166,11 @@ PanelManager::PanelManager(QObject* parent)
     /* Alt key hold timer */
     m_altKeyHoldTimer.setSingleShot(true);
     m_altKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
-    QObject::connect(&m_altKeyHoldTimer, SIGNAL(timeout()), SLOT(updateAltKeyHoldState()));
+    connect(&m_altKeyHoldTimer, SIGNAL(timeout()), SLOT(updateAltKeyHoldState()));
 
-    QObject::connect(KeyboardModifiersMonitor::instance(),
-                     SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
-                     SLOT(onKeyboardModifiersChanged(Qt::KeyboardModifiers)));
+    connect(KeyboardModifiersMonitor::instance(),
+            SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+            SLOT(onKeyboardModifiersChanged(Qt::KeyboardModifiers)));
 
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
