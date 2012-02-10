@@ -22,6 +22,7 @@
 */
 #include "plugin.h"
 
+#include "dashclient.h"
 #include "launcherapplication.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -50,12 +51,9 @@
 #include "launcherdropitem.h"
 
 #include "config.h"
-#include "dashclient.h"
 
-#include "autohidebehavior.h"
-#include "intellihidebehavior.h"
-#include "forcevisiblebehavior.h"
 #include "bfb.h"
+#include "gesturehandler.h"
 
 #include "lenses.h"
 #include "lens.h"
@@ -68,7 +66,16 @@
 #include "radiooptionfilter.h"
 #include "checkoptionfilter.h"
 #include "multirangefilter.h"
+#include "windowsintersectmonitor.h"
+#include "spreadmonitor.h"
 #include "focuspath.h"
+
+#include "unity2ddeclarativeview.h"
+#include "inputshapemanager.h"
+#include "inputshaperectangle.h"
+#include "inputshapemask.h"
+#include "unity2dpanel.h"
+#include "strutmanager.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -98,6 +105,8 @@ static int _x_errhandler(Display* display, XErrorEvent* event)
 void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
+
+    qmlRegisterType<DashClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -136,10 +145,6 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesList>(uri, 0, 1, "WorkspacesList");
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
 
-    qmlRegisterType<IntelliHideBehavior>(uri, 0, 1, "IntelliHideBehavior");
-    qmlRegisterType<AutoHideBehavior>(uri, 0, 1, "AutoHideBehavior");
-    qmlRegisterType<ForceVisibleBehavior>(uri, 0, 1, "ForceVisibleBehavior");
-
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 
     qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
@@ -160,7 +165,17 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<FilterOption>();
     qmlRegisterType<FilterOptions>();
 
-    qmlRegisterType<DashClient>();
+    qmlRegisterType<GestureHandler>(uri, 0, 1, "GestureHandler");
+    qmlRegisterType<WindowsIntersectMonitor>(uri, 0, 1, "WindowsIntersectMonitor");
+    qmlRegisterType<SpreadMonitor>(uri, 0, 1, "SpreadMonitor");
+
+    qmlRegisterType<InputShapeManager>(uri, 0, 1, "InputShapeManager");
+    qmlRegisterType<InputShapeRectangle>(uri, 0, 1, "InputShapeRectangle");
+    qmlRegisterType<InputShapeMask>(uri, 0, 1, "InputShapeMask");
+    qmlRegisterType<Unity2DDeclarativeView>();
+
+    qmlRegisterType<Unity2dPanel>(uri, 0, 1, "Unity2dPanel");
+    qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)
@@ -179,8 +194,9 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
     engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
+    engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
+    engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
     engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
-    engine->rootContext()->setContextProperty("dashClient", DashClient::instance());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.

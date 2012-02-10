@@ -1,14 +1,10 @@
 config.h
 
-launcher/app/unity-2d-launcher
-launcher/app/launcheradaptor.*
-launcher/app/unity-2d-launcher.service
-launcher/tests/launchermenutest
-launcher/tests/launcherviewtest
-
-places/app/unity-2d-places
-places/app/unity-2d-places.service
-places/app/dashadaptor.*
+shell/app/dashadaptor.*
+shell/app/launcheradaptor.*
+shell/app/unity-2d-launcher.service
+shell/app/unity-2d-places.service
+shell/app/unity-2d-shell
 
 spread/app/unity-2d-spread
 spread/app/unity-2d-spread.service
@@ -19,7 +15,6 @@ panel/applets/appname/registraradaptor.*
 panel/applets/indicator/indicator-config.h
 panel/applets/libpanelplugin-*.so.*
 panel/lib/libuqpanel.so*
-panel/tests/homebuttonapplettest
 
 libunity-2d-private/src/libunity-2d-private.so.*
 libunity-2d-private/src/unity-2d-private.pc
@@ -44,6 +39,7 @@ libunity-2d-private/Unity2d/launchermenu/launchermenu.qrc.depends
 po/*.gmo
 
 tests/misc/binary_dir.txt
+tests/getshape/getshape
 
 # Cmake files and generated files
 Makefile
@@ -77,10 +73,9 @@ debian/*.debhelper
 debian/stamp-*
 debian/tmp
 debian/unity-2d
-debian/unity-2d-launcher
 debian/unity-2d-panel
-debian/unity-2d-places
 debian/unity-2d-spread
+debian/unity-2d-shell
 debian/libunity-2d-private0
 debian/libunity-2d-private-dev
 data/gschemas.compiled

@@ -260,6 +260,9 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
     /* Ensure focus is actually switched to active window */
     XSetInputFocus(display, window, RevertToParent, CurrentTime);
     XFlush(display);
+
+    /* Use Qt's setFocus mechanism as a safety guard in case the above failed */
+    setFocus();
 }
 
 /* Save WId of window with keyboard focus to m_last_focused_window */

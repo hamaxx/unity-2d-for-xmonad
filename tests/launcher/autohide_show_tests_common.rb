@@ -32,7 +32,7 @@
 def test_position_with_empty_desktop()
   # check width before proceeding
   verify_equal( LAUNCHER_WIDTH, TIMEOUT, "Launcher is not #{LAUNCHER_WIDTH} pixels wide on screen!" ) {
-    @app.Unity2dPanel()['width'].to_i
+    @app.Launcher()['width'].to_i
   }
 
   verify_launcher_visible(TIMEOUT, 'Launcher hiding on empty desktop, should be visible')

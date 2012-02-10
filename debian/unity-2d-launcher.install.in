@@ -1,5 +1,0 @@
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/unity-2d-launcher
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/dbus-1/services/unity-2d-launcher.service
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/applications/unity-2d-launcher.desktop
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/unity-2d/launcher/*.qml
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/unity-2d/launcher/artwork

@@ -33,7 +33,6 @@ public:
     explicit SpreadView();
 
 public Q_SLOTS:
-    /* FIXME: copied from places/app/dashdeclarativeview.h */
     void fitToAvailableSpace();
 
 protected:

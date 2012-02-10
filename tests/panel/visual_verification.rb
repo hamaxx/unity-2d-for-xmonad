@@ -63,7 +63,7 @@ context "Panel visual verification tests" do
                      :arguments => "-testability",
                      :sleeptime => 2 )
 
-    @launcher = $SUT.run( :name => UNITY_2D_LAUNCHER,
+    @launcher = $SUT.run( :name => UNITY_2D_SHELL,
                        :arguments => "-testability",
                        :sleeptime => 2 )
 
