@@ -40,11 +40,28 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 65
+
+        /* Launcher visibility handling and 4 fingers dragging reveal */
+        property int hiddenX: Utils.isLeftToRight() ? -width : shell.width
+        property int shownX: Utils.isLeftToRight() ? 0 : shell.width - width
         x: {
-            if (Utils.isLeftToRight()) {
-                return visibilityController.shown ? 0 : -width
+            var value
+            var delta = Utils.isLeftToRight() ? gestureHandler.dragDelta : -gestureHandler.dragDelta
+
+            if (visibilityController.shown) {
+                value = shownX
             } else {
-                return visibilityController.shown ? shell.width - width : shell.width
+                if (gestureHandler.isDragging) {
+                    value = hiddenX + delta
+                } else {
+                    value = hiddenX
+                }
+            }
+
+            if (hiddenX <= shownX) {
+                return Utils.clamp(value, hiddenX, shownX)
+            } else {
+                return Utils.clamp(value, shownX, hiddenX)
             }
         }
 
