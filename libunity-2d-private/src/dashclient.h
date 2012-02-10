@@ -44,36 +44,23 @@ public:
     bool active() const;
     void setActive(bool active);
 
-    /**
-     * Returns the active page. This is either:
-     * - The lens id of the active lens
-     * - "home" if the home is visible
-     * - "" if the dash is not visible
-     */
-    QString activePage() const;
     bool alwaysFullScreen() const;
-    void setActivePage(const QString& page, const QString& lensId=QString());
     static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
     void activeChanged(bool);
-    void activePageChanged(const QString&);
     void alwaysFullScreenChanged();
 
 private Q_SLOTS:
     void connectToDash();
     void slotDashActiveChanged(bool);
-    void slotDashActiveLensChanged(const QString&);
     void updateAlwaysFullScreen();
 
 private:
     DashClient(QObject* parent = 0);
-    void updateActivePage();
 
     QDBusInterface* m_dashDbusIface;
     bool m_dashActive;
-    QString m_dashActiveLens;
-    QString m_activePage;
     bool m_alwaysFullScreen;
 };
 
