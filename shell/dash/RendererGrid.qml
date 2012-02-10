@@ -40,7 +40,6 @@ Renderer {
 
     property int minHorizontalSpacing: 26
     property int minVerticalSpacing: 26
-    property string lensId 
 
     property bool centered: true
 
