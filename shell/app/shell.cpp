@@ -44,7 +44,6 @@
 #include "shelldeclarativeview.h"
 #include "dashclient.h"
 #include "dashdbus.h"
-#include "gesturehandler.h"
 #include "launcherdbus.h"
 
 int main(int argc, char *argv[])

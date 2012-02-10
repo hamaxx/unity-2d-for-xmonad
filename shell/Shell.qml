@@ -31,16 +31,39 @@ Item {
 
     Accessible.name: "shell"
 
+    GestureHandler {
+        id: gestureHandler
+    }
+
     LauncherLoader {
         id: launcherLoader
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 65
+
+        /* Launcher visibility handling and 4 fingers dragging reveal */
+        property int hiddenX: Utils.isLeftToRight() ? -width : shell.width
+        property int shownX: Utils.isLeftToRight() ? 0 : shell.width - width
         x: {
-            if (Utils.isLeftToRight()) {
-                return visibilityController.shown ? 0 : -width
+            var value
+            var delta = Utils.isLeftToRight() ? gestureHandler.dragDelta : -gestureHandler.dragDelta
+
+            if (visibilityController.shown) {
+                value = shownX
             } else {
-                return visibilityController.shown ? shell.width - width : shell.width
+                /* FIXME: it would be better to have gestureHandler disabled
+                   for dragging when hideMode is set to 0 */
+                if (launcher2dConfiguration.hideMode != 0 && gestureHandler.isDragging) {
+                    value = hiddenX + delta
+                } else {
+                    value = hiddenX
+                }
+            }
+
+            if (hiddenX <= shownX) {
+                return Utils.clamp(value, hiddenX, shownX)
+            } else {
+                return Utils.clamp(value, shownX, hiddenX)
             }
         }
 
