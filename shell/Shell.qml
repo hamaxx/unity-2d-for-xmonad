@@ -52,7 +52,7 @@ Item {
             value: !dashLoader.item.active
         }
 
-        Behavior on x { NumberAnimation { duration: 125 } }
+        Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
 
         Connections {
             target: declarativeView
@@ -123,24 +123,7 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            rectangle: {
-                // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
-                //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
-                if (somewhatShown) {
-                    return Qt.rect(launcherLoader.x,
-                                   launcherLoader.y,
-                                   launcherLoader.width,
-                                   launcherLoader.height)
-                } else {
-                    // The outerEdgeMouseArea is one pixel bigger on each side so use it
-                    // when the launcher is hidden to have that extra pixel in the border
-                    return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
-                                   launcherLoader.y,
-                                   launcherLoader.outerEdgeMouseArea.width,
-                                   launcherLoader.height)
-                }
-            }
+            id: launcherInputShape
             enabled: launcherLoader.status == Loader.Ready
         }
 
@@ -161,6 +144,30 @@ Item {
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             }
         }
+    }
+
+    Binding {
+        target: launcherInputShape
+        property: "rectangle"
+        value: {
+            // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
+            //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
+            var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
+            if (somewhatShown) {
+                return Qt.rect(launcherLoader.x,
+                                launcherLoader.y,
+                                launcherLoader.width,
+                                launcherLoader.height)
+            } else {
+                // The outerEdgeMouseArea is one pixel bigger on each side so use it
+                // when the launcher is hidden to have that extra pixel in the border
+                return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
+                                launcherLoader.y,
+                                launcherLoader.outerEdgeMouseArea.width,
+                                launcherLoader.height)
+            }
+        }
+        when: !launcherLoaderXAnimation.running
     }
 
     StrutManager {
