@@ -27,6 +27,9 @@ Item {
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */
     height: declarativeView.screen.availableGeometry.height
+    // We need the min because X is async thus it can happen that even if strutManager.enabled is true
+    // declarativeView.screen.availableGeometry.width still has not been updated and thus the sum might be bigger than declarativeView.screen.geometry.width.
+    // The real nice and proper solution would be strutManager having a hasTheChangeBeenApplied property
     width: Math.min(declarativeView.screen.geometry.width, declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0))
 
     Accessible.name: "shell"
