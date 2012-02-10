@@ -156,7 +156,19 @@ FocusScope {
 
     function activateHome() {
         if (spreadMonitor.shown) return
-        activateLens("home.lens")
+        if (declarativeView.haveCustomHomeShortcuts) {
+            for (var i=0; i<lenses.rowCount(); i++) {
+                lenses.get(i).viewType = Lens.Hidden
+            }
+            pageLoader.setSource("Home.qml")
+            /* Take advantage of the fact that the loaded qml is local and setting
+               the source loads it immediately making pageLoader.item valid */
+            activatePage(pageLoader.item)
+            declarativeView.activeLens = ""
+            dash.active = true
+        } else {
+            activateLens("home.lens")
+        }
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
@@ -300,7 +312,7 @@ FocusScope {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "commands.lens"
+            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top

@@ -111,8 +111,8 @@ FocusScope {
             /* Required by ListViewWithHeaders when the loaded Renderer is a Flickable.
                In that case the list view scrolls the Flickable appropriately.
             */
-            property int totalHeight: item ? item.totalHeight != undefined ? item.totalHeight : 0 : 0
-            property variant currentItem: item ? item.currentItem : ""
+            property int totalHeight: item.totalHeight != undefined ? item.totalHeight : 0
+            property variant currentItem: item.currentItem
 
             Binding { target: item; property: "name"; value: name }
             Binding { target: item; property: "iconHint"; value: iconHint }

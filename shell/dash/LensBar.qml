@@ -108,7 +108,13 @@ FocusScope {
                     }
                     item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint
                 }
-                active: item.viewType == Lens.LensView
+                active: {
+                    /* we need this in order to activate the arrow when using a custom shortcuts file */
+                    if (item.id == "home.lens" && declarativeView.activeLens == "") {
+                        return true
+                    }
+                    return item.viewType == Lens.LensView
+                }
                 onClicked: {
                     if (item.id == "home.lens") {
                         dash.activateHome()
