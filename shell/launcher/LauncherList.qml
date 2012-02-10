@@ -337,7 +337,6 @@ AutoScrollingListView {
 
         Connections {
             target: declarativeView
-            // FIXME: port methods over
             onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
                 if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {

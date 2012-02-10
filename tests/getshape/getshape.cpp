@@ -25,6 +25,9 @@
 #include <QStringList>
 
 #include <QBitmap>
+#include <QDesktopWidget>
+#include <QFile>
+#include <QImageWriter>
 #include <QRegion>
 #include <QPainter>
 #include <QPainterPath>
@@ -80,19 +83,45 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < count; i++) {
         region = region.united(QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height));
-
-        printf("%dx%d@%d,%d", rects[i].width, rects[i].height, rects[i].x, rects[i].y);
     }
 
     if (!outputFile.isEmpty()) {
-        QBitmap bitmap(region.boundingRect().width(), region.boundingRect().height());
+        Atom actual_type;
+        int actual_format;
+        unsigned long nitems, bytes_after;
+        unsigned char *data;
+        const Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_DESKTOP", False);
+        const int status = XGetWindowProperty(QX11Info::display(), windowId, atom, 0, (~0L),
+                                              False, AnyPropertyType, &actual_type,
+                                              &actual_format, &nitems, &bytes_after,
+                                              &data);
+        int desktop = -1;
+        if (status == Success) {
+            if (nitems == 1) {
+                desktop = *((int*)data);
+            }
+            free(data);
+        }
+  
+        const QDesktopWidget dw;
+        QBitmap bitmap(dw.availableGeometry(desktop).size());
         bitmap.fill(Qt::color0);
         QPainter painter(&bitmap);
         QPainterPath path;
         path.addRegion(region);
         painter.fillPath(path, Qt::color1);
         painter.end();
-        if (!bitmap.save(outputFile)) {
+
+        if (outputFile == "-") {
+            QFile f;
+            if (!f.open(stdout, QIODevice::WriteOnly)) {
+                return 4;
+            }
+            QImageWriter writer(&f, "PNG");
+            if (!writer.write(bitmap.toImage())) {
+                return 5;
+            }
+        } else if (!bitmap.save(outputFile)) {
             qWarning() << "Failed to save file with path:" << outputFile;
             return 3;
         }

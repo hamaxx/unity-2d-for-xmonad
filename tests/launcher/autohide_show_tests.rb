@@ -27,10 +27,48 @@ require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
 require 'tmpwindow'
+require $library_path + '/../../launcher/autohide_show_tests_common.rb'
 
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   launcher_favorites = ""
+
+  def verify_launcher_visible(timeout, message = '')
+    verify_equal( 0, timeout, message ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+  end
+
+  def verify_launcher_hidden(timeout, message = '')
+    verify_equal( -LAUNCHER_WIDTH, timeout, message ) {
+      @app.Launcher()['x_absolute'].to_i
+    }
+  end
+
+  def open_overlapping_window()
+    xid = TmpWindow.open_window_at(10,100)
+    return xid
+  end
+
+  def move_mouse_to_screen_edge()
+    XDo::Mouse.move(0, 200, 0, true)
+  end
+
+  def move_mouse_to_launcher_inner_border()
+    XDo::Mouse.move(LAUNCHER_WIDTH-1,200)
+  end
+
+  def move_mouse_to_just_outside_launcher()
+    XDo::Mouse.move(LAUNCHER_WIDTH,200)
+  end
+
+  def move_window_just_overlapping(xid)
+    xid.move(LAUNCHER_WIDTH - 1 , 100)
+  end
+
+  def move_window_just_not_overlapping(xid)
+    xid.move(LAUNCHER_WIDTH, 100)
+  end
 
   # Run once at the beginning of this test suite
   startup do
@@ -48,7 +86,7 @@ context "Launcher Autohide and Show Tests" do
   # Run before each test case begins
   setup do
     #Ensure mouse out of the way
-    XDo::Mouse.move(200,200,10,true)    
+    XDo::Mouse.move(200,200,10,true)
 
     launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
@@ -72,574 +110,72 @@ context "Launcher Autohide and Show Tests" do
   #####################################################################################
   # Test cases
 
-
-  # Test case objectives:
-  #   * Check the Launcher position on Empty desktop
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Verify Launcher is #{LAUNCHER_WIDTH} pixels wide
-  #   * Verify Launcher showing
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Position with Empty Desktop" do
-    # check width before proceeding
-    verify_equal( LAUNCHER_WIDTH, TIMEOUT, "Launcher is not #{LAUNCHER_WIDTH} pixels wide on screen!" ) {
-      @app.Launcher()['width'].to_i
-    }
-
-    verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
+    test_position_with_empty_desktop()
   end
 
-
-  # Test case objectives:
-  #   * Check the Launcher position on desktop with window not in way
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position not overlapping Launcher
-  #   * Verify Launcher showing
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Position with Window not in the way" do
-    # Open Terminal with position 100x100
-    xid = TmpWindow.open_window_at(100,100)
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when window not in the way, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_position_width_window_not_in_the_way()
   end
 
-
-  # Test case objectives:
-  #   * Check the Launcher position on desktop with window in the way
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hides
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Position with Window in the way" do
-    # Open Terminal with position 40x100
-    xid = TmpWindow.open_window_at(40,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_position_with_window_in_the_way()
   end
 
-
-  # Test case objectives:
-  #   * Check Launcher autohide working
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position not overlapping Launcher
-  #   * Verify Launcher showing
-  #   * Move application window to position overlapping Launcher
-  #   * Verify Launcher hides
-  #   * Move application window to position not overlapping Launcher
-  #   * Verify Launcher shows again
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Move window positioning to check launcher action" do
-    # Open Terminal with position 100x100
-    xid = TmpWindow.open_window_at(100,100)
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when window not in the way, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    xid.move(LAUNCHER_WIDTH-1,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible when window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    xid.move(LAUNCHER_WIDTH,100)
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when window not in the way, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_move_window_positioning_to_check_launcher_action()
   end
 
-
-  # Test case objectives:
-  #   * Check Launcher reveal using mouse works
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Move mouse to left of screen to reveal Launcher
-  #   * Verify Launcher shows but not immediately
-  #   * Move mouse to the right, but still over the Launcher
-  #   * Verify Launcher still showing
-  #   * Move mouse further right to not overlap Launcher
-  #   * Verify Launcher hides but not immediately
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Reveal hidden Launcher with mouse" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Mouse.move(0,200)
-    sleep 0.4
-    verify_equal( -LAUNCHER_WIDTH, 0, 'Launcher should not be visible immediately after mouse moves to the left edge, has to wait 0.5 seconds to show' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Mouse.move(LAUNCHER_WIDTH-1,200)
-    verify_equal( 0, TIMEOUT, 'Launcher should still be visible as mouse over it' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Mouse.move(LAUNCHER_WIDTH,200)
-    sleep 0.9
-    verify_equal( 0, 0, 'Launcher should still be visible as it should take 1 second to hide after mouse is not over it' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_reveal_hidden_launcher_with_mouse()
   end
 
-
-  # Test case objectives:
-  #   * Check Launcher reveal when dash is invoked
-  # Pre-conditions
-  #   * None
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Press Super key
-  #   * Verify Launcher shows
-  #   * Press Super key
-  #   * Verify Launcher hides
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
-  test "Press Super key to reveal launcher, press again to hide" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key pressed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+  test "Press Super key to toggle launcher" do
+    test_press_super_to_toggle_launcher()
   end
 
-
-  # Test case objectives:
-  #   * Check Launcher reveal with Super key works
-  # Pre-conditions
-  #   * None
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Hold down Super key
-  #   * Verify Launcher shows
-  #   * Verify Tile shortcut numbers are showing 
-  #   * Release Super key
-  #   * Verify Launcher hides
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Hold Super key down to reveal launcher and shortcut keys" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    sleep 1 #launcher seems not ready to accept Super key, need a pause
-    XDo::Keyboard.key_down('SUPER')
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when Super Key held, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    verify_equal( 'true', TIMEOUT, 'Shortcut on Home Folder icon not displaying with Super key held' ) {
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Home Folder' ) \
-          .QDeclarativeRectangle() \
-          .QDeclarativeText()['visible']
-    }  
-
-    XDo::Keyboard.key_up('SUPER')
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_hold_super_launcher_shortcuts()
   end
 
-
-  # Test case objectives:
-  #   * Alt+F1 gives keyboard focus to Launcher, escape removes it
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Press Alt+F1
-  #   * Verify Launcher shows
-  #   * Verify Dash icon is highlighted
-  #   * Press Escape
-  #   * Verify Launcher hides
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Press Alt+F1 to focus Launcher" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 0, TIMEOUT, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ){
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
-    }
-
-    XDo::Keyboard.escape
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_alt_f1_focus_launcher()
   end
 
-
-  # Test case objectives:
-  #   * Alt+F1 takes & gives keyboard focus to the Launcher
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Verify application has keyboard focus
-  #   * Press Alt+F1
-  #   * Verify Launcher shows
-  #   * Verify Dash icon is highlighted
-  #   * Verify application does not have keyboard focus
-  #   * Press Alt+F1
-  #   * Verify Launcher hides
-  #   * Verify application has keyboard focus
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Press Alt+F1 to focus/unfocus Launcher" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal should have focus after starting it' )
-
-    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 0, TIMEOUT, 'Launcher hiding after Alt+F1 pressed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
-    }
-    assert_not_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal has focus when it should be in the launcher' )
-
-    XDo::Keyboard.alt_F1
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal does not have focus when it should' )
-    xid.close!
+    test_alt_f1_focus_unfocus_launcher()
   end
 
-
-  # Test case objectives:
-  #   * Alt+F1 gives keyboard focus to the Launcher when dash was open, escape removes it
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Verify application has keyboard focus
-  #   * Press Super to invoke the Dash
-  #   * Verify Launcher is shown
-  #   * Press Alt+F1
-  #   * Verify Launcher shows
-  #   * Verify Dash icon is highlighted
-  #   * Verify application does not have keyboard focus
-  #   * Press Escape
-  #   * Verify Launcher hides
-  #   * Verify application has keyboard focus
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
-  xtest "Press Alt+F1 to focus/unfocus Launcher when dash is open" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal should have focus after starting it' )
-
-    XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( 0, TIMEOUT, 'Launcher hiding after Super pressed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
-    }
-    assert_not_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal has focus when it should be in the launcher' )
-
-    XDo::Keyboard.escape
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal does not have focus when it should' )
-    xid.close!
+  test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
+    test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
   end
 
-
-  # Test case objectives:
-  #   * Alt+F1 takes & gives keyboard focus to the Launcher when dash was open
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Verify application has keyboard focus
-  #   * Press Super to invoke the Dash
-  #   * Verify Launcher is shown
-  #   * Press Alt+F1
-  #   * Verify Launcher shows
-  #   * Verify Dash icon is highlighted
-  #   * Verify application does not have keyboard focus
-  #   * Press Alt+F1
-  #   * Verify Launcher hides
-  #   * Verify application has keyboard focus
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
-  xtest "Press Alt+F1 to focus Launcher when dash is open, escape to unfocus" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal should have focus after starting it' )
-
-    XDo::Keyboard.simulate('{SUPER}')
-    verify_equal( 0, TIMEOUT, 'Launcher hiding after Super pressed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    verify_equal( 'true', TIMEOUT, 'Dash icon not highlighted after Alt+F1 pressed' ) {
-      @app.LauncherList( :name => 'main' ) \
-          .QDeclarativeItem( :name => 'Dash home' ) \
-          .QDeclarativeImage( :name => 'selectionOutline' )['visible']
-    }
-    assert_not_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal has focus when it should be in the launcher' )
-
-    XDo::Keyboard.alt_F1
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way and mouse moved out, should be hidden' ){
-      @app.Launcher()['x_absolute'].to_i
-    }
-    assert_equal( xid.id, XDo::XWindow.active_window, \
-                  'terminal does not have focus when it should' )
-    xid.close!
+  test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
+    test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 
-
-  # Test case objectives:
-  #   * Launcher displays when 'show desktop' engages
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Engage "Show Desktop" mode
-  #   * Verify Launcher showing
-  #   * Disengage "Show Desktop" mode
-  #   * Verify Launcher hides
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Launcher visible on show-desktop" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::XWindow.toggle_minimize_all # This is effectively the show-desktop shortcut
-    verify_equal( 0, TIMEOUT, 'Launcher hiding after triggering show-desktop, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-
-    XDo::XWindow.toggle_minimize_all
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    xid.close!
+    test_launcher_visible_show_desktop()
   end
 
-  # Test case objectives:
-  #   * Launcher is around for 1 second after removing a tile
-  # Pre-conditions
-  #   * Desktop with at least one application not running
-  # Test steps
-  #   * Open application in position overlapping Launcher
-  #   * Verify Launcher hiding
-  #   * Right click on a non running application tile
-  #   * Wait enough time ( > 1 sec) so that the timer that would close the launcher
-  #     if the menu was not open triggers
-  #   * Click on the last menu item (Remove)
-  #   * Verify Launcher stays away for a second
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
   test "Launcher hide delay on tile removal" do
-    xid = TmpWindow.open_window_at(10,100)
-    tiles = ""
-    verify( 0, 'Could not find any non running application tile to remove' ) {
-        tiles = @app.LauncherList( :name => 'main' ).children( { :running => 'false', :desktopFile => /^.*.desktop$/ } )
-    }
-    if !tiles.empty?
-      tile = tiles[0]
-      XDo::Mouse.move(0, 200, 0, true)
-      verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
-        @app.Launcher()['x_absolute'].to_i
-      }
-      XDo::Mouse.move(tile['x_absolute'].to_i + 1, tile['y_absolute'].to_i + 1, 0, true)
-      XDo::Mouse.click(nil, nil, :right)
-      menu = @app.LauncherContextualMenu( :folded => false );
-      XDo::Mouse.move(menu['x_absolute'].to_i + 20, menu['y_absolute'].to_i + menu['height'].to_i - 10, 0, true)
-      sleep 1.5
-      XDo::Mouse.click()
-      sleep 0.9
-      verify_equal( 0, 0, 'Launcher hiding after icon removal, should be visible for 1 second' ) {
-        @app.Launcher()['x_absolute'].to_i
-      }
-      verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-        @app.Launcher()['x_absolute'].to_i
-      }
-      xid.close!
-    end
+    test_launcher_hide_delay_on_tile_removal()
   end
 
-  # Test case objectives:
-  # * Launcher does not hide after toggling the dash
-  # Pre-conditions
-  # * Desktop with no running applications
-  # Test steps
-  # * Open application in position overlapping Launcher
-  # * Verify Launcher hiding
-  # * Move mouse to the left
-  # * Verify Launcher showing
-  # * Click twice in the bfb
-  # * Verify Launcher showing during 1.5 seconds
-  # Post-conditions
-  # * None
-  # References
-  # * None
   test "Launcher visible after toggling dash" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
- 
-    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
-    XDo::Mouse.move(0, 200, 0, true)
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    bfb.move_mouse()
-    bfb.tap()
-    bfb.tap()
-    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
-      verify_equal( -LAUNCHER_WIDTH, 2 ) {
-        @app.Launcher()['x_absolute'].to_i
-      }
-    }
- 
-    xid.close!
+    test_launcher_visible_after_toggling_dash()
   end
 
-  # Test case objectives:
-  # * Launcher does not hide on Esc after Alt+F1 with overlapping window
-  # Pre-conditions
-  # * Desktop with no running applications
-  # Test steps
-  # * Open application in position overlapping Launcher
-  # * Verify Launcher hiding
-  # * Press Alt+F1
-  # * Verify Launcher showing
-  # * Move mouse over the launcher
-  # * Press Esc
-  # * Verify Launcher does not hide
-  # Post-conditions
-  # * None
-  # References
-  # * None
   test "Launcher does not hide on Esc after Alt+F1 with overlapping window" do
-    xid = TmpWindow.open_window_at(10,100)
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible with window in the way, should be hidden' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
-    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
-    bfb.move_mouse()
-    XDo::Keyboard.escape
-    verify_not(0, 'Launcher hiding after hovering mouse over bfb and clicking twice') {
-      verify_equal( -LAUNCHER_WIDTH, 2 ) {
-        @app.Launcher()['x_absolute'].to_i
-      }
-    }
-    xid.close!
+    test_launcher_does_not_hide_on_esc_after_alt_f1_with_overlapping_window()
+  end
+
+  test "Launcher hides immediately on Esc after Super with overlapping window" do
+    test_launcher_hides_immediatel_on_esc_after_super_with_overlapping_window()
+  end
+
+  test "Launcher does not hide on Esc after Super with overlapping window and mouse on BFB" do
+    test_launcher_does_not_hide_on_esc_after_Super_with_overlapping_window_mouse_on_bfb()
   end
 
 end

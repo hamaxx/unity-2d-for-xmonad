@@ -87,8 +87,6 @@ void DashClient::connectToDash()
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotDashActiveChanged(bool)));
-    connect(m_dashDbusIface, SIGNAL(activeLensChanged(const QString&)),
-            SLOT(slotDashActiveLensChanged(const QString&)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
@@ -96,14 +94,6 @@ void DashClient::connectToDash()
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
-    value = m_dashDbusIface->property("activeLens");
-    if (value.isValid()) {
-        m_dashActiveLens = value.toString();
-    } else {
-        UQ_WARNING << "Fetching Dash.activeLens property failed";
-    }
-
-    updateActivePage();
 }
 
 DashClient* DashClient::instance()
@@ -116,55 +106,25 @@ void DashClient::slotDashActiveChanged(bool value)
 {
     if (m_dashActive != value) {
         m_dashActive = value;
-        updateActivePage();
     }
+    Q_EMIT activeChanged(value);
 }
 
-void DashClient::slotDashActiveLensChanged(const QString& lens)
+bool DashClient::active() const
 {
-    if (m_dashActiveLens != lens) {
-        m_dashActiveLens = lens;
-        updateActivePage();
-    }
+    return m_dashActive;
 }
 
-QString DashClient::activePage() const
+void DashClient::setActive(bool active)
 {
-    return m_activePage;
-}
-
-void DashClient::setActivePage(const QString& page, const QString& lensId)
-{
-    if (m_activePage == page) {
-        return;
-    }
-    if (page.isEmpty()) {
-        // Use m_dashDbusIface to close the dash, but only if it is running
+    if (!active) {
+        // Use m_dashDbusIface only if the dash is running
         if (m_dashDbusIface) {
             m_dashDbusIface->setProperty("active", false);
         }
-        return;
-    }
-    // Use a separate QDBusInterface so that the dash is started if it is not
-    // already running
-    QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (page == "home") {
-        iface.asyncCall("activateHome");
     } else {
-        iface.asyncCall("activateLens", lensId);
-    }
-}
-
-void DashClient::updateActivePage()
-{
-    QString activePage;
-    if (m_dashActive) {
-        activePage = m_dashActiveLens.isEmpty() ? "home" : m_dashActiveLens;
-    }
-
-    if (m_activePage != activePage) {
-        m_activePage = activePage;
-        activePageChanged(m_activePage);
+        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        iface.setProperty("active", true);
     }
 }
 
@@ -179,7 +139,7 @@ void DashClient::updateAlwaysFullScreen()
     if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
         alwaysFullScreen = true;
     } else {
-        QRect rect = QApplication::desktop()->screenGeometry();
+        QRect rect = QApplication::desktop()->screenGeometry(QPoint());
         QSize minSize = minimumSizeForDesktop();
         alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
     }

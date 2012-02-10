@@ -26,6 +26,7 @@
 
 class LauncherClient;
 class DashDBus;
+class ScreenInfo;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -107,16 +108,15 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
-    void updateShellPosition(int screen);
+    void updateShellPosition();
 
 private:
     void focusOutEvent(QFocusEvent* event);
     void focusInEvent(QFocusEvent* event);
-    void updateMask();
     void setWMFlags();
-    bool isSpreadActive();
     void updateInputShape();
 
     DashMode m_mode;
