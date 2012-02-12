@@ -195,6 +195,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
     engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
+    engine->rootContext()->setContextProperty("unityConfiguration", &unityConfiguration());
     engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
     engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
 
