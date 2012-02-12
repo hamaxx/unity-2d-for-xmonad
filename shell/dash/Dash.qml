@@ -225,6 +225,8 @@ FocusScope {
             anchors.rightMargin: content.anchors.rightMargin
             clip: true
 
+            effect: Colorize {color: unityConfiguration.averageBgColor; strength: 0.20}
+
             Image {
                 id: blurredBackground
 

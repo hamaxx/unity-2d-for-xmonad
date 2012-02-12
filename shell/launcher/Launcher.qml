@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import Effects 1.0
 import "../common"
 import "../common/utils.js" as Utils
 
@@ -63,10 +64,12 @@ LauncherDropItem {
     }
 
     Rectangle {
+        effect: Colorize {color: unityConfiguration.averageBgColor; strength: 0.20}
+
         Accessible.name: "background"
         anchors.fill: parent
         color: "black"
-        opacity: 0.66
+        opacity: 0.86
         visible: desktop.isCompositingManagerRunning
     }
     
