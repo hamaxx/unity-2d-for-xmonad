@@ -26,6 +26,7 @@
 
 // libunity-core
 #include <UnityCore/Lens.h>
+#include <UnityCore/HomeLens.h>
 
 namespace unity
 {
@@ -64,6 +65,7 @@ private Q_SLOTS:
 
 private:
     unity::dash::Lenses* m_unityLenses;
+    unity::dash::HomeLens* m_homeLens;
     QList<Lens*> m_lenses;
 
     void addUnityLens(unity::dash::Lens::Ptr unity_lens, int index);

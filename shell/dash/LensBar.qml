@@ -93,22 +93,6 @@ FocusScope {
             return undefined
         }
 
-        /* Need to manually include the Home lens */
-        LensButton {
-            id: homeLens
-
-            Accessible.name: u2d.tr("home")
-
-            focus: true
-            icon: "artwork/lens-nav-home.svg"
-            onClicked: dash.activateHome()
-            active: ( declarativeView.activeLens == "" )
-            iconWidth: lensBar.iconWidth
-            iconSpacing: lensBar.iconSpacing
-            width: iconWidth+iconSpacing
-            height: lensContainer.height
-        }
-
         /* Now fetch all other lenses and display */
         Repeater{
             id: repeater
@@ -118,9 +102,26 @@ FocusScope {
                 Accessible.name: u2d.tr(item.name)
 
                 /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
-                icon: item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint
-                active: item.viewType == Lens.LensView
-                onClicked: dash.activateLens(item.id)
+                icon: {
+                    if (item.id == "home.lens") {
+                        return "artwork/lens-nav-home.svg"
+                    }
+                    item.iconHint.indexOf("/") == -1 ? "image://icons/" + item.iconHint : item.iconHint
+                }
+                active: {
+                    /* we need this in order to activate the arrow when using a custom shortcuts file */
+                    if (item.id == "home.lens" && declarativeView.activeLens == "") {
+                        return true
+                    }
+                    return item.viewType == Lens.LensView
+                }
+                onClicked: {
+                    if (item.id == "home.lens") {
+                        dash.activateHome()
+                    } else {
+                        dash.activateLens(item.id)
+                    }
+                }
                 iconWidth: lensBar.iconWidth
                 iconSpacing: lensBar.iconSpacing
                 width: iconWidth+iconSpacing
