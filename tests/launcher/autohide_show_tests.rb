@@ -32,6 +32,7 @@ require $library_path + '/../../launcher/autohide_show_tests_common.rb'
 ############################# Test Suite #############################
 context "Launcher Autohide and Show Tests" do
   launcher_favorites = ""
+  hide_mode = 0
 
   def verify_launcher_visible(timeout, message = '')
     verify_equal( 0, timeout, message ) {
@@ -75,12 +76,18 @@ context "Launcher Autohide and Show Tests" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
+    hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
+    
+    # Set hide mode to intellihide
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
   
   # Run once at the end of this test suite
   shutdown do
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 
   # Run before each test case begins

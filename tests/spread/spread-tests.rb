@@ -86,11 +86,15 @@ context "Spread Tests" do
   # References
   #   * None
   test "Super+s shows the launcher and the spread" do
+    hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode').to_i
+
     verify_not(2, 'There should not be a Spread declarative view on startup') {
       @app_spread.SpreadView()
     }
     xid = TmpWindow.open_window_at(10,100)
-    verify_equal(-LAUNCHER_WIDTH, TIMEOUT, 'The launcher should not be visible with an overlapping window') {
+
+    verify_equal((hide_mode == 0) ? 0 :-LAUNCHER_WIDTH, TIMEOUT, 
+                 'The launcher should not be visible with an overlapping window (unless Launcher in always-show mode)') {
       @app_shell.Launcher()['x_absolute'].to_i
     }
     XDo::Keyboard.super_s
