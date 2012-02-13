@@ -22,7 +22,6 @@
 
 // Qt
 #include <QAbstractListModel>
-#include <QList>
 
 // libunity-core
 #include <UnityCore/Hud.h>
