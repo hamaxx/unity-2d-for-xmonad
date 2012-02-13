@@ -55,7 +55,8 @@ ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
-    , m_active(false)
+    , m_dashActive(false)
+    , m_hudActive(false)
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
 {
@@ -132,6 +133,7 @@ ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
     setDashActive(false);
+    setHudActive(false);
     Q_EMIT focusChanged();
 }
 
@@ -177,16 +179,21 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
 void
 ShellDeclarativeView::setDashActive(bool value)
 {
-    if (value != m_active) {
-        m_active = value;
-        Q_EMIT dashActiveChanged(m_active);
+    if (value != m_dashActive) {
+        /* If HUD is open, close it */
+        if (value && m_hudActive) {
+            setHudActive(false);
+        }
+
+        m_dashActive = value;
+        Q_EMIT dashActiveChanged(m_dashActive);
     }
 }
 
 bool
 ShellDeclarativeView::dashActive() const
 {
-    return m_active;
+    return m_dashActive;
 }
 
 bool
@@ -277,6 +284,26 @@ ShellDeclarativeView::onAltF1Pressed()
             forceDeactivateWindow();
         }
     }
+}
+
+void
+ShellDeclarativeView::setHudActive(bool value)
+{
+    if (value != m_hudActive) {
+        /* If Dash is open, close it */
+        if (value && m_dashActive) {
+            setDashActive(false);
+        }
+
+        m_hudActive = value;
+        Q_EMIT hudActiveChanged(m_hudActive);
+    }
+}
+
+bool
+ShellDeclarativeView::hudActive() const
+{
+    return m_hudActive;
 }
 
 /* ----------------- super key handling ---------------- */
