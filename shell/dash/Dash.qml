@@ -211,55 +211,15 @@ FocusScope {
         }
     }
 
-    Item {
+    Background {
         id: background
 
         anchors.fill: parent
 
-        /* Avoid redraw at rendering */
-        effect: CacheEffect {}
-
-        Item {
-            anchors.fill: parent
-            anchors.bottomMargin: content.anchors.bottomMargin
-            anchors.rightMargin: content.anchors.rightMargin
-            clip: true
-
-            Image {
-                id: blurredBackground
-
-                effect: Blur {blurRadius: 12}
-
-                /* 'source' needs to be set when the dash becomes visible, that
-                   is when dash.active becomes true, so that a
-                   screenshot of the windows behind the dash is taken at that
-                   point.
-                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
-                */
-
-                /* Use an image of the root window which essentially is a
-                   capture of the entire screen */
-                source: dash.active ? "image://window/root" : ""
-                cache: false
-
-                fillMode: Image.PreserveAspectCrop
-                x: -launcherLoader.width
-                y: -declarativeView.globalPosition.y
-            }
-
-            Image {
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectCrop
-                source: "artwork/background_sheen.png"
-            }
-        }
-
-        BorderImage {
-            anchors.fill: parent
-            visible: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
-            source: desktop.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
-            mirror: isRightToLeft()
-        }
+        active: dash.active
+        fullscreen: declarativeView.dashMode != ShellDeclarativeView.DesktopMode
+        xPosition: launcherLoader.width
+        yPosition: declarativeView.globalPosition.y
     }
 
     Item {
@@ -269,8 +229,8 @@ FocusScope {
         /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
-        anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
+        anchors.bottomMargin: background.bottomBorderThickness
+        anchors.rightMargin: background.rightBorderThickness
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
