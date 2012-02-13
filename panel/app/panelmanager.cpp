@@ -360,9 +360,8 @@ void PanelManager::onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers)
             m_altPressIgnored = false;
             /* If any other key is pressed with Alt, make sure we detect it so an Alt-tap
                isn't registered */
-            QObject::connect(keyMonitor,
-                             SIGNAL(keyPressed()),
-                             this, SLOT(ignoreAltPress()));
+            connect(keyMonitor, SIGNAL(keyPressed()),
+                    this, SLOT(ignoreAltPress()));
 
             /* If the key is pressed, start up a timer to monitor if it's being held short
                enough to qualify as just a "tap" or as a proper hold */
@@ -370,9 +369,8 @@ void PanelManager::onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers)
         } else {
             m_altKeyHoldTimer.stop();
             /* Now Alt is released, can stop watching for other keys */
-            QObject::disconnect(keyMonitor,
-                             SIGNAL(keyPressed()),
-                             this, SLOT(ignoreAltPress()));
+            disconnect(keyMonitor, SIGNAL(keyPressed()),
+                       this, SLOT(ignoreAltPress()));
 
             /* If the key is released, and was not being held, it means that the user just
                performed a "tap". Unless we're told to ignore that tap, that is. */
