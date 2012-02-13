@@ -265,15 +265,6 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
     } else if (gestureName == GEIS_GESTURE_TYPE_DRAG4) {
         m_dragDelta += attributes[GEIS_GESTURE_ATTRIBUTE_DELTA_X].float_val;
         Q_EMIT dragDeltaChanged();
-        /* If the drag goes sufficiently above than the maximum delta then
-           lock the launcher in place by reserving the area so that no windows
-           overlap it. TODO: move to QML.
-         */
-//        if (m_dragDelta - m_launcher->delta() > 240) {
-//            m_launcher->setUseStrut(true);
-//        } else {
-//            m_launcher->setUseStrut(false);
-//        }
     }
 }
 

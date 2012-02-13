@@ -41,17 +41,13 @@
 #include <QtDBus/QDBusInterface>
 #include <QX11Info>
 #include <QGraphicsObject>
+#include <QFileInfo>
 
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
-
-static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_PATH = "/Spread";
-static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
@@ -100,27 +96,32 @@ ShellDeclarativeView::ShellDeclarativeView()
 void
 ShellDeclarativeView::updateShellPosition()
 {
+    // ShellDeclarativeView is a dock window (Qt::WA_X11NetWmWindowTypeDock) this means it does not respect struts.
+    // We use availableGeometry to get the geometry with the struts applied and from there
+    // we remove any strut that we might be applying ourselves
     const QRect availableGeometry = m_screenInfo->availableGeometry();
     QPoint posToMove = availableGeometry.topLeft();
     if (qApp->isRightToLeft()) {
         posToMove.setX(availableGeometry.width() - width());
     }
 
-    StrutManager *strutManager = rootObject()->findChild<StrutManager*>();
-    if (strutManager && strutManager->enabled()) {
-        // Do not push ourselves
-        switch (strutManager->edge()) {
-            case Unity2dPanel::TopEdge:
-                posToMove.ry() -= strutManager->realHeight();
-            break;
+    QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
+    Q_FOREACH(StrutManager *strutManager, strutManagers) {
+        if (strutManager->enabled()) {
+            // Do not push ourselves
+            switch (strutManager->edge()) {
+                case Unity2dPanel::TopEdge:
+                    posToMove.ry() -= strutManager->realHeight();
+                break;
 
-            case Unity2dPanel::LeftEdge:
-                if (qApp->isLeftToRight()) {
-                    posToMove.rx() -= strutManager->realWidth();
-                } else {
-                    posToMove.rx() += strutManager->realWidth();
-                }
-            break;
+                case Unity2dPanel::LeftEdge:
+                    if (qApp->isLeftToRight()) {
+                        posToMove.rx() -= strutManager->realWidth();
+                    } else {
+                        posToMove.rx() += strutManager->realWidth();
+                    }
+                break;
+            }
         }
     }
 
@@ -170,25 +171,6 @@ ShellDeclarativeView::setWMFlags()
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
 
-bool
-ShellDeclarativeView::isSpreadActive()
-{
-    /* Check if the spread is present on DBUS first, as we don't want to have DBUS
-       activate it if it's not running yet */
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
-    if (reply.isValid() && reply.value() == true) {
-        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
-                                       SPREAD_DBUS_INTERFACE);
-
-        QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
-        if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
@@ -202,24 +184,11 @@ void
 ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_dashActive) {
-        if (value) {
-            /* Check if the spread is active before activating the dash.
-               We need to do this since the spread can't prevent the launcher from
-               monitoring the super key and therefore getting to this point if
-               it's tapped. */
-            if (isSpreadActive()) {
-                return;
-            }
-
-            /* If HUD is open, close it */
-            if (m_hudActive) {
-                setHudActive(false);
-            }
-
-            // FIXME: should be moved to Shell.qml
-            // We need a delay, otherwise the window may not be visible when we try to activate it
-            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
+        /* If HUD is open, close it */
+        if (value && m_hudActive) {
+            setHudActive(false);
         }
+
         m_dashActive = value;
         Q_EMIT dashActiveChanged(m_dashActive);
     }
@@ -229,6 +198,12 @@ bool
 ShellDeclarativeView::dashActive() const
 {
     return m_dashActive;
+}
+
+bool
+ShellDeclarativeView::haveCustomHomeShortcuts() const
+{
+    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
 }
 
 void
@@ -287,7 +262,6 @@ ShellDeclarativeView::toggleDash()
         setDashActive(false);
         forceDeactivateWindow();
     } else {
-        setFocus();
         Q_EMIT activateHome();
     }
 }
@@ -302,13 +276,15 @@ void
 ShellDeclarativeView::onAltF1Pressed()
 {
     if (!isActiveWindow()) {
-        Q_EMIT launcherFocusRequested();
         forceActivateWindow();
+        Q_EMIT launcherFocusRequested();
     } else {
         if (dashActive()) {
+            // focus the launcher instead of the dash
             setDashActive(false);
             Q_EMIT launcherFocusRequested();
         } else {
+            // we assume that the launcher is focused; unfocus it by deactivating the shell window
             forceDeactivateWindow();
         }
     }
@@ -318,20 +294,11 @@ void
 ShellDeclarativeView::setHudActive(bool value)
 {
     if (value != m_hudActive) {
-        if (value) {
-            /* Check if the spread is active before activating the dash.*/
-            if (isSpreadActive()) {
-                return;
-            }
-            /* If Dash is open, close it */
-            if (m_dashActive) {
-                setDashActive(false);
-            }
-
-            // FIXME: should be moved to Shell.qml
-            // We need a delay, otherwise the window may not be visible when we try to activate it
-            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
+        /* If Dash is open, close it */
+        if (value && m_dashActive) {
+            setDashActive(false);
         }
+
         m_hudActive = value;
         Q_EMIT hudActiveChanged(m_hudActive);
     }
