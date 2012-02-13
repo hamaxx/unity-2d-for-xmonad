@@ -25,7 +25,6 @@
 // Qt
 #include <QObject>
 #include <QList>
-#include <QTimer>
 
 class Unity2dPanel;
 
@@ -37,9 +36,6 @@ public:
     PanelManager(QObject* parent = 0);
     ~PanelManager();
 
-Q_SIGNALS:
-    void altKeyHeldChanged(bool);
-
 private:
     Q_DISABLE_COPY(PanelManager)
     QList<Unity2dPanel*> m_panels;
@@ -47,21 +43,10 @@ private:
     Unity2dPanel* instantiatePanel(int screen);
     QStringList loadPanelConfiguration() const;
 
-    void toggleHud();
-
 private Q_SLOTS:
     void updateScreenLayout(int newCount);
     void onAltF10Pressed();
     void onScreenResized(int screen);
-    void ignoreAltPress();
-    void updateAltKeyHoldState();
-    void onKeyboardModifiersChanged(Qt::KeyboardModifiers modifiers);
-
-private:
-    QTimer m_altKeyHoldTimer;
-    bool m_altKeyPressed;
-    bool m_altKeyHeld;
-    bool m_altPressIgnored;
 };
 
 #endif // PanelManager_H
