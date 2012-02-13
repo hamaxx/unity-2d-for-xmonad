@@ -170,7 +170,7 @@ FocusScope {
                 width: sourceSize.width
                 height: sourceSize.height
 
-                source: "artwork/cross.png"
+                source: "../common/artwork/cross.png"
             }
 
             opacity: (expanded && declarativeView.dashMode == ShellDeclarativeView.DesktopMode) ? 1 : 0

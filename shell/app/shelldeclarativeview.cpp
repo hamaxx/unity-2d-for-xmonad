@@ -41,6 +41,7 @@
 #include <QtDBus/QDBusInterface>
 #include <QX11Info>
 #include <QGraphicsObject>
+#include <QFileInfo>
 
 // X11
 #include <X11/Xlib.h>
@@ -186,6 +187,12 @@ bool
 ShellDeclarativeView::dashActive() const
 {
     return m_active;
+}
+
+bool
+ShellDeclarativeView::haveCustomHomeShortcuts() const
+{
+    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
 }
 
 void
