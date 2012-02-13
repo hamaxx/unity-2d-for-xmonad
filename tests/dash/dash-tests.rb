@@ -214,6 +214,7 @@ context "Dash Tests" do
   test "Super, Super and Alt+F1 interaction" do
     XDo::Mouse.move(200, 200, 0, true)
     xid = TmpWindow.open_window_at(10,100)
+    hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode').to_i
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {
       XDo::XWindow.active_window
     }
@@ -231,7 +232,8 @@ context "Dash Tests" do
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after toggling the dash' ) {
       XDo::XWindow.active_window
     }
-    verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher should be hiding after toggling the dash' ) {
+    verify_equal((hide_mode == 0) ? 0 : -LAUNCHER_WIDTH, TIMEOUT, 
+                 'Launcher position wrong after toggling the dash' ) {
       @app.Launcher()['x_absolute'].to_i
     }
     XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys

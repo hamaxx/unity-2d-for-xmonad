@@ -33,6 +33,7 @@ include TDriverVerify
 ############################# Test Suite #############################
 context "Shell input shape tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
+  hide_mode = 0
 
   # Run once at the beginning of this test suite
   startup do
@@ -40,6 +41,11 @@ context "Shell input shape tests" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-panel'
+
+    hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
+    
+    # Set hide mode to intellihide
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
 
     # Need panel running as position of shell depends on it
     @@panel = $SUT.run(:name => UNITY_2D_PANEL,
@@ -51,6 +57,7 @@ context "Shell input shape tests" do
   
   # Run once at the end of this test suite
   shutdown do
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 
   # Run before each test case begins
