@@ -132,12 +132,8 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
-    if (m_dashActive) {
-        setDashActive(false);
-    }
-    if (m_hudActive) {
-        setHudActive(false);
-    }
+    setDashActive(false);
+    setHudActive(false);
     Q_EMIT focusChanged();
 }
 
