@@ -296,6 +296,17 @@ FocusScope {
             anchors.rightMargin: 15
 
             height: 42
+
+            active: dash.active
+            placeHolderText: {
+                if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
+                    return dash.currentPage.model.searchHint
+                else
+                    return u2d.tr("Search")
+            }
+
+            onSearchQueryChanged: if (dash.currentPage != undefined) dash.currentPage.model.searchQuery = searchQuery
+            onActivateFirstResult: if (dash.currentPage != undefined) dash.currentPage.activateFirstResult()
         }
 
         FilterPane {
