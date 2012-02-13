@@ -394,8 +394,7 @@ void PanelManager::updateAltKeyHoldState()
     if (m_altKeyPressed && !m_altPressIgnored) {
         m_altKeyHeld = true;
         Q_EMIT altKeyHeldChanged(m_altKeyHeld);
-    }
-    else {
+    } else {
         /* TODO: start fading in the panel menubar */
     }
 }
