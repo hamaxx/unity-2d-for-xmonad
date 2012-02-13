@@ -54,7 +54,7 @@ Loader {
         target: declarativeView
         property: "monitoredArea"
         value: Qt.rect(launcherLoader.x, launcherLoader.item.y, launcherLoader.item.width, launcherLoader.item.height)
-        when: launcherBehavior.status == Loader.Ready
+        when: launcherBehavior.status == Loader.Ready && !launcherLoaderXAnimation.running
     }
 
     Binding {

@@ -27,20 +27,46 @@ Item {
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */
     height: declarativeView.screen.availableGeometry.height
-    width: declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0)
+    // We need the min because X is async thus it can happen that even if strutManager.enabled is true
+    // declarativeView.screen.availableGeometry.width still has not been updated and thus the sum might be bigger than declarativeView.screen.geometry.width.
+    // The real nice and proper solution would be strutManager having a hasTheChangeBeenApplied property
+    width: Math.min(declarativeView.screen.geometry.width, declarativeView.screen.availableGeometry.width + (strutManager.enabled ? strutManager.width : 0))
 
     Accessible.name: "shell"
+
+    GestureHandler {
+        id: gestureHandler
+    }
 
     LauncherLoader {
         id: launcherLoader
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: 65
+
+        /* Launcher visibility handling and 4 fingers dragging reveal */
+        property int hiddenX: Utils.isLeftToRight() ? -width : shell.width
+        property int shownX: Utils.isLeftToRight() ? 0 : shell.width - width
         x: {
-            if (Utils.isLeftToRight()) {
-                return visibilityController.shown ? 0 : -width
+            var value
+            var delta = Utils.isLeftToRight() ? gestureHandler.dragDelta : -gestureHandler.dragDelta
+
+            if (visibilityController.shown) {
+                value = shownX
             } else {
-                return visibilityController.shown ? shell.width - width : shell.width
+                /* FIXME: it would be better to have gestureHandler disabled
+                   for dragging when hideMode is set to 0 */
+                if (launcher2dConfiguration.hideMode != 0 && gestureHandler.isDragging) {
+                    value = hiddenX + delta
+                } else {
+                    value = hiddenX
+                }
+            }
+
+            if (hiddenX <= shownX) {
+                return Utils.clamp(value, hiddenX, shownX)
+            } else {
+                return Utils.clamp(value, shownX, hiddenX)
             }
         }
 
@@ -52,7 +78,7 @@ Item {
             value: !dashLoader.item.active
         }
 
-        Behavior on x { NumberAnimation { duration: 125 } }
+        Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
 
         Connections {
             target: declarativeView
@@ -123,24 +149,7 @@ Item {
         target: declarativeView
 
         InputShapeRectangle {
-            rectangle: {
-                // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
-                //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-                var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
-                if (somewhatShown) {
-                    return Qt.rect(launcherLoader.x,
-                                   launcherLoader.y,
-                                   launcherLoader.width,
-                                   launcherLoader.height)
-                } else {
-                    // The outerEdgeMouseArea is one pixel bigger on each side so use it
-                    // when the launcher is hidden to have that extra pixel in the border
-                    return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
-                                   launcherLoader.y,
-                                   launcherLoader.outerEdgeMouseArea.width,
-                                   launcherLoader.height)
-                }
-            }
+            id: launcherInputShape
             enabled: launcherLoader.status == Loader.Ready
         }
 
@@ -155,12 +164,36 @@ Item {
 
             InputShapeMask {
                 id: shape1
-                source: "shell/dash/artwork/desktop_dash_background_no_transparency.png"
+                source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
                 position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             }
         }
+    }
+
+    Binding {
+        target: launcherInputShape
+        property: "rectangle"
+        value: {
+            // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
+            //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
+            var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
+            if (somewhatShown) {
+                return Qt.rect(launcherLoader.x,
+                                launcherLoader.y,
+                                launcherLoader.width,
+                                launcherLoader.height)
+            } else {
+                // The outerEdgeMouseArea is one pixel bigger on each side so use it
+                // when the launcher is hidden to have that extra pixel in the border
+                return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
+                                launcherLoader.y,
+                                launcherLoader.outerEdgeMouseArea.width,
+                                launcherLoader.height)
+            }
+        }
+        when: !launcherLoaderXAnimation.running
     }
 
     StrutManager {
