@@ -22,7 +22,7 @@ import "fontUtils.js" as FontUtils
 
 AbstractButton {
     property string searchQuery
-    property string instructions
+    property string placeHolderText: ""
     property bool active: false
 
     signal activateFirstResult
@@ -170,7 +170,7 @@ AbstractButton {
                     if(searchInput.text || searchInput.inputMethodComposing)
                         return ""
                     else
-                        return instructions
+                        return placeHolderText
                 }
             }
         }

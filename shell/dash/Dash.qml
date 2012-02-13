@@ -296,7 +296,7 @@ FocusScope {
             height: 42
 
             active: dash.active
-            instructions: {
+            placeHolderText: {
                 if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
                     return dash.currentPage.model.searchHint
                 else
