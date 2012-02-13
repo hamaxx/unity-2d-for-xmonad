@@ -35,13 +35,13 @@ context "Launcher Autohide and Show Tests" do
 
   def verify_launcher_visible(timeout, message = '')
     verify_equal( 0, timeout, message ) {
-      @app.Unity2dPanel()['x_absolute'].to_i
+      @app.Launcher()['x_absolute'].to_i
     }
   end
 
   def verify_launcher_hidden(timeout, message = '')
     verify_equal( -LAUNCHER_WIDTH, timeout, message ) {
-      @app.Unity2dPanel()['x_absolute'].to_i
+      @app.Launcher()['x_absolute'].to_i
     }
   end
 
@@ -72,8 +72,8 @@ context "Launcher Autohide and Show Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -86,16 +86,16 @@ context "Launcher Autohide and Show Tests" do
   # Run before each test case begins
   setup do
     #Ensure mouse out of the way
-    XDo::Mouse.move(200,200,10,true)    
+    XDo::Mouse.move(200,200,10,true)
 
     launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER, 
-                     :arguments => "-testability", 
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
+                     :arguments => "-testability",
                      :sleeptime => 2 )
     # Make certain application is ready for testing
-    verify{ @app.Unity2dPanel() }
+    verify{ @app.Launcher() }
   end
 
   # Run after each test case completes
@@ -103,7 +103,7 @@ context "Launcher Autohide and Show Tests" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
     $SUT.execute_shell_command "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
@@ -146,11 +146,11 @@ context "Launcher Autohide and Show Tests" do
     test_alt_f1_focus_unfocus_launcher()
   end
 
-  xtest "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
+  test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
     test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
   end
 
-  xtest "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
+  test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 

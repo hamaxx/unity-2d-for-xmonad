@@ -22,14 +22,12 @@
 
 #include "spreadcontrol.h"
 #include "spreadadaptor.h"
-#include "launcherclient.h"
 
 static const char* DBUS_SERVICE = "com.canonical.Unity2d.Spread";
 static const char* DBUS_OBJECT_PATH = "/Spread";
 
 SpreadControl::SpreadControl(QObject *parent) :
-    QObject(parent), m_isShown(false),
-    m_launcherClient(new LauncherClient(this))
+    QObject(parent), m_isShown(false)
 {
 }
 
@@ -39,11 +37,6 @@ SpreadControl::setIsShown(bool isShown)
     if (isShown != m_isShown) {
         m_isShown = isShown;
         Q_EMIT IsShownChanged(isShown);
-    }
-    if (m_isShown) {
-        m_launcherClient->beginForceVisible();
-    } else {
-        m_launcherClient->endForceVisible();
     }
 }
 

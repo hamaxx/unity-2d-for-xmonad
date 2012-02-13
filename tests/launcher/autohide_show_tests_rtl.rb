@@ -35,13 +35,13 @@ context "Launcher Autohide and Show Tests on RTL" do
 
   def verify_launcher_visible(timeout, message = '')
     verify_equal( XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH, timeout, message ) {
-      @app.Unity2dPanel()['x_absolute'].to_i
+      @app.Launcher()['x_absolute'].to_i
     }
   end
 
   def verify_launcher_hidden(timeout, message = '')
     verify_equal( XDo::XWindow.display_geometry[0], timeout, message ) {
-      @app.Unity2dPanel()['x_absolute'].to_i
+      @app.Launcher()['x_absolute'].to_i
     }
   end
 
@@ -73,8 +73,8 @@ context "Launcher Autohide and Show Tests on RTL" do
 
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -92,11 +92,11 @@ context "Launcher Autohide and Show Tests on RTL" do
     launcher_favorites = $SUT.execute_shell_command 'gsettings get com.canonical.Unity.Launcher favorites'
 
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER,
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
                      :arguments => "-testability,-reverse",
                      :sleeptime => 2 )
     # Make certain application is ready for testing
-    verify{ @app.Unity2dPanel() }
+    verify{ @app.Launcher() }
   end
 
   # Run after each test case completes
@@ -104,7 +104,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
     $SUT.execute_shell_command "gsettings set com.canonical.Unity.Launcher favorites \"" + launcher_favorites + "\""
   end
 
@@ -127,7 +127,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_move_window_positioning_to_check_launcher_action()
   end
 
-  xtest "Reveal hidden Launcher with mouse" do
+  test "Reveal hidden Launcher with mouse" do
     test_reveal_hidden_launcher_with_mouse()
   end
 
@@ -147,11 +147,11 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_alt_f1_focus_unfocus_launcher()
   end
 
-  xtest "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
+  test "Press Alt+F1, esc to focus/unfocus Launcher when dash is open" do
     test_alt_f1_esc_focus_unfocus_launcher_when_dash_open()
   end
 
-  xtest "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
+  test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
   end
 
@@ -159,11 +159,11 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_launcher_visible_show_desktop()
   end
 
-  xtest "Launcher hide delay on tile removal" do
+  test "Launcher hide delay on tile removal" do
     test_launcher_hide_delay_on_tile_removal()
   end
 
-  xtest "Launcher visible after toggling dash" do
+  test "Launcher visible after toggling dash" do
     test_launcher_visible_after_toggling_dash()
   end
 

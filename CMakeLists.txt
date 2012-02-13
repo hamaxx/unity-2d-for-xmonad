@@ -93,11 +93,11 @@ configure_file(tests/misc/binary_dir.txt.in ${CMAKE_CURRENT_SOURCE_DIR}/tests/mi
 
 # Source
 add_subdirectory(libunity-2d-private)
-add_subdirectory(launcher)
 add_subdirectory(panel)
-add_subdirectory(places)
 add_subdirectory(spread)
+add_subdirectory(shell)
 add_subdirectory(po)
+add_subdirectory(tests/getshape)
 
 # uninstall target
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)

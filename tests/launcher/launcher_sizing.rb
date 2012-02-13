@@ -32,8 +32,8 @@ require 'tmpwindow'
 context "Sizing tests" do
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-panel'
@@ -49,9 +49,9 @@ context "Sizing tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER, 
-    		         :arguments => "-testability", 
-    		         :sleeptime => 2 )
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
+                     :arguments => "-testability",
+                     :sleeptime => 2 )
 
     # Make sure the panel is running
     @app_panel = $SUT.run( :name => UNITY_2D_PANEL, 
@@ -59,15 +59,14 @@ context "Sizing tests" do
                            :sleeptime => 2 )
 
     # Make certain application is ready for testing
-    verify{ @app.Unity2dPanel() }
+    verify{ @app.Launcher() }
   end
 
   # Run after each test case completes
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher and Panel as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
-    $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
   #####################################################################################
@@ -89,15 +88,15 @@ context "Sizing tests" do
   test "Launcher updates size and position on free desktop space change" do
     # check width before proceeding
     verify_equal( PANEL_HEIGHT, TIMEOUT, "Launcher is not just under the panel" ) {
-      @app.Unity2dPanel()['y_absolute'].to_i
+      @app.Launcher()['y_absolute'].to_i
     }
-    old_height = @app.Unity2dPanel()['height'].to_i
+    old_height = @app.Launcher()['height'].to_i
     $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
     verify_equal( 0, TIMEOUT, "Launcher did not move to the top of the screen when killing the panel" ) {
-      @app.Unity2dPanel()['y_absolute'].to_i
+      @app.Launcher()['y_absolute'].to_i
     }
     verify_equal( old_height + PANEL_HEIGHT, TIMEOUT, "Launcher did not grow vertically when killing the panel" ) {
-      @app.Unity2dPanel()['height'].to_i
+      @app.Launcher()['height'].to_i
     }
   end
 end

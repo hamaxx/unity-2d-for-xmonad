@@ -35,8 +35,8 @@ context "Spread Tests" do
     $SUT.execute_shell_command 'killall unity-2d-spread'
     $SUT.execute_shell_command 'killall unity-2d-spread'
 
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -49,9 +49,9 @@ context "Spread Tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app_launcher = $SUT.run( :name => UNITY_2D_LAUNCHER, 
-                              :arguments => "-testability", 
-                              :sleeptime => 2 )
+    @app_shell = $SUT.run( :name => UNITY_2D_SHELL,
+                           :arguments => "-testability",
+                           :sleeptime => 2 )
 
     @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
                               :arguments => "-testability", 
@@ -63,7 +63,7 @@ context "Spread Tests" do
   teardown do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
     $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
   end
 
@@ -91,14 +91,14 @@ context "Spread Tests" do
     }
     xid = TmpWindow.open_window_at(10,100)
     verify_equal(-LAUNCHER_WIDTH, TIMEOUT, 'The launcher should not be visible with an overlapping window') {
-      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+      @app_shell.Launcher()['x_absolute'].to_i
     }
     XDo::Keyboard.super_s
     verify_equal("true", TIMEOUT, 'There should be a visible Spread declarative view after pressing Alt+F2') {
       @app_spread.SpreadView()['visible']
     }
     verify_equal(0, TIMEOUT, 'The launcher should be visible when spread is invoked') {
-      @app_launcher.Unity2dPanel()['x_absolute'].to_i
+      @app_shell.Launcher()['x_absolute'].to_i
     }
     xid.close!
   end

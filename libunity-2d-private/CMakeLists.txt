@@ -10,6 +10,7 @@ pkg_check_modules(INDICATOR REQUIRED indicator3-0.4)
 pkg_check_modules(UNITYCORE REQUIRED unity-core-5.0)
 pkg_check_modules(DEE REQUIRED dee-1.0)
 pkg_check_modules(XINPUT REQUIRED xi)
+pkg_check_modules(GEIS REQUIRED libutouch-geis)
 
 set(libunity-2d-private_SOVERSION 0)
 set(libunity-2d-private_VERSION ${libunity-2d-private_SOVERSION}.0.0)

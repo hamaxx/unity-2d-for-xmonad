@@ -21,17 +21,14 @@
 #include "bfb.h"
 
 // libunity-2d
-#include <dashclient.h>
 #include <debug_p.h>
 #include <unity2dtr.h>
 
 // Qt
 
 BfbItem::BfbItem()
-: m_active(false)
+: m_active(false), m_view(NULL)
 {
-    connect(DashClient::instance(), SIGNAL(activePageChanged(const QString&)),
-        SLOT(slotActivePageChanged(const QString&)));
 }
 
 BfbItem::~BfbItem()
@@ -41,15 +38,6 @@ BfbItem::~BfbItem()
 bool BfbItem::active() const
 {
     return m_active;
-}
-
-void BfbItem::slotActivePageChanged(const QString& page)
-{
-    bool active = !page.isEmpty();
-    if (m_active != active) {
-        m_active = active;
-        activeChanged(m_active);
-    }
 }
 
 bool BfbItem::running() const
@@ -82,13 +70,40 @@ bool BfbItem::launching() const
     return false;
 }
 
+QObject* BfbItem::dashView() const
+{
+    return m_view;
+}
+
+void BfbItem::setDashView(QObject* view)
+{
+    if (m_view != NULL) {
+        disconnect(view);
+    }
+    m_view = view;
+    if (m_view != NULL) {
+        connect(view, SIGNAL(dashActiveChanged(bool)), this, SLOT(slotDashActiveChanged(bool)));
+    }
+}
+
 void BfbItem::activate()
 {
-    DashClient::instance()->setActivePage(m_active ? "" : "home");
+    Q_ASSERT(m_view != NULL);
+    if (m_view != NULL) {
+        QMetaObject::invokeMethod(m_view, "toggleDash");
+    }
 }
 
 void BfbItem::createMenuActions()
 {
+}
+
+void BfbItem::slotDashActiveChanged(bool active)
+{
+    if (m_active != active) {
+        m_active = active;
+        Q_EMIT activeChanged(m_active);
+    }
 }
 
 ////////////////////////////////////////////////////////////
@@ -115,6 +130,16 @@ QVariant BfbModel::data(const QModelIndex& index, int /*role*/) const
     }
 
     return QVariant::fromValue(m_bfbItem);
+}
+
+QObject* BfbModel::dashView() const
+{
+    return m_bfbItem->dashView();
+}
+
+void BfbModel::setDashView(QObject* view)
+{
+    m_bfbItem->setDashView(view);
 }
 
 #include <bfb.moc>

@@ -13,7 +13,6 @@ set(lib${LIB_NAME}_SRCS
     hotkey.cpp
     keymonitor.cpp
     launcherclient.cpp
-    mousearea.cpp
     unity2dapplication.cpp
     unity2ddebug.cpp
     unity2dpanel.cpp
@@ -22,11 +21,7 @@ set(lib${LIB_NAME}_SRCS
     mimedata.cpp
     dragdropevent.cpp
     propertybinder.cpp
-    abstractvisibilitybehavior.cpp
-    autohidebehavior.cpp
-    edgehitdetector.cpp
-    forcevisiblebehavior.cpp
-    intellihidebehavior.cpp
+    gesturehandler.cpp
     giodefaultapplication.cpp
     qsortfilterproxymodelqml.cpp
     blendedimageprovider.cpp
@@ -72,7 +67,14 @@ set(lib${LIB_NAME}_SRCS
     panelapplet.cpp
     panelstyle.cpp
     percentcoder.cpp
+    windowsintersectmonitor.cpp
+    abstractdbusservicemonitor.cpp
+    spreadmonitor.cpp
     focuspath.cpp
+    inputshapemanager.cpp
+    inputshaperectangle.cpp
+    inputshapemask.cpp
+    strutmanager.cpp
     )
 
 # Build
@@ -100,6 +102,7 @@ include_directories(
     ${NUXCORE_INCLUDE_DIRS}
     ${DEE_INCLUDE_DIRS}
     ${XINPUT_INCLUDE_DIRS}
+    ${GEIS_INCLUDE_DIRS}
     )
 
 add_library(${LIB_NAME} SHARED ${libunity-2d-private_SRCS} listmodelwrapper.h)
@@ -135,6 +138,7 @@ target_link_libraries(${LIB_NAME}
     ${NUXCORE_LDFLAGS}
     ${DEE_LDFLAGS}
     ${XINPUT_LDFLAGS}
+    ${GEIS_LDFLAGS}
     )
 
 # Install

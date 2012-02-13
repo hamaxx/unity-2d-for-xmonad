@@ -92,8 +92,8 @@ end
 context "Launcher pips tests" do
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -123,7 +123,7 @@ context "Launcher pips tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER,
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
     		         :arguments => "-testability", 
     		         :sleeptime => 2 )
     @@title_string = ""
@@ -133,13 +133,11 @@ context "Launcher pips tests" do
   teardown do
     close_all_test_windows
     reset_current_workspace
-    system "pkill -nf unity-2d-launcher"
+    system "pkill -nf unity-2d-shell"
   end
 
     #####################################################################################
     # Test cases
-
-    # FIXME We need some visual tests for this too
 
     # Test case objectives:
     #   * Check pips are updated properly when the app is in current workspace
@@ -158,10 +156,10 @@ context "Launcher pips tests" do
         xid = open_window()
         @@xid_list << xid
 
-        expected_pip_image = 'image://blended/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching with launcher_arrow_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']
@@ -186,10 +184,10 @@ context "Launcher pips tests" do
 
         change_window_workspace(xid)
 
-        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching with launcher_arrow_outline_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']
@@ -214,10 +212,10 @@ context "Launcher pips tests" do
         xid = open_window()
         @@xid_list << xid
 
-        expected_pip_image = 'image://blended/artwork/launcher_pip_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_pip_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'Pip not matching expected image launcher_pip_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']
@@ -245,10 +243,10 @@ context "Launcher pips tests" do
         @@xid_list << xid
         change_window_workspace(xid)
 
-        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']
@@ -276,10 +274,10 @@ context "Launcher pips tests" do
         xid.close!
         change_window_workspace(@@xid_list[0])
 
-        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']
@@ -304,10 +302,10 @@ context "Launcher pips tests" do
 
         change_user_workspace
 
-        expected_pip_image = 'image://blended/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
+        expected_pip_image = 'image://blended/launcher/artwork/launcher_arrow_outline_ltr.pngcolor=lightgreyalpha=1'
 
         verify_equal(expected_pip_image, TIMEOUT, 'pip not matching expected image launcher_arrow_outline_ltr.png'){
-             @app.Unity2dPanel() \
+             @app.Launcher() \
             .LauncherList( :name => 'main' ) \
             .QDeclarativeItem( :name => @@title_string ) \
             .QDeclarativeImage( :name => 'pips-0')['source']

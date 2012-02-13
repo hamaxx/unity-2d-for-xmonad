@@ -42,17 +42,16 @@ $LOAD_PATH.unshift $library_path
 # installed applications instead
 binary_dir_file = $library_path + '/../binary_dir.txt'
 if File.exists?(binary_dir_file)
-    binary_dir = File.open(binary_dir_file).first.strip
-    puts 'Running tests on applications contained within ' + binary_dir
-    UNITY_2D_LAUNCHER = binary_dir + '/launcher/app/unity-2d-launcher'
-    UNITY_2D_PANEL = binary_dir + '/panel/app/unity-2d-panel'
-    UNITY_2D_PLACES = binary_dir + '/places/app/unity-2d-places'
-    UNITY_2D_SPREAD = binary_dir + '/spread/app/unity-2d-spread'
+    BINARY_DIR = File.open(binary_dir_file).first.strip
+    puts 'Running tests on applications contained within ' + BINARY_DIR
+    UNITY_2D_SHELL = BINARY_DIR + '/shell/app/unity-2d-shell'
+    UNITY_2D_PANEL = BINARY_DIR + '/panel/app/unity-2d-panel'
+    UNITY_2D_SPREAD = BINARY_DIR + '/spread/app/unity-2d-spread'
 else
+    BINARY_DIR = ""
     puts 'NOTICE: source not configured, tests will be carried out on *installed* applications!'
-    UNITY_2D_LAUNCHER = 'unity-2d-launcher'
+    UNITY_2D_SHELL = 'unity-2d-shell'
     UNITY_2D_PANEL = 'unity-2d-panel'
-    UNITY_2D_PLACES = 'unity-2d-places'
     UNITY_2D_SPREAD = 'unity-2d-spread'
 end
 
@@ -77,7 +76,7 @@ XDo.sut = $SUT
 include TDriverReportTestUnit if ARGV.delete('-report')
 
 # List of directories in which to search for test cases
-test_directories = ['launcher', 'panel', 'places', 'spread', 'window-manager', 'other']
+test_directories = ['launcher', 'panel', 'dash', 'spread', 'shell', 'window-manager', 'other']
 
 # Only run scan for tests if this script is directly called
 if __FILE__ == $0

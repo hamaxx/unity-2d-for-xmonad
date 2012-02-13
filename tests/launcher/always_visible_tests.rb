@@ -34,8 +34,8 @@ context "Launcher Always Visible Behaviour Tests" do
 
   # Run once at the beginning of this test suite
   startup do
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -53,11 +53,11 @@ context "Launcher Always Visible Behaviour Tests" do
     hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
 
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_LAUNCHER,
+    @app = $SUT.run( :name => UNITY_2D_SHELL,
                      :arguments => "-testability", 
                      :sleeptime => 2 )
     # Make certain application is ready for testing
-    verify{ @app.Unity2dPanel() }
+    verify{ @app.Launcher() }
   end
 
   # Run after each test case completes
@@ -65,7 +65,7 @@ context "Launcher Always Visible Behaviour Tests" do
     TmpWindow.close_all_windows
     #@app.close        
     #Need to kill Launcher as it does not shutdown when politely asked
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
     $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 
