@@ -79,9 +79,6 @@ int main(int argc, char *argv[])
         view.setUseOpenGL(true);
     }
 
-    HudDBus hudDBus(&view);
-    hudDBus.connectToBus();
-
     application.installX11EventFilter(&view);
 
     view.engine()->addImportPath(unity2dImportPath());
@@ -122,6 +119,9 @@ int main(int argc, char *argv[])
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
+
+    HudDBus hudDBus(&view);
+    hudDBus.connectToBus();
 
     LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
