@@ -25,7 +25,7 @@ AutoScrollingListView {
 
     /* The spacing is explicitly set in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
-    spacing: -8
+    spacing: -7
 
     property int tileSize: 54
 

@@ -81,7 +81,7 @@ FocusScope {
         bodyDelegate: Loader {
             visible: category_model.count > 0
             width: parent.width
-            height: visible ? item.contentHeight : 0
+            height: item ? visible ? item.contentHeight : 0 : 0
 
             property string name: model.column_0
             property string iconHint: model.column_1
@@ -119,18 +119,19 @@ FocusScope {
             Binding { target: item; property: "categoryId"; value: categoryId }
             Binding { target: item; property: "category_model"; value: category_model }
             Binding { target: item; property: "lens"; value: lensView.model }
+            Binding { target: item; property: "lensId"; value: lensView.model.id }
 
             onLoaded: item.focus = true
         }
 
         headerDelegate: CategoryHeader {
-            visible: body.item.needHeader && body.visible
+            visible: body.item ? body.item.needHeader && body.visible : false
             height: visible ? 32 : 0
 
-            property bool foldable: body.item.folded != undefined
-            availableCount: foldable ? body.category_model.count - body.item.cellsPerRow : 0
-            folded: foldable ? body.item.folded : false
-            onClicked: if(foldable) body.item.folded = !body.item.folded
+            property bool foldable: body.item ? body.item.folded != undefined : false
+            availableCount: body.item ? foldable ? body.category_model.count - body.item.cellsPerRow : 0 : 0
+            folded: body.item ? foldable ? body.item.folded : false : false
+            onClicked: if(foldable && body.item) body.item.folded = !body.item.folded
             moving: flickerMoving
 
             icon: body.iconHint
