@@ -30,6 +30,11 @@
 #include <QDeclarativeContext>
 #include <QAbstractEventDispatcher>
 
+// libunity-2d-private
+#include <hotkeymonitor.h>
+#include <hotkey.h>
+#include <screeninfo.h>
+
 // Local
 #include "shelldeclarativeview.h"
 #include "dashclient.h"
@@ -53,6 +58,7 @@ struct ShellManagerPrivate
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
     void updateScreenCount(int newCount);
+    ShellDeclarativeView* activeShell() const;
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
@@ -61,7 +67,9 @@ struct ShellManagerPrivate
     QUrl m_sourceFileUrl;
 };
 
-ShellDeclarativeView* ShellManagerPrivate::initShell(bool isTopLeft, int screen)
+
+ShellDeclarativeView *
+ShellManagerPrivate::initShell(bool isTopLeft, int screen)
 {
     const QStringList arguments = qApp->arguments();
     ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, isTopLeft, screen);
@@ -107,7 +115,20 @@ ShellDeclarativeView* ShellManagerPrivate::initShell(bool isTopLeft, int screen)
     return view;
 }
 
-void ShellManagerPrivate::updateScreenCount(int newCount)
+ShellDeclarativeView *
+ShellManagerPrivate::activeShell() const
+{
+    int cursorScreen = ScreenInfo::cursorScreen();
+    Q_FOREACH(ShellDeclarativeView * shell, m_viewList) {
+        if (shell->screenNumber() == cursorScreen) {
+            return shell;
+        }
+    }
+    return 0;
+}
+
+void
+ShellManagerPrivate::updateScreenCount(int newCount)
 {
     if (newCount > 0) {
         QDesktopWidget* desktop = QApplication::desktop();
@@ -168,6 +189,22 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->updateScreenCount(desktop->screenCount());
 
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+
+    /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
+    Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
+    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
+
+    /* Alt+F2 shows the dash with the commands lens activated. */
+    Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
+    connect(altF2, SIGNAL(pressed()), SLOT(onAltF2Pressed()));
+
+    /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
+    for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
+        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
+        hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
+    }
 }
 
 ShellManager::~ShellManager()
@@ -180,4 +217,36 @@ void
 ShellManager::onScreenCountChanged(int newCount)
 {
     d->updateScreenCount(newCount);
+}
+
+/*------------------ Hotkeys Handling -----------------------*/
+
+void
+ShellManager::onAltF1Pressed()
+{
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        activeShell->toggleLauncher();
+    }
+}
+
+void
+ShellManager::onAltF2Pressed()
+{
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        activeShell->showCommandsLens();
+    }
+}
+
+void
+ShellManager::onNumericHotkeyPressed()
+{
+    Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
+    if (hotkey) {
+        ShellDeclarativeView * activeShell = d->activeShell();
+        if (activeShell) {
+            activeShell->processNumericHotkey(hotkey);
+        }
+    }
 }

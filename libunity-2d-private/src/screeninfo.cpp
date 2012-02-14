@@ -198,6 +198,14 @@ ScreenInfo::corner() const
     return m_corner;
 }
 
+int
+ScreenInfo::cursorScreen()
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    QPoint cursorPos(QCursor::pos());
+    return desktop->screenNumber(cursorPos);
+}
+
 void
 ScreenInfo::setCorner(Corner corner)
 {
