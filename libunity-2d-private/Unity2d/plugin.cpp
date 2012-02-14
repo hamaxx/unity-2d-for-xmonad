@@ -40,6 +40,7 @@
 #include "desktopinfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
+#include "colorizeeffect.h"
 #include "iconutilities.h"
 #include "unity2dtr.h"
 #include "giodefaultapplication.h"
@@ -117,6 +118,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
+    qmlRegisterType<ColorizeEffect>("Effects", 0, 1, "ColorizeEffect");
     qmlRegisterType<QGraphicsBlurEffect>("Effects", 1, 0, "Blur");
     qmlRegisterType<QGraphicsColorizeEffect>("Effects", 1, 0, "Colorize");
     qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");

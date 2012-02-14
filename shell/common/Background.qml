@@ -38,6 +38,11 @@ Item {
            would prevent proper repainting when maximizing then unmaximizing the
            dash.
         */
+        effect: ColorizeEffect {
+            color: unityConfiguration.averageBgColor
+            saturation: 0.4
+        }
+
         Item {
             anchors.fill: parent
             anchors.bottomMargin: bottomBorderThickness
@@ -73,6 +78,7 @@ Item {
                 anchors.fill: parent
                 fillMode: Image.PreserveAspectCrop
                 source: "artwork/background_sheen.png"
+                opacity: 0.8
             }
         }
     }
