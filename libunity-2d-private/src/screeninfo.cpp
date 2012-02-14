@@ -199,7 +199,7 @@ ScreenInfo::corner() const
 }
 
 int
-ScreenInfo::activeScreen()
+ScreenInfo::cursorScreen()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     QPoint cursorPos(QCursor::pos());

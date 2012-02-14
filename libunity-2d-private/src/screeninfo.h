@@ -39,7 +39,7 @@ public:
     int screen() const;
     QWidget* widget() const;
     Corner corner() const;
-    static int activeScreen();
+    static int cursorScreen();
 
     /* Setters */
     void setScreen(int screen);

@@ -119,9 +119,9 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
 ShellDeclarativeView *
 ShellManagerPrivate::activeShell() const
 {
-    int activeScreen = ScreenInfo::activeScreen();
+    int cursorScreen = ScreenInfo::cursorScreen();
     Q_FOREACH(ShellDeclarativeView * shell, m_viewList) {
-        if (shell->screenNumber() == activeScreen) {
+        if (shell->screenNumber() == cursorScreen) {
             return shell;
         }
     }
