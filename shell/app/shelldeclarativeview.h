@@ -84,7 +84,6 @@ public:
     virtual bool x11EventFilter(XEvent* event);
 
     void toggleLauncher();
-    void removeFocus();
     void showCommandsLens();
 
     void processNumericHotkey(Hotkey*);

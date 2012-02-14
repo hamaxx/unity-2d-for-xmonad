@@ -356,12 +356,6 @@ ShellDeclarativeView::ignoreSuperPress()
 }
 
 void
-ShellDeclarativeView::removeFocus()
-{
-    forceDeactivateWindow();
-}
-
-void
 ShellDeclarativeView::processNumericHotkey(Hotkey* hotkey)
 {
     /* Shortcuts from 1 to 9 should activate the items with index

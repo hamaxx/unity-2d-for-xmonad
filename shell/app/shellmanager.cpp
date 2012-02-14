@@ -230,7 +230,7 @@ ShellManager::onAltF1Pressed()
     // and remove its focus
     if (d->m_activeShell != 0 && activeShell != d->m_activeShell) {
         if (d->m_activeShell->isActiveWindow()) {
-            d->m_activeShell->removeFocus();
+            d->m_activeShell->toggleLauncher();
         }
     }
     if (activeShell) {
