@@ -60,7 +60,6 @@ set(lib${LIB_NAME}_SRCS
     checkoptionfilter.cpp
     multirangefilter.cpp
     filters.cpp
-    hud.cpp
     cairoutils.cpp
     indicatorentrywidget.cpp
     indicatorsmanager.cpp
