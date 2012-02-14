@@ -21,30 +21,16 @@
 // QT
 #include <QApplication>
 #include <QDebug>
-#include <QtDeclarative>
-#include <QDeclarativeEngine>
-#include <QDeclarativeView>
-#include <QDesktopWidget>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-#include <QDeclarativeContext>
-#include <QAbstractEventDispatcher>
 #include <QDir>
-
-// X11
-#include <X11/Xlib.h>
+#include <QUrl>
 
 // unity-2d
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
-#include <unity2ddebug.h>
 
 // Local
 #include "config.h"
-#include "shelldeclarativeview.h"
-#include "dashclient.h"
-#include "dashdbus.h"
-#include "launcherdbus.h"
+#include "shellmanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -71,32 +57,7 @@ int main(int argc, char *argv[])
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");
     client.connectToSessionManager();
 
-    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
-    ShellDeclarativeView view;
-    view.setAccessibleName("Shell");
-    if (arguments.contains("-opengl")) {
-        view.setUseOpenGL(true);
-    }
-
-    application.installX11EventFilter(&view);
-
-    view.engine()->addImportPath(unity2dImportPath());
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
-
-    /* Load the QML UI, focus and show the window */
-    view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
-    view.rootContext()->setContextProperty("declarativeView", &view);
-    // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
-    // but it lead to locks when both the shell and the spread were started
-    // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
-    // and DashClient QDBusServiceWatcher::serviceRegistered
-    // triggered at the same time ending up with both creating QDBusInterface
-    // to eachother in the main thread meaning they would block
-    // In case you need to have a DashClient in the spread the fix for the problem
-    // is moving the QDbusInterface creation to a thread so it does not block
-    // the main thread
-    view.rootContext()->setContextProperty("dashClient", DashClient::instance());
-    view.setSource(rootFileUrl);
+    ShellManager shells(rootFileUrl);
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.
@@ -112,15 +73,6 @@ int main(int argc, char *argv[])
        current working directory from the dash, and they expect a sane default
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
-
-    DashDBus dashDBus(&view);
-    if (!dashDBus.connectToBus()) {
-        qCritical() << "Another instance of the Dash already exists. Quitting.";
-        return -1;
-    }
-
-    LauncherDBus launcherDBus(&view);
-    launcherDBus.connectToBus();
 
     return application.exec();
 }

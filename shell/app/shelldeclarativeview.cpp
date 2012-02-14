@@ -51,18 +51,20 @@ static const int KEY_HOLD_THRESHOLD = 250;
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
-ShellDeclarativeView::ShellDeclarativeView()
+ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
+    , m_isTopLeftShell(isTopLeftShell)
+    , m_sourceFileUrl(sourceFileUrl)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
-    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
+    m_screenInfo = new ScreenInfo(screen, this);
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -172,6 +174,9 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
     /* Note that this has to be called everytime the window is shown, as the WM
        will remove the flags when the window is hidden */
     setWMFlags();
+    if (source().isEmpty()) {
+        setSource(m_sourceFileUrl);
+    }
 }
 
 void
@@ -465,4 +470,27 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
+}
+
+void
+ShellDeclarativeView::setIsTopLeftShell(bool ashell)
+{
+    if (m_isTopLeftShell == ashell) {
+        return;
+    }
+
+    m_isTopLeftShell = ashell;
+    Q_EMIT isTopLeftShellChanged(m_isTopLeftShell);
+}
+
+void
+ShellDeclarativeView::setScreenNumber(int screen)
+{
+    m_screenInfo->setScreen(screen);
+}
+
+int
+ShellDeclarativeView::screenNumber() const
+{
+    return m_screenInfo->screen();
 }

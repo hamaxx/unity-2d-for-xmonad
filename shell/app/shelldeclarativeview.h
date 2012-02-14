@@ -39,6 +39,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
+    Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
     Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
@@ -56,7 +57,7 @@ public:
         DesktopMode,
         FullScreenMode
     };
-    explicit ShellDeclarativeView();
+    explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
 
     /* getters */
     bool dashActive() const;
@@ -67,13 +68,17 @@ public:
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
+    bool isTopLeftShell() const { return m_isTopLeftShell; }
 
     /* setters */
     Q_SLOT void setDashActive(bool active);
     Q_INVOKABLE void setDashMode(DashMode);
     Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
+    void setScreenNumber(int);
+    int screenNumber() const;
     void setMonitoredArea(QRect monitoredArea);
+    void setIsTopLeftShell(bool);
 
     virtual bool x11EventFilter(XEvent* event);
 
@@ -94,6 +99,7 @@ Q_SIGNALS:
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
+    void isTopLeftShellChanged(bool);
 
 private Q_SLOTS:
     void updateSuperKeyMonitoring();
@@ -132,6 +138,8 @@ private:
     QTimer m_superKeyHoldTimer;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
+    bool m_isTopLeftShell;
+    QUrl m_sourceFileUrl;
 
     friend class DashDBus;
     friend class LauncherDBus;

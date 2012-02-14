@@ -106,7 +106,11 @@ Item {
 
     Loader {
         id: dashLoader
-        source: "dash/Dash.qml"
+        /* TODO : In case of multi-monitors, there should be only one dash,
+           which could be moved to any screen.
+           ATM, we are displaying dash for the leftmost screen only. other screens will not support dash yet.
+        */
+        source: (declarativeView.isTopLeftShell ? "dash/Dash.qml" : "")
         anchors.top: parent.top
         x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
         onLoaded: item.focus = true

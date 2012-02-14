@@ -8,12 +8,14 @@ set(shell_SRCS
     dashdbus.cpp
     launcherdbus.cpp
     shelldeclarativeview.cpp
+    shellmanager.cpp
     )
 
 set(shell_MOC_HDRS
     dashdbus.h
     launcherdbus.h
     shelldeclarativeview.h
+    shellmanager.h
     )
 
 qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
