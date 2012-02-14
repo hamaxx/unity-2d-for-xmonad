@@ -49,5 +49,8 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
 ## Known bugs
 
-* Sometimes Xmonad doesn't redraw windows
 * Unity dash and places open on the current screen, not on the primary one
+
+### If you experience problems with Xmonad not redrawing windows while switching workspaces, try disabling desktop icons
+
+    gsettings set org.gnome.desktop.background show-desktop-icons false
