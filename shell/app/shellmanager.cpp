@@ -53,7 +53,7 @@
 struct ShellManagerPrivate
 {
     ShellManagerPrivate() :
-        q(0), m_dashDBus(0), m_launcherDBus(0), m_activeShell(0)
+        q(0), m_dashDBus(0), m_launcherDBus(0)
     {}
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
@@ -64,7 +64,6 @@ struct ShellManagerPrivate
     QList<ShellDeclarativeView *> m_viewList;
     DashDBus * m_dashDBus;
     LauncherDBus* m_launcherDBus;
-    ShellDeclarativeView * m_activeShell;
     QUrl m_sourceFileUrl;
 };
 
@@ -226,25 +225,17 @@ void
 ShellManager::onAltF1Pressed()
 {
     ShellDeclarativeView * activeShell = d->activeShell();
-    // Note: Check whether the previous shell has active focus still
-    // and remove its focus
-    if (d->m_activeShell != 0 && activeShell != d->m_activeShell) {
-        if (d->m_activeShell->isActiveWindow()) {
-            d->m_activeShell->toggleLauncher();
-        }
-    }
     if (activeShell) {
         activeShell->toggleLauncher();
     }
-    d->m_activeShell = activeShell;
 }
 
 void
 ShellManager::onAltF2Pressed()
 {
-    d->m_activeShell = d->activeShell();
-    if (d->m_activeShell) {
-        d->m_activeShell->showCommandsLens();
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        activeShell->showCommandsLens();
     }
 }
 
@@ -253,9 +244,9 @@ ShellManager::onNumericHotkeyPressed()
 {
     Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey) {
-        d->m_activeShell = d->activeShell();
-        if (d->m_activeShell) {
-            d->m_activeShell->processNumericHotkey(hotkey);
+        ShellDeclarativeView * activeShell = d->activeShell();
+        if (activeShell) {
+            activeShell->processNumericHotkey(hotkey);
         }
     }
 }

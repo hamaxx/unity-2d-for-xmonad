@@ -26,9 +26,6 @@ Item {
     property bool fullscreen: false
     property int bottomBorderThickness
     property int rightBorderThickness
-    /* coordinates of top left corner needed to capture correct segment of background */
-    property int xPosition: 0
-    property int yPosition: 0
 
     /* Avoid redraw at rendering */
     effect: CacheEffect {}
@@ -55,8 +52,13 @@ Item {
             cache: false
 
             fillMode: Image.PreserveAspectCrop
-            x: -xPosition
-            y: -yPosition
+
+            /* Place the screenshot of the desktop background on top of the desktop background,
+               no matter where the DeclarativeView or the parent object are placed.
+            */
+            property variant origin: parent.mapFromItem(null, -declarativeView.globalPosition.x, -declarativeView.globalPosition.y)
+            x: origin.x
+            y: origin.y
         }
 
         Image {
