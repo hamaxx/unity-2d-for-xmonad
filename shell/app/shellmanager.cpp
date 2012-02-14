@@ -1,0 +1,183 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2010 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+#include "shellmanager.h"
+
+// Qt
+#include <QApplication>
+#include <QDebug>
+#include <QtDeclarative>
+#include <QDeclarativeEngine>
+#include <QDeclarativeView>
+#include <QDesktopWidget>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include <QDeclarativeContext>
+#include <QAbstractEventDispatcher>
+
+// Local
+#include "shelldeclarativeview.h"
+#include "dashclient.h"
+#include "dashdbus.h"
+#include "gesturehandler.h"
+#include "launcherdbus.h"
+#include "config.h"
+
+// unity-2d
+#include <unity2ddebug.h>
+#include <unity2dapplication.h>
+
+// X11
+#include <X11/Xlib.h>
+
+struct ShellManagerPrivate
+{
+    ShellManagerPrivate() :
+        q(0), m_dashDBus(0), m_launcherDBus(0)
+    {}
+
+    ShellDeclarativeView* initShell(bool isTopLeft, int screen);
+    void updateScreenCount(int newCount);
+
+    ShellManager *q;
+    QList<ShellDeclarativeView *> m_viewList;
+    DashDBus * m_dashDBus;
+    LauncherDBus* m_launcherDBus;
+    QUrl m_sourceFileUrl;
+};
+
+ShellDeclarativeView* ShellManagerPrivate::initShell(bool isTopLeft, int screen)
+{
+    const QStringList arguments = qApp->arguments();
+    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, isTopLeft, screen);
+    view->setAccessibleName("Shell");
+    if (arguments.contains("-opengl")) {
+        view->setUseOpenGL(true);
+    }
+
+    Unity2dApplication::instance()->installX11EventFilter(view);
+
+    view->engine()->addImportPath(unity2dImportPath());
+    view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
+
+    /* Load the QML UI, focus and show the window */
+    view->setResizeMode(QDeclarativeView::SizeViewToRootObject);
+    view->rootContext()->setContextProperty("declarativeView", view);
+    // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
+    // but it lead to locks when both the shell and the spread were started
+    // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
+    // and DashClient QDBusServiceWatcher::serviceRegistered
+    // triggered at the same time ending up with both creating QDBusInterface
+    // to eachother in the main thread meaning they would block
+    // In case you need to have a DashClient in the spread the fix for the problem
+    // is moving the QDbusInterface creation to a thread so it does not block
+    // the main thread
+    view->rootContext()->setContextProperty("dashClient", DashClient::instance());
+
+    if (!m_dashDBus) {
+        m_dashDBus = new DashDBus(view);
+        if (!m_dashDBus->connectToBus()) {
+            qCritical() << "Another instance of the Dash already exists. Quitting.";
+            return 0;
+        }
+    }
+
+    if (!m_launcherDBus) {
+        m_launcherDBus = new LauncherDBus(view);
+        m_launcherDBus->connectToBus();
+    }
+
+    view->show();
+
+    return view;
+}
+
+void ShellManagerPrivate::updateScreenCount(int newCount)
+{
+    if (newCount > 0) {
+        QDesktopWidget* desktop = QApplication::desktop();
+        int size = m_viewList.size();
+        ShellDeclarativeView* shell = 0;
+
+        /* The first shell is always the one on the leftmost screen. */
+        QPoint p;
+        if (QApplication::isRightToLeft()) {
+            p = QPoint(desktop->width() - 1, 0);
+        }
+        int leftmost = desktop->screenNumber(p);
+        if (size > 0) {
+            shell = m_viewList[0];
+        } else {
+            shell = initShell(true, leftmost);
+            m_viewList.append(shell);
+        }
+        shell->setScreenNumber(leftmost);
+
+        /* Update the position of other existing Shells, and instantiate new
+           Shells as needed. */
+        int i = 1;
+        for (int screen = 0; screen < newCount; ++screen) {
+            if (screen == leftmost) {
+                continue;
+            }
+            if (i < size) {
+                shell = m_viewList[i];
+            } else {
+                shell = initShell(false, screen);
+                m_viewList.append(shell);
+            }
+            shell->setIsTopLeftShell(false);
+            shell->setScreenNumber(screen);
+            ++i;
+        }
+    }
+    /* Remove extra Shells if any. */
+    while (m_viewList.size() > newCount) {
+        m_viewList.takeLast()->deleteLater();
+    }
+}
+
+/* -------------------------- ShellManager -----------------------------*/
+
+ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
+    QObject(parent)
+    ,d(new ShellManagerPrivate)
+{
+    d->q = this;
+    d->m_sourceFileUrl = sourceFileUrl;
+
+    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+
+    QDesktopWidget* desktop = QApplication::desktop();
+
+    d->updateScreenCount(desktop->screenCount());
+
+    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+}
+
+ShellManager::~ShellManager()
+{
+    qDeleteAll(d->m_viewList);
+    delete d;
+}
+
+void
+ShellManager::onScreenCountChanged(int newCount)
+{
+    d->updateScreenCount(newCount);
+}
