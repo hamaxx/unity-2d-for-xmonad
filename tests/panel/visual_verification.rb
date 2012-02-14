@@ -80,6 +80,10 @@ context "Panel visual verification tests" do
   #####################################################################################
   # Test cases
 
+  # FIXME: this test actually does not compare the visuals of the buttons but
+  # only the existence of the buttons. That test should be reimplemented by
+  # checking the properties of the AppNameApplet to check whether or not the buttons
+  # are displayed.
   test "Visually compare dash buttons with reference" do
     XDo::Mouse.move(100, 100, 0, true)
     XDo::Keyboard.simulate('{SUPER}')
