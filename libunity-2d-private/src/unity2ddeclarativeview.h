@@ -17,11 +17,14 @@
 #ifndef UNITY2DDECLARATIVEVIEW_H
 #define UNITY2DDECLARATIVEVIEW_H
 
-#include <QDeclarativeView>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QDeclarativeItem>
+#include <QGraphicsView>
 
 class ScreenInfo;
 
-class Unity2DDeclarativeView : public QDeclarativeView
+class Unity2DDeclarativeView : public QGraphicsView
 {
     Q_OBJECT
 
@@ -38,12 +41,18 @@ public:
     // getters
     bool useOpenGL() const;
     bool transparentBackground() const;
+    QUrl source() const;
     QPoint globalPosition() const;
     ScreenInfo* screen() const;
 
     // setters
     void setUseOpenGL(bool);
     void setTransparentBackground(bool);
+    void setSource(const QUrl& source, const QMap<const char*, QVariant> &rootObjectProperties = QMap<const char*, QVariant>());
+
+    static QDeclarativeEngine *engine();
+    QDeclarativeContext* rootContext() const;
+    QGraphicsObject* rootObject() const;
 
 Q_SIGNALS:
     void useOpenGLChanged(bool);
@@ -52,6 +61,7 @@ Q_SIGNALS:
     void screenChanged(ScreenInfo*);
     void visibleChanged(bool);
     void activeWorkspaceChanged();
+    void sceneResized(QSize size);
 
 protected:
     void setupViewport();
@@ -67,6 +77,7 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void onActiveWorkspaceChanged();
+    void resizeToRootObject();
 
 private:
     void saveActiveWindow();
@@ -74,7 +85,11 @@ private:
 
     bool m_useOpenGL;
     bool m_transparentBackground;
+    QUrl m_source;
     WId m_last_focused_window;
+
+    QGraphicsScene m_scene;
+    QDeclarativeItem* m_rootItem;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)

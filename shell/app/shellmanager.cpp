@@ -83,9 +83,6 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
     view->engine()->addImportPath(unity2dImportPath());
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
-    /* Load the QML UI, focus and show the window */
-    view->setResizeMode(QDeclarativeView::SizeViewToRootObject);
-    view->rootContext()->setContextProperty("declarativeView", view);
     // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
     // but it lead to locks when both the shell and the spread were started
     // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered

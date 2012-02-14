@@ -46,12 +46,18 @@ callbackName(GObject* src, void* dummy1, QObject* dst) \
 GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
-    QDeclarativeView(parent),
+    QGraphicsView(parent),
     m_screenInfo(NULL),
     m_useOpenGL(false),
     m_transparentBackground(false),
-    m_last_focused_window(None)
+    m_last_focused_window(None),
+    m_rootItem(NULL)
 {
+    setScene(&m_scene);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setFrameStyle(NoFrame);
+
     if (!QFileInfo(UNITY_2D_SCHEMA_FILE).exists()) {
         m_useOpenGL = false;
     } else {
@@ -66,6 +72,47 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
 
 Unity2DDeclarativeView::~Unity2DDeclarativeView()
 {
+}
+
+QDeclarativeEngine* Unity2DDeclarativeView::engine()
+{
+    static QDeclarativeEngine* engine = new QDeclarativeEngine();
+    return engine;
+}
+
+QDeclarativeContext* Unity2DDeclarativeView::rootContext() const
+{
+    return engine()->rootContext();
+}
+
+QGraphicsObject* Unity2DDeclarativeView::rootObject() const
+{
+    return m_rootItem;
+}
+
+void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char*, QVariant> &rootObjectProperties)
+{
+    QDeclarativeComponent* component = new QDeclarativeComponent(engine(), source, this);
+    QObject *instance = component->beginCreate(rootContext());
+    QMap<const char*, QVariant>::const_iterator it = rootObjectProperties.begin();
+    QMap<const char*, QVariant>::const_iterator itEnd = rootObjectProperties.end();
+    for ( ; it != itEnd; ++it) {
+        instance->setProperty(it.key(), it.value());
+    }
+    component->completeCreate();
+    m_rootItem = qobject_cast<QDeclarativeItem *>(instance);
+    connect(m_rootItem, SIGNAL(widthChanged()), SLOT(resizeToRootObject()));
+    connect(m_rootItem, SIGNAL(heightChanged()), SLOT(resizeToRootObject()));
+    resizeToRootObject();
+    m_scene.addItem(m_rootItem);
+    m_source = source;
+}
+
+void Unity2DDeclarativeView::resizeToRootObject()
+{
+    QSize size(m_rootItem->width(), m_rootItem->height());
+    resize(size);
+    Q_EMIT sceneResized(size);
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const
@@ -88,6 +135,11 @@ void Unity2DDeclarativeView::setUseOpenGL(bool useOpenGL)
 bool Unity2DDeclarativeView::transparentBackground() const
 {
     return m_transparentBackground;
+}
+
+QUrl Unity2DDeclarativeView::source() const
+{
+    return m_source;
 }
 
 void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground)
@@ -164,13 +216,13 @@ void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
 
 void Unity2DDeclarativeView::showEvent(QShowEvent* event)
 {
-    QDeclarativeView::showEvent(event);
+    QGraphicsView::showEvent(event);
     Q_EMIT visibleChanged(true);
 }
 
 void Unity2DDeclarativeView::hideEvent(QHideEvent* event)
 {
-    QDeclarativeView::hideEvent(event);
+    QGraphicsView::hideEvent(event);
     Q_EMIT visibleChanged(false);
 }
 
