@@ -53,7 +53,7 @@
 struct ShellManagerPrivate
 {
     ShellManagerPrivate() :
-        q(0), m_dashDBus(0), m_launcherDBus(0), m_activeShell(0)
+        q(0), m_dashDBus(0), m_launcherDBus(0), m_previousActiveShell(0)
     {}
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
@@ -64,7 +64,7 @@ struct ShellManagerPrivate
     QList<ShellDeclarativeView *> m_viewList;
     DashDBus * m_dashDBus;
     LauncherDBus* m_launcherDBus;
-    ShellDeclarativeView * m_activeShell;
+    ShellDeclarativeView * m_previousActiveShell;
     QUrl m_sourceFileUrl;
 };
 
@@ -228,23 +228,24 @@ ShellManager::onAltF1Pressed()
     ShellDeclarativeView * activeShell = d->activeShell();
     // Note: Check whether the previous shell has active focus still
     // and remove its focus
-    if (d->m_activeShell != 0 && activeShell != d->m_activeShell) {
-        if (d->m_activeShell->isActiveWindow()) {
-            d->m_activeShell->toggleLauncher();
+    if (d->m_previousActiveShell != 0 && activeShell != d->m_previousActiveShell) {
+        if (d->m_previousActiveShell->isActiveWindow()) {
+            d->m_previousActiveShell->toggleLauncher();
         }
     }
     if (activeShell) {
         activeShell->toggleLauncher();
     }
-    d->m_activeShell = activeShell;
+
+    d->m_previousActiveShell = activeShell;
 }
 
 void
 ShellManager::onAltF2Pressed()
 {
-    d->m_activeShell = d->activeShell();
-    if (d->m_activeShell) {
-        d->m_activeShell->showCommandsLens();
+    d->m_previousActiveShell = d->activeShell();
+    if (d->m_previousActiveShell) {
+        d->m_previousActiveShell->showCommandsLens();
     }
 }
 
@@ -253,9 +254,9 @@ ShellManager::onNumericHotkeyPressed()
 {
     Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey) {
-        d->m_activeShell = d->activeShell();
-        if (d->m_activeShell) {
-            d->m_activeShell->processNumericHotkey(hotkey);
+        d->m_previousActiveShell = d->activeShell();
+        if (d->m_previousActiveShell) {
+            d->m_previousActiveShell->processNumericHotkey(hotkey);
         }
     }
 }
