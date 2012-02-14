@@ -226,8 +226,6 @@ FocusScope {
 
         active: dash.active
         fullscreen: declarativeView.dashMode != ShellDeclarativeView.DesktopMode
-        xPosition: launcherLoader.width
-        yPosition: declarativeView.globalPosition.y
     }
 
     Item {
