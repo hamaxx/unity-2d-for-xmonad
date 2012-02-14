@@ -27,6 +27,7 @@
 #include <gconnector.h>
 #include <gscopedpointer.h>
 #include <dashclient.h>
+#include <config.h>
 
 // Qt
 #include <QApplication>
@@ -70,7 +71,11 @@ public:
 
         QPalette pal;
         if (DashClient::instance()->active()) {
-            pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
+            /* The background color is the same as in the launcher */
+            QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
+            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 204);
+            backgroundColor = backgroundColor.darker(300);
+            pal.setBrush(QPalette::Window, backgroundColor);
         } else {
             pal.setBrush(QPalette::Window, generateBackgroundBrush());
         }
@@ -180,6 +185,7 @@ PanelStyle::PanelStyle(QObject* parent)
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
     QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
+    QObject::connect(&unityConfiguration(), SIGNAL(averageBgColor(QVariant)), this, SLOT(onWallpaperColorChanged(QVariant)));
     d->updatePalette();
 }
 
@@ -212,6 +218,11 @@ QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelS
 }
 
 void PanelStyle::onDashActiveChanged(bool active)
+{
+    d->updatePalette();
+}
+
+void PanelStyle::onWallpaperColorChanged(QVariant color)
 {
     d->updatePalette();
 }

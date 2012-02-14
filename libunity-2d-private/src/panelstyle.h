@@ -66,6 +66,7 @@ public:
 
 private Q_SLOTS:
     void onDashActiveChanged(bool active);
+    void onWallpaperColorChanged(QVariant color);
 
 private:
     friend class PanelStylePrivate;
