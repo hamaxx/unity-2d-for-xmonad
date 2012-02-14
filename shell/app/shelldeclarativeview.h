@@ -87,8 +87,7 @@ public:
     void removeFocus();
     void showCommandsLens();
 
-    void emitActivateShortcutPressed(int itemIndex) { Q_EMIT activateShortcutPressed(itemIndex); }
-    void emitNewInstanceShortcutPressed(int itemIndex) { Q_EMIT newInstanceShortcutPressed(itemIndex); }
+    void processNumericHotkey(Hotkey*);
 
 Q_SIGNALS:
     void dashActiveChanged(bool);

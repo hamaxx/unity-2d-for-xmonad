@@ -255,26 +255,7 @@ ShellManager::onNumericHotkeyPressed()
     if (hotkey) {
         d->m_activeShell = d->activeShell();
         if (d->m_activeShell) {
-            /* Shortcuts from 1 to 9 should activate the items with index
-               from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
-               Shortcut for 0 should activate item with index 10.
-               In other words, the indexes are activated in the same order as
-               the keys appear on a standard keyboard. */
-            Qt::Key key = hotkey->key();
-            if (key >= Qt::Key_1 && key <= Qt::Key_9) {
-                int index = key - Qt::Key_0;
-                if (hotkey->modifiers() & Qt::ShiftModifier) {
-                    d->m_activeShell->emitNewInstanceShortcutPressed(index);
-                } else {
-                    d->m_activeShell->emitActivateShortcutPressed(index);
-                }
-            } else if (key == Qt::Key_0) {
-                if (hotkey->modifiers() & Qt::ShiftModifier) {
-                    d->m_activeShell->emitNewInstanceShortcutPressed(10);
-                } else {
-                    d->m_activeShell->emitActivateShortcutPressed(10);
-                }
-            }
+            d->m_activeShell->processNumericHotkey(hotkey);
         }
     }
 }
