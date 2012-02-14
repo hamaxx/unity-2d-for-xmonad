@@ -27,6 +27,7 @@
 class LauncherClient;
 class DashDBus;
 class ScreenInfo;
+class Hotkey;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -82,6 +83,13 @@ public:
 
     virtual bool x11EventFilter(XEvent* event);
 
+    void toggleLauncher();
+    void removeFocus();
+    void showCommandsLens();
+
+    void emitActivateShortcutPressed(int itemIndex) { Q_EMIT activateShortcutPressed(itemIndex); }
+    void emitNewInstanceShortcutPressed(int itemIndex) { Q_EMIT newInstanceShortcutPressed(itemIndex); }
+
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
@@ -105,12 +113,9 @@ private Q_SLOTS:
     void updateSuperKeyMonitoring();
     void updateSuperKeyHoldState();
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
-    void forwardNumericHotkey();
     void ignoreSuperPress();
 
     void toggleDash();
-    void showCommandsLens();
-    void onAltF1Pressed();
 
 protected:
     virtual void showEvent(QShowEvent *event);

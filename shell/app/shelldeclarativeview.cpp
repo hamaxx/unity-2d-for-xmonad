@@ -74,22 +74,6 @@ ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTop
     connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
 
-    /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
-    Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
-    connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
-
-    /* Alt+F2 shows the dash with the commands lens activated. */
-    Hotkey* altF2 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F2, Qt::AltModifier);
-    connect(altF2, SIGNAL(pressed()), SLOT(showCommandsLens()));
-
-    /* Super+{n} for 0 ≤ n ≤ 9 activates the item with index (n + 9) % 10. */
-    for (Qt::Key key = Qt::Key_0; key <= Qt::Key_9; key = (Qt::Key) (key + 1)) {
-        Hotkey* hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-        hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
-        connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
-    }
-
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
     updateShellPosition();
 }
@@ -267,7 +251,7 @@ ShellDeclarativeView::showCommandsLens()
 }
 
 void
-ShellDeclarativeView::onAltF1Pressed()
+ShellDeclarativeView::toggleLauncher()
 {
     if (!isActiveWindow()) {
         forceActivateWindow();
@@ -372,31 +356,9 @@ ShellDeclarativeView::ignoreSuperPress()
 }
 
 void
-ShellDeclarativeView::forwardNumericHotkey()
+ShellDeclarativeView::removeFocus()
 {
-    Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
-    if (hotkey != NULL) {
-        /* Shortcuts from 1 to 9 should activate the items with index
-           from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
-           Shortcut for 0 should activate item with index 10.
-           In other words, the indexes are activated in the same order as
-           the keys appear on a standard keyboard. */
-        Qt::Key key = hotkey->key();
-        if (key >= Qt::Key_1 && key <= Qt::Key_9) {
-            int index = key - Qt::Key_0;
-            if (hotkey->modifiers() & Qt::ShiftModifier) {
-                Q_EMIT newInstanceShortcutPressed(index);
-            } else {
-                Q_EMIT activateShortcutPressed(index);
-            }
-        } else if (key == Qt::Key_0) {
-            if (hotkey->modifiers() & Qt::ShiftModifier) {
-                Q_EMIT newInstanceShortcutPressed(10);
-            } else {
-                Q_EMIT activateShortcutPressed(10);
-            }
-        }
-    }
+    forceDeactivateWindow();
 }
 
 /* ----------------- monitored area handling ---------------- */

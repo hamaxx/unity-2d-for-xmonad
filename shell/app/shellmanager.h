@@ -32,6 +32,9 @@ public:
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
+    void onAltF1Pressed();
+    void onAltF2Pressed();
+    void onNumericHotkeyPressed();
 
 private:
     Q_DISABLE_COPY(ShellManager)
