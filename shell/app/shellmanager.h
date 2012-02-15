@@ -26,12 +26,26 @@ class QUrl;
 class ShellManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
+
 public:
     ShellManager(const QUrl &sourceFileUrl, QObject* parent = 0);
     ~ShellManager();
 
+    bool superKeyHeld() const;
+
+Q_SIGNALS:
+    void superKeyHeldChanged(bool superKeyHeld);
+
 private Q_SLOTS:
     void onScreenCountChanged(int);
+
+    void updateSuperKeyMonitoring();
+    void updateSuperKeyHoldState();
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void ignoreSuperPress();
+    void onSuperKeyTapped();
+
     void onAltF1Pressed();
     void onAltF2Pressed();
     void onNumericHotkeyPressed();

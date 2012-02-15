@@ -125,7 +125,7 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
-        shortcutVisible: declarativeView.superKeyHeld &&
+        shortcutVisible: shellManager.superKeyHeld &&
                          ((item.toString().indexOf("LauncherApplication") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {

@@ -39,7 +39,6 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
-    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
     Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
@@ -66,7 +65,6 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
-    bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
     bool isTopLeftShell() const { return m_isTopLeftShell; }
@@ -83,6 +81,7 @@ public:
 
     virtual bool x11EventFilter(XEvent* event);
 
+    void toggleDash();
     void toggleLauncher();
     void showCommandsLens();
 
@@ -100,20 +99,10 @@ Q_SIGNALS:
     void monitoredAreaContainsMouseChanged();
 
     void addWebFavoriteRequested(const QUrl& url);
-    void superKeyHeldChanged(bool superKeyHeld);
-    void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
     void isTopLeftShellChanged(bool);
-
-private Q_SLOTS:
-    void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
-    void ignoreSuperPress();
-
-    void toggleDash();
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -135,10 +124,6 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
-    bool m_superKeyPressed;
-    bool m_superKeyHeld;
-    bool m_superPressIgnored;
-    QTimer m_superKeyHoldTimer;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
     bool m_isTopLeftShell;
