@@ -120,6 +120,19 @@ Item {
         }
     }
 
+    Loader {
+        id: hudLoader
+        property bool animating: item.animating
+
+        source: "hud/Hud.qml"
+        anchors.top: parent.top
+        x: Utils.isLeftToRight() ? 0 : shell.width - width
+        onLoaded: item.focus = true
+        visible: item.active
+        focus: item.active
+        width: Math.min(shell.width, 1082)
+    }
+
     Connections {
         target: declarativeView
         onLauncherFocusRequested: {
@@ -168,6 +181,21 @@ Item {
                 color: "red"
                 position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            }
+        }
+
+        InputShapeRectangle {
+            rectangle: if (desktop.isCompositingManagerRunning) {
+                Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            } else {
+                Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+            }
+            enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
+
+            InputShapeMask {
+                source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
+                color: "red"
+                position: Qt.point(hudLoader.width - 50, hudLoader.height - 49)
             }
         }
     }
