@@ -61,12 +61,12 @@ FocusScope {
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
-            hudModel.searchQuery = "" /* helps ensure HUD ready */
+            hudModel.searchText = "" /* helps ensure HUD ready */
             searchEntry.focus = true
         }
         else {
-            hudModel.closeQuery
-            queryList.currentIndex = 0
+            hudModel.endSearch
+            resultList.currentIndex = 0
         }
     }
 
@@ -101,7 +101,7 @@ FocusScope {
             anchors.bottom: parent.bottom
             width: 65
 
-            visible: queryList.activeFocus
+            visible: resultList.activeFocus
 
             Image {
                 id: pip
@@ -121,8 +121,8 @@ FocusScope {
                 anchors.leftMargin: 6
                 width: 54
                 height: 54
-                source: (queryList.currentItem != null)
-                        ? "image://icons/" + queryList.currentItem.icon
+                source: (resultList.currentItem != null)
+                        ? "image://icons/" + resultList.currentItem.icon
                         : "image://icons/unknown"
             }
         }
@@ -140,7 +140,7 @@ FocusScope {
             anchors.leftMargin: 10
             anchors.right: parent.right
             anchors.rightMargin: 10
-            height: queryList.count * queryHeight + searchEntry.height
+            height: resultList.count * resultHeight + searchEntry.height
             border.color: "#21ffffff" // 80% opaque
             border.width: 1
             color: "transparent"
@@ -151,7 +151,7 @@ FocusScope {
                 id: searchEntry
 
                 focus: true
-                KeyNavigation.down: (queryList.count > 0 ) ? queryList : null
+                KeyNavigation.down: (resultList.count > 0 ) ? resultList : null
 
                 anchors.top: parent.top
                 anchors.left: parent.left
@@ -163,17 +163,17 @@ FocusScope {
                 active: hud.active
                 placeHolderText: u2d.tr("Type your Command")
 
-                onSearchQueryChanged: hudModel.searchQuery = searchQuery
+                onSearchQueryChanged: hudModel.searchText = searchText
                 onActivateFirstResult: {
-                    hudModel.executeQuery(0)
+                    hudModel.executeResult(0)
                     hud.active = false
                 }
             }
 
             ListView {
-                id: queryList
+                id: resultList
 
-                Accessible.name: "query list"
+                Accessible.name: "result list"
                 KeyNavigation.up: searchEntry
 
                 model: hudModel
@@ -185,14 +185,14 @@ FocusScope {
 
                 boundsBehavior: ListView.StopAtBounds
 
-                delegate: QueryItem{
-                    height: queryHeight
+                delegate: ResultItem{
+                    height: resultHeight
                     width: ListView.view.width
 
                     icon: iconName /* expose this property for tile */
 
                     onClicked: {
-                        hudModel.executeQuery(queryId)
+                        hudModel.executeResult(resultId)
                         hud.active = false
                     }
                 }

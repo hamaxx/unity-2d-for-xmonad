@@ -32,14 +32,14 @@ class Hud : public QAbstractListModel
 
     Q_PROPERTY(QString target READ target NOTIFY targetChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
-    Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
+    Q_PROPERTY(QString searchText READ searchText WRITE setSearchText NOTIFY searchTextChanged)
 
 public:
     explicit Hud(QObject *parent = 0);
     ~Hud();
 
     enum Roles {
-        QueryIdRole = Qt::UserRole+1,
+        ResultIdRole = Qt::UserRole+1,
         FormattedTextRole,
         IconNameRole,
         ItemIconRole,
@@ -49,38 +49,38 @@ public:
 
     /* getters */
     QString target() const;
-    QString searchQuery() const;
+    QString searchText() const;
     bool connected() const;
 
     /* setters */
-    void setSearchQuery(const QString&);
+    void setSearchText(const QString&);
 
     QVariant data(int role) const;
     QHash<int, QByteArray> roleNames() const;
 
     /* Implementation of virtual methods from QAbstractListModel */
-    QVariant data(const QModelIndex& index, int role = Hud::QueryIdRole) const;
+    QVariant data(const QModelIndex& index, int role = Hud::ResultIdRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    Q_INVOKABLE void executeQuery(const int) const;
-    Q_INVOKABLE void executeQueryBySearch(const QString&) const;
-    Q_INVOKABLE void closeQuery();
+    Q_INVOKABLE void executeResult(const int) const;
+    Q_INVOKABLE void executeResultBySearch(const QString&) const;
+    Q_INVOKABLE void endSearch();
 
 Q_SIGNALS:
-    void searchQueryChanged();
+    void searchTextChanged();
     void targetChanged();
     void connectedChanged();
 
 private Q_SLOTS:
     void onTargetChanged(const std::string);
     void onConnectedChanged(const bool);
-    void onQueriesUpdated(const unity::hud::Hud::Queries);
+    void onResultsUpdated(const unity::hud::Hud::Queries);
 
 private:
     bool m_connected;
-    QString m_searchQuery;
+    QString m_searchText;
     unity::hud::Hud* m_unityHud;
-    unity::hud::Hud::Queries m_unityHudQueries; //doubly-ended queue of 'Query's.
+    unity::hud::Hud::Queries m_unityHudResults; //doubly-ended queue of 'Query's.
 };
 
 Q_DECLARE_METATYPE(Hud*)

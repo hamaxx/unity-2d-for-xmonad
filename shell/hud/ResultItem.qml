@@ -55,8 +55,8 @@ AbstractButton {
         smooth: true
 
         TextCustom {
-            id: queryText
-            objectName: "query"
+            id: resultText
+            objectName: "result"
 
             anchors.left: parent.left
             anchors.right: shortcutText.left

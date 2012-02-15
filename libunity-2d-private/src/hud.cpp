@@ -41,7 +41,7 @@ Hud::Hud(QObject *parent) :
     m_connected(false)
 {
     QHash<int, QByteArray> names;
-    names[QueryIdRole] = "queryId";
+    names[ResultIdRole] = "resultId";
     names[FormattedTextRole] = "formattedText";
     names[IconNameRole] = "iconName";
     names[ItemIconRole] = "itemIcon";
@@ -59,7 +59,7 @@ Hud::Hud(QObject *parent) :
 
     m_unityHud->target.changed.connect(sigc::mem_fun(this, &Hud::onTargetChanged));
     m_unityHud->connected.changed.connect(sigc::mem_fun(this, &Hud::onConnectedChanged));
-    m_unityHud->queries_updated.connect(sigc::mem_fun(this, &Hud::onQueriesUpdated));
+    m_unityHud->queries_updated.connect(sigc::mem_fun(this, &Hud::onResultsUpdated));
 }
 
 Hud::~Hud()
@@ -70,40 +70,40 @@ Hud::~Hud()
 int Hud::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent)
-    if (m_searchQuery.isEmpty()) {
+    if (m_searchText.isEmpty()) {
         return 0;
     }
-    return m_unityHudQueries.size();
+    return m_unityHudResults.size();
 }
 
 QVariant Hud::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid() || m_searchQuery.isEmpty()) {
+    if (!index.isValid() || m_searchText.isEmpty()) {
         return QVariant();
     }
 
-    std::shared_ptr<unity::hud::Query> query;
+    std::shared_ptr<unity::hud::Query> result;
 
     try {
-        query = m_unityHudQueries.at(index.row());
+        result = m_unityHudResults.at(index.row());
     } catch (std::out_of_range) {
         UQ_DEBUG << "HUD query id invalid";
         return QVariant();
     }
 
     switch(role) {
-    case Hud::QueryIdRole:
+    case Hud::ResultIdRole:
         return index.row();
     case Hud::FormattedTextRole:
-        return QString::fromStdString(query->formatted_text);
+        return QString::fromStdString(result->formatted_text);
     case Hud::IconNameRole:
-        return QString::fromStdString(query->icon_name);
+        return QString::fromStdString(result->icon_name);
     case Hud::ItemIconRole:
-        return QString::fromStdString(query->item_icon);
+        return QString::fromStdString(result->item_icon);
     case Hud::CompletionTextRole:
-        return QString::fromStdString(query->completion_text);
+        return QString::fromStdString(result->completion_text);
     case Hud::ShortcutRole:
-        return QString::fromStdString(query->shortcut);
+        return QString::fromStdString(result->shortcut);
     /* TODO (?) Hud returns more information in a "key" struct containing
      * lower-level information than we seem not to need right now. */
     default:
@@ -111,50 +111,50 @@ QVariant Hud::data(const QModelIndex& index, int role) const
     }
 }
 
-QString Hud::searchQuery() const
+QString Hud::searchText() const
 {
-    return m_searchQuery;
+    return m_searchText;
 }
 
-void Hud::setSearchQuery(const QString& searchQuery)
+void Hud::setSearchText(const QString& searchText)
 {
-    if (searchQuery != m_searchQuery) {
-        m_searchQuery = searchQuery;
-        m_unityHud->RequestQuery(m_searchQuery.toStdString());
+    if (searchText != m_searchText) {
+        m_searchText = searchText;
+        m_unityHud->RequestQuery(m_searchText.toStdString());
         beginResetModel();
-        Q_EMIT searchQueryChanged();
+        Q_EMIT searchTextChanged();
     }
 }
 
-void Hud::executeQuery(const int id) const
+void Hud::executeResult(const int id) const
 {
-    std::shared_ptr<unity::hud::Query> query;
+    std::shared_ptr<unity::hud::Query> result;
 
     try {
-        query = m_unityHudQueries.at(id);
+        result = m_unityHudResults.at(id);
     } catch (std::out_of_range) {
         UQ_DEBUG << "HUD query id invalid";
         return;
     }
 
-    m_unityHud->ExecuteQuery(query,
+    m_unityHud->ExecuteQuery(result,
                              QDateTime::currentDateTime().toTime_t());
 }
 
-void Hud::executeQueryBySearch(const QString& searchQuery) const
+void Hud::executeResultBySearch(const QString& searchQuery) const
 {
     m_unityHud->ExecuteQueryBySearch(searchQuery.toStdString(),
                                      QDateTime::currentDateTime().toTime_t());
 }
 
-void Hud::closeQuery()
+void Hud::endSearch()
 {
     m_unityHud->CloseQuery();
 }
 
-void Hud::onQueriesUpdated(const unity::hud::Hud::Queries queries)
+void Hud::onResultsUpdated(const unity::hud::Hud::Queries results)
 {
-    m_unityHudQueries = queries;
+    m_unityHudResults = results;
     endResetModel();
 }
 
