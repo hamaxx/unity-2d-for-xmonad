@@ -86,11 +86,12 @@ Item {
         Connections {
             target: shellManager
             onDashActiveChanged: {
-                // TODO Do it only for the view that contains the dash
-                if (shellManager.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                else {
-                    launcherLoader.visibilityController.endForceVisible("dash")
-                    if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                if (shellManager.dashShell == declarativeView) {
+                    if (shellManager.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
+                    else {
+                        launcherLoader.visibilityController.endForceVisible("dash")
+                        if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                    }
                 }
             }
         }
