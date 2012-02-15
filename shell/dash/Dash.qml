@@ -68,7 +68,7 @@ FocusScope {
         target: declarativeView
         property: "dashMode"
         value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
-               ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
+               ShellManager.FullScreenMode : ShellManager.DesktopMode
     }
 
     Connections {
@@ -225,7 +225,7 @@ FocusScope {
         anchors.fill: parent
 
         active: dash.active
-        fullscreen: declarativeView.dashMode != ShellDeclarativeView.DesktopMode
+        fullscreen: shellManager.dashMode != ShellManager.DesktopMode
     }
 
     Item {
@@ -348,7 +348,7 @@ FocusScope {
     states: [
         State {
             name: "desktop"
-            when: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            when: shellManager.dashMode == ShellManager.DesktopMode
             PropertyChanges {
                 target: dash
                 width: desktopWidth
@@ -357,7 +357,7 @@ FocusScope {
         },
         State {
             name: "fullscreen"
-            when: declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
+            when: shellManager.dashMode == ShellManager.FullScreenMode
             PropertyChanges {
                 target: dash
                 width: fullscreenWidth

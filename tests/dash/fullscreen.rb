@@ -103,14 +103,14 @@ context "Dash fullscreen tests" do
 
     expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
     verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state') {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
 
     $SUT.execute_shell_command "dconf write #{DASH_FULLSCREEN_KEY} true"
     sleep 1
 
     verify_equal('FullScreenMode', TIMEOUT, 'Dash is not fullscreen but should be') {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
   end
 
@@ -133,7 +133,7 @@ context "Dash fullscreen tests" do
     maxbutton.tap if maxbutton
     sleep 1
     verify_equal('FullScreenMode', TIMEOUT, 'Dash should be fullsceen, but it is not' ) {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
 
     # When always fullscreen tapping the max button does nothing, so the key should remain set to
@@ -147,7 +147,7 @@ context "Dash fullscreen tests" do
     sleep 1
     expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
     verify_equal(expected, TIMEOUT, 'Dash is in the wrong fullscreen state' ) {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
     verify_equal('false', TIMEOUT, 'Dash fullscreen key was not unset') {
         ($SUT.execute_shell_command "dconf read #{DASH_FULLSCREEN_KEY}").chop
@@ -164,7 +164,7 @@ context "Dash fullscreen tests" do
         @shell.ShellDeclarativeView()['dashActive']
     }
     verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
   end
 
@@ -178,7 +178,7 @@ context "Dash fullscreen tests" do
         @shell.ShellDeclarativeView()['dashActive']
     }
     verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
-        @shell.ShellDeclarativeView()['dashMode']
+        @shell.ShellManager()['dashMode']
     }
   end
 end

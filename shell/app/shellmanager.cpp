@@ -53,7 +53,7 @@
 struct ShellManagerPrivate
 {
     ShellManagerPrivate() :
-        q(0), m_dashDBus(0), m_launcherDBus(0)
+        q(0), m_dashDBus(0), m_launcherDBus(0), m_mode(ShellManager::DesktopMode)
     {}
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
@@ -65,6 +65,7 @@ struct ShellManagerPrivate
     DashDBus * m_dashDBus;
     LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
+    ShellManager::DashMode m_mode;
 };
 
 
@@ -83,6 +84,7 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
     view->engine()->addImportPath(unity2dImportPath());
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
+    view->rootContext()->setContextProperty("shellManager", q);
     // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
     // but it lead to locks when both the shell and the spread were started
     // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
@@ -180,6 +182,7 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->m_sourceFileUrl = sourceFileUrl;
 
     qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+    qmlRegisterUncreatableType<ShellManager>("Unity2d", 1, 0, "ShellManager", "This can only be created from C++");
 
     QDesktopWidget* desktop = QApplication::desktop();
 
@@ -208,6 +211,23 @@ ShellManager::~ShellManager()
 {
     qDeleteAll(d->m_viewList);
     delete d;
+}
+
+void
+ShellManager::setDashMode(DashMode mode)
+{
+    if (d->m_mode == mode) {
+        return;
+    }
+
+    d->m_mode = mode;
+    dashModeChanged(d->m_mode);
+}
+
+ShellManager::DashMode
+ShellManager::dashMode() const
+{
+    return d->m_mode;
 }
 
 void

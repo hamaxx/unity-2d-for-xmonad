@@ -89,7 +89,7 @@ FocusScope {
             verticalAlignment: Text.AlignVCenter
         }
 
-        opacity: (!expanded && declarativeView.dashMode == ShellDeclarativeView.DesktopMode) ? 1 : 0
+        opacity: (!expanded && shellManager.dashMode == ShellManager.DesktopMode) ? 1 : 0
         Behavior on opacity {NumberAnimation {duration: 100}}
 
         onClicked: {
@@ -137,7 +137,7 @@ FocusScope {
         id: shortcuts
 
         focus: !globalSearchActive
-        opacity: (!globalSearchActive && (shortcutsActive || declarativeView.dashMode == ShellDeclarativeView.FullScreenMode)) ? 1 : 0
+        opacity: (!globalSearchActive && (shortcutsActive || shellManager.dashMode == ShellManager.FullScreenMode)) ? 1 : 0
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
@@ -173,7 +173,7 @@ FocusScope {
                 source: "../common/artwork/cross.png"
             }
 
-            opacity: (expanded && declarativeView.dashMode == ShellDeclarativeView.DesktopMode) ? 1 : 0
+            opacity: (expanded && shellManager.dashMode == ShellManager.DesktopMode) ? 1 : 0
             Behavior on opacity {NumberAnimation {duration: 100}}
 
             onClicked: shortcutsActive = false

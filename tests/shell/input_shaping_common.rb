@@ -121,7 +121,7 @@ end
 def test_shape_of_launcher_and_fullscreen_mode_dash(isRTL = false)
     XDo::Keyboard.simulate('{SUPER}')
     sleep 1
-    @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
+    @app.ShellManager()['dashMode'] = 'FullScreenMode'
     sleep 1
 
     maskpath = get_shell_shape()

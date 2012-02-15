@@ -53,7 +53,6 @@ static const char* COMMANDS_LENS_ID = "commands.lens";
 
 ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
     : Unity2DDeclarativeView()
-    , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
     , m_superKeyPressed(false)
@@ -186,23 +185,6 @@ bool
 ShellDeclarativeView::haveCustomHomeShortcuts() const
 {
     return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
-}
-
-void
-ShellDeclarativeView::setDashMode(ShellDeclarativeView::DashMode mode)
-{
-    if (m_mode == mode) {
-        return;
-    }
-
-    m_mode = mode;
-    dashModeChanged(m_mode);
-}
-
-ShellDeclarativeView::DashMode
-ShellDeclarativeView::dashMode() const
-{
-    return m_mode;
 }
 
 void

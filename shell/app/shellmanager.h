@@ -26,9 +26,25 @@ class QUrl;
 class ShellManager : public QObject
 {
     Q_OBJECT
+
+    Q_ENUMS(DashMode)
+
+    Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
+
 public:
+    enum DashMode {
+        DesktopMode,
+        FullScreenMode
+    };
+
     ShellManager(const QUrl &sourceFileUrl, QObject* parent = 0);
     ~ShellManager();
+
+    DashMode dashMode() const;
+    Q_INVOKABLE void setDashMode(DashMode);
+
+Q_SIGNALS:
+    void dashModeChanged(DashMode);
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
