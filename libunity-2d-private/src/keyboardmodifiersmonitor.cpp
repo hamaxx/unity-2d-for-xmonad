@@ -23,6 +23,7 @@
 #include "keyboardmodifiersmonitor.h"
 
 // Local
+#include <hotmodifier.h>
 #include <debug_p.h>
 
 // Qt
@@ -86,7 +87,17 @@ bool KeyboardModifiersMonitor::x11EventFilter(XEvent* event)
         XkbEvent *xkbEvent = (XkbEvent*)event;
         if (xkbEvent->any.xkb_type == XkbStateNotify) {
             d->m_modifiers = xkbEvent->state.mods;
-            keyboardModifiersChanged(keyboardModifiers());
+            Qt::KeyboardModifiers modifiers = keyboardModifiers();
+            keyboardModifiersChanged(modifiers);
+
+            Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+                if (hotModifier->modifiers() & m_disabledModifiers) {
+                    /* If any of the modifiers have been disabled, the
+                     * hotModifier cannot be triggered */
+                    continue;
+                }
+                hotModifier->onModifiersChanged(modifiers);
+            }
         }
     }
     return false;
@@ -108,6 +119,44 @@ Qt::KeyboardModifiers KeyboardModifiersMonitor::keyboardModifiers() const
         value |= Qt::MetaModifier;
     }
     return value;
+}
+
+HotModifier*
+KeyboardModifiersMonitor::getHotModifierFor(Qt::KeyboardModifiers modifiers)
+{
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() == modifiers) {
+            return hotModifier;
+        }
+    }
+
+    HotModifier *hotModifier = new HotModifier(modifiers, this);
+    m_hotModifiers.append(hotModifier);
+    return hotModifier;
+}
+
+void
+KeyboardModifiersMonitor::disableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    m_disabledModifiers |= modifiers;
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() & m_disabledModifiers) {
+            hotModifier->disable();
+        }
+    }
+}
+
+void
+KeyboardModifiersMonitor::enableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    Qt::KeyboardModifiers previouslyDisabled = m_disabledModifiers;
+    m_disabledModifiers &= ~modifiers;
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() & previouslyDisabled
+            && !hotModifier->modifiers() & m_disabledModifiers) {
+            hotModifier->onModifiersChanged(keyboardModifiers());
+        }
+    }
 }
 
 #include "keyboardmodifiersmonitor.moc"
