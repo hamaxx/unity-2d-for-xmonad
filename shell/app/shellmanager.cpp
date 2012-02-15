@@ -318,7 +318,7 @@ ShellManager::toggleDash()
 {
     if (dashActive()) {
         setDashActive(false);
-// TODO        forceDeactivateWindow();
+        d->m_shellWithDash->forceDeactivateWindow();
     } else {
         Q_EMIT dashActivateHome();
     }
