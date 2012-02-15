@@ -85,6 +85,7 @@ Q_SIGNALS:
     void activeLensChanged(const QString&);
     void activateLens(const QString& lensId);
     void activateHome();
+    void toggleHud();
     void focusChanged();
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
@@ -127,6 +128,7 @@ private:
     bool m_monitoredAreaContainsMouse;
 
     HotModifier* m_superHotModifier;
+    HotModifier* m_altHotModifier;
 
     friend class DashDBus;
     friend class LauncherDBus;

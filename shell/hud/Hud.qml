@@ -30,33 +30,14 @@ FocusScope {
     LayoutMirroring.enabled: Utils.isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
-    property variant currentPage
-    /* FIXME: 'active' property exactly mirrors 'declarativeView.hudActive'.
-       The final goal is to transition to using exclusively the QML 'active' property
-       and drop the C++ 'declarativeView.hudActive'.
-    */
-    property variant active
-    /* The following way of mirroring the values of 'declarativeView.hudActive'
-       and 'active' works now and QML does not see it as a binding loop but we
-       cannot count on it long term.
-    */
-    property int queryHeight: 42
+    property bool active: false
+
+    property int resultHeight: 42
     property int listLowerMargin: 10
 
     property bool animating: heightAnimation.running
     height: container.height + layout.anchors.bottomMargin + container.anchors.topMargin + listLowerMargin
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
-
-    Binding {
-        target: declarativeView
-        property: "hudActive"
-        value: hud.active
-    }
-    Binding {
-        target: hud
-        property: "active"
-        value: declarativeView.hudActive
-    }
 
     onActiveChanged: {
         if (active) {
@@ -70,6 +51,19 @@ FocusScope {
         }
     }
 
+    Connections {
+        target: declarativeView
+
+        onToggleHud: active = !active
+        onFocusChanged: console.log("focus", focus)
+        onActiveFocusChanged: console.log("activefocus", activeFocus)
+    }
+
+    Keys.onPressed: {
+        if (event.key == Qt.Key_Escape) {
+            active = false
+        }
+    }
     property variant hudModel: Hud {}
 
     Background {
@@ -131,7 +125,7 @@ FocusScope {
            necessarily focusing the search bar first. */
         Keys.forwardTo: [searchEntry]
 
-        Rectangle{
+        Rectangle {
             id: container
             anchors.top: parent.top
             anchors.topMargin: 11
