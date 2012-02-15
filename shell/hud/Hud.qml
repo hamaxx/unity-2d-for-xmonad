@@ -105,7 +105,8 @@ FocusScope {
 
             Image {
                 id: pip
-                y: 24
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
                 mirror: Utils.isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
