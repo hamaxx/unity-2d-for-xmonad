@@ -58,11 +58,7 @@ FocusScope {
         return Qt.application.layoutDirection == Qt.RightToLeft
     }
 
-    Binding {
-        target: declarativeView
-        property: "expanded"
-        value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
-    }
+    property bool expanded: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
 
     Binding {
         target: declarativeView
@@ -335,7 +331,7 @@ FocusScope {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 44
-            visible: declarativeView.expanded
+            visible: expanded
         }
     }
 
@@ -352,7 +348,7 @@ FocusScope {
             PropertyChanges {
                 target: dash
                 width: desktopWidth
-                height: declarativeView.expanded ? desktopExpandedHeight : desktopCollapsedHeight
+                height: expanded ? desktopExpandedHeight : desktopCollapsedHeight
             }
         },
         State {

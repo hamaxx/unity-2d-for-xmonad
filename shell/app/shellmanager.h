@@ -55,6 +55,7 @@ Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
     void dashActiveLensChanged(const QString&);
+
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
 

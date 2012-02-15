@@ -33,7 +33,6 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
@@ -54,14 +53,12 @@ public:
 
     /* getters */
     bool haveCustomHomeShortcuts() const;
-    bool expanded() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
     bool isTopLeftShell() const { return m_isTopLeftShell; }
 
     /* setters */
-    Q_INVOKABLE void setExpanded(bool);
     void setScreenNumber(int);
     int screenNumber() const;
     void setMonitoredArea(QRect monitoredArea);
@@ -74,7 +71,6 @@ public:
     void processNumericHotkey(Hotkey*);
 
 Q_SIGNALS:
-    void expandedChanged(bool);
     void focusChanged();
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
@@ -107,8 +103,6 @@ private:
     void focusInEvent(QFocusEvent* event);
     void setWMFlags();
     void updateInputShape();
-
-    bool m_expanded;
 
     bool m_superKeyPressed;
     bool m_superKeyHeld;

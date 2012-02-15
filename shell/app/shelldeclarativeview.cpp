@@ -51,7 +51,6 @@ static const int KEY_HOLD_THRESHOLD = 250;
 
 ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
     : Unity2DDeclarativeView()
-    , m_expanded(true)
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
     , m_isTopLeftShell(isTopLeftShell)
@@ -167,23 +166,6 @@ bool
 ShellDeclarativeView::haveCustomHomeShortcuts() const
 {
     return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
-}
-
-void
-ShellDeclarativeView::setExpanded(bool value)
-{
-    if (m_expanded == value) {
-        return;
-    }
-
-    m_expanded = value;
-    expandedChanged(m_expanded);
-}
-
-bool
-ShellDeclarativeView::expanded() const
-{
-    return m_expanded;
 }
 
 void
