@@ -61,7 +61,7 @@ FocusScope {
     property bool expanded: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
 
     Binding {
-        target: declarativeView
+        target: shellManager
         property: "dashMode"
         value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
                ShellManager.FullScreenMode : ShellManager.DesktopMode
