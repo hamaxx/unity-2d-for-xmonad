@@ -330,7 +330,8 @@ ShellManager::ignoreSuperPress()
 void
 ShellManager::onSuperKeyTapped()
 {
-    // Note: first item in the list should the topLeft shell
+    // TODO : In future, All shells should be able to handle the Dash
+    // Note: Always, first item in the list is the topLeft shell
     // In any case, just iterate through the list
     Q_FOREACH(ShellDeclarativeView *shell, d->m_viewList) {
         if (shell->isTopLeftShell()) {
