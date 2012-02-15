@@ -27,6 +27,7 @@
 class LauncherClient;
 class DashDBus;
 class ScreenInfo;
+class HotModifier;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -64,7 +65,7 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
-    bool superKeyHeld() const { return m_superKeyHeld; }
+    bool superKeyHeld() const;
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
 
@@ -90,17 +91,13 @@ Q_SIGNALS:
 
     void addWebFavoriteRequested(const QUrl& url);
     void superKeyHeldChanged(bool superKeyHeld);
-    void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
 
 private Q_SLOTS:
     void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardNumericHotkey();
-    void ignoreSuperPress();
 
     void toggleDash();
     void showCommandsLens();
@@ -126,12 +123,10 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
-    bool m_superKeyPressed;
-    bool m_superKeyHeld;
-    bool m_superPressIgnored;
-    QTimer m_superKeyHoldTimer;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
+
+    HotModifier* m_superHotModifier;
 
     friend class DashDBus;
     friend class LauncherDBus;
