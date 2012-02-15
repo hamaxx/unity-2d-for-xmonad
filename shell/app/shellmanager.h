@@ -33,6 +33,7 @@ class ShellManager : public QObject
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
     Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
+    Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
 
 public:
     enum DashMode {
@@ -51,13 +52,16 @@ public:
 
     const QString& dashActiveLens() const;
     Q_INVOKABLE void setDashActiveLens(const QString& activeLens);
-    
+
     bool dashHaveCustomHomeShortcuts() const;
+
+    QObject *dashShell() const;
 
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
     void dashActiveLensChanged(const QString&);
+    void dashShellChanged(QObject *shell);
 
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
@@ -74,6 +78,7 @@ private:
     ShellManagerPrivate * const d;
 
 friend class DashDBus;
+friend struct ShellManagerPrivate;
 };
 
 #endif // SHELLMANAGER_H

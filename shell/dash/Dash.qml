@@ -50,7 +50,7 @@ FocusScope {
         value: shellManager.dashActive
     }
 
-    onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
+    onActiveChanged: if (dash.active) shellManager.dashShell.forceActivateWindow()
 
     property variant queuedLensId
 
@@ -338,8 +338,8 @@ FocusScope {
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: declarativeView.screen.availableGeometry.width
-    property int fullscreenHeight: declarativeView.screen.availableGeometry.height
+    property int fullscreenWidth: shellManager.dashShell.screen.availableGeometry.width
+    property int fullscreenHeight: shellManager.dashShell.screen.availableGeometry.height
 
     states: [
         State {

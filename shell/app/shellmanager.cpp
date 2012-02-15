@@ -55,6 +55,7 @@ struct ShellManagerPrivate
 {
     ShellManagerPrivate() :
         q(0)
+        , m_shellWithDash(0)
         , m_launcherDBus(0)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
@@ -63,9 +64,11 @@ struct ShellManagerPrivate
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
     void updateScreenCount(int newCount);
     ShellDeclarativeView* activeShell() const;
+    void moveDashToShell(ShellDeclarativeView* newShell);
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
+    ShellDeclarativeView * m_shellWithDash;
     LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
     bool m_dashActive;
@@ -162,10 +165,28 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             shell->setScreenNumber(screen);
             ++i;
         }
+
+        m_shellWithDash = m_viewList[0];
+        Q_EMIT q->dashShellChanged(m_shellWithDash);
     }
     /* Remove extra Shells if any. */
     while (m_viewList.size() > newCount) {
         m_viewList.takeLast()->deleteLater();
+    }
+}
+
+void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
+{
+    if (newShell != m_shellWithDash) {
+        QDeclarativeItem *dash = m_shellWithDash->rootObject()->findChild<QDeclarativeItem*>("DashLoader");
+        if (dash) {
+            newShell->scene()->addItem(dash);
+            dash->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
+            m_shellWithDash = newShell;
+            Q_EMIT q->dashShellChanged(m_shellWithDash);
+        } else {
+            qWarning() << "ShellManager::onShellRequestDash: Could not find the dash";
+        }
     }
 }
 
@@ -263,6 +284,12 @@ ShellManager::dashHaveCustomHomeShortcuts() const
     return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
 }
 
+QObject *
+ShellManager::dashShell() const
+{
+    return d->m_shellWithDash;
+}
+
 void
 ShellManager::onScreenCountChanged(int newCount)
 {
@@ -302,7 +329,11 @@ ShellManager::onAltF1Pressed()
 void
 ShellManager::onAltF2Pressed()
 {
-    Q_EMIT dashActivateLens(COMMANDS_LENS_ID);
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        d->moveDashToShell(activeShell);
+        Q_EMIT dashActivateLens(COMMANDS_LENS_ID);
+    }
 }
 
 void
