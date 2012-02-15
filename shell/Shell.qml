@@ -221,7 +221,7 @@ Item {
                                 launcherLoader.height)
             }
         }
-        when: !launcherLoaderXAnimation.running
+        when: !launcherLoaderXAnimation.running && !hudLoader.animating
     }
 
     StrutManager {
