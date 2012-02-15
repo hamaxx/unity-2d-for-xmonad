@@ -33,6 +33,8 @@
 // libunity-2d-private
 #include <hotkeymonitor.h>
 #include <hotkey.h>
+#include <keyboardmodifiersmonitor.h>
+#include <keymonitor.h>
 #include <screeninfo.h>
 
 // Local
@@ -49,16 +51,19 @@
 // X11
 #include <X11/Xlib.h>
 
+static const int KEY_HOLD_THRESHOLD = 250;
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
 struct ShellManagerPrivate
 {
-    ShellManagerPrivate() :
-        q(0)
+    ShellManagerPrivate()
+        : q(0)
         , m_shellWithDash(0)
         , m_launcherDBus(0)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
+        , m_superKeyPressed(false)
+        , m_superKeyHeld(false)
     {}
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
@@ -74,6 +79,11 @@ struct ShellManagerPrivate
     bool m_dashActive;
     ShellManager::DashMode m_dashMode;
     QString m_dashActiveLens; /* Lens id of the active lens */
+
+    bool m_superKeyPressed;
+    bool m_superKeyHeld;
+    bool m_superPressIgnored;
+    QTimer m_superKeyHoldTimer;
 };
 
 
@@ -208,6 +218,13 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
 
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
 
+    d->m_superKeyHoldTimer.setSingleShot(true);
+    d->m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
+    connect(&d->m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
+
+    connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
+    updateSuperKeyMonitoring();
+
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
     connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
@@ -305,6 +322,99 @@ ShellManager::toggleDash()
     } else {
         Q_EMIT dashActivateHome();
     }
+}
+
+/* ----------------- super key handling ---------------- */
+
+void
+ShellManager::updateSuperKeyHoldState()
+{
+    /* If the key was released in the meantime, just do nothing, otherwise
+       consider the key being held, unless we're told to ignore it. */
+    if (d->m_superKeyPressed && !d->m_superPressIgnored) {
+        d->m_superKeyHeld = true;
+        Q_EMIT superKeyHeldChanged(d->m_superKeyHeld);
+    }
+}
+
+void
+ShellManager::updateSuperKeyMonitoring()
+{
+    KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
+    KeyMonitor *keyMonitor = KeyMonitor::instance();
+    HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
+
+    QVariant value = launcher2dConfiguration().property("superKeyEnable");
+    if (!value.isValid() || value.toBool() == true) {
+        hotkeyMonitor.enableModifiers(Qt::MetaModifier);
+        QObject::connect(modifiersMonitor,
+                         SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+                         this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        /* Ignore Super presses if another key was pressed simultaneously
+           (i.e. a shortcut). https://bugs.launchpad.net/unity-2d/+bug/801073 */
+        QObject::connect(keyMonitor,
+                         SIGNAL(keyPressed()),
+                         this, SLOT(ignoreSuperPress()));
+        setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
+    } else {
+        hotkeyMonitor.disableModifiers(Qt::MetaModifier);
+        QObject::disconnect(modifiersMonitor,
+                            SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+                            this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
+        QObject::disconnect(keyMonitor,
+                            SIGNAL(keyPressed()),
+                            this, SLOT(ignoreSuperPress()));
+        d->m_superKeyHoldTimer.stop();
+        d->m_superKeyPressed = false;
+        if (d->m_superKeyHeld) {
+            d->m_superKeyHeld = false;
+            Q_EMIT superKeyHeldChanged(false);
+        }
+    }
+}
+
+void
+ShellManager::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
+{
+    /* This is the new new state of the Super key (AKA Meta key), while
+       d->m_superKeyPressed is the previous state of the key at the last modifiers change. */
+    bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
+
+    if (d->m_superKeyPressed != superKeyPressed) {
+        d->m_superKeyPressed = superKeyPressed;
+        if (superKeyPressed) {
+            d->m_superPressIgnored = false;
+            /* If the key is pressed, start up a timer to monitor if it's being held short
+               enough to qualify as just a "tap" or as a proper hold */
+            d->m_superKeyHoldTimer.start();
+        } else {
+            d->m_superKeyHoldTimer.stop();
+
+            /* If the key is released, and was not being held, it means that the user just
+               performed a "tap". Unless we're told to ignore that tap, that is. */
+            if (!d->m_superKeyHeld && !d->m_superPressIgnored) {
+                toggleDash();
+            }
+            /* Otherwise the user just terminated a hold. */
+            else if(d->m_superKeyHeld){
+                d->m_superKeyHeld = false;
+                Q_EMIT superKeyHeldChanged(d->m_superKeyHeld);
+            }
+        }
+    }
+}
+
+void
+ShellManager::ignoreSuperPress()
+{
+    /* There was a key pressed, ignore current super tap/hold */
+    d->m_superPressIgnored = true;
+}
+
+bool
+ShellManager::superKeyHeld() const
+{
+    return d->m_superKeyHeld;
 }
 
 /*------------------ Hotkeys Handling -----------------------*/

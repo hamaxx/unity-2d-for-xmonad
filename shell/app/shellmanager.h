@@ -34,6 +34,7 @@ class ShellManager : public QObject
     Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
     Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
     Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
+    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
     enum DashMode {
@@ -57,17 +58,26 @@ public:
 
     QObject *dashShell() const;
 
+    bool superKeyHeld() const;
+
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
     void dashActiveLensChanged(const QString&);
     void dashShellChanged(QObject *shell);
+    void superKeyHeldChanged(bool superKeyHeld);
 
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
+
+    void updateSuperKeyMonitoring();
+    void updateSuperKeyHoldState();
+    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
+    void ignoreSuperPress();
+
     void onAltF1Pressed();
     void onAltF2Pressed();
     void onNumericHotkeyPressed();

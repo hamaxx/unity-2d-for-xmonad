@@ -34,7 +34,6 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_OBJECT
 
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
-    Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
@@ -51,7 +50,6 @@ public:
     explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
 
     /* getters */
-    bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
     bool isTopLeftShell() const { return m_isTopLeftShell; }
@@ -74,18 +72,10 @@ Q_SIGNALS:
     void monitoredAreaContainsMouseChanged();
 
     void addWebFavoriteRequested(const QUrl& url);
-    void superKeyHeldChanged(bool superKeyHeld);
-    void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
     void isTopLeftShellChanged(bool);
-
-private Q_SLOTS:
-    void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
-    void ignoreSuperPress();
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -102,10 +92,6 @@ private:
     void setWMFlags();
     void updateInputShape();
 
-    bool m_superKeyPressed;
-    bool m_superKeyHeld;
-    bool m_superPressIgnored;
-    QTimer m_superKeyHoldTimer;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
     bool m_isTopLeftShell;

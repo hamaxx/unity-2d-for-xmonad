@@ -70,7 +70,7 @@ Loader {
     }
 
     Connections {
-        target: declarativeView
+        target: shellManager
         onSuperKeyHeldChanged: {
             if (superKeyHeld) visibilityController.beginForceVisible()
             else visibilityController.endForceVisible()
