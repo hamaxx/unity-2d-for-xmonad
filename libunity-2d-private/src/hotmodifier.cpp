@@ -83,7 +83,9 @@ HotModifier::updateHoldState()
 void
 HotModifier::ignoreCurrentPress()
 {
-    m_ignored = true;
+    if (m_pressed) {
+        m_ignored = true;
+    }
 }
 
 void
