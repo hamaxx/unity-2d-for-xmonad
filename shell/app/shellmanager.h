@@ -32,6 +32,7 @@ class ShellManager : public QObject
     Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
+    Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
 
 public:
     enum DashMode {
@@ -50,6 +51,8 @@ public:
 
     const QString& dashActiveLens() const;
     Q_INVOKABLE void setDashActiveLens(const QString& activeLens);
+    
+    bool dashHaveCustomHomeShortcuts() const;
 
 Q_SIGNALS:
     void dashActiveChanged(bool);

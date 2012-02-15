@@ -36,7 +36,6 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
-    Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
        we need to detect when the mouse is inside the area occupied by the lancher. This should
@@ -52,7 +51,6 @@ public:
     explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
 
     /* getters */
-    bool haveCustomHomeShortcuts() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;

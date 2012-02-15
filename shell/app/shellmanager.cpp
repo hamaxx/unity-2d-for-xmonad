@@ -257,6 +257,12 @@ ShellManager::dashActiveLens() const
     return d->m_dashActiveLens;
 }
 
+bool
+ShellManager::dashHaveCustomHomeShortcuts() const
+{
+    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
+}
+
 void
 ShellManager::onScreenCountChanged(int newCount)
 {

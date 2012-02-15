@@ -162,12 +162,6 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
     }
 }
 
-bool
-ShellDeclarativeView::haveCustomHomeShortcuts() const
-{
-    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
-}
-
 void
 ShellDeclarativeView::toggleLauncher()
 {

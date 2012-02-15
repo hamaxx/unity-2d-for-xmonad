@@ -152,7 +152,7 @@ FocusScope {
 
     function activateHome() {
         if (spreadMonitor.shown) return
-        if (declarativeView.haveCustomHomeShortcuts) {
+        if (shellManager.dashHaveCustomHomeShortcuts) {
             for (var i=0; i<lenses.rowCount(); i++) {
                 lenses.get(i).viewType = Lens.Hidden
             }
