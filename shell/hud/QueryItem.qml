@@ -68,7 +68,6 @@ AbstractButton {
             fontSize: "large"
             font.weight: Font.Light
             maximumLineCount: 1
-            //elide: Text.ElideRight /* does not work with rich text */
             clip: true
 
             textFormat: Text.RichText
