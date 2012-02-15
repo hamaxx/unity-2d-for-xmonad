@@ -97,7 +97,6 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
-// TODO    setDashActive(false);
     Q_EMIT focusChanged();
 }
 

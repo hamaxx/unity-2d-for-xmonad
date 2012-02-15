@@ -74,6 +74,12 @@ FocusScope {
         onDashActivateLens: activateLens(lensId)
     }
 
+    Connections {
+        target: shellManager.dashShell
+
+        onFocusChanged: if (!shellManager.dashShell.focus) active = false
+    }
+
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
         search_entry.focus = true
