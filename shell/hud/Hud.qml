@@ -124,13 +124,6 @@ FocusScope {
                 source: (queryList.currentItem != null)
                         ? "image://icons/" + queryList.currentItem.icon
                         : "image://icons/unknown"
-
-                opacity: 1
-
-                SequentialAnimation on opacity {
-                    NumberAnimation { to: 0.0; duration: 500; easing.type: Easing.InOutQuad }
-                    NumberAnimation { to: 1.0; duration: 500; easing.type: Easing.InOutQuad }
-                }
             }
         }
 
