@@ -70,11 +70,6 @@ FocusScope {
         }
     }
 
-    function executeFirstQuery() {
-        hudModel.executeQuery(0)
-        hud.active = false
-    }
-
     property variant hudModel: Hud {}
 
     Background {
@@ -175,7 +170,10 @@ FocusScope {
                 placeHolderText: u2d.tr("Type your Command")
 
                 onSearchQueryChanged: hudModel.searchQuery = searchQuery
-                onActivateFirstResult: executeFirstQuery()
+                onActivateFirstResult: {
+                    hudModel.executeQuery(0)
+                    hud.active = false
+                }
             }
 
             ListView {
