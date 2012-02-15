@@ -30,24 +30,24 @@ FocusScope {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
-    /* FIXME: 'active' property exactly mirrors 'declarativeView.dashActive'.
+    /* FIXME: 'active' property exactly mirrors 'shellManager.dashActive'.
        The final goal is to transition to using exclusively the QML 'active' property
-       and drop the C++ 'declarativeView.dashActive'.
+       and drop the C++ 'shellManager.dashActive'.
     */
     property variant active
-    /* The following way of mirroring the values of 'declarativeView.dashActive'
+    /* The following way of mirroring the values of 'shellManager.dashActive'
        and 'active' works now and QML does not see it as a binding loop but we
        cannot count on it long term.
     */
     Binding {
-        target: declarativeView
+        target: shellManager
         property: "dashActive"
         value: dash.active
     }
     Binding {
         target: dash
         property: "active"
-        value: declarativeView.dashActive
+        value: shellManager.dashActive
     }
 
     onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
@@ -72,10 +72,10 @@ FocusScope {
     }
 
     Connections {
-        target: declarativeView
+        target: shellManager
 
-        onActivateHome: activateHome()
-        onActivateLens: activateLens(lensId)
+        onDashActivateHome: activateHome()
+        onDashActivateLens: activateLens(lensId)
     }
 
     function activatePage(page) {
@@ -106,7 +106,7 @@ FocusScope {
         for (var i=0; i<lenses.rowCount(); i++) {
             lenses.get(i).viewType = Lens.Hidden
         }
-        declarativeView.activeLens = ""
+        shellManager.dashActiveLens = ""
     }
 
     SpreadMonitor {
@@ -128,7 +128,7 @@ FocusScope {
             return
         }
 
-        if (lensId == declarativeView.activeLens && dash.active) {
+        if (lensId == shellManager.dashActiveLens && dash.active) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
@@ -150,7 +150,7 @@ FocusScope {
         }
 
         buildLensPage(lens)
-        declarativeView.activeLens = lens.id
+        shellManager.dashActiveLens = lens.id
         dash.active = true
     }
 
@@ -164,7 +164,7 @@ FocusScope {
             /* Take advantage of the fact that the loaded qml is local and setting
                the source loads it immediately making pageLoader.item valid */
             activatePage(pageLoader.item)
-            declarativeView.activeLens = ""
+            shellManager.dashActiveLens = ""
             dash.active = true
         } else {
             activateLens("home.lens")
@@ -281,7 +281,7 @@ FocusScope {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
+            visible: shellManager.dashActiveLens != "home.lens" && shellManager.dashActiveLens != "" && shellManager.dashActiveLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top

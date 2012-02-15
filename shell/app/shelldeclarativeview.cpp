@@ -49,12 +49,9 @@
 
 static const int KEY_HOLD_THRESHOLD = 250;
 
-static const char* COMMANDS_LENS_ID = "commands.lens";
-
 ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
     : Unity2DDeclarativeView()
     , m_expanded(true)
-    , m_active(false)
     , m_superKeyPressed(false)
     , m_superKeyHeld(false)
     , m_isTopLeftShell(isTopLeftShell)
@@ -118,7 +115,7 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
-    setDashActive(false);
+// TODO    setDashActive(false);
     Q_EMIT focusChanged();
 }
 
@@ -166,21 +163,6 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
     }
 }
 
-void
-ShellDeclarativeView::setDashActive(bool value)
-{
-    if (value != m_active) {
-        m_active = value;
-        Q_EMIT dashActiveChanged(m_active);
-    }
-}
-
-bool
-ShellDeclarativeView::dashActive() const
-{
-    return m_active;
-}
-
 bool
 ShellDeclarativeView::haveCustomHomeShortcuts() const
 {
@@ -205,52 +187,13 @@ ShellDeclarativeView::expanded() const
 }
 
 void
-ShellDeclarativeView::setActiveLens(const QString& activeLens)
-{
-    if (activeLens != m_activeLens) {
-        m_activeLens = activeLens;
-        Q_EMIT activeLensChanged(activeLens);
-    }
-}
-
-const QString&
-ShellDeclarativeView::activeLens() const
-{
-    return m_activeLens;
-}
-
-void
-ShellDeclarativeView::toggleDash()
-{
-    if (dashActive()) {
-        setDashActive(false);
-        forceDeactivateWindow();
-    } else {
-        Q_EMIT activateHome();
-    }
-}
-
-void
-ShellDeclarativeView::showCommandsLens()
-{
-    Q_EMIT activateLens(COMMANDS_LENS_ID);
-}
-
-void
 ShellDeclarativeView::toggleLauncher()
 {
     if (!isActiveWindow()) {
         forceActivateWindow();
         Q_EMIT launcherFocusRequested();
     } else {
-        if (dashActive()) {
-            // focus the launcher instead of the dash
-            setDashActive(false);
-            Q_EMIT launcherFocusRequested();
-        } else {
-            // we assume that the launcher is focused; unfocus it by deactivating the shell window
-            forceDeactivateWindow();
-        }
+        forceDeactivateWindow();
     }
 }
 

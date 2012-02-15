@@ -29,7 +29,9 @@ class ShellManager : public QObject
 
     Q_ENUMS(DashMode)
 
+    Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
+    Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
 
 public:
     enum DashMode {
@@ -40,21 +42,34 @@ public:
     ShellManager(const QUrl &sourceFileUrl, QObject* parent = 0);
     ~ShellManager();
 
+    bool dashActive() const;
+    Q_SLOT void setDashActive(bool active);
+
     DashMode dashMode() const;
     Q_INVOKABLE void setDashMode(DashMode);
 
+    const QString& dashActiveLens() const;
+    Q_INVOKABLE void setDashActiveLens(const QString& activeLens);
+
 Q_SIGNALS:
+    void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
+    void dashActiveLensChanged(const QString&);
+    void dashActivateHome();
+    void dashActivateLens(const QString& lensId);
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
     void onAltF1Pressed();
     void onAltF2Pressed();
     void onNumericHotkeyPressed();
+    void toggleDash();
 
 private:
     Q_DISABLE_COPY(ShellManager)
     ShellManagerPrivate * const d;
+
+friend class DashDBus;
 };
 
 #endif // SHELLMANAGER_H

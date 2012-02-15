@@ -98,7 +98,7 @@ context "Dash fullscreen tests" do
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @shell.ShellDeclarativeView()['dashActive']
+        @shell.ShellManager()['dashActive']
     }
 
     expected = dash_always_fullscreen ? 'FullScreenMode' : 'DesktopMode'
@@ -122,7 +122,7 @@ context "Dash fullscreen tests" do
     XDo::Keyboard.super
     sleep 1
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @shell.ShellDeclarativeView()['dashActive']
+        @shell.ShellManager()['dashActive']
     }
 
     maxbutton = nil
@@ -161,7 +161,7 @@ context "Dash fullscreen tests" do
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @shell.ShellDeclarativeView()['dashActive']
+        @shell.ShellManager()['dashActive']
     }
     verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
         @shell.ShellManager()['dashMode']
@@ -175,7 +175,7 @@ context "Dash fullscreen tests" do
     sleep 1
 
     verify_equal('true', TIMEOUT, 'Dash did not appear') {
-        @shell.ShellDeclarativeView()['dashActive']
+        @shell.ShellManager()['dashActive']
     }
     verify_equal('FullScreenMode', TIMEOUT, 'Dash initial state is wrong') {
         @shell.ShellManager()['dashMode']

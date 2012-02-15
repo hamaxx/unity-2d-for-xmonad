@@ -33,9 +33,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
     Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
-    Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
@@ -55,9 +53,7 @@ public:
     explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
 
     /* getters */
-    bool dashActive() const;
     bool haveCustomHomeShortcuts() const;
-    const QString& activeLens() const;
     bool expanded() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
@@ -65,8 +61,6 @@ public:
     bool isTopLeftShell() const { return m_isTopLeftShell; }
 
     /* setters */
-    Q_SLOT void setDashActive(bool active);
-    Q_INVOKABLE void setActiveLens(const QString& activeLens);
     Q_INVOKABLE void setExpanded(bool);
     void setScreenNumber(int);
     int screenNumber() const;
@@ -76,16 +70,11 @@ public:
     virtual bool x11EventFilter(XEvent* event);
 
     void toggleLauncher();
-    void showCommandsLens();
 
     void processNumericHotkey(Hotkey*);
 
 Q_SIGNALS:
-    void dashActiveChanged(bool);
     void expandedChanged(bool);
-    void activeLensChanged(const QString&);
-    void activateLens(const QString& lensId);
-    void activateHome();
     void focusChanged();
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
@@ -104,8 +93,6 @@ private Q_SLOTS:
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void ignoreSuperPress();
 
-    void toggleDash();
-
 protected:
     virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
@@ -122,8 +109,6 @@ private:
     void updateInputShape();
 
     bool m_expanded;
-    QString m_activeLens; /* Lens id of the active lens */
-    bool m_active;
 
     bool m_superKeyPressed;
     bool m_superKeyHeld;
@@ -134,8 +119,8 @@ private:
     bool m_isTopLeftShell;
     QUrl m_sourceFileUrl;
 
-    friend class DashDBus;
     friend class LauncherDBus;
+    friend class ShellManager;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)

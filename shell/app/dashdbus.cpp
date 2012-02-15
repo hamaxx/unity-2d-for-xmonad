@@ -21,7 +21,7 @@
 #include "dashadaptor.h"
 
 // Local
-#include <shelldeclarativeview.h>
+#include <shellmanager.h>
 
 // Qt
 #include <QtDBus/QDBusConnection>
@@ -29,12 +29,12 @@
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 
-DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
+DashDBus::DashDBus(ShellManager* manager, QObject* parent)
 : QObject(parent)
-, m_view(view)
+, m_manager(manager)
 {
-    connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
-    connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
+    connect(m_manager, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
+    connect(m_manager, SIGNAL(dashActiveLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 }
 
 DashDBus::~DashDBus()
@@ -58,35 +58,35 @@ DashDBus::connectToBus()
 void
 DashDBus::activateHome()
 {
-    Q_EMIT m_view->activateHome();
+    Q_EMIT m_manager->dashActivateHome();
 }
 
 void
 DashDBus::activateLens(const QString& lensId)
 {
-    Q_EMIT m_view->activateLens(lensId);
+    Q_EMIT m_manager->dashActivateLens(lensId);
 }
 
 bool
 DashDBus::active() const
 {
-    return m_view->dashActive();
+    return m_manager->dashActive();
 }
 
 void
 DashDBus::setActive(bool active)
 {
-    m_view->setDashActive(active);
+    m_manager->setDashActive(active);
 }
 
 QString
 DashDBus::activeLens() const
 {
-    return m_view->activeLens();
+    return m_manager->dashActiveLens();
 }
 
 void
 DashDBus::setActiveLens(QString activeLens)
 {
-    m_view->setActiveLens(activeLens);
+    m_manager->setDashActiveLens(activeLens);
 }

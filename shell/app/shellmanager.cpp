@@ -38,7 +38,6 @@
 // Local
 #include "shelldeclarativeview.h"
 #include "dashclient.h"
-#include "dashdbus.h"
 #include "gesturehandler.h"
 #include "launcherdbus.h"
 #include "config.h"
@@ -50,10 +49,15 @@
 // X11
 #include <X11/Xlib.h>
 
+static const char* COMMANDS_LENS_ID = "commands.lens";
+
 struct ShellManagerPrivate
 {
     ShellManagerPrivate() :
-        q(0), m_dashDBus(0), m_launcherDBus(0), m_mode(ShellManager::DesktopMode)
+        q(0)
+        , m_launcherDBus(0)
+        , m_dashActive(false)
+        , m_dashMode(ShellManager::DesktopMode)
     {}
 
     ShellDeclarativeView* initShell(bool isTopLeft, int screen);
@@ -62,10 +66,11 @@ struct ShellManagerPrivate
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
-    DashDBus * m_dashDBus;
     LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
-    ShellManager::DashMode m_mode;
+    bool m_dashActive;
+    ShellManager::DashMode m_dashMode;
+    QString m_dashActiveLens; /* Lens id of the active lens */
 };
 
 
@@ -95,14 +100,6 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
     // is moving the QDbusInterface creation to a thread so it does not block
     // the main thread
     view->rootContext()->setContextProperty("dashClient", DashClient::instance());
-
-    if (!m_dashDBus) {
-        m_dashDBus = new DashDBus(view);
-        if (!m_dashDBus->connectToBus()) {
-            qCritical() << "Another instance of the Dash already exists. Quitting.";
-            return 0;
-        }
-    }
 
     if (!m_launcherDBus) {
         m_launcherDBus = new LauncherDBus(view);
@@ -214,26 +211,67 @@ ShellManager::~ShellManager()
 }
 
 void
+ShellManager::setDashActive(bool value)
+{
+    if (value != d->m_dashActive) {
+        d->m_dashActive = value;
+        Q_EMIT dashActiveChanged(d->m_dashActive);
+    }
+}
+
+bool
+ShellManager::dashActive() const
+{
+    return d->m_dashActive;
+}
+
+void
 ShellManager::setDashMode(DashMode mode)
 {
-    if (d->m_mode == mode) {
+    if (d->m_dashMode == mode) {
         return;
     }
 
-    d->m_mode = mode;
-    dashModeChanged(d->m_mode);
+    d->m_dashMode = mode;
+    dashModeChanged(d->m_dashMode);
 }
 
 ShellManager::DashMode
 ShellManager::dashMode() const
 {
-    return d->m_mode;
+    return d->m_dashMode;
+}
+
+void
+ShellManager::setDashActiveLens(const QString& activeLens)
+{
+    if (activeLens != d->m_dashActiveLens) {
+        d->m_dashActiveLens = activeLens;
+        Q_EMIT dashActiveLensChanged(activeLens);
+    }
+}
+
+const QString&
+ShellManager::dashActiveLens() const
+{
+    return d->m_dashActiveLens;
 }
 
 void
 ShellManager::onScreenCountChanged(int newCount)
 {
     d->updateScreenCount(newCount);
+}
+
+void
+ShellManager::toggleDash()
+{
+    if (dashActive()) {
+        setDashActive(false);
+// TODO        forceDeactivateWindow();
+    } else {
+        Q_EMIT dashActivateHome();
+    }
 }
 
 /*------------------ Hotkeys Handling -----------------------*/
@@ -243,17 +281,22 @@ ShellManager::onAltF1Pressed()
 {
     ShellDeclarativeView * activeShell = d->activeShell();
     if (activeShell) {
-        activeShell->toggleLauncher();
+        if (dashActive()) {
+            // focus the launcher instead of the dash
+            setDashActive(false);
+            Q_EMIT activeShell->launcherFocusRequested();
+        }
+        else
+        {
+            activeShell->toggleLauncher();
+        }
     }
 }
 
 void
 ShellManager::onAltF2Pressed()
 {
-    ShellDeclarativeView * activeShell = d->activeShell();
-    if (activeShell) {
-        activeShell->showCommandsLens();
-    }
+    Q_EMIT dashActivateLens(COMMANDS_LENS_ID);
 }
 
 void

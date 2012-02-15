@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
 
-class ShellDeclarativeView;
+class ShellManager;
 
 /**
  * DBus interface for the dash.
@@ -38,7 +38,7 @@ class DashDBus : public QObject, protected QDBusContext
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
 
 public:
-    DashDBus(ShellDeclarativeView* view, QObject* parent=0);
+    DashDBus(ShellManager* manager, QObject* parent=0);
     ~DashDBus();
 
     bool connectToBus();
@@ -57,7 +57,7 @@ Q_SIGNALS:
     void activeLensChanged(QString);
 
 private:
-    ShellDeclarativeView* m_view;
+    ShellManager* m_manager;
 };
 
 #endif // DashDBus_H

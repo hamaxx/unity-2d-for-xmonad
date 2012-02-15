@@ -84,9 +84,10 @@ Item {
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
 
         Connections {
-            target: declarativeView
+            target: shellManager
             onDashActiveChanged: {
-                if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
+                // TODO Do it only for the view that contains the dash
+                if (shellManager.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
                 else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()

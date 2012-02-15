@@ -30,6 +30,7 @@
 
 // Local
 #include "config.h"
+#include "dashdbus.h"
 #include "shellmanager.h"
 
 int main(int argc, char *argv[])
@@ -73,6 +74,12 @@ int main(int argc, char *argv[])
        current working directory from the dash, and they expect a sane default
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
+
+    DashDBus *dashDBus = new DashDBus(&shells);
+    if (!dashDBus->connectToBus()) {
+        qCritical() << "Another instance of the Dash already exists. Quitting.";
+        return -1;
+    }
 
     return application.exec();
 }
