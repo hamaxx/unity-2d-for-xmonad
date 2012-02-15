@@ -21,6 +21,7 @@
 
 #include "screeninfo.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QGLWidget>
 #include <QVariant>
@@ -224,6 +225,16 @@ void Unity2DDeclarativeView::hideEvent(QHideEvent* event)
 {
     QGraphicsView::hideEvent(event);
     Q_EMIT visibleChanged(false);
+}
+
+void Unity2DDeclarativeView::keyPressEvent(QKeyEvent* event)
+{
+    QApplication::sendEvent(scene(), event);
+}
+
+void Unity2DDeclarativeView::keyReleaseEvent(QKeyEvent* event)
+{
+    QApplication::sendEvent(scene(), event);
 }
 
 /* Obtaining & Discarding Keyboard Focus for Window on Demand

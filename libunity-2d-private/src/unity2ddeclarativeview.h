@@ -68,6 +68,8 @@ protected:
     virtual void moveEvent(QMoveEvent* event);
     virtual void showEvent(QShowEvent *event);
     virtual void hideEvent(QHideEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void keyReleaseEvent(QKeyEvent* event);
 
     ScreenInfo* m_screenInfo;
 
