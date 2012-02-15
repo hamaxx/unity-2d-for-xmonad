@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Canonical, Ltd.
+ * Copyright (C) 2012 Canonical, Ltd.
  *
  * Authors:
  *  Michał Sawicz <michal.sawicz@canonical.com>
@@ -91,6 +91,7 @@ HotModifier::disable()
 {
     m_holdTimer.stop();
     m_pressed = false;
+    m_ignored = false;
     if (m_held) {
         m_held = false;
         Q_EMIT heldChanged(false);
