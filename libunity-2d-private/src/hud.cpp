@@ -70,7 +70,7 @@ Hud::~Hud()
 int Hud::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent)
-    if (m_searchText.isEmpty()) {
+    if (m_searchQuery.isEmpty()) {
         return 0;
     }
     return m_unityHudResults.size();
@@ -78,7 +78,7 @@ int Hud::rowCount(const QModelIndex& parent) const
 
 QVariant Hud::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid() || m_searchText.isEmpty()) {
+    if (!index.isValid() || m_searchQuery.isEmpty()) {
         return QVariant();
     }
 
@@ -111,18 +111,18 @@ QVariant Hud::data(const QModelIndex& index, int role) const
     }
 }
 
-QString Hud::searchText() const
+QString Hud::searchQuery() const
 {
-    return m_searchText;
+    return m_searchQuery;
 }
 
-void Hud::setSearchText(const QString& searchText)
+void Hud::setSearchQuery(const QString& searchQuery)
 {
-    if (searchText != m_searchText) {
-        m_searchText = searchText;
-        m_unityHud->RequestQuery(m_searchText.toStdString());
+    if (searchQuery != m_searchQuery) {
+        m_searchQuery = searchQuery;
+        m_unityHud->RequestQuery(m_searchQuery.toStdString());
         beginResetModel();
-        Q_EMIT searchTextChanged();
+        Q_EMIT searchQueryChanged();
     }
 }
 

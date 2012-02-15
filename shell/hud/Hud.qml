@@ -78,7 +78,6 @@ FocusScope {
         anchors.fill: parent
 
         active: hud.active
-        yPosition: declarativeView.globalPosition.y
     }
 
     Item {
@@ -163,7 +162,7 @@ FocusScope {
                 active: hud.active
                 placeHolderText: u2d.tr("Type your Command")
 
-                onSearchQueryChanged: hudModel.searchText = searchText
+                onSearchQueryChanged: hudModel.searchQuery = searchQuery
                 onActivateFirstResult: {
                     hudModel.executeResult(0)
                     hud.active = false

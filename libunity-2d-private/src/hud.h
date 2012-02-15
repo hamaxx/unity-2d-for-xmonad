@@ -32,7 +32,7 @@ class Hud : public QAbstractListModel
 
     Q_PROPERTY(QString target READ target NOTIFY targetChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
-    Q_PROPERTY(QString searchText READ searchText WRITE setSearchText NOTIFY searchTextChanged)
+    Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
 
 public:
     explicit Hud(QObject *parent = 0);
@@ -49,11 +49,11 @@ public:
 
     /* getters */
     QString target() const;
-    QString searchText() const;
+    QString searchQuery() const;
     bool connected() const;
 
     /* setters */
-    void setSearchText(const QString&);
+    void setSearchQuery(const QString&);
 
     QVariant data(int role) const;
     QHash<int, QByteArray> roleNames() const;
@@ -67,7 +67,7 @@ public:
     Q_INVOKABLE void endSearch();
 
 Q_SIGNALS:
-    void searchTextChanged();
+    void searchQueryChanged();
     void targetChanged();
     void connectedChanged();
 
@@ -78,7 +78,7 @@ private Q_SLOTS:
 
 private:
     bool m_connected;
-    QString m_searchText;
+    QString m_searchQuery;
     unity::hud::Hud* m_unityHud;
     unity::hud::Hud::Queries m_unityHudResults; //doubly-ended queue of 'Query's.
 };
