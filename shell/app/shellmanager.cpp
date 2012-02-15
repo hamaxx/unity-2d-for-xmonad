@@ -188,14 +188,26 @@ ShellManagerPrivate::updateScreenCount(int newCount)
 void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
 {
     if (newShell != m_shellWithDash) {
-        QDeclarativeItem *dash = m_shellWithDash->rootObject()->findChild<QDeclarativeItem*>("DashLoader");
+        QDeclarativeItem *dash = qobject_cast<QDeclarativeItem*>(m_shellWithDash->rootObject()->property("dashLoader").value<QObject *>());
         if (dash) {
+            QGraphicsView::ViewportUpdateMode vum1 = m_shellWithDash->viewportUpdateMode();
+            QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
+            m_shellWithDash->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
             newShell->scene()->addItem(dash);
             dash->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
+
+            m_shellWithDash->rootObject()->setProperty("dashLoader", QVariant());
+            newShell->rootObject()->setProperty("dashLoader", QVariant::fromValue<QObject*>(dash));
+
+            m_shellWithDash->setViewportUpdateMode(vum1);
+            newShell->setViewportUpdateMode(vum2);
+
             m_shellWithDash = newShell;
             Q_EMIT q->dashShellChanged(m_shellWithDash);
         } else {
-            qWarning() << "ShellManager::onShellRequestDash: Could not find the dash";
+            qWarning() << "moveDashToShell: Could not find the dash";
         }
     }
 }

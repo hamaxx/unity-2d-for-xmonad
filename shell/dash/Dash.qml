@@ -344,8 +344,8 @@ FocusScope {
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: shellManager.dashShell.screen.availableGeometry.width
-    property int fullscreenHeight: shellManager.dashShell.screen.availableGeometry.height
+    property int fullscreenWidth: shellManager.dashShell != undefined ? shellManager.dashShell.screen.availableGeometry.width : 0
+    property int fullscreenHeight: shellManager.dashShell != undefined ? shellManager.dashShell.screen.availableGeometry.height : 0
 
     states: [
         State {

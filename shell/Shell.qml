@@ -25,6 +25,7 @@ Item {
     id: shell
 
     property variant declarativeView
+    property variant dashLoader
 
     /* Space reserved by strutManager is taken off screen.availableGeometry but
        we want the shell to take all the available space, including the one we
@@ -39,6 +40,17 @@ Item {
 
     GestureHandler {
         id: gestureHandler
+    }
+
+    onDashLoaderChanged: {
+        if (shellManager.dashActive) {
+            if (dashLoader == undefined)
+            {
+                launcherLoader.visibilityController.endForceVisible("dash")
+            } else {
+                launcherLoader.visibilityController.beginForceVisible("dash")
+            }
+        }
     }
 
     LauncherLoader {
@@ -73,12 +85,10 @@ Item {
             }
         }
 
-        KeyNavigation.right: dashLoader
-
         Binding {
             target: launcherLoader.item
             property: "showMenus"
-            value: !dashLoader.item.active
+            value: dashLoader != undefined && !dashLoader.item.active
         }
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
@@ -108,28 +118,6 @@ Item {
         }
     }
 
-
-    Loader {
-        id: dashLoader
-        objectName: "DashLoader"
-        /* TODO : In case of multi-monitors, there should be only one dash,
-           which could be moved to any screen.
-           ATM, we are displaying dash for the leftmost screen only. other screens will not support dash yet.
-        */
-        source: (declarativeView.isTopLeftShell ? "dash/Dash.qml" : "")
-        anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
-        onLoaded: item.focus = true
-        opacity: item.active ? 1.0 : 0.0
-        focus: item.active
-
-        Binding {
-            target: dashLoader.item
-            property: "fullscreenWidth"
-            value: shell.width - launcherLoader.width
-        }
-    }
-
     Connections {
         target: declarativeView
         onLauncherFocusRequested: {
@@ -147,7 +135,13 @@ Item {
         }
     }
 
-    Component.onCompleted: declarativeView.show()
+    Component.onCompleted: {
+        if (declarativeView.isTopLeftShell) {
+            var loaderComponent = Qt.createComponent("DashLoader.qml");
+            dashLoader = loaderComponent.createObject(shell, {});
+        }
+        declarativeView.show()
+    }
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape) {
@@ -164,19 +158,25 @@ Item {
         }
 
         InputShapeRectangle {
-            rectangle: if (desktop.isCompositingManagerRunning) {
-                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
-            } else {
-                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+            rectangle: {
+                if (dashLoader != undefined) {
+                    if (desktop.isCompositingManagerRunning) {
+                        return Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+                    } else {
+                        return Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+                    }
+                } else {
+                    return Qt.rect(1, 1, 1, 1)
+                }
             }
-            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+            enabled: dashLoader != undefined && dashLoader.status == Loader.Ready && dashLoader.item.active
             mirrorHorizontally: Utils.isRightToLeft()
 
             InputShapeMask {
                 id: shape1
                 source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
-                position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
+                position: dashLoader != undefined ? Qt.point(dashLoader.width - 50, dashLoader.height - 49) : Qt.point(1, 1)
                 enabled: shellManager.dashMode == ShellManager.DesktopMode
             }
         }
