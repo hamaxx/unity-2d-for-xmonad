@@ -45,6 +45,11 @@ FocusScope {
         contentXid: declarativeView.lastFocusedWindow
     }
 
+    SpreadMonitor {
+        id: spread
+        onShownChanged: active = false
+    }
+
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
@@ -66,6 +71,7 @@ FocusScope {
     }
 
     function toggleHud() {
+        if (spread.shown) return
         if (active) declarativeView.forceDeactivateWindow()
         active = !active
     }
