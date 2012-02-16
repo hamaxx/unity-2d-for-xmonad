@@ -29,9 +29,12 @@ require 'xdo/mouse'
 require 'tmpwindow'
 
 ############################# Test Suite #############################
-context "Dash Tests" do
+context "Spread Tests" do
   # Run once at the beginning of this test suite
   startup do
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+    $SUT.execute_shell_command 'killall unity-2d-spread'
+
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
@@ -46,9 +49,13 @@ context "Dash Tests" do
   # Run before each test case begins
   setup do
     # Execute the application 
-    @app = $SUT.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability",
-                     :sleeptime => 2 )
+    @app_shell = $SUT.run( :name => UNITY_2D_SHELL,
+                           :arguments => "-testability",
+                           :sleeptime => 2 )
+
+    @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
+                              :arguments => "-testability", 
+                              :sleeptime => 2 )
 
   end
 
@@ -57,58 +64,46 @@ context "Dash Tests" do
     TmpWindow.close_all_windows
     #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
   end
 
   #####################################################################################
   # Test casess
 
   # Test case objectives:
-  #   * Check that Alt+F2 shows dash
+  #   * Check that Super+s shows the launcher and the spread
   # Pre-conditions
   #   * Desktop with no running applications
   # Test steps
-  #   * Verify dash is not showing
-  #   * Press Alt+F2
-  #   * Verify dash is showing
+  #   * Verify spread is not showing
+  #   * Open application that overlaps with the launcher
+  #   * Verify launcher is not showing
+  #   * Press Super+s
+  #   * Verify spread is showing
+  #   * Verify launcher is showing
   # Post-conditions
   #   * None
   # References
   #   * None
-  test "Alt+F2 shows the Dash" do
-    verify_equal("false", 0, 'There should not be a Dash declarative view on startup') {
-      @app.Dash()['active']
-    }
-    XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
-    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
-      @app.Dash()['active']
-    }
-  end
+  test "Super+s shows the launcher and the spread" do
+    hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode').to_i
 
-  # Test case objectives:
-  #   * Check that pressing the bfb shows the dash
-  # Pre-conditions
-  #   * Desktop with no running applications
-  # Test steps
-  #   * Verify dash is not showing
-  #   * Click on the bfb
-  #   * Verify dash is showing
-  # Post-conditions
-  #   * None
-  # References
-  #   * None
-  test "Pressing the bfb shows the Dash" do
-    verify_equal("false", 0, 'There should not be a Dash declarative view on startup') {
-      @app.Dash()['active']
+    verify_not(2, 'There should not be a Spread declarative view on startup') {
+      @app_spread.SpreadView()
     }
-    bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
-    XDo::Mouse.move(0, 200, 0, true)
-    verify_equal( 0, TIMEOUT, 'Launcher hiding when mouse at left edge of screen' ) {
-      @app.Launcher()['x_absolute'].to_i
+    xid = TmpWindow.open_window_at(10,100)
+
+    verify_equal((hide_mode == 0) ? 0 :-LAUNCHER_WIDTH, TIMEOUT, 
+                 'The launcher should not be visible with an overlapping window (unless Launcher in always-show mode)') {
+      @app_shell.Launcher()['x_absolute'].to_i
     }
-    bfb.move_mouse()
-    bfb.tap()
-    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after activating the bfb') {
-        @app.Dash()['active']
+    XDo::Keyboard.super_s
+    verify_equal("true", TIMEOUT, 'There should be a visible Spread declarative view after pressing Alt+F2') {
+      @app_spread.SpreadView()['visible']
     }
+    verify_equal(0, TIMEOUT, 'The launcher should be visible when spread is invoked') {
+      @app_shell.Launcher()['x_absolute'].to_i
+    }
+    xid.close!
   end
 end

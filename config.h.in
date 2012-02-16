@@ -6,11 +6,13 @@
 #define UNITY_2D_SCHEMA_FILE "@UNITY_2D_SCHEMA_FILE@"
 
 #include <QCoreApplication>
+#include <QDir>
 #include "qconf.h"
 
 static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
 static const char* LAUNCHER2D_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
 static const char* PANEL2D_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* DASH2D_DCONF_SCHEMA = "com.canonical.Unity2d.Dash";
 
 static const char* UNITY_DCONF_SCHEMA = "com.canonical.Unity";
 static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity.Launcher";
@@ -31,6 +33,11 @@ inline QConf& panel2dConfiguration() {
     return configuration;
 }
 
+inline QConf& dash2dConfiguration() {
+    static QConf configuration(DASH2D_DCONF_SCHEMA);
+    return configuration;
+}
+
 inline QConf& unityConfiguration() {
     static QConf configuration(UNITY_DCONF_SCHEMA);
     return configuration;
@@ -48,7 +55,8 @@ inline QConf& panelConfiguration() {
 
 
 inline bool isRunningInstalled() {
-    return (QCoreApplication::applicationDirPath() == (INSTALL_PREFIX "/" INSTALL_BINDIR));
+    static bool installed = (QCoreApplication::applicationDirPath() == QDir((INSTALL_PREFIX "/" INSTALL_BINDIR)).canonicalPath());
+    return installed;
 }
 
 inline QString unity2dDirectory() {

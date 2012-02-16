@@ -1,3 +1,24 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2012 Canonical Ltd.
+ *
+ * Authors:
+ * - Ugo Riboni <ugo.riboni@canonical.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <QDebug>
 #include <QRect>
 #include <QX11Info>
@@ -5,7 +26,7 @@
 
 #include "inputshapemanager.h"
 #include "unity2ddeclarativeview.h"
-#include "screeninfo.h"
+#include "desktopinfo.h"
 
 // X11
 #include <X11/Xlib.h>
@@ -35,11 +56,8 @@ void InputShapeManager::updateManagedShape()
         }
     }
 
-    // FIXME: A more efficient way of doing this would be to call XShapeCombineMask passing an X11
-    // pixmap created from the mask bitmap. However for some reason I wasn't able to figure out yet
-    // I get a lot of warnings when calling QBitmap::handle, so for now I'm passing a region as a
-    // workaround.
-    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(), ShapeInput,
+    XShapeCombineRegion(QX11Info::display(), m_target->effectiveWinId(),
+                        DesktopInfo::instance()->isCompositingManagerRunning() ? ShapeInput : ShapeBounding,
                         0, 0, QRegion(inputShape).handle(), ShapeSet);
 }
 
@@ -60,7 +78,7 @@ void InputShapeManager::setTarget(Unity2DDeclarativeView *target)
         if (m_target != NULL) {
             // due to the way xshape works we need to re-apply the shaping every time the target window
             // is mapped again.
-            connect(m_target, SIGNAL(shown()), SLOT(updateManagedShape()));
+            connect(m_target, SIGNAL(visibleChanged(bool)), SLOT(updateManagedShape()));
             connect(m_target, SIGNAL(sceneResized(QSize)), SLOT(updateManagedShape()));
         }
         Q_EMIT targetChanged();

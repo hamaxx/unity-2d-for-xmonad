@@ -22,7 +22,7 @@
 */
 #include "plugin.h"
 
-#include "dashsettings.h"
+#include "dashclient.h"
 #include "launcherapplication.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -37,6 +37,7 @@
 #include "windowinfo.h"
 #include "windowslist.h"
 #include "screeninfo.h"
+#include "desktopinfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
 #include "iconutilities.h"
@@ -88,8 +89,6 @@
 
 #include <X11/Xlib.h>
 
-using namespace Unity2d;
-
 /* FIXME: This should be done more properly, it's just an hack this way.
           We should silence only the errors that we know we can produce.
           We could probably also learn something from gdk-error-trap-push.
@@ -107,11 +106,12 @@ void Unity2dPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
-    qmlRegisterType<DashSettings>(uri, 0, 1, "DashSettings");
+    qmlRegisterType<DashClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
-    qmlRegisterType<ScreenInfo>(); // Register the type as non creatable
+    qmlRegisterType<ScreenInfo>(uri, 0, 1, "ScreenInfo");
+    qmlRegisterType<DesktopInfo>(); // Register the type as non creatable
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
@@ -190,12 +190,13 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     /* ScreenInfo is exposed as a context property as it's a singleton and therefore
        not creatable directly in QML */
-    engine->rootContext()->setContextProperty("screen", ScreenInfo::instance());
+    engine->rootContext()->setContextProperty("desktop", DesktopInfo::instance());
     engine->rootContext()->setContextProperty("iconUtilities", new IconUtilities(engine));
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
     engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
     engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
+    engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
 
     /* Critically important to set the client type to pager because wnck
        will pass that type over to the window manager through XEvents.

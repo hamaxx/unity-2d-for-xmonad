@@ -36,3 +36,11 @@ function hashEmpty(hash) {
     for (var key in hash) return false;
     return true
 }
+
+function isLeftToRight() {
+    return Qt.application.layoutDirection == Qt.LeftToRight
+}
+
+function isRightToLeft() {
+    return Qt.application.layoutDirection == Qt.RightToLeft
+}

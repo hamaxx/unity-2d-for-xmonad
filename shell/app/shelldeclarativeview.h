@@ -26,6 +26,7 @@
 
 class LauncherClient;
 class DashDBus;
+class ScreenInfo;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -38,6 +39,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
+    Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
        we need to detect when the mouse is inside the area occupied by the lancher. This should
@@ -58,6 +60,7 @@ public:
 
     /* getters */
     bool dashActive() const;
+    bool haveCustomHomeShortcuts() const;
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
@@ -107,17 +110,15 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
-    void updateDashModeDependingOnScreenGeometry();
-    void updateShellPosition(int screen);
+    void updateShellPosition();
 
 private:
     void focusOutEvent(QFocusEvent* event);
     void focusInEvent(QFocusEvent* event);
-    void updateMask();
     void setWMFlags();
-    bool isSpreadActive();
     void updateInputShape();
 
     DashMode m_mode;

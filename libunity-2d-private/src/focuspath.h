@@ -99,7 +99,7 @@ private:
     QDeclarativeItem *m_item;
     int m_columns;
     int m_rows;
-    int m_currentIndex;
+    int m_currentPosition;
     Flow m_flow;
     NavigationDirection m_direction;
     QList<PathItem > m_path;
@@ -107,6 +107,7 @@ private:
 
 
     void updateItem(QDeclarativeItem *item);
+    void updatePosition(int newPosition);
 };
 
 class FocusPathAttached : public QObject

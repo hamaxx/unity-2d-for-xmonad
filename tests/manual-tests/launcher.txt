@@ -96,3 +96,12 @@
 The panel title Ubuntu Desktop is shown - The desktop title is changed from 'Desktop to 'Ubuntu Desktop'(lp:869873)
 
 ----
+
+ * Enable dragging and dropping of files & folders to Launcher tiles
+
+Draging and droping a file/folder over a tile should launch that application, if it can handle such data. for eg: gedit
+can handle plain/text. If the application can't handle data, no action taken (lp:676549)
+If the drag is acceptable, mouse cursor will have a '+' sign. but this feedback seems
+to take one second time to update.
+
+----

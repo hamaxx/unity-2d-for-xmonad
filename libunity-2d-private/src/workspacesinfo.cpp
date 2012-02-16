@@ -1,5 +1,5 @@
 #include "workspacesinfo.h"
-#include "screeninfo.h"
+#include "desktopinfo.h"
 #include "signalwaiter.h"
 #include <debug_p.h>
 
@@ -74,9 +74,9 @@ bool WorkspacesInfo::globalEventFilter(void* message)
 
     if (notify->atom == _NET_DESKTOP_LAYOUT ||
         notify->atom == _NET_NUMBER_OF_DESKTOPS) {
-        ScreenInfo::instance()->workspaces()->updateWorkspaceGeometry();
+        DesktopInfo::instance()->workspaces()->updateWorkspaceGeometry();
     } else if (notify->atom == _NET_CURRENT_DESKTOP) {
-        ScreenInfo::instance()->workspaces()->updateCurrentWorkspace();
+        DesktopInfo::instance()->workspaces()->updateCurrentWorkspace();
     }
 
     return ret;

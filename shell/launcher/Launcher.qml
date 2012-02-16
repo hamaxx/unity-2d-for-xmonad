@@ -29,11 +29,6 @@ LauncherDropItem {
     property bool shown
     property bool showMenus: true
 
-    Binding {
-        target: declarativeView
-        property: "monitoredArea"
-        value: Qt.rect(launcher.x, launcher.y, launcher.width, launcher.height)
-    }
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
 
     function hideMenu() {
@@ -63,7 +58,7 @@ LauncherDropItem {
             anchors.fill: parent
             overlay_color: "black"
             overlay_alpha: 0.66
-            visible: !screen.isCompositingManagerRunning
+            visible: !desktop.isCompositingManagerRunning
         }
     }
 
@@ -72,7 +67,7 @@ LauncherDropItem {
         anchors.fill: parent
         color: "black"
         opacity: 0.66
-        visible: screen.isCompositingManagerRunning
+        visible: desktop.isCompositingManagerRunning
     }
     
     Image {
@@ -81,7 +76,8 @@ LauncherDropItem {
 
         width: 1
         height: parent.height
-        anchors.right: parent.right
+        anchors.right: Utils.isLeftToRight() ? parent.right : undefined
+        anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
         fillMode: Image.TileVertically
         source: "artwork/background.png"
     }
@@ -210,7 +206,6 @@ LauncherDropItem {
 
     Connections {
         target: declarativeView
-        // FIXME: copy methods over
         onAddWebFavoriteRequested: applications.insertWebFavorite(url)
     }
 

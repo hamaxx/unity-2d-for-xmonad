@@ -23,12 +23,12 @@
 #include "windowhelper.h"
 
 // Local
+#include "config.h"
 
 // unity-2d
-#include <dashsettings.h>
+#include <dashclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
-#include <screeninfo.h>
 
 // Bamf
 #include <bamf-matcher.h>
@@ -45,38 +45,17 @@ extern "C" {
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
+#include <QVariant>
 
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <QX11Info>
 
-using namespace Unity2d;
-
 struct WindowHelperPrivate
 {
-    void updateDashCanResize()
-    {
-        WnckScreen* screen = wnck_window_get_screen(m_window);
-        int screenNumber = wnck_screen_get_number(screen);
-        QRect rect = QApplication::desktop()->screenGeometry(screenNumber);
-
-        /* If the screen size too small, we don't allow the Dash to be used
-         * in Desktop mode (not fullscreen) */
-        QSize minSize = DashSettings::minimumSizeForDesktop();
-        if (rect.width() < minSize.width() &&
-            rect.height() < minSize.height()) {
-            m_dashCanResize = false;
-        } else {
-            m_dashCanResize = true;
-        }
-    }
-
-    DashSettings* m_dashSettings;
     WnckWindow* m_window;
     GConnector m_connector;
-    bool m_activeWindowIsDash;
-    bool m_dashCanResize;
 };
 
 WindowHelper::WindowHelper(QObject* parent)
@@ -84,7 +63,6 @@ WindowHelper::WindowHelper(QObject* parent)
 , d(new WindowHelperPrivate)
 {
     d->m_window = 0;
-    d->m_dashSettings = new DashSettings(this);
 
     WnckScreen* screen = wnck_screen_get_default();
     wnck_screen_force_update(screen);
@@ -102,6 +80,12 @@ WindowHelper::WindowHelper(QObject* parent)
     // last window is closed. Should be removed when this bug is fixed.
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
         SLOT(update()));
+
+    connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
+    // FIXME: the queued connection should not be needed, however if it's not used when
+    // (un)maximizing the dash, the panel will deadlock for some reason.
+    connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(update()),
+            Qt::QueuedConnection);
 }
 
 WindowHelper::~WindowHelper()
@@ -123,12 +107,6 @@ static void nameChangedCB(GObject* window,
     QMetaObject::invokeMethod(watcher, "nameChanged");
 }
 
-static void geometryChangedCB(GObject* window,
-    WindowHelper*  watcher)
-{
-    QMetaObject::invokeMethod(watcher, "stateChanged");
-}
-
 void WindowHelper::update()
 {
     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
@@ -141,19 +119,6 @@ void WindowHelper::update()
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
 
-        const char *name = wnck_window_get_name(d->m_window);
-        d->m_activeWindowIsDash = qstrcmp(name, "unity-2d-places") == 0;
-        if (d->m_activeWindowIsDash) {
-            /* Since we are not really minimizing and maximizing the dash we
-             * cannot rely on the wnck "state-changed" signal to be emitted;
-             * instead, listen for the "geometry-changed" and emit our
-             * stateChanged() from that. */
-            d->m_connector.connect(G_OBJECT(d->m_window), "geometry-changed",
-                                   G_CALLBACK(geometryChangedCB), this);
-
-            d->updateDashCanResize();
-        }
-
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
@@ -163,17 +128,14 @@ void WindowHelper::update()
 
 bool WindowHelper::isMaximized() const
 {
-    if (!d->m_window) {
-        return false;
-    }
-    if (d->m_activeWindowIsDash) {
-        int x, y, width, height;
-        wnck_window_get_geometry(d->m_window, &x, &y, &width, &height);
-        const QRect windowGeometry(x, y, width, height);
-        ScreenInfo* screenInfo = ScreenInfo::instance();
-        return screenInfo->panelsFreeGeometry() == windowGeometry;
+    if (DashClient::instance()->active()) {
+        return dash2dConfiguration().property("fullScreen").toBool();
     } else {
-        return wnck_window_is_maximized(d->m_window);
+        if (d->m_window) {
+            return wnck_window_is_maximized(d->m_window);
+        } else {
+            return false;
+        }
     }
 }
 
@@ -200,33 +162,27 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
     return true;
 }
 
-bool WindowHelper::dashIsVisible() const
-{
-    return d->m_window != 0 && d->m_activeWindowIsDash;
-}
-
-bool WindowHelper::dashCanResize() const
-{
-    return d->m_dashCanResize;
-}
-
 void WindowHelper::close()
 {
-    guint32 timestamp = QDateTime::currentDateTime().toTime_t();
-    wnck_window_close(d->m_window, timestamp);
+    if (DashClient::instance()->active()) {
+        DashClient::instance()->setActive(false);
+    } else {
+        guint32 timestamp = QDateTime::currentDateTime().toTime_t();
+        wnck_window_close(d->m_window, timestamp);
+    }
 }
 
 void WindowHelper::minimize()
 {
-    if (!d->m_activeWindowIsDash) {
+    if (!DashClient::instance()->active()) {
         wnck_window_minimize(d->m_window);
     }
 }
 
 void WindowHelper::maximize()
 {
-    if (d->m_activeWindowIsDash) {
-        d->m_dashSettings->setFormFactor(DashSettings::Netbook);
+    if (DashClient::instance()->active()) {
+        dash2dConfiguration().setProperty("fullScreen", QVariant(true));
     } else {
         /* This currently cannot happen, because the window buttons are not
          * shown in the panel for non maximized windows. It's here just for
@@ -237,8 +193,8 @@ void WindowHelper::maximize()
 
 void WindowHelper::unmaximize()
 {
-    if (d->m_activeWindowIsDash) {
-        d->m_dashSettings->setFormFactor(DashSettings::Desktop);
+    if (DashClient::instance()->active()) {
+        dash2dConfiguration().setProperty("fullScreen", QVariant(false));
     } else {
         wnck_window_unmaximize(d->m_window);
     }

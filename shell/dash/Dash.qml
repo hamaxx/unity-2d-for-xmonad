@@ -50,6 +50,8 @@ FocusScope {
         value: declarativeView.dashActive
     }
 
+    onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
+
     property variant queuedLensId
 
     function isRightToLeft() {
@@ -62,15 +64,11 @@ FocusScope {
         value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
     }
 
-    DashSettings {
-        id: dashSettings
-    }
-
     Binding {
         target: declarativeView
         property: "dashMode"
-        value: (dashSettings.formFactor == DashSettings.Desktop) ?
-               ShellDeclarativeView.DesktopMode : ShellDeclarativeView.FullScreenMode
+        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+               ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
     }
 
     Connections {
@@ -108,9 +106,16 @@ FocusScope {
         for (var i=0; i<lenses.rowCount(); i++) {
             lenses.get(i).viewType = Lens.Hidden
         }
+        declarativeView.activeLens = ""
+    }
+
+    SpreadMonitor {
+        id: spreadMonitor
     }
 
     function activateLens(lensId) {
+        if (spreadMonitor.shown) return
+
         /* check if lenses variable was populated already */
         if (lenses.rowCount() == 0) {
             queuedLensId = lensId
@@ -123,17 +128,25 @@ FocusScope {
             return
         }
 
-        if (lensId == declarativeView.activeLens) {
+        if (lensId == declarativeView.activeLens && dash.active) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
         }
 
-        /* To activate lens, we set its viewType to LensView, and then set all
-           other lenses to Hidden */
         for (var i=0; i<lenses.rowCount(); i++) {
             var thislens = lenses.get(i)
-            thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+            if (lensId == "home.lens") {
+                if (thislens.id == lensId) {
+                    thislens.viewType = Lens.LensView
+                    continue
+                }
+                /* When Home is shown, need to notify all other lenses. Those in the global view
+                    (in home search results page) are set to HomeView, all others to Hidden */
+                thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
+            } else {
+                thislens.viewType = (lens == thislens) ?  Lens.LensView : Lens.Hidden
+            }
         }
 
         buildLensPage(lens)
@@ -142,19 +155,20 @@ FocusScope {
     }
 
     function activateHome() {
-        /* When Home is shown, need to notify all other lenses. Those in the global view
-           (in home search results page) are set to HomeView, all others to Hidden */
-        for (var i=0; i<lenses.rowCount(); i++) {
-            var thislens = lenses.get(i)
-            thislens.viewType = (thislens.searchInGlobal) ? Lens.HomeView : Lens.Hidden
+        if (spreadMonitor.shown) return
+        if (declarativeView.haveCustomHomeShortcuts) {
+            for (var i=0; i<lenses.rowCount(); i++) {
+                lenses.get(i).viewType = Lens.Hidden
+            }
+            pageLoader.setSource("Home.qml")
+            /* Take advantage of the fact that the loaded qml is local and setting
+               the source loads it immediately making pageLoader.item valid */
+            activatePage(pageLoader.item)
+            declarativeView.activeLens = ""
+            dash.active = true
+        } else {
+            activateLens("home.lens")
         }
-
-        pageLoader.setSource("Home.qml")
-        /* Take advantage of the fact that the loaded qml is local and setting
-           the source loads it immediately making pageLoader.item valid */
-        activatePage(pageLoader.item)
-        declarativeView.activeLens = ""
-        dash.active = true
     }
 
     function activateLensWithOptionFilter(lensId, filterId, optionId) {
@@ -205,66 +219,24 @@ FocusScope {
         }
     }
 
-    Item {
+    Background {
         id: background
 
         anchors.fill: parent
 
-        /* Avoid redraw at rendering */
-        effect: CacheEffect {}
-
-        Item {
-            anchors.fill: parent
-            anchors.bottomMargin: content.anchors.bottomMargin
-            anchors.rightMargin: content.anchors.rightMargin
-            clip: true
-
-            Image {
-                id: blurredBackground
-
-                effect: Blur {blurRadius: 12}
-
-                /* 'source' needs to be set when the dash becomes visible, that
-                   is when dash.active becomes true, so that a
-                   screenshot of the windows behind the dash is taken at that
-                   point.
-                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
-                */
-
-                /* Use an image of the root window which essentially is a
-                   capture of the entire screen */
-                source: dash.active ? "image://window/root" : ""
-                cache: false
-
-                fillMode: Image.PreserveAspectCrop
-                x: -launcherLoader.width
-                y: -declarativeView.globalPosition.y
-            }
-
-            Image {
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectCrop
-                source: "artwork/background_sheen.png"
-            }
-        }
-
-        BorderImage {
-            anchors.fill: parent
-            visible: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
-            source: screen.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
-            mirror: isRightToLeft()
-        }
+        active: dash.active
+        fullscreen: declarativeView.dashMode != ShellDeclarativeView.DesktopMode
     }
 
     Item {
         id: content
 
         anchors.fill: parent
-        /* Margins in DesktopMode set song that the content does not overlap with
+        /* Margins in DesktopMode set so that the content does not overlap with
            the border defined by the background image.
         */
-        anchors.bottomMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 39 : 0
-        anchors.rightMargin: declarativeView.dashMode == ShellDeclarativeView.DesktopMode ? 37 : 0
+        anchors.bottomMargin: background.bottomBorderThickness
+        anchors.rightMargin: background.rightBorderThickness
 
         /* Unhandled keys will always be forwarded to the search bar. That way
            the user can type and search from anywhere in the interface without
@@ -290,6 +262,17 @@ FocusScope {
             anchors.rightMargin: 15
 
             height: 42
+
+            active: dash.active
+            placeHolderText: {
+                if(dash.currentPage != undefined && dash.currentPage.model.searchHint)
+                    return dash.currentPage.model.searchHint
+                else
+                    return u2d.tr("Search")
+            }
+
+            onSearchQueryChanged: if (dash.currentPage != undefined) dash.currentPage.model.searchQuery = searchQuery
+            onActivateFirstResult: if (dash.currentPage != undefined) dash.currentPage.activateFirstResult()
         }
 
         FilterPane {
@@ -298,7 +281,7 @@ FocusScope {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
+            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
@@ -312,6 +295,7 @@ FocusScope {
 
         Loader {
             id: pageLoader
+            objectName: "pageLoader"
 
             Accessible.name: "loader"
             /* FIXME: check on visible necessary; fixed in Qt Quick 1.1
@@ -355,35 +339,11 @@ FocusScope {
         }
     }
 
-    AbstractButton {
-        id: fullScreenButton
-
-        Accessible.name: "Full Screen"
-
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 15
-        anchors.bottomMargin: 15
-        width: fullScreenButtonImage.sourceSize.width
-        height: fullScreenButtonImage.sourceSize.height
-        visible: declarativeView.dashMode != ShellDeclarativeView.FullScreenMode
-
-        Image {
-            id: fullScreenButtonImage
-            source: "artwork/fullscreen_button.png"
-            mirror: isRightToLeft()
-        }
-
-        onClicked: {
-            declarativeView.dashMode = ShellDeclarativeView.FullScreenMode
-        }
-    }
-
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: screen.availableGeometry.width
-    property int fullscreenHeight: screen.availableGeometry.height
+    property int fullscreenWidth: declarativeView.screen.availableGeometry.width
+    property int fullscreenHeight: declarativeView.screen.availableGeometry.height
 
     states: [
         State {

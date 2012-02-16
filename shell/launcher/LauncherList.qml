@@ -25,7 +25,7 @@ AutoScrollingListView {
 
     /* The spacing is explicitly set in order to compensate
        the space added by selectionOutline and round_corner_54x54.png. */
-    spacing: -8
+    spacing: -7
 
     property int tileSize: 54
 
@@ -89,6 +89,16 @@ AutoScrollingListView {
                 return "%1 %2".arg(item.name).arg(windows)
             } else {
                 return "%1 %2".arg(item.name).arg(u2d.tr("not running"))
+            }
+        }
+
+        function updatePips() {
+            if (item.belongsToDifferentWorkspace()) {
+                launcherItem.pips = 1
+                launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
+            } else {
+                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
             }
         }
 
@@ -222,7 +232,10 @@ AutoScrollingListView {
             target: item.menu
             /* The menu had the keyboard focus because the launcher had
                activated it. Restore it. */
-            onDismissedByKeyEvent: declarativeView.forceActivateWindow()
+            onDismissedByKeyEvent: {
+                declarativeView.forceActivateWindow()
+                launcherLoader.focus = true
+            }
         }
 
         Connections {
@@ -279,7 +292,10 @@ AutoScrollingListView {
             PropertyAction { target: launcherItem; property: "ListView.delayRemove"; value: false }
         }
 
-        onRunningChanged: setIconGeometry()
+        onRunningChanged: {
+            setIconGeometry()
+            item.connectWindowSignals()
+        }
         /* Note: this doesn’t work as expected for the first favorite
            application in the list if it is already running when the
            launcher is started, because its y property doesn’t change.
@@ -292,6 +308,8 @@ AutoScrollingListView {
             onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
                                                 y + declarativeView.globalPosition.y,
                                                 width, height, xid)
+            onWindowCountChanged: updatePips()
+            onWindowWorkspaceChanged: updatePips()
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }
@@ -319,7 +337,6 @@ AutoScrollingListView {
 
         Connections {
             target: declarativeView
-            // FIXME: port methods over
             onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
                 if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
@@ -335,5 +352,11 @@ AutoScrollingListView {
                 }
             }
         }
+
+        Connections {
+            target: declarativeView
+            onActiveWorkspaceChanged: updatePips()
+        }
+        Component.onCompleted: updatePips()
     }
 }

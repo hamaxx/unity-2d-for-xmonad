@@ -41,8 +41,6 @@ public:
 
     bool isMaximized() const;
     bool isMostlyOnScreen(int screen) const;
-    bool dashIsVisible() const;
-    bool dashCanResize() const;
 
 public Q_SLOTS:
     void close();

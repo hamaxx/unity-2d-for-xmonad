@@ -4,7 +4,6 @@ set (LIB_NAME "unity-2d-private")
 set(lib${LIB_NAME}_SRCS
     bfb.cpp
     dashclient.cpp
-    dashsettings.cpp
     debug.cpp
     gconnector.cpp
     gimageutils.cpp
@@ -30,6 +29,7 @@ set(lib${LIB_NAME}_SRCS
     windowinfo.cpp
     windowslist.cpp
     screeninfo.cpp
+    desktopinfo.cpp
     cacheeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp

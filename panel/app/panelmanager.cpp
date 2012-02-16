@@ -116,19 +116,36 @@ QStringList PanelManager::loadPanelConfiguration() const
 PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
 {
+    Unity2dPanel* panel;
     QDesktopWidget* desktop = QApplication::desktop();
+
+    QPoint p;
+    if (QApplication::isRightToLeft()) {
+        p = QPoint(desktop->width() - 1, 0);
+    }
+    int leftmost = desktop->screenNumber(p);
+
+    panel = instantiatePanel(leftmost);
+    m_panels.append(panel);
+    panel->show();
+    panel->move(desktop->screenGeometry(leftmost).topLeft());
+
     for(int i = 0; i < desktop->screenCount(); ++i) {
-        Unity2dPanel* panel = instantiatePanel(i);
+        if (i == leftmost) {
+            continue;
+        }
+        panel = instantiatePanel(i);
         m_panels.append(panel);
         panel->show();
         panel->move(desktop->screenGeometry(i).topLeft());
     }
-    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(onScreenCountChanged(int)));
+    connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(updateScreenLayout(int)));
+    connect(desktop, SIGNAL(resized(int)), SLOT(onScreenResized(int)));
 
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
-    Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
-    connect(F10, SIGNAL(released()), SLOT(onF10Pressed()));
+    Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::AltModifier);
+    connect(F10, SIGNAL(released()), SLOT(onAltF10Pressed()));
 }
 
 PanelManager::~PanelManager()
@@ -138,7 +155,7 @@ PanelManager::~PanelManager()
 
 Unity2dPanel* PanelManager::instantiatePanel(int screen)
 {
-    Unity2dPanel* panel = new Unity2dPanel;
+    Unity2dPanel* panel = new Unity2dPanel(false, screen);
     panel->setAccessibleName("Top Panel");
     panel->setEdge(Unity2dPanel::TopEdge);
     panel->setFixedHeight(24);
@@ -181,7 +198,25 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
 }
 
 void
-PanelManager::onScreenCountChanged(int newCount)
+PanelManager::onScreenResized(int screen)
+{
+    QPoint p;
+    QDesktopWidget* desktop = QApplication::desktop();
+    if (QApplication::isRightToLeft()) {
+        p = QPoint(desktop->width() - 1, 0);
+    }
+    int leftmost = desktop->screenNumber(p);
+
+    /*  We only care about the leftmost screen being resized,
+        because there is no screenLayoutChanged signal, we're
+        abusing it here so that we update the panels  */
+    if (screen == leftmost) {
+        updateScreenLayout(desktop->screenCount());
+    }
+}
+
+void
+PanelManager::updateScreenLayout(int newCount)
 {
     if (newCount > 0) {
         QDesktopWidget* desktop = QApplication::desktop();
@@ -197,7 +232,7 @@ PanelManager::onScreenCountChanged(int newCount)
             m_panels.append(panel);
         }
         panel->show();
-        panel->move(desktop->screenGeometry(leftmost).topLeft());
+        panel->setScreen(leftmost);
 
         /* Update the position of other existing panels, and instantiate new
            panels as needed. */
@@ -213,7 +248,7 @@ PanelManager::onScreenCountChanged(int newCount)
                 m_panels.append(panel);
             }
             panel->show();
-            panel->move(desktop->screenGeometry(screen).topLeft());
+            panel->setScreen(screen);
             ++i;
         }
     }
@@ -223,7 +258,7 @@ PanelManager::onScreenCountChanged(int newCount)
     }
 }
 
-void PanelManager::onF10Pressed()
+void PanelManager::onAltF10Pressed()
 {
     QDesktopWidget* desktop = QApplication::desktop();
     int screen = desktop->screenNumber(QCursor::pos());

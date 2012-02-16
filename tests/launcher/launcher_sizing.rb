@@ -30,11 +30,13 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Sizing tests" do
-  PANEL_HEIGHT=24
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
+
+    $SUT.execute_shell_command 'killall unity-2d-panel'
+    $SUT.execute_shell_command 'killall unity-2d-panel'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -50,6 +52,11 @@ context "Sizing tests" do
     @app = $SUT.run( :name => UNITY_2D_SHELL,
                      :arguments => "-testability",
                      :sleeptime => 2 )
+
+    # Make sure the panel is running
+    @app_panel = $SUT.run( :name => UNITY_2D_PANEL, 
+                           :arguments => "-testability", 
+                           :sleeptime => 2 )
 
     # Make certain application is ready for testing
     verify{ @app.Launcher() }

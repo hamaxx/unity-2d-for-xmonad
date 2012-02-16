@@ -18,6 +18,7 @@
 
 import QtQuick 1.1
 import Unity2d 1.0
+import "../common"
 
 /* This component represents a single "tile" in the launcher and the surrounding
    indicator icons.
@@ -156,7 +157,7 @@ DropItem {
         Repeater {
             model: item.pips
             delegate: Image {
-                objectName: "pips"
+                objectName: "pips-" + index
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
                    for a moment it doesn't have any parent, and therefore warnings are
                    printed for the following two anchor assignements. This fixes the
@@ -191,43 +192,28 @@ DropItem {
             height: item.tileSize
             anchors.centerIn: parent
 
-            /* This is the image providing the background image. The
-               color blended with this image is obtained from the color of the icon when it's
-               loaded.
-               While the application is launching, this will fade out and in. */
-            Image {
-                id: tileBackground
-                objectName: "tileBackground"
-                property color color: defaultBackgroundColor
-                anchors.fill: parent
-                smooth: true
-                opacity: 1
+            /* This draws the icon, the tile background and the sheen on top */
+            IconTile {
+                id: icon
+                width: item.tileSize
+                height: item.tileSize
+                anchors.centerIn: parent
 
-                SequentialAnimation on opacity {
+                activeFocus: item.activeFocus
+                backgroundFromIcon: item.backgroundFromIcon
+
+                tileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_54.png" : ""
+                tileShineImage: (item.isBfb) ? "../launcher/artwork/squircle_shine_54.png" : ""
+                selectedTileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_selected_54.png" : ""
+
+                /* tile background fade in/out animation */
+                SequentialAnimation on backgroundOpacity {
                     NumberAnimation { to: 0.0; duration: 1000; easing.type: Easing.InOutQuad }
                     NumberAnimation { to: 1.0; duration: 1000; easing.type: Easing.InOutQuad }
 
                     loops: Animation.Infinite
                     alwaysRunToEnd: true
                     running: launching
-                }
-
-                sourceSize.width: item.tileSize
-                sourceSize.height: item.tileSize
-                source: {
-                    if (isBfb) {
-                        if (declarativeView.focus && item.activeFocus) {
-                            return "artwork/squircle_base_selected_54.png"
-                        } else {
-                            return "artwork/squircle_base_54.png"
-                        }
-                    }
-
-                    var actualColor = declarativeView.focus && item.activeFocus ? selectedBackgroundColor : color
-                    return "image://blended/%1color=%2alpha=%3"
-                        .arg("launcher/artwork/round_corner_54x54.png")
-                        .arg(actualColor.toString().replace("#", ""))
-                        .arg(1.0)
                 }
             }
 
@@ -252,42 +238,6 @@ DropItem {
                     alwaysRunToEnd: true
                     running: launching
                 }
-            }
-
-            /* This is just the main icon of the tile */
-            Image {
-                id: icon
-                objectName: "icon"
-                anchors.centerIn: parent
-                smooth: true
-
-                sourceSize.width: 48
-                sourceSize.height: 48
-
-                /* Whenever one of the parameters used in calculating the background color of
-                   the icon changes, recalculate its value */
-                onWidthChanged: updateColors()
-                onHeightChanged: updateColors()
-                onSourceChanged: updateColors()
-                onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
-
-                function updateColors() {
-                    if (!item.backgroundFromIcon) return;
-
-                    var colors = iconUtilities.getColorsFromIcon(icon.source, icon.sourceSize)
-                    if (colors && colors.length > 0) tileBackground.color = colors[0]
-                }
-            }
-
-            /* This just adds some shiny effect to the tile */
-            Image {
-                id: tileShine
-                anchors.fill: parent
-                smooth: true
-
-                source: isBfb ? "artwork/squircle_shine_54.png" : "artwork/round_shine_54x54.png"
-                sourceSize.width: item.tileSize
-                sourceSize.height: item.tileSize
             }
 
             Image {

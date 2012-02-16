@@ -25,9 +25,10 @@
 #include <hotkeymonitor.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
-#include <dashsettings.h>
+#include <dashclient.h>
 #include <launcherclient.h>
 #include <screeninfo.h>
+#include <strutmanager.h>
 
 // Qt
 #include <QApplication>
@@ -40,17 +41,13 @@
 #include <QtDBus/QDBusInterface>
 #include <QX11Info>
 #include <QGraphicsObject>
+#include <QFileInfo>
 
 // X11
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
-
-static const char* SPREAD_DBUS_SERVICE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_PATH = "/Spread";
-static const char* SPREAD_DBUS_INTERFACE = "com.canonical.Unity2d.Spread";
-static const char* SPREAD_DBUS_METHOD_IS_SHOWN = "IsShown";
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
@@ -63,11 +60,9 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
-    /* Respect the struts manually because the window manager does not enforce struts
-       on dock windows */
-    move(QApplication::desktop()->availableGeometry(QX11Info::appScreen()).topLeft());
-
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
+
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
 
     m_superKeyHoldTimer.setSingleShot(true);
     m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -93,29 +88,43 @@ ShellDeclarativeView::ShellDeclarativeView()
         connect(hotkey, SIGNAL(pressed()), SLOT(forwardNumericHotkey()));
     }
 
-    //connect(desktop, SIGNAL(resized(int)), SLOT(updateDashModeDependingOnScreenGeometry()));
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(updateShellPosition(int)));
-}
-
-// TODO: this is probably expressed more nicely in QML.
-void
-ShellDeclarativeView::updateDashModeDependingOnScreenGeometry()
-{
-    QRect rect = ScreenInfo::instance()->geometry();
-    QSize minSize = Unity2d::DashSettings::minimumSizeForDesktop();
-    if (rect.width() < minSize.width() && rect.height() < minSize.height()) {
-        setDashMode(FullScreenMode);
-    } else {
-        setDashMode(DesktopMode);
-    }
+    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
+    updateShellPosition();
 }
 
 void
-ShellDeclarativeView::updateShellPosition(int screen)
+ShellDeclarativeView::updateShellPosition()
 {
-    if (screen == QX11Info::appScreen()) {
-        move(QApplication::desktop()->availableGeometry(screen).topLeft());
+    // ShellDeclarativeView is a dock window (Qt::WA_X11NetWmWindowTypeDock) this means it does not respect struts.
+    // We use availableGeometry to get the geometry with the struts applied and from there
+    // we remove any strut that we might be applying ourselves
+    const QRect availableGeometry = m_screenInfo->availableGeometry();
+    QPoint posToMove = availableGeometry.topLeft();
+    if (qApp->isRightToLeft()) {
+        posToMove.setX(availableGeometry.width() - width());
     }
+
+    QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
+    Q_FOREACH(StrutManager *strutManager, strutManagers) {
+        if (strutManager->enabled()) {
+            // Do not push ourselves
+            switch (strutManager->edge()) {
+                case Unity2dPanel::TopEdge:
+                    posToMove.ry() -= strutManager->realHeight();
+                break;
+
+                case Unity2dPanel::LeftEdge:
+                    if (qApp->isLeftToRight()) {
+                        posToMove.rx() -= strutManager->realWidth();
+                    } else {
+                        posToMove.rx() += strutManager->realWidth();
+                    }
+                break;
+            }
+        }
+    }
+
+    move(posToMove);
 }
 
 void
@@ -134,6 +143,13 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 }
 
 void
+ShellDeclarativeView::resizeEvent(QResizeEvent *event)
+{
+    updateShellPosition();
+    Unity2DDeclarativeView::resizeEvent(event);
+}
+
+void
 ShellDeclarativeView::setWMFlags()
 {
     Display *display = QX11Info::display();
@@ -149,25 +165,6 @@ ShellDeclarativeView::setWMFlags()
                     XA_ATOM, 32, PropModeAppend, (unsigned char *) &propAtom, 1);
 }
 
-bool
-ShellDeclarativeView::isSpreadActive()
-{
-    /* Check if the spread is present on DBUS first, as we don't want to have DBUS
-       activate it if it's not running yet */
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SPREAD_DBUS_SERVICE);
-    if (reply.isValid() && reply.value() == true) {
-        QDBusInterface spreadInterface(SPREAD_DBUS_SERVICE, SPREAD_DBUS_PATH,
-                                       SPREAD_DBUS_INTERFACE);
-
-        QDBusReply<bool> spreadActiveResult = spreadInterface.call(SPREAD_DBUS_METHOD_IS_SHOWN);
-        if (spreadActiveResult.isValid() && spreadActiveResult.value() == true) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void
 ShellDeclarativeView::showEvent(QShowEvent *event)
 {
@@ -181,23 +178,6 @@ void
 ShellDeclarativeView::setDashActive(bool value)
 {
     if (value != m_active) {
-        if (value) {
-            /* Check if the spread is active before activating the dash.
-               We need to do this since the spread can't prevent the launcher from
-               monitoring the super key and therefore getting to this point if
-               it's tapped. */
-            if (isSpreadActive()) {
-                return;
-            }
-
-            /* FIXME: should not be called here; it is unrelated to the dash being active or not
-               It should be called at the shell instantiation and whenever
-               ScreenInfo::instance()->geometry() changes */
-            updateDashModeDependingOnScreenGeometry();
-            // FIXME: should be moved to Shell.qml
-            // We need a delay, otherwise the window may not be visible when we try to activate it
-            QTimer::singleShot(0, this, SLOT(forceActivateWindow()));
-        }
         m_active = value;
         Q_EMIT dashActiveChanged(m_active);
     }
@@ -207,6 +187,12 @@ bool
 ShellDeclarativeView::dashActive() const
 {
     return m_active;
+}
+
+bool
+ShellDeclarativeView::haveCustomHomeShortcuts() const
+{
+    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
 }
 
 void
@@ -263,6 +249,7 @@ ShellDeclarativeView::toggleDash()
 {
     if (dashActive()) {
         setDashActive(false);
+        forceDeactivateWindow();
     } else {
         Q_EMIT activateHome();
     }
@@ -278,10 +265,17 @@ void
 ShellDeclarativeView::onAltF1Pressed()
 {
     if (!isActiveWindow()) {
-        Q_EMIT launcherFocusRequested();
         forceActivateWindow();
+        Q_EMIT launcherFocusRequested();
     } else {
-        forceDeactivateWindow();
+        if (dashActive()) {
+            // focus the launcher instead of the dash
+            setDashActive(false);
+            Q_EMIT launcherFocusRequested();
+        } else {
+            // we assume that the launcher is focused; unfocus it by deactivating the shell window
+            forceDeactivateWindow();
+        }
     }
 }
 

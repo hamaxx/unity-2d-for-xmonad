@@ -1,3 +1,24 @@
+/*
+ * This file is part of unity-2d
+ *
+ * Copyright 2012 Canonical Ltd.
+ *
+ * Authors:
+ * - Ugo Riboni <ugo.riboni@canonical.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "inputshapemask.h"
 #include "config.h"
 
@@ -57,6 +78,7 @@ void InputShapeMask::setSource(const QString &source)
 {
     if (m_source != source) {
         m_source = source;
+        Q_EMIT sourceChanged(m_source);
         updateShape();
     }
 }
@@ -65,6 +87,7 @@ void InputShapeMask::setColor(const QColor &color)
 {
     if (m_color != color) {
         m_color = color;
+        Q_EMIT colorChanged(m_color);
         updateShape();
     }
 }
