@@ -83,12 +83,13 @@ Item {
         Connections {
             target: declarativeView
             onDashActiveChanged: {
-                if (declarativeView.dashActive && hudLoader.item.active) hudLoader.item.active = false
-
-                if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                else {
+                if (declarativeView.dashActive) {
+                    if (hudLoader.item.active) hudLoader.item.active = false
+                    launcherLoader.visibilityController.beginForceVisible("dash")
+                } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                    if (!hudLoader.item.active) Utils.background.update()
                 }
             }
         }
@@ -138,12 +139,12 @@ Item {
     Connections {
         target: hudLoader.item
         onActiveChanged: {
-            if (dashLoader.item.active && hudLoader.item.active) dashLoader.item.active = false
-
             if (hudLoader.item.active) {
+                if (dashLoader.item.active) dashLoader.item.active = false
                 launcherLoader.visibilityController.beginForceHidden("hud")
             } else {
                 launcherLoader.visibilityController.endForceHidden("hud")
+                if (!dashLoader.item.active) Utils.background.update()
             }
         }
     }

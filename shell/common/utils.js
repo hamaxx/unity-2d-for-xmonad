@@ -44,3 +44,20 @@ function isLeftToRight() {
 function isRightToLeft() {
     return Qt.application.layoutDirection == Qt.RightToLeft
 }
+
+/* BackgroundRevision object to help update background only when wanted.
+   It manages a global variable that is used to control when a new snapshot
+   of the root window is needed. See Background.qml for more information */
+function BackgroundRevision() {
+    this.stamp = 0
+}
+
+BackgroundRevision.prototype.update = function() {
+    this.stamp += 1
+}
+
+BackgroundRevision.prototype.getStamp = function() {
+    return this.stamp
+}
+
+var background = new BackgroundRevision
