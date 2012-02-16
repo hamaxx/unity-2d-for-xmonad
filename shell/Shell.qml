@@ -136,7 +136,7 @@ Item {
     }
 
     Component.onCompleted: {
-        if (declarativeView.isTopLeftShell) {
+        if (declarativeView.screen.screen == 0) {
             var loaderComponent = Qt.createComponent("DashLoader.qml");
             dashLoader = loaderComponent.createObject(shell, {});
         }

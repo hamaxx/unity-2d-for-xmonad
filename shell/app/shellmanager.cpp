@@ -66,7 +66,7 @@ struct ShellManagerPrivate
         , m_superKeyHeld(false)
     {}
 
-    ShellDeclarativeView* initShell(bool isTopLeft, int screen);
+    ShellDeclarativeView* initShell(int screen);
     void updateScreenCount(int newCount);
     ShellDeclarativeView* activeShell() const;
     void moveDashToShell(ShellDeclarativeView* newShell);
@@ -88,10 +88,10 @@ struct ShellManagerPrivate
 
 
 ShellDeclarativeView *
-ShellManagerPrivate::initShell(bool isTopLeft, int screen)
+ShellManagerPrivate::initShell(int screen)
 {
     const QStringList arguments = qApp->arguments();
-    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, isTopLeft, screen);
+    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, screen);
     // Otherwise gets confused when moving the dash around
     view->scene()->setItemIndexMethod(QGraphicsScene::NoIndex);
     view->setAccessibleName("Shell");
@@ -141,50 +141,31 @@ ShellManagerPrivate::activeShell() const
 void
 ShellManagerPrivate::updateScreenCount(int newCount)
 {
-    if (newCount > 0) {
-        QDesktopWidget* desktop = QApplication::desktop();
-        int size = m_viewList.size();
-        ShellDeclarativeView* shell = 0;
+    const int previousCount = m_viewList.size();
 
-        /* The first shell is always the one on the leftmost screen. */
-        QPoint p;
-        if (QApplication::isRightToLeft()) {
-            p = QPoint(desktop->width() - 1, 0);
-        }
-        int leftmost = desktop->screenNumber(p);
-        if (size > 0) {
-            shell = m_viewList[0];
-        } else {
-            shell = initShell(true, leftmost);
-            m_viewList.append(shell);
-        }
-        shell->setScreenNumber(leftmost);
+    /* Update the position of other existing Shells, and instantiate new Shells as needed. */
+    for (int screen = previousCount; screen < newCount; ++screen) {
+        ShellDeclarativeView *shell = initShell(screen);
+        m_viewList.append(shell);
 
-        /* Update the position of other existing Shells, and instantiate new
-           Shells as needed. */
-        int i = 1;
-        for (int screen = 0; screen < newCount; ++screen) {
-            if (screen == leftmost) {
-                continue;
-            }
-            if (i < size) {
-                shell = m_viewList[i];
-            } else {
-                shell = initShell(false, screen);
-                m_viewList.append(shell);
-            }
-            shell->setIsTopLeftShell(false);
-            shell->setScreenNumber(screen);
-            ++i;
+        if (screen == 0) {
+            m_shellWithDash = m_viewList[0];
+            Q_EMIT q->dashShellChanged(m_shellWithDash);
         }
-
-        m_shellWithDash = m_viewList[0];
-        Q_EMIT q->dashShellChanged(m_shellWithDash);
     }
+
     /* Remove extra Shells if any. */
     while (m_viewList.size() > newCount) {
-        m_viewList.takeLast()->deleteLater();
+        ShellDeclarativeView *shell = m_viewList.takeLast();
+        if (shell == m_shellWithDash) {
+            if (newCount > 0) {
+                moveDashToShell(m_viewList[0]);
+                Q_EMIT q->dashShellChanged(m_shellWithDash);
+            }
+        }
+        shell->deleteLater();
     }
+
 }
 
 static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
@@ -237,7 +218,7 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->q = this;
     d->m_sourceFileUrl = sourceFileUrl;
 
-    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+    qmlRegisterUncreatableType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView", "This can only be created from C++");
     qmlRegisterUncreatableType<ShellManager>("Unity2d", 1, 0, "ShellManager", "This can only be created from C++");
 
     QDesktopWidget* desktop = QApplication::desktop();

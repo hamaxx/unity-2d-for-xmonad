@@ -42,9 +42,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
+ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, int screen)
     : Unity2DDeclarativeView()
-    , m_isTopLeftShell(isTopLeftShell)
     , m_sourceFileUrl(sourceFileUrl)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
@@ -251,17 +250,6 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
-}
-
-void
-ShellDeclarativeView::setIsTopLeftShell(bool ashell)
-{
-    if (m_isTopLeftShell == ashell) {
-        return;
-    }
-
-    m_isTopLeftShell = ashell;
-    Q_EMIT isTopLeftShellChanged(m_isTopLeftShell);
 }
 
 void

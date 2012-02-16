@@ -34,7 +34,6 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_OBJECT
 
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
-    Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
        we need to detect when the mouse is inside the area occupied by the lancher. This should
@@ -47,18 +46,16 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
                                                NOTIFY monitoredAreaContainsMouseChanged)
 
 public:
-    explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
+    explicit ShellDeclarativeView(const QUrl &sourceFileUrl, int screen);
 
     /* getters */
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
-    bool isTopLeftShell() const { return m_isTopLeftShell; }
 
     /* setters */
     void setScreenNumber(int);
     int screenNumber() const;
     void setMonitoredArea(QRect monitoredArea);
-    void setIsTopLeftShell(bool);
 
     virtual bool x11EventFilter(XEvent* event);
 
@@ -75,7 +72,6 @@ Q_SIGNALS:
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
-    void isTopLeftShellChanged(bool);
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -94,7 +90,6 @@ private:
 
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
-    bool m_isTopLeftShell;
     QUrl m_sourceFileUrl;
 
     friend class LauncherDBus;
