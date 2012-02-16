@@ -106,7 +106,6 @@ AbstractButton {
             font.pixelSize: FontUtils.fontSizeToPixels("xx-large")
             focus: true
             selectByMouse: true
-            cursorDelegate: cursor
             selectionColor: "gray"
 
             onTextChanged: liveSearchTimeout.restart()
@@ -121,34 +120,6 @@ AbstractButton {
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;
-                }
-            }
-
-            Component {
-                id: cursor
-
-                Rectangle {
-                    color: "white"
-                    width: 2
-                    height: 16
-
-                    /* WARNING: that animation uses resources */
-                    /* The following animation would behave exactly like
-                       Unity if only 'search_input' could be referenced from
-                       within the cursor Component.
-                    /*
-                    SequentialAnimation on opacity {
-                        id: cursor_pulse
-                        loops: 30
-                        running: false
-                        PropertyAnimation { duration: 1000; to: 0; easing.type: Easing.InOutQuad }
-                        PropertyAnimation { duration: 1000; to: 1; easing.type: Easing.InOutQuad }
-                    }
-                    Connections {
-                        target: search_input
-                        onTextChanged: cursor_pulse.running = true
-                        onActiveFocusChanged: cursor_pulse.running = search_input.activeFocus
-                    }*/
                 }
             }
 
