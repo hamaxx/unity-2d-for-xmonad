@@ -101,7 +101,7 @@ FocusScope {
 
             Image {
                 id: pip
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenter: iconTile.verticalCenter
                 anchors.left: parent.left
                 mirror: Utils.isRightToLeft()
 
@@ -111,6 +111,7 @@ FocusScope {
             }
 
             IconTile {
+                id: iconTile
                 anchors.top: parent.top
                 anchors.topMargin: 5
                 anchors.left: parent.left
