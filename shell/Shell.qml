@@ -83,6 +83,8 @@ Item {
         Connections {
             target: declarativeView
             onDashActiveChanged: {
+                if (declarativeView.dashActive && hudLoader.item.active) hudLoader.item.active = false
+
                 if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
                 else {
                     launcherLoader.visibilityController.endForceVisible("dash")
@@ -134,12 +136,27 @@ Item {
     }
 
     Connections {
+        target: hudLoader.item
+        onActiveChanged: {
+            if (dashLoader.item.active && hudLoader.item.active) dashLoader.item.active = false
+
+            if (hudLoader.item.active) {
+                launcherLoader.visibilityController.beginForceHidden("hud")
+            } else {
+                launcherLoader.visibilityController.endForceHidden("hud")
+            }
+        }
+    }
+
+    Connections {
         target: declarativeView
         onLauncherFocusRequested: {
             launcherLoader.focus = true
             launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
+            if (!declarativeView.focus && hudLoader.item.active) hudLoader.item.active = false
+
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
                if it has it, this doesn't happen with FocusScopes (and Launcher is a FocusScope).
