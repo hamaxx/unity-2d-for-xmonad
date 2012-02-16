@@ -50,7 +50,7 @@ FocusScope {
             resultList.focus = true
         } else {
             hudModel.endSearch
-            resultList.currentIndex = 0
+            resultList.currentIndex = -1
         }
     }
 
