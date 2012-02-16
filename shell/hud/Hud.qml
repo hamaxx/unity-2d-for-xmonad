@@ -38,7 +38,10 @@ FocusScope {
 
     height: layout.childrenRect.height + layout.anchors.bottomMargin + 10
 
-    Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
+    Behavior on height {
+        enabled: desktop.isCompositingManagerRunning
+        PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad }
+    }
 
     WindowInfo {
         id: activeWindow
