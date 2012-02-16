@@ -29,6 +29,7 @@
 #include <launcherclient.h>
 #include <screeninfo.h>
 #include <strutmanager.h>
+#include <pointerbarrier.h>
 
 // Qt
 #include <QApplication>

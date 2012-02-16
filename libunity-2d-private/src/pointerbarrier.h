@@ -41,6 +41,7 @@ public:
     ~PointerBarrierWrapper();
 
     void createBarrier(const QLine&, const int threshold);
+    void updateBarrier(const QLine&, const int threshold);
     void destroyBarrier();
 
 Q_SIGNALS:
@@ -56,12 +57,14 @@ private:
     PointerBarrierWrapperPrivate* d;
     PointerBarrier m_barrier;
 
+    bool m_active;
     int m_eventBase;
     int m_errorBase;
     int m_maxVelocityMultiplier;
     int m_smoothing;
     QTimer *m_smoothingTimer;
     int m_threshold;
+    int m_pressure;
 };
 
 #endif // POINTERBARRIER_H

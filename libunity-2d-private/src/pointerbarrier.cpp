@@ -44,6 +44,7 @@ struct PointerBarrierWrapperPrivate
 PointerBarrierWrapper::PointerBarrierWrapper(const QLine& line, const int threshold, QObject *parent)
     : QObject(parent)
     , d(new PointerBarrierWrapperPrivate)
+    , m_active(false)
     , m_eventBase(0)
     , m_errorBase(0)
     , m_maxVelocityMultiplier(30) //??
@@ -57,7 +58,7 @@ PointerBarrierWrapper::PointerBarrierWrapper(const QLine& line, const int thresh
 
     int maj, min;
     XFixesQueryVersion(display, &maj, &min);
-    if (maj < 5) {
+    if (maj < 6) {
         qDebug() << "XFixes version 6 or greater required for PointerBarrierVelocity";
         return;
     }
@@ -83,19 +84,29 @@ PointerBarrierWrapper::PointerBarrierWrapper(const QLine& line, const int thresh
 PointerBarrierWrapper::~PointerBarrierWrapper()
 {
     destroyBarrier();
+
+    Unity2dApplication* application = Unity2dApplication::instance();
+    if (application != NULL) {
+        application->removeX11EventFilter(this);
+    }
 }
 
 void
 PointerBarrierWrapper::createBarrier(const QLine& line, int threshold)
 {
+    if (m_active) {
+        qDebug() << "Border already created";
+        return;
+    }
+
     if (threshold < 0) {
         qDebug() << "Cannot create border with negative stop velocity";
         return;
     }
 
     if (line.isNull() ||
-            (line.x1() != line.x2()) && (line.y1() != line.y2())
-       ) {
+           ((line.x1() != line.x2()) && (line.y1() != line.y2())))
+    {
         qDebug() << "Barrier line must be horizontal or vertical only";
         return;
     }
@@ -104,30 +115,40 @@ PointerBarrierWrapper::createBarrier(const QLine& line, int threshold)
     m_threshold = threshold;
 
     m_barrier = XFixesCreatePointerBarrierVelocity(display,
-                                                 DefaultRootWindow(display),
-                                                 line.x1(), line.y1(),
-                                                 line.x2(), line.y2(),
-                                                 0,
-                                                 m_threshold,
-                                                 0,
-                                                 NULL);
+                    DefaultRootWindow(display),
+                    line.x1(), line.y1(),
+                    line.x2(), line.y2(),
+                    0,
+                    m_threshold,
+                    0,
+                    NULL);
+    m_active = true;
 }
 
 void
 PointerBarrierWrapper::destroyBarrier()
 {
-    XFixesDestroyPointerBarrier(QX11Info::display(), m_barrier);
+    if (m_active) {
+        XFixesDestroyPointerBarrier(QX11Info::display(), m_barrier);
+        m_active = false;
+    }
+}
+
+void
+PointerBarrierWrapper::updateBarrier(const QLine& line, int threshold)
+{
+    destroyBarrier();
+    createBarrier(line, threshold);
 }
 
 bool
-PointerBarrierWrapper::x11EventFilter(XEvent* event)
+PointerBarrierWrapper::x11EventFilter(XEvent *event)
 {
     if (event->type - m_eventBase == XFixesBarrierNotify) {
 
-        XFixesBarrierNotifyEvent *notifyEvent = (XFixesBarrierNotifyEvent *)&event;
+        XFixesBarrierNotifyEvent *notifyEvent = (XFixesBarrierNotifyEvent *)event;
 
         if (notifyEvent->barrier == m_barrier && notifyEvent->subtype == XFixesBarrierHitNotify) {
-
             d->m_lastX = notifyEvent->x;
             d->m_lastY = notifyEvent->y;
             d->m_lastEventId = notifyEvent->event_id;
@@ -159,5 +180,22 @@ PointerBarrierWrapper::smoother()
     d->m_smoothingAccumulator = 0;
     d->m_smoothingCount = 0;
 }
+
+
+/*   // make the effect half as strong as specified as other values shouldn't scale
+  // as quickly as the max velocity multiplier
+  float responsiveness_mult = ((options->edge_responsiveness() - 1) * .025) + 1;
+
+  decaymulator_->rate_of_decay = options->edge_decay_rate() * responsiveness_mult;
+  _edge_overcome_pressure = options->edge_overcome_pressure() * responsiveness_mult;
+
+  _pointer_barrier->threshold = options->edge_stop_velocity();
+  _pointer_barrier->max_velocity_multiplier = options->edge_responsiveness();
+  _pointer_barrier->DestroyBarrier();
+  _pointer_barrier->ConstructBarrier();
+
+  _hide_machine->reveal_pressure = options->edge_reveal_pressure() * responsiveness_mult;
+  _hide_machine->edge_decay_rate = options->edge_decay_rate() * responsiveness_mult;
+  */
 
 #include <pointerbarrier.moc>
