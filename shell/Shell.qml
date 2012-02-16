@@ -166,7 +166,7 @@ Item {
                         return Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
                     }
                 } else {
-                    return Qt.rect(1, 1, 1, 1)
+                    return Qt.rect(0, 0, 0, 0)
                 }
             }
             enabled: dashLoader != undefined && dashLoader.status == Loader.Ready && dashLoader.item.active
@@ -176,7 +176,7 @@ Item {
                 id: shape1
                 source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
-                position: dashLoader != undefined ? Qt.point(dashLoader.width - 50, dashLoader.height - 49) : Qt.point(1, 1)
+                position: dashLoader != undefined ? Qt.point(dashLoader.width - 50, dashLoader.height - 49) : Qt.point(0, 0)
                 enabled: shellManager.dashMode == ShellManager.DesktopMode
             }
         }

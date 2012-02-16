@@ -59,7 +59,7 @@ QColor InputShapeMask::color() const
     return m_color;
 }
 
-QPoint InputShapeMask::position() const
+QPointF InputShapeMask::position() const
 {
     return m_position;
 }
@@ -92,7 +92,7 @@ void InputShapeMask::setColor(const QColor &color)
     }
 }
 
-void InputShapeMask::setPosition(const QPoint &position)
+void InputShapeMask::setPosition(const QPointF &position)
 {
     if (m_position != position) {
         m_position = position;
