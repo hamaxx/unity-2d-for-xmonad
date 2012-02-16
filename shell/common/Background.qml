@@ -19,6 +19,7 @@
 import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
+import "utils.js" as Utils
 
 Item {
     id: background
@@ -41,15 +42,17 @@ Item {
 
             effect: Blur {blurRadius: 12}
 
-            /* 'source' needs to be set when this becomes visible, that is when active
-               becomes true, so that a screenshot of the desktop is taken at that point.
-               See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
-            */
+            /* To create the blurred background illusion, we grab the image of the root window 
+               which essentially is a capture of the entire screen. However we don't want this 
+               image to always be cached, but instead want to trigger a reload when needed.
+               QML1.1 can disable cacheing entirely, but unfortunately in that case there is no way  
+               to force an image reload to occur. See https://bugreports.qt-project.org/browse/QTBUG-14900
 
-            /* Use an image of the root window which essentially is a
-               capture of the entire screen */
-            source: active ? "image://window/root" : ""
-            cache: false
+               To work around this we append a global counter to the URI that we can increment
+               when necessary. We look for an updated background image only when 'active' becomes true,
+               i.e. when this component becomes visible.
+            */
+            source: active ? "image://window/root@" + Utils.background.getStamp() : ""
 
             fillMode: Image.PreserveAspectCrop
 

@@ -83,8 +83,10 @@ Item {
         Connections {
             target: declarativeView
             onDashActiveChanged: {
-                if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                else {
+                if (declarativeView.dashActive) {
+                    Utils.background.update()
+                    launcherLoader.visibilityController.beginForceVisible("dash")
+                } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
                 }
