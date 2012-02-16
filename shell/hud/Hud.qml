@@ -39,10 +39,15 @@ FocusScope {
     height: container.height + layout.anchors.bottomMargin + container.anchors.topMargin + listLowerMargin
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
 
+    WindowInfo {
+        id: activeWindow
+        contentXid: declarativeView.lastFocusedWindow
+    }
+
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
-            searchEntry.focus = true
+            resultList.focus = true
         } else {
             hudModel.endSearch
             resultList.currentIndex = 0
@@ -97,8 +102,6 @@ FocusScope {
             anchors.bottom: parent.bottom
             width: 65
 
-            visible: resultList.activeFocus
-
             Image {
                 id: pip
 
@@ -123,7 +126,9 @@ FocusScope {
 
                 source: (resultList.currentItem != null)
                         ? "image://icons/" + resultList.currentItem.icon
-                        : "image://icons/unknown"
+                        : (activeWindow.icon
+                           ? "image://icons/" + activeWindow.icon
+                           : "image://icons/unknown")
             }
         }
 
@@ -152,9 +157,6 @@ FocusScope {
             SearchEntry {
                 id: searchEntry
 
-                focus: true
-                KeyNavigation.down: (resultList.count > 0 ) ? resultList : null
-
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -165,15 +167,19 @@ FocusScope {
                 active: hud.active
                 placeHolderText: u2d.tr("Type your Command")
 
-                onSearchQueryChanged: hudModel.searchQuery = searchQuery
+                onSearchQueryChanged: {
+                    hudModel.searchQuery = searchQuery
+                    resultList.currentIndex = 0
+                }
                 onActivateFirstResult: executeResult(0)
             }
 
             ListView {
                 id: resultList
 
+                focus: true
+
                 Accessible.name: "result list"
-                KeyNavigation.up: searchEntry
 
                 model: hudModel
 

@@ -31,6 +31,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include "bamf-window.h"
+#include "bamf-matcher.h"
+
 // libwnck
 extern "C" {
 #include <libwnck/libwnck.h>
@@ -228,6 +231,7 @@ void Unity2DDeclarativeView::forceDeactivateWindow()
     forceActivateThisWindow(m_last_focused_window);
 
     m_last_focused_window = None;
+    Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
 }
 
 void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
@@ -268,13 +272,10 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
 /* Save WId of window with keyboard focus to m_last_focused_window */
 void Unity2DDeclarativeView::saveActiveWindow()
 {
-    Display* display = QX11Info::display();
-    WId active_window;
-    int current_focus_state;
-
-    XGetInputFocus(display, &active_window, &current_focus_state);
+    WId active_window = BamfMatcher::get_default().active_window()->xid();
     if( active_window != this->effectiveWinId()){
         m_last_focused_window = active_window;
+        Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
     }
 }
 
@@ -288,6 +289,12 @@ ScreenInfo*
 Unity2DDeclarativeView::screen() const
 {
     return m_screenInfo;
+}
+
+unsigned int
+Unity2DDeclarativeView::lastFocusedWindow() const
+{
+    return m_last_focused_window;
 }
 
 #include <unity2ddeclarativeview.moc>
