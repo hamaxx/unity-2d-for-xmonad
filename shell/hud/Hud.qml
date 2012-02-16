@@ -33,10 +33,12 @@ FocusScope {
     property bool active: false
 
     property int resultHeight: 42
-    property int listLowerMargin: 10
+    property int listBottomMargin: 10
 
     property bool animating: heightAnimation.running
-    height: container.height + layout.anchors.bottomMargin + container.anchors.topMargin + listLowerMargin
+
+    height: layout.childrenRect.height + layout.anchors.bottomMargin
+
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
 
     WindowInfo {
@@ -88,6 +90,7 @@ FocusScope {
         id: layout
 
         anchors.fill: parent
+
         /* Margins so content does not overlap with the background border */
         anchors.bottomMargin: background.bottomBorderThickness
         anchors.rightMargin: background.rightBorderThickness
@@ -99,7 +102,6 @@ FocusScope {
 
             anchors.left: parent.left
             anchors.top: parent.top
-            anchors.bottom: parent.bottom
             width: 65
 
             Image {
@@ -146,7 +148,7 @@ FocusScope {
             anchors.leftMargin: 10
             anchors.right: parent.right
             anchors.rightMargin: 10
-            height: resultList.count * resultHeight + searchEntry.height
+            height: childrenRect.height
 
             border.color: "#21ffffff" // 80% opaque
             border.width: 1
@@ -186,8 +188,7 @@ FocusScope {
                 anchors.top: searchEntry.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 10
+                height: count * resultHeight
 
                 boundsBehavior: ListView.StopAtBounds
 
@@ -200,6 +201,11 @@ FocusScope {
                     onClicked: executeResult(resultId)
                 }
             }
+        }
+
+        Item {
+            anchors.top: container.bottom
+            height: 10
         }
     }
 }
