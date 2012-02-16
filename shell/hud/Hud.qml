@@ -33,11 +33,10 @@ FocusScope {
     property bool active: false
 
     property int resultHeight: 42
-    property int listBottomMargin: 10
 
     property bool animating: heightAnimation.running
 
-    height: layout.childrenRect.height + layout.anchors.bottomMargin
+    height: layout.childrenRect.height + layout.anchors.bottomMargin + 11
 
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
 
@@ -201,11 +200,6 @@ FocusScope {
                     onClicked: executeResult(resultId)
                 }
             }
-        }
-
-        Item {
-            anchors.top: container.bottom
-            height: 10
         }
     }
 }
