@@ -1,7 +1,7 @@
 /*
 * This file is part of unity-2d
 *
-* Copyright 2010-2011 Canonical Ltd.
+* Copyright 2012 Canonical Ltd.
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,19 @@ AbstractButton {
 
     Rectangle {
         id: line
+
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: 1
+
         color: "#21ffffff" // 80% opaque
     }
 
     Rectangle {
         id: container
         objectName: "container"
+
         anchors.top: line.bottom
         anchors.left: parent.left
         anchors.right: parent.right

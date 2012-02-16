@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010-2011 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,7 @@ FocusScope {
         if (active) {
             declarativeView.forceActivateWindow()
             searchEntry.focus = true
-        }
-        else {
+        } else {
             hudModel.endSearch
             resultList.currentIndex = 0
         }
@@ -57,14 +56,17 @@ FocusScope {
     }
 
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape) {
-            toggleHud()
-        }
+        if (event.key == Qt.Key_Escape) toggleHud()
     }
 
     function toggleHud() {
         if (active) declarativeView.forceDeactivateWindow()
         active = !active
+    }
+
+    function executeResult(resultId) {
+        hudModel.executeResult(resultId)
+        hud.active = false
     }
 
     property variant hudModel: Hud {}
@@ -81,11 +83,9 @@ FocusScope {
         id: layout
 
         anchors.fill: parent
-        /* Margins in DesktopMode set so that the content does not overlap with
-           the border defined by the background image.
-        */
-        anchors.bottomMargin: 39
-        anchors.rightMargin: 37
+        /* Margins so content does not overlap with the background border */
+        anchors.bottomMargin: background.bottomBorderThickness
+        anchors.rightMargin: background.rightBorderThickness
 
         clip: true
 
@@ -101,6 +101,7 @@ FocusScope {
 
             Image {
                 id: pip
+
                 anchors.verticalCenter: iconTile.verticalCenter
                 anchors.left: parent.left
                 mirror: Utils.isRightToLeft()
@@ -112,12 +113,14 @@ FocusScope {
 
             IconTile {
                 id: iconTile
+
                 anchors.top: parent.top
                 anchors.topMargin: 5
                 anchors.left: parent.left
                 anchors.leftMargin: 6
                 width: 54
                 height: 54
+
                 source: (resultList.currentItem != null)
                         ? "image://icons/" + resultList.currentItem.icon
                         : "image://icons/unknown"
@@ -131,6 +134,7 @@ FocusScope {
 
         Rectangle {
             id: container
+
             anchors.top: parent.top
             anchors.topMargin: 11
             anchors.left: tile.right
@@ -138,6 +142,7 @@ FocusScope {
             anchors.right: parent.right
             anchors.rightMargin: 10
             height: resultList.count * resultHeight + searchEntry.height
+
             border.color: "#21ffffff" // 80% opaque
             border.width: 1
             color: "transparent"
@@ -153,18 +158,15 @@ FocusScope {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-
                 height: 42
+
                 opacity: 1
 
                 active: hud.active
                 placeHolderText: u2d.tr("Type your Command")
 
                 onSearchQueryChanged: hudModel.searchQuery = searchQuery
-                onActivateFirstResult: {
-                    hudModel.executeResult(0)
-                    hud.active = false
-                }
+                onActivateFirstResult: executeResult(0)
             }
 
             ListView {
@@ -179,19 +181,17 @@ FocusScope {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
 
                 boundsBehavior: ListView.StopAtBounds
 
-                delegate: ResultItem{
+                delegate: ResultItem {
                     height: resultHeight
                     width: ListView.view.width
 
                     icon: iconName /* expose this property for tile */
 
-                    onClicked: {
-                        hudModel.executeResult(resultId)
-                        hud.active = false
-                    }
+                    onClicked: executeResult(resultId)
                 }
             }
         }
