@@ -150,6 +150,7 @@ void Hud::executeResultBySearch(const QString& searchQuery) const
 void Hud::endSearch()
 {
     m_unityHud->CloseQuery();
+    m_searchQuery.clear();
 }
 
 void Hud::onResultsUpdated(const unity::hud::Hud::Queries results)
