@@ -241,6 +241,17 @@ FocusScope {
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
 
+        Image {
+            id: panelBorder
+
+            height: 1
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: "artwork/panel_border.png"
+            fillMode: Image.Stretch
+        }
+
         SearchEntry {
             id: search_entry
 

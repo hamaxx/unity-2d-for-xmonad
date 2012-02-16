@@ -159,6 +159,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     panel->setAccessibleName("Top Panel");
     panel->setEdge(Unity2dPanel::TopEdge);
     panel->setFixedHeight(24);
+    panel->setAttribute(Qt::WA_TranslucentBackground, true);
 
     QPoint p;
     if (QApplication::isRightToLeft()) {
