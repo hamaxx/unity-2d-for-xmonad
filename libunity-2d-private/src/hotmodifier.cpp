@@ -55,6 +55,8 @@ HotModifier::held() const
 void
 HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    /* FIXME this logic needs tweaking, as pressing one modifier and tapping
+       another will result in a tap on the latter one. */
     bool pressed = m_modifiers & modifiers;
     if (!m_ignored && m_pressed && !m_held && !pressed) {
         Q_EMIT tapped();
