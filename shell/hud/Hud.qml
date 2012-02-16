@@ -126,7 +126,7 @@ FocusScope {
                 width: 54
                 height: 54
 
-                source: (resultList.currentItem != null)
+                source: (resultList.count > 0)
                         ? "image://icons/" + resultList.currentItem.icon
                         : (activeWindow.icon
                            ? "image://icons/" + activeWindow.icon
