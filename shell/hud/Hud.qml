@@ -42,7 +42,6 @@ FocusScope {
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
-            hudModel.searchText = "" /* helps ensure HUD ready */
             searchEntry.focus = true
         }
         else {
@@ -54,16 +53,20 @@ FocusScope {
     Connections {
         target: declarativeView
 
-        onToggleHud: active = !active
-        onFocusChanged: console.log("focus", focus)
-        onActiveFocusChanged: console.log("activefocus", activeFocus)
+        onToggleHud: toggleHud()
     }
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape) {
-            active = false
+            toggleHud()
         }
     }
+
+    function toggleHud() {
+        if (active) declarativeView.forceDeactivateWindow()
+        active = !active
+    }
+
     property variant hudModel: Hud {}
 
     Background {
