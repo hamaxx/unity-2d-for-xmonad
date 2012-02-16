@@ -84,11 +84,11 @@ Item {
             target: declarativeView
             onDashActiveChanged: {
                 if (declarativeView.dashActive) {
-                    Utils.background.update()
                     launcherLoader.visibilityController.beginForceVisible("dash")
                 } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                    Utils.background.update()
                 }
             }
         }
