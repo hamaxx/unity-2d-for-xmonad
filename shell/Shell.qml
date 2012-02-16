@@ -84,7 +84,6 @@ Item {
             target: declarativeView
             onDashActiveChanged: {
                 if (declarativeView.dashActive) {
-                    if (hudLoader.item.active) hudLoader.item.active = false
                     launcherLoader.visibilityController.beginForceVisible("dash")
                 } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
