@@ -180,7 +180,7 @@ LauncherDropItem {
         dashView: declarativeView
     }
 
-    LauncherApplicationsList {
+    ApplicationsList {
         id: applications
     }
 

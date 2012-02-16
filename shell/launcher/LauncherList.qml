@@ -126,10 +126,10 @@ AutoScrollingListView {
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
         shortcutVisible: declarativeView.superKeyHeld &&
-                         ((item.toString().indexOf("LauncherApplication") == 0 && index > 0 && index <= 10) ||
+                         ((item.toString().indexOf("Application") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
-            if (item.toString().indexOf("LauncherApplication") == 0) {
+            if (item.toString().indexOf("Application") == 0) {
                 return index % 10
             } else {
                 return String.fromCharCode(item.shortcutKey).toLowerCase()
@@ -141,7 +141,7 @@ AutoScrollingListView {
 
         /* Best way I could find to check if the item is an application or the
            workspaces switcher. There may be something cleaner and better. */
-        backgroundFromIcon: item.toString().indexOf("LauncherApplication") == 0 ||
+        backgroundFromIcon: item.toString().indexOf("Application") == 0 ||
                             item.toString().indexOf("Workspaces") == 0
 
         Binding { target: item.menu; property: "title"; value: item.name }
@@ -339,14 +339,14 @@ AutoScrollingListView {
             target: declarativeView
             onActivateShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
-                if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
+                if (item.toString().indexOf("Application") == 0 && index == itemIndex) {
                     item.menu.hide()
                     item.activate()
                 }
             }
             onNewInstanceShortcutPressed: {
                 /* Only applications can be launched by keyboard shortcuts */
-                if (item.toString().indexOf("LauncherApplication") == 0 && index == itemIndex) {
+                if (item.toString().indexOf("Application") == 0 && index == itemIndex) {
                     item.menu.hide()
                     item.launchNewInstance()
                 }

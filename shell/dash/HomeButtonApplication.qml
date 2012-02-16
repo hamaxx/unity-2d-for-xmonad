@@ -28,7 +28,7 @@ HomeButton {
         id: gconfKey
     }
 
-    LauncherApplication {
+    Application {
         id: application
         desktop_file: {
             var exec = gconfKey.value
