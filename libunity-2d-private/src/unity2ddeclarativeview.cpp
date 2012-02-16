@@ -272,8 +272,12 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
 /* Save WId of window with keyboard focus to m_last_focused_window */
 void Unity2DDeclarativeView::saveActiveWindow()
 {
+    /* Using Bamf here, 'cause XGetFocusInputFocus returned a XId
+       different by 1, which then could not be used with Bamf to
+       get the application. The change does not result in any functional
+       differences, though. */
     WId active_window = BamfMatcher::get_default().active_window()->xid();
-    if( active_window != this->effectiveWinId()){
+    if (active_window != this->effectiveWinId()) {
         m_last_focused_window = active_window;
         Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
     }
