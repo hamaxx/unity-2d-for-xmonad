@@ -36,7 +36,7 @@ FocusScope {
 
     property bool animating: heightAnimation.running
 
-    height: layout.childrenRect.height + layout.anchors.bottomMargin + 11
+    height: layout.childrenRect.height + layout.anchors.bottomMargin + 10
 
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
 
