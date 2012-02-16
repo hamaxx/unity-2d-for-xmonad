@@ -344,12 +344,14 @@ ShellManager::onScreenCountChanged(int newCount)
 void
 ShellManager::toggleDash()
 {
-    if (dashActive()) {
-        setDashActive(false);
-        d->m_shellWithDash->forceDeactivateWindow();
-    } else {
-        ShellDeclarativeView * activeShell = d->activeShell();
-        if (activeShell) {
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        const bool differentShell = d->m_shellWithDash != activeShell;
+
+        if (dashActive() && !differentShell) {
+            setDashActive(false);
+            d->m_shellWithDash->forceDeactivateWindow();
+        } else {
             d->moveDashToShell(activeShell);
             Q_EMIT dashActivateHome();
         }
