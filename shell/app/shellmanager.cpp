@@ -180,7 +180,6 @@ static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
     return res;
 }
 
-
 void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
 {
     if (newShell != m_shellWithDash) {
