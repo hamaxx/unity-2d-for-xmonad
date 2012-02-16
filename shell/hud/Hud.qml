@@ -39,6 +39,11 @@ FocusScope {
     height: container.height + layout.anchors.bottomMargin + container.anchors.topMargin + listLowerMargin
     Behavior on height { PropertyAnimation { id: heightAnimation; duration: 150; easing.type: Easing.InOutQuad } }
 
+    WindowInfo {
+        id: activeWindow
+        contentXid: declarativeView.lastFocusedWindow
+    }
+
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
@@ -123,7 +128,9 @@ FocusScope {
 
                 source: (resultList.currentItem != null)
                         ? "image://icons/" + resultList.currentItem.icon
-                        : "image://icons/unknown"
+                        : (activeWindow.icon
+                           ? "image://icons/" + activeWindow.icon
+                           : "image://icons/unknown")
             }
         }
 
