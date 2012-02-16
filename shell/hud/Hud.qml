@@ -71,7 +71,7 @@ FocusScope {
 
     function executeResult(resultId) {
         hudModel.executeResult(resultId)
-        hud.active = false
+        active = false
     }
 
     property variant hudModel: Hud {}
