@@ -52,6 +52,15 @@ FocusScope {
 
     onActiveChanged: if (dash.active) shellManager.dashShell.forceActivateWindow()
 
+    Connections {
+        target: shellManager
+        onDashShellChanged: {
+            if (dash.active) {
+                shellManager.dashShell.forceActivateWindow()
+            }
+        }
+    }
+
     property variant queuedLensId
 
     function isRightToLeft() {

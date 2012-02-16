@@ -92,6 +92,8 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
 {
     const QStringList arguments = qApp->arguments();
     ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, isTopLeft, screen);
+    // Otherwise gets confused when moving the dash around
+    view->scene()->setItemIndexMethod(QGraphicsScene::NoIndex);
     view->setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view->setUseOpenGL(true);
@@ -185,27 +187,41 @@ ShellManagerPrivate::updateScreenCount(int newCount)
     }
 }
 
+static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
+    QList<QDeclarativeItem *> res;
+    QDeclarativeItem *item = qobject_cast<QDeclarativeItem*>(obj);
+    if (item && item->hasFocus()) {
+        res << item;
+    }
+    Q_FOREACH (QObject *childObj, obj->children()) {
+        res += dumpFocusedItems(childObj);
+    }
+    return res;
+}
+
+
 void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
 {
     if (newShell != m_shellWithDash) {
         QDeclarativeItem *dash = qobject_cast<QDeclarativeItem*>(m_shellWithDash->rootObject()->property("dashLoader").value<QObject *>());
         if (dash) {
-            QGraphicsView::ViewportUpdateMode vum1 = m_shellWithDash->viewportUpdateMode();
-            QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
-            m_shellWithDash->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            ShellDeclarativeView *oldShell = m_shellWithDash;
 
-            newShell->scene()->addItem(dash);
+            // Moving the dash around makes it lose its focus values, remember them and set them later
+            const QList<QDeclarativeItem *> dashChildrenFocusedItems = dumpFocusedItems(dash);
+
+            oldShell->rootObject()->setProperty("dashLoader", QVariant());
+            oldShell->scene()->removeItem(dash);
+
             dash->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
-
-            m_shellWithDash->rootObject()->setProperty("dashLoader", QVariant());
             newShell->rootObject()->setProperty("dashLoader", QVariant::fromValue<QObject*>(dash));
 
-            m_shellWithDash->setViewportUpdateMode(vum1);
-            newShell->setViewportUpdateMode(vum2);
-
             m_shellWithDash = newShell;
-            Q_EMIT q->dashShellChanged(m_shellWithDash);
+            Q_EMIT q->dashShellChanged(newShell);
+
+            Q_FOREACH(QDeclarativeItem *item, dashChildrenFocusedItems) {
+                item->setFocus(true);
+            }
         } else {
             qWarning() << "moveDashToShell: Could not find the dash";
         }
@@ -332,7 +348,11 @@ ShellManager::toggleDash()
         setDashActive(false);
         d->m_shellWithDash->forceDeactivateWindow();
     } else {
-        Q_EMIT dashActivateHome();
+        ShellDeclarativeView * activeShell = d->activeShell();
+        if (activeShell) {
+            d->moveDashToShell(activeShell);
+            Q_EMIT dashActivateHome();
+        }
     }
 }
 
