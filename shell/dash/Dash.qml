@@ -20,13 +20,14 @@ import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
 import "../common"
+import "../common/utils.js" as Utils
 
 FocusScope {
     id: dash
     objectName: "Dash"
     Accessible.name: "dash"
 
-    LayoutMirroring.enabled: isRightToLeft()
+    LayoutMirroring.enabled: Utils.isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
@@ -53,10 +54,6 @@ FocusScope {
     onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
 
     property variant queuedLensId
-
-    function isRightToLeft() {
-        return Qt.application.layoutDirection == Qt.RightToLeft
-    }
 
     Binding {
         target: declarativeView
