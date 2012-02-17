@@ -203,11 +203,7 @@ Item {
         }
 
         InputShapeRectangle {
-            rectangle: if (desktop.isCompositingManagerRunning) {
-                Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
-            } else {
-                Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
-            }
+            id: hudInputShape
             enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
 
             InputShapeMask {
@@ -239,7 +235,20 @@ Item {
                                 launcherLoader.height)
             }
         }
-        when: !launcherLoaderXAnimation.running && !hudLoader.animating
+        when: !launcherLoaderXAnimation.running
+    }
+
+    Binding {
+        target: hudInputShape
+        property: "rectangle"
+        value: {
+            if (desktop.isCompositingManagerRunning) {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            } else {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+            }
+        }
+        when: !hudLoader.animating
     }
 
     StrutManager {
