@@ -68,7 +68,8 @@ PointerBarrierWrapper::PointerBarrierWrapper(const QLine& line, const int thresh
     /* Enables barrier detection events - only call once!! */
     XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
 
-    m_smoothingTimer->setSingleShot(m_smoothing);
+    m_smoothingTimer->setSingleShot(true);
+    m_smoothingTimer->setInterval(m_smoothing);
     connect(m_smoothingTimer, SIGNAL(timeout()), this, SLOT(smoother()));
 
     Unity2dApplication* application = Unity2dApplication::instance();
