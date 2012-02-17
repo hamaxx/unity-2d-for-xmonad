@@ -1,4 +1,4 @@
-unity-2d (5.4.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (5.4.0-0ubuntu1) precise; urgency=low
 
   * New upstream release
     - unity-2d-launcher crashed with SIGABRT in qt_message_output()
@@ -23,7 +23,7 @@ unity-2d (5.4.0-0ubuntu1) UNRELEASED; urgency=low
     - transition unity-2d-launcher and unity-2d-places to unity-2d-shell
     - breaks against older gnome-session (as components links changed)
 
- -- Didier Roche <didrocks@ubuntu.com>  Fri, 17 Feb 2012 13:45:25 +0100
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 17 Feb 2012 14:21:45 +0100
 
 unity-2d (5.2.1-0ubuntu1) precise; urgency=low
 
