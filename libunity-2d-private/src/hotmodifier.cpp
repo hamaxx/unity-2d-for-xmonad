@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Canonical, Ltd.
+ * Copyright (C) 2012 Canonical, Ltd.
  *
  * Authors:
  *  Michał Sawicz <michal.sawicz@canonical.com>
@@ -55,7 +55,9 @@ HotModifier::held() const
 void
 HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    bool pressed = m_modifiers == modifiers;
+    /* FIXME this logic needs tweaking, as pressing one modifier and tapping
+       another will result in a tap on the latter one. */
+    bool pressed = m_modifiers & modifiers;
     if (!m_ignored && m_pressed && !m_held && !pressed) {
         Q_EMIT tapped();
     } else if (m_pressed && m_held && !pressed) {
@@ -83,7 +85,9 @@ HotModifier::updateHoldState()
 void
 HotModifier::ignoreCurrentPress()
 {
-    m_ignored = true;
+    if (m_pressed) {
+        m_ignored = true;
+    }
 }
 
 void
@@ -91,6 +95,7 @@ HotModifier::disable()
 {
     m_holdTimer.stop();
     m_pressed = false;
+    m_ignored = false;
     if (m_held) {
         m_held = false;
         Q_EMIT heldChanged(false);
