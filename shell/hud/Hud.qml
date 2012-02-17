@@ -131,7 +131,7 @@ FocusScope {
                 anchors.top: parent.top
                 anchors.topMargin: 5
                 anchors.left: parent.left
-                anchors.leftMargin: 6
+                anchors.leftMargin: 5
                 width: 54
                 height: 54
 
