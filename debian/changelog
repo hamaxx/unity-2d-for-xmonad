@@ -1,3 +1,30 @@
+unity-2d (5.4.0-0ubuntu1) precise; urgency=low
+
+  * New upstream release
+    - unity-2d-launcher crashed with SIGABRT in qt_message_output()
+      (LP: #854634)
+    - Useless scroll arrows in Unity 2D global menus (LP: #913237)
+    - [workspace switcher] Does not activate since bzr revision 900
+      (LP: #928398)
+    - On unity 2d when using Hebrew localization launcher won't load if you
+      move cursor all the way to the right (LP: #877292)
+    - panel 2D uses wrong width on multi monitor setup (LP: #880698)
+    - Keyboard shortcut - F10 shortcut is used to show menu and this is wrong
+      (LP: #878492)
+    - [dash] User can move dash around with ALT+LeftClick+Move (LP: #827838)
+    - [launcher] UI does not distinguish between windows on this workspace and
+      others (LP: #883172)
+    - Panel and launcher are blank and non-functional when /usr is a symlink
+      (LP: #757288)
+    - Launcher - change to 'locked out' by default (LP: #928153)
+  * debian/control:
+    - Build-dep on latest nux (ABI break)
+  * debian/*install, debian/control:
+    - transition unity-2d-launcher and unity-2d-places to unity-2d-shell
+    - breaks against older gnome-session (as components links changed)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 17 Feb 2012 14:21:45 +0100
+
 unity-2d (5.2.1-0ubuntu1) precise; urgency=low
 
   * New upstream release

@@ -7,3 +7,8 @@
  * Open any indicator menu
 
 --> Verify menu shows correctly and there are no scroll arrows (lp:913237)
+
+----
+ * Hit super key to Open Dash.
+
+--> Verify top panel is transparent

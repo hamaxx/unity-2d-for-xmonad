@@ -26,6 +26,7 @@
 #include <debug_p.h>
 #include <gconnector.h>
 #include <gscopedpointer.h>
+#include <dashclient.h>
 
 // Qt
 #include <QApplication>
@@ -68,7 +69,11 @@ public:
         gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
         QPalette pal;
-        pal.setBrush(QPalette::Window, generateBackgroundBrush());
+        if (DashClient::instance()->active()) {
+            pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
+        } else {
+            pal.setBrush(QPalette::Window, generateBackgroundBrush());
+        }
         QApplication::setPalette(pal);
     }
 
@@ -174,6 +179,7 @@ PanelStyle::PanelStyle(QObject* parent)
     d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
+    QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
     d->updatePalette();
 }
 
@@ -203,6 +209,11 @@ QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelS
     } else {
         return d->genericWindowButtonPixmap(type, state);
     }
+}
+
+void PanelStyle::onDashActiveChanged(bool active)
+{
+    d->updatePalette();
 }
 
 #include "panelstyle.moc"
