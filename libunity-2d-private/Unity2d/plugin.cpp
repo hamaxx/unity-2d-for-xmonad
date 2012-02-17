@@ -23,12 +23,12 @@
 #include "plugin.h"
 
 #include "dashclient.h"
-#include "launcherapplication.h"
+#include "application.h"
 #include "launcherdevice.h"
 #include "trash.h"
 #include "workspaces.h"
 #include "listaggregatormodel.h"
-#include "launcherapplicationslist.h"
+#include "applicationslist.h"
 #include "launcherdeviceslist.h"
 #include "iconimageprovider.h"
 #include "blendedimageprovider.h"
@@ -131,8 +131,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<BfbModel>(uri, 0, 1, "BfbModel");
     qmlRegisterType<BfbItem>(uri, 0, 1, "BfbItem");
 
-    qmlRegisterType<LauncherApplicationsList>(uri, 0, 1, "LauncherApplicationsList");
-    qmlRegisterType<LauncherApplication>(uri, 0, 1, "LauncherApplication");
+    qmlRegisterType<ApplicationsList>(uri, 0, 1, "ApplicationsList");
+    qmlRegisterType<Application>(uri, 0, 1, "Application");
 
     qmlRegisterType<DeeListModel>(uri, 0, 1, "DeeListModel");
 
