@@ -88,7 +88,7 @@ Item {
         Binding {
             target: launcherLoader.item
             property: "showMenus"
-            value: dashLoader != undefined && !dashLoader.item.active
+            value: dashLoader == undefined || !dashLoader.item.active
         }
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
