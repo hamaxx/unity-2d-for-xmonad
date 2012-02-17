@@ -116,6 +116,7 @@ FocusScope {
                 id: pip
 
                 anchors.verticalCenter: iconTile.verticalCenter
+                anchors.horizontalCenterOffset: -1
                 anchors.left: parent.left
                 mirror: Utils.isRightToLeft()
 

@@ -133,7 +133,7 @@ Item {
         onLoaded: item.focus = true
         visible: item.active
         focus: item.active
-        width: Math.min(shell.width, 1082)
+        width: Math.min(shell.width, 1061)
     }
 
     Connections {
