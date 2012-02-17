@@ -99,15 +99,11 @@ QImage WindowImageProvider::requestImage(const QString &id,
                                               QSize *size,
                                               const QSize &requestedSize)
 {
-    /* Throw away the part of the id after the @ (if any) since it's just a unique
-       number added to force the QML image cache to request a new image from this
-       image provider instead of re-using the old. */
-    int atPos = id.indexOf('@');
-    QString windowIds = (atPos == -1) ? id : id.left(atPos);
+    QString windowIds = id;
 
     /* Split the id on the character "|". The first part is the window ID of
        the decorations, the latter of the actual content. */
-    atPos = windowIds.indexOf('|');
+    int atPos = windowIds.indexOf('|');
     Window frameId = ((atPos == -1) ? windowIds : windowIds.left(atPos)).toULong();
     Window contentId = ((atPos == -1) ? windowIds : windowIds.mid(atPos + 1)).toULong();
 

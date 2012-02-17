@@ -89,7 +89,6 @@ Item {
                 } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
-                    if (!hudLoader.item.active) Utils.background.update()
                 }
             }
         }
@@ -144,7 +143,6 @@ Item {
                 launcherLoader.visibilityController.beginForceHidden("hud")
             } else {
                 launcherLoader.visibilityController.endForceHidden("hud")
-                if (!dashLoader.item.active) Utils.background.update()
             }
         }
     }
