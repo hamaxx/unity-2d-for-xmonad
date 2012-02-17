@@ -129,6 +129,7 @@ Replaces: unity-2d-launcher (<< 5.4~),
           unity-2d-places (<< 5.4~),
 Breaks: unity-2d-launcher (<< 5.4~),
         unity-2d-places (<< 5.4~),
+        gnome-session (<< 3.2.1-0ubuntu5~),
 Description: Dash and Launcher for the Unity 2D environment
  This is part of Unity 2D and can not run as a standalone application outside
  of the Unity 2D environment. The components included are:
