@@ -80,6 +80,7 @@ FocusScope {
     }
 
     function executeResult(resultId) {
+        declarativeView.forceDeactivateWindow()
         hudModel.executeResult(resultId)
         active = false
     }
