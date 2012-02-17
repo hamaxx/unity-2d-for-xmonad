@@ -32,6 +32,8 @@ context "Panel visual verification tests" do
   pwd = File.expand_path(File.dirname(__FILE__)) + '/'
   old_value = ""
 
+  DASH_BUTTONS_TOLERANCE = 70
+
   def dash_always_fullscreen
     out = XDo::XWindow.display_geometry()
     width = out[0]
@@ -78,65 +80,69 @@ context "Panel visual verification tests" do
   #####################################################################################
   # Test cases
 
+  # FIXME: this test actually does not compare the visuals of the buttons but
+  # only the existence of the buttons. That test should be reimplemented by
+  # checking the properties of the AppNameApplet to check whether or not the buttons
+  # are displayed.
   test "Visually compare dash buttons with reference" do
     XDo::Mouse.move(100, 100, 0, true)
     XDo::Keyboard.simulate('{SUPER}')
 
     closeButton = @app.AppNameApplet().QAbstractButton( :name => 'AppNameApplet::CloseButton' )
     verify_true( TIMEOUT, 'close button not matching reference image' ) {
-      closeButton.find_on_screen(pwd + 'verification/dash_close_button.png') != nil
+      closeButton.find_on_screen(pwd + 'verification/close_dash.png', DASH_BUTTONS_TOLERANCE) != nil
     }
 
     closeButton.move_mouse
     verify_true( TIMEOUT, 'close button not matching reference image' ) {
-      closeButton.find_on_screen(pwd + 'verification/dash_close_button_over.png') != nil
+      closeButton.find_on_screen(pwd + 'verification/close_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
     }
 
     minimizeButton = @app.AppNameApplet().QAbstractButton( :name => 'AppNameApplet::MinimizeButton' )
     verify_true( TIMEOUT, 'minimize button not matching reference image' ) {
-      minimizeButton.find_on_screen(pwd + 'verification/dash_minimize_button.png') != nil
+      minimizeButton.find_on_screen(pwd + 'verification/minimize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
     }
 
     maximizeButton = @app.AppNameApplet().QAbstractButton( :name => 'AppNameApplet::MaximizeButton' )
     if dash_always_fullscreen
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       maximizeButton.move_mouse
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen_over.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
       }
     else
       verify_true( TIMEOUT, 'maximize button not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       maximizeButton.move_mouse()
       verify_true( TIMEOUT, 'maximize button not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_over.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       XDo::Mouse.down()
       verify_true( TIMEOUT, 'maximize button pressed not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_pressed.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_pressed.png', DASH_BUTTONS_TOLERANCE) != nil
       }
       XDo::Mouse.up()
 
       minimizeButton.move_mouse() # move mouse away
 
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       maximizeButton.move_mouse()
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen_over.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       XDo::Mouse.down()
       verify_true( TIMEOUT, 'maximize button fullscreen pressed not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/dash_maximize_button_fullscreen_pressed.png') != nil
+        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_pressed.png', DASH_BUTTONS_TOLERANCE) != nil
       }
       XDo::Mouse.up()
     end
@@ -144,7 +150,7 @@ context "Panel visual verification tests" do
     closeButton.move_mouse()
     XDo::Mouse.down()
     verify_true( TIMEOUT, 'close button pressed not matching reference image' ) {
-      closeButton.find_on_screen(pwd + 'verification/dash_close_button_pressed.png') != nil
+      closeButton.find_on_screen(pwd + 'verification/close_dash_pressed.png', DASH_BUTTONS_TOLERANCE) != nil
     }
     XDo::Mouse.up()
   end
