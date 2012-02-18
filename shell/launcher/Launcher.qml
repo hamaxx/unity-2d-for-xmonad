@@ -90,6 +90,7 @@ LauncherDropItem {
 
         focus: true
         anchors.fill: parent
+        anchors.rightMargin: border.width
         z: 1 /* ensure the lists are always strictly on top of the background */
 
         LauncherList {
