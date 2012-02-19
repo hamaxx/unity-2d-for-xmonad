@@ -50,22 +50,76 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
+<<<<<<< HEAD
     StrutManager m_strutManager;
     ScreenInfo* m_screenInfo;
+    QPropertyAnimation* m_slideInAnimation;
+    QPropertyAnimation* m_slideOutAnimation;
+    bool m_useStrut;
+    int m_delta;
+    bool m_manualSliding;
+
+    void setStrut(ulong* struts)
+    {
+        static Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
+        XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
+                        XA_CARDINAL, 32, PropModeReplace,
+                        (unsigned char *) struts, 12);
+    }
+
+    void reserveStrut()
+    {
+        QDesktopWidget* desktop = QApplication::desktop();
+	const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
+
+        ulong struts[12] = {};
+        switch (m_edge) {
+        case Unity2dPanel::LeftEdge:
+            if (QApplication::isLeftToRight()) {
+                struts[0] = available.width();
+                struts[4] = available.top();
+                struts[5] = available.y() + available.height();
+            } else {
+                struts[1] = available.width();
+                struts[6] = available.top();
+                struts[7] = available.y() + available.height();
+            }
+            break;
+        case Unity2dPanel::TopEdge:
+            struts[2] = q->height();
+            struts[8] = screen.left();
+            struts[9] = screen.x() + screen.width() - 1; //otherwise xmonad thinks panel is on all screens
+            break;
+        }
+
+        setStrut(struts);
+    }
+
+    void releaseStrut()
+    {
+        ulong struts[12];
+        memset(struts, 0, sizeof struts);
+        setStrut(struts);
+    }
 
     void updateGeometry()
     {
-        const QRect screen = m_screenInfo->geometry();
-        const QRect available = m_screenInfo->availableGeometry();
+        QDesktopWidget* desktop = QApplication::desktop();
+	const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
 
         QRect rect;
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
+                rect = QRect(screen.left(), available.top() + 24, available.width(), available.height() - 24);
                 rect.moveLeft(m_delta);
             } else {
-                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
+                rect = QRect(screen.right() - available.width(), available.top(), available.width(), available.height());
+                rect.moveRight(screen.right() - m_delta);
             }
             break;
         case Unity2dPanel::TopEdge:
