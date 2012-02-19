@@ -1,4 +1,5 @@
 # Dependencies
+pkg_check_modules(QTBAMF REQUIRED libqtbamf)
 pkg_check_modules(QTGCONF REQUIRED libqtgconf)
 
 # Sources
@@ -25,6 +26,7 @@ add_executable(unity-2d-places ${places_SRCS} ${places_MOC_SRCS})
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
