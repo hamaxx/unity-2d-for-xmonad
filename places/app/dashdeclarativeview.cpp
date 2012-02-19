@@ -124,7 +124,7 @@ DashDeclarativeView::fitToAvailableSpace()
 {
     QRect rect = availableGeometry();
     move(rect.topLeft());
-    QSize size = QSize(rect.size().width() - 1, rect.size().height() - 25);
+    QSize size = QSize(rect.size().width(), rect.size().height());
     setFixedSize(size);
 }
 
@@ -291,15 +291,15 @@ DashDeclarativeView::availableGeometry() const
         availableGeometry = QRect(
             LauncherClient::MaximumWidth,
             screenRect.top() + 24,
-            screenRect.width() - LauncherClient::MaximumWidth - 1,
-            availableRect.height() - 1
+            screenRect.width() - LauncherClient::MaximumWidth - 2,
+            availableRect.height() - 26
             );
     } else {
         availableGeometry = QRect(
             screenRect.left(),
             screenRect.top(),
-            screenRect.width() - 1,
-            availableRect.height() + 23
+            screenRect.width() - 2,
+            availableRect.height() - 2
             );
     }
     if (QApplication::isRightToLeft()) {
