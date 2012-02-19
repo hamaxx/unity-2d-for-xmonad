@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
-    view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
+    //view.setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
 
     view.engine()->addImportPath(unity2dImportPath());
     /* Note: baseUrl seems to be picky: if it does not end with a slash,
@@ -75,8 +75,7 @@ int main(int argc, char *argv[])
     view.setSource(QUrl("./Workspaces.qml"));
 
     /* Always match the size of the desktop */
-    //int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(0); //always on primary screen
+    //view.fitToAvailableSpace();
     //QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
 
     return application.exec();

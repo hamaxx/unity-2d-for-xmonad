@@ -32,19 +32,37 @@
 
 #include <debug_p.h>
 
+// unity-2d
+#include <launcherclient.h>
+
 SpreadView::SpreadView() : Unity2DDeclarativeView()
 {
 }
 
-/* FIXME: copied from places/app/dashdeclarativeview.cpp */
-void SpreadView::fitToAvailableSpace(int screen)
+void SpreadView::fitToAvailableSpace()
 {
-    //QDesktopWidget *desktop = QApplication::desktop();
-    //QRect geometry = desktop->availableGeometry(this);
-    //geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
-    setGeometry(QRect(LauncherClient::MaximumWidth, 24, 1024, 800));
-    //setFixedSize(geometry.size());
-    setFixedSize(QSize(1024 - LauncherClient::MaximumWidth, 768 - 24));
+    int currentScreen = QApplication::desktop()->screenNumber(QCursor::pos());
+    QRect screenRect = QApplication::desktop()->screenGeometry(currentScreen);
+    QRect availableRect = QApplication::desktop()->availableGeometry(currentScreen);
+    QRect availableGeometry;
+
+    if (currentScreen == QApplication::desktop()->primaryScreen()) {
+        availableGeometry = QRect(
+            LauncherClient::MaximumWidth,
+            screenRect.top() + 24,
+            screenRect.width() - LauncherClient::MaximumWidth - 2,
+            availableRect.height() - 26
+            );
+    } else {
+        availableGeometry = QRect(
+            screenRect.left(),
+            screenRect.top(),
+            screenRect.width() - 2,
+            availableRect.height() - 2
+            );
+    }
+    move(availableGeometry.topLeft());
+    setFixedSize(availableGeometry.size());
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did
@@ -95,8 +113,9 @@ void SpreadView::focusOutEvent(QFocusEvent * event)
 bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::MouseMove) {
         QPoint pos = ((QMouseEvent*)event)->pos();
-
-        if (!this->viewport()->geometry().contains(pos) && pos.x() > 0) {
+        QRect rect = this->viewport()->geometry();
+        rect.adjust(-1, -1, 2, 2); //border
+        if (!rect.contains(pos, false)) {
             Q_EMIT outsideClick();
         }
     } else if (event->type() == QEvent::MouseButtonPress) {
@@ -110,6 +129,7 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
 
 void SpreadView::showEvent(QShowEvent *event)
 {
+	fitToAvailableSpace(); //always adjust size
     Q_UNUSED(event);
     Q_EMIT visibleChanged(true);
 }

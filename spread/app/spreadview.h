@@ -33,8 +33,7 @@ public:
     explicit SpreadView();
 
 public Q_SLOTS:
-    /* FIXME: copied from places/app/dashdeclarativeview.h */
-    void fitToAvailableSpace(int screen);
+    void fitToAvailableSpace();
 
 protected:
     virtual void focusInEvent( QFocusEvent * event );
