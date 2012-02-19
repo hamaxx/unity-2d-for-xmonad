@@ -9,20 +9,20 @@ import DBus.Message
 import System.Cmd
 import XMonad.Hooks.DynamicLog
 
+main = withConnection Session $ \ dbus -> do
+  xmonad gnomeConfig {
+    manageHook = myManageHook
+  , logHook    = logHook gnomeConfig >> dynamicLogWithPP (myPrettyPrinter dbus)
+  }
 
 myManageHook = composeAll (
   [ manageHook gnomeConfig
   , className =? "Unity-2d-panel" --> doIgnore
   , className =? "Unity-2d-launcher" --> doIgnore
   , className =? "Unity-2d-places" --> doFloat
+  , className =? "Unity-2d-spread" --> doFloat
   , className =? "Do" --> doIgnore
   ])
-
-main = withConnection Session $ \ dbus -> do
-  xmonad gnomeConfig {
-    manageHook = myManageHook
-  , logHook    = logHook gnomeConfig >> dynamicLogWithPP (myPrettyPrinter dbus)
-  }
 
 myPrettyPrinter dbus = defaultPP {
     ppOutput  = outputThroughDBus dbus
