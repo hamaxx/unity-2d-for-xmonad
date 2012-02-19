@@ -102,6 +102,7 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
+	qDebug() << "-- Genometry Update! --";
         QDesktopWidget* desktop = QApplication::desktop();
 	const int primscr = desktop->primaryScreen();
         const QRect screen = desktop->screenGeometry(primscr);
@@ -187,6 +188,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     }
     
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
+    connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -230,6 +232,12 @@ void Unity2dPanel::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
+
+void Unity2dPanel::slotScreenCountChanged(int screenno) {
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
