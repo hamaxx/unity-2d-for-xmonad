@@ -50,7 +50,6 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
-<<<<<<< HEAD
     StrutManager m_strutManager;
     ScreenInfo* m_screenInfo;
     QPropertyAnimation* m_slideInAnimation;
@@ -106,6 +105,7 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
+	qDebug() << "-- Genometry Update! --";
         QDesktopWidget* desktop = QApplication::desktop();
 	const int primscr = desktop->primaryScreen();
         const QRect screen = desktop->screenGeometry(primscr);
@@ -184,6 +184,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
     connect(&d->m_strutManager, SIGNAL(enabledChanged(bool)), SIGNAL(useStrutChanged(bool)));
+    connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -229,6 +230,19 @@ IndicatorsManager* Unity2dPanel::indicatorsManager() const
 void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
+    d->updateEdge();
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+}
+
+void Unity2dPanel::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
+
+void Unity2dPanel::slotScreenCountChanged(int screenno) {
+    d->m_slideOutAnimation->setEndValue(-panelSize());
     d->updateEdge();
 }
 

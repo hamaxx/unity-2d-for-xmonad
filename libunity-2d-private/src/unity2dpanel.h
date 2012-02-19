@@ -82,7 +82,8 @@ protected:
 
 private Q_SLOTS:
     void slotWorkAreaResized(int screen);
-
+    void slotScreenCountChanged(int screenno);
+    
 private:
     Q_DISABLE_COPY(Unity2dPanel)
     Unity2dPanelPrivate* const d;
