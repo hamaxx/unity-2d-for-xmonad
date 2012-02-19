@@ -66,18 +66,19 @@ struct Unity2dPanelPrivate
     void reserveStrut()
     {
         QDesktopWidget* desktop = QApplication::desktop();
-        const QRect screen = desktop->screenGeometry(q);
-        const QRect available = desktop->availableGeometry(q);
+	const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
 
         ulong struts[12] = {};
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                struts[0] = q->width();
+                struts[0] = available.width();
                 struts[4] = available.top();
                 struts[5] = available.y() + available.height();
             } else {
-                struts[1] = q->width();
+                struts[1] = available.width();
                 struts[6] = available.top();
                 struts[7] = available.y() + available.height();
             }
@@ -101,18 +102,20 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
+	qDebug() << "-- Genometry Update! --";
         QDesktopWidget* desktop = QApplication::desktop();
-        const QRect screen = desktop->screenGeometry(q);
-        const QRect available = desktop->availableGeometry(q);
+	const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
 
         QRect rect;
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
+                rect = QRect(screen.left(), available.top() + 24, available.width(), available.height() - 24);
                 rect.moveLeft(m_delta);
             } else {
-                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
+                rect = QRect(screen.right() - available.width(), available.top(), available.width(), available.height());
                 rect.moveRight(screen.right() - m_delta);
             }
             break;
@@ -185,6 +188,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     }
     
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
+    connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -228,6 +232,12 @@ void Unity2dPanel::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
     d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
+
+void Unity2dPanel::slotScreenCountChanged(int screenno) {
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
 }
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
