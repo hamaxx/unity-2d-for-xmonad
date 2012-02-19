@@ -117,7 +117,8 @@ DashDeclarativeView::fitToAvailableSpace()
 {
     QRect rect = availableGeometry();
     move(rect.topLeft());
-    setFixedSize(rect.size());
+    QSize size = QSize(rect.size().width() - 1, rect.size().height() - 26);
+    setFixedSize(size);
 }
 
 void
