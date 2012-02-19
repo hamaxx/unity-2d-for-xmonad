@@ -25,6 +25,10 @@
 // unity-2d
 #include <launcherclient.h>
 
+// Bamf
+#include <bamf-application.h>
+#include <bamf-matcher.h>
+
 // Qt
 #include <QDesktopWidget>
 #include <QApplication>
@@ -41,8 +45,10 @@
 
 #include <config.h>
 
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+//static const int DASH_MIN_SCREEN_WIDTH = 1280;
+//static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+static const int DASH_MIN_SCREEN_WIDTH = 9999;
+static const int DASH_MIN_SCREEN_HEIGHT = 9999;
 
 static const int DASH_DESKTOP_WIDTH = 989;
 static const int DASH_DESKTOP_COLLAPSED_HEIGHT = 115;
@@ -100,6 +106,7 @@ DashDeclarativeView::updateDashModeDependingOnScreenGeometry()
     } else {
         setDashMode(DesktopMode);
     }
+    updateSize();
 }
 
 void
@@ -117,7 +124,7 @@ DashDeclarativeView::fitToAvailableSpace()
 {
     QRect rect = availableGeometry();
     move(rect.topLeft());
-    QSize size = QSize(rect.size().width() - 1, rect.size().height() - 26);
+    QSize size = QSize(rect.size().width() - 1, rect.size().height() - 25);
     setFixedSize(size);
 }
 
@@ -275,15 +282,26 @@ DashDeclarativeView::screenGeometry() const
 QRect
 DashDeclarativeView::availableGeometry() const
 {
-    QRect screenRect = QApplication::desktop()->screenGeometry(this);
-    QRect availableRect = QApplication::desktop()->availableGeometry(this);
+    int currentScreen = QApplication::desktop()->screenNumber(QCursor::pos());
+    QRect screenRect = QApplication::desktop()->screenGeometry(currentScreen);
+    QRect availableRect = QApplication::desktop()->availableGeometry(currentScreen);
+    QRect availableGeometry;
 
-    QRect availableGeometry(
-        LauncherClient::MaximumWidth - 1,
-        availableRect.top() + 24,
-        screenRect.width() - LauncherClient::MaximumWidth,
-        availableRect.height()
-        );
+    if (currentScreen == QApplication::desktop()->primaryScreen()) {
+        availableGeometry = QRect(
+            LauncherClient::MaximumWidth,
+            screenRect.top() + 24,
+            screenRect.width() - LauncherClient::MaximumWidth - 1,
+            availableRect.height() - 1
+            );
+    } else {
+        availableGeometry = QRect(
+            screenRect.left(),
+            screenRect.top(),
+            screenRect.width() - 1,
+            availableRect.height() + 23
+            );
+    }
     if (QApplication::isRightToLeft()) {
         availableGeometry.moveLeft(0);
     }
