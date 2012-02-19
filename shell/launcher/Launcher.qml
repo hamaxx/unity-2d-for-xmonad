@@ -65,21 +65,36 @@ LauncherDropItem {
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
+        anchors.rightMargin: declarativeView.dashActive ? 0 : 1
         color: "black"
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
     }
 
     Image {
-        Accessible.name: "border"
+        Accessible.name: "borderWithDash"
         id: border
 
         width: 1
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
+        visible: declarativeView.dashActive
         source: "artwork/border.png"
         fillMode: Image.Stretch
+    }
+
+    Rectangle {
+        Accessible.name: "border"
+
+        width: border.width
+        height: parent.height
+        anchors.right: Utils.isLeftToRight() ? parent.right : undefined
+        anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
+        visible: !declarativeView.dashActive
+
+        color: "white"
+        opacity: 0.15
     }
 
     onDesktopFileDropped: applications.insertFavoriteApplication(path)
