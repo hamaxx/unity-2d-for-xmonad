@@ -115,7 +115,7 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
         QPoint pos = ((QMouseEvent*)event)->pos();
         QRect rect = this->viewport()->geometry();
         rect.adjust(-1, -1, 2, 2); //border
-        if (!rect.contains(pos, false)) {
+        if (!rect.contains(pos, false) && QCursor().pos().x() > LauncherClient::MaximumWidth) {
             Q_EMIT outsideClick();
         }
     } else if (event->type() == QEvent::MouseButtonPress) {
