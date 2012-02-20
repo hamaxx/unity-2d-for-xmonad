@@ -71,7 +71,7 @@ struct Unity2dPanelPrivate
     void reserveStrut()
     {
         QDesktopWidget* desktop = QApplication::desktop();
-	const int primscr = desktop->primaryScreen();
+        const int primscr = desktop->primaryScreen();
         const QRect screen = desktop->screenGeometry(primscr);
         const QRect available = desktop->availableGeometry(primscr);
 
@@ -79,11 +79,11 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                struts[0] = available.width();
+                struts[0] = q->width();
                 struts[4] = available.top();
                 struts[5] = available.y() + available.height();
             } else {
-                struts[1] = available.width();
+                struts[1] = q->width();
                 struts[6] = available.top();
                 struts[7] = available.y() + available.height();
             }
@@ -107,9 +107,9 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
-	qDebug() << "-- Genometry Update! --";
+        qDebug() << "-- Geometry Update! --";
         QDesktopWidget* desktop = QApplication::desktop();
-	const int primscr = desktop->primaryScreen();
+        const int primscr = desktop->primaryScreen();
         const QRect screen = desktop->screenGeometry(primscr);
         const QRect available = desktop->availableGeometry(primscr);
 
@@ -117,10 +117,10 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top() + 24, available.width(), available.height() - 24);
+                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
                 rect.moveLeft(m_delta);
             } else {
-                rect = QRect(screen.right() - available.width(), available.top(), available.width(), available.height());
+                rect = QRect(screen.right() - available.width(), available.top(), q->width(), available.height());
                 rect.moveRight(screen.right() - m_delta);
             }
             break;
@@ -183,7 +183,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     } else {
         setAutoFillBackground(true);
     }
-    
+
     /* Geometry Update Triggers */
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
     connect(&d->m_strutManager, SIGNAL(enabledChanged(bool)), SIGNAL(useStrutChanged(bool)));
@@ -265,7 +265,8 @@ void Unity2dPanel::slotWorkAreaResized(int screen)
  * Fallback update. In case the others do not work.
  * Currently uses a timer.
  */
-void Unity2dPanel::slotFallbackGeometryUpdate() {
+void Unity2dPanel::slotFallbackGeometryUpdate()
+{
     d->updateEdge();
 }
 
