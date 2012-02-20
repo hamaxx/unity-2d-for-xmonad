@@ -36,6 +36,7 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QHBoxLayout>
+#include <QTimer>
 #include <QX11Info>
 
 // unity-2d
@@ -43,6 +44,7 @@
 #include "screeninfo.h"
 
 static const int SLIDE_DURATION = 125;
+static const int REARRANGE_INTERVALL = 2000; // The intervall between fallback geometry updates in ms
 
 struct Unity2dPanelPrivate
 {
@@ -182,9 +184,15 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
         setAutoFillBackground(true);
     }
     
+    /* Geometry Update Triggers */
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
     connect(&d->m_strutManager, SIGNAL(enabledChanged(bool)), SIGNAL(useStrutChanged(bool)));
     connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
+
+    /* Fallback intervall based trigger (If the ones above don't do it */
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(slotFallbackGeometryUpdate()));
+    timer->start(REARRANGE_INTERVALL);
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -251,6 +259,14 @@ void Unity2dPanel::slotWorkAreaResized(int screen)
     if (x11Info().screen() == screen) {
         d->updateEdge();
     }
+}
+
+/**
+ * Fallback update. In case the others do not work.
+ * Currently uses a timer.
+ */
+void Unity2dPanel::slotFallbackGeometryUpdate() {
+    d->updateEdge();
 }
 
 void Unity2dPanel::paintEvent(QPaintEvent* event)
