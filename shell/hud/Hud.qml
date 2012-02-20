@@ -106,6 +106,17 @@ FocusScope {
 
         clip: true
 
+        Image {
+            id: panelBorder
+
+            height: 1
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: "../common/artwork/panel_border.png"
+            fillMode: Image.Stretch
+        }
+
         Item {
             id: tile
 
