@@ -187,6 +187,11 @@ void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
         if (dash) {
             ShellDeclarativeView *oldShell = m_shellWithDash;
 
+            const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
+            const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
+            oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
             // Moving the dash around makes it lose its focus values, remember them and set them later
             const QList<QDeclarativeItem *> dashChildrenFocusedItems = dumpFocusedItems(dash);
 
@@ -202,6 +207,9 @@ void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
             Q_FOREACH(QDeclarativeItem *item, dashChildrenFocusedItems) {
                 item->setFocus(true);
             }
+
+            oldShell->setViewportUpdateMode(vum1);
+            newShell->setViewportUpdateMode(vum2);
         } else {
             qWarning() << "moveDashToShell: Could not find the dash";
         }
