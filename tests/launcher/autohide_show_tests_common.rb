@@ -585,5 +585,4 @@ def test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb
   verify_not(0, 'Launcher hiding after on Esc after Alt+F1 with mouse over bfb') {
     verify_launcher_hidden(2)
   }
-  xid.close!
 end
