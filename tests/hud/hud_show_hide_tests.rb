@@ -153,23 +153,16 @@ context "HUD Show and Hide tests" do
   # Test case objectives:
   #   * Check the Launcher hides when the HUD opens
   # Pre-conditions
-  #   * Desktop with no running applications
+  #   * None
   # Test steps
-  #   * Check Launcher is visible
   #   * Check HUD closed
   #   * Tap the Alt key
   #   * Check Launcher hides
-  #   * Tap Alt key
-  #   * Check Launcher is visible
   # Post-conditions
   #   * None
   # References
   #   * None
   test "HUD makes Launcher hide" do
-    XDo::XWindow.toggle_minimize_all
-    verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
     verify_not(1, 'HUD should be hidden at startup') {
       @app.Hud()
     }
@@ -178,12 +171,6 @@ context "HUD Show and Hide tests" do
     verify_equal( -LAUNCHER_WIDTH, TIMEOUT, 'Launcher visible when HUD activated, should be hidden' ) {
       @app.Launcher()['x_absolute'].to_i
     }
-    
-    XDo::Keyboard.alt
-    verify_equal( 0, TIMEOUT, 'Launcher hiding on empty desktop after HUD dismissed, should be visible' ) {
-      @app.Launcher()['x_absolute'].to_i
-    }
-    XDo::XWindow.toggle_minimize_all
   end
   
   # Test case objectives:
