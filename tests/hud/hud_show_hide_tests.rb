@@ -241,12 +241,52 @@ context "HUD Show and Hide tests" do
     verify_not(1, 'HUD should be hidden, as the Alt key was pressed with another key') {
       @app.Hud()
     }
+    XDo::Keyboard.escape
     XDo::Keyboard.char('alt+ctrl')
     sleep 0.1
     verify_not(1, 'HUD should be hidden, as the Alt key was pressed with Ctrl key') {
       @app.Hud()
     }
-    XDo::Keyboard.escape
+  end
+
+  # Test case objectives:
+  #   * Hold Alt key, check Super key tap doesn't open Dash
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Check HUD closed
+  #   * Tap Alt+f
+  #   * Check HUD stays closed
+  #   * Tap Ctrl+Alt
+  #   * Check HUD stays closed
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Hold Alt key, check Super key tap doesn't open Dash" do
+    verify_not(1, 'HUD should be hidden at startup') {
+      @app.Hud()
+    }
+    verify_equal('false', TIMEOUT, 'Dash should be hidden at startup') {
+      @app.Dash()['active']
+    }
+
+    XDo::Keyboard.key_down('Alt')
+    sleep 0.2
+    verify_not(1, 'HUD should be hidden, as the Alt key is held down') {
+      @app.Hud()
+    }
+
+    XDo::Keyboard.super
+    sleep 0.1
+    verify_equal('false', TIMEOUT, 'Dash should not be shown by Super tap while Alt held') {
+      @app.Dash()['active']
+    }
+
+    XDo::Keyboard.key_up('Alt')
+    verify_not(1, 'HUD should be hidden, as the Alt key held & Super key only tapped') {
+      @app.Hud()
+    }
   end
 
   # Test case objectives:
