@@ -28,10 +28,6 @@
 
 // Qt
 #include <QDateTime>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-#include <QDBusInterface>
-#include <QDBusServiceWatcher>
 
 static const char* HUD_DBUS_SERVICE = "com.canonical.hud";
 static const char* HUD_DBUS_PATH = "/com/canonical/hud";
@@ -48,12 +44,6 @@ Hud::Hud(QObject *parent) :
     names[CompletionTextRole] = "completionText";
     names[ShortcutRole] = "shortcut";
     setRoleNames(names);
-
-    QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(HUD_DBUS_SERVICE);
-    if (!reply.isValid() || !reply.value()) {
-        qDebug() << "HUD service com.canonical.hud is NOT registered";
-    }
 
     m_unityHud = new unity::hud::Hud(HUD_DBUS_SERVICE, HUD_DBUS_PATH);
 
