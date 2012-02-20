@@ -112,6 +112,7 @@ FocusScope {
             height: 1
             anchors.top: parent.top
             anchors.left: parent.left
+            anchors.leftMargin: tile.width
             anchors.right: parent.right
             source: "../common/artwork/panel_border.png"
             fillMode: Image.Stretch
