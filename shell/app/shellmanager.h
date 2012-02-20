@@ -34,6 +34,7 @@ class ShellManager : public QObject
     Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
     Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
     Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
+    Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
@@ -58,6 +59,8 @@ public:
 
     QObject *dashShell() const;
 
+    bool dashAlwaysFullScreen() const;
+
     bool superKeyHeld() const;
 
 Q_SIGNALS:
@@ -65,6 +68,7 @@ Q_SIGNALS:
     void dashModeChanged(DashMode);
     void dashActiveLensChanged(const QString&);
     void dashShellChanged(QObject *shell);
+    void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
 
     void dashActivateHome();
@@ -82,6 +86,8 @@ private Q_SLOTS:
     void onAltF2Pressed();
     void onNumericHotkeyPressed();
     void toggleDash();
+
+    void updateDashAlwaysFullScreen();
 
 private:
     Q_DISABLE_COPY(ShellManager)

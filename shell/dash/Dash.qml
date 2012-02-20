@@ -72,7 +72,7 @@ FocusScope {
     Binding {
         target: shellManager
         property: "dashMode"
-        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+        value: shellManager.alwaysFullScreen || dash2dConfiguration.fullScreen ?
                ShellManager.FullScreenMode : ShellManager.DesktopMode
     }
 

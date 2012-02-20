@@ -39,7 +39,6 @@
 
 // Local
 #include "shelldeclarativeview.h"
-#include "dashclient.h"
 #include "gesturehandler.h"
 #include "launcherdbus.h"
 #include "config.h"
@@ -53,12 +52,15 @@
 
 static const int KEY_HOLD_THRESHOLD = 250;
 static const char* COMMANDS_LENS_ID = "commands.lens";
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 struct ShellManagerPrivate
 {
     ShellManagerPrivate()
         : q(0)
         , m_shellWithDash(0)
+        , m_dashAlwaysFullScreen(false)
         , m_launcherDBus(0)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
@@ -74,6 +76,7 @@ struct ShellManagerPrivate
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
     ShellDeclarativeView * m_shellWithDash;
+    bool m_dashAlwaysFullScreen;
     LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
     bool m_dashActive;
@@ -103,16 +106,6 @@ ShellManagerPrivate::initShell(int screen)
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     view->rootContext()->setContextProperty("shellManager", q);
-    // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
-    // but it lead to locks when both the shell and the spread were started
-    // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
-    // and DashClient QDBusServiceWatcher::serviceRegistered
-    // triggered at the same time ending up with both creating QDBusInterface
-    // to eachother in the main thread meaning they would block
-    // In case you need to have a DashClient in the spread the fix for the problem
-    // is moving the QDbusInterface creation to a thread so it does not block
-    // the main thread
-    view->rootContext()->setContextProperty("dashClient", DashClient::instance());
 
     if (!m_launcherDBus) {
         m_launcherDBus = new LauncherDBus(view);
@@ -254,6 +247,16 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
     }
+
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateDashAlwaysFullScreen()), Qt::QueuedConnection);
+    connect(this, SIGNAL(dashShellChanged(QObject *)), this, SLOT(updateDashAlwaysFullScreen()));
+    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateDashAlwaysFullScreen()));
+
+    updateDashAlwaysFullScreen();
 }
 
 ShellManager::~ShellManager()
@@ -321,6 +324,11 @@ ShellManager::dashShell() const
     return d->m_shellWithDash;
 }
 
+bool ShellManager::dashAlwaysFullScreen() const
+{
+    return d->m_dashAlwaysFullScreen;
+}
+
 void
 ShellManager::onScreenCountChanged(int newCount)
 {
@@ -341,6 +349,28 @@ ShellManager::toggleDash()
             d->moveDashToShell(activeShell);
             Q_EMIT dashActivateHome();
         }
+    }
+}
+
+static QSize minimumSizeForDesktop()
+{
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
+}
+
+void ShellManager::updateDashAlwaysFullScreen()
+{
+    bool dashAlwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        dashAlwaysFullScreen = true;
+    } else {
+        const QRect rect = QApplication::desktop()->screenGeometry(d->m_shellWithDash);
+        const QSize minSize = minimumSizeForDesktop();
+        dashAlwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    }
+
+    if (d->m_dashAlwaysFullScreen != dashAlwaysFullScreen) {
+        d->m_dashAlwaysFullScreen = dashAlwaysFullScreen;
+        Q_EMIT dashAlwaysFullScreenChanged(dashAlwaysFullScreen);
     }
 }
 
