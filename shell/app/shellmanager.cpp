@@ -92,8 +92,6 @@ ShellManagerPrivate::initShell(int screen)
 {
     const QStringList arguments = qApp->arguments();
     ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, screen);
-    // Otherwise gets confused when moving the dash around
-    view->scene()->setItemIndexMethod(QGraphicsScene::NoIndex);
     view->setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view->setUseOpenGL(true);
