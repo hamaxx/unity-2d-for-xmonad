@@ -21,14 +21,15 @@
  * - Jure Ham <jure@hamsworld.net>
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
 import Unity2d 1.0
 import "utils.js" as Utils
+import Effects 1.0
 
 Rectangle {
     id: switcher
 
-    color: "black"
+    //color: "black"
 
     property string applicationFilter
     property int zoomedWorkspace: 0
@@ -48,6 +49,41 @@ Rectangle {
             state: "zoomed"
 
         }
+    }
+    Image {
+        id: blurredBackground
+
+        effect: Blur {blurRadius: 12}
+
+        /* 'source' needs to be set when the dash becomes visible, that
+           is when declarativeView.active becomes true, so that a
+           screenshot of the windows behind the dash is taken at that
+           point.
+           'source' also needs to change so that the screenshot is
+           re-taken as opposed to pulled from QML's image cache.
+           This workarounds the fact that the image cache cannot be
+           disabled. A new API to deal with this was introduced in Qt Quick 1.1.
+
+           See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
+        */
+        property variant timeAtActivation
+        Connections {
+            target: declarativeView
+            onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
+        }
+
+        /* Use an image of the root window which essentially is a
+           capture of the entire screen */
+        source: "image://window/root@" + blurredBackground.timeAtActivation
+
+        fillMode: Image.PreserveAspectCrop
+        x: -declarativeView.globalPosition.x
+        y: -declarativeView.globalPosition.y
+    }
+    Image {
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+        source: "background_sheen.png"
     }
 
     /* This connection receives all commands from the DBUS API */
@@ -77,7 +113,7 @@ Rectangle {
 
         spreadView.show()
         spreadView.forceActivateWindow()
-        switcher.forceActiveFocus()
+        switcher.forceActivateFocus()
     }
 
     Keys.onPressed: {
