@@ -145,6 +145,16 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 void
 ShellDeclarativeView::resizeEvent(QResizeEvent *event)
 {
+    if (rootObject()) {
+        const int wantedWidth = rootObject()->property("width").toInt();
+        const int wantedHeight = rootObject()->property("height").toInt();
+        if (width() != wantedWidth || height() != wantedHeight) {
+            // This sould never happen as we are using SizeViewToRootObject
+            // in our QDeclarative view but it seems it happens sometimes
+            // so force it to the size we want
+            resize(wantedWidth, wantedHeight);
+        }
+    }
     updateShellPosition();
     Unity2DDeclarativeView::resizeEvent(event);
 }
