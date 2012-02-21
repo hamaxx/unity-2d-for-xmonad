@@ -137,8 +137,6 @@ Item {
         }
     }
 
-    Component.onCompleted: declarativeView.show()
-
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape) {
             declarativeView.forceDeactivateWindow()

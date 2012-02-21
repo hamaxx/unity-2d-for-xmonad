@@ -122,5 +122,7 @@ int main(int argc, char *argv[])
     LauncherDBus launcherDBus(&view);
     launcherDBus.connectToBus();
 
+    view.show();
+
     return application.exec();
 }
