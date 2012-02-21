@@ -67,10 +67,6 @@ Rectangle {
            See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
         */
         property variant timeAtActivation
-        Connections {
-            target: declarativeView
-            onActiveChanged: blurredBackground.timeAtActivation = screen.currentTime()
-        }
 
         /* Use an image of the root window which essentially is a
            capture of the entire screen */
@@ -113,7 +109,7 @@ Rectangle {
 
         spreadView.show()
         spreadView.forceActivateWindow()
-        switcher.forceActivateFocus()
+        //switcher.forceActiveFocus()
     }
 
     Keys.onPressed: {
