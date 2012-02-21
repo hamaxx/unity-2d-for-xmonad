@@ -103,6 +103,7 @@ Rectangle {
     }
 
     function show() {
+        blurredBackground.timeAtActivation = screen.currentTime()
         lastActiveWindow = screen.activeWindow
 
         allWindows.load()
