@@ -9,3 +9,7 @@ file(GLOB spread_QML *.qml *.js)
 install(FILES ${spread_QML}
     DESTINATION ${UNITY_2D_DIR}/spread
     )
+
+install(DIRECTORY artwork
+    DESTINATION ${UNITY_2D_DIR}/spread
+    )

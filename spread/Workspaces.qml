@@ -79,7 +79,7 @@ Rectangle {
     Image {
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
-        source: "background_sheen.png"
+        source: "artwork/background_sheen.png"
     }
 
     /* This connection receives all commands from the DBUS API */
