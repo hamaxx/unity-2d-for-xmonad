@@ -91,10 +91,11 @@ GridView {
 
     property int columns: Math.ceil(Math.sqrt(count))
     property int rows: Math.ceil(count / columns)
-    property int cellSpacing: 10
+    property int cellSpacingVertical: 10
+    property int cellSpacingHorizontal: 20
 
     cellWidth: Math.floor(width / columns)
-    cellHeight: height / rows
+    cellHeight: height / rows - 20
 
     /* Set the model only when the component is ready; otherwise, the
      * initialization gets somehow messed up and the "columns" and "rows"
@@ -186,10 +187,10 @@ GridView {
                         PropertyChanges {
                             target: spreadWindow
                             /* Center the window in its cell */
-                            x: followCell ? scaledCell.x + cellSpacing : x
-                            y: followCell ? scaledCell.y + cellSpacing : y
-                            width: followCell ? scaledCell.width - cellSpacing * 2 : width
-                            height: followCell ? scaledCell.height - cellSpacing * 2: height
+                            x: followCell ? scaledCell.x + cellSpacingVertical : x
+                            y: followCell ? scaledCell.y + cellSpacingHorizontal : y
+                            width: followCell ? scaledCell.width - cellSpacingVertical * 2 : width
+                            height: followCell ? scaledCell.height - cellSpacingHorizontal * 2: height
                             animateFollow: !switcher.initial
                         }
                     }

@@ -61,23 +61,15 @@ Item {
     property bool enableBehaviors: false
 
     Rectangle {
-        id: border
-        width: parent.width + 4
-        height: parent.height + 4
-        anchors.centerIn: parent
-
-        color: "#666666"
-        radius: 3
-        visible: true
-    }
-    Rectangle {
         id: glow
-        width: parent.width + 4
-        height: parent.height + 4
-        anchors.centerIn: parent
+		width: parent.width
+		height: parent.height - 30
+		smooth: true
 
-        color: "#dddddd"
-        radius: 3
+		color: Qt.rgba(1, 1, 1, 0.3)
+		radius: 3
+		border.color: "#ffffff"
+		border.width: 1
         visible: window.isSelected
     }
 
@@ -91,6 +83,8 @@ Item {
         id: shot
 
         anchors.fill: parent
+		anchors.margins: 5
+		anchors.bottomMargin: 35
         fillMode: Image.Stretch
 
         /* HACK: QML uses an internal cache for Image objects that seems to use as
@@ -119,10 +113,13 @@ Item {
         id: iconBox
 
         anchors.fill: parent
+		anchors.margins: 5
+		anchors.bottomMargin: 35
 
         border.width: 1
         border.color: "black"
         color: "#333"
+		radius: 10
 
 
         visible: (shot.status == Image.Error)
@@ -142,66 +139,28 @@ Item {
         }
     }
 
-    Item {
-        id: overlay
+	Text {
+		id: label
 
-        anchors.fill: parent
+		anchors.centerIn: parent
+		anchors.verticalCenterOffset: parent.height / 2 - 17
+		width: shot.width
+		visible: true
 
-        /* A label with the window title centered over the shot.
-           It will appear only for the currently selected window. See overlay.states */
-        Rectangle {
-            id: labelBox
+		font.bold: true
+		font.pointSize: 11
 
-            /* The width of the box around the text should be the same as
-               the text itself, with 3 pixels of margin on all sides, but it should also
-               never overflow the shot's borders.
+		text: windowInfo.title
+		elide: Text.ElideRight
+		horizontalAlignment: Text.AlignHCenter
 
-               Normally one would just set anchors.margins, but this can't work
-               here because first we need to let the Text calculate it's "natural" width
-               ("paintedWidth" in QT terms) -- that is, the size it would have
-               ìf free to expand horizontally unconstrained, to know if it's smaller than
-               the labelBox or not.
-               However if we bind the Text's width to the width of the labelBox, and the
-               width of the labelBox to the Text's size, we get a binding loop error.
+		property real originalFontSize
+		Component.onCompleted: {
+			originalFontSize = font.pointSize
+		}
 
-               The trick is to bind the Text's width to the labelBox's parent, and then
-               the labelBox to the Text's size. Since the relation between labelBox and
-               parent is taken care of by the positioner indirectly, there's no loop.
-
-               Yeah, messy. Blame QML ;)
-            */
-            property int labelMargins: 6
-            width: Math.min(parent.width, label.paintedWidth + labelMargins)
-            height: label.height + labelMargins
-            anchors.centerIn: parent
-
-            /* This equals backgroundColor: "black" and opacity: 0.6
-               but we don't want to set it that way since it would be
-               inherited by the Text child, and we want it to be fully
-               opaque instead */
-            color: "#99000000"
-            radius: 3
-            visible: true //always show label
-
-            Text {
-                id: label
-
-                anchors.centerIn: parent
-                width: overlay.width - parent.labelMargins
-
-                text: windowInfo.title
-                elide: Text.ElideRight
-                horizontalAlignment: Text.AlignHCenter
-
-                property real originalFontSize
-                Component.onCompleted: {
-                    originalFontSize = font.pointSize
-                }
-
-                color: "white"
-            }
-        }
-    }
+		color: "white"
+	}
 
     MouseArea {
         id: mouseArea
