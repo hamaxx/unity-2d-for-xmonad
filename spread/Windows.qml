@@ -128,6 +128,11 @@ GridView {
                     windows.currentIndex = index
                     cell.forceActiveFocus()
                 }
+                Component.onCompleted: {
+                    if (index == 0) {
+                        cell.forceActiveFocus()
+                    }
+                }
 
                 onClicked: windows.windowActivated(spreadWindow)
 
