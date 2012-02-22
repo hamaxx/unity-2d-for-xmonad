@@ -32,6 +32,7 @@ static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 : QObject(parent)
 , m_view(view)
+, m_hudActive(false)
 {
     connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
     connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
@@ -89,4 +90,19 @@ void
 DashDBus::setActiveLens(QString activeLens)
 {
     m_view->setActiveLens(activeLens);
+}
+
+bool
+DashDBus::hudActive() const
+{
+    return m_hudActive;
+}
+
+void
+DashDBus::setHudActive(bool active)
+{
+    if (active != m_hudActive) {
+        m_hudActive = active;
+        Q_EMIT hudActiveChanged(active);
+    }
 }

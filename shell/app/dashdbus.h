@@ -36,6 +36,7 @@ class DashDBus : public QObject, protected QDBusContext
     Q_OBJECT
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
+    Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
 
 public:
     DashDBus(ShellDeclarativeView* view, QObject* parent=0);
@@ -47,6 +48,8 @@ public:
     void setActive(bool active);
     QString activeLens() const;
     void setActiveLens(QString activeLens);
+    bool hudActive() const;
+    void setHudActive(bool active);
 
 public Q_SLOTS:
     Q_NOREPLY void activateHome();
@@ -55,9 +58,11 @@ public Q_SLOTS:
 Q_SIGNALS:
     void activeChanged(bool);
     void activeLensChanged(QString);
+    void hudActiveChanged(bool);
 
 private:
     ShellDeclarativeView* m_view;
+    bool m_hudActive;
 };
 
 #endif // DashDBus_H
