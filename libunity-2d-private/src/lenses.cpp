@@ -39,7 +39,7 @@ Lenses::Lenses(QObject *parent) :
     setRoleNames(roles);
 
     m_homeLens = new unity::dash::HomeLens(u2dTr("Home").toStdString(), u2dTr("Home screen").toStdString(), u2dTr("Search").toStdString());
-    m_unityLenses = new unity::dash::FilesystemLenses("/usr/share/unity/lenses");
+    m_unityLenses = new unity::dash::FilesystemLenses();
     m_homeLens->AddLenses(*m_unityLenses);
     m_homeLens->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
     unity::dash::HomeLens::Ptr homeLensPtr(m_homeLens);
