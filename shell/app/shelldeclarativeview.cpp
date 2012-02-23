@@ -64,7 +64,7 @@ ShellDeclarativeView::updateShellPosition()
     const QRect availableGeometry = m_screenInfo->availableGeometry();
     QPoint posToMove = availableGeometry.topLeft();
     if (qApp->isRightToLeft()) {
-        posToMove.setX(availableGeometry.width() - width());
+        posToMove.rx() += (availableGeometry.width() - width());
     }
 
     if (rootObject() != NULL) {

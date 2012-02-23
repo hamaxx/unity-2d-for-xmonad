@@ -185,7 +185,12 @@ void StrutManager::reserveStrut()
             struts[4] = available.top();
             struts[5] = available.y() + available.height();
         } else {
-            struts[1] = realWidth();
+            // Find the right-most X
+            int rightMostX = 0;
+            for (int i = 0; i < desktop->screenCount(); ++i) {
+              rightMostX = qMax(rightMostX, desktop->screenGeometry(i).right());
+            }
+            struts[1] = (rightMostX - screen.right()) + realWidth();
             struts[6] = available.top();
             struts[7] = available.y() + available.height();
         }

@@ -40,7 +40,6 @@
 // Local
 #include "shelldeclarativeview.h"
 #include "gesturehandler.h"
-#include "launcherdbus.h"
 #include "config.h"
 
 // unity-2d
@@ -61,7 +60,6 @@ struct ShellManagerPrivate
         : q(0)
         , m_shellWithDash(0)
         , m_dashAlwaysFullScreen(false)
-        , m_launcherDBus(0)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
         , m_superKeyPressed(false)
@@ -77,7 +75,6 @@ struct ShellManagerPrivate
     QList<ShellDeclarativeView *> m_viewList;
     ShellDeclarativeView * m_shellWithDash;
     bool m_dashAlwaysFullScreen;
-    LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
     bool m_dashActive;
     ShellManager::DashMode m_dashMode;
@@ -106,11 +103,6 @@ ShellManagerPrivate::initShell(int screen)
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     view->rootContext()->setContextProperty("shellManager", q);
-
-    if (!m_launcherDBus) {
-        m_launcherDBus = new LauncherDBus(view);
-        m_launcherDBus->connectToBus();
-    }
 
     view->show();
 

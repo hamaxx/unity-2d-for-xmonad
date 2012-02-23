@@ -68,7 +68,6 @@ Q_SIGNALS:
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
 
-    void addWebFavoriteRequested(const QUrl& url);
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
@@ -92,7 +91,6 @@ private:
     bool m_monitoredAreaContainsMouse;
     QUrl m_sourceFileUrl;
 
-    friend class LauncherDBus;
     friend class ShellManager;
 };
 
