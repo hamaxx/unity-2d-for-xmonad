@@ -32,10 +32,7 @@ AbstractButton {
     id: lensButton
 
     effect: DropShadow {
-         blurRadius: 8
          color: "white"
-         offset.x: 0
-         offset.y: 0
          enabled: ( lensButton.state == "selected" || active )
     }
 
