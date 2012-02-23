@@ -34,6 +34,7 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 , m_view(view)
 {
     connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
+    connect(m_view, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
     connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 }
 
@@ -77,6 +78,12 @@ void
 DashDBus::setActive(bool active)
 {
     m_view->setDashActive(active);
+}
+
+bool
+DashDBus::alwaysFullScreen() const
+{
+    return m_view->dashAlwaysFullScreen();
 }
 
 QString
