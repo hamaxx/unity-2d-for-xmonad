@@ -42,7 +42,6 @@
 #include "dashclient.h"
 #include "dashdbus.h"
 #include "gesturehandler.h"
-#include "launcherdbus.h"
 #include "config.h"
 
 // unity-2d
@@ -59,7 +58,6 @@ struct ShellManagerPrivate
     ShellManagerPrivate()
         : q(0)
         , m_dashDBus(0)
-        , m_launcherDBus(0)
         , m_superKeyPressed(false)
         , m_superKeyHeld(false)
     {}
@@ -71,7 +69,6 @@ struct ShellManagerPrivate
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
     DashDBus * m_dashDBus;
-    LauncherDBus* m_launcherDBus;
     QUrl m_sourceFileUrl;
 
     bool m_superKeyPressed;
@@ -117,11 +114,6 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
             qCritical() << "Another instance of the Dash already exists. Quitting.";
             return 0;
         }
-    }
-
-    if (!m_launcherDBus) {
-        m_launcherDBus = new LauncherDBus(view);
-        m_launcherDBus->connectToBus();
     }
 
     view->show();

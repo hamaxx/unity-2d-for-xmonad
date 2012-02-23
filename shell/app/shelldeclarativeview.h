@@ -98,7 +98,6 @@ Q_SIGNALS:
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
 
-    void addWebFavoriteRequested(const QUrl& url);
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
@@ -130,7 +129,6 @@ private:
     QUrl m_sourceFileUrl;
 
     friend class DashDBus;
-    friend class LauncherDBus;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)
