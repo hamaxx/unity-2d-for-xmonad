@@ -69,7 +69,7 @@ LauncherDropItem {
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
     }
-    
+
     Image {
         Accessible.name: "border"
         id: border
@@ -78,8 +78,8 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
-        fillMode: Image.TileVertically
-        source: "artwork/background.png"
+        source: "artwork/border.png"
+        fillMode: Image.Stretch
     }
 
     onDesktopFileDropped: applications.insertFavoriteApplication(path)
@@ -180,7 +180,7 @@ LauncherDropItem {
         dashView: declarativeView
     }
 
-    LauncherApplicationsList {
+    ApplicationsList {
         id: applications
     }
 
