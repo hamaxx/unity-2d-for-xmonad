@@ -39,7 +39,7 @@
                         <dox:d>True if the Dash has to be in full screen mode</dox:d>
                 </arg>
         </signal>
-         <signal name="activeLensChanged">
+        <signal name="activeLensChanged">
                 <dox:d>Signals when the currently lens in the Dash changes</dox:d>
                 <arg name="activeLens" type="s" direction="out">
                         <dox:d>The currently active lens</dox:d>
