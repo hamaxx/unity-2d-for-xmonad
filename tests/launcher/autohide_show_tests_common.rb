@@ -555,3 +555,34 @@ def test_launcher_does_not_hide_on_esc_after_Super_with_overlapping_window_mouse
   }
   xid.close!
 end
+
+# Test case objectives:
+# * Auto Hide: Launcher does not hide on Esc after Alt+F1 with mouse on the bfb
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Set hide-mode to 1
+# * Move mouse outside the launcher
+# * Verify Launcher hiding
+# * Press Alt+F1
+# * Verify Launcher showing
+# * Move mouse to the bfb
+# * Press Esc
+# * Verify Launcher does not hide
+# Post-conditions
+# * None
+# References
+# * None
+def test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+  XDo::Mouse.move(300, 300, 0, true)
+  verify_launcher_hidden(TIMEOUT, 'Launcher visible, should be hidden')
+  XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
+  verify_launcher_visible(TIMEOUT, 'Launcher hidden, should be visible')
+  bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
+  bfb.move_mouse()
+  XDo::Keyboard.escape
+  verify_not(0, 'Launcher hiding after on Esc after Alt+F1 with mouse over bfb') {
+    verify_launcher_hidden(2)
+  }
+end

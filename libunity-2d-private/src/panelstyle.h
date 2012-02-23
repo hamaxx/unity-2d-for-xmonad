@@ -64,6 +64,9 @@ public:
 
     QPixmap windowButtonPixmap(WindowButtonType, WindowButtonState);
 
+private Q_SLOTS:
+    void onDashActiveChanged(bool active);
+
 private:
     friend class PanelStylePrivate;
     // Use a pimpl to avoid the need for gtk includes here

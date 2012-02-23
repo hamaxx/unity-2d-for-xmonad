@@ -19,6 +19,7 @@
 import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
+import "utils.js" as Utils
 
 Item {
     id: background
@@ -77,7 +78,7 @@ Item {
 
         anchors.fill: parent
         source: desktop.isCompositingManagerRunning ? "artwork/desktop_dash_background.sci" : "artwork/desktop_dash_background_no_transparency.sci"
-        mirror: isRightToLeft()
+        mirror: Utils.isRightToLeft()
     }
 
     states: [
