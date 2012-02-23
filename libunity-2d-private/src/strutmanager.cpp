@@ -181,7 +181,7 @@ void StrutManager::reserveStrut()
     switch (m_edge) {
     case Unity2dPanel::LeftEdge:
         if (QApplication::isLeftToRight()) {
-            struts[0] = realWidth();
+            struts[0] = screen.x() + realWidth();
             struts[4] = available.top();
             struts[5] = available.y() + available.height();
         } else {
