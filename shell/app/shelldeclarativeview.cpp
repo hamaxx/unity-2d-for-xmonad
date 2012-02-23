@@ -70,7 +70,7 @@ ShellDeclarativeView::updateShellPosition()
     const QRect availableGeometry = m_screenInfo->availableGeometry();
     QPoint posToMove = availableGeometry.topLeft();
     if (qApp->isRightToLeft()) {
-        posToMove.setX(availableGeometry.width() - width());
+        posToMove.rx() += (availableGeometry.width() - width());
     }
 
     QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
