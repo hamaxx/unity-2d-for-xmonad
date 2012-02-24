@@ -36,6 +36,17 @@ FocusScope {
         Accessible.name: title.text
 
         effect: DropShadow {
+                    blurRadius: {
+                        switch (header.state) {
+                            case "selected":
+                            case "hovered":
+                                return 4
+                            case "pressed":
+                                return 8
+                            default:
+                                return 0
+                        }
+                    }
                     offset.x: 0
                     offset.y: 0
                     color: "white"
