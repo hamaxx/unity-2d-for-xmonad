@@ -44,6 +44,17 @@ AbstractButton {
                 enabled: ( categoryHeader.state == "pressed" && !moving )
             }
 
+    Rectangle {
+        id: divider
+
+        visible: !isFirst
+        color: "#21ffffff"
+        height: 1
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
+
     Image {
         id: iconImage
 
@@ -111,15 +122,5 @@ AbstractButton {
             anchors.leftMargin: 10
             anchors.bottom: label.baseline
         }
-    }
-
-    Rectangle {
-        id: divider
-
-        color: "#21ffffff"
-        height: 1
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
     }
 }

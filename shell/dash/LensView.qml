@@ -25,6 +25,24 @@ FocusScope {
 
     /* An instance of Lens */
     property variant model
+    property string firstNonEmptyCategory
+
+    SortFilterProxyModel {
+        model: lensView.model != undefined ? lensView.model.results : undefined
+        onTotalCountChanged: {
+            if (lensView.model.results.count == 0)
+                return
+            var firstCategory = -1
+            for (var i = 0; i < lensView.model.results.count; i++) {
+                var result = lensView.model.results.get(i)
+                if (result.column_2 < firstCategory || firstCategory == -1) {
+                    firstCategory = result.column_2
+                }
+            }
+            var category = lensView.model.categories.get(firstCategory)
+            firstNonEmptyCategory = category.column_0
+        }
+    }
 
     function activateFirstResult() {
         var firstResult = null
@@ -110,6 +128,7 @@ FocusScope {
             visible: body.item ? body.item.needHeader && body.visible : false
             height: visible ? 32 : 0
 
+            property bool isFirst: firstNonEmptyCategory == body.name
             property bool foldable: body.item ? body.item.folded != undefined : false
             availableCount: body.item ? foldable ? body.category_model.count - body.item.cellsPerRow : 0 : 0
             folded: body.item ? foldable ? body.item.folded : false : false
