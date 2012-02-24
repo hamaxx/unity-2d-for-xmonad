@@ -221,11 +221,6 @@ LauncherDropItem {
     }
 
     Connections {
-        target: declarativeView
-        onAddWebFavoriteRequested: applications.insertWebFavorite(url)
-    }
-
-    Connections {
         target: applications
         onApplicationBecameUrgent: {
             if (main.autoScrolling) {
