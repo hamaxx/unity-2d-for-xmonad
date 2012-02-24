@@ -1041,8 +1041,6 @@ Application::belongsToDifferentScreen(int screen)
         return false;
     }
 
-    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
-
     QScopedPointer<BamfUintList> xids(m_application->xids());
     for (int i = 0; i < xids->size(); i++) {
         /* When geting the wnck window, it's possible we get a NULL
