@@ -62,7 +62,6 @@ Q_SIGNALS:
 
 private:
     ShellDeclarativeView* m_view;
-    bool m_hudActive;
 };
 
 #endif // DashDBus_H

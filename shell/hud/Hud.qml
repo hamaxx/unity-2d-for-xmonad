@@ -56,19 +56,10 @@ FocusScope {
     onActiveChanged: {
         if (active) {
             declarativeView.forceActivateWindow()
-            dashClient.hudActive = true
             resultList.focus = true
         } else {
-            dashClient.hudActive = false
             hudModel.endSearch
             resultList.currentIndex = -1
-        }
-    }
-
-    Connections {
-        target: dashClient
-        onHudActiveChanged: {
-            if (active != dashClient.hudActive) toggleHud()
         }
     }
 
