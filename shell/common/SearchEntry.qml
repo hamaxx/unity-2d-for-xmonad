@@ -90,6 +90,8 @@ AbstractButton {
             effect: DropShadow {
                     id: glow
 
+                    offset.x: 0
+                    offset.y: 0
                     color: "white"
                     enabled: searchInput.text != "" || searchInput.inputMethodComposing
                 }

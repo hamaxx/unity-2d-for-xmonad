@@ -38,6 +38,8 @@ AbstractButton {
 
     effect: DropShadow {
                 color: "white"
+                offset.x: 0
+                offset.y: 0
                 enabled: ( categoryHeader.state == "pressed" && !moving )
             }
 
@@ -80,6 +82,8 @@ AbstractButton {
 
         effect: DropShadow {
                     color: "white"
+                    offset.x: 0
+                    offset.y: 0
                     enabled: ( moreResults.opacity == 1.0 && !moving )
                 }
 

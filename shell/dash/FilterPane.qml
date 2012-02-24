@@ -36,6 +36,8 @@ FocusScope {
         Accessible.name: title.text
 
         effect: DropShadow {
+                    offset.x: 0
+                    offset.y: 0
                     color: "white"
                 }
 
