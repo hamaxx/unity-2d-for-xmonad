@@ -20,6 +20,7 @@
 #include <config.h>
 
 #include "screeninfo.h"
+#include "gobjectcallback.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -39,14 +40,7 @@ extern "C" {
 #include <libwnck/libwnck.h>
 }
 
-#define GOBJECT_CALLBACK0(callbackName, slot) \
-static void \
-callbackName(GObject* src, void* dummy1, QObject* dst) \
-{ \
-    QMetaObject::invokeMethod(dst, slot); \
-}
-
-GOBJECT_CALLBACK0(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
+GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     QGraphicsView(parent),
