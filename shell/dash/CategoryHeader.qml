@@ -51,8 +51,8 @@ AbstractButton {
 
         width: 22
         height: 22
-        anchors.bottom: underline.top
-        anchors.bottomMargin: 5
+        anchors.top: divider.bottom
+        anchors.topMargin: 15
         anchors.left: parent.left
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
@@ -63,8 +63,8 @@ AbstractButton {
         id: title
 
         fontSize: "large"
-        anchors.baseline: underline.top
-        anchors.baselineOffset: -10
+        anchors.top: divider.bottom
+        anchors.topMargin: 15
         anchors.left: iconImage.right
         anchors.leftMargin: 8
     }
@@ -114,12 +114,11 @@ AbstractButton {
     }
 
     Rectangle {
-        id: underline
+        id: divider
 
         color: "#21ffffff"
-
         height: 1
-        anchors.bottom: parent.bottom
+        anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
     }
