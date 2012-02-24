@@ -35,7 +35,6 @@ Item {
     Accessible.name: "shell"
 
     property alias hudActive: hudLoader.active
-    signal onHudActiveChanged(bool active)
 
     GestureHandler {
         id: gestureHandler
@@ -129,10 +128,7 @@ Item {
         id: hudLoader
         property bool animating: item.animating
         property bool active: item.active
-        onActiveChanged: {
-            item.active = active
-            onHudActiveChanged(active)
-        }
+        onActiveChanged: item.active = active
 
         source: "hud/Hud.qml"
         anchors.top: parent.top

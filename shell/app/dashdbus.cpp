@@ -36,7 +36,9 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 {
     connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
     connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
-    connect(m_view->rootObject(), SIGNAL(onHudActiveChanged(bool)), SIGNAL(hudActiveChanged(bool)));
+
+    /* QML's propertyChanged signals are simple, they don't pass the property value */
+    connect(m_view->rootObject(), SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
 }
 
 DashDBus::~DashDBus()
@@ -97,6 +99,12 @@ bool
 DashDBus::hudActive() const
 {
     return m_view->rootObject()->property("hudActive").toBool();
+}
+
+void
+DashDBus::onHudActiveChanged()
+{
+    Q_EMIT hudActiveChanged(hudActive());
 }
 
 void

@@ -54,6 +54,7 @@ public:
 public Q_SLOTS:
     Q_NOREPLY void activateHome();
     Q_NOREPLY void activateLens(const QString& lensId);
+    void onHudActiveChanged();
 
 Q_SIGNALS:
     void activeChanged(bool);
