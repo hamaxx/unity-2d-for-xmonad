@@ -43,6 +43,7 @@
 #include <debug_p.h>
 
 // Qt
+#include <Qt>
 #include <QApplication>
 #include <QDebug>
 #include <QDesktopWidget>
