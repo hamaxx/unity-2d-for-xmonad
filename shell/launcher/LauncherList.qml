@@ -93,7 +93,7 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            if (item.belongsToDifferentWorkspace()) {
+            if (item.belongsToDifferentWorkspace() || item.belongsToDifferentScreen(declarativeView.screen.screen)) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
             } else {
@@ -309,6 +309,7 @@ AutoScrollingListView {
                                                 width, height, xid)
             onWindowCountChanged: updatePips()
             onWindowWorkspaceChanged: updatePips()
+            onWindowGeometryChanged: updatePips()
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }

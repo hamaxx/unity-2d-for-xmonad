@@ -206,6 +206,20 @@ ScreenInfo::cursorScreen()
     return desktop->screenNumber(cursorPos);
 }
 
+int
+ScreenInfo::pointScreen(const QPoint & point)
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    return desktop->screenNumber(point);
+}
+
+int
+ScreenInfo::screenCount()
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    return desktop->screenCount();
+}
+
 void
 ScreenInfo::setCorner(Corner corner)
 {

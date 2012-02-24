@@ -43,6 +43,7 @@
 // libunity-2d
 #include <unity2dtr.h>
 #include <debug_p.h>
+#include <screeninfo.h>
 
 // Qt
 #include <Qt>
@@ -62,6 +63,14 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
+#define GOBJECT_CALLBACK0(callbackName, slot) \
+static void \
+callbackName(GObject* src, QObject* dst) \
+{ \
+    QMetaObject::invokeMethod(dst, slot); \
+}
+GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
+
 const char* SHORTCUT_NICK_PROPERTY = "nick";
 
 Application::Application()
@@ -78,6 +87,11 @@ Application::Application()
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
+
+    // Accumulate geometry changes during 50 msec
+    m_geometryChangedTimer.setSingleShot(true);
+    m_geometryChangedTimer.setInterval(50);
+    connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
 }
 
 Application::Application(const Application& other)
@@ -91,6 +105,7 @@ Application::Application(const Application& other)
 
 Application::~Application()
 {
+    disconnectWindowSignals();
 }
 
 bool
@@ -526,6 +541,34 @@ Application::connectWindowSignals()
         WnckWindow* window = wnck_window_get(xids->at(i));
         g_signal_connect(G_OBJECT(window), "workspace-changed",
             G_CALLBACK(Application::onWindowWorkspaceChanged), this);
+        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+    }
+}
+
+void
+Application::disconnectWindowSignals()
+{
+    if (m_application == NULL || m_application->running() == false) {
+        return;
+    }
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        WnckWindow *window = wnck_window_get(xids->at(i));
+        if (window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            window = wnck_window_get(xids->at(i));
+            if (window == NULL) {
+                continue;
+            }
+        }
+
+        g_signal_handlers_disconnect_by_func(window, gpointer(geometryChangedCB), this);
     }
 }
 
@@ -537,6 +580,7 @@ Application::onWindowAdded(BamfWindow* window)
         WnckWindow* wnck_window = wnck_window_get(window->xid());
         g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
              G_CALLBACK(Application::onWindowWorkspaceChanged), this);
+        g_signal_connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
     }
 }
 
@@ -986,6 +1030,46 @@ Application::belongsToDifferentWorkspace()
     return false;
 }
 
+bool
+Application::belongsToDifferentScreen(int screen)
+{
+    if (!m_application) {
+        return false;
+    }
+
+    if (ScreenInfo::screenCount() == 1) {
+        return false;
+    }
+
+    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    for (int i = 0; i < xids->size(); i++) {
+        /* When geting the wnck window, it's possible we get a NULL
+           return value because wnck hasn't updated its internal list yet,
+           so we need to force it once to be sure */
+        WnckWindow *window = wnck_window_get(xids->at(i));
+        if (window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            window = wnck_window_get(xids->at(i));
+            if (window == NULL) {
+                continue;
+            }
+        }
+
+        // Check the window screen
+        int x, y, width, height;
+        wnck_window_get_geometry(window, &x, &y, &width, &height);
+        const QRect windowRect(x, y, width, height);
+        const QPoint pos = windowRect.center();
+        if (ScreenInfo::pointScreen(pos) == screen) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void
 Application::onIndicatorMenuUpdated()
 {
@@ -1107,6 +1191,13 @@ Application::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
 {
     Q_UNUSED(window);
     ((Application*)user_data)->windowWorkspaceChanged();
+}
+
+void
+Application::onWindowGeometryChanged()
+{
+    if (!m_geometryChangedTimer.isActive())
+      m_geometryChangedTimer.start();
 }
 
 void
