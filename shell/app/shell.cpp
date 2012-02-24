@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    DashDBus *dashDBus = new DashDBus(&shells);
-    if (!dashDBus->connectToBus()) {
+    DashDBus dashDBus (&shells);
+    if (!dashDBus.connectToBus()) {
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
