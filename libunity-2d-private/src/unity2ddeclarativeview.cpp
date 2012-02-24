@@ -23,6 +23,8 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QDeclarativeEngine>
+#include <QDeclarativeItem>
 #include <QGLWidget>
 #include <QVariant>
 #include <QX11Info>

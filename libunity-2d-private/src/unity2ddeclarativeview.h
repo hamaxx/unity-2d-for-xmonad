@@ -17,12 +17,18 @@
 #ifndef UNITY2DDECLARATIVEVIEW_H
 #define UNITY2DDECLARATIVEVIEW_H
 
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#include <QDeclarativeItem>
 #include <QGraphicsView>
 
+#include <QMap>
+#include <QUrl>
+#include <QVariant>
+
 class ScreenInfo;
+
+class QDeclarativeContext;
+class QDeclarativeEngine;
+class QDeclarativeItem;
+class QGraphicsObject;
 
 class Unity2DDeclarativeView : public QGraphicsView
 {
