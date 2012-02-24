@@ -35,6 +35,7 @@
 #include "bamf-indicator.h"
 
 #include "dbusmenuimporter.h"
+#include "gobjectcallback.h"
 
 #include <gio/gio.h>
 
@@ -64,12 +65,6 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
-#define GOBJECT_CALLBACK0(callbackName, slot) \
-static void \
-callbackName(GObject* src, QObject* dst) \
-{ \
-    QMetaObject::invokeMethod(dst, slot); \
-}
 GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
