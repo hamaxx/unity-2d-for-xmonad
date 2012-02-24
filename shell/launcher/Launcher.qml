@@ -85,7 +85,7 @@ LauncherDropItem {
     }
 
     Rectangle {
-        Accessible.name: "border"
+        Accessible.name: "borderWithoutDash"
 
         width: border.width
         height: parent.height
