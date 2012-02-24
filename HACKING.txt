@@ -1,0 +1,35 @@
+To build trunk:
+
+ 1. Install build dependencies (on Ubuntu):
+
+  apt-get build-dep unity-2d
+
+ 2. Qt/QML preprocessing/preparation stage:
+
+  cmake .
+
+ 3. Compile (in parallel on four CPUs):
+
+  make -j4
+
+ 4. Test:
+
+  killall -9 unity-2d
+  ./shell/app/unity-2d-shell &
+
+ 5. Test again with non-compositing window-manager mode (eg. different assets
+  such as './shell/common/artwork/desktop_dash_background_no_transparency.sci'):
+  
+  gconftool-2 --set --type=bool /apps/metacity/general/compositing_manager false
+  killall metacity
+  killall -9 unity-2d
+  ./shell/app/unity-2d-shell &
+
+ 6. Restore compositing mode:
+
+  gconftool-2 --set --type=bool /apps/metacity/general/compositing_manager false
+  killall metacity
+  killall -9 unity-2d
+  ./shell/app/unity-2d-shell &
+
+  
