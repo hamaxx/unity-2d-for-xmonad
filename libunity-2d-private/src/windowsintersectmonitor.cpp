@@ -16,6 +16,7 @@
 
 // libunity-2d
 #include <debug_p.h>
+#include "gobjectcallback.h"
 
 // Qt
 #include <QCursor>
@@ -27,29 +28,6 @@
 // libwnck
 extern "C" {
 #include <libwnck/libwnck.h>
-}
-
-// Handy macros to declare GObject callbacks. The 'n' in CALLBACKn refers to
-// the number of dummy arguments the callback returns
-#define GOBJECT_CALLBACK0(callbackName, slot) \
-static void \
-callbackName(GObject* src, QObject* dst) \
-{ \
-    QMetaObject::invokeMethod(dst, slot); \
-}
-
-#define GOBJECT_CALLBACK1(callbackName, slot) \
-static void \
-callbackName(GObject* src, void* dummy1, QObject* dst) \
-{ \
-    QMetaObject::invokeMethod(dst, slot); \
-}
-
-#define GOBJECT_CALLBACK2(callbackName, slot) \
-static void \
-callbackName(GObject* src, void* dummy1, void* dummy2, QObject* dst) \
-{ \
-    QMetaObject::invokeMethod(dst, slot); \
 }
 
 // Screen callbacks
