@@ -89,8 +89,8 @@ LauncherDropItem {
 
         width: border.width
         height: parent.height
-        anchors.right: Utils.isLeftToRight() ? parent.right : undefined
-        anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
+        anchors.right: border.anchors.right
+        anchors.left:  border.anchors.left
         visible: !declarativeView.dashActive
 
         color: "white"
