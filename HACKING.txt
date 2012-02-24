@@ -51,5 +51,11 @@ Debugging output:
 
   qDebug() << "foobar=" << foobar;
 
+Finally:
+
+If you want to proposed and merge your changes back into the main tree, see:
+
+  http://wiki.ubuntu.com/Unity2D#Coding
+
 
 Have fun!  -Paul Sladen, 2012-02-24 from advices of the DX team!
