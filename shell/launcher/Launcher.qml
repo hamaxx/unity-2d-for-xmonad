@@ -65,7 +65,7 @@ LauncherDropItem {
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
-        anchors.rightMargin: declarativeView.dashActive ? 0 : 1
+        anchors.rightMargin: declarativeView.dashActive ? 0 : border.width
         color: "black"
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
