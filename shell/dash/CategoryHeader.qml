@@ -37,9 +37,9 @@ AbstractButton {
     Accessible.name: "%1 %2 %3".arg(title.text).arg(label.text).arg(folded ? u2d.tr("not expanded") : u2d.tr("expanded"))
 
     effect: DropShadow {
-                color: "white"
                 offset.x: 0
                 offset.y: 0
+                color: "white"
                 enabled: ( categoryHeader.state == "pressed" && !moving )
             }
 
@@ -81,9 +81,9 @@ AbstractButton {
         Behavior on opacity {NumberAnimation { duration: 100 }}
 
         effect: DropShadow {
-                    color: "white"
                     offset.x: 0
                     offset.y: 0
+                    color: "white"
                     enabled: ( moreResults.opacity == 1.0 && !moving )
                 }
 
