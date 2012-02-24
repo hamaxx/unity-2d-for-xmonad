@@ -22,32 +22,20 @@
 #include <QApplication>
 #include <QDebug>
 #include <QtDeclarative>
-#include <QDeclarativeEngine>
-#include <QDeclarativeView>
 #include <QDesktopWidget>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-#include <QDeclarativeContext>
-#include <QAbstractEventDispatcher>
 
 // libunity-2d-private
 #include <hotkeymonitor.h>
 #include <hotkey.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
-#include <screeninfo.h>
 
 // Local
 #include "shelldeclarativeview.h"
-#include "gesturehandler.h"
 #include "config.h"
 
 // unity-2d
 #include <unity2ddebug.h>
-#include <unity2dapplication.h>
-
-// X11
-#include <X11/Xlib.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
 static const char* COMMANDS_LENS_ID = "commands.lens";
