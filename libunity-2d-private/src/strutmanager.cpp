@@ -196,7 +196,7 @@ void StrutManager::reserveStrut()
         }
         break;
     case Unity2dPanel::TopEdge:
-        struts[2] = realHeight();
+        struts[2] = screen.y() + realHeight();
         struts[8] = screen.left();
         struts[9] = screen.x() + screen.width();
         break;
