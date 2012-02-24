@@ -33,7 +33,7 @@ class InputShapeMask;
 class InputShapeRectangle : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QRect rectangle READ rectangle WRITE setRectangle NOTIFY rectangleChanged)
+    Q_PROPERTY(QRectF rectangle READ rectangle WRITE setRectangle NOTIFY rectangleChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool mirrorHorizontally READ mirrorHorizontally WRITE setMirrorHorizontally NOTIFY mirrorHorizontallyChanged)
     Q_PROPERTY(QBitmap shape READ shape NOTIFY shapeChanged)
@@ -43,8 +43,8 @@ class InputShapeRectangle : public QObject
 public:
     explicit InputShapeRectangle(QObject *parent = 0);
 
-    QRect rectangle() const;
-    void setRectangle(QRect rectangle);
+    QRectF rectangle() const;
+    void setRectangle(QRectF rectangle);
     bool enabled() const;
     void setEnabled(bool enabled);
     QBitmap shape() const;
@@ -65,7 +65,7 @@ Q_SIGNALS:
     void mirrorHorizontallyChanged(bool mirrorHorizontally);
 
 private:
-    QRect m_rectangle;
+    QRectF m_rectangle;
     bool m_enabled;
     bool m_mirrorHorizontally;
     QBitmap m_shape;

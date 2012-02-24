@@ -90,7 +90,6 @@ Q_SIGNALS:
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
 
-    void addWebFavoriteRequested(const QUrl& url);
     void superKeyHeldChanged(bool superKeyHeld);
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
@@ -131,7 +130,6 @@ private:
     HotModifier* m_altHotModifier;
 
     friend class DashDBus;
-    friend class LauncherDBus;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)
