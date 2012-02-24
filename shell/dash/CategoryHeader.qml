@@ -27,21 +27,8 @@ AbstractButton {
     property alias label: title.text
     property bool folded: true
     property int availableCount
-    /* HACK: DropShadow causes visual artifacts while being moved. The previously painted
-       DropShadow can remain in areas where nothing draws over it. Work around this by
-       detecting the flicking movement and disable DropShadow when it happens.
-       DropShadow not officially supported until Qt4.8, when hopefully this will be fixed.
-    */
-    property bool moving: false
 
     Accessible.name: "%1 %2 %3".arg(title.text).arg(label.text).arg(folded ? u2d.tr("not expanded") : u2d.tr("expanded"))
-
-    effect: DropShadow {
-                offset.x: 0
-                offset.y: 0
-                color: "white"
-                enabled: ( categoryHeader.state == "pressed" && !moving )
-            }
 
     Image {
         id: iconImage
@@ -79,13 +66,6 @@ AbstractButton {
         opacity: ( categoryHeader.state == "selected" || categoryHeader.state == "pressed"
                   || categoryHeader.state == "hovered" ) ? 1.0 : 0.5
         Behavior on opacity {NumberAnimation { duration: 100 }}
-
-        effect: DropShadow {
-                    offset.x: 0
-                    offset.y: 0
-                    color: "white"
-                    enabled: ( moreResults.opacity == 1.0 && !moving )
-                }
 
         TextCustom {
             id: label

@@ -31,13 +31,6 @@ AbstractButton {
 
     id: lensButton
 
-    effect: DropShadow {
-         color: "white"
-         offset.x: 0
-         offset.y: 0
-         enabled: ( lensButton.state == "selected" || active )
-    }
-
     Rectangle {
         anchors.fill: parent
         anchors.topMargin: 7

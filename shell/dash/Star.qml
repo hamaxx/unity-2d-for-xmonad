@@ -29,12 +29,6 @@ Item {
     width: childrenRect.width
     height: childrenRect.height
 
-    effect: DropShadow {
-         color: "white"
-         offset.x: 0
-         offset.y: 0
-    }
-
     Image {
         width: sourceSize.width
         height: sourceSize.height
