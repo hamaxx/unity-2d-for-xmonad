@@ -252,12 +252,6 @@ ShellDeclarativeView::monitoredAreaContainsMouse() const
     return m_monitoredAreaContainsMouse;
 }
 
-void
-ShellDeclarativeView::setScreenNumber(int screen)
-{
-    m_screenInfo->setScreen(screen);
-}
-
 int
 ShellDeclarativeView::screenNumber() const
 {
