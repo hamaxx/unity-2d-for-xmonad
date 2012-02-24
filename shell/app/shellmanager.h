@@ -26,16 +26,53 @@ class QUrl;
 class ShellManager : public QObject
 {
     Q_OBJECT
+
+    Q_ENUMS(DashMode)
+
+    Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
+    Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
+    Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
+    Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
+    Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
+    Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
 
 public:
+    enum DashMode {
+        DesktopMode,
+        FullScreenMode
+    };
+
     ShellManager(const QUrl &sourceFileUrl, QObject* parent = 0);
     ~ShellManager();
+
+    bool dashActive() const;
+    Q_SLOT void setDashActive(bool active);
+
+    DashMode dashMode() const;
+    Q_INVOKABLE void setDashMode(DashMode);
+
+    const QString& dashActiveLens() const;
+    Q_INVOKABLE void setDashActiveLens(const QString& activeLens);
+
+    bool dashHaveCustomHomeShortcuts() const;
+
+    QObject *dashShell() const;
+
+    bool dashAlwaysFullScreen() const;
 
     bool superKeyHeld() const;
 
 Q_SIGNALS:
+    void dashActiveChanged(bool);
+    void dashModeChanged(DashMode);
+    void dashActiveLensChanged(const QString&);
+    void dashShellChanged(QObject *shell);
+    void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
+
+    void dashActivateHome();
+    void dashActivateLens(const QString& lensId);
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
@@ -44,15 +81,20 @@ private Q_SLOTS:
     void updateSuperKeyHoldState();
     void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void ignoreSuperPress();
-    void onSuperKeyTapped();
 
     void onAltF1Pressed();
     void onAltF2Pressed();
     void onNumericHotkeyPressed();
+    void toggleDash();
+
+    void updateDashAlwaysFullScreen();
 
 private:
     Q_DISABLE_COPY(ShellManager)
     ShellManagerPrivate * const d;
+
+friend class DashDBus;
+friend struct ShellManagerPrivate;
 };
 
 #endif // SHELLMANAGER_H

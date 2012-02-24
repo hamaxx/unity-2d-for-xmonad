@@ -42,14 +42,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-static const char* COMMANDS_LENS_ID = "commands.lens";
-
-ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, bool isTopLeftShell, int screen)
+ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, int screen)
     : Unity2DDeclarativeView()
-    , m_mode(DesktopMode)
-    , m_expanded(true)
-    , m_active(false)
-    , m_isTopLeftShell(isTopLeftShell)
     , m_sourceFileUrl(sourceFileUrl)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
@@ -73,22 +67,24 @@ ShellDeclarativeView::updateShellPosition()
         posToMove.rx() += (availableGeometry.width() - width());
     }
 
-    QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
-    Q_FOREACH(StrutManager *strutManager, strutManagers) {
-        if (strutManager->enabled()) {
-            // Do not push ourselves
-            switch (strutManager->edge()) {
-                case Unity2dPanel::TopEdge:
-                    posToMove.ry() -= strutManager->realHeight();
-                break;
+    if (rootObject() != NULL) {
+        QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
+        Q_FOREACH(StrutManager *strutManager, strutManagers) {
+            if (strutManager->enabled()) {
+                // Do not push ourselves
+                switch (strutManager->edge()) {
+                    case Unity2dPanel::TopEdge:
+                        posToMove.ry() -= strutManager->realHeight();
+                    break;
 
-                case Unity2dPanel::LeftEdge:
-                    if (qApp->isLeftToRight()) {
-                        posToMove.rx() -= strutManager->realWidth();
-                    } else {
-                        posToMove.rx() += strutManager->realWidth();
-                    }
-                break;
+                    case Unity2dPanel::LeftEdge:
+                        if (qApp->isLeftToRight()) {
+                            posToMove.rx() -= strutManager->realWidth();
+                        } else {
+                            posToMove.rx() += strutManager->realWidth();
+                        }
+                    break;
+                }
             }
         }
     }
@@ -100,7 +96,6 @@ void
 ShellDeclarativeView::focusOutEvent(QFocusEvent* event)
 {
     Unity2DDeclarativeView::focusOutEvent(event);
-    setDashActive(false);
     Q_EMIT focusChanged();
 }
 
@@ -142,95 +137,10 @@ ShellDeclarativeView::showEvent(QShowEvent *event)
        will remove the flags when the window is hidden */
     setWMFlags();
     if (source().isEmpty()) {
-        setSource(m_sourceFileUrl);
+        QMap<const char*, QVariant> rootObjectProperties;
+        rootObjectProperties.insert("declarativeView", QVariant::fromValue(this));
+        setSource(m_sourceFileUrl, rootObjectProperties);
     }
-}
-
-void
-ShellDeclarativeView::setDashActive(bool value)
-{
-    if (value != m_active) {
-        m_active = value;
-        Q_EMIT dashActiveChanged(m_active);
-    }
-}
-
-bool
-ShellDeclarativeView::dashActive() const
-{
-    return m_active;
-}
-
-bool
-ShellDeclarativeView::haveCustomHomeShortcuts() const
-{
-    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
-}
-
-void
-ShellDeclarativeView::setDashMode(ShellDeclarativeView::DashMode mode)
-{
-    if (m_mode == mode) {
-        return;
-    }
-
-    m_mode = mode;
-    dashModeChanged(m_mode);
-}
-
-ShellDeclarativeView::DashMode
-ShellDeclarativeView::dashMode() const
-{
-    return m_mode;
-}
-
-void
-ShellDeclarativeView::setExpanded(bool value)
-{
-    if (m_expanded == value) {
-        return;
-    }
-
-    m_expanded = value;
-    expandedChanged(m_expanded);
-}
-
-bool
-ShellDeclarativeView::expanded() const
-{
-    return m_expanded;
-}
-
-void
-ShellDeclarativeView::setActiveLens(const QString& activeLens)
-{
-    if (activeLens != m_activeLens) {
-        m_activeLens = activeLens;
-        Q_EMIT activeLensChanged(activeLens);
-    }
-}
-
-const QString&
-ShellDeclarativeView::activeLens() const
-{
-    return m_activeLens;
-}
-
-void
-ShellDeclarativeView::toggleDash()
-{
-    if (dashActive()) {
-        setDashActive(false);
-        forceDeactivateWindow();
-    } else {
-        Q_EMIT activateHome();
-    }
-}
-
-void
-ShellDeclarativeView::showCommandsLens()
-{
-    Q_EMIT activateLens(COMMANDS_LENS_ID);
 }
 
 void
@@ -240,14 +150,7 @@ ShellDeclarativeView::toggleLauncher()
         forceActivateWindow();
         Q_EMIT launcherFocusRequested();
     } else {
-        if (dashActive()) {
-            // focus the launcher instead of the dash
-            setDashActive(false);
-            Q_EMIT launcherFocusRequested();
-        } else {
-            // we assume that the launcher is focused; unfocus it by deactivating the shell window
-            forceDeactivateWindow();
-        }
+        forceDeactivateWindow();
     }
 }
 
@@ -347,17 +250,6 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
-}
-
-void
-ShellDeclarativeView::setIsTopLeftShell(bool ashell)
-{
-    if (m_isTopLeftShell == ashell) {
-        return;
-    }
-
-    m_isTopLeftShell = ashell;
-    Q_EMIT isTopLeftShellChanged(m_isTopLeftShell);
 }
 
 void

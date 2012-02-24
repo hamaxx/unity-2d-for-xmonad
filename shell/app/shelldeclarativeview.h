@@ -32,15 +32,8 @@ class Hotkey;
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
     Q_OBJECT
-    Q_ENUMS(DashMode)
 
-    Q_PROPERTY(bool dashActive READ dashActive WRITE setDashActive NOTIFY dashActiveChanged)
-    Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expandedChanged)
-    Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
-    Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
-    Q_PROPERTY(bool isTopLeftShell READ isTopLeftShell WRITE setIsTopLeftShell NOTIFY isTopLeftShellChanged)
-    Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
     /* These two properties and mouse movement tracking on the widget are added here only because
        we need to detect when the mouse is inside the area occupied by the lancher. This should
@@ -53,47 +46,24 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
                                                NOTIFY monitoredAreaContainsMouseChanged)
 
 public:
-    enum DashMode {
-        DesktopMode,
-        FullScreenMode
-    };
-    explicit ShellDeclarativeView(const QUrl &sourceFileUrl = QUrl(), bool isTopLeftShell = false, int screen = 0);
+    explicit ShellDeclarativeView(const QUrl &sourceFileUrl, int screen);
 
     /* getters */
-    bool dashActive() const;
-    bool haveCustomHomeShortcuts() const;
-    DashMode dashMode() const;
-    const QString& activeLens() const;
-    bool expanded() const;
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
-    bool isTopLeftShell() const { return m_isTopLeftShell; }
 
     /* setters */
-    Q_SLOT void setDashActive(bool active);
-    Q_INVOKABLE void setDashMode(DashMode);
-    Q_INVOKABLE void setActiveLens(const QString& activeLens);
-    Q_INVOKABLE void setExpanded(bool);
     void setScreenNumber(int);
     int screenNumber() const;
     void setMonitoredArea(QRect monitoredArea);
-    void setIsTopLeftShell(bool);
 
     virtual bool x11EventFilter(XEvent* event);
 
-    void toggleDash();
     void toggleLauncher();
-    void showCommandsLens();
 
     void processNumericHotkey(Hotkey*);
 
 Q_SIGNALS:
-    void dashActiveChanged(bool);
-    void dashModeChanged(DashMode);
-    void expandedChanged(bool);
-    void activeLensChanged(const QString&);
-    void activateLens(const QString& lensId);
-    void activateHome();
     void focusChanged();
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
@@ -101,7 +71,6 @@ Q_SIGNALS:
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
-    void isTopLeftShellChanged(bool);
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -118,17 +87,11 @@ private:
     void setWMFlags();
     void updateInputShape();
 
-    DashMode m_mode;
-    bool m_expanded;
-    QString m_activeLens; /* Lens id of the active lens */
-    bool m_active;
-
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
-    bool m_isTopLeftShell;
     QUrl m_sourceFileUrl;
 
-    friend class DashDBus;
+    friend class ShellManager;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)

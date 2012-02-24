@@ -39,8 +39,6 @@
 
 // Local
 #include "shelldeclarativeview.h"
-#include "dashclient.h"
-#include "dashdbus.h"
 #include "gesturehandler.h"
 #include "config.h"
 
@@ -52,24 +50,35 @@
 #include <X11/Xlib.h>
 
 static const int KEY_HOLD_THRESHOLD = 250;
+static const char* COMMANDS_LENS_ID = "commands.lens";
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 
 struct ShellManagerPrivate
 {
     ShellManagerPrivate()
         : q(0)
-        , m_dashDBus(0)
+        , m_shellWithDash(0)
+        , m_dashAlwaysFullScreen(false)
+        , m_dashActive(false)
+        , m_dashMode(ShellManager::DesktopMode)
         , m_superKeyPressed(false)
         , m_superKeyHeld(false)
     {}
 
-    ShellDeclarativeView* initShell(bool isTopLeft, int screen);
+    ShellDeclarativeView* initShell(int screen);
     void updateScreenCount(int newCount);
     ShellDeclarativeView* activeShell() const;
+    void moveDashToShell(ShellDeclarativeView* newShell);
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
-    DashDBus * m_dashDBus;
+    ShellDeclarativeView * m_shellWithDash;
+    bool m_dashAlwaysFullScreen;
     QUrl m_sourceFileUrl;
+    bool m_dashActive;
+    ShellManager::DashMode m_dashMode;
+    QString m_dashActiveLens; /* Lens id of the active lens */
 
     bool m_superKeyPressed;
     bool m_superKeyHeld;
@@ -79,10 +88,10 @@ struct ShellManagerPrivate
 
 
 ShellDeclarativeView *
-ShellManagerPrivate::initShell(bool isTopLeft, int screen)
+ShellManagerPrivate::initShell(int screen)
 {
     const QStringList arguments = qApp->arguments();
-    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, isTopLeft, screen);
+    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, screen);
     view->setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view->setUseOpenGL(true);
@@ -93,28 +102,7 @@ ShellManagerPrivate::initShell(bool isTopLeft, int screen)
     view->engine()->addImportPath(unity2dImportPath());
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
-    /* Load the QML UI, focus and show the window */
-    view->setResizeMode(QDeclarativeView::SizeViewToRootObject);
-    view->rootContext()->setContextProperty("declarativeView", view);
     view->rootContext()->setContextProperty("shellManager", q);
-    // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
-    // but it lead to locks when both the shell and the spread were started
-    // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
-    // and DashClient QDBusServiceWatcher::serviceRegistered
-    // triggered at the same time ending up with both creating QDBusInterface
-    // to eachother in the main thread meaning they would block
-    // In case you need to have a DashClient in the spread the fix for the problem
-    // is moving the QDbusInterface creation to a thread so it does not block
-    // the main thread
-    view->rootContext()->setContextProperty("dashClient", DashClient::instance());
-
-    if (!m_dashDBus) {
-        m_dashDBus = new DashDBus(view);
-        if (!m_dashDBus->connectToBus()) {
-            qCritical() << "Another instance of the Dash already exists. Quitting.";
-            return 0;
-        }
-    }
 
     view->show();
 
@@ -136,46 +124,78 @@ ShellManagerPrivate::activeShell() const
 void
 ShellManagerPrivate::updateScreenCount(int newCount)
 {
-    if (newCount > 0) {
-        QDesktopWidget* desktop = QApplication::desktop();
-        int size = m_viewList.size();
-        ShellDeclarativeView* shell = 0;
+    const int previousCount = m_viewList.size();
 
-        /* The first shell is always the one on the leftmost screen. */
-        QPoint p;
-        if (QApplication::isRightToLeft()) {
-            p = QPoint(desktop->width() - 1, 0);
-        }
-        int leftmost = desktop->screenNumber(p);
-        if (size > 0) {
-            shell = m_viewList[0];
-        } else {
-            shell = initShell(true, leftmost);
-            m_viewList.append(shell);
-        }
-        shell->setScreenNumber(leftmost);
+    /* Update the position of other existing Shells, and instantiate new Shells as needed. */
+    for (int screen = previousCount; screen < newCount; ++screen) {
+        ShellDeclarativeView *shell = initShell(screen);
+        m_viewList.append(shell);
 
-        /* Update the position of other existing Shells, and instantiate new
-           Shells as needed. */
-        int i = 1;
-        for (int screen = 0; screen < newCount; ++screen) {
-            if (screen == leftmost) {
-                continue;
-            }
-            if (i < size) {
-                shell = m_viewList[i];
-            } else {
-                shell = initShell(false, screen);
-                m_viewList.append(shell);
-            }
-            shell->setIsTopLeftShell(false);
-            shell->setScreenNumber(screen);
-            ++i;
+        if (screen == 0) {
+            m_shellWithDash = m_viewList[0];
+            Q_EMIT q->dashShellChanged(m_shellWithDash);
         }
     }
+
     /* Remove extra Shells if any. */
     while (m_viewList.size() > newCount) {
-        m_viewList.takeLast()->deleteLater();
+        ShellDeclarativeView *shell = m_viewList.takeLast();
+        if (shell == m_shellWithDash) {
+            if (newCount > 0) {
+                moveDashToShell(m_viewList[0]);
+                Q_EMIT q->dashShellChanged(m_shellWithDash);
+            }
+        }
+        shell->deleteLater();
+    }
+
+}
+
+static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
+    QList<QDeclarativeItem *> res;
+    QDeclarativeItem *item = qobject_cast<QDeclarativeItem*>(obj);
+    if (item && item->hasFocus()) {
+        res << item;
+    }
+    Q_FOREACH (QObject *childObj, obj->children()) {
+        res += dumpFocusedItems(childObj);
+    }
+    return res;
+}
+
+void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
+{
+    if (newShell != m_shellWithDash) {
+        QDeclarativeItem *dash = qobject_cast<QDeclarativeItem*>(m_shellWithDash->rootObject()->property("dashLoader").value<QObject *>());
+        if (dash) {
+            ShellDeclarativeView *oldShell = m_shellWithDash;
+
+            const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
+            const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
+            oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+            // Moving the dash around makes it lose its focus values, remember them and set them later
+            const QList<QDeclarativeItem *> dashChildrenFocusedItems = dumpFocusedItems(dash);
+
+            oldShell->rootObject()->setProperty("dashLoader", QVariant());
+            oldShell->scene()->removeItem(dash);
+
+            dash->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
+            newShell->rootObject()->setProperty("dashLoader", QVariant::fromValue<QObject*>(dash));
+
+            m_shellWithDash = newShell;
+            Q_EMIT q->dashShellChanged(newShell);
+
+            Q_FOREACH(QDeclarativeItem *item, dashChildrenFocusedItems) {
+                item->setFocus(true);
+            }
+
+            oldShell->setViewportUpdateMode(vum1);
+            newShell->setViewportUpdateMode(vum2);
+        } else {
+            qWarning() << "moveDashToShell: Could not find the dash";
+        }
     }
 }
 
@@ -188,7 +208,8 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->q = this;
     d->m_sourceFileUrl = sourceFileUrl;
 
-    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
+    qmlRegisterUncreatableType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView", "This can only be created from C++");
+    qmlRegisterUncreatableType<ShellManager>("Unity2d", 1, 0, "ShellManager", "This can only be created from C++");
 
     QDesktopWidget* desktop = QApplication::desktop();
 
@@ -218,6 +239,16 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
     }
+
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateDashAlwaysFullScreen()), Qt::QueuedConnection);
+    connect(this, SIGNAL(dashShellChanged(QObject *)), this, SLOT(updateDashAlwaysFullScreen()));
+    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateDashAlwaysFullScreen()));
+
+    updateDashAlwaysFullScreen();
 }
 
 ShellManager::~ShellManager()
@@ -227,9 +258,112 @@ ShellManager::~ShellManager()
 }
 
 void
+ShellManager::setDashActive(bool value)
+{
+    if (value != d->m_dashActive) {
+        d->m_dashActive = value;
+        Q_EMIT dashActiveChanged(d->m_dashActive);
+    }
+}
+
+bool
+ShellManager::dashActive() const
+{
+    return d->m_dashActive;
+}
+
+void
+ShellManager::setDashMode(DashMode mode)
+{
+    if (d->m_dashMode == mode) {
+        return;
+    }
+
+    d->m_dashMode = mode;
+    dashModeChanged(d->m_dashMode);
+}
+
+ShellManager::DashMode
+ShellManager::dashMode() const
+{
+    return d->m_dashMode;
+}
+
+void
+ShellManager::setDashActiveLens(const QString& activeLens)
+{
+    if (activeLens != d->m_dashActiveLens) {
+        d->m_dashActiveLens = activeLens;
+        Q_EMIT dashActiveLensChanged(activeLens);
+    }
+}
+
+const QString&
+ShellManager::dashActiveLens() const
+{
+    return d->m_dashActiveLens;
+}
+
+bool
+ShellManager::dashHaveCustomHomeShortcuts() const
+{
+    return QFileInfo(unity2dDirectory() + "/shell/dash/HomeShortcutsCustomized.qml").exists();
+}
+
+QObject *
+ShellManager::dashShell() const
+{
+    return d->m_shellWithDash;
+}
+
+bool ShellManager::dashAlwaysFullScreen() const
+{
+    return d->m_dashAlwaysFullScreen;
+}
+
+void
 ShellManager::onScreenCountChanged(int newCount)
 {
     d->updateScreenCount(newCount);
+}
+
+void
+ShellManager::toggleDash()
+{
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        const bool differentShell = d->m_shellWithDash != activeShell;
+
+        if (dashActive() && !differentShell) {
+            setDashActive(false);
+            d->m_shellWithDash->forceDeactivateWindow();
+        } else {
+            d->moveDashToShell(activeShell);
+            Q_EMIT dashActivateHome();
+        }
+    }
+}
+
+static QSize minimumSizeForDesktop()
+{
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
+}
+
+void ShellManager::updateDashAlwaysFullScreen()
+{
+    bool dashAlwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        dashAlwaysFullScreen = true;
+    } else {
+        const QRect rect = QApplication::desktop()->screenGeometry(d->m_shellWithDash);
+        const QSize minSize = minimumSizeForDesktop();
+        dashAlwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    }
+
+    if (d->m_dashAlwaysFullScreen != dashAlwaysFullScreen) {
+        d->m_dashAlwaysFullScreen = dashAlwaysFullScreen;
+        Q_EMIT dashAlwaysFullScreenChanged(dashAlwaysFullScreen);
+    }
 }
 
 /* ----------------- super key handling ---------------- */
@@ -301,7 +435,7 @@ ShellManager::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
             /* If the key is released, and was not being held, it means that the user just
                performed a "tap". Unless we're told to ignore that tap, that is. */
             if (!d->m_superKeyHeld && !d->m_superPressIgnored) {
-                onSuperKeyTapped();
+                toggleDash();
             }
             /* Otherwise the user just terminated a hold. */
             else if(d->m_superKeyHeld){
@@ -319,20 +453,6 @@ ShellManager::ignoreSuperPress()
     d->m_superPressIgnored = true;
 }
 
-void
-ShellManager::onSuperKeyTapped()
-{
-    // TODO : In future, All shells should be able to handle the Dash
-    // Note: Always, first item in the list is the topLeft shell
-    // In any case, just iterate through the list
-    Q_FOREACH(ShellDeclarativeView *shell, d->m_viewList) {
-        if (shell->isTopLeftShell()) {
-            shell->toggleDash();
-            break;
-        }
-    }
-}
-
 bool
 ShellManager::superKeyHeld() const
 {
@@ -346,7 +466,15 @@ ShellManager::onAltF1Pressed()
 {
     ShellDeclarativeView * activeShell = d->activeShell();
     if (activeShell) {
-        activeShell->toggleLauncher();
+        if (dashActive()) {
+            // focus the launcher instead of the dash
+            setDashActive(false);
+            Q_EMIT activeShell->launcherFocusRequested();
+        }
+        else
+        {
+            activeShell->toggleLauncher();
+        }
     }
 }
 
@@ -355,7 +483,8 @@ ShellManager::onAltF2Pressed()
 {
     ShellDeclarativeView * activeShell = d->activeShell();
     if (activeShell) {
-        activeShell->showCommandsLens();
+        d->moveDashToShell(activeShell);
+        Q_EMIT dashActivateLens(COMMANDS_LENS_ID);
     }
 }
 
