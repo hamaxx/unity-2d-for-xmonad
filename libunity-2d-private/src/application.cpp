@@ -36,18 +36,16 @@
 
 #include "dbusmenuimporter.h"
 
-#include <X11/X.h>
-
 #include <gio/gio.h>
 
 // libunity-2d
 #include <unity2dtr.h>
 #include <debug_p.h>
-#include <screeninfo.h>
 
 // Qt
-#include <Qt>
+#include <QApplication>
 #include <QDebug>
+#include <QDesktopWidget>
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -56,6 +54,8 @@
 #include <QFileSystemWatcher>
 #include <QScopedPointer>
 #include <QX11Info>
+
+#include <X11/X.h>
 
 extern "C" {
 #include <gdk/gdk.h>
@@ -1037,7 +1037,7 @@ Application::belongsToDifferentScreen(int screen)
         return false;
     }
 
-    if (ScreenInfo::screenCount() == 1) {
+    if (QApplication::desktop()->screenCount() == 1) {
         return false;
     }
 
@@ -1060,7 +1060,7 @@ Application::belongsToDifferentScreen(int screen)
         wnck_window_get_geometry(window, &x, &y, &width, &height);
         const QRect windowRect(x, y, width, height);
         const QPoint pos = windowRect.center();
-        if (ScreenInfo::pointScreen(pos) == screen) {
+        if (QApplication::desktop()->screenNumber(pos) == screen) {
             return false;
         }
     }

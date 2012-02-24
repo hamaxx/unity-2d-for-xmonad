@@ -112,7 +112,7 @@ ShellManagerPrivate::initShell(int screen)
 ShellDeclarativeView *
 ShellManagerPrivate::activeShell() const
 {
-    int cursorScreen = ScreenInfo::cursorScreen();
+    int cursorScreen = QApplication::desktop()->screenNumber(QCursor::pos());
     Q_FOREACH(ShellDeclarativeView * shell, m_viewList) {
         if (shell->screenNumber() == cursorScreen) {
             return shell;
