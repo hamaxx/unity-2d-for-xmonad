@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 // Self
 #include "unity2dpanel.h"
 #include "strutmanager.h"
@@ -31,12 +36,14 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QHBoxLayout>
+#include <QTimer>
 #include <QX11Info>
 
 // unity-2d
 #include "screeninfo.h"
 
 static const int SLIDE_DURATION = 125;
+static const int REARRANGE_INTERVALL = 2000; // The intervall between fallback geometry updates in ms
 
 struct Unity2dPanelPrivate
 {
@@ -49,8 +56,60 @@ struct Unity2dPanelPrivate
     StrutManager m_strutManager;
     ScreenInfo* m_screenInfo;
 
+    void setStrut(ulong* struts)
+    {
+        static Atom atom = XInternAtom(QX11Info::display(), "_NET_WM_STRUT_PARTIAL", False);
+        XChangeProperty(QX11Info::display(), q->effectiveWinId(), atom,
+                        XA_CARDINAL, 32, PropModeReplace,
+                        (unsigned char *) struts, 12);
+    }
+
+    void reserveStrut()
+    {
+        QDesktopWidget* desktop = QApplication::desktop();
+        const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
+
+        ulong struts[12] = {};
+        switch (m_edge) {
+        case Unity2dPanel::LeftEdge:
+            if (QApplication::isLeftToRight()) {
+                struts[0] = q->width();
+                struts[4] = available.top();
+                struts[5] = available.y() + available.height();
+            } else {
+                struts[1] = q->width();
+                struts[6] = available.top();
+                struts[7] = available.y() + available.height();
+            }
+            break;
+        case Unity2dPanel::TopEdge:
+            struts[2] = q->height();
+            struts[8] = screen.left();
+            struts[9] = screen.x() + screen.width() - 1; //otherwise xmonad thinks panel is on all screens
+            break;
+        }
+
+        setStrut(struts);
+    }
+
+    void releaseStrut()
+    {
+        ulong struts[12];
+        memset(struts, 0, sizeof struts);
+        setStrut(struts);
+    }
+
     void updateGeometry()
     {
+        qDebug() << "-- Geometry Update! --";
+        QDesktopWidget* desktop = QApplication::desktop();
+        const int primscr = desktop->primaryScreen();
+        const QRect screen = desktop->screenGeometry(primscr);
+        const QRect available = desktop->availableGeometry(primscr);
+
+        //unity 5.4
         const QRect screen = m_screenInfo->geometry();
         const QRect available = m_screenInfo->availableGeometry();
 
@@ -58,10 +117,10 @@ struct Unity2dPanelPrivate
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top(), q->width(), available.height());
+                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
                 rect.moveLeft(m_delta);
             } else {
-                rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
+                rect = QRect(screen.right() - available.width(), available.top(), q->width(), available.height());
                 rect.moveRight(screen.right() - m_delta);
             }
             break;
@@ -125,9 +184,18 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     } else {
         setAutoFillBackground(true);
     }
-    
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
+
+    //unity 5.4
     connect(&d->m_strutManager, SIGNAL(enabledChanged(bool)), SIGNAL(useStrutChanged(bool)));
+
+    /* Geometry Update Triggers */
+    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), SLOT(slotWorkAreaResized(int)));
+    connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
+
+    /* Fallback intervall based trigger (If the ones above don't do it */
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(slotFallbackGeometryUpdate()));
+    timer->start(REARRANGE_INTERVALL);
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -173,13 +241,38 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
+    d->m_slideOutAnimation->setEndValue(-panelSize());
 }
+
+//unity 5.4
+/*
+void Unity2dPanel::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
+
+void Unity2dPanel::slotScreenCountChanged(int screenno) {
+    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
+*/
 
 void Unity2dPanel::slotWorkAreaResized(int screen)
 {
     if (x11Info().screen() == screen) {
         d->updateEdge();
     }
+}
+
+/**
+ * Fallback update. In case the others do not work.
+ * Currently uses a timer.
+ */
+void Unity2dPanel::slotFallbackGeometryUpdate()
+{
+    d->updateEdge();
 }
 
 void Unity2dPanel::paintEvent(QPaintEvent* event)

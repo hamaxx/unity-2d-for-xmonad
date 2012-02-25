@@ -17,6 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 #include "spreadview.h"
 
 #include <QDesktopWidget>
@@ -24,6 +29,11 @@
 #include <QMouseEvent>
 
 #include "screeninfo.h"
+
+#include <debug_p.h>
+
+// unity-2d
+#include <launcherclient.h>
 
 SpreadView::SpreadView()
 : Unity2DDeclarativeView()
@@ -36,9 +46,29 @@ SpreadView::SpreadView()
 
 void SpreadView::fitToAvailableSpace()
 {
-    QRect geometry = m_screenInfo->panelsFreeGeometry();
-    setGeometry(geometry);
-    setFixedSize(geometry.size());
+    //hard merge
+    int currentScreen = QApplication::desktop()->screenNumber(QCursor::pos());
+    QRect screenRect = QApplication::desktop()->screenGeometry(currentScreen);
+    QRect availableRect = QApplication::desktop()->availableGeometry(currentScreen);
+    QRect availableGeometry;
+
+    if (currentScreen == QApplication::desktop()->primaryScreen()) {
+        availableGeometry = QRect(
+            LauncherClient::MaximumWidth,
+            screenRect.top() + 24,
+            screenRect.width() - LauncherClient::MaximumWidth - 2,
+            availableRect.height() - 26
+            );
+    } else {
+        availableGeometry = QRect(
+            screenRect.left(),
+            screenRect.top(),
+            screenRect.width() - 2,
+            availableRect.height() - 2
+            );
+    }
+    move(availableGeometry.topLeft());
+    setFixedSize(availableGeometry.size());
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did
@@ -87,11 +117,31 @@ void SpreadView::focusOutEvent(QFocusEvent * event)
 }
 
 bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
-    if (event->type() == QEvent::MouseButtonPress) {
+    if (event->type() == QEvent::MouseMove) {
+        QPoint pos = ((QMouseEvent*)event)->pos();
+        QRect rect = this->viewport()->geometry();
+        rect.adjust(-1, -1, 2, 2); //border
+        if (!rect.contains(pos, false) && QCursor().pos().x() > LauncherClient::MaximumWidth) {
+            Q_EMIT outsideClick();
+        }
+    } else if (event->type() == QEvent::MouseButtonPress) {
         if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
             Q_EMIT outsideClick();
         }
     }
 
     return false;
+}
+
+void SpreadView::showEvent(QShowEvent *event)
+{
+    fitToAvailableSpace(); //always adjust size
+    Q_UNUSED(event);
+    Q_EMIT visibleChanged(true);
+}
+
+void SpreadView::hideEvent(QHideEvent *event)
+{
+    Q_UNUSED(event);
+    Q_EMIT visibleChanged(false);
 }

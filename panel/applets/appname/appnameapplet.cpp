@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 // Self
 #include "appnameapplet.h"
 
@@ -303,19 +308,18 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
-    bool isOpened = isOnSameScreen &&
-        (isUnderMouse
+    bool isOpened = isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
-        || d->m_menuBarWidget->isOpened()
-        );
+        || d->m_menuBarWidget->isOpened();
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
     bool dashIsVisible = DashClient::instance()->active();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
-    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    //bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;
+
+    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
@@ -331,28 +335,27 @@ void AppNameApplet::updateWidgets()
     /* make sure we use the right button for dash */
     d->m_closeButton->setIsDashButton(dashIsVisible);
 
+    //hard merge
     if (showAppLabel || showDesktopLabel || dashIsVisible) {
         d->m_label->setVisible(true);
         if (showAppLabel) {
             // Define text
             QString text;
+            QString text;
             if (app) {
-                if (isMaximized) {
-                    // When maximized, show window title
-                    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                    if (bamfWindow) {
-                        text = bamfWindow->name();
-                    }
+                //Display application name and window title
+                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                if (bamfWindow) {
+                    text.sprintf("%s :: %s", app->name().toUtf8().constData(), bamfWindow->name().toUtf8().constData());
                 } else {
-                    // When not maximized, show application name
                     text = app->name();
                 }
+                d->m_label->setText(text);
+            } else if (showDesktopLabel) {
+                d->m_label->setText(u2dTr("Ubuntu Desktop"));
+            } else {
+                d->m_label->setText(QString());
             }
-            d->m_label->setText(text);
-        } else if (showDesktopLabel) {
-            d->m_label->setText(u2dTr("Ubuntu Desktop"));
-        } else {
-            d->m_label->setText(QString());
         }
 
         // Define label width

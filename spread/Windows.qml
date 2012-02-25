@@ -16,6 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 import QtQuick 1.0
 import "utils.js" as Utils
 import Unity2d 1.0
@@ -59,7 +64,7 @@ GridView {
         dynamicSortFilter: true
 
         filterRole: WindowInfo.RoleWorkspace
-        filterRegExp: RegExp("^%1|-2$".arg(workspace.workspaceNumber))
+        //filterRegExp: RegExp("^%1|-2$".arg(workspace.workspaceNumber))
     }
 
     /* If there's any application filter set, this proxy model will remove
@@ -75,10 +80,11 @@ GridView {
 
     property int columns: Math.ceil(Math.sqrt(count))
     property int rows: Math.ceil(count / columns)
-    property int cellSpacing: 10
+    property int cellSpacingVertical: 10
+    property int cellSpacingHorizontal: 20
 
     cellWidth: Math.floor(width / columns)
-    cellHeight: height / rows
+    cellHeight: height / rows - 20
 
     /* Set the model only when the component is ready; otherwise, the
      * initialization gets somehow messed up and the "columns" and "rows"
@@ -137,6 +143,11 @@ GridView {
                     /* Make sure the workspace is notified as well */
                     windows.entered()
                 }
+                Component.onCompleted: {
+                    if (index == 0) {
+                        cell.forceActiveFocus()
+                    }
+                }
 
                 onClicked: windows.windowActivated(spreadWindow)
 
@@ -144,15 +155,6 @@ GridView {
                 parent: windows
 
                 z: window.z
-
-                /* Duplicated animation code because QML does not support grouping
-                   of identical Behaviors yet.
-                   http://bugreports.qt.nokia.com/browse/QTBUG-16375
-                */
-                Behavior on x { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                Behavior on y { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                Behavior on width { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
-                Behavior on height { enabled: spreadWindow.animateFollow; NumberAnimation { duration: Utils.transitionDuration; easing.type: Easing.InOutQuad } }
 
                 windowInfo: window
                 state: windows.state == "screen" ? "screen" : "spread"
@@ -173,10 +175,10 @@ GridView {
                         PropertyChanges {
                             target: spreadWindow
                             /* Center the window in its cell */
-                            x: followCell ? scaledCell.x + cellSpacing : x
-                            y: followCell ? scaledCell.y + cellSpacing : y
-                            width: followCell ? scaledCell.width - cellSpacing * 2 : width
-                            height: followCell ? scaledCell.height - cellSpacing * 2: height
+                            x: followCell ? scaledCell.x + cellSpacingVertical : x
+                            y: followCell ? scaledCell.y + cellSpacingHorizontal : y
+                            width: followCell ? scaledCell.width - cellSpacingVertical * 2 : width
+                            height: followCell ? scaledCell.height - cellSpacingHorizontal * 2: height
                             animateFollow: !switcher.initial
                         }
                     }
@@ -184,34 +186,14 @@ GridView {
 
                 SequentialAnimation {
                     id: addAnimation
-
-                    PropertyAction { target: spreadWindow; property: "animateFollow"; value: false }
-                    NumberAnimation { target: spreadWindow; property: "opacity"; from: 0; to: 1.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
-                    PropertyAction { target: spreadWindow; property: "animateFollow"; value: true }
                 }
                 SequentialAnimation {
                     id: removeAnimation
-
-                    /* FIXME: do not work if windowInfo is destroyed */
-                    PropertyAction { target: spreadWindow; property: "followCell"; value: false }
-                    NumberAnimation { target: spreadWindow; property: "opacity"; to: 0.0; duration: Utils.transitionDuration; easing.type: Easing.InOutQuad }
-                    /* spreadWindow was reparented from cell and will not be deleted when cell is.
-                       Delete it manually. */
-                    ScriptAction { script: spreadWindow.deleteLater() }
                 }
                 transitions: [
                     Transition {
                         to: "screen,spread"
                         SequentialAnimation {
-                            PropertyAction { target: spreadWindow; property: "animating"; value: true }
-                            NumberAnimation {
-                                properties: "x,y,width,height"
-                                duration: Utils.transitionDuration
-                                easing.type: Easing.InOutQuad
-                            }
-                            /* Apply final value to spreadWindow.animateFollow by not specifying a value */
-                            PropertyAction { property: "animateFollow" }
-                            PropertyAction { target: spreadWindow; property: "animating"; value: false }
                         }
                     }
                 ]

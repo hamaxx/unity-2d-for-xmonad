@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.1
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
+import QtQuick 1.0
 import "utils.js" as Utils
 
 /*
@@ -55,6 +60,19 @@ Item {
 
     property bool enableBehaviors: false
 
+    Rectangle {
+        id: glow
+		width: parent.width
+		height: parent.height - 30
+		smooth: true
+
+		color: Qt.rgba(1, 1, 1, 0.3)
+		radius: 3
+		border.color: "#ffffff"
+		border.width: 1
+        visible: window.isSelected
+    }
+
     /* Screenshot of the window, minus the decorations. The actual image is
        obtained via the WindowImageProvider which serves the "image://window/*" source URIs.
        Please note that the screenshot is taken at the moment the source property is
@@ -65,19 +83,21 @@ Item {
         id: shot
 
         anchors.fill: parent
+		anchors.margins: 5
+		anchors.bottomMargin: 35
         fillMode: Image.Stretch
 
-        source: "image://window/" + windowInfo.decoratedXid + "|"
-                                  + windowInfo.contentXid
-        cache: false
-
-        /* The window is scaled to a rectangle as large as possible inside
-           sourceSize while preserving its aspect ratio.
-           It saves video memory when using the OpenGL backend.
-           It makes scaling cheaper in the spread when using the raster backend.
+        /* HACK: QML uses an internal cache for Image objects that seems to use as
+           key the source property of the image.
+           This is great for normal images but in this case we really want the
+           screenshot to reload everytime.
+           Since I could not find any way to disable this cache, I am using this
+           hack which essentially appends the current time to the source URL of the
+           Image, tricking the cache into doing a request to the image provider.
         */
-        sourceSize.width: 512
-        sourceSize.height: 512
+        source: "image://window/" + windowInfo.decoratedXid + "|"
+                                  + windowInfo.contentXid + "@"
+                                  + screen.currentTime()
 
         /* Disabled during animations for performance reasons */
         smooth: !animating
@@ -93,9 +113,14 @@ Item {
         id: iconBox
 
         anchors.fill: parent
+		anchors.margins: 5
+		anchors.bottomMargin: 35
 
         border.width: 1
         border.color: "black"
+        color: "#333"
+		radius: 10
+
 
         visible: (shot.status == Image.Error)
 
@@ -108,72 +133,34 @@ Item {
 
             /* Please note that sourceSize is necessary, otherwise the
                IconImageProvider will crash when loading the icon */
-            height: 48
-            width: 48
+            height: 64
+            width: 64
             sourceSize { width: width; height: height }
         }
     }
 
-    Item {
-        id: overlay
+	Text {
+		id: label
 
-        anchors.fill: parent
+		anchors.centerIn: parent
+		anchors.verticalCenterOffset: parent.height / 2 - 17
+		width: shot.width
+		visible: true
 
-        /* A label with the window title centered over the shot.
-           It will appear only for the currently selected window. See overlay.states */
-        Rectangle {
-            id: labelBox
+		font.bold: true
+		font.pointSize: 11
 
-            /* The width of the box around the text should be the same as
-               the text itself, with 3 pixels of margin on all sides, but it should also
-               never overflow the shot's borders.
+		text: windowInfo.title
+		elide: Text.ElideRight
+		horizontalAlignment: Text.AlignHCenter
 
-               Normally one would just set anchors.margins, but this can't work
-               here because first we need to let the Text calculate it's "natural" width
-               ("paintedWidth" in QT terms) -- that is, the size it would have
-               ìf free to expand horizontally unconstrained, to know if it's smaller than
-               the labelBox or not.
-               However if we bind the Text's width to the width of the labelBox, and the
-               width of the labelBox to the Text's size, we get a binding loop error.
+		property real originalFontSize
+		Component.onCompleted: {
+			originalFontSize = font.pointSize
+		}
 
-               The trick is to bind the Text's width to the labelBox's parent, and then
-               the labelBox to the Text's size. Since the relation between labelBox and
-               parent is taken care of by the positioner indirectly, there's no loop.
-
-               Yeah, messy. Blame QML ;)
-            */
-            property int labelMargins: 6
-            width: Math.min(parent.width, label.paintedWidth + labelMargins)
-            height: label.height + labelMargins
-            anchors.centerIn: parent
-
-            /* This equals backgroundColor: "black" and opacity: 0.6
-               but we don't want to set it that way since it would be
-               inherited by the Text child, and we want it to be fully
-               opaque instead */
-            color: "#99000000"
-            radius: 3
-            visible: window.isSelected
-
-            Text {
-                id: label
-
-                anchors.centerIn: parent
-                width: overlay.width - parent.labelMargins
-
-                text: windowInfo.title
-                elide: Text.ElideRight
-                horizontalAlignment: Text.AlignHCenter
-
-                property real originalFontSize
-                Component.onCompleted: {
-                    originalFontSize = font.pointSize
-                }
-
-                color: "white"
-            }
-        }
-    }
+		color: "white"
+	}
 
     MouseArea {
         id: mouseArea

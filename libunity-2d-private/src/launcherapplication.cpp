@@ -28,6 +28,11 @@
    set it again here.
 */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 #include "launcherapplication.h"
 #include "launchermenu.h"
 #include "launcherutility.h"
@@ -670,10 +675,14 @@ LauncherApplication::activate()
 {
     if (urgent()) {
         show();
+    /*
     } else if (active()) {
         if (windowCountOnCurrentWorkspace() > 0 && windowCount() > 1) {
             spread(windowCount() > windowCountOnCurrentWorkspace());
         }
+    */
+    } else if (windowCount() > 1) {
+        spread(windowCount() > windowCountOnCurrentWorkspace());
     } else if (running() && has_visible_window()) {
         show();
     } else {

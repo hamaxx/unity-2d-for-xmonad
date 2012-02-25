@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 // Self
 #include "panelmanager.h"
 
@@ -129,7 +134,8 @@ PanelManager::PanelManager(QObject* parent)
     m_panels.append(panel);
     panel->show();
     panel->move(desktop->screenGeometry(leftmost).topLeft());
-
+//unity 5.4
+/*
     for(int i = 0; i < desktop->screenCount(); ++i) {
         if (i == leftmost) {
             continue;
@@ -139,9 +145,17 @@ PanelManager::PanelManager(QObject* parent)
         panel->show();
         panel->move(desktop->screenGeometry(i).topLeft());
     }
+*/
     connect(desktop, SIGNAL(screenCountChanged(int)), SLOT(updateScreenLayout(int)));
     connect(desktop, SIGNAL(resized(int)), SLOT(onScreenResized(int)));
 
+/*
+    //panel is always only on first screen
+    Unity2dPanel* panel = instantiatePanel(0);
+    m_panels.append(panel);
+    panel->show();
+    panel->move(desktop->screenGeometry(0).topLeft());
+*/
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
     Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::AltModifier);
@@ -264,7 +278,7 @@ void PanelManager::onAltF10Pressed()
     QDesktopWidget* desktop = QApplication::desktop();
     int screen = desktop->screenNumber(QCursor::pos());
     Unity2dPanel* panel;
-    
+
     if (screen >= m_panels.size()) {
         return;
     }

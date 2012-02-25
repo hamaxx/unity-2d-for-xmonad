@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Modified by:
+ * - Jure Ham <jure@hamsworld.net>
+ */
+
 // Self
 #include "legacytrayapplet.h"
 
@@ -64,6 +69,7 @@ void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
        classes to allow in the Panel's systray implementation." but here we only
        support matching on WM_CLASS.
     */
+    //unity 5.4
     if (!m_whitelistAll && !m_whitelist.contains(task->name(), Qt::CaseInsensitive)) {
         return;
     }

@@ -100,7 +100,10 @@ protected:
 
 private Q_SLOTS:
     void slotWorkAreaResized(int screen);
-
+    void slotScreenCountChanged(int screenno);
+    /** If everything else fails. Invoked using a timer. This is a dirty hack. */
+    void slotFallbackGeometryUpdate();
+    
 private:
     Q_DISABLE_COPY(Unity2dPanel)
     Unity2dPanelPrivate* const d;
