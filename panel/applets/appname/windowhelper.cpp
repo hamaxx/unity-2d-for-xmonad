@@ -23,8 +23,10 @@
 #include "windowhelper.h"
 
 // Local
+#include "config.h"
 
 // unity-2d
+#include <dashclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
 
@@ -43,6 +45,7 @@ extern "C" {
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPoint>
+#include <QVariant>
 
 // X11
 #include <X11/Xlib.h>
@@ -77,6 +80,12 @@ WindowHelper::WindowHelper(QObject* parent)
     // last window is closed. Should be removed when this bug is fixed.
     connect(&BamfMatcher::get_default(), SIGNAL(ViewClosed(BamfView*)),
         SLOT(update()));
+
+    connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
+    // FIXME: the queued connection should not be needed, however if it's not used when
+    // (un)maximizing the dash, the panel will deadlock for some reason.
+    connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(update()),
+            Qt::QueuedConnection);
 }
 
 WindowHelper::~WindowHelper()
@@ -109,6 +118,7 @@ void WindowHelper::update()
     }
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
+
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
@@ -118,10 +128,15 @@ void WindowHelper::update()
 
 bool WindowHelper::isMaximized() const
 {
-    if (!d->m_window) {
-        return false;
+    if (DashClient::instance()->active()) {
+        return dash2dConfiguration().property("fullScreen").toBool();
+    } else {
+        if (d->m_window) {
+            return wnck_window_is_maximized(d->m_window);
+        } else {
+            return false;
+        }
     }
-    return wnck_window_is_maximized(d->m_window);
 }
 
 bool WindowHelper::isMostlyOnScreen(int screen) const
@@ -149,18 +164,49 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 
 void WindowHelper::close()
 {
-    guint32 timestamp = QDateTime::currentDateTime().toTime_t();
-    wnck_window_close(d->m_window, timestamp);
+    if (DashClient::instance()->active()) {
+        DashClient::instance()->setActive(false);
+    } else {
+        guint32 timestamp = QDateTime::currentDateTime().toTime_t();
+        wnck_window_close(d->m_window, timestamp);
+    }
 }
 
 void WindowHelper::minimize()
 {
-    wnck_window_minimize(d->m_window);
+    if (!DashClient::instance()->active()) {
+        wnck_window_minimize(d->m_window);
+    }
+}
+
+void WindowHelper::maximize()
+{
+    if (DashClient::instance()->active()) {
+        dash2dConfiguration().setProperty("fullScreen", QVariant(true));
+    } else {
+        /* This currently cannot happen, because the window buttons are not
+         * shown in the panel for non maximized windows. It's here just for
+         * completeness. */
+        wnck_window_maximize(d->m_window);
+    }
 }
 
 void WindowHelper::unmaximize()
 {
-    wnck_window_unmaximize(d->m_window);
+    if (DashClient::instance()->active()) {
+        dash2dConfiguration().setProperty("fullScreen", QVariant(false));
+    } else {
+        wnck_window_unmaximize(d->m_window);
+    }
+}
+
+void WindowHelper::toggleMaximize()
+{
+    if (isMaximized()) {
+        unmaximize();
+    } else {
+        maximize();
+    }
 }
 
 void WindowHelper::drag(const QPoint& pos)

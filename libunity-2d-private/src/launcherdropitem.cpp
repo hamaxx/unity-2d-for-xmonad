@@ -24,11 +24,13 @@
 
 LauncherDropItem::LauncherDropItem(QDeclarativeItem *parent) : DeclarativeDropItem(parent)
 {
+    // Makes the LauncherDropItem a QML FocusScope
+    setFlag(QGraphicsItem::ItemIsFocusScope);
 }
 
 void LauncherDropItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_FOREACH(QUrl url, getEventUrls(event)) {
+    Q_FOREACH(const QUrl& url, getEventUrls(event)) {
         if ((url.scheme() == "file" && url.path().endsWith(".desktop")) ||
             url.scheme().startsWith("http")) {
             event->setAccepted(true);
@@ -40,7 +42,7 @@ void LauncherDropItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void LauncherDropItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    Q_FOREACH(QUrl url, getEventUrls(event)) {
+    Q_FOREACH(const QUrl& url, getEventUrls(event)) {
         if (url.scheme() == "file" && url.path().endsWith(".desktop")) {
             desktopFileDropped(url.path());
         } else if (url.scheme().startsWith("http")) {

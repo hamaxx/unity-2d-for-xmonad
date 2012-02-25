@@ -8,6 +8,13 @@
         When set to false, the raster engine is used.
       </description>
     </key>
+    <key type="s" name="form-factor">
+      <default>"desktop"</default>
+      <summary>What sort of device Unity is running on.</summary>
+      <description>
+        Unity will adapt its shape and form to the device it is running on.
+      </description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">
@@ -16,14 +23,13 @@
       <description>Whether or not the super (also called windows key) key is used.</description>
     </key>
     <key name="hide-mode" type="i">
-      <default>2</default>
+      <default>0</default>
       <summary>Hiding mode of the launcher</summary>
-      <description>Possible values: 0: never hide; the launcher is always visible. Always set /com/canonical/unity-2d/launcher/use-strut to true when using that mode 1: auto hide; the launcher will disappear after a short time if the user is not interacting with it 2: intellihide; the launcher will disappear if a window is placed on top of it and if the user is not interacting with it</description>
-    </key>
-    <key name="use-strut" type="b">
-      <default>false</default>
-      <summary>Reserve launcher area</summary>
-      <description>Use EWMH standard to reserve an area of the desktop (struts) so that no window can use the launcher's area</description>
+      <description>Possible values:
+        0: never hide; the launcher is always visible and windows won't overlap with it
+        1: auto hide; the launcher will disappear after a short time if the user is not interacting with it
+        2: intellihide; same as auto hide but the launcher will disappear if a window is placed on top of it
+       </description>
     </key>
   </schema>
   <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
@@ -34,6 +40,16 @@
         List of panel applets that should be displayed, in order, in the panel.
         Each applet name can be annotated with the prefix "!" to force that applet to be displayed
         only on the panel living in the leftmost screen.
+      </description>
+    </key>
+  </schema>
+  <schema path="/com/canonical/unity-2d/dash/" id="com.canonical.Unity2d.Dash" gettext-domain="unity-2d">
+    <key type="b" name="full-screen">
+      <default>false</default>
+      <summary>The current fullscreen status of the dash</summary>
+      <description>
+        Describe if the dash should be fullscreen or not. If the dash is already running this setting
+        is applied immediately, otherwise it is applied as soon as the dash is activated again.
       </description>
     </key>
   </schema>

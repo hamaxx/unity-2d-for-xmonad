@@ -1,34 +1,84 @@
-#define INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-#define UNITY_2D_DIR "${UNITY_2D_DIR}"
-#define UNITY_DIR "${UNITY_DIR}"
+#define INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define INSTALL_LIBDIR "@CMAKE_INSTALL_LIBDIR@"
+#define INSTALL_BINDIR "@CMAKE_INSTALL_BINDIR@"
+#define UNITY_2D_DIR "@UNITY_2D_DIR@"
+#define UNITY_DIR "@UNITY_DIR@"
+#define UNITY_2D_SCHEMA_FILE "@UNITY_2D_SCHEMA_FILE@"
 
 #include <QCoreApplication>
+#include <QDir>
+#include "qconf.h"
+
+static const char* UNITY2D_DCONF_SCHEMA = "com.canonical.Unity2d";
+static const char* LAUNCHER2D_DCONF_SCHEMA = "com.canonical.Unity2d.Launcher";
+static const char* PANEL2D_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* DASH2D_DCONF_SCHEMA = "com.canonical.Unity2d.Dash";
+
+static const char* UNITY_DCONF_SCHEMA = "com.canonical.Unity";
+static const char* LAUNCHER_DCONF_SCHEMA = "com.canonical.Unity.Launcher";
+static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity.Panel";
+
+inline QConf& unity2dConfiguration() {
+    static QConf configuration(UNITY2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& launcher2dConfiguration() {
+    static QConf configuration(LAUNCHER2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& panel2dConfiguration() {
+    static QConf configuration(PANEL2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& dash2dConfiguration() {
+    static QConf configuration(DASH2D_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& unityConfiguration() {
+    static QConf configuration(UNITY_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& launcherConfiguration() {
+    static QConf configuration(LAUNCHER_DCONF_SCHEMA);
+    return configuration;
+}
+
+inline QConf& panelConfiguration() {
+    static QConf configuration(PANEL_DCONF_SCHEMA);
+    return configuration;
+}
+
 
 inline bool isRunningInstalled() {
-    static bool cachedResult = QCoreApplication::applicationDirPath() == INSTALL_PREFIX "/bin";
-    return cachedResult;
+    static bool installed = (QCoreApplication::applicationDirPath() == QDir((INSTALL_PREFIX "/" INSTALL_BINDIR)).canonicalPath());
+    return installed;
 }
 
 inline QString unity2dDirectory() {
     if (isRunningInstalled()) {
         return QString(INSTALL_PREFIX "/" UNITY_2D_DIR);
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../../");
+        return QString("@CMAKE_SOURCE_DIR@/");
     }
 }
 
 inline QString unity2dImportPath() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/lib/qt4/imports");
+        return QString(INSTALL_PREFIX "/" INSTALL_LIBDIR "/qt4/imports");
     } else {
-        return QString(QCoreApplication::applicationDirPath()+"/../");
+        return QString("@CMAKE_BINARY_DIR@/libunity-2d-private/");
     }
 }
 
 inline QString unity2dPluginsPath() {
     if (isRunningInstalled()) {
-        return QString(INSTALL_PREFIX "/lib/unity-2d/plugins");
+        return QString(INSTALL_PREFIX "/" INSTALL_LIBDIR "/unity-2d/plugins");
     } else {
-        return unity2dDirectory();
+        return QString("@CMAKE_BINARY_DIR@");
     }
 }

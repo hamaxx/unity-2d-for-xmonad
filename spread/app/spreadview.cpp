@@ -23,25 +23,22 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include "launcherclient.h"
+#include "screeninfo.h"
 
-SpreadView::SpreadView() : Unity2DDeclarativeView()
+SpreadView::SpreadView()
+: Unity2DDeclarativeView()
 {
+    m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
+    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
+
+    fitToAvailableSpace();
 }
 
-/* FIXME: copied from places/app/dashdeclarativeview.cpp */
-void SpreadView::fitToAvailableSpace(int screen)
+void SpreadView::fitToAvailableSpace()
 {
-    QDesktopWidget *desktop = QApplication::desktop();
-    int current_screen = desktop->screenNumber(this);
-
-    if(screen == current_screen)
-    {
-        QRect geometry = desktop->availableGeometry(this);
-        geometry.setX(geometry.x() + LauncherClient::MaximumWidth);
-        setGeometry(geometry);
-        setFixedSize(geometry.size());
-    }
+    QRect geometry = m_screenInfo->panelsFreeGeometry();
+    setGeometry(geometry);
+    setFixedSize(geometry.size());
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did
@@ -97,16 +94,4 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
     }
 
     return false;
-}
-
-void SpreadView::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event);
-    Q_EMIT visibleChanged(true);
-}
-
-void SpreadView::hideEvent(QHideEvent *event)
-{
-    Q_UNUSED(event);
-    Q_EMIT visibleChanged(false);
 }

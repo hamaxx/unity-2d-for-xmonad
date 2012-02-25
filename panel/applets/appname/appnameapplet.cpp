@@ -23,11 +23,13 @@
 #include "appnameapplet.h"
 
 // Local
+#include "config.h"
 #include "croppedlabel.h"
 #include "menubarwidget.h"
 #include "panelstyle.h"
 #include "unity2dpanel.h"
 #include "windowhelper.h"
+#include "dashclient.h"
 
 // Unity-2d
 #include <debug_p.h>
@@ -36,6 +38,7 @@
 #include <hotkey.h>
 #include <hotkeymonitor.h>
 #include <indicatorentrywidget.h>
+#include <unity2dtr.h>
 
 // Bamf
 #include <bamf-application.h>
@@ -60,15 +63,28 @@ class WindowButton : public QAbstractButton
 public:
     WindowButton(const PanelStyle::WindowButtonType& buttonType, QWidget* parent = 0)
     : QAbstractButton(parent)
-    , m_buttonType(buttonType)
+    , m_isDashButton(false)
+    , m_initialized(false)
     {
-        loadPixmaps();
+        setButtonType(buttonType);
         if (buttonType == PanelStyle::MinimizeWindowButton) {
             setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
         } else {
             setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         }
         setAttribute(Qt::WA_Hover);
+        m_initialized = true;
+    }
+
+    void setButtonType(const PanelStyle::WindowButtonType& buttonType)
+    {
+        if (m_initialized && m_buttonType == buttonType) {
+            return;
+        }
+
+        m_buttonType = buttonType;
+        loadPixmaps(false);
+        update();
     }
 
     QSize minimumSizeHint() const
@@ -76,11 +92,21 @@ public:
         return m_normalPix.size();
     }
 
+    void setIsDashButton(bool isDashButton)
+    {
+        if (m_initialized && m_isDashButton == isDashButton) {
+            return;
+        }
+
+        m_isDashButton = isDashButton;
+        update();
+    }
+
 protected:
     bool event(QEvent* ev)
     {
         if (ev->type() == QEvent::PaletteChange) {
-            loadPixmaps();
+            loadPixmaps(true);
         }
         return QAbstractButton::event(ev);
     }
@@ -89,12 +115,16 @@ protected:
     {
         QPainter painter(this);
         QPixmap pix;
-        if (isDown()) {
-            pix = m_downPix;
-        } else if (underMouse()) {
-            pix = m_hoverPix;
+        if (isEnabled()) {
+            if (isDown()) {
+                pix = (m_isDashButton) ? m_dash_downPix : m_downPix;
+            } else if (underMouse()) {
+                pix = (m_isDashButton) ? m_dash_hoverPix : m_hoverPix;
+            } else {
+                pix = (m_isDashButton) ? m_dash_normalPix : m_normalPix;
+            }
         } else {
-            pix = m_normalPix;
+            pix = (m_isDashButton) ? m_dash_normalPix : m_normalPix;
         }
         int posX;
         if (m_buttonType == PanelStyle::CloseWindowButton) {
@@ -107,16 +137,49 @@ protected:
 
 private:
     PanelStyle::WindowButtonType m_buttonType;
+    bool m_isDashButton;
     QPixmap m_normalPix;
     QPixmap m_hoverPix;
     QPixmap m_downPix;
+    QPixmap m_dash_normalPix;
+    QPixmap m_dash_hoverPix;
+    QPixmap m_dash_downPix;
+    bool m_initialized;
 
-    void loadPixmaps()
+    void loadPixmaps(bool loadOnlyStylePixmaps)
     {
         PanelStyle* style = PanelStyle::instance();
         m_normalPix = style->windowButtonPixmap(m_buttonType, PanelStyle::NormalState);
         m_hoverPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PrelightState);
         m_downPix = style->windowButtonPixmap(m_buttonType, PanelStyle::PressedState);
+
+        if (!loadOnlyStylePixmaps) {
+            loadDashPixmaps(m_buttonType);
+        }
+    }
+
+    void loadDashPixmaps(PanelStyle::WindowButtonType buttonType)
+    {
+        QString iconPath = unity2dDirectory() + "/panel/applets/appname/artwork/";
+
+        switch (buttonType) {
+        case PanelStyle::CloseWindowButton:
+            iconPath += "close_dash";
+            break;
+        case PanelStyle::MinimizeWindowButton:
+            iconPath += "minimize_dash";
+            break;
+        case PanelStyle::UnmaximizeWindowButton:
+            iconPath += "unmaximize_dash";
+            break;
+        case PanelStyle::MaximizeWindowButton:
+            iconPath += "maximize_dash";
+            break;
+        }
+
+        m_dash_normalPix.load(iconPath + ".png");
+        m_dash_hoverPix.load(iconPath + "_prelight.png");
+        m_dash_downPix.load(iconPath + "_pressed.png");
     }
 };
 
@@ -161,15 +224,18 @@ struct AppNameAppletPrivate
         layout->setMargin(0);
         layout->setSpacing(0);
         m_closeButton = new WindowButton(PanelStyle::CloseWindowButton);
+        m_closeButton->setObjectName("AppNameApplet::CloseButton");
         m_minimizeButton = new WindowButton(PanelStyle::MinimizeWindowButton);
+        m_minimizeButton->setObjectName("AppNameApplet::MinimizeButton");
         m_maximizeButton = new WindowButton(PanelStyle::UnmaximizeWindowButton);
+        m_maximizeButton->setObjectName("AppNameApplet::MaximizeButton");
         layout->addWidget(m_closeButton);
         layout->addWidget(m_minimizeButton);
         layout->addWidget(m_maximizeButton);
         m_windowButtonWidget->setFixedWidth(LauncherClient::MaximumWidth);
         QObject::connect(m_closeButton, SIGNAL(clicked()), m_windowHelper, SLOT(close()));
         QObject::connect(m_minimizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(minimize()));
-        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(unmaximize()));
+        QObject::connect(m_maximizeButton, SIGNAL(clicked()), m_windowHelper, SLOT(toggleMaximize()));
     }
 
     void setupWindowHelper()
@@ -210,6 +276,8 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     d->setupMenuBarWidget(panel->indicatorsManager());
     d->setupKeyboardModifiersMonitor();
 
+    connect(DashClient::instance(), SIGNAL(alwaysFullScreenChanged()), SLOT(updateWidgets()));
+
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
     layout->setSpacing(0);
@@ -243,35 +311,58 @@ void AppNameApplet::updateWidgets()
         || d->m_menuBarWidget->isOpened()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
-    bool showWindowButtons = isOpened && isMaximized;
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
+    bool dashIsVisible = DashClient::instance()->active();
+    bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
+    bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
+    bool showDesktopLabel = !app;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
+    d->m_maximizeButton->setIsDashButton(dashIsVisible);
+    d->m_maximizeButton->setButtonType(isMaximized ?
+                                       PanelStyle::UnmaximizeWindowButton :
+                                       PanelStyle::MaximizeWindowButton);
+    /* disable the minimize button for the dash */
+    d->m_minimizeButton->setEnabled(!dashIsVisible);
+    d->m_minimizeButton->setIsDashButton(dashIsVisible);
+    /* and the maximize button, if the dash is not resizeable */
+    d->m_maximizeButton->setEnabled(!dashIsVisible || dashCanResize);
+    d->m_maximizeButton->setIsDashButton(dashIsVisible);
+    /* make sure we use the right button for dash */
+    d->m_closeButton->setIsDashButton(dashIsVisible);
 
-    d->m_label->setVisible(showLabel);
-    if (showLabel) {
-        // Define text
-        QString text;
-        if (app) {
-            if (isMaximized) {
-                // When maximized, show window title
-                BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                if (bamfWindow) {
-                    text = bamfWindow->name();
+    if (showAppLabel || showDesktopLabel || dashIsVisible) {
+        d->m_label->setVisible(true);
+        if (showAppLabel) {
+            // Define text
+            QString text;
+            if (app) {
+                if (isMaximized) {
+                    // When maximized, show window title
+                    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+                    if (bamfWindow) {
+                        text = bamfWindow->name();
+                    }
+                } else {
+                    // When not maximized, show application name
+                    text = app->name();
                 }
-            } else {
-                // When not maximized, show application name
-                text = app->name();
             }
+            d->m_label->setText(text);
+        } else if (showDesktopLabel) {
+            d->m_label->setText(u2dTr("Ubuntu Desktop"));
+        } else {
+            d->m_label->setText(QString());
         }
-        d->m_label->setText(text);
 
-        // Define width
+        // Define label width
         if (!isMaximized && showMenu) {
             d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
         } else {
             d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
         }
+    } else {
+        d->m_label->setVisible(false);
     }
 
     d->m_menuBarWidget->setVisible(showMenu);
@@ -314,7 +405,7 @@ void AppNameApplet::mouseMoveEvent(QMouseEvent* event) {
             d->m_windowHelper->drag(d->m_dragStartPosition);
         }
     } else {
-        Unity2d::PanelApplet::mouseReleaseEvent(event);
+        Unity2d::PanelApplet::mouseMoveEvent(event);
     }
 }
 

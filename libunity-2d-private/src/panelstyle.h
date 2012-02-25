@@ -48,7 +48,8 @@ public:
     enum WindowButtonType {
         CloseWindowButton,
         MinimizeWindowButton,
-        UnmaximizeWindowButton
+        UnmaximizeWindowButton,
+        MaximizeWindowButton
     };
 
     enum WindowButtonState {
@@ -62,6 +63,9 @@ public:
     struct _GtkStyleContext* styleContext() const;
 
     QPixmap windowButtonPixmap(WindowButtonType, WindowButtonState);
+
+private Q_SLOTS:
+    void onDashActiveChanged(bool active);
 
 private:
     friend class PanelStylePrivate;

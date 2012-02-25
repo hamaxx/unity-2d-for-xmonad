@@ -39,7 +39,9 @@ int main(int argc, char *argv[])
     QSet<QString> arguments = QSet<QString>::fromList(QCoreApplication::arguments());
 
     SpreadView view;
-    view.setUseOpenGL(arguments.contains("-opengl"));
+    if (arguments.contains("-opengl")) {
+        view.setUseOpenGL(true);
+    }
 
     /* The spread window is borderless and not moveable by the user, yet not
        fullscreen */
@@ -50,16 +52,10 @@ int main(int argc, char *argv[])
        setSource() will fail */
     view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
-    if (!isRunningInstalled()) {
-        /* Spread.qml imports Unity2d */
-        view.engine()->addImportPath(unity2dDirectory() + "/libunity-2d-private/");
-    }
-
     /* Add a SpreadControl instance to the QML context */
     /* FIXME: the SpreadControl class should be exposed to QML by a plugin and
               instantiated on the QML side */
     SpreadControl control;
-    control.connectToBus();
     control.connect(&view, SIGNAL(visibleChanged(bool)), SLOT(setIsShown(bool)));
     view.rootContext()->setContextProperty("control", &control);
 
@@ -69,10 +65,7 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Workspaces.qml"));
 
-    /* Always match the size of the desktop */
-    int current_screen = QApplication::desktop()->screenNumber(&view);
-    view.fitToAvailableSpace(current_screen);
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)), &view, SLOT(fitToAvailableSpace(int)));
+    control.connectToBus();
 
     return application.exec();
 }

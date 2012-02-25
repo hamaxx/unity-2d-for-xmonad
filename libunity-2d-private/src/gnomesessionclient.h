@@ -47,6 +47,8 @@ public:
 
     void connectToSessionManager();
 
+    bool eventFilter(QObject* watched, QEvent* event);
+
 private Q_SLOTS:
     void slotRegisterClientFinished(QDBusPendingCallWatcher* watcher);
     void stop();

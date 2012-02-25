@@ -35,14 +35,18 @@ public:
 
     Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers);
 
+    void disableModifiers(Qt::KeyboardModifiers modifiers);
+    void enableModifiers(Qt::KeyboardModifiers modifiers);
+
 private:
     HotkeyMonitor(QObject* parent=0);
 
     static bool keyEventFilter(void* message);
-    void processKeyEvent(uint x11Keycode, uint x11Modifiers,
+    bool processKeyEvent(uint x11Keycode, uint x11Modifiers,
                          bool isPressEvent);
 
     QList<Hotkey*> m_hotkeys;
+    Qt::KeyboardModifiers m_disabledModifiers;
 };
 
 

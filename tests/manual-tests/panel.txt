@@ -1,0 +1,14 @@
+----
+ * Hit Alt-F10.
+
+--> Panel main menu should be activated. The shortcut key F10 is changed to Alt-F10 now (lp:878492)
+
+----
+ * Open any indicator menu
+
+--> Verify menu shows correctly and there are no scroll arrows (lp:913237)
+
+----
+ * Hit super key to Open Dash.
+
+--> Verify top panel is transparent

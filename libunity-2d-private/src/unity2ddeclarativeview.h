@@ -19,7 +19,7 @@
 
 #include <QDeclarativeView>
 
-class QConf;
+class ScreenInfo;
 
 class Unity2DDeclarativeView : public QDeclarativeView
 {
@@ -28,6 +28,8 @@ class Unity2DDeclarativeView : public QDeclarativeView
     Q_PROPERTY(bool useOpenGL READ useOpenGL WRITE setUseOpenGL NOTIFY useOpenGLChanged)
     Q_PROPERTY(bool transparentBackground READ transparentBackground WRITE setTransparentBackground NOTIFY transparentBackgroundChanged)
     Q_PROPERTY(QPoint globalPosition READ globalPosition NOTIFY globalPositionChanged)
+    Q_PROPERTY(ScreenInfo* screen READ screen NOTIFY screenChanged)
+    Q_PROPERTY(bool visible READ isVisible NOTIFY visibleChanged)
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
@@ -37,6 +39,7 @@ public:
     bool useOpenGL() const;
     bool transparentBackground() const;
     QPoint globalPosition() const;
+    ScreenInfo* screen() const;
 
     // setters
     void setUseOpenGL(bool);
@@ -46,14 +49,24 @@ Q_SIGNALS:
     void useOpenGLChanged(bool);
     void transparentBackgroundChanged(bool);
     void globalPositionChanged(QPoint);
+    void screenChanged(ScreenInfo*);
+    void visibleChanged(bool);
+    void activeWorkspaceChanged();
 
 protected:
     void setupViewport();
     virtual void moveEvent(QMoveEvent* event);
+    virtual void showEvent(QShowEvent *event);
+    virtual void hideEvent(QHideEvent* event);
+
+    ScreenInfo* m_screenInfo;
 
 protected Q_SLOTS:
     void forceActivateWindow();
     void forceDeactivateWindow();
+
+private Q_SLOTS:
+    void onActiveWorkspaceChanged();
 
 private:
     void saveActiveWindow();
@@ -62,7 +75,6 @@ private:
     bool m_useOpenGL;
     bool m_transparentBackground;
     WId m_last_focused_window;
-    QConf* m_conf;
 };
 
 Q_DECLARE_METATYPE(Unity2DDeclarativeView*)

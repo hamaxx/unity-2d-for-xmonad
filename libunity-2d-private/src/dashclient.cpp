@@ -22,6 +22,7 @@
 #include "dashclient.h"
 
 // Local
+#include "config.h"
 
 // libunity-2d
 #include <debug_p.h>
@@ -32,15 +33,21 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
+#include <QDesktopWidget>
+#include <QRect>
 
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
 DashClient::DashClient(QObject* parent)
 : QObject(parent)
 , m_dashDbusIface(0)
 , m_dashActive(false)
+, m_alwaysFullScreen(false)
 {
     /* Check if the dash is already up and running by asking the bus instead of
        trying to create an instance of the interface. Creating an instance would
@@ -59,6 +66,15 @@ DashClient::DashClient(QObject* parent)
                                                                this);
         connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
     }
+
+    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateAlwaysFullScreen()));
+
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateAlwaysFullScreen()), Qt::QueuedConnection);
+    updateAlwaysFullScreen();
 }
 
 void DashClient::connectToDash()
@@ -71,8 +87,6 @@ void DashClient::connectToDash()
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotDashActiveChanged(bool)));
-    connect(m_dashDbusIface, SIGNAL(activeLensChanged(const QString&)),
-            SLOT(slotDashActiveLensChanged(const QString&)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
@@ -80,14 +94,6 @@ void DashClient::connectToDash()
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
-    value = m_dashDbusIface->property("activeLens");
-    if (value.isValid()) {
-        m_dashActiveLens = value.toString();
-    } else {
-        UQ_WARNING << "Fetching Dash.activeLens property failed";
-    }
-
-    updateActivePage();
 }
 
 DashClient* DashClient::instance()
@@ -100,56 +106,53 @@ void DashClient::slotDashActiveChanged(bool value)
 {
     if (m_dashActive != value) {
         m_dashActive = value;
-        updateActivePage();
     }
+    Q_EMIT activeChanged(value);
 }
 
-void DashClient::slotDashActiveLensChanged(const QString& lens)
+bool DashClient::active() const
 {
-    if (m_dashActiveLens != lens) {
-        m_dashActiveLens = lens;
-        updateActivePage();
-    }
+    return m_dashActive;
 }
 
-QString DashClient::activePage() const
+void DashClient::setActive(bool active)
 {
-    return m_activePage;
-}
-
-void DashClient::setActivePage(const QString& page, const QString& lensId)
-{
-    if (m_activePage == page) {
-        return;
-    }
-    if (page.isEmpty()) {
-        // Use m_dashDbusIface to close the dash, but only if it is running
+    if (!active) {
+        // Use m_dashDbusIface only if the dash is running
         if (m_dashDbusIface) {
             m_dashDbusIface->setProperty("active", false);
         }
-        return;
-    }
-    // Use a separate QDBusInterface so that the dash is started if it is not
-    // already running
-    QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-    if (page == "home") {
-        iface.asyncCall("activateHome");
     } else {
-        iface.asyncCall("activateLens", lensId);
+        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        iface.setProperty("active", true);
     }
 }
 
-void DashClient::updateActivePage()
+QSize DashClient::minimumSizeForDesktop()
 {
-    QString activePage;
-    if (m_dashActive) {
-        activePage = m_dashActiveLens.isEmpty() ? "home" : m_dashActiveLens;
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
+}
+
+void DashClient::updateAlwaysFullScreen()
+{
+    bool alwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        alwaysFullScreen = true;
+    } else {
+        QRect rect = QApplication::desktop()->screenGeometry(QPoint());
+        QSize minSize = minimumSizeForDesktop();
+        alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
     }
 
-    if (m_activePage != activePage) {
-        m_activePage = activePage;
-        activePageChanged(m_activePage);
+    if (m_alwaysFullScreen != alwaysFullScreen) {
+        m_alwaysFullScreen = alwaysFullScreen;
+        Q_EMIT alwaysFullScreenChanged();
     }
+}
+
+bool DashClient::alwaysFullScreen() const
+{
+    return m_alwaysFullScreen;
 }
 
 #include "dashclient.moc"

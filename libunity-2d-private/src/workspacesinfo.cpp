@@ -1,5 +1,5 @@
 #include "workspacesinfo.h"
-#include "screeninfo.h"
+#include "desktopinfo.h"
 #include "signalwaiter.h"
 #include <debug_p.h>
 
@@ -74,9 +74,9 @@ bool WorkspacesInfo::globalEventFilter(void* message)
 
     if (notify->atom == _NET_DESKTOP_LAYOUT ||
         notify->atom == _NET_NUMBER_OF_DESKTOPS) {
-        ScreenInfo::instance()->workspaces()->updateWorkspaceGeometry();
+        DesktopInfo::instance()->workspaces()->updateWorkspaceGeometry();
     } else if (notify->atom == _NET_CURRENT_DESKTOP) {
-        ScreenInfo::instance()->workspaces()->updateCurrentWorkspace();
+        DesktopInfo::instance()->workspaces()->updateCurrentWorkspace();
     }
 
     return ret;
@@ -84,61 +84,104 @@ bool WorkspacesInfo::globalEventFilter(void* message)
 
 void WorkspacesInfo::updateWorkspaceGeometry()
 {
-    int workspaceCount;
-    int rows;
-    int columns;
-    Orientation orientation;
-    Corner startingCorner;
-    unsigned long *result;
+    int workspaceCount = 0;
+    Orientation orientation = WorkspacesInfo::OrientationHorizontal;
+    int columns = 0;
+    int rows = 0;
+    int squareColumns;
+    int squareRows;
+    Corner startingCorner = WorkspacesInfo::CornerTopLeft;
+    bool XWorkspaceCountNeedsUpdate = false;
+    bool XLayoutNeedsUpdate = false;
 
-    /* First obtain the number of workspaces, that will be needed to
-       also calculate some properties of the layout which could be missing
-       from the property we will retrieve after this one */
-    result = getX11IntProperty(_NET_NUMBER_OF_DESKTOPS, 1);
-    if (result == NULL) {
+    XWorkspaceCountNeedsUpdate = !getWorkspaceCountFromX(workspaceCount);
+    XLayoutNeedsUpdate = !getWorkspaceLayoutFromX(orientation, columns, rows, startingCorner);
+
+    /* If the number of workspaces was not set or set to 0 fallback to a default
+       number of 4 workspaces. */
+    if (workspaceCount == 0) {
         workspaceCount = 4;
-    } else {
-        workspaceCount = result[0];
+        XWorkspaceCountNeedsUpdate = true;
     }
-    XFree(result);
 
-    /* Then ask X11 the layout of the workspaces. */
+    /* Override the number of rows and columns possibly set by an external pager.
+       The number of rows and columns is computed from the number of workspaces
+       to make the layout square.
+
+       We override external pagers because differentiating an external pager from
+       oneself is hard. Example case where it matters:
+       Starting with 9 workspaces, we decide on 3 rows and 3 columns. When the
+       number of workspaces is then changed dynamically to 4 workspaces, without
+       override, we would layout the 4 workspaces in a 3x3 grid.
+    */
+    squareColumns = ceil(sqrt((float)workspaceCount));
+    squareRows = ceil((float) workspaceCount / (float) squareColumns);
+
+    if (squareColumns != columns || squareRows != rows) {
+        columns = squareColumns;
+        rows = squareRows;
+        XLayoutNeedsUpdate = true;
+    }
+
+    if (XWorkspaceCountNeedsUpdate) {
+        setWorkspaceCountToX(workspaceCount);
+    }
+
+    if (XLayoutNeedsUpdate) {
+        setWorkspaceLayoutToX(orientation, columns, rows, startingCorner);
+    }
+
+    updateWorkspaceGeometryProperties(workspaceCount, orientation, columns, rows, startingCorner);
+}
+
+bool WorkspacesInfo::getWorkspaceCountFromX(int& workspaceCount)
+{
+    unsigned long *result;
+    result = getX11IntProperty(_NET_NUMBER_OF_DESKTOPS, 1);
+    if (result != NULL) {
+        workspaceCount = result[0];
+        XFree(result);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool WorkspacesInfo::getWorkspaceLayoutFromX(Orientation& orientation, int& columns, int& rows, Corner& startingCorner)
+{
+    unsigned long *result;
     result = getX11IntProperty(_NET_DESKTOP_LAYOUT, 4);
     if (result != NULL) {
-        /* If we read the values correctly (some pager or the user set them)
-           then just use them. */
         orientation = (Orientation) result[0];
         columns = result[1];
         rows = result[2];
         startingCorner = (Corner) result[3];
-
-        /* Perform some sanity checks, since it's possible according to
-           the spec for rows or colums to be zero, and we are supposed to
-           calculate these values ourselves by using the total count
-        */
-        if (rows == 0 && columns == 0) {
-            rows = 2;
-            columns = workspaceCount;
-        } else {
-            if (rows == 0) {
-                rows = ceil((float) workspaceCount / (float) columns);
-            } else if (columns == 0) {
-                columns = ceil((float) workspaceCount / (float) rows);
-            }
-        }
-
         XFree(result);
+        return true;
     } else {
-        /* In this property does not exist (as is the case if you
-           don't login into the regular gnome session before unity-2d),
-           just fallback on reasonable defaults. */
-        rows = 2;
-        columns = ceil((float) workspaceCount / (float) rows);
-        orientation = WorkspacesInfo::OrientationHorizontal;
-        startingCorner = WorkspacesInfo::CornerTopLeft;
+        return false;
     }
+}
 
-    /* Notify of changes, if any */
+void WorkspacesInfo::setWorkspaceCountToX(int workspaceCount)
+{
+    unsigned long values[1];
+    values[0] = workspaceCount;
+    setX11IntProperty(_NET_NUMBER_OF_DESKTOPS, (unsigned char*)values, 1);
+}
+
+void WorkspacesInfo::setWorkspaceLayoutToX(Orientation orientation, int columns, int rows, Corner startingCorner)
+{
+    unsigned long values[4];
+    values[0] = orientation;
+    values[1] = columns;
+    values[2] = rows;
+    values[3] = startingCorner;
+    setX11IntProperty(_NET_DESKTOP_LAYOUT, (unsigned char*)values, 4);
+}
+
+void WorkspacesInfo::updateWorkspaceGeometryProperties(int workspaceCount, Orientation orientation, int columns, int rows, Corner startingCorner)
+{
     if (m_count != workspaceCount) {
         m_count = workspaceCount;
         Q_EMIT countChanged(m_count);
@@ -226,6 +269,17 @@ unsigned long * WorkspacesInfo::getX11IntProperty(Atom property, long length)
     }
 
     return NULL;
+}
+
+/* Helper function to write the value of X11 window property of integer type of
+   the length specified. */
+void WorkspacesInfo::setX11IntProperty(Atom property, unsigned char *data, long length)
+{
+    XChangeProperty(QX11Info::display(), QX11Info::appRootWindow(),
+                    property,
+                    XA_CARDINAL, 32,
+                    PropModeReplace,
+                    data, length);
 }
 
 #include "workspacesinfo.moc"

@@ -53,6 +53,7 @@ Q_SIGNALS:
     void showCurrentWorkspace(QString applicationDesktopFile);
     void filterByApplication(QString applicationDesktopFile);
     void hide();
+    void IsShownChanged(bool isShown);
 
 private:
     bool m_isShown;

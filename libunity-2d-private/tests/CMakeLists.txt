@@ -4,20 +4,21 @@ configure_file(config-test.h.in config-test.h)
 include_directories(
     ${libunity-2d-private_SOURCE_DIR}/src
     ${libunity-2d-private_SOURCE_DIR}/Unity2d
+    ${CMAKE_SOURCE_DIR}/tests/misc
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GLIB_INCLUDE_DIRS}
     ${QT_QTTEST_INCLUDE_DIR}
     )
 
-enable_testing()
-
 set(LIBUNITY_2D_TEST_DIR ${libunity-2d-private_BINARY_DIR}/tests)
 
-# Unit-tests
+# Unit-tests (all run with Xvfb)
 macro(libunity_2d_tests)
     set(_test_list "")
     foreach(_test ${ARGN})
-        add_test(${_test} ${_test})
+        add_test(NAME ${_test} 
+            COMMAND /bin/bash ${CMAKE_SOURCE_DIR}/tests/misc/run-with-xvfb.sh ./${_test}
+            )
         add_executable(${_test} ${_test}.cpp ${_test}.moc)
         qt4_generate_moc(${_test}.cpp ${_test}.moc)
         target_link_libraries(${_test}
@@ -27,21 +28,34 @@ macro(libunity_2d_tests)
             )
         set(_test_list "${_test_list};${_test}")
     endforeach(_test)
-
-    add_custom_target(libunity-2d-private_check COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-        DEPENDS ${_test_list})
-    add_dependencies(check libunity-2d-private_check)
 endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
     gconnectortest
     keyboardmodifiersmonitortest
-    paneltest
-    unity2dtrtest
     launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest
+    focuspathtest
     )
+    
+# unity2dtrtest - FIXME
+#add_test(NAME unity2dtrtest_check
+#    COMMAND /bin/sh unity2dtrtest.sh
+#    )
+add_executable(unity2dtrtest
+    unity2dtrtest.cpp unity2dtrtest.moc
+    )
+qt4_generate_moc(unity2dtrtest.cpp
+    unity2dtrtest.moc
+    )
+target_link_libraries(unity2dtrtest
+    ${QT_QTTEST_LIBRARIES}
+    unity-2d-private
+    unity-2d-private-qml
+    )
+configure_file(unity2dtrtest.sh.in
+    unity2dtrtest.sh @ONLY)
 
 add_custom_target(unity2dtr_po COMMAND
     mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/locale/fr/LC_MESSAGES/
@@ -64,15 +78,8 @@ configure_file(gnomesessionclienttesthelper.desktop.in
 configure_file(gnomesessionclienttest.sh.in
     gnomesessionclienttest.sh @ONLY)
 
-add_test(NAME gnomesessionclient_check
-    COMMAND /bin/sh gnomesessionclienttest.sh
-    )
-add_dependencies(libunity-2d-private_check gnomesessionclient_check)
+#FIXME: rewrite this using dbus-test-runner to fake gnome-session messaging
+#add_test(NAME gnomesessionclient_check
+#    COMMAND /bin/sh gnomesessionclienttest.sh
+#    )
 
-# mouseareademo
-add_executable(mouseareademo
-    mouseareademo.cpp
-    )
-target_link_libraries(mouseareademo
-    unity-2d-private
-    )

@@ -29,6 +29,8 @@ class IndicatorsManager;
 #include <QWidget>
 #include <QEvent>
 
+#include "screeninfo.h"
+
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
@@ -45,6 +47,7 @@ class Unity2dPanel : public QWidget
      */
     Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
+    Q_ENUMS(Edge)
 
 public:
     enum Edge {
@@ -54,11 +57,15 @@ public:
 
     static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
 
-    Unity2dPanel(bool requiresTransparency = false, QWidget* parent = 0);
+    Unity2dPanel(bool requiresTransparency = false, int screen = -1,
+                 ScreenInfo::Corner corner = ScreenInfo::InvalidCorner, QWidget* parent = 0);
     ~Unity2dPanel();
 
     void setEdge(Edge);
     Edge edge() const;
+
+    void setScreen(int);
+    int screen() const;
 
     void addWidget(QWidget*);
 
@@ -81,9 +88,7 @@ public:
     bool manualSliding() const;
     void setManualSliding(bool);
 
-public Q_SLOTS:
-    void slideIn();
-    void slideOut();
+    QString id() const;
 
 Q_SIGNALS:
     void manualSlidingChanged(bool);
@@ -91,7 +96,6 @@ Q_SIGNALS:
 
 protected:
     virtual void showEvent(QShowEvent*);
-    virtual void resizeEvent(QResizeEvent*);
     virtual void paintEvent(QPaintEvent*);
 
 private Q_SLOTS:

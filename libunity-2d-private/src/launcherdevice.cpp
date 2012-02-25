@@ -87,7 +87,7 @@ LauncherDevice::name() const
         return s;
     }
 
-    return QString("");
+    return QString();
 }
 
 QString

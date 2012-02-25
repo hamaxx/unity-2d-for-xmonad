@@ -47,5 +47,9 @@ target_link_libraries(panelplugin-appname
     )
 
 install(TARGETS panelplugin-appname
-        LIBRARY DESTINATION lib/unity-2d/plugins/panel
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/unity-2d/plugins/panel
        )
+
+install(DIRECTORY artwork
+    DESTINATION ${UNITY_2D_DIR}/panel/applets/appname
+    )

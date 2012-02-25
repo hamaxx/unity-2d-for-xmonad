@@ -22,9 +22,6 @@
 #ifndef PanelManager_H
 #define PanelManager_H
 
-// QConf
-#include <qconf.h>
-
 // Qt
 #include <QObject>
 #include <QList>
@@ -42,14 +39,14 @@ public:
 private:
     Q_DISABLE_COPY(PanelManager)
     QList<Unity2dPanel*> m_panels;
-    QConf m_conf;
 
     Unity2dPanel* instantiatePanel(int screen);
     QStringList loadPanelConfiguration() const;
 
 private Q_SLOTS:
-    void onScreenCountChanged(int newCount);
-    void onF10Pressed();
+    void updateScreenLayout(int newCount);
+    void onAltF10Pressed();
+    void onScreenResized(int screen);
 };
 
 #endif // PanelManager_H

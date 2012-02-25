@@ -66,6 +66,7 @@ protected:
     bool x11EventFilter(XEvent*);
 
 private:
+    void loadTestabilityPlugin();
     QList<AbstractX11EventFilter*> m_x11EventFilters;
     PlatformFontTracker* m_platformFontTracker;
 };

@@ -163,9 +163,9 @@ void IndicatorEntryWidget::updatePix()
         m_pix = QPixmap();
     } else {
         QImage img(width, height(), QImage::Format_ARGB32_Premultiplied);
+        img.fill(Qt::transparent);
         QPainter painter(&img);
         painter.initFrom(this);
-        painter.eraseRect(img.rect());
         if (m_entry->active()) {
             paintActiveBackground(&img);
         }
@@ -337,7 +337,7 @@ void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
     }
     int nuxButton = qtButton == Qt::NoButton ? 0 : 1;
     QPoint pos = mapToGlobal(rect().bottomLeft());
-    m_entry->ShowMenu(pos.x(), pos.y(),
+    m_entry->ShowMenu(pos.x(), pos.y() + 1, /* position top of menu under the panel bottom */
         time(NULL),
         nuxButton
         );

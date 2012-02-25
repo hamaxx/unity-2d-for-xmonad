@@ -24,6 +24,8 @@ import Unity2d 1.0
 Item {
     property string overlay_color
     property real overlay_alpha
+    property int offsetX: -1
+    property int offsetY: -1
     
     /* Avoid redraw at rendering */
     CacheEffect {
@@ -78,12 +80,25 @@ Item {
             else
                 return filename
         }
-        width: screen.geometry.width
-        height: screen.geometry.height
+        width: declarativeView.screen.geometry.width
+        height: declarativeView.screen.geometry.height
 
         smooth: true
-        x: screen.availableGeometry.x - declarativeView.globalPosition.x
-        y: -screen.availableGeometry.y
+
+        /* Limit the width of the background thus:
+           - saving video memory when using the OpenGL backend
+           - making scaling cheaper in the spread when using the raster backend
+
+           The height will be computed to preserve the aspect ratio.
+        */
+        sourceSize.width: 512
+        sourceSize.height: 0
+
+        /* by default, place the background on top of the desktop background,
+           no matter where the DeclarativeView or the parent object are placed.
+        */
+        x: offsetX != -1 ? offsetX : parent.mapFromItem(null, -declarativeView.globalPosition.x, 0).x
+        y: offsetY != -1 ? offsetY : parent.mapFromItem(null, 0, -declarativeView.globalPosition.y).y
 
         /* Possible modes are:
             - "wallpaper"

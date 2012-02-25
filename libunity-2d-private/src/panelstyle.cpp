@@ -26,6 +26,7 @@
 #include <debug_p.h>
 #include <gconnector.h>
 #include <gscopedpointer.h>
+#include <dashclient.h>
 
 // Qt
 #include <QApplication>
@@ -68,7 +69,11 @@ public:
         gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
         QPalette pal;
-        pal.setBrush(QPalette::Window, generateBackgroundBrush());
+        if (DashClient::instance()->active()) {
+            pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
+        } else {
+            pal.setBrush(QPalette::Window, generateBackgroundBrush());
+        }
         QApplication::setPalette(pal);
     }
 
@@ -98,11 +103,14 @@ public:
         case PanelStyle::UnmaximizeWindowButton:
             typeString = "unmaximize";
             break;
+        case PanelStyle::MaximizeWindowButton:
+            typeString = "maximize";
+            break;
         }
 
         switch (state) {
         case PanelStyle::NormalState:
-            stateString = "";
+            // stateString = QString(); no need since we just declared and noone assigned anything to it
             break;
         case PanelStyle::PrelightState:
             stateString = "_focused_prelight";
@@ -131,6 +139,9 @@ public:
             break;
         case PanelStyle::UnmaximizeWindowButton:
             standardIcon = QStyle::SP_TitleBarNormalButton;
+            break;
+        case PanelStyle::MaximizeWindowButton:
+            standardIcon = QStyle::SP_TitleBarMaxButton;
             break;
         }
 
@@ -168,6 +179,7 @@ PanelStyle::PanelStyle(QObject* parent)
     d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
+    QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
     d->updatePalette();
 }
 
@@ -197,6 +209,11 @@ QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelS
     } else {
         return d->genericWindowButtonPixmap(type, state);
     }
+}
+
+void PanelStyle::onDashActiveChanged(bool active)
+{
+    d->updatePalette();
 }
 
 #include "panelstyle.moc"

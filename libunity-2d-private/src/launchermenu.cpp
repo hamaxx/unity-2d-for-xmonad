@@ -73,7 +73,6 @@ LauncherContextualMenu::LauncherContextualMenu():
 
     /* First action used to display the title of the item */
     m_titleAction = new QAction(this);
-    m_titleAction->setEnabled(false);
     addAction(m_titleAction);
 }
 
@@ -157,6 +156,14 @@ LauncherContextualMenu::enterEvent(QEvent* event)
 }
 
 void
+LauncherContextualMenu::focusOutEvent(QFocusEvent* event)
+{
+    /* Hide menu if mouse click outside widget */
+    m_hidingDelayTimer.stop();
+    hide();
+}
+
+void
 LauncherContextualMenu::show(int x, int y)
 {
     m_hidingDelayTimer.stop();
@@ -170,7 +177,7 @@ LauncherContextualMenu::show(int x, int y)
         x = QApplication::desktop()->width() - x - sizeHint().width();
     }
 
-    move(x, y - minimumSize().height() / 2);
+    move(x, y - sizeHint().height() / 2 );
     QMenu::show();
 
     /* FIXME: adjust the position of the menu if it goes offscreen,
@@ -275,6 +282,13 @@ void
 LauncherContextualMenu::setLauncherItem(LauncherItem* launcherItem)
 {
     m_launcherItem = launcherItem;
+    connect(m_titleAction, SIGNAL(triggered()), SLOT(titleTriggered()));
+}
+
+void LauncherContextualMenu::titleTriggered()
+{
+    hide();
+    m_launcherItem->activate();
 }
 
 void
@@ -304,6 +318,7 @@ LauncherContextualMenu::setFocus()
             break;
         }
     }
+    QMenu::setFocus();
 }
 
 void
@@ -317,8 +332,8 @@ LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
     if (key == Qt::Key_Left || key == Qt::Key_Escape) {
-        hide();
         Q_EMIT dismissedByKeyEvent();
+        hide();
         event->accept();
         return;
     }

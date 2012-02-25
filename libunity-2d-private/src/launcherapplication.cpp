@@ -38,6 +38,8 @@
 
 #include <X11/X.h>
 
+#include <gio/gio.h>
+
 // libunity-2d
 #include <unity2dtr.h>
 #include <debug_p.h>
@@ -182,7 +184,7 @@ LauncherApplication::name() const
         return QString::fromUtf8(sn_startup_sequence_get_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -206,7 +208,7 @@ LauncherApplication::icon() const
         return QString::fromUtf8(sn_startup_sequence_get_icon_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -216,7 +218,7 @@ LauncherApplication::application_type() const
         return m_application->application_type();
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -230,7 +232,7 @@ LauncherApplication::desktop_file() const
         return QString::fromUtf8(g_desktop_app_info_get_filename((GDesktopAppInfo*)m_appInfo.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 QString
@@ -244,7 +246,7 @@ LauncherApplication::executable() const
         return QString::fromUtf8(sn_startup_sequence_get_binary_name(m_snStartupSequence.data()));
     }
 
-    return QString("");
+    return QString();
 }
 
 void
@@ -505,10 +507,36 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
 }
 
 void
+LauncherApplication::connectWindowSignals()
+{
+    if (m_application == NULL || m_application->running() == false) {
+        return;
+    }
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    WnckScreen* screen = wnck_screen_get_default();
+    wnck_screen_force_update(screen);
+
+    for (int i = 0; i < size; ++i) {
+        WnckWindow* window = wnck_window_get(xids->at(i));
+        g_signal_connect(G_OBJECT(window), "workspace-changed",
+            G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
+    }
+}
+
+void
 LauncherApplication::onWindowAdded(BamfWindow* window)
 {
     if (window != NULL) {
         windowAdded(window->xid());
+        WnckWindow* wnck_window = wnck_window_get(window->xid());
+        g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
+             G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
     }
 }
 
@@ -599,10 +627,16 @@ int
 LauncherApplication::windowCountOnCurrentWorkspace()
 {
     int windowCount = 0;
+
+    if (!m_application) {
+        return windowCount;
+    }
+
     WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
-    for (int i = 0; i < m_application->windows()->size(); i++) {
-        BamfWindow *window = m_application->windows()->at(i);
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    for (int i = 0; i < windows->size(); i++) {
+        BamfWindow *window = windows->at(i);
         if (window == NULL) {
             continue;
         }
@@ -619,9 +653,13 @@ LauncherApplication::windowCountOnCurrentWorkspace()
             }
         }
 
-        WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
-        if (workspace == current) {
+        if (wnck_window_is_pinned(wnck_window)) {
             windowCount++;
+        } else {
+            WnckWorkspace *workspace = wnck_window_get_workspace(wnck_window);
+            if (workspace == current) {
+                windowCount++;
+            }
         }
     }
     return windowCount;
@@ -763,7 +801,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
 
     if (compiz.isValid()) {
         Qt::HANDLE root = QX11Info::appRootWindow();
-        BamfUintList* xids = m_application->xids();
+        QScopedPointer<BamfUintList> xids(m_application->xids());
         QStringList fragments;
         for (int i = 0; i < xids->size(); i++) {
             uint xid = xids->at(i);
@@ -820,7 +858,7 @@ LauncherApplication::slotChildRemoved(BamfView* child)
 void
 LauncherApplication::fetchIndicatorMenus()
 {
-    Q_FOREACH(QString path, m_indicatorMenus.keys()) {
+    Q_FOREACH(const QString& path, m_indicatorMenus.keys()) {
         m_indicatorMenus.take(path)->deleteLater();
     }
 
@@ -936,6 +974,18 @@ LauncherApplication::createStaticMenuActions()
     } 
 }
 
+bool
+LauncherApplication::belongsToDifferentWorkspace()
+{
+    int totalWindows = windowCount();
+    int windowsInCurrentWorkspace = windowCountOnCurrentWorkspace();
+    if (totalWindows > 0 && windowsInCurrentWorkspace == 0) {
+        return true;
+    }
+
+    return false;
+}
+
 void
 LauncherApplication::onIndicatorMenuUpdated()
 {
@@ -987,8 +1037,8 @@ LauncherApplication::onQuitTriggered()
 }
 
 template<typename T>
-bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
-                                             QString propertyName, T* member)
+bool LauncherApplication::updateOverlayState(const QMap<QString, QVariant>& properties,
+                                             const QString& propertyName, T* member)
 {
     if (properties.contains(propertyName)) {
         T value = properties.value(propertyName).value<T>();
@@ -1001,7 +1051,7 @@ bool LauncherApplication::updateOverlayState(QMap<QString, QVariant> properties,
 }
 
 void
-LauncherApplication::updateOverlaysState(const QString& sender, QMap<QString, QVariant> properties)
+LauncherApplication::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);
@@ -1050,6 +1100,135 @@ LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& 
 {
     m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
     setDynamicQuicklistImporter(newOwner);
+}
+
+void
+LauncherApplication::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
+{
+    Q_UNUSED(window);
+    ((LauncherApplication*)user_data)->windowWorkspaceChanged();
+}
+
+void
+LauncherApplication::onDragEnter(DeclarativeDragDropEvent* event)
+{
+    QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
+    if (urls.isEmpty()) {
+        event->setDropAction(Qt::IgnoreAction);
+        event->setAccepted(false);
+    } else {
+        event->setDropAction(Qt::CopyAction);
+        event->setAccepted(true);
+    }
+    return;
+}
+
+void
+LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
+{
+    GError* error = NULL;
+    QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
+
+    if (g_app_info_supports_uris(m_appInfo.data())) {
+        GList* list = NULL;
+        Q_FOREACH(QUrl url, urls) {
+            list = g_list_prepend(list, g_strdup(qPrintable(url.toString())));
+        }
+
+        g_app_info_launch_uris(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
+        g_list_free_full(list, g_free);
+    } else if (g_app_info_supports_files(G_APP_INFO(m_appInfo.data()))) {
+        GList* list = NULL, *l;
+        Q_FOREACH(QUrl url, urls) {
+            GFile* file = g_file_new_for_uri(qPrintable(url.toString()));
+            list = g_list_prepend(list, file);
+        }
+        g_app_info_launch(G_APP_INFO(m_appInfo.data()), list, NULL, &error);
+        for (l = list; l; l = l->next) {
+            g_object_unref(G_FILE(list->data));
+        }
+        g_list_free(list);
+    } else {
+        g_app_info_launch(G_APP_INFO(m_appInfo.data()), NULL, NULL, &error);
+    }
+
+    if (error) {
+        UQ_WARNING << "Failed to launch application: " << error->message;
+        g_error_free(error);
+    }
+
+    /* 'launching' property becomes true for a few seconds and becomes
+       false as soon as the application is launched */
+    m_launching_timer.start();
+    launchingChanged(true);
+}
+
+
+QList<QUrl>
+LauncherApplication::validateUrisForLaunch(DeclarativeMimeData* mimedata)
+{
+    QList<QUrl> result;
+    bool isHomeLauncher = desktop_file().endsWith("nautilus-home.desktop");
+
+    if (isHomeLauncher) {
+        result = mimedata->urls();
+        return result;
+    }
+
+    QStringList appSupportedTypes = supportedTypes();
+    QList<QUrl> urls = mimedata->urls();
+
+    QStringList urlTypes;
+    QMap<QString, QList<QUrl> > typesToUris;
+
+    Q_FOREACH(QUrl url, urls) {
+        GFile * file(g_file_new_for_uri(qPrintable(url.toString())));
+        GFileInfo * info(g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, G_FILE_QUERY_INFO_NONE, NULL, NULL));
+        const char* contentType = g_file_info_get_content_type(info);
+        if (contentType != NULL)  {
+            urlTypes.append(contentType);
+            typesToUris[contentType].append(url);
+        }
+    }
+
+    Q_FOREACH(QString urlType, urlTypes) {
+        Q_FOREACH(QString appSupportType, appSupportedTypes) {
+            if (g_content_type_is_a(qPrintable(urlType), qPrintable(appSupportType))) {
+                result.append(typesToUris.value(urlType));
+            }
+        }
+    }
+
+    return result;
+}
+
+
+QStringList
+LauncherApplication::supportedTypes()
+{
+    QStringList types;
+    QString desktopFile = desktop_file();
+    if (desktopFile.isEmpty()) {
+        return types;
+    }
+
+    QFile file(desktopFile);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        while (!file.atEnd()) {
+            QString line = file.readLine();
+            if (line.startsWith("MimeType")) {
+                QString mimeTypeKey = line.split("=").at(0);
+                if (mimeTypeKey == "MimeType") {
+                    QString mimetype = line.split("=").at(1);
+                    mimetype = mimetype.simplified();
+                    types = mimetype.split(";");
+                    break;
+                }
+            }
+        }
+    }
+
+    return types;
 }
 
 #include "launcherapplication.moc"

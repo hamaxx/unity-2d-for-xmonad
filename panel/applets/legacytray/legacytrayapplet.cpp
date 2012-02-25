@@ -28,21 +28,16 @@
 
 // libunity-2d-private
 #include <debug_p.h>
-
-// libdconf-qt
-#include <qconf.h>
+#include <config.h>
 
 // Qt
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QVariant>
 
-#define PANEL_DCONF_SCHEMA QString("com.canonical.Unity.Panel")
-
 LegacyTrayApplet::LegacyTrayApplet(Unity2dPanel* panel)
 : Unity2d::PanelApplet(panel)
 , m_selectionManager(new SystemTray::FdoSelectionManager)
-, m_dconfPanel(new QConf(PANEL_DCONF_SCHEMA))
 {
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
@@ -53,13 +48,13 @@ LegacyTrayApplet::LegacyTrayApplet(Unity2dPanel* panel)
     connect(m_selectionManager, SIGNAL(taskCreated(SystemTray::Task*)),
         SLOT(slotTaskCreated(SystemTray::Task*)));
 
-    m_whitelist = m_dconfPanel->property("systrayWhitelist").toStringList();
+    m_whitelist = panelConfiguration().property("systrayWhitelist").toStringList();
+    m_whitelistAll = m_whitelist.contains("all", Qt::CaseInsensitive);
 }
 
 LegacyTrayApplet::~LegacyTrayApplet()
 {
     delete m_selectionManager;
-    delete m_dconfPanel;
 }
 
 void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
@@ -69,7 +64,7 @@ void LegacyTrayApplet::slotTaskCreated(SystemTray::Task* task)
        classes to allow in the Panel's systray implementation." but here we only
        support matching on WM_CLASS.
     */
-    if (!m_whitelist.contains(task->name())) {
+    if (!m_whitelistAll && !m_whitelist.contains(task->name(), Qt::CaseInsensitive)) {
         return;
     }
 
