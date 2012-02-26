@@ -58,6 +58,9 @@
 #include <QMouseEvent>
 #include <QPoint>
 
+static const char* PANEL_DCONF_SCHEMA = "com.canonical.Unity2d.Panel";
+static const char* PANEL_DCONF_PROPERTY_XMONADLOG = "xmonadlog";
+
 static const int APPNAME_LABEL_LEFT_MARGIN = 6;
 
 class WindowButton : public QAbstractButton
@@ -205,6 +208,7 @@ struct AppNameAppletPrivate
 AppNameApplet::AppNameApplet(Unity2dPanel* panel)
 : Unity2d::PanelApplet(panel)
 , d(new AppNameAppletPrivate)
+, m_conf(new QConf(PANEL_DCONF_SCHEMA))
 {
     d->q = this;
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
@@ -226,10 +230,13 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
         panel->installEventFilter(this);
     }
 
-    xmonadLog = QString("");
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+    displayXmonadLog = m_conf->property(PANEL_DCONF_PROPERTY_XMONADLOG).toBool();
 
+	xmonadLog = QString("");
+    if (displayXmonadLog) {
+		QDBusConnection bus = QDBusConnection::sessionBus();
+		bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+	}
     updateWidgets();
 }
 
@@ -267,14 +274,24 @@ void AppNameApplet::updateWidgets()
             //Display application name and window title
             BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
             if (bamfWindow) {
-                text.sprintf("%s | <span>%s</span> : <span>%s</span>",
-					xmonadLog.toUtf8().constData(),
-					app->name().toUtf8().constData(),
-					bamfWindow->name().toUtf8().constData());
+				if (displayXmonadLog && !xmonadLog.isEmpty()) {
+					text.sprintf("%s | <span>%s</span> : <span>%s</span>",
+						xmonadLog.toUtf8().constData(),
+						app->name().toUtf8().constData(),
+						bamfWindow->name().toUtf8().constData());
+				} else {
+					text.sprintf("<span>%s</span> : <span>%s</span>",
+						app->name().toUtf8().constData(),
+						bamfWindow->name().toUtf8().constData());
+				}
             } else {
-                text.sprintf("%s | <span>%s</span>",
-					xmonadLog.toUtf8().constData(),
-					app->name().toUtf8().constData());
+				if (displayXmonadLog && !xmonadLog.isEmpty()) {
+					text.sprintf("%s | <span>%s</span>",
+						xmonadLog.toUtf8().constData(),
+						app->name().toUtf8().constData());
+				} else {
+					text.sprintf("<span>%s</span>", app->name().toUtf8().constData());
+				}
             }
         }
         d->m_label->setText(text);

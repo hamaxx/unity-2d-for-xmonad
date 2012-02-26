@@ -36,5 +36,10 @@
         only on the panel living in the leftmost screen.
       </description>
     </key>
+    <key type="b" name="xmonadlog">
+      <default>true</default>
+      <summary>Display xmonadlog dbus messages in appname applet</summary>
+      <description>Lalala</description>
+    </key>
   </schema>
 </schemalist>
