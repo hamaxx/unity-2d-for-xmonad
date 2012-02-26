@@ -39,7 +39,7 @@
     <key type="b" name="xmonadlog">
       <default>true</default>
       <summary>Display xmonadlog dbus messages in appname applet</summary>
-      <description>Lalala</description>
+      <description>If you have xmonad configured so that it sends dbus messages to "org.xmonad.Log", unity will display them in the appname applet.</description>
     </key>
   </schema>
 </schemalist>
