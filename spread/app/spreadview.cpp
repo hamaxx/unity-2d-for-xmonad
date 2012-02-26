@@ -51,10 +51,13 @@ SpreadView::SpreadView() : Unity2DDeclarativeView()
 
 void SpreadView::fitToAvailableSpace()
 {
+    int x, y, width, height, currentScreen = 0;
     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-    int x, y, width, height;
-    wnck_window_get_geometry(wnck_window_get(bamfWindow->xid()), &x, &y, &width, &height);
-    int currentScreen = QApplication::desktop()->screenNumber(QPoint(x, y));
+
+    if (bamfWindow) {
+        wnck_window_get_geometry(wnck_window_get(bamfWindow->xid()), &x, &y, &width, &height);
+        currentScreen = QApplication::desktop()->screenNumber(QPoint(x, y));
+    }
 
     QRect screenRect = QApplication::desktop()->screenGeometry(currentScreen);
     QRect availableRect = QApplication::desktop()->availableGeometry(currentScreen);
@@ -133,17 +136,17 @@ bool SpreadView::eventFilter(QObject *obj, QEvent *event) {
             Q_EMIT outsideClick();
         }
     } else if (event->type() == QEvent::MouseButtonPress) {
-		if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
-			Q_EMIT outsideClick();
-		}
-	}
+        if (!this->viewport()->geometry().contains(((QMouseEvent*)event)->pos())) {
+            Q_EMIT outsideClick();
+        }
+    }
 
     return false;
 }
 
 void SpreadView::showEvent(QShowEvent *event)
 {
-	fitToAvailableSpace(); //always adjust size
+    fitToAvailableSpace(); //always adjust size
     Q_UNUSED(event);
     Q_EMIT visibleChanged(true);
 }

@@ -248,6 +248,7 @@ AppNameApplet::~AppNameApplet()
 void AppNameApplet::logReceived(const QDBusMessage &msg)
 {
     xmonadLog = msg.arguments().at(0).toString();
+    updateWidgets();
 }
 
 void AppNameApplet::updateWidgets()
@@ -260,16 +261,15 @@ void AppNameApplet::updateWidgets()
     bool isOpened = isUnderMouse
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened();
-    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty();
     bool showWindowButtons = isOpened && isMaximized;
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
+    bool showLabel = !(isMaximized && showMenu);
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
-
     d->m_label->setVisible(showLabel);
+
+    QString text;
     if (showLabel) {
-        // Define text
-        QString text;
         if (app) {
             //Display application name and window title
             BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
@@ -293,6 +293,8 @@ void AppNameApplet::updateWidgets()
                     text.sprintf("<span>%s</span>", app->name().toUtf8().constData());
                 }
             }
+        } else if (displayXmonadLog && !xmonadLog.isEmpty()) {
+            text = xmonadLog;
         }
         d->m_label->setText(text);
 
