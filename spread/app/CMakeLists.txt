@@ -27,6 +27,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${GTK_INCLUDE_DIRS}
+    ${QTBAMF_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 

@@ -39,11 +39,18 @@
 #include <QGraphicsObject>
 #include <QtDBus/QDBusConnection>
 #include <QTimer>
+#include <QDebug>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
 #include <config.h>
+
+// libwnck
+extern "C" {
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE
+#include <libwnck/libwnck.h>
+}
 
 //static const int DASH_MIN_SCREEN_WIDTH = 1280;
 //static const int DASH_MIN_SCREEN_HEIGHT = 1084;
@@ -281,7 +288,11 @@ DashDeclarativeView::screenGeometry() const
 QRect
 DashDeclarativeView::availableGeometry() const
 {
-    int currentScreen = QApplication::desktop()->screenNumber(QCursor::pos());
+    BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
+    int x, y, width, height;
+    wnck_window_get_geometry(wnck_window_get(bamfWindow->xid()), &x, &y, &width, &height);
+    int currentScreen = QApplication::desktop()->screenNumber(QPoint(x, y));
+
     QRect screenRect = QApplication::desktop()->screenGeometry(currentScreen);
     QRect availableRect = QApplication::desktop()->availableGeometry(currentScreen);
     QRect availableGeometry;
