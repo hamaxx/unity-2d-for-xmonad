@@ -103,6 +103,11 @@
         only on the panel living in the leftmost screen.
       </description>
     </key>
+    <key type="b" name="xmonadlog">
+      <default>true</default>
+      <summary>Display xmonadlog dbus messages in appname applet</summary>
+      <description>Lalala</description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/dash/" id="com.canonical.Unity2d.Dash" gettext-domain="unity-2d">
     <key type="b" name="full-screen">

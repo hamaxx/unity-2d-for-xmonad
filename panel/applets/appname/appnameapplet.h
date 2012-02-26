@@ -29,7 +29,15 @@ class IndicatorsManager;
 // Unity-2d
 #include <panelapplet.h>
 
+// DBus
 #include <QtDBus>
+
+// QConf
+#include <qconf.h>
+
+// Qt
+#include <QObject>
+#include <QList>
 
 struct AppNameAppletPrivate;
 class AppNameApplet : public Unity2d::PanelApplet
@@ -56,6 +64,8 @@ private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
     QString xmonadLog;
+    QConf* m_conf;
+    bool displayXmonadLog;
 };
 
 #endif /* APPNAMEAPPLET_H */
