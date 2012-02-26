@@ -106,7 +106,7 @@
     <key type="b" name="xmonadlog">
       <default>true</default>
       <summary>Display xmonadlog dbus messages in appname applet</summary>
-      <description>Lalala</description>
+      <description>If you have xmonad configured so that it sends dbus messages to "org.xmonad.Log", unity will display them in the appname applet.</description>
     </key>
   </schema>
   <schema path="/com/canonical/unity-2d/dash/" id="com.canonical.Unity2d.Dash" gettext-domain="unity-2d">

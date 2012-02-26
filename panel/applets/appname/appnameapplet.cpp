@@ -314,11 +314,11 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
 
     displayXmonadLog = m_conf->property(PANEL_DCONF_PROPERTY_XMONADLOG).toBool();
 
-	xmonadLog = QString("");
+    xmonadLog = QString("");
     if (displayXmonadLog) {
-		QDBusConnection bus = QDBusConnection::sessionBus();
-		bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
-	}
+        QDBusConnection bus = QDBusConnection::sessionBus();
+        bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+    }
     updateWidgets();
 }
 
@@ -356,7 +356,6 @@ void AppNameApplet::updateWidgets()
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
-<<<<<<< HEAD
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
     d->m_maximizeButton->setButtonType(isMaximized ?
                                        PanelStyle::UnmaximizeWindowButton :
@@ -379,20 +378,22 @@ void AppNameApplet::updateWidgets()
                 if (isMaximized) {
                     // When maximized, show window title
                     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
-                    if (bamfWindow) {
-                        text = bamfWindow->name();
+		    if (bamfWindow) {
+		      if (displayXmonadLog && !xmonadLog.isEmpty()) {
+			text = bamfWindow->name();
 			text.sprintf("%s | <span>%s</span> : <span>%s</span>",
 				     xmonadLog.toUtf8().constData(),
 				     app->name().toUtf8().constData(),
 				     bamfWindow->name().toUtf8().constData());
-		    } else {
-		      text.sprintf("%s | <span>%s</span>",
-					xmonadLog.toUtf8().constData(),
-					app->name().toUtf8().constData());
-		      // When not maximized, show application name
-		      text = app->name();
+		      } else {
+			text.sprintf("<span>%s</span> : <span>%s</span>",
+				     app->name().toUtf8().constData(),
+				     bamfWindow->name().toUtf8().constData());
+			// When not maximized, show application name
+			text = app->name();
+		      }
+		      d->m_label->setVisible(showLabel);
 		    }
-		    d->m_label->setVisible(showLabel);
 		}
 	    }
 	    d->m_label->setText(text);

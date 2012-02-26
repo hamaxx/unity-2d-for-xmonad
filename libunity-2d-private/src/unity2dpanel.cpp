@@ -107,7 +107,6 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
-        qDebug() << "-- Geometry Update! --";
         QDesktopWidget* desktop = QApplication::desktop();
         const int primscr = desktop->primaryScreen();
         const QRect screen = desktop->screenGeometry(primscr);
