@@ -232,11 +232,11 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
 
     displayXmonadLog = m_conf->property(PANEL_DCONF_PROPERTY_XMONADLOG).toBool();
 
-	xmonadLog = QString("");
+    xmonadLog = QString("");
     if (displayXmonadLog) {
-		QDBusConnection bus = QDBusConnection::sessionBus();
-		bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
-	}
+        QDBusConnection bus = QDBusConnection::sessionBus();
+        bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+    }
     updateWidgets();
 }
 
@@ -274,24 +274,24 @@ void AppNameApplet::updateWidgets()
             //Display application name and window title
             BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
             if (bamfWindow) {
-				if (displayXmonadLog && !xmonadLog.isEmpty()) {
-					text.sprintf("%s | <span>%s</span> : <span>%s</span>",
-						xmonadLog.toUtf8().constData(),
-						app->name().toUtf8().constData(),
-						bamfWindow->name().toUtf8().constData());
-				} else {
-					text.sprintf("<span>%s</span> : <span>%s</span>",
-						app->name().toUtf8().constData(),
-						bamfWindow->name().toUtf8().constData());
-				}
+                if (displayXmonadLog && !xmonadLog.isEmpty()) {
+                    text.sprintf("%s | <span>%s</span> : <span>%s</span>",
+                        xmonadLog.toUtf8().constData(),
+                        app->name().toUtf8().constData(),
+                        bamfWindow->name().toUtf8().constData());
+                } else {
+                    text.sprintf("<span>%s</span> : <span>%s</span>",
+                        app->name().toUtf8().constData(),
+                        bamfWindow->name().toUtf8().constData());
+                }
             } else {
-				if (displayXmonadLog && !xmonadLog.isEmpty()) {
-					text.sprintf("%s | <span>%s</span>",
-						xmonadLog.toUtf8().constData(),
-						app->name().toUtf8().constData());
-				} else {
-					text.sprintf("<span>%s</span>", app->name().toUtf8().constData());
-				}
+                if (displayXmonadLog && !xmonadLog.isEmpty()) {
+                    text.sprintf("%s | <span>%s</span>",
+                        xmonadLog.toUtf8().constData(),
+                        app->name().toUtf8().constData());
+                } else {
+                    text.sprintf("<span>%s</span>", app->name().toUtf8().constData());
+                }
             }
         }
         d->m_label->setText(text);
