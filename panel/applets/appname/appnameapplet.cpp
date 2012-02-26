@@ -330,6 +330,7 @@ AppNameApplet::~AppNameApplet()
 void AppNameApplet::logReceived(const QDBusMessage &msg)
 {
     xmonadLog = msg.arguments().at(0).toString();
+    updateWidgets();
 }
 
 void AppNameApplet::updateWidgets()
@@ -342,9 +343,9 @@ void AppNameApplet::updateWidgets()
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
     bool isOpened = isOnSameScreen &&
         (isUnderMouse
-        || KeyMonitor::instance()->keyboardModifiers() == Qt::AltModifier
-        || d->m_menuBarWidget->isOpened()
-        );
+	 || KeyMonitor::instance()->keyboardModifiers() == Qt::AltModifier
+	 || d->m_menuBarWidget->isOpened()
+	 );
     bool showDesktopLabel = !app;
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && (isUserVisibleApp || showDesktopLabel);
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
@@ -353,13 +354,6 @@ void AppNameApplet::updateWidgets()
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
-    bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
-
-    d->m_windowButtonWidget->setVisible(showWindowButtons);
-    d->m_maximizeButton->setIsDashButton(dashIsVisible);
-    d->m_maximizeButton->setButtonType(isMaximized ?
-                                       PanelStyle::UnmaximizeWindowButton :
-                                       PanelStyle::MaximizeWindowButton);
     /* disable the minimize button for the dash & hud */
     d->m_minimizeButton->setEnabled(!dashIsVisible || !hudIsVisible);
     d->m_minimizeButton->setIsDashButton(dashIsVisible || hudIsVisible);
@@ -379,41 +373,51 @@ void AppNameApplet::updateWidgets()
                     // When maximized, show window title
                     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
 		    if (bamfWindow) {
-		      if (displayXmonadLog && !xmonadLog.isEmpty()) {
-			text = bamfWindow->name();
-			text.sprintf("%s | <span>%s</span> : <span>%s</span>",
-				     xmonadLog.toUtf8().constData(),
-				     app->name().toUtf8().constData(),
-				     bamfWindow->name().toUtf8().constData());
-		      } else {
-			text.sprintf("<span>%s</span> : <span>%s</span>",
-				     app->name().toUtf8().constData(),
-				     bamfWindow->name().toUtf8().constData());
+			if (displayXmonadLog && !xmonadLog.isEmpty()) {
+			    text.sprintf("%s | <span>%s</span> : <span>%s</span>",
+					 xmonadLog.toUtf8().constData(),
+					 app->name().toUtf8().constData(),
+					 bamfWindow->name().toUtf8().constData());
+			} else {
+			    text.sprintf("<span>%s</span> : <span>%s</span>",
+					 app->name().toUtf8().constData(),
+					 bamfWindow->name().toUtf8().constData());
+			}
+		    } else {
+			if (displayXmonadLog && !xmonadLog.isEmpty()) {
+			    text.sprintf("%s | <span>%s</span>",
+					 xmonadLog.toUtf8().constData(),
+					 app->name().toUtf8().constData());
+			} else {
+			    text.sprintf("<span>%s</span>", app->name().toUtf8().constData());
+			}
 			// When not maximized, show application name
 			text = app->name();
-		      }
-		      d->m_label->setVisible(showLabel);
 		    }
+		    d->m_label->setVisible(showLabel);
 		}
 	    }
-	    d->m_label->setText(text);
-	} else if (showDesktopLabel) {
-	      d->m_label->setText(u2dTr("Ubuntu Desktop"));
-        } else {
-            d->m_label->setText(QString());
-        }
-
-        // Define label width
-        if (!isMaximized && showMenu) {
-            d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
-        } else {
-            d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
-        }
+	} else if (displayXmonadLog && !xmonadLog.isEmpty()) {
+	    text = xmonadLog;
+	}
+	d->m_label->setText(text);
+    } else if (showDesktopLabel) {
+	d->m_label->setText(u2dTr("Ubuntu Desktop"));
     } else {
-        d->m_label->setVisible(false);
+	d->m_label->setText(QString());
     }
 
-    d->m_menuBarWidget->setVisible(showMenu);
+    // Define label width
+    if (!isMaximized && showMenu) {
+	d->m_label->setMaximumWidth(LauncherClient::MaximumWidth);
+    } else {
+	d->m_label->setMaximumWidth(QWIDGETSIZE_MAX);
+    }
+} else {
+    d->m_label->setVisible(false);
+ }
+
+d->m_menuBarWidget->setVisible(showMenu);
 }
 
 void AppNameApplet::enterEvent(QEvent*) {

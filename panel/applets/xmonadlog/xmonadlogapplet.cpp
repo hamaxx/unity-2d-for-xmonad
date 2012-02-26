@@ -39,7 +39,7 @@ void XmonadLogApplet::logReceived(const QDBusMessage &msg)
     QString text = msg.arguments().at(0).toString();
     text.replace("<span", "<font");
     text.replace("</span>", "<font/>");
-    text.replace("forground", "color");
+    text.replace("forground=", "color=");
     x_log->setText(text);
 }
 

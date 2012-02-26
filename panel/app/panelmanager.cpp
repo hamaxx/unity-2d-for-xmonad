@@ -266,18 +266,14 @@ PanelManager::updateScreenLayout(int newCount)
 
 void PanelManager::onAltF10Pressed()
 {
-    QDesktopWidget* desktop = QApplication::desktop();
-    int screen = desktop->screenNumber(QCursor::pos());
     Unity2dPanel* panel;
-    
-    if (screen >= m_panels.size()) {
-        return;
-    }
-    panel = m_panels[screen];
-    if (panel != NULL) {
-        QEvent* event = new QEvent(Unity2dPanel::SHOW_FIRST_MENU_EVENT);
-        QCoreApplication::postEvent(panel, event);
-    }
+	if (m_panels.size() > 0) {
+		panel = m_panels[0];
+		if (panel != NULL) {
+			QEvent* event = new QEvent(Unity2dPanel::SHOW_FIRST_MENU_EVENT);
+			QCoreApplication::postEvent(panel, event);
+		}
+	}
 }
 
 #include "panelmanager.moc"

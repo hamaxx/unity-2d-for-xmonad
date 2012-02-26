@@ -35,6 +35,7 @@
 #include <QApplication>
 #include <QImage>
 #include <QPainter>
+#include <QDebug>
 
 // GTK
 #include <gtk/gtk.h>
