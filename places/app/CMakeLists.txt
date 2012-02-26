@@ -29,6 +29,7 @@ include_directories(
     ${QTBAMF_INCLUDE_DIRS}
     ${QTGCONF_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
