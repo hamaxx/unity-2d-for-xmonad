@@ -146,7 +146,7 @@ struct AppNameAppletPrivate
     {
         m_label = new CroppedLabel;
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        m_label->setTextFormat(Qt::PlainText);
+        //m_label->setTextFormat(Qt::PlainText);
         // Align left of label with left of menubar
         if (QApplication::isLeftToRight()) {
             m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
@@ -226,12 +226,21 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
         panel->installEventFilter(this);
     }
 
+    xmonadLog = QString("");
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+
     updateWidgets();
 }
 
 AppNameApplet::~AppNameApplet()
 {
     delete d;
+}
+
+void AppNameApplet::logReceived(const QDBusMessage &msg)
+{
+    xmonadLog = msg.arguments().at(0).toString();
 }
 
 void AppNameApplet::updateWidgets()
@@ -258,9 +267,14 @@ void AppNameApplet::updateWidgets()
             //Display application name and window title
             BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
             if (bamfWindow) {
-                text.sprintf("%s :: %s", app->name().toUtf8().constData(), bamfWindow->name().toUtf8().constData());
+                text.sprintf("%s | <span>%s</span> : <span>%s</span>",
+					xmonadLog.toUtf8().constData(),
+					app->name().toUtf8().constData(),
+					bamfWindow->name().toUtf8().constData());
             } else {
-                text = app->name();
+                text.sprintf("%s | <span>%s</span>",
+					xmonadLog.toUtf8().constData(),
+					app->name().toUtf8().constData());
             }
         }
         d->m_label->setText(text);

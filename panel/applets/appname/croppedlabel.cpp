@@ -94,7 +94,7 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
 
     // Set text
     QByteArray utf8Text = text().toUtf8();
-    pango_layout_set_text (layout.data(), utf8Text.data(), -1);
+    pango_layout_set_markup (layout.data(), utf8Text.data(), -1);
 
     // Get text size
     int textWidth = 0;
