@@ -39,7 +39,7 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
 1. Use my xmonad.hs config file from xmonad-files folder
 2. If you have problems with DBus error message, use the version in xmonad-files (Install with sudo cabal install)
-3. Open dconf-editor, go to "com -> canonical -> unity-2d -> panel " and add "xmonadlog" to applets field.
+3. Open dconf-editor, go to "com -> canonical -> unity-2d -> panel " and check the xmonadlog field or add "xmonadlog" to applets field.
 4. Restart unity-2d-panel
 
 ## What it looks like
