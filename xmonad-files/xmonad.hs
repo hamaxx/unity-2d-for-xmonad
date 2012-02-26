@@ -47,7 +47,7 @@ getWellKnownName dbus = tryGetName `catchDyn` (\ (DBus.Error _ _) ->
 
 outputThroughDBus :: Connection -> String -> IO ()
 outputThroughDBus dbus str = do
-  let str' = "<font color=\"#dddddd\">" ++ str ++ "</span>"
+  let str' = "<span foreground=\"#dddddd\">" ++ str ++ "</span>"
   msg <- newSignal "/org/xmonad/Log" "org.xmonad.Log" "Update"
   addArgs msg [String str']
   send dbus msg 0 `catchDyn` (\ (DBus.Error _ _ ) -> return 0)
@@ -59,8 +59,8 @@ returnBlank x = ""
 pangoColor :: String -> String -> String
 pangoColor fg = wrap left right
  where
-  left  = "<font color=\"" ++ fg ++ "\">"
-  right = "</font>"
+  left  = "<span color=\"" ++ fg ++ "\">"
+  right = "</span>"
 
 pangoSanitize :: String -> String
 pangoSanitize = foldr sanitize ""

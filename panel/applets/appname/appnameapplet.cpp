@@ -222,7 +222,7 @@ struct AppNameAppletPrivate
     {
         m_label = new CroppedLabel;
         m_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-        m_label->setTextFormat(Qt::PlainText);
+        //m_label->setTextFormat(Qt::PlainText);
         // Align left of label with left of menubar
         if (QApplication::isLeftToRight()) {
             m_label->setContentsMargins(APPNAME_LABEL_LEFT_MARGIN, 0, 0, 0);
@@ -308,12 +308,21 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
         panel->installEventFilter(this);
     }
 
+    xmonadLog = QString("");
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.connect("", "", "org.xmonad.Log", "Update", this, SLOT(logReceived(const QDBusMessage &)));
+
     updateWidgets();
 }
 
 AppNameApplet::~AppNameApplet()
 {
     delete d;
+}
+
+void AppNameApplet::logReceived(const QDBusMessage &msg)
+{
+    xmonadLog = msg.arguments().at(0).toString();
 }
 
 void AppNameApplet::updateWidgets()
@@ -340,7 +349,6 @@ void AppNameApplet::updateWidgets()
     bool showLabel = !(isMaximized && showMenu) && isUserVisibleApp; //show label for applications on all screens
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
-    d->m_windowButtonWidget->setEnabled(showWindowButtons);
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
     d->m_maximizeButton->setButtonType(isMaximized ?
                                        PanelStyle::UnmaximizeWindowButton :
@@ -365,15 +373,23 @@ void AppNameApplet::updateWidgets()
                     BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();
                     if (bamfWindow) {
                         text = bamfWindow->name();
-                    }
-                } else {
-                    // When not maximized, show application name
-                    text = app->name();
-                }
-            }
-            d->m_label->setText(text);
-        } else if (showDesktopLabel) {
-            d->m_label->setText(u2dTr("Ubuntu Desktop"));
+			text.sprintf("%s | <span>%s</span> : <span>%s</span>",
+				     xmonadLog.toUtf8().constData(),
+				     app->name().toUtf8().constData(),
+				     bamfWindow->name().toUtf8().constData());
+		    } else {
+		      text.sprintf("%s | <span>%s</span>",
+					xmonadLog.toUtf8().constData(),
+					app->name().toUtf8().constData());
+		      // When not maximized, show application name
+		      text = app->name();
+		    }
+		    d->m_label->setVisible(showLabel);
+		}
+	    }
+	    d->m_label->setText(text);
+	} else if (showDesktopLabel) {
+	      d->m_label->setText(u2dTr("Ubuntu Desktop"));
         } else {
             d->m_label->setText(QString());
         }

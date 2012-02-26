@@ -29,6 +29,8 @@ class IndicatorsManager;
 // Unity-2d
 #include <panelapplet.h>
 
+#include <QtDBus>
+
 struct AppNameAppletPrivate;
 class AppNameApplet : public Unity2d::PanelApplet
 {
@@ -48,10 +50,12 @@ protected:
 
 private Q_SLOTS:
     void updateWidgets();
+    void logReceived(const QDBusMessage &msg);
 
 private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
+    QString xmonadLog;
 };
 
 #endif /* APPNAMEAPPLET_H */
