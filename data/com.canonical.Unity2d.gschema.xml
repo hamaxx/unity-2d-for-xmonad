@@ -23,7 +23,7 @@
       <description>Whether or not the super (also called windows key) key is used.</description>
     </key>
     <key name="hide-mode" type="i">
-      <default>2</default>
+      <default>0</default>
       <summary>Hiding mode of the launcher</summary>
       <description>Possible values:
         0: never hide; the launcher is always visible and windows won't overlap with it

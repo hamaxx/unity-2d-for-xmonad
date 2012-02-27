@@ -27,6 +27,8 @@
 
 // libunity-core
 #include <UnityCore/FilesystemLenses.h>
+#include <UnityCore/HomeLens.h>
+#include <unity2dtr.h>
 
 Lenses::Lenses(QObject *parent) :
     QAbstractListModel(parent)
@@ -36,17 +38,18 @@ Lenses::Lenses(QObject *parent) :
     roles[Lenses::RoleVisible] = "visible";
     setRoleNames(roles);
 
-    m_unityLenses = new unity::dash::FilesystemLenses("/usr/share/unity/lenses");
-    for (unsigned int i=0; i<m_unityLenses->count(); i++) {
-        unity::dash::Lens::Ptr unityLens = m_unityLenses->GetLensAtIndex(i);
-        addUnityLens(unityLens, i);
-    }
-    m_unityLenses->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
+    m_homeLens = new unity::dash::HomeLens(u2dTr("Home").toStdString(), u2dTr("Home screen").toStdString(), u2dTr("Search").toStdString());
+    m_unityLenses = new unity::dash::FilesystemLenses();
+    m_homeLens->AddLenses(*m_unityLenses);
+    m_homeLens->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
+    unity::dash::HomeLens::Ptr homeLensPtr(m_homeLens);
+    addUnityLens(homeLensPtr, 0);
 }
 
 Lenses::~Lenses()
 {
     delete m_unityLenses;
+    delete m_homeLens;
 }
 
 int Lenses::rowCount(const QModelIndex& parent) const

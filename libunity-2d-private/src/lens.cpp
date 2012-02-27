@@ -22,7 +22,7 @@
 
 // libunity-2d
 #include <debug_p.h>
-#include "launcherapplication.h"
+#include "application.h"
 #include "filters.h"
 
 // Qt
@@ -196,7 +196,7 @@ void Lens::fallbackActivate(const QString& uri)
         return;
     }
     if (url.scheme() == "application") {
-        LauncherApplication application;
+        Application application;
         /* Cannot set the desktop file to url.host(), because the QUrl constructor
            converts the host name to lower case to conform to the Nameprep
            RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
@@ -224,9 +224,21 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
 
     m_filters = new Filters(m_unityLens->filters, this);
 
-    m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
-    m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
-    m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
+    if (QString::fromStdString(m_unityLens->results()->swarm_name) == QString(":local")) {
+        m_results->setModel(m_unityLens->results()->model());
+    } else {
+        m_results->setName(QString::fromStdString(m_unityLens->results()->swarm_name));
+    }
+    if (QString::fromStdString(m_unityLens->global_results()->swarm_name) == QString(":local")) {
+        m_globalResults->setModel(m_unityLens->global_results()->model());
+    } else {
+        m_globalResults->setName(QString::fromStdString(m_unityLens->global_results()->swarm_name));
+    }
+    if (QString::fromStdString(m_unityLens->categories()->swarm_name) == QString(":local")) {
+        m_categories->setModel(m_unityLens->categories()->model());
+    } else {
+        m_categories->setName(QString::fromStdString(m_unityLens->categories()->swarm_name));
+    }
 
     /* Property change signals */
     m_unityLens->id.changed.connect(sigc::mem_fun(this, &Lens::idChanged));

@@ -78,8 +78,8 @@ void CroppedLabel::paintEvent(QPaintEvent* event)
     QImage image(width(), height(), QImage::Format_ARGB32_Premultiplied);
     {
         QPainter painter(&image);
+        image.fill(Qt::transparent);
         painter.initFrom(this);
-        painter.eraseRect(rect());
     }
 
     // Create a pango layout

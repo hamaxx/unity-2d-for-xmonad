@@ -36,39 +36,30 @@ class DashClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
 public:
     static DashClient* instance();
 
-    /**
-     * Returns the active page. This is either:
-     * - The lens id of the active lens
-     * - "home" if the home is visible
-     * - "" if the dash is not visible
-     */
-    QString activePage() const;
+    bool active() const;
+    void setActive(bool active);
+
     bool alwaysFullScreen() const;
-    void setActivePage(const QString& page, const QString& lensId=QString());
-    static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
-    void activePageChanged(const QString&);
+    void activeChanged(bool);
     void alwaysFullScreenChanged();
 
 private Q_SLOTS:
     void connectToDash();
     void slotDashActiveChanged(bool);
-    void slotDashActiveLensChanged(const QString&);
-    void updateAlwaysFullScreen();
+    void slotAlwaysFullScreenChanged(bool);
 
 private:
     DashClient(QObject* parent = 0);
-    void updateActivePage();
 
     QDBusInterface* m_dashDbusIface;
     bool m_dashActive;
-    QString m_dashActiveLens;
-    QString m_activePage;
     bool m_alwaysFullScreen;
 };
 
