@@ -94,6 +94,7 @@ FocusScope {
             model: visibleLenses
             delegate: LensButton {
                 Accessible.name: u2d.tr(item.name)
+                objectName: item.name
 
                 /* Heuristic: if iconHint does not contain a '/' then it is an icon name */
                 icon: {
