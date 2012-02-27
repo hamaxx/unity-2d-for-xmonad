@@ -129,7 +129,7 @@ FocusScope {
 
         headerDelegate: CategoryHeader {
             visible: body.item ? body.item.needHeader && body.visible : false
-            height: visible ? 32 : 0
+            height: isFirst ? 20 : visible ? 32 : 0
 
             property bool isFirst: firstNonEmptyCategory == body.name
             property bool foldable: body.item ? body.item.folded != undefined : false
