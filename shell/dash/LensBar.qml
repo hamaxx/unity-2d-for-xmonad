@@ -43,12 +43,6 @@ FocusScope {
     }
 
     /* LensBar contains a row of LensButtons */
-
-    /* Ugly Hack: the DropShadow effect on the Home lensButton causes visual artifacts as
-       the list of lenses is being populated, when the inter-lensButton spacing is non-zero.
-       A previously painted DropShadow remains in the (transparent) inter-lensButton space.
-       Can work around this by removing spacing and instead add padding to each lensButton.
-       DropShadow not officially supported until Qt4.8, when hopefully this will be fixed. */
     Row {
         id: lensContainer
 
