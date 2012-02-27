@@ -45,7 +45,6 @@ public:
     void setActive(bool active);
 
     bool alwaysFullScreen() const;
-    static QSize minimumSizeForDesktop();
 
 Q_SIGNALS:
     void activeChanged(bool);
@@ -54,7 +53,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void connectToDash();
     void slotDashActiveChanged(bool);
-    void updateAlwaysFullScreen();
+    void slotAlwaysFullScreenChanged(bool);
 
 private:
     DashClient(QObject* parent = 0);

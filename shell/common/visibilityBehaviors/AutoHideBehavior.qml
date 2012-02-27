@@ -46,6 +46,15 @@ BaseBehavior {
     }
 
     Connections {
+        target: (autoHide.target !== undefined) ? autoHide.target : null
+        onContainsMouseChanged: {
+            if (target.activeFocus) {
+                shownRegardlessOfFocus = true
+            }
+        }
+    }
+
+    Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
         onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
         ignoreUnknownSignals: true

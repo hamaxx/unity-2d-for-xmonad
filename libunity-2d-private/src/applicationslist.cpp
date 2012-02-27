@@ -14,10 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "launcherapplication.h"
-#include "launcherapplicationslist.h"
+#include "application.h"
+#include "applicationslist.h"
 #include "webfavorite.h"
-#include "launcherapplicationslistdbus.h"
+#include "applicationslistdbus.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -51,7 +51,7 @@ extern "C" {
 static const QStringList EXECUTABLES_BLACKLIST = (QStringList() << "xdg-open");
 static const QByteArray LATEST_SETTINGS_MIGRATION = "3.2.10";
 
-LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
+ApplicationsList::ApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
     QDBusConnection session = QDBusConnection::sessionBus();
@@ -74,7 +74,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
         /* Set ourselves up to receive a method call from Software Center asking us to add
            to favorites an application that is being installed and that the user requested
            to be added. */
-        LauncherApplicationsListDBUS *dbusAdapter = new LauncherApplicationsListDBUS(this);
+        ApplicationsListDBUS *dbusAdapter = new ApplicationsListDBUS(this);
         if (!session.registerObject(DBUS_OBJECT_LAUNCHER, dbusAdapter,
                                     QDBusConnection::ExportAllSlots)) {
             UQ_WARNING << "The object" << DBUS_OBJECT_LAUNCHER << "on" << DBUS_SERVICE_LAUNCHER
@@ -86,7 +86,7 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
     Display *xdisplay = QX11Info::display();
     m_snDisplay = sn_display_new(xdisplay, NULL, NULL);
     m_snContext = sn_monitor_context_new(m_snDisplay, QX11Info::appScreen(),
-                                          LauncherApplicationsList::snEventHandler,
+                                          ApplicationsList::snEventHandler,
                                           this, NULL);
     Unity2dApplication* application = Unity2dApplication::instance();
     if (application == NULL) {
@@ -111,14 +111,14 @@ LauncherApplicationsList::LauncherApplicationsList(QObject *parent) :
 }
 
 void
-LauncherApplicationsList::snEventHandler(SnMonitorEvent *event, void *user_data)
+ApplicationsList::snEventHandler(SnMonitorEvent *event, void *user_data)
 {
     /* This method is static and only forwards the event to a non static method. */
-    ((LauncherApplicationsList*)user_data)->onSnMonitorEventReceived(event);
+    ((ApplicationsList*)user_data)->onSnMonitorEventReceived(event);
 }
 
 void
-LauncherApplicationsList::onSnMonitorEventReceived(SnMonitorEvent *event)
+ApplicationsList::onSnMonitorEventReceived(SnMonitorEvent *event)
 {
     SnStartupSequence *sequence = sn_monitor_event_get_startup_sequence(event);
 
@@ -131,7 +131,7 @@ LauncherApplicationsList::onSnMonitorEventReceived(SnMonitorEvent *event)
         case SN_MONITOR_EVENT_CANCELED:
             /* These events are ignored for now. This is acceptable since the
                case of a failed application startup is handled by
-               LauncherApplication::launching being automatically reset to
+               Application::launching being automatically reset to
                false after a timeout. */
             break;
     }
@@ -139,7 +139,7 @@ LauncherApplicationsList::onSnMonitorEventReceived(SnMonitorEvent *event)
 
 
 bool
-LauncherApplicationsList::x11EventFilter(XEvent* xevent)
+ApplicationsList::x11EventFilter(XEvent* xevent)
 {
     /* libsn specifies that all events need to be forwarded to
        sn_display_process_event but it is not actually necessary.
@@ -152,7 +152,7 @@ LauncherApplicationsList::x11EventFilter(XEvent* xevent)
 }
 
 void
-LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
+ApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
 {
     UQ_RETURN_IF_FAIL(calledFromDBus());
     QString sender = message().service();
@@ -164,7 +164,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
         return;
     }
 
-    Q_FOREACH(LauncherApplication *application, m_applications) {
+    Q_FOREACH(Application *application, m_applications) {
         if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
             application->updateOverlaysState(sender, properties);
             return;
@@ -174,7 +174,7 @@ LauncherApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QStr
     UQ_WARNING << "Application sent an update but we don't seem to have it in the launcher:" << applicationURI;
 }
 
-LauncherApplicationsList::~LauncherApplicationsList()
+ApplicationsList::~ApplicationsList()
 {
     sn_monitor_context_unref(m_snContext);
     sn_display_unref(m_snDisplay);
@@ -183,7 +183,7 @@ LauncherApplicationsList::~LauncherApplicationsList()
 }
 
 QString
-LauncherApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFile) const
+ApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFile) const
 {
     QString desktopFile(_desktopFile);
     Q_FOREACH(const QString& applicationDir, m_xdgApplicationDirs) {
@@ -197,7 +197,7 @@ LauncherApplicationsList::favoriteFromDesktopFilePath(const QString& _desktopFil
 }
 
 void
-LauncherApplicationsList::insertApplication(LauncherApplication* application)
+ApplicationsList::insertApplication(Application* application)
 {
     /* Insert at the end of the list. */
     int index = m_applications.size();
@@ -221,7 +221,7 @@ LauncherApplicationsList::insertApplication(LauncherApplication* application)
 }
 
 void
-LauncherApplicationsList::removeApplication(LauncherApplication* application)
+ApplicationsList::removeApplication(Application* application)
 {
     int index = m_applications.indexOf(application);
 
@@ -236,7 +236,7 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
     m_applicationForExecutable.remove(application->executable());
     endRemoveRows();
 
-    /* LauncherApplicationsList::removeApplication might have been called in
+    /* ApplicationsList::removeApplication might have been called in
        response to a signal emitted by application itself. Do not delete
        immediately to cater for this case.
     */
@@ -244,7 +244,7 @@ LauncherApplicationsList::removeApplication(LauncherApplication* application)
 }
 
 void
-LauncherApplicationsList::onApplicationUserVisibleChanged(bool user_visible)
+ApplicationsList::onApplicationUserVisibleChanged(bool user_visible)
 {
     BamfApplication* bamf_application = qobject_cast<BamfApplication*>(sender());
     if (user_visible) {
@@ -255,7 +255,7 @@ LauncherApplicationsList::onApplicationUserVisibleChanged(bool user_visible)
     }
 }
 
-void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
+void ApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
 {
     /* Only insert BamfApplications for which the user_visible property is true.
        Monitor that property so that they are inserted/removed dynamically when it changes.
@@ -269,17 +269,17 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
         return;
     }
 
-    LauncherApplication* matchingApplication = NULL;
-    LauncherApplication* newApplication = new LauncherApplication;
+    Application* matchingApplication = NULL;
+    Application* newApplication = new Application;
     newApplication->setBamfApplication(bamf_application);
 
     QString executable = newApplication->executable();
     QString desktop_file = newApplication->desktop_file();
     if (m_applicationForDesktopFile.contains(desktop_file)) {
-        /* A LauncherApplication with the same desktop file already exists */
+        /* A Application with the same desktop file already exists */
         matchingApplication = m_applicationForDesktopFile[desktop_file];
     } else if (m_applicationForExecutable.contains(executable)) {
-        /* A LauncherApplication with the same executable already exists */
+        /* A Application with the same executable already exists */
         matchingApplication = m_applicationForExecutable[executable];
         /* If the application already registered for that executable has a
            desktop file assigned then make sure that the one to be inserted
@@ -293,11 +293,11 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
     }
 
     if (matchingApplication != NULL) {
-        /* A LauncherApplication that corresponds to bamf_application already exists */
+        /* A Application that corresponds to bamf_application already exists */
         /* FIXME: this deletion blocks for a long time (around 100ms here) and
            leads to a visual glitch in the launcher when an application finished
            starting up. This is due to the deletion of the QFileSystemWatcher
-           belonging to the LauncherApplication. */
+           belonging to the Application. */
         delete newApplication;
         matchingApplication->setBamfApplication(bamf_application);
     } else {
@@ -306,14 +306,14 @@ void LauncherApplicationsList::insertBamfApplication(BamfApplication* bamf_appli
 }
 
 void
-LauncherApplicationsList::insertFavoriteApplication(const QString& desktop_file)
+ApplicationsList::insertFavoriteApplication(const QString& desktop_file)
 {
     if (m_applicationForDesktopFile.contains(desktop_file)) {
         return;
     }
 
-    /* Create a new LauncherApplication */
-    LauncherApplication* application = new LauncherApplication;
+    /* Create a new Application */
+    Application* application = new Application;
     application->setDesktopFile(desktop_file);
 
     /* If the desktop_file property is empty after setting it, it
@@ -340,14 +340,14 @@ LauncherApplicationsList::insertFavoriteApplication(const QString& desktop_file)
 }
 
 void
-LauncherApplicationsList::insertWebFavorite(const QUrl& url)
+ApplicationsList::insertWebFavorite(const QUrl& url)
 {
     if (!url.isValid() || url.isRelative()) {
         UQ_WARNING << "Invalid URL:" << url;
         return;
     }
 
-    LauncherApplication* application = new LauncherApplication;
+    Application* application = new Application;
     WebFavorite* webfav = new WebFavorite(url, application);
 
     application->setDesktopFile(webfav->desktopFile());
@@ -356,7 +356,7 @@ LauncherApplicationsList::insertWebFavorite(const QUrl& url)
 }
 
 void
-LauncherApplicationsList::insertSnStartupSequence(SnStartupSequence* sequence)
+ApplicationsList::insertSnStartupSequence(SnStartupSequence* sequence)
 {
     if (sequence == NULL) {
         return;
@@ -368,18 +368,18 @@ LauncherApplicationsList::insertSnStartupSequence(SnStartupSequence* sequence)
     }
 
     if (m_applicationForExecutable.contains(executable)) {
-        /* A LauncherApplication with the same executable already exists */
+        /* A Application with the same executable already exists */
         m_applicationForExecutable[executable]->setSnStartupSequence(sequence);
     } else {
-        /* Create a new LauncherApplication and append it to the list */
-        LauncherApplication* newApplication = new LauncherApplication;
+        /* Create a new Application and append it to the list */
+        Application* newApplication = new Application;
         newApplication->setSnStartupSequence(sequence);
         insertApplication(newApplication);
     }
 }
 
 void
-LauncherApplicationsList::load()
+ApplicationsList::load()
 {
     /* Migrate the favorites if needed and ignore errors */
     QByteArray latest_migration = launcherConfiguration().property("favoriteMigration").toString().toAscii();
@@ -411,7 +411,7 @@ LauncherApplicationsList::load()
 }
 
 void
-LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
+ApplicationsList::onBamfViewOpened(BamfView* bamf_view)
 {
     /* Make sure bamf_view is in fact a BamfApplication */
     BamfApplication* bamf_application;
@@ -424,9 +424,9 @@ LauncherApplicationsList::onBamfViewOpened(BamfView* bamf_view)
     insertBamfApplication(bamf_application);
 }
 
-void LauncherApplicationsList::onApplicationClosed()
+void ApplicationsList::onApplicationClosed()
 {
-    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+    Application* application = static_cast<Application*>(sender());
 
     if (!application->sticky() && !application->running()) {
         removeApplication(application);
@@ -434,9 +434,9 @@ void LauncherApplicationsList::onApplicationClosed()
 }
 
 void
-LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
+ApplicationsList::onApplicationStickyChanged(bool sticky)
 {
-    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+    Application* application = static_cast<Application*>(sender());
 
     writeFavoritesToGConf();
 
@@ -446,9 +446,9 @@ LauncherApplicationsList::onApplicationStickyChanged(bool sticky)
 }
 
 void
-LauncherApplicationsList::onApplicationLaunchingChanged(bool launching)
+ApplicationsList::onApplicationLaunchingChanged(bool launching)
 {
-    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+    Application* application = static_cast<Application*>(sender());
 
     if (!application->sticky() && !application->running() && !application->launching()) {
         removeApplication(application);
@@ -456,20 +456,20 @@ LauncherApplicationsList::onApplicationLaunchingChanged(bool launching)
 }
 
 void
-LauncherApplicationsList::onApplicationUrgentChanged(bool urgent)
+ApplicationsList::onApplicationUrgentChanged(bool urgent)
 {
-    LauncherApplication* application = static_cast<LauncherApplication*>(sender());
+    Application* application = static_cast<Application*>(sender());
     if (urgent) {
         Q_EMIT applicationBecameUrgent(m_applications.indexOf(application));
     }
 }
 
 void
-LauncherApplicationsList::writeFavoritesToGConf()
+ApplicationsList::writeFavoritesToGConf()
 {
     QStringList favorites;
 
-    Q_FOREACH(LauncherApplication *application, m_applications) {
+    Q_FOREACH(Application *application, m_applications) {
         QString desktop_file = application->desktop_file();
         if (application->sticky()) {
             favorites.append(favoriteFromDesktopFilePath(desktop_file));
@@ -482,7 +482,7 @@ LauncherApplicationsList::writeFavoritesToGConf()
 }
 
 int
-LauncherApplicationsList::rowCount(const QModelIndex &parent) const
+ApplicationsList::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
@@ -490,7 +490,7 @@ LauncherApplicationsList::rowCount(const QModelIndex &parent) const
 }
 
 QVariant
-LauncherApplicationsList::data(const QModelIndex &index, int role) const
+ApplicationsList::data(const QModelIndex &index, int role) const
 {
     Q_UNUSED(role);
 
@@ -502,7 +502,7 @@ LauncherApplicationsList::data(const QModelIndex &index, int role) const
 }
 
 void
-LauncherApplicationsList::move(int from, int to)
+ApplicationsList::move(int from, int to)
 {
     QModelIndex parent;
     /* When moving an item down, the destination index needs to be incremented
@@ -518,4 +518,4 @@ LauncherApplicationsList::move(int from, int to)
     }
 }
 
-#include "launcherapplicationslist.moc"
+#include "applicationslist.moc"

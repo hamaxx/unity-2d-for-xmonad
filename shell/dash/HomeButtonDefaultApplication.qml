@@ -30,7 +30,7 @@ HomeButton {
         id: defaultApplication
     }
 
-    LauncherApplication {
+    Application {
         id: application
         desktop_file: defaultApplication.desktopFile
     }

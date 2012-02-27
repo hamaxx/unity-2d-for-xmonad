@@ -40,9 +40,9 @@ set(lib${LIB_NAME}_SRCS
     iconimageprovider.cpp
     listaggregatormodel.cpp
     launcheritem.cpp
-    launcherapplication.cpp
-    launcherapplicationslist.cpp
-    launcherapplicationslistdbus.cpp
+    application.cpp
+    applicationslist.cpp
+    applicationslistdbus.cpp
     launcherdevice.cpp
     launcherdeviceslist.cpp
     launcherutility.cpp
