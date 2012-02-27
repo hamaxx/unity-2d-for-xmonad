@@ -139,10 +139,9 @@ AutoScrollingListView {
         isBeingDragged: (reorder.draggedTileId != "") && (reorder.draggedTileId == desktopFile)
         dragPosition: reorder.listCoordinates.y - list.contentY
 
-        /* Best way I could find to check if the item is an application or the
-           workspaces switcher. There may be something cleaner and better. */
-        backgroundFromIcon: item.toString().indexOf("Application") == 0 ||
-                            item.toString().indexOf("Workspaces") == 0
+        /* Best way I could find to check if the item is an application.
+           There may be something cleaner and better. */
+        backgroundFromIcon: item.toString().indexOf("Application") == 0
 
         Binding { target: item.menu; property: "title"; value: item.name }
 
@@ -158,7 +157,7 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            item.menu.show(width, declarativeView.globalPosition.y + list.y - list.contentY +
+            item.menu.show(width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
                                   y + height - selectionOutlineSize / 2)
         }
 

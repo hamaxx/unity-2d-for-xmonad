@@ -38,6 +38,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
+    Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
@@ -64,6 +65,7 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
+    bool dashAlwaysFullScreen() const;
     bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
@@ -88,7 +90,7 @@ Q_SIGNALS:
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
 
-    void addWebFavoriteRequested(const QUrl& url);
+    void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
     void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
@@ -105,6 +107,8 @@ private Q_SLOTS:
     void toggleDash();
     void showCommandsLens();
     void onAltF1Pressed();
+
+    void updateDashAlwaysFullScreen();
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -127,6 +131,7 @@ private:
     bool m_active;
 
     bool m_superKeyPressed;
+    bool m_dashAlwaysFullScreen;
     bool m_superKeyHeld;
     bool m_superPressIgnored;
     QTimer m_superKeyHoldTimer;
@@ -134,7 +139,6 @@ private:
     bool m_monitoredAreaContainsMouse;
 
     friend class DashDBus;
-    friend class LauncherDBus;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)

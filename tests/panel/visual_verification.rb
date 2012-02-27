@@ -49,8 +49,8 @@ context "Panel visual verification tests" do
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-panel'
 
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
-    $SUT.execute_shell_command 'killall unity-2d-launcher'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
+    $SUT.execute_shell_command 'killall unity-2d-shell'
   end
 
   # Run once at the end of this test suite
@@ -74,7 +74,7 @@ context "Panel visual verification tests" do
   # Run after each test case completes
   teardown do
     $SUT.execute_shell_command 'pkill -nf unity-2d-panel'
-    $SUT.execute_shell_command 'pkill -nf unity-2d-launcher'
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
   #####################################################################################
@@ -132,17 +132,17 @@ context "Panel visual verification tests" do
       minimizeButton.move_mouse() # move mouse away
 
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
+        maximizeButton.find_on_screen(pwd + 'verification/unmaximize_dash.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       maximizeButton.move_mouse()
       verify_true( TIMEOUT, 'maximize button fullscreen not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
+        maximizeButton.find_on_screen(pwd + 'verification/unmaximize_dash_prelight.png', DASH_BUTTONS_TOLERANCE) != nil
       }
 
       XDo::Mouse.down()
       verify_true( TIMEOUT, 'maximize button fullscreen pressed not matching reference image' ) {
-        maximizeButton.find_on_screen(pwd + 'verification/maximize_dash_pressed.png', DASH_BUTTONS_TOLERANCE) != nil
+        maximizeButton.find_on_screen(pwd + 'verification/unmaximize_dash_pressed.png', DASH_BUTTONS_TOLERANCE) != nil
       }
       XDo::Mouse.up()
     end

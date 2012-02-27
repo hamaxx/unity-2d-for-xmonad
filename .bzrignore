@@ -2,7 +2,6 @@ config.h
 
 shell/app/dashadaptor.*
 shell/app/launcheradaptor.*
-shell/app/unity-2d-launcher.service
 shell/app/unity-2d-places.service
 shell/app/unity-2d-shell
 
