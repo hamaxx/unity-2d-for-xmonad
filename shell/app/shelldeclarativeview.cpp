@@ -50,11 +50,17 @@
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
+    , m_superKeyPressed(false)
+    , m_dashAlwaysFullScreen(false)
+    , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
@@ -91,6 +97,15 @@ ShellDeclarativeView::ShellDeclarativeView()
 
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
     updateShellPosition();
+
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateDashAlwaysFullScreen()), Qt::QueuedConnection);
+    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateDashAlwaysFullScreen()));
+
+    updateDashAlwaysFullScreen();
 }
 
 void
@@ -230,6 +245,11 @@ ShellDeclarativeView::expanded() const
     return m_expanded;
 }
 
+bool ShellDeclarativeView::dashAlwaysFullScreen() const
+{
+    return m_dashAlwaysFullScreen;
+}
+
 void
 ShellDeclarativeView::setActiveLens(const QString& activeLens)
 {
@@ -280,6 +300,41 @@ ShellDeclarativeView::onAltF1Pressed()
     }
 }
 
+static QSize minimumSizeForDesktop()
+{
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
+}
+
+void ShellDeclarativeView::updateDashAlwaysFullScreen()
+{
+    bool dashAlwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        dashAlwaysFullScreen = true;
+    } else {
+        const QRect rect = m_screenInfo->geometry();
+        const QSize minSize = minimumSizeForDesktop();
+        dashAlwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    }
+
+    if (m_dashAlwaysFullScreen != dashAlwaysFullScreen) {
+        m_dashAlwaysFullScreen = dashAlwaysFullScreen;
+        Q_EMIT dashAlwaysFullScreenChanged(dashAlwaysFullScreen);
+    }
+}
+
+/* ----------------- super key handling ---------------- */
+
+void
+ShellDeclarativeView::updateSuperKeyHoldState()
+{
+    /* If the key was released in the meantime, just do nothing, otherwise
+       consider the key being held, unless we're told to ignore it. */
+    if (m_superKeyPressed && !m_superPressIgnored) {
+        m_superKeyHeld = true;
+        Q_EMIT superKeyHeldChanged(m_superKeyHeld);
+    }
+}
+
 void
 ShellDeclarativeView::updateSuperKeyMonitoring()
 {
@@ -294,6 +349,44 @@ ShellDeclarativeView::updateSuperKeyMonitoring()
         hotkeyMonitor.disableModifiers(Qt::MetaModifier);
         modifiersMonitor->disableModifiers(Qt::MetaModifier);
     }
+}
+
+void
+ShellDeclarativeView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
+{
+    /* This is the new new state of the Super key (AKA Meta key), while
+       m_superKeyPressed is the previous state of the key at the last modifiers change. */
+    bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
+
+    if (m_superKeyPressed != superKeyPressed) {
+        m_superKeyPressed = superKeyPressed;
+        if (superKeyPressed) {
+            m_superPressIgnored = false;
+            /* If the key is pressed, start up a timer to monitor if it's being held short
+               enough to qualify as just a "tap" or as a proper hold */
+            m_superKeyHoldTimer.start();
+        } else {
+            m_superKeyHoldTimer.stop();
+
+            /* If the key is released, and was not being held, it means that the user just
+               performed a "tap". Unless we're told to ignore that tap, that is. */
+            if (!m_superKeyHeld && !m_superPressIgnored) {
+                Q_EMIT superKeyTapped();
+            }
+            /* Otherwise the user just terminated a hold. */
+            else if(m_superKeyHeld){
+                m_superKeyHeld = false;
+                Q_EMIT superKeyHeldChanged(m_superKeyHeld);
+            }
+        }
+    }
+}
+
+void
+ShellDeclarativeView::ignoreSuperPress()
+{
+    /* There was a key pressed, ignore current super tap/hold */
+    m_superPressIgnored = true;
 }
 
 void
@@ -395,10 +488,4 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
-}
-
-bool
-ShellDeclarativeView::superKeyHeld() const
-{
-    return m_superHotModifier->held();
 }
