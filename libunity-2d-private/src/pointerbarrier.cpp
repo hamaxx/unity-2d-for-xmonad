@@ -18,170 +18,176 @@
  */
 
 // Qt
-#include <QX11Info>
 #include <QDebug>
+#include <QX11Info>
+
+// libunity-2d
+#include "pointerbarriermanager.h"
+#include "config.h"
 
 // Self
 #include "pointerbarrier.h"
 
-struct PointerBarrierWrapperPrivate
-{
-    PointerBarrierWrapperPrivate()
-    : m_lastEventId(0)
+PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
+    : QObject(parent)
+    , m_barrier(0)
+    , m_maxVelocityMultiplier(30) //??
+    , m_smoothing(75)
+    , m_smoothingTimer(new QTimer(this))
+    , m_lastEventId(0)
     , m_lastX(0)
     , m_lastY(0)
     , m_smoothingCount(0)
     , m_smoothingAccumulator(0)
-    {}
-
-    int m_lastEventId;
-    int m_lastX;
-    int m_lastY;
-    int m_smoothingCount;
-    int m_smoothingAccumulator;
-};
-
-PointerBarrierWrapper::PointerBarrierWrapper(const QLine& line, const int threshold, QObject *parent)
-    : QObject(parent)
-    , d(new PointerBarrierWrapperPrivate)
-    , m_active(false)
-    , m_eventBase(0)
-    , m_errorBase(0)
-    , m_maxVelocityMultiplier(30) //??
-    , m_smoothing(75)
-    , m_smoothingTimer(new QTimer(this))
-    , m_threshold(threshold)
 {
-    Display *display = QX11Info::display();
-
-    XFixesQueryExtension(display, &m_eventBase, &m_errorBase);
-
-    int maj, min;
-    XFixesQueryVersion(display, &maj, &min);
-    if (maj < 6) {
-        qDebug() << "XFixes version 6 or greater required for PointerBarrierVelocity";
-        return;
-    }
-
-    createBarrier(line, m_threshold);
-
-    /* Enables barrier detection events - only call once!! */
-    XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
-
     m_smoothingTimer->setSingleShot(true);
     m_smoothingTimer->setInterval(m_smoothing);
     connect(m_smoothingTimer, SIGNAL(timeout()), this, SLOT(smoother()));
-
-    Unity2dApplication* application = Unity2dApplication::instance();
-    if (application == NULL) {
-        /* This can happen for example when using qmlviewer to run the launcher */
-        qDebug() << "The application is not an Unity2dApplication."
-                      "Modifiers will not be monitored.";
-    } else {
-        application->installX11EventFilter(this);
-    }
+    
+    connect(&launcher2dConfiguration(), SIGNAL(edgeStopVelocityChanged(int)), SLOT(updateEdgeStopVelocity()));
+    
+    PointerBarrierManager::instance()->addBarrier(this);
 }
 
 PointerBarrierWrapper::~PointerBarrierWrapper()
 {
+    PointerBarrierManager::instance()->removeBarrier(this);
     destroyBarrier();
+}
 
-    Unity2dApplication* application = Unity2dApplication::instance();
-    if (application != NULL) {
-        application->removeX11EventFilter(this);
-    }
+QPointF
+PointerBarrierWrapper::p1() const
+{
+    return m_p1;
 }
 
 void
-PointerBarrierWrapper::createBarrier(const QLine& line, int threshold)
+PointerBarrierWrapper::setP1(const QPointF& p)
 {
-    if (m_active) {
-        qDebug() << "Border already created";
+    if (p == m_p1) {
         return;
     }
+    
+    if (m_barrier != 0) {
+        destroyBarrier();
+    }
+        
+    m_p1 = p;
+    Q_EMIT p1Changed(p);
+    
+    createBarrier();
+}
 
+QPointF
+PointerBarrierWrapper::p2() const
+{
+    return m_p2;
+}
+
+void
+PointerBarrierWrapper::setP2(const QPointF& p)
+{
+    if (p == m_p2) {
+        return;
+    }
+    
+    if (m_barrier != 0) {
+        destroyBarrier();
+    }
+    
+    m_p2 = p;
+    Q_EMIT p2Changed(p);
+
+    createBarrier();
+}
+
+void
+PointerBarrierWrapper::createBarrier()
+{
+    QVariant value = launcher2dConfiguration().property("edgeStopVelocity");
+    const int threshold = value.isValid() ? value.toInt() : -1;
     if (threshold < 0) {
         qDebug() << "Cannot create border with negative stop velocity";
         return;
     }
+    
+    if (m_p1.isNull() || m_p2.isNull()) {
+        return;
+    }
 
-    if (line.isNull() ||
-           ((line.x1() != line.x2()) && (line.y1() != line.y2())))
+    if ((m_p1.x() != m_p2.x()) && (m_p1.y() != m_p2.y()))
     {
-        qDebug() << "Barrier line must be horizontal or vertical only";
+        qWarning() << "Barrier line must be horizontal or vertical only";
         return;
     }
 
     Display *display = QX11Info::display();
-    m_threshold = threshold;
 
     m_barrier = XFixesCreatePointerBarrierVelocity(display,
                     DefaultRootWindow(display),
-                    line.x1(), line.y1(),
-                    line.x2(), line.y2(),
+                    m_p1.x(), m_p1.y(),
+                    m_p2.x(), m_p2.y(),
                     0,
-                    m_threshold,
+                    threshold,
                     0,
                     NULL);
-    m_active = true;
+    Q_ASSERT(m_barrier != 0);
 }
 
 void
 PointerBarrierWrapper::destroyBarrier()
 {
-    if (m_active) {
+    if (m_barrier != 0) {
         XFixesDestroyPointerBarrier(QX11Info::display(), m_barrier);
-        m_active = false;
+        m_barrier = 0;
     }
 }
 
 void
-PointerBarrierWrapper::updateBarrier(const QLine& line, int threshold)
+PointerBarrierWrapper::doProcess(XFixesBarrierNotifyEvent *notifyEvent)
 {
-    destroyBarrier();
-    createBarrier(line, threshold);
-}
+    m_lastX = notifyEvent->x;
+    m_lastY = notifyEvent->y;
+    m_lastEventId = notifyEvent->event_id;
+    m_smoothingAccumulator += notifyEvent->velocity;
+    m_smoothingCount++;
 
-bool
-PointerBarrierWrapper::x11EventFilter(XEvent *event)
-{
-    if (event->type - m_eventBase == XFixesBarrierNotify) {
-
-        XFixesBarrierNotifyEvent *notifyEvent = (XFixesBarrierNotifyEvent *)event;
-
-        if (notifyEvent->barrier == m_barrier && notifyEvent->subtype == XFixesBarrierHitNotify) {
-            d->m_lastX = notifyEvent->x;
-            d->m_lastY = notifyEvent->y;
-            d->m_lastEventId = notifyEvent->event_id;
-            d->m_smoothingAccumulator += notifyEvent->velocity;
-            d->m_smoothingCount++;
-
-            /* Gathers events for 'm_smoothing' miliseconds, then takes average */
-            if (!m_smoothingTimer->isActive()) {
-                m_smoothingTimer->start();
-            }
-        }
-        return (notifyEvent->barrier == m_barrier);
+    /* Gathers events for 'm_smoothing' miliseconds, then takes average */
+    if (!m_smoothingTimer->isActive()) {
+        m_smoothingTimer->start();
     }
-    return false;
 }
+
+PointerBarrier
+PointerBarrierWrapper::barrier() const
+{
+    return m_barrier;
+}
+
+// TODO Release barrier
 
 void
 PointerBarrierWrapper::smoother()
 {
-    if (d->m_smoothingCount <= 0) {
+    if (m_smoothingCount <= 0) {
         return;
     }
-    int velocity = qMin(600 * m_maxVelocityMultiplier, d->m_smoothingAccumulator / d->m_smoothingCount);
+    int velocity = qMin(600 * m_maxVelocityMultiplier, m_smoothingAccumulator / m_smoothingCount);
 
-    Q_EMIT barrierHit(d->m_lastX, d->m_lastY,
-                    velocity,
-                    d->m_lastEventId);
+    Q_EMIT barrierHit(m_lastX, m_lastY, velocity, m_lastEventId);
 
-    d->m_smoothingAccumulator = 0;
-    d->m_smoothingCount = 0;
+    m_smoothingAccumulator = 0;
+    m_smoothingCount = 0;
 }
 
+void
+PointerBarrierWrapper::updateEdgeStopVelocity()
+{
+    if (m_barrier != 0) {
+        destroyBarrier();
+        createBarrier();
+    }
+}
 
 /*   // make the effect half as strong as specified as other values shouldn't scale
   // as quickly as the max velocity multiplier

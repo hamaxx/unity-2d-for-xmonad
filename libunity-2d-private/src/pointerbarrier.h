@@ -24,47 +24,62 @@
 #include <QLine>
 #include <QTimer>
 
-// Local
-#include <unity2dapplication.h>
-
 // X11
 #include <X11/extensions/Xfixes.h>
 
 struct PointerBarrierWrapperPrivate;
 
-class PointerBarrierWrapper : public QObject, protected AbstractX11EventFilter
+class PointerBarrierWrapper : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QPointF p1 READ p1 WRITE setP1 NOTIFY p1Changed)
+    Q_PROPERTY(QPointF p2 READ p2 WRITE setP2 NOTIFY p2Changed)
+    
+friend class PointerBarrierManager;
 
 public:
-    PointerBarrierWrapper(const QLine&, const int, QObject* parent = 0);
+    PointerBarrierWrapper(QObject* parent = 0);
     ~PointerBarrierWrapper();
 
-    void createBarrier(const QLine&, const int threshold);
-    void updateBarrier(const QLine&, const int threshold);
-    void destroyBarrier();
+    QPointF p1() const;
+    void setP1(const QPointF &p);
+    
+    QPointF p2() const;
+    void setP2(const QPointF &p);
+
+    PointerBarrier barrier() const;
 
 Q_SIGNALS:
+    void p1Changed(const QPointF &p1);
+    void p2Changed(const QPointF &p2);
+    
     void barrierHit(int x, int y, int velocity, int eventId);
-
-protected:
-    bool x11EventFilter(XEvent*);
 
 private Q_SLOTS:
     void smoother();
+    
+    void updateEdgeStopVelocity();
 
 private:
-    PointerBarrierWrapperPrivate* d;
+    void createBarrier();
+    void destroyBarrier();
+    
+    void doProcess(XFixesBarrierNotifyEvent *event);
+
     PointerBarrier m_barrier;
 
-    bool m_active;
-    int m_eventBase;
-    int m_errorBase;
+    QPointF m_p1;
+    QPointF m_p2;
     int m_maxVelocityMultiplier;
     int m_smoothing;
     QTimer *m_smoothingTimer;
-    int m_threshold;
     int m_pressure;
+
+    int m_lastEventId;
+    int m_lastX;
+    int m_lastY;
+    int m_smoothingCount;
+    int m_smoothingAccumulator;
 };
 
 #endif // POINTERBARRIER_H

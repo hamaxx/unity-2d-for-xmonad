@@ -76,6 +76,7 @@ set(lib${LIB_NAME}_SRCS
     inputshapemask.cpp
     strutmanager.cpp
     pointerbarrier.cpp
+    pointerbarriermanager.cpp
     )
 
 # Build
