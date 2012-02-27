@@ -56,13 +56,15 @@ public:
 public Q_SLOTS:
     Q_NOREPLY void activateHome();
     Q_NOREPLY void activateLens(const QString& lensId);
-    void onHudActiveChanged();
 
 Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged(bool);
     void activeLensChanged(QString);
     void hudActiveChanged(bool);
+
+private Q_SLOTS:
+    void onHudActiveChanged();
 
 private:
     ShellDeclarativeView* m_view;
