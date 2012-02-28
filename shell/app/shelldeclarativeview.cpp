@@ -73,6 +73,10 @@ ShellDeclarativeView::ShellDeclarativeView()
     connect(m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDash()));
     connect(m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
 
+    /* Alt tap shows the HUD */
+    m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
+    connect(m_altHotModifier, SIGNAL(tapped()), SIGNAL(toggleHud()));
+
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
     connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));

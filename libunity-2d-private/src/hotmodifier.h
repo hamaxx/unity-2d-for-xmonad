@@ -54,6 +54,7 @@ private:
     bool m_pressed;
     bool m_held;
     bool m_ignored;
+    bool m_otherModifierPressed;
 };
 
 #endif // HOTMODIFIER_H
