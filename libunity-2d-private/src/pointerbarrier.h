@@ -84,6 +84,8 @@ private Q_SLOTS:
     void decay();
 
 private:
+    Q_DISABLE_COPY(PointerBarrierWrapper);
+
     void createBarrier();
     void destroyBarrier();
 
