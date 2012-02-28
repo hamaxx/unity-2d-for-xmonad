@@ -16,6 +16,7 @@
 
 // Qt
 #include <QDebug>
+#include <QTimer>
 #include <QX11Info>
 
 // libunity-2d

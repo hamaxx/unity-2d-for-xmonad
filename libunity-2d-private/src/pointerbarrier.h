@@ -20,9 +20,8 @@
 #ifndef POINTERBARRIER_H
 #define POINTERBARRIER_H
 
-//Qt
-#include <QLine>
-#include <QTimer>
+#include <QObject>
+#include <QPointF>
 
 // X11
 #include <X11/extensions/Xfixes.h>
