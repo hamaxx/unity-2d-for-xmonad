@@ -106,8 +106,6 @@ private:
     QTimer *m_smoothingTimer;
 
     int m_lastEventId;
-    int m_lastX;
-    int m_lastY;
     int m_smoothingCount;
     int m_smoothingAccumulator;
 

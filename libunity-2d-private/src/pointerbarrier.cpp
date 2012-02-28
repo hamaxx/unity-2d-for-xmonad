@@ -35,8 +35,6 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     , m_breakPressure(-1)
     , m_smoothingTimer(new QTimer(this))
     , m_lastEventId(0)
-    , m_lastX(0)
-    , m_lastY(0)
     , m_smoothingCount(0)
     , m_smoothingAccumulator(0)
     , m_value(0)
@@ -159,8 +157,6 @@ PointerBarrierWrapper::destroyBarrier()
 void
 PointerBarrierWrapper::doProcess(XFixesBarrierNotifyEvent *notifyEvent)
 {
-    m_lastX = notifyEvent->x;
-    m_lastY = notifyEvent->y;
     m_lastEventId = notifyEvent->event_id;
     m_smoothingAccumulator += notifyEvent->velocity;
     m_smoothingCount++;
