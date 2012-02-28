@@ -70,11 +70,11 @@ public:
         gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
         QPalette pal;
-        if (DashClient::instance()->active()) {
+        if (DashClient::instance()->active() || DashClient::instance()->hudActive()) {
             /* The background color is the same as in the launcher */
             QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
-            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 204);
-            backgroundColor = backgroundColor.darker(400);
+            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 168);
+            backgroundColor = backgroundColor.darker(800);
             pal.setBrush(QPalette::Window, backgroundColor);
         } else {
             pal.setBrush(QPalette::Window, generateBackgroundBrush());
@@ -185,6 +185,7 @@ PanelStyle::PanelStyle(QObject* parent)
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
     QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
+    QObject::connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
     QObject::connect(&unityConfiguration(), SIGNAL(averageBgColor(QVariant)), this, SLOT(onWallpaperColorChanged(QVariant)));
     d->updatePalette();
 }

@@ -31,6 +31,7 @@ HotModifier::HotModifier(Qt::KeyboardModifiers modifiers, QObject *parent) :
 ,   m_pressed(false)
 ,   m_held(false)
 ,   m_ignored(false)
+,   m_otherModifierPressed(false)
 {
     m_holdTimer.setSingleShot(true);
     m_holdTimer.setInterval(KEY_HOLD_THRESHOLD);
@@ -55,9 +56,16 @@ HotModifier::held() const
 void
 HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    /* FIXME this logic needs tweaking, as pressing one modifier and tapping
-       another will result in a tap on the latter one. */
     bool pressed = m_modifiers & modifiers;
+    bool otherModifierPressed = modifiers ^ m_modifiers;
+
+    /* if a modifier other than m_modifier is pressed, we take note of it because when the
+       other modifier is released, m_modifier is emitted again. If we don't ignore this
+       event, we generate a tap, which is wrong */
+    if (otherModifierPressed && pressed) {
+        m_otherModifierPressed = true;
+    }
+
     if (!m_ignored && m_pressed && !m_held && !pressed) {
         Q_EMIT tapped();
     } else if (m_pressed && m_held && !pressed) {
@@ -67,6 +75,12 @@ HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
     if (!m_pressed && pressed) {
         m_ignored = false;
         m_holdTimer.start();
+    }
+    /* Case where "other modifier" is released while m_modifier still pressed. In this case
+       we want to have the entire modifier press event ignored, to prevent generating a tap */
+    if (m_otherModifierPressed && otherModifierPressed && pressed) {
+        m_otherModifierPressed = false;
+        m_ignored = true;
     }
     m_pressed = pressed;
 }

@@ -24,13 +24,15 @@ Item {
     property bool shown: true
     property variant behavior: null
     property bool forceVisible: false
+    property bool forceHidden: false
     property variant forceVisibleChangeId
     property variant forceVisibleStack: {}
+    property variant forceHiddenStack: {}
 
     Binding {
         target: controller
         property: "shown"
-        value: forceVisible || behavior.shown
+        value: (!forceHidden) ? forceVisible || behavior.shown : false
         when: behavior != null
     }
 
@@ -42,6 +44,9 @@ Item {
         */
         var stack = controller.forceVisibleStack
         var wasEmpty = Utils.hashEmpty(stack)
+
+        if (forceHidden) console.log("WARNING: beginForceVisible for id \"" + id +
+                        "\" called when forceHidden still true")
 
         if (stack[id]) stack[id] += 1
         else stack[id] = 1
@@ -66,6 +71,39 @@ Item {
         if (Utils.hashEmpty(stack)) {
             forceVisibleChangeId = id
             forceVisible = false
+        }
+    }
+
+    function beginForceHidden(id) {
+        var stack = controller.forceHiddenStack
+        var wasEmpty = Utils.hashEmpty(stack)
+
+        if (forceVisible) console.log("WARNING: beginForceHidden for id \"" + id +
+                        "\" called when forceVisible still true")
+
+        if (stack[id]) stack[id] += 1
+        else stack[id] = 1
+        controller.forceHiddenStack = stack
+
+        if (wasEmpty) {
+            forceVisibleChangeId = id
+            forceHidden = true
+        }
+    }
+
+    function endForceHidden(id) {
+        var stack = controller.forceHiddenStack
+
+        if (stack[id]) {
+            stack[id] -= 1
+            if (stack[id] === 0) delete stack[id]
+        } else console.log("WARNING: endForceHidden for id \"" + id +
+                           "\" called without matching startForceHidden")
+
+        controller.forceHiddenStack = stack
+        if (Utils.hashEmpty(stack)) {
+            forceVisibleChangeId = id
+            forceHidden = false
         }
     }
 }
