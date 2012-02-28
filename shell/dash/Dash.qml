@@ -247,7 +247,7 @@ FocusScope {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            source: "artwork/panel_border.png"
+            source: "../common/artwork/panel_border.png"
             fillMode: Image.Stretch
         }
 

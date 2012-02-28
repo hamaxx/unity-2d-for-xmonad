@@ -124,7 +124,14 @@ protected:
                 pix = (m_isDashButton) ? m_dash_normalPix : m_normalPix;
             }
         } else {
-            pix = (m_isDashButton) ? m_dash_normalPix : m_normalPix;
+            if (m_buttonType == PanelStyle::MaximizeWindowButton && m_isDashButton) {
+                /* we have disabled asset only for dash maximize button */
+                pix = m_dash_disabledPix;
+            } else if (m_isDashButton) {
+                pix = m_dash_normalPix;
+            } else {
+                pix = m_normalPix;
+            }
         }
         int posX;
         if (m_buttonType == PanelStyle::CloseWindowButton) {
@@ -144,6 +151,7 @@ private:
     QPixmap m_dash_normalPix;
     QPixmap m_dash_hoverPix;
     QPixmap m_dash_downPix;
+    QPixmap m_dash_disabledPix;
     bool m_initialized;
 
     void loadPixmaps(bool loadOnlyStylePixmaps)
@@ -174,6 +182,8 @@ private:
             break;
         case PanelStyle::MaximizeWindowButton:
             iconPath += "maximize_dash";
+            /* we have disabled asset only for maximize button */
+            m_dash_disabledPix.load(iconPath + "_disabled.png");
             break;
         }
 
@@ -313,7 +323,8 @@ void AppNameApplet::updateWidgets()
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
     bool dashIsVisible = DashClient::instance()->active();
-    bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible;
+    bool hudIsVisible = DashClient::instance()->hudActive();
+    bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;
 
@@ -322,16 +333,16 @@ void AppNameApplet::updateWidgets()
     d->m_maximizeButton->setButtonType(isMaximized ?
                                        PanelStyle::UnmaximizeWindowButton :
                                        PanelStyle::MaximizeWindowButton);
-    /* disable the minimize button for the dash */
-    d->m_minimizeButton->setEnabled(!dashIsVisible);
-    d->m_minimizeButton->setIsDashButton(dashIsVisible);
-    /* and the maximize button, if the dash is not resizeable */
-    d->m_maximizeButton->setEnabled(!dashIsVisible || dashCanResize);
-    d->m_maximizeButton->setIsDashButton(dashIsVisible);
+    /* disable the minimize button for the dash & hud */
+    d->m_minimizeButton->setEnabled(!dashIsVisible || !hudIsVisible);
+    d->m_minimizeButton->setIsDashButton(dashIsVisible || hudIsVisible);
+    /* disable the maximize button for the HUD, and when the dash is not resizeable */
+    d->m_maximizeButton->setEnabled((dashIsVisible && dashCanResize) || !hudIsVisible);
+    d->m_maximizeButton->setIsDashButton(dashIsVisible || hudIsVisible);
     /* make sure we use the right button for dash */
-    d->m_closeButton->setIsDashButton(dashIsVisible);
+    d->m_closeButton->setIsDashButton(dashIsVisible || hudIsVisible);
 
-    if (showAppLabel || showDesktopLabel || dashIsVisible) {
+    if (showAppLabel || showDesktopLabel || dashIsVisible || hudIsVisible) {
         d->m_label->setVisible(true);
         if (showAppLabel) {
             // Define text
