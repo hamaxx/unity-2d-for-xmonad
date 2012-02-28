@@ -32,7 +32,6 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     , m_maxVelocityMultiplier(-1)
     , m_decayRate(-1)
     , m_breakPressure(-1)
-    , m_smoothing(75)
     , m_smoothingTimer(new QTimer(this))
     , m_lastEventId(0)
     , m_lastX(0)
@@ -43,7 +42,7 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     , m_valueDecayTimer(new QTimer(this))
 {
     m_smoothingTimer->setSingleShot(true);
-    m_smoothingTimer->setInterval(m_smoothing);
+    m_smoothingTimer->setInterval(75);
     connect(m_smoothingTimer, SIGNAL(timeout()), this, SLOT(smoother()));
 
     m_valueDecayTimer->setInterval(10);

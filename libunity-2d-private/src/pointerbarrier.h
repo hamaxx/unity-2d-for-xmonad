@@ -102,7 +102,6 @@ private:
     int m_decayRate;
     int m_breakPressure;
 
-    int m_smoothing;
     QTimer *m_smoothingTimer;
 
     int m_lastEventId;
