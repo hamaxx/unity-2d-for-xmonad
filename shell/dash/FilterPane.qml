@@ -32,6 +32,7 @@ FocusScope {
 
     AbstractButton {
         id: header
+        objectName: "filterResults"
 
         Accessible.name: title.text
 

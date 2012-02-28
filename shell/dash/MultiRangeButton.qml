@@ -43,13 +43,6 @@ AbstractButton {
         text: multiRangeButton.text
         elide: Text.ElideRight
 
-        effect: DropShadow {
-             blurRadius: 8
-             color: "white"
-             offset.x: 0
-             offset.y: 0
-             enabled: ( multiRangeButton.state == "selected" )
-        }
     }
 
     Rectangle {
