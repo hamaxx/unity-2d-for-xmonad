@@ -58,9 +58,7 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
-    , m_superKeyPressed(false)
     , m_dashAlwaysFullScreen(false)
-    , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
@@ -322,19 +320,6 @@ void ShellDeclarativeView::updateDashAlwaysFullScreen()
     }
 }
 
-/* ----------------- super key handling ---------------- */
-
-void
-ShellDeclarativeView::updateSuperKeyHoldState()
-{
-    /* If the key was released in the meantime, just do nothing, otherwise
-       consider the key being held, unless we're told to ignore it. */
-    if (m_superKeyPressed && !m_superPressIgnored) {
-        m_superKeyHeld = true;
-        Q_EMIT superKeyHeldChanged(m_superKeyHeld);
-    }
-}
-
 void
 ShellDeclarativeView::updateSuperKeyMonitoring()
 {
@@ -349,44 +334,6 @@ ShellDeclarativeView::updateSuperKeyMonitoring()
         hotkeyMonitor.disableModifiers(Qt::MetaModifier);
         modifiersMonitor->disableModifiers(Qt::MetaModifier);
     }
-}
-
-void
-ShellDeclarativeView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
-{
-    /* This is the new new state of the Super key (AKA Meta key), while
-       m_superKeyPressed is the previous state of the key at the last modifiers change. */
-    bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
-
-    if (m_superKeyPressed != superKeyPressed) {
-        m_superKeyPressed = superKeyPressed;
-        if (superKeyPressed) {
-            m_superPressIgnored = false;
-            /* If the key is pressed, start up a timer to monitor if it's being held short
-               enough to qualify as just a "tap" or as a proper hold */
-            m_superKeyHoldTimer.start();
-        } else {
-            m_superKeyHoldTimer.stop();
-
-            /* If the key is released, and was not being held, it means that the user just
-               performed a "tap". Unless we're told to ignore that tap, that is. */
-            if (!m_superKeyHeld && !m_superPressIgnored) {
-                Q_EMIT superKeyTapped();
-            }
-            /* Otherwise the user just terminated a hold. */
-            else if(m_superKeyHeld){
-                m_superKeyHeld = false;
-                Q_EMIT superKeyHeldChanged(m_superKeyHeld);
-            }
-        }
-    }
-}
-
-void
-ShellDeclarativeView::ignoreSuperPress()
-{
-    /* There was a key pressed, ignore current super tap/hold */
-    m_superPressIgnored = true;
 }
 
 void
@@ -488,4 +435,10 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
+}
+
+bool
+ShellDeclarativeView::superKeyHeld() const
+{
+    return m_superHotModifier->held();
 }

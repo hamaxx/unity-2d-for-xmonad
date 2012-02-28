@@ -66,8 +66,8 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
+    bool superKeyHeld() const;
     bool dashAlwaysFullScreen() const;
-    bool superKeyHeld() const { return m_superKeyHeld; }
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
 
@@ -94,17 +94,13 @@ Q_SIGNALS:
 
     void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
-    void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
 
 private Q_SLOTS:
     void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardNumericHotkey();
-    void ignoreSuperPress();
 
     void toggleDash();
     void showCommandsLens();
@@ -132,11 +128,7 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
-    bool m_superKeyPressed;
     bool m_dashAlwaysFullScreen;
-    bool m_superKeyHeld;
-    bool m_superPressIgnored;
-    QTimer m_superKeyHoldTimer;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
 

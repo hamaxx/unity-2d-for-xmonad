@@ -87,16 +87,6 @@ AbstractButton {
             Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
 
-            effect: DropShadow {
-                    id: glow
-
-                    blurRadius: 4
-                    offset.x: 0
-                    offset.y: 0
-                    color: "white"
-                    enabled: searchInput.text != "" || searchInput.inputMethodComposing
-                }
-
             anchors.left: searchIcon.right
             anchors.leftMargin: -5
             anchors.right: parent.right
