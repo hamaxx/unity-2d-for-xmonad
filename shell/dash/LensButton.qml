@@ -31,14 +31,6 @@ AbstractButton {
 
     id: lensButton
 
-    effect: DropShadow {
-         blurRadius: 8
-         color: "white"
-         offset.x: 0
-         offset.y: 0
-         enabled: ( lensButton.state == "selected" || active )
-    }
-
     Rectangle {
         anchors.fill: parent
         anchors.topMargin: 7
@@ -77,10 +69,10 @@ AbstractButton {
         height: sourceSize.height
         smooth: true
         anchors.bottomMargin: (width-height)/2 /* Correct for rotation */
-        anchors.bottom: parent.bottom
+        anchors.bottom: icon
         anchors.horizontalCenter: parent.horizontalCenter
 
-        rotation: -90
+        rotation: 90
         visible: active
     }
 }

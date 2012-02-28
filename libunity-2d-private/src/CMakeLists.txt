@@ -9,6 +9,7 @@ set(lib${LIB_NAME}_SRCS
     gimageutils.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
+    hotmodifier.cpp
     hotkeymonitor.cpp
     hotkey.cpp
     keymonitor.cpp

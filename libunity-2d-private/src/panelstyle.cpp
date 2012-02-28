@@ -74,7 +74,7 @@ public:
             /* The background color is the same as in the launcher */
             QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
             QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 204);
-            backgroundColor = backgroundColor.darker(300);
+            backgroundColor = backgroundColor.darker(400);
             pal.setBrush(QPalette::Window, backgroundColor);
         } else {
             pal.setBrush(QPalette::Window, generateBackgroundBrush());
