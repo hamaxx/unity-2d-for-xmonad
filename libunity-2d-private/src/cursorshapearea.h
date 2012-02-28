@@ -21,10 +21,6 @@
 
 #include <QDeclarativeItem>
 
-/* Taken from a Qt Community Note by "njeisecke" at
-   https://developer.qt.nokia.com/doc/qt-4.7/qml-mousearea.html
-   made available under the Creative Commons Attribution-Share Alike 2.5 Generic licence*/
-
 class CursorShapeArea : public QDeclarativeItem
 {
     Q_OBJECT
