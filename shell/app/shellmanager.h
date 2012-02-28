@@ -78,9 +78,6 @@ private Q_SLOTS:
     void onScreenCountChanged(int);
 
     void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
-    void ignoreSuperPress();
 
     void onAltF1Pressed();
     void onAltF2Pressed();
