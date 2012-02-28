@@ -50,7 +50,7 @@ BaseBehavior {
     }
 
     Connections {
-        target: (autoHide.target !== undefined) ? autoHide.target : null
+        target: autoHide.target !== undefined ? autoHide.target : null
         onBarrierBroken: shownRegardlessOfFocus = true
     }
 }
