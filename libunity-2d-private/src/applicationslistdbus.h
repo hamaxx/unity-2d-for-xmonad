@@ -1,16 +1,16 @@
-#ifndef LAUNCHERAPPLICATIONSLISTDBUS_H
-#define LAUNCHERAPPLICATIONSLISTDBUS_H
+#ifndef APPLICATIONSLISTDBUS_H
+#define APPLICATIONSLISTDBUS_H
 
 #include <QObject>
 #include <QtDBus/QDBusAbstractAdaptor>
 
-class LauncherApplicationsListDBUS : public QDBusAbstractAdaptor
+class ApplicationsListDBUS : public QDBusAbstractAdaptor
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.canonical.Unity.Launcher")
 
 public:
-    explicit LauncherApplicationsListDBUS(QObject *parent = 0);
+    explicit ApplicationsListDBUS(QObject *parent = 0);
 
 public Q_SLOTS:
     void AddLauncherItemFromPosition(QString icon, QString title,
@@ -19,4 +19,4 @@ public Q_SLOTS:
 
 };
 
-#endif // LAUNCHERAPPLICATIONSLISTDBUS_H
+#endif // APPLICATIONSLISTDBUS_H

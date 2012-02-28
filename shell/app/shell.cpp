@@ -42,9 +42,7 @@
 // Local
 #include "config.h"
 #include "shelldeclarativeview.h"
-#include "dashclient.h"
 #include "dashdbus.h"
-#include "launcherdbus.h"
 
 int main(int argc, char *argv[])
 {
@@ -86,16 +84,6 @@ int main(int argc, char *argv[])
     /* Load the QML UI, focus and show the window */
     view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
     view.rootContext()->setContextProperty("declarativeView", &view);
-    // WARNING This declaration of dashClient used to be in Unity2d/plugin.cpp
-    // but it lead to locks when both the shell and the spread were started
-    // at the same time since SpreadMonitor QDBusServiceWatcher::serviceRegistered
-    // and DashClient QDBusServiceWatcher::serviceRegistered
-    // triggered at the same time ending up with both creating QDBusInterface
-    // to eachother in the main thread meaning they would block
-    // In case you need to have a DashClient in the spread the fix for the problem
-    // is moving the QDbusInterface creation to a thread so it does not block
-    // the main thread
-    view.rootContext()->setContextProperty("dashClient", DashClient::instance());
     view.setSource(rootFileUrl);
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
@@ -118,9 +106,6 @@ int main(int argc, char *argv[])
         qCritical() << "Another instance of the Dash already exists. Quitting.";
         return -1;
     }
-
-    LauncherDBus launcherDBus(&view);
-    launcherDBus.connectToBus();
 
     return application.exec();
 }

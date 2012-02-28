@@ -19,6 +19,7 @@
 import QtQuick 1.1
 import Unity2d 1.0
 import "../common"
+import "../common/utils.js" as Utils
 
 /* This component represents a single "tile" in the launcher and the surrounding
    indicator icons.
@@ -98,10 +99,6 @@ DropItem {
         else return (index == 0) ? 0 : (index == 1) ? -4 : +4
     }
 
-    function isRightToLeft() {
-        return Qt.application.layoutDirection == Qt.RightToLeft
-    }
-
     signal clicked(variant mouse)
     signal pressed(variant mouse)
     signal entered
@@ -110,7 +107,7 @@ DropItem {
     Item {
         /* The actual item, reparented so its y coordinate can be animated. */
         id: looseItem
-        LayoutMirroring.enabled: isRightToLeft()
+        LayoutMirroring.enabled: Utils.isRightToLeft()
         LayoutMirroring.childrenInherit: true
         parent: list
         width: item.width
@@ -138,7 +135,7 @@ DropItem {
             objectName: "active"
             anchors.right: parent.right
             y: item.height - item.selectionOutlineSize / 2 - height / 2
-            mirror: isRightToLeft()
+            mirror: Utils.isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
                   .arg("launcher/artwork/launcher_arrow_rtl.png")
@@ -164,7 +161,7 @@ DropItem {
                    problem, but I'm not sure if it should happen in the first place. */
                 anchors.left: (parent) ? parent.left : undefined
                 y: item.height - item.selectionOutlineSize / 2 - height / 2 + getPipOffset(index)
-                mirror: isRightToLeft()
+                mirror: Utils.isRightToLeft()
 
                 source: "image://blended/%1color=%2alpha=%3"
                         .arg(pipSource).arg("lightgrey").arg(1.0)

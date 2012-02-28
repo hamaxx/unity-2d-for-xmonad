@@ -6,13 +6,11 @@ pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 set(shell_SRCS
     shell.cpp
     dashdbus.cpp
-    launcherdbus.cpp
     shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
     dashdbus.h
-    launcherdbus.h
     shelldeclarativeview.h
     )
 
@@ -21,9 +19,6 @@ qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
 # Build
 configure_file(unity-2d-places.service.in unity-2d-places.service)
 qt4_add_dbus_adaptor(shell_SRCS dash.xml dashdbus.h DashDBus)
-
-configure_file(unity-2d-launcher.service.in unity-2d-launcher.service)
-qt4_add_dbus_adaptor(shell_SRCS launcher.xml launcherdbus.h LauncherDBus)
 
 add_executable(unity-2d-shell ${shell_SRCS} ${shell_MOC_SRCS})
 
@@ -55,10 +50,6 @@ install(TARGETS unity-2d-shell
     )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-places.service
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
-    )
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/unity-2d-launcher.service
     DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services
     )
 

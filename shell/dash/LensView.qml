@@ -27,38 +27,20 @@ FocusScope {
     property variant model
 
     function activateFirstResult() {
-        /* Going through the list of categories and selecting the first one
-           that has results for the search. A SortFilterProxyModel
-           ('firstCategoryModel') is used to filter the search results per category.
-        */
-        var i
-        for (i=0; i<lensView.model.categories.count; i=i+1) {
-            firstCategoryModel.categoryId = i
-            if (firstCategoryModel.count != 0) {
-                var firstResult = firstCategoryModel.get(0)
-                /* Lenses give back the uri of the item in 'column_0' and the
-                   mimetype in 'column_3' per specification */
-                var uri = firstResult.column_0
-                var mimetype = firstResult.column_3
-                dash.activateUriWithLens(model, uri, mimetype)
-                return;
+        var firstResult = null
+        for (var i = 0; i < lensView.model.results.count; i++) {
+            var result = lensView.model.results.get(i)
+            var category = result.column_2
+            if ((firstResult === null) || (category < firstResult.column_2)) {
+                firstResult = result
             }
         }
-    }
-
-    SortFilterProxyModel {
-        id: firstCategoryModel
-
-        property int categoryId
-        model: lensView.model != undefined ? lensView.model.results : null
-
-        /* lensView.model.entryResultsModel contains data for all
-           the categories of a given Lens.
-           Each row has a column (the second one) containing the id of
-           the category it belongs to (categoryId).
-        */
-        filterRole: 2 /* second column (see above comment) */
-        filterRegExp: RegExp("^%1$".arg(categoryId)) /* exact match */
+        if (firstResult === null) {
+            return
+        }
+        var uri = firstResult.column_0
+        var mimetype = firstResult.column_3
+        dash.activateUriWithLens(model, uri, mimetype)
     }
 
     ListViewWithScrollbar {

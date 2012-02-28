@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERAPPLICATION_H
-#define LAUNCHERAPPLICATION_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
 #include <gio/gdesktopappinfo.h>
 #include <libwnck/libwnck.h>
@@ -53,10 +53,10 @@ typedef GObjectScopedPointer<GAppInfo> GAppInfoPointer;
 typedef GObjectScopedPointer<GDesktopAppInfo> GDesktopAppInfoPointer;
 typedef GScopedPointer<SnStartupSequence, sn_startup_sequence_unref> SnStartupSequencePointer;
 typedef GObjectScopedPointer<IndicatorDesktopShortcuts> IndicatorDesktopShortcutsPointer;
-class LauncherApplication : public LauncherItem
+class Application : public LauncherItem
 {
     Q_OBJECT
-    friend class LauncherApplicationsListDBUS;
+    friend class ApplicationsListDBUS;
 
     Q_PROPERTY(bool sticky READ sticky WRITE setSticky NOTIFY stickyChanged)
     Q_PROPERTY(QString application_type READ application_type NOTIFY applicationTypeChanged)
@@ -65,9 +65,9 @@ class LauncherApplication : public LauncherItem
     Q_PROPERTY(bool has_visible_window READ has_visible_window NOTIFY hasVisibleWindowChanged)
 
 public:
-    LauncherApplication();
-    LauncherApplication(const LauncherApplication& other);
-    ~LauncherApplication();
+    Application();
+    Application(const Application& other);
+    ~Application();
 
     /* getters */
     virtual bool active() const;
@@ -190,7 +190,7 @@ private:
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
 };
 
-Q_DECLARE_METATYPE(LauncherApplication*)
+Q_DECLARE_METATYPE(Application*)
 
-#endif // LAUNCHERAPPLICATION_H
+#endif // APPLICATION_H
 

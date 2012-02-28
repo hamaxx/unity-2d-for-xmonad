@@ -20,13 +20,14 @@ import QtQuick 1.1
 import Unity2d 1.0
 import Effects 1.0
 import "../common"
+import "../common/utils.js" as Utils
 
 FocusScope {
     id: dash
     objectName: "Dash"
     Accessible.name: "dash"
 
-    LayoutMirroring.enabled: isRightToLeft()
+    LayoutMirroring.enabled: Utils.isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
@@ -54,10 +55,6 @@ FocusScope {
 
     property variant queuedLensId
 
-    function isRightToLeft() {
-        return Qt.application.layoutDirection == Qt.RightToLeft
-    }
-
     Binding {
         target: declarativeView
         property: "expanded"
@@ -67,7 +64,7 @@ FocusScope {
     Binding {
         target: declarativeView
         property: "dashMode"
-        value: dashClient.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+        value: declarativeView.dashAlwaysFullScreen || dash2dConfiguration.fullScreen ?
                ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
     }
 
@@ -243,6 +240,17 @@ FocusScope {
            necessarily focusing the search bar first. */
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
+
+        Image {
+            id: panelBorder
+
+            height: 1
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            source: "artwork/panel_border.png"
+            fillMode: Image.Stretch
+        }
 
         SearchEntry {
             id: search_entry

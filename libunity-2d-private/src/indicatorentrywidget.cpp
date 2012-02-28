@@ -163,9 +163,9 @@ void IndicatorEntryWidget::updatePix()
         m_pix = QPixmap();
     } else {
         QImage img(width, height(), QImage::Format_ARGB32_Premultiplied);
+        img.fill(Qt::transparent);
         QPainter painter(&img);
         painter.initFrom(this);
-        painter.eraseRect(img.rect());
         if (m_entry->active()) {
             paintActiveBackground(&img);
         }

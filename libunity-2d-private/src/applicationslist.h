@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHERAPPLICATIONSLIST_H
-#define LAUNCHERAPPLICATIONSLIST_H
+#ifndef APPLICATIONSLIST_H
+#define APPLICATIONSLIST_H
 
 #include <QAbstractListModel>
 #include <QList>
@@ -33,18 +33,18 @@ struct SnDisplay;
 struct SnMonitorContext;
 struct SnMonitorEvent;
 struct SnStartupSequence;
-class LauncherApplication;
+class Application;
 class BamfApplication;
 class BamfView;
 
-class LauncherApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
+class ApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
 {
     Q_OBJECT
-    friend class LauncherApplicationsListDBUS;
+    friend class ApplicationsListDBUS;
 
 public:
-    LauncherApplicationsList(QObject *parent = 0);
-    ~LauncherApplicationsList();
+    ApplicationsList(QObject *parent = 0);
+    ~ApplicationsList();
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
@@ -66,27 +66,27 @@ private:
     void insertBamfApplication(BamfApplication* bamf_application);
     void insertSnStartupSequence(SnStartupSequence* sequence);
 
-    void insertApplication(LauncherApplication* application);
-    void removeApplication(LauncherApplication* application);
+    void insertApplication(Application* application);
+    void removeApplication(Application* application);
 
     QString favoriteFromDesktopFilePath(const QString& desktop_file) const;
 
     void writeFavoritesToGConf();
 
-    /* List of LauncherApplication displayed in the launcher. */
-    QList<LauncherApplication*> m_applications;
-    /* Hash of desktop file names to LauncherApplication used to reduce
+    /* List of Application displayed in the launcher. */
+    QList<Application*> m_applications;
+    /* Hash of desktop file names to Application used to reduce
        the algorithmical complexity of merging the list of running applications
        and the list of favorited applications into the list of applications
        displayed (m_applications).
     */
-    QHash<QString, LauncherApplication*> m_applicationForDesktopFile;
-    /* Hash of application executables to LauncherApplication used to reduce
+    QHash<QString, Application*> m_applicationForDesktopFile;
+    /* Hash of application executables to Application used to reduce
        the algorithmical complexity of merging the list of launching applications
        and the list of running applications into the list of applications
        displayed (m_applications).
     */
-    QHash<QString, LauncherApplication*> m_applicationForExecutable;
+    QHash<QString, Application*> m_applicationForExecutable;
     QStringList m_xdgApplicationDirs;
 
     /* Startup notification support */
@@ -106,6 +106,6 @@ private Q_SLOTS:
                               QMap<QString, QVariant> properties);
 };
 
-QML_DECLARE_TYPE(LauncherApplicationsList)
+QML_DECLARE_TYPE(ApplicationsList)
 
-#endif // LAUNCHERAPPLICATIONSLIST_H
+#endif // APPLICATIONSLIST_H

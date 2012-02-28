@@ -40,9 +40,6 @@ static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
-static const int DASH_MIN_SCREEN_WIDTH = 1280;
-static const int DASH_MIN_SCREEN_HEIGHT = 1084;
-
 DashClient::DashClient(QObject* parent)
 : QObject(parent)
 , m_dashDbusIface(0)
@@ -66,15 +63,6 @@ DashClient::DashClient(QObject* parent)
                                                                this);
         connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
     }
-
-    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateAlwaysFullScreen()));
-
-    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
-    // when we read any property from the slot (which we need to do). We need to check why this
-    // happens and report a bug to dconf-qt to get it fixed.
-    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
-                                     SLOT(updateAlwaysFullScreen()), Qt::QueuedConnection);
-    updateAlwaysFullScreen();
 }
 
 void DashClient::connectToDash()
@@ -87,12 +75,21 @@ void DashClient::connectToDash()
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotDashActiveChanged(bool)));
+    connect(m_dashDbusIface, SIGNAL(alwaysFullScreenChanged(bool)),
+            SLOT(slotAlwaysFullScreenChanged(bool)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
         m_dashActive = value.toBool();
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
+    }
+
+    value = m_dashDbusIface->property("alwaysFullScreen");
+    if (value.isValid()) {
+        m_alwaysFullScreen = value.toBool();
+    } else {
+        UQ_WARNING << "Fetching Dash.alwaysFullScreen property failed";
     }
 }
 
@@ -128,26 +125,12 @@ void DashClient::setActive(bool active)
     }
 }
 
-QSize DashClient::minimumSizeForDesktop()
+void DashClient::slotAlwaysFullScreenChanged(bool value)
 {
-    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
-}
-
-void DashClient::updateAlwaysFullScreen()
-{
-    bool alwaysFullScreen;
-    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
-        alwaysFullScreen = true;
-    } else {
-        QRect rect = QApplication::desktop()->screenGeometry(QPoint());
-        QSize minSize = minimumSizeForDesktop();
-        alwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    if (m_alwaysFullScreen != value) {
+        m_alwaysFullScreen = value;
     }
-
-    if (m_alwaysFullScreen != alwaysFullScreen) {
-        m_alwaysFullScreen = alwaysFullScreen;
-        Q_EMIT alwaysFullScreenChanged();
-    }
+    Q_EMIT alwaysFullScreenChanged();
 }
 
 bool DashClient::alwaysFullScreen() const

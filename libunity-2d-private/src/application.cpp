@@ -28,7 +28,7 @@
    set it again here.
 */
 
-#include "launcherapplication.h"
+#include "application.h"
 #include "launchermenu.h"
 #include "launcherutility.h"
 #include "bamf-matcher.h"
@@ -64,7 +64,7 @@ extern "C" {
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
 
-LauncherApplication::LauncherApplication()
+Application::Application()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
     , m_sticky(false)
@@ -80,7 +80,7 @@ LauncherApplication::LauncherApplication()
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 }
 
-LauncherApplication::LauncherApplication(const LauncherApplication& other)
+Application::Application(const Application& other)
 {
     /* FIXME: a number of members are not copied over */
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
@@ -89,12 +89,12 @@ LauncherApplication::LauncherApplication(const LauncherApplication& other)
     }
 }
 
-LauncherApplication::~LauncherApplication()
+Application::~Application()
 {
 }
 
 bool
-LauncherApplication::active() const
+Application::active() const
 {
     if (m_application != NULL) {
         return m_application->active();
@@ -104,7 +104,7 @@ LauncherApplication::active() const
 }
 
 bool
-LauncherApplication::running() const
+Application::running() const
 {
     if (m_application != NULL) {
         return m_application->running();
@@ -114,7 +114,7 @@ LauncherApplication::running() const
 }
 
 int
-LauncherApplication::windowCount() const
+Application::windowCount() const
 {
     if (m_application == NULL) {
         return 0;
@@ -125,7 +125,7 @@ LauncherApplication::windowCount() const
 }
 
 bool
-LauncherApplication::urgent() const
+Application::urgent() const
 {
     if (m_forceUrgent) {
         return true;
@@ -139,7 +139,7 @@ LauncherApplication::urgent() const
 }
 
 void
-LauncherApplication::beginForceUrgent(int duration)
+Application::beginForceUrgent(int duration)
 {
     bool wasUrgent = urgent();
     m_forceUrgent = true;
@@ -150,7 +150,7 @@ LauncherApplication::beginForceUrgent(int duration)
 }
 
 void
-LauncherApplication::endForceUrgent()
+Application::endForceUrgent()
 {
     bool wasUrgent = urgent();
     m_forceUrgent = false;
@@ -160,13 +160,13 @@ LauncherApplication::endForceUrgent()
 }
 
 bool
-LauncherApplication::sticky() const
+Application::sticky() const
 {
     return m_sticky;
 }
 
 QString
-LauncherApplication::name() const
+Application::name() const
 {
     if (sticky() && (m_appInfo != NULL)) {
         return QString::fromUtf8(g_app_info_get_name(m_appInfo.data()));
@@ -188,7 +188,7 @@ LauncherApplication::name() const
 }
 
 QString
-LauncherApplication::icon() const
+Application::icon() const
 {
     if (sticky() && (m_appInfo != NULL)) {
         GCharPointer ptr(g_icon_to_string(g_app_info_get_icon(m_appInfo.data())));
@@ -212,7 +212,7 @@ LauncherApplication::icon() const
 }
 
 QString
-LauncherApplication::application_type() const
+Application::application_type() const
 {
     if (m_application != NULL) {
         return m_application->application_type();
@@ -222,7 +222,7 @@ LauncherApplication::application_type() const
 }
 
 QString
-LauncherApplication::desktop_file() const
+Application::desktop_file() const
 {
     if (m_application != NULL) {
         return m_application->desktop_file();
@@ -236,7 +236,7 @@ LauncherApplication::desktop_file() const
 }
 
 QString
-LauncherApplication::executable() const
+Application::executable() const
 {
     if (m_appInfo != NULL) {
         return QString::fromUtf8(g_app_info_get_executable(m_appInfo.data()));
@@ -250,7 +250,7 @@ LauncherApplication::executable() const
 }
 
 void
-LauncherApplication::setSticky(bool sticky)
+Application::setSticky(bool sticky)
 {
     if (sticky == m_sticky) {
         return;
@@ -261,7 +261,7 @@ LauncherApplication::setSticky(bool sticky)
 }
 
 void
-LauncherApplication::setDesktopFile(const QString& desktop_file)
+Application::setDesktopFile(const QString& desktop_file)
 {
     QString oldDesktopFile = this->desktop_file();
 
@@ -322,7 +322,7 @@ LauncherApplication::setDesktopFile(const QString& desktop_file)
 }
 
 void
-LauncherApplication::monitorDesktopFile(const QString& path)
+Application::monitorDesktopFile(const QString& path)
 {
     /* Monitor the desktop file for live changes */
     if (m_desktopFileWatcher == NULL) {
@@ -351,7 +351,7 @@ LauncherApplication::monitorDesktopFile(const QString& path)
 }
 
 void
-LauncherApplication::onDesktopFileChanged(const QString& path)
+Application::onDesktopFileChanged(const QString& path)
 {
     if (m_desktopFileWatcher->files().contains(path) || QFile::exists(path)) {
         /* The contents of the file have changed. */
@@ -378,7 +378,7 @@ LauncherApplication::onDesktopFileChanged(const QString& path)
 }
 
 void
-LauncherApplication::checkDesktopFileReallyRemoved()
+Application::checkDesktopFileReallyRemoved()
 {
     QString path = desktop_file();
     if (QFile::exists(path)) {
@@ -392,7 +392,7 @@ LauncherApplication::checkDesktopFileReallyRemoved()
 }
 
 void
-LauncherApplication::setBamfApplication(BamfApplication *application)
+Application::setBamfApplication(BamfApplication *application)
 {
     if (application == NULL) {
         return;
@@ -428,7 +428,7 @@ LauncherApplication::setBamfApplication(BamfApplication *application)
 }
 
 void
-LauncherApplication::updateBamfApplicationDependentProperties()
+Application::updateBamfApplicationDependentProperties()
 {
     activeChanged(active());
     runningChanged(running());
@@ -445,7 +445,7 @@ LauncherApplication::updateBamfApplicationDependentProperties()
 }
 
 void
-LauncherApplication::onBamfApplicationClosed(bool running)
+Application::onBamfApplicationClosed(bool running)
 {
     if(running)
        return;
@@ -457,7 +457,7 @@ LauncherApplication::onBamfApplicationClosed(bool running)
 }
 
 void
-LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
+Application::setSnStartupSequence(SnStartupSequence* sequence)
 {
     if (sequence != NULL) {
         if (!sn_startup_sequence_get_completed(sequence)) {
@@ -478,7 +478,7 @@ LauncherApplication::setSnStartupSequence(SnStartupSequence* sequence)
 }
 
 void
-LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint xid)
+Application::setIconGeometry(int x, int y, int width, int height, uint xid)
 {
     if (m_application == NULL) {
         return;
@@ -507,7 +507,7 @@ LauncherApplication::setIconGeometry(int x, int y, int width, int height, uint x
 }
 
 void
-LauncherApplication::connectWindowSignals()
+Application::connectWindowSignals()
 {
     if (m_application == NULL || m_application->running() == false) {
         return;
@@ -525,29 +525,29 @@ LauncherApplication::connectWindowSignals()
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
         g_signal_connect(G_OBJECT(window), "workspace-changed",
-            G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
+            G_CALLBACK(Application::onWindowWorkspaceChanged), this);
     }
 }
 
 void
-LauncherApplication::onWindowAdded(BamfWindow* window)
+Application::onWindowAdded(BamfWindow* window)
 {
     if (window != NULL) {
         windowAdded(window->xid());
         WnckWindow* wnck_window = wnck_window_get(window->xid());
         g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
-             G_CALLBACK(LauncherApplication::onWindowWorkspaceChanged), this);
+             G_CALLBACK(Application::onWindowWorkspaceChanged), this);
     }
 }
 
 bool
-LauncherApplication::launching() const
+Application::launching() const
 {
     return m_launching_timer.isActive();
 }
 
 void
-LauncherApplication::updateHasVisibleWindow()
+Application::updateHasVisibleWindow()
 {
     bool prev = m_has_visible_window;
 
@@ -563,13 +563,13 @@ LauncherApplication::updateHasVisibleWindow()
 }
 
 void
-LauncherApplication::updateWindowCount()
+Application::updateWindowCount()
 {
     Q_EMIT windowCountChanged(windowCount());
 }
 
 void
-LauncherApplication::updateCounterVisible()
+Application::updateCounterVisible()
 {
     bool counterVisible = running() && m_counter > 0;
 
@@ -580,43 +580,43 @@ LauncherApplication::updateCounterVisible()
 }
 
 bool
-LauncherApplication::has_visible_window() const
+Application::has_visible_window() const
 {
     return m_has_visible_window;
 }
 
 float
-LauncherApplication::progress() const
+Application::progress() const
 {
     return m_progress;
 }
 
 int
-LauncherApplication::counter() const
+Application::counter() const
 {
     return m_counter;
 }
 
 QString
-LauncherApplication::emblem() const
+Application::emblem() const
 {
     return m_emblem;
 }
 
 bool
-LauncherApplication::progressBarVisible() const
+Application::progressBarVisible() const
 {
     return m_progressBarVisible;
 }
 
 bool
-LauncherApplication::counterVisible() const
+Application::counterVisible() const
 {
     return m_counterVisible;
 }
 
 bool
-LauncherApplication::emblemVisible() const
+Application::emblemVisible() const
 {
     return m_emblemVisible;
 }
@@ -624,7 +624,7 @@ LauncherApplication::emblemVisible() const
 /* Returns the number of window for this application that reside on the
    current workspace */
 int
-LauncherApplication::windowCountOnCurrentWorkspace()
+Application::windowCountOnCurrentWorkspace()
 {
     int windowCount = 0;
 
@@ -666,7 +666,7 @@ LauncherApplication::windowCountOnCurrentWorkspace()
 }
 
 void
-LauncherApplication::activate()
+Application::activate()
 {
     if (urgent()) {
         show();
@@ -682,13 +682,13 @@ LauncherApplication::activate()
 }
 
 void
-LauncherApplication::launchNewInstance()
+Application::launchNewInstance()
 {
     launch();
 }
 
 bool
-LauncherApplication::launch()
+Application::launch()
 {
     if (m_appInfo == NULL) {
         return false;
@@ -729,13 +729,13 @@ LauncherApplication::launch()
 }
 
 void
-LauncherApplication::onLaunchingTimeouted()
+Application::onLaunchingTimeouted()
 {
     launchingChanged(false);
 }
 
 void
-LauncherApplication::close()
+Application::close()
 {
     if (m_application == NULL) {
         return;
@@ -757,7 +757,7 @@ LauncherApplication::close()
 }
 
 void
-LauncherApplication::show()
+Application::show()
 {
     if (m_application == NULL) {
         return;
@@ -793,7 +793,7 @@ LauncherApplication::show()
 }
 
 void
-LauncherApplication::spread(bool showAllWorkspaces)
+Application::spread(bool showAllWorkspaces)
 {
     QDBusInterface compiz("org.freedesktop.compiz",
                           "/org/freedesktop/compiz/scale/screen0/initiate_all_key",
@@ -830,7 +830,7 @@ LauncherApplication::spread(bool showAllWorkspaces)
 }
 
 void
-LauncherApplication::slotChildAdded(BamfView* child)
+Application::slotChildAdded(BamfView* child)
 {
     BamfIndicator* indicator = qobject_cast<BamfIndicator*>(child);
     if (indicator != NULL) {
@@ -844,7 +844,7 @@ LauncherApplication::slotChildAdded(BamfView* child)
 }
 
 void
-LauncherApplication::slotChildRemoved(BamfView* child)
+Application::slotChildRemoved(BamfView* child)
 {
     BamfIndicator* indicator = qobject_cast<BamfIndicator*>(child);
     if (indicator != NULL) {
@@ -856,7 +856,7 @@ LauncherApplication::slotChildRemoved(BamfView* child)
 }
 
 void
-LauncherApplication::fetchIndicatorMenus()
+Application::fetchIndicatorMenus()
 {
     Q_FOREACH(const QString& path, m_indicatorMenus.keys()) {
         m_indicatorMenus.take(path)->deleteLater();
@@ -871,7 +871,7 @@ LauncherApplication::fetchIndicatorMenus()
 }
 
 void
-LauncherApplication::createMenuActions()
+Application::createMenuActions()
 {
     if (m_application != NULL && !m_indicatorMenus.isEmpty()) {
         /* Request indicator menus to be updated: this is asynchronous
@@ -890,7 +890,7 @@ LauncherApplication::createMenuActions()
 }
 
 void
-LauncherApplication::createDynamicMenuActions()
+Application::createDynamicMenuActions()
 {
     if (!m_dynamicQuicklistImporter.isNull()) {
         /* FIXME: the menu is only partially updated while visible: stale
@@ -910,7 +910,7 @@ LauncherApplication::createDynamicMenuActions()
 }
 
 void
-LauncherApplication::createStaticMenuActions()
+Application::createStaticMenuActions()
 {
     /* Custom menu actions from the desktop file. */
     if (!m_staticShortcuts.isNull()) {
@@ -975,7 +975,7 @@ LauncherApplication::createStaticMenuActions()
 }
 
 bool
-LauncherApplication::belongsToDifferentWorkspace()
+Application::belongsToDifferentWorkspace()
 {
     int totalWindows = windowCount();
     int windowsInCurrentWorkspace = windowCountOnCurrentWorkspace();
@@ -987,7 +987,7 @@ LauncherApplication::belongsToDifferentWorkspace()
 }
 
 void
-LauncherApplication::onIndicatorMenuUpdated()
+Application::onIndicatorMenuUpdated()
 {
     if (!m_menu->isVisible()) {
         return;
@@ -1012,7 +1012,7 @@ LauncherApplication::onIndicatorMenuUpdated()
 }
 
 void
-LauncherApplication::onStaticShortcutTriggered()
+Application::onStaticShortcutTriggered()
 {
     QAction* action = static_cast<QAction*>(sender());
     QString nick = action->property(SHORTCUT_NICK_PROPERTY).toString();
@@ -1021,7 +1021,7 @@ LauncherApplication::onStaticShortcutTriggered()
 }
 
 void
-LauncherApplication::onKeepTriggered()
+Application::onKeepTriggered()
 {
     QAction* keep = static_cast<QAction*>(sender());
     bool sticky = keep->isChecked();
@@ -1030,14 +1030,14 @@ LauncherApplication::onKeepTriggered()
 }
 
 void
-LauncherApplication::onQuitTriggered()
+Application::onQuitTriggered()
 {
     m_menu->hide();
     close();
 }
 
 template<typename T>
-bool LauncherApplication::updateOverlayState(const QMap<QString, QVariant>& properties,
+bool Application::updateOverlayState(const QMap<QString, QVariant>& properties,
                                              const QString& propertyName, T* member)
 {
     if (properties.contains(propertyName)) {
@@ -1051,7 +1051,7 @@ bool LauncherApplication::updateOverlayState(const QMap<QString, QVariant>& prop
 }
 
 void
-LauncherApplication::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
+Application::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
         Q_EMIT progressChanged(m_progress);
@@ -1077,7 +1077,7 @@ LauncherApplication::updateOverlaysState(const QString& sender, const QMap<QStri
 }
 
 void
-LauncherApplication::setDynamicQuicklistImporter(const QString& service)
+Application::setDynamicQuicklistImporter(const QString& service)
 {
     if (m_dynamicQuicklistPath.isEmpty() || service.isEmpty()) {
         m_dynamicQuicklistImporter.reset();
@@ -1096,21 +1096,21 @@ LauncherApplication::setDynamicQuicklistImporter(const QString& service)
 }
 
 void
-LauncherApplication::dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner)
+Application::dynamicQuicklistImporterServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner)
 {
     m_dynamicQuicklistServiceWatcher->removeWatchedService(oldOwner);
     setDynamicQuicklistImporter(newOwner);
 }
 
 void
-LauncherApplication::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
+Application::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
 {
     Q_UNUSED(window);
-    ((LauncherApplication*)user_data)->windowWorkspaceChanged();
+    ((Application*)user_data)->windowWorkspaceChanged();
 }
 
 void
-LauncherApplication::onDragEnter(DeclarativeDragDropEvent* event)
+Application::onDragEnter(DeclarativeDragDropEvent* event)
 {
     QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
     if (urls.isEmpty()) {
@@ -1124,7 +1124,7 @@ LauncherApplication::onDragEnter(DeclarativeDragDropEvent* event)
 }
 
 void
-LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
+Application::onDrop(DeclarativeDragDropEvent* event)
 {
     GError* error = NULL;
     QList<QUrl> urls = validateUrisForLaunch(event->mimeData());
@@ -1165,7 +1165,7 @@ LauncherApplication::onDrop(DeclarativeDragDropEvent* event)
 
 
 QList<QUrl>
-LauncherApplication::validateUrisForLaunch(DeclarativeMimeData* mimedata)
+Application::validateUrisForLaunch(DeclarativeMimeData* mimedata)
 {
     QList<QUrl> result;
     bool isHomeLauncher = desktop_file().endsWith("nautilus-home.desktop");
@@ -1204,7 +1204,7 @@ LauncherApplication::validateUrisForLaunch(DeclarativeMimeData* mimedata)
 
 
 QStringList
-LauncherApplication::supportedTypes()
+Application::supportedTypes()
 {
     QStringList types;
     QString desktopFile = desktop_file();
@@ -1231,4 +1231,4 @@ LauncherApplication::supportedTypes()
     return types;
 }
 
-#include "launcherapplication.moc"
+#include "application.moc"

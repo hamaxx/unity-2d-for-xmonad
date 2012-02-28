@@ -50,11 +50,15 @@
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
+static const int DASH_MIN_SCREEN_WIDTH = 1280;
+static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
 ShellDeclarativeView::ShellDeclarativeView()
     : Unity2DDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
+    , m_dashAlwaysFullScreen(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
@@ -87,6 +91,15 @@ ShellDeclarativeView::ShellDeclarativeView()
 
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(updateShellPosition()));
     updateShellPosition();
+
+    // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
+    // when we read any property from the slot (which we need to do). We need to check why this
+    // happens and report a bug to dconf-qt to get it fixed.
+    connect(&unity2dConfiguration(), SIGNAL(formFactorChanged(QString)),
+                                     SLOT(updateDashAlwaysFullScreen()), Qt::QueuedConnection);
+    connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateDashAlwaysFullScreen()));
+
+    updateDashAlwaysFullScreen();
 }
 
 void
@@ -226,6 +239,11 @@ ShellDeclarativeView::expanded() const
     return m_expanded;
 }
 
+bool ShellDeclarativeView::dashAlwaysFullScreen() const
+{
+    return m_dashAlwaysFullScreen;
+}
+
 void
 ShellDeclarativeView::setActiveLens(const QString& activeLens)
 {
@@ -273,6 +291,28 @@ ShellDeclarativeView::onAltF1Pressed()
             // we assume that the launcher is focused; unfocus it by deactivating the shell window
             forceDeactivateWindow();
         }
+    }
+}
+
+static QSize minimumSizeForDesktop()
+{
+    return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
+}
+
+void ShellDeclarativeView::updateDashAlwaysFullScreen()
+{
+    bool dashAlwaysFullScreen;
+    if (unity2dConfiguration().property("formFactor").toString() != "desktop") {
+        dashAlwaysFullScreen = true;
+    } else {
+        const QRect rect = m_screenInfo->geometry();
+        const QSize minSize = minimumSizeForDesktop();
+        dashAlwaysFullScreen = rect.width() < minSize.width() && rect.height() < minSize.height();
+    }
+
+    if (m_dashAlwaysFullScreen != dashAlwaysFullScreen) {
+        m_dashAlwaysFullScreen = dashAlwaysFullScreen;
+        Q_EMIT dashAlwaysFullScreenChanged(dashAlwaysFullScreen);
     }
 }
 
