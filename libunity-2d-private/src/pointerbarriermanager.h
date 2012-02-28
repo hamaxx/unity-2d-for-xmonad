@@ -39,7 +39,6 @@ private:
     QSet<PointerBarrierWrapper*> m_barriers;
     int m_eventBase;
     int m_errorBase;
-    bool m_detectionEnabled;
 };
 
 #endif // POINTERBARRIERMANAGER_H

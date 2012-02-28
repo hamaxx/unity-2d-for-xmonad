@@ -36,8 +36,7 @@ PointerBarrierManager *PointerBarrierManager::instance()
     return bpm;
 }
 
-PointerBarrierManager::PointerBarrierManager() :
-    m_detectionEnabled(false)
+PointerBarrierManager::PointerBarrierManager()
 {
     Display *display = QX11Info::display();
 
@@ -51,19 +50,14 @@ PointerBarrierManager::PointerBarrierManager() :
     } else {
         application->installX11EventFilter(this);
     }
+
+    /* Enables barrier detection events - only call once!! */
+    XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
 }
 
 void PointerBarrierManager::addBarrier(PointerBarrierWrapper *barrier)
 {
     m_barriers += barrier;
-
-    if (!m_detectionEnabled) {
-        Display *display = QX11Info::display();
-        /* Enables barrier detection events - only call once!! */
-        XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
-        m_detectionEnabled = true;
-    }
-
 }
 
 void PointerBarrierManager::removeBarrier(PointerBarrierWrapper *barrier)
