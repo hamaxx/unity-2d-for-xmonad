@@ -25,11 +25,27 @@ LauncherDropItem {
     id: launcher
     Accessible.name: "launcher"
 
-    property bool outerEdgeContainsMouse
+    signal barrierBroken
+
     property bool shown
     property bool showMenus: true
 
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
+    property variant barrierX
+    property variant barrierY
+
+    PointerBarrier {
+        p1: Qt.point(barrierX, barrierY)
+        p2: Qt.point(barrierX, barrierY + launcher.height)
+        enabled: !launcher.shown
+        threshold: launcher2dConfiguration.edgeStopVelocity
+        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
+        decayRate: launcher2dConfiguration.edgeDecayrate
+        breakPressure: (p1.x == 0 || p1.x == desktop.totalWidth) ? launcher2dConfiguration.edgeRevealPressure
+                                                                 : launcher2dConfiguration.edgeOvercomePressure
+
+        onBarrierBroken: launcher.barrierBroken()
+    }
 
     function hideMenu() {
         if (main.visibleMenu !== undefined) {

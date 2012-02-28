@@ -34,7 +34,12 @@ class PointerBarrierWrapper : public QObject
     Q_OBJECT
     Q_PROPERTY(QPointF p1 READ p1 WRITE setP1 NOTIFY p1Changed)
     Q_PROPERTY(QPointF p2 READ p2 WRITE setP2 NOTIFY p2Changed)
-    
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(int threshold READ threshold WRITE setThreshold NOTIFY thresholdChanged)
+    Q_PROPERTY(int maxVelocityMultiplier READ maxVelocityMultiplier WRITE setMaxVelocityMultiplier NOTIFY maxVelocityMultiplierChanged)
+    Q_PROPERTY(int decayRate READ decayRate WRITE setDecayRate NOTIFY decayRateChanged)
+    Q_PROPERTY(int breakPressure READ breakPressure WRITE setBreakPressure NOTIFY breakPressureChanged)
+
 friend class PointerBarrierManager;
 
 public:
@@ -43,43 +48,73 @@ public:
 
     QPointF p1() const;
     void setP1(const QPointF &p);
-    
+
     QPointF p2() const;
     void setP2(const QPointF &p);
+
+    bool enabled() const;
+    void setEnabled(bool enabled);
+
+    int threshold() const;
+    void setThreshold(int threshold);
+
+    qreal maxVelocityMultiplier() const;
+    void setMaxVelocityMultiplier(qreal maxVelocityMultiplier);
+
+    int decayRate() const;
+    void setDecayRate(int decayRate);
+
+    int breakPressure() const;
+    void setBreakPressure(int breakPressure);
 
     PointerBarrier barrier() const;
 
 Q_SIGNALS:
     void p1Changed(const QPointF &p1);
     void p2Changed(const QPointF &p2);
-    
-    void barrierHit(int x, int y, int velocity, int eventId);
+    void enabledChanged(bool changed);
+    void thresholdChanged(int threshold);
+    void maxVelocityMultiplierChanged(qreal maxVelocityMultiplier);
+    void decayRateChanged(int decayRate);
+    void breakPressureChanged(int breakPressure);
+
+    void barrierBroken();
 
 private Q_SLOTS:
     void smoother();
-    
-    void updateEdgeStopVelocity();
+    void decay();
 
 private:
     void createBarrier();
     void destroyBarrier();
-    
+
     void doProcess(XFixesBarrierNotifyEvent *event);
+
+    void updateRealDecayTargetPressure();
 
     PointerBarrier m_barrier;
 
     QPointF m_p1;
     QPointF m_p2;
-    int m_maxVelocityMultiplier;
+    bool m_enabled;
+    int m_threshold;
+    qreal m_maxVelocityMultiplier;
+    int m_decayRate;
+    int m_breakPressure;
+
     int m_smoothing;
     QTimer *m_smoothingTimer;
-    int m_pressure;
 
     int m_lastEventId;
     int m_lastX;
     int m_lastY;
     int m_smoothingCount;
     int m_smoothingAccumulator;
+
+    int m_value;
+    int m_targetPressure;
+    int m_realDecayRate;
+    QTimer *m_valueDecayTimer;
 };
 
 #endif // POINTERBARRIER_H

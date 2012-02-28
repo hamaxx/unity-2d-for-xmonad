@@ -31,7 +31,7 @@
         2: intellihide; same as auto hide but the launcher will disappear if a window is placed on top of it
        </description>
     </key>
-    <key name="edge-responsiveness" type="i">
+    <key name="edge-responsiveness" type="d">
       <default>2</default>
       <summary>Responsiveness of the Launcher</summary>
       <description>How quickly the Launcher will reveal when you push the pointer against the 

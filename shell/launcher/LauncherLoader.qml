@@ -26,7 +26,6 @@ Loader {
     source: "Launcher.qml"
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
-    property alias outerEdgeMouseArea: outerEdge
 
     VisibilityController {
         id: visibilityController
@@ -37,10 +36,9 @@ Loader {
         id: launcherBehavior
 
         property variant modesMap: { 0: '../common/visibilityBehaviors/AlwaysVisibleBehavior.qml',
-                                     1: '../common/visibilityBehaviors/AutoHideBehavior.qml',
-                                     2: '../common/visibilityBehaviors/IntelliHideBehavior.qml' }
+                                     1: '../common/visibilityBehaviors/AutoHideBehavior.qml' }
 
-        source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
+        source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 1)]
     }
 
     Binding {
@@ -78,17 +76,8 @@ Loader {
     }
 
     Binding {
-        target: launcherLoader.item
-        property: "outerEdgeContainsMouse"
-        value: outerEdge.containsMouse && outerEdge.enabled
+        target: item
+        property: "shown"
+        value: visibilityController.shown
     }
-
-    MouseArea {
-        id: outerEdge
-        anchors.fill: parent
-        anchors.margins: -1
-        hoverEnabled: !visibilityController.shown
-        enabled: !visibilityController.shown
-    }
-
 }

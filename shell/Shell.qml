@@ -89,6 +89,10 @@ Item {
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
                 }
             }
+            onGlobalPositionChanged: {
+                launcherLoader.item.barrierX = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+                launcherLoader.item.barrierY = declarativeView.globalPosition.y
+            }
         }
 
         SpreadMonitor {
@@ -175,24 +179,10 @@ Item {
     Binding {
         target: launcherInputShape
         property: "rectangle"
-        value: {
-            // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
-            //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-            var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
-            if (somewhatShown) {
-                return Qt.rect(launcherLoader.x,
-                                launcherLoader.y,
-                                launcherLoader.width,
-                                launcherLoader.height)
-            } else {
-                // The outerEdgeMouseArea is one pixel bigger on each side so use it
-                // when the launcher is hidden to have that extra pixel in the border
-                return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
-                                launcherLoader.y,
-                                launcherLoader.outerEdgeMouseArea.width,
-                                launcherLoader.height)
-            }
-        }
+        value: Qt.rect(launcherLoader.x,
+                       launcherLoader.y,
+                       launcherLoader.width,
+                       launcherLoader.height)
         when: !launcherLoaderXAnimation.running
     }
 

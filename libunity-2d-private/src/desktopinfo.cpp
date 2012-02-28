@@ -18,6 +18,8 @@ extern "C" {
 DesktopInfo::DesktopInfo(QObject *parent) :
     QObject(parent)
 {
+    QDesktopWidget *dw = qApp->desktop();
+    connect(dw, SIGNAL(screenCountChanged(int)), this, SIGNAL(totalWidthChanged()));
 }
 
 
@@ -30,6 +32,16 @@ DesktopInfo* DesktopInfo::instance()
 bool DesktopInfo::isCompositingManagerRunning() const
 {
     return QX11Info::isCompositingManagerRunning();
+}
+
+int DesktopInfo::totalWidth() const
+{
+    QDesktopWidget *dw = qApp->desktop();
+    int tw = 0;
+    for (int i = 0; i < dw->screenCount(); ++i) {
+        tw += dw->screenGeometry(i).width();
+    }
+    return tw;
 }
 
 #include "desktopinfo.moc"
