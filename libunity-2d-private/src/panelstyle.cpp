@@ -73,8 +73,8 @@ public:
         if (DashClient::instance()->active()) {
             /* The background color is the same as in the launcher */
             QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
-            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 204);
-            backgroundColor = backgroundColor.darker(400);
+            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 168);
+            backgroundColor = backgroundColor.darker(800);
             pal.setBrush(QPalette::Window, backgroundColor);
         } else {
             pal.setBrush(QPalette::Window, generateBackgroundBrush());

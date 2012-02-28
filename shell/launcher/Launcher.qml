@@ -67,8 +67,8 @@ LauncherDropItem {
         Accessible.name: "background"
         anchors.fill: parent
         anchors.rightMargin: declarativeView.dashActive ? 0 : border.width
-        color: Qt.darker(unityConfiguration.averageBgColor, 4.0)
-        opacity: 0.8
+        color: Qt.darker(unityConfiguration.averageBgColor, 8.0)
+        opacity: 0.66
         visible: desktop.isCompositingManagerRunning
     }
 
