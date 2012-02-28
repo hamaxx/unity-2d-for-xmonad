@@ -25,7 +25,7 @@
 // Local
 #include <unity2dapplication.h>
 
-// Qt
+class HotModifier;
 
 struct KeyboardModifiersMonitorPrivate;
 
@@ -47,6 +47,11 @@ public:
 
     Qt::KeyboardModifiers keyboardModifiers() const;
 
+    HotModifier* getHotModifierFor(Qt::KeyboardModifiers modifiers);
+
+    void disableModifiers(Qt::KeyboardModifiers modifiers);
+    void enableModifiers(Qt::KeyboardModifiers modifiers);
+
     static KeyboardModifiersMonitor* instance();
 
 Q_SIGNALS:
@@ -57,6 +62,8 @@ protected:
 
 private:
     KeyboardModifiersMonitorPrivate* const d;
+    QList<HotModifier*> m_hotModifiers;
+    Qt::KeyboardModifiers m_disabledModifiers;
 };
 
 #endif /* KEYBOARDMODIFIERMONITOR_H */
