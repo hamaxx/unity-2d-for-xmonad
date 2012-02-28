@@ -42,8 +42,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-static const int SLIDE_DURATION = 125;
-static const int REARRANGE_INTERVALL = 2000; // The intervall between fallback geometry updates in ms
+// Razor-qt
+#include "xfitman.h"
+
+static const int DEFAULT_SLIDE_DURATION = 125;
+static const int DEFAULT_REARRANGE_INTERVALL = 2000; // The intervall between fallback geometry updates in ms
 
 struct Unity2dPanelPrivate
 {
@@ -53,6 +56,9 @@ struct Unity2dPanelPrivate
     QHBoxLayout* m_layout;
     QPropertyAnimation* m_slideInAnimation;
     QPropertyAnimation* m_slideOutAnimation;
+    QTimer* m_fallbackRedrawTimer;
+    int m_screen;
+    int m_size;
     bool m_useStrut;
     int m_delta;
     bool m_manualSliding;
@@ -68,27 +74,29 @@ struct Unity2dPanelPrivate
     void reserveStrut()
     {
         QDesktopWidget* desktop = QApplication::desktop();
-        const int primscr = desktop->primaryScreen();
-        const QRect screen = desktop->screenGeometry(primscr);
-        const QRect available = desktop->availableGeometry(primscr);
+	const QRect screen    = desktop->screenGeometry(m_screen);
+	//        const QRect available = xfitMan().availableGeometry(m_screen);
+        const QRect available = desktop->availableGeometry(m_screen);
 
         ulong struts[12] = {};
         switch (m_edge) {
         case Unity2dPanel::LeftEdge:
-            if (QApplication::isLeftToRight()) {
-                struts[0] = q->width();
-                struts[4] = available.top();
-                struts[5] = available.y() + available.height();
-            } else {
-                struts[1] = q->width();
-                struts[6] = available.top();
-                struts[7] = available.y() + available.height();
-            }
+	    struts[0] = m_size;
+	    struts[4] = available.top();
+	    struts[5] = available.bottom() - screen.bottom();
+	case Unity2dPanel::RightEdge:
+	    struts[1] = m_size;
+	    struts[6] = available.top();
+	    struts[7] = available.bottom() - screen.bottom();
             break;
         case Unity2dPanel::TopEdge:
-            struts[2] = q->height();
-            struts[8] = screen.left();
-            struts[9] = screen.x() + screen.width() - 1; //otherwise xmonad thinks panel is on all screens
+            struts[2] = m_size;
+            struts[8] = available.left();
+            struts[9] = available.right() - screen.right();
+        case Unity2dPanel::BottomEdge:
+            struts[3]  = m_size;
+            struts[10] = available.left();
+            struts[11] = available.right() - screen.right(); //otherwise xmonad thinks panel is on all screens	
             break;
         }
 
@@ -104,27 +112,25 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
-        QDesktopWidget* desktop = QApplication::desktop();
-        const int primscr = desktop->primaryScreen();
-        const QRect screen = desktop->screenGeometry(primscr);
-        const QRect available = desktop->availableGeometry(primscr);
+        QDesktopWidget* desktop = QApplication::desktop();	
+	//        const QRect available = xfitMan().availableGeometry(m_screen);
+        const QRect available = desktop->availableGeometry(m_screen);
 
         QRect rect;
-        switch (m_edge) {
+        switch (Unity2dPanel::BottomEdge){
         case Unity2dPanel::LeftEdge:
-            if (QApplication::isLeftToRight()) {
-                rect = QRect(screen.left(), available.top() + 24, q->width(), available.height() - 24);
-                rect.moveLeft(m_delta);
-            } else {
-                rect = QRect(screen.right() - available.width(), available.top(), q->width(), available.height());
-                rect.moveRight(screen.right() - m_delta);
-            }
+	    rect = QRect(available.left(), available.top(), m_size, available.height());
+	    break;
+	case Unity2dPanel::RightEdge:
+	    rect = QRect(available.right() - m_size, available.top(), m_size, available.height());
             break;
         case Unity2dPanel::TopEdge:
-            rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
-            rect.moveTop(m_delta);
+            rect = QRect(available.left(), available.top(), available.width(), m_size);
             break;
-        }
+	case Unity2dPanel::BottomEdge:
+	    rect = QRect(available.left(), available.bottom() - m_size, available.width(), m_size);
+	    break;
+	}
 
         q->setGeometry(rect);
     }
@@ -134,11 +140,17 @@ struct Unity2dPanelPrivate
         QBoxLayout::Direction direction;
         switch(m_edge) {
         case Unity2dPanel::TopEdge:
-            direction = QBoxLayout::LeftToRight;
-            break;
-        case Unity2dPanel::LeftEdge:
             direction = QBoxLayout::TopToBottom;
             break;
+        case Unity2dPanel::BottomEdge:
+            direction = QBoxLayout::BottomToTop;
+	    break;
+        case Unity2dPanel::LeftEdge:
+            direction = QBoxLayout::LeftToRight;
+            break;
+	case Unity2dPanel::RightEdge:
+            direction = QBoxLayout::RightToLeft;
+	    break;
         }
         m_layout->setDirection(direction);
     }
@@ -159,6 +171,8 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
 {
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
+    d->m_screen = -1;
+    d->m_size = 0;
     d->m_indicatorsManager = 0;
     d->m_useStrut = true;
     d->m_delta = 0;
@@ -170,13 +184,13 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     d->m_slideInAnimation = new QPropertyAnimation(this);
     d->m_slideInAnimation->setTargetObject(this);
     d->m_slideInAnimation->setPropertyName("delta");
-    d->m_slideInAnimation->setDuration(SLIDE_DURATION);
+    d->m_slideInAnimation->setDuration(DEFAULT_SLIDE_DURATION);
     d->m_slideInAnimation->setEndValue(0);
 
     d->m_slideOutAnimation = new QPropertyAnimation(this);
     d->m_slideOutAnimation->setTargetObject(this);
     d->m_slideOutAnimation->setPropertyName("delta");
-    d->m_slideOutAnimation->setDuration(SLIDE_DURATION);
+    d->m_slideOutAnimation->setDuration(DEFAULT_SLIDE_DURATION);
     d->m_slideOutAnimation->setEndValue(-panelSize());
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
@@ -193,9 +207,9 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, QWidget* parent)
     connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)), SLOT(slotScreenCountChanged(int)));
 
     /* Fallback intervall based trigger (If the ones above don't do it */
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(slotFallbackGeometryUpdate()));
-    timer->start(REARRANGE_INTERVALL);
+    d->m_fallbackRedrawTimer = new QTimer(this);
+    connect(d->m_fallbackRedrawTimer, SIGNAL(timeout()), this, SLOT(slotFallbackGeometryUpdate()));
+    d->m_fallbackRedrawTimer->start(DEFAULT_REARRANGE_INTERVALL);
 }
 
 Unity2dPanel::~Unity2dPanel()
@@ -314,9 +328,14 @@ void Unity2dPanel::setDelta(int delta)
     d->updateGeometry();
 }
 
+void Unity2dPanel::setPanelSize(int s) 
+{
+    d->m_size = s;
+}
+
 int Unity2dPanel::panelSize() const
 {
-    return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
+    return d->m_size;
 }
 
 void Unity2dPanel::slideIn()
@@ -352,6 +371,37 @@ void Unity2dPanel::setManualSliding(bool manualSliding)
         }
         Q_EMIT manualSlidingChanged(d->m_manualSliding);
     }
+}
+
+void Unity2dPanel::setFallbackRedrawIntervall(int t)
+{
+    d->m_fallbackRedrawTimer->setInterval(t);
+}
+
+int Unity2dPanel::fallbackRedrawIntervall() const 
+{ 
+    return d->m_fallbackRedrawTimer->interval();;
+}
+
+void Unity2dPanel::setScreen(int scr)
+{
+    d->m_screen = scr;
+}
+
+int Unity2dPanel::screen() const
+{ 
+    return d->m_screen;
+}
+
+void Unity2dPanel::setSlideDuration(int dur)
+{
+    d->m_slideInAnimation->setDuration(dur);
+    d->m_slideOutAnimation->setDuration(dur);
+}
+
+int Unity2dPanel::slideDuration() const
+{ 
+    return d->m_slideOutAnimation->duration();
 }
 
 #include "unity2dpanel.moc"

@@ -44,12 +44,27 @@ class Unity2dPanel : public QWidget
        by slideIn() or slideOut().
      */
     Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
+    /** The time the slide-in takes. */
+    Q_PROPERTY(int slideDuration READ slideDuration WRITE setSlideDuration NOTIFY slideDurationChanged)
+
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
+
+    /** The physical screen this panel is on. */
+    Q_PROPERTY(int screen READ screen WRITE setScreen NOTIFY screenChanged)
+    /** The thickness of the panel in px. */
+    Q_PROPERTY(int panelSize READ panelSize WRITE setPanelSize NOTIFY panelSizeChanged)
+    /**
+     * The intervall between the fallback geometry updates (the last resort if 
+     * there is no notification about a configuration change)
+     */
+    Q_PROPERTY(int fallbackRedrawIntervall READ fallbackRedrawIntervall WRITE setFallbackRedrawIntervall NOTIFY fallbackRedrawIntervallChanged)
 
 public:
     enum Edge {
         LeftEdge,
-        TopEdge
+	RightEdge,
+	TopEdge,
+	BottomEdge
     };
 
     static const QEvent::Type SHOW_FIRST_MENU_EVENT = QEvent::User;
@@ -77,9 +92,19 @@ public:
     void setDelta(int);
 
     int panelSize() const;
+    void setPanelSize(int);
 
     bool manualSliding() const;
     void setManualSliding(bool);
+
+    int screen() const;
+    void setScreen(int);
+
+    int fallbackRedrawIntervall() const;
+    void setFallbackRedrawIntervall(int);
+
+    int slideDuration() const;
+    void setSlideDuration(int);
 
 public Q_SLOTS:
     void slideIn();
@@ -88,6 +113,10 @@ public Q_SLOTS:
 Q_SIGNALS:
     void manualSlidingChanged(bool);
     void useStrutChanged(bool);
+    void screenChanged(int);
+    void fallbackRedrawIntervallChanged(int);
+    void slideDurationChanged(int);
+    void panelSizeChanged(int);
 
 protected:
     virtual void showEvent(QShowEvent*);
