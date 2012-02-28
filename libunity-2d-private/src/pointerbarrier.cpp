@@ -164,7 +164,7 @@ PointerBarrierWrapper::doProcess(XFixesBarrierNotifyEvent *notifyEvent)
     m_smoothingAccumulator += notifyEvent->velocity;
     m_smoothingCount++;
 
-    /* Gathers events for 'm_smoothing' miliseconds, then takes average */
+    /* Gathers events for m_smoothingTimer->interval() miliseconds, then takes average */
     if (!m_smoothingTimer->isActive()) {
         m_smoothingTimer->start();
     }
