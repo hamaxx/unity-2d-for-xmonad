@@ -132,10 +132,7 @@ PointerBarrierWrapper::createBarrier()
         return;
 
     if ((m_p1.x() != m_p2.x()) && (m_p1.y() != m_p2.y()) && m_p1 != m_p2)
-    {
-        qWarning() << "Barrier line must be horizontal or vertical only";
         return;
-    }
 
     Display *display = QX11Info::display();
 
