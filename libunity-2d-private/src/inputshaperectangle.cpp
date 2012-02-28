@@ -59,12 +59,12 @@ void InputShapeRectangle::updateShape()
     Q_EMIT shapeChanged();
 }
 
-QRect InputShapeRectangle::rectangle() const
+QRectF InputShapeRectangle::rectangle() const
 {
     return m_rectangle;
 }
 
-void InputShapeRectangle::setRectangle(QRect rectangle)
+void InputShapeRectangle::setRectangle(QRectF rectangle)
 {
     if (rectangle != m_rectangle) {
         m_rectangle = rectangle;

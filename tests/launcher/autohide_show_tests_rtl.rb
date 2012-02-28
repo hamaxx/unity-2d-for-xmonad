@@ -186,4 +186,8 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_launcher_does_not_hide_on_esc_after_Super_with_overlapping_window_mouse_on_bfb()
   end
 
+  test "Auto Hide: Launcher does not hide on Esc after Alt+F1 and mouse on BFB" do
+    test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb()
+  end
+
 end

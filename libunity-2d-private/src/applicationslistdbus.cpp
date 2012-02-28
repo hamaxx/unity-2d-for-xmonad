@@ -1,14 +1,14 @@
-#include "launcherapplication.h"
-#include "launcherapplicationslistdbus.h"
-#include "launcherapplicationslist.h"
+#include "application.h"
+#include "applicationslistdbus.h"
+#include "applicationslist.h"
 
-LauncherApplicationsListDBUS::LauncherApplicationsListDBUS(QObject *parent) :
+ApplicationsListDBUS::ApplicationsListDBUS(QObject *parent) :
     QDBusAbstractAdaptor(parent)
 {
 }
 
 void
-LauncherApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString title,
+ApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString title,
                                                           int icon_x, int icon_y, int icon_size,
                                                           QString desktop_file, QString aptdaemon_task)
 {
@@ -19,14 +19,14 @@ LauncherApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString 
     Q_UNUSED(icon_size)
     Q_UNUSED(aptdaemon_task)
 
-    LauncherApplicationsList* applicationsList = qobject_cast<LauncherApplicationsList*>(parent());
+    ApplicationsList* applicationsList = qobject_cast<ApplicationsList*>(parent());
     if (applicationsList != NULL && !desktop_file.isEmpty()) {
         applicationsList->insertFavoriteApplication(desktop_file);
-        LauncherApplication *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
+        Application *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
         if (application != NULL) {
             application->beginForceUrgent(1500);
         }
     }
 }
 
-#include "launcherapplicationslistdbus.moc"
+#include "applicationslistdbus.moc"

@@ -27,6 +27,7 @@
 class LauncherClient;
 class DashDBus;
 class ScreenInfo;
+class HotModifier;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -38,6 +39,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
     Q_PROPERTY(DashMode dashMode READ dashMode WRITE setDashMode NOTIFY dashModeChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
     Q_PROPERTY(bool focus READ hasFocus NOTIFY focusChanged) // overridden to add notify
+    Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool haveCustomHomeShortcuts READ haveCustomHomeShortcuts)
 
@@ -64,7 +66,8 @@ public:
     DashMode dashMode() const;
     const QString& activeLens() const;
     bool expanded() const;
-    bool superKeyHeld() const { return m_superKeyHeld; }
+    bool superKeyHeld() const;
+    bool dashAlwaysFullScreen() const;
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
 
@@ -88,23 +91,21 @@ Q_SIGNALS:
     void monitoredAreaChanged();
     void monitoredAreaContainsMouseChanged();
 
-    void addWebFavoriteRequested(const QUrl& url);
+    void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
-    void superKeyTapped();
     void activateShortcutPressed(int itemIndex);
     void newInstanceShortcutPressed(int itemIndex);
     void launcherFocusRequested();
 
 private Q_SLOTS:
     void updateSuperKeyMonitoring();
-    void updateSuperKeyHoldState();
-    void setHotkeysForModifiers(Qt::KeyboardModifiers modifiers);
     void forwardNumericHotkey();
-    void ignoreSuperPress();
 
     void toggleDash();
     void showCommandsLens();
     void onAltF1Pressed();
+
+    void updateDashAlwaysFullScreen();
 
 protected:
     virtual void showEvent(QShowEvent *event);
@@ -126,15 +127,13 @@ private:
     QString m_activeLens; /* Lens id of the active lens */
     bool m_active;
 
-    bool m_superKeyPressed;
-    bool m_superKeyHeld;
-    bool m_superPressIgnored;
-    QTimer m_superKeyHoldTimer;
+    bool m_dashAlwaysFullScreen;
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
 
+    HotModifier* m_superHotModifier;
+
     friend class DashDBus;
-    friend class LauncherDBus;
 };
 
 Q_DECLARE_METATYPE(ShellDeclarativeView*)

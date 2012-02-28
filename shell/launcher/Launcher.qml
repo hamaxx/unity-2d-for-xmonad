@@ -66,21 +66,36 @@ LauncherDropItem {
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
+        anchors.rightMargin: declarativeView.dashActive ? 0 : border.width
         color: Qt.darker(unityConfiguration.averageBgColor, 3.0)
         opacity: 0.8
         visible: desktop.isCompositingManagerRunning
     }
 
     Image {
-        Accessible.name: "border"
+        Accessible.name: "borderWithDash"
         id: border
 
         width: 1
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
+        visible: declarativeView.dashActive
         source: "artwork/border.png"
         fillMode: Image.Stretch
+    }
+
+    Rectangle {
+        Accessible.name: "borderWithoutDash"
+
+        width: border.width
+        height: parent.height
+        anchors.right: border.anchors.right
+        anchors.left:  border.anchors.left
+        visible: !declarativeView.dashActive
+
+        color: "white"
+        opacity: 0.15
     }
 
     onDesktopFileDropped: applications.insertFavoriteApplication(path)
@@ -91,6 +106,7 @@ LauncherDropItem {
 
         focus: true
         anchors.fill: parent
+        anchors.rightMargin: border.width
         z: 1 /* ensure the lists are always strictly on top of the background */
 
         LauncherList {
@@ -181,7 +197,7 @@ LauncherDropItem {
         dashView: declarativeView
     }
 
-    LauncherApplicationsList {
+    ApplicationsList {
         id: applications
     }
 
@@ -203,11 +219,6 @@ LauncherDropItem {
         items.appendModel(workspaces);
         items.appendModel(devices);
         shelfItems.appendModel(trashes);
-    }
-
-    Connections {
-        target: declarativeView
-        onAddWebFavoriteRequested: applications.insertWebFavorite(url)
     }
 
     Connections {

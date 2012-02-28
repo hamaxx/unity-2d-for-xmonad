@@ -19,6 +19,7 @@
 import QtQuick 1.1
 import Effects 1.0
 import "fontUtils.js" as FontUtils
+import "utils.js" as Utils
 
 AbstractButton {
     property string searchQuery
@@ -86,16 +87,6 @@ AbstractButton {
             Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
 
-            effect: DropShadow {
-                    id: glow
-
-                    blurRadius: 4
-                    offset.x: 0
-                    offset.y: 0
-                    color: "white"
-                    enabled: searchInput.text != "" || searchInput.inputMethodComposing
-                }
-
             anchors.left: searchIcon.right
             anchors.leftMargin: -5
             anchors.right: parent.right
@@ -160,7 +151,7 @@ AbstractButton {
                 elide: Text.ElideRight
                 anchors.verticalCenter: parent.verticalCenter
                 LayoutMirroring.enabled: false
-                horizontalAlignment: isRightToLeft() ? Text.AlignRight : Text.AlignLeft
+                horizontalAlignment: Utils.isRightToLeft() ? Text.AlignRight : Text.AlignLeft
 
                 color: "white"
                 opacity: 0.5

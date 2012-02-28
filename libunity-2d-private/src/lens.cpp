@@ -22,7 +22,7 @@
 
 // libunity-2d
 #include <debug_p.h>
-#include "launcherapplication.h"
+#include "application.h"
 #include "filters.h"
 
 // Qt
@@ -196,7 +196,7 @@ void Lens::fallbackActivate(const QString& uri)
         return;
     }
     if (url.scheme() == "application") {
-        LauncherApplication application;
+        Application application;
         /* Cannot set the desktop file to url.host(), because the QUrl constructor
            converts the host name to lower case to conform to the Nameprep
            RFC (see http://doc.qt.nokia.com/qurl.html#FormattingOption-enum).
