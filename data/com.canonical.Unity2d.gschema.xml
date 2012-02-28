@@ -39,7 +39,7 @@
       </description>
     </key>
     <key name="edge-decayrate" type="i">
-      <default>2</default>
+      <default>1500</default>
       <summary>Decay rate of mouse pressure against barrier</summary>
       <description>The pressures against the monitor edge are continually added up, and when the sum
         hits a certain threshold the launcher reveals. To prevent a series of distinct gentle pushes  
@@ -48,7 +48,7 @@
       </description>
     </key>
     <key name="edge-reveal-pressure" type="i">
-      <default>2</default>
+      <default>2000</default>
       <summary>Launcher reveal edge pressure</summary>
       <description>The minimum pressure to press the pointer against the monitor edge to 
         cause the launcher to reveal
@@ -62,7 +62,7 @@
       </description>
     </key>
     <key name="edge-overcome-pressure" type="i">
-      <default>2</default>
+      <default>2000</default>
       <summary>Barrier edge overcome pressure
       </summary>
       <description>Minimum pressure the pointer needs to exert on the barrier for the barrier to drop.
