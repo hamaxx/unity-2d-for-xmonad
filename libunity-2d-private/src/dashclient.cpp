@@ -44,6 +44,7 @@ DashClient::DashClient(QObject* parent)
 : QObject(parent)
 , m_dashDbusIface(0)
 , m_dashActive(false)
+, m_hudActive(false)
 , m_alwaysFullScreen(false)
 {
     /* Check if the dash is already up and running by asking the bus instead of
@@ -75,6 +76,8 @@ void DashClient::connectToDash()
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotDashActiveChanged(bool)));
+    connect(m_dashDbusIface, SIGNAL(hudActiveChanged(bool)),
+            SLOT(slotHudActiveChanged(bool)));
     connect(m_dashDbusIface, SIGNAL(alwaysFullScreenChanged(bool)),
             SLOT(slotAlwaysFullScreenChanged(bool)));
 
@@ -90,6 +93,13 @@ void DashClient::connectToDash()
         m_alwaysFullScreen = value.toBool();
     } else {
         UQ_WARNING << "Fetching Dash.alwaysFullScreen property failed";
+    }
+
+    value = m_dashDbusIface->property("hudActive");
+    if (value.isValid()) {
+        m_hudActive = value.toBool();
+    } else {
+        UQ_WARNING << "Fetching Dash.hudActive property failed";
     }
 }
 
@@ -107,9 +117,22 @@ void DashClient::slotDashActiveChanged(bool value)
     Q_EMIT activeChanged(value);
 }
 
+void DashClient::slotHudActiveChanged(bool value)
+{
+    if (m_hudActive != value) {
+        m_hudActive = value;
+    }
+    Q_EMIT hudActiveChanged(value);
+}
+
 bool DashClient::active() const
 {
     return m_dashActive;
+}
+
+bool DashClient::hudActive() const
+{
+    return m_hudActive;
 }
 
 void DashClient::setActive(bool active)
@@ -122,6 +145,19 @@ void DashClient::setActive(bool active)
     } else {
         QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
         iface.setProperty("active", true);
+    }
+}
+
+void DashClient::setHudActive(bool active)
+{
+    if (!active) {
+        // Use m_dashDbusIface only if the shell is running
+        if (m_dashDbusIface) {
+            m_dashDbusIface->setProperty("hudActive", false);
+        }
+    } else {
+        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        iface.setProperty("hudActive", true);
     }
 }
 

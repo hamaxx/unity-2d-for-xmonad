@@ -1,0 +1,9 @@
+----
+ * Hit Alt key
+ * Enter a few characters
+ 
+--> Check HUD offers results
+--> Navigate through them with keyboard arrow keys & mouse
+--> check tile is updated to reflect the app/indicator listed
+--> click on one and ensure the action is performed
+--> Check HUD closes

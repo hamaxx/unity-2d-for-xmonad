@@ -25,6 +25,7 @@
 
 // Qt
 #include <QtDBus/QDBusConnection>
+#include <QGraphicsObject>
 
 static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
@@ -36,6 +37,8 @@ DashDBus::DashDBus(ShellManager* manager, QObject* parent)
     connect(m_manager, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
     connect(m_manager, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
     connect(m_manager, SIGNAL(dashActiveLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
+
+    connect(m_manager, SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
 }
 
 DashDBus::~DashDBus()
@@ -96,4 +99,25 @@ void
 DashDBus::setActiveLens(QString activeLens)
 {
     m_manager->setDashActiveLens(activeLens);
+}
+
+bool
+DashDBus::hudActive() const
+{
+    return m_manager->hudActive();
+}
+
+void
+DashDBus::onHudActiveChanged()
+{
+    Q_EMIT hudActiveChanged(hudActive());
+}
+
+void
+DashDBus::setHudActive(bool active)
+{
+    if (active != hudActive()) {
+        m_manager->setHudActive(active);
+        Q_EMIT hudActiveChanged(active);
+    }
 }

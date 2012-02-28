@@ -47,6 +47,7 @@ struct ShellManagerPrivate
     ShellManagerPrivate()
         : q(0)
         , m_shellWithDash(0)
+        , m_shellWithHud(0)
         , m_dashAlwaysFullScreen(false)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
@@ -56,10 +57,12 @@ struct ShellManagerPrivate
     void updateScreenCount(int newCount);
     ShellDeclarativeView* activeShell() const;
     void moveDashToShell(ShellDeclarativeView* newShell);
+    void moveHudToShell(ShellDeclarativeView* newShell);
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
     ShellDeclarativeView * m_shellWithDash;
+    ShellDeclarativeView * m_shellWithHud;
     bool m_dashAlwaysFullScreen;
     QUrl m_sourceFileUrl;
     bool m_dashActive;
@@ -67,6 +70,7 @@ struct ShellManagerPrivate
     QString m_dashActiveLens; /* Lens id of the active lens */
 
     HotModifier* m_superHotModifier;
+    HotModifier* m_altHotModifier;
 };
 
 
@@ -116,7 +120,9 @@ ShellManagerPrivate::updateScreenCount(int newCount)
 
         if (screen == 0) {
             m_shellWithDash = m_viewList[0];
+            m_shellWithHud = m_viewList[0];
             Q_EMIT q->dashShellChanged(m_shellWithDash);
+            // TODO Hud?
         }
     }
 
@@ -127,6 +133,12 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             if (newCount > 0) {
                 moveDashToShell(m_viewList[0]);
                 Q_EMIT q->dashShellChanged(m_shellWithDash);
+            }
+        }
+        if (shell == m_shellWithHud) {
+            if (newCount > 0) {
+                moveHudToShell(m_viewList[0]);
+//                 TODO ? Q_EMIT q->dashShellChanged(m_shellWithDash);
             }
         }
         shell->deleteLater();
@@ -182,6 +194,43 @@ void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
     }
 }
 
+// TODO Merge with above
+void ShellManagerPrivate::moveHudToShell(ShellDeclarativeView* newShell)
+{
+    if (newShell != m_shellWithHud) {
+        QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+        if (hud) {
+            ShellDeclarativeView *oldShell = m_shellWithHud;
+
+            const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
+            const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
+            oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+            // Moving the hud around makes it lose its focus values, remember them and set them later
+            const QList<QDeclarativeItem *> hudChildrenFocusedItems = dumpFocusedItems(hud);
+
+            oldShell->rootObject()->setProperty("hudLoader", QVariant());
+            oldShell->scene()->removeItem(hud);
+
+            hud->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
+            newShell->rootObject()->setProperty("hudLoader", QVariant::fromValue<QObject*>(hud));
+
+            m_shellWithHud = newShell;
+            // Q_EMIT q->dashShellChanged(newShell); TODO ?
+
+            Q_FOREACH(QDeclarativeItem *item, hudChildrenFocusedItems) {
+                item->setFocus(true);
+            }
+
+            oldShell->setViewportUpdateMode(vum1);
+            newShell->setViewportUpdateMode(vum2);
+        } else {
+            qWarning() << "moveHudToShell: Could not find the hud";
+        }
+    }
+}
+
 /* -------------------------- ShellManager -----------------------------*/
 
 ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
@@ -207,6 +256,12 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->m_superHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
     connect(d->m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDash()));
     connect(d->m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
+
+    /* Alt tap shows the HUD */
+    d->m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
+    connect(d->m_altHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
+    
+//     TODO hudActiveChanged m_view->rootObject()
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
@@ -328,6 +383,20 @@ ShellManager::toggleDash()
     }
 }
 
+void
+ShellManager::toggleHudRequested()
+{
+    ShellDeclarativeView * activeShell = d->activeShell();
+    if (activeShell) {
+        const bool differentShell = d->m_shellWithHud != activeShell;
+
+        if (!hudActive() || !differentShell) {
+            d->moveHudToShell(activeShell);
+            Q_EMIT toggleHud();
+        }
+    }
+}
+
 static QSize minimumSizeForDesktop()
 {
     return QSize(DASH_MIN_SCREEN_WIDTH, DASH_MIN_SCREEN_HEIGHT);
@@ -372,6 +441,20 @@ bool
 ShellManager::superKeyHeld() const
 {
     return d->m_superHotModifier->held();
+}
+
+bool
+ShellManager::hudActive() const
+{
+    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+    return hud->property("hudActive").toBool();
+}
+
+void
+ShellManager::setHudActive(bool active)
+{
+    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+    hu->setProperty("active", active);
 }
 
 /*------------------ Hotkeys Handling -----------------------*/

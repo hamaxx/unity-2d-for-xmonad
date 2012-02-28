@@ -26,6 +26,7 @@ Item {
 
     property variant declarativeView
     property variant dashLoader
+    property variant hudLoader
 
     /* Space reserved by strutManager is taken off screen.availableGeometry but
        we want the shell to take all the available space, including the one we
@@ -88,7 +89,7 @@ Item {
         Binding {
             target: launcherLoader.item
             property: "showMenus"
-            value: dashLoader == undefined || !dashLoader.item.active
+            value: (dashLoader == undefined || !dashLoader.item.active) && (hudLoader == undefined || !hudLoader.item.active)
         }
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
@@ -97,8 +98,10 @@ Item {
             target: shellManager
             onDashActiveChanged: {
                 if (shellManager.dashShell == declarativeView) {
-                    if (shellManager.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                    else {
+                    if (shellManager.dashActive) {
+                        if (hudLoader != undefined && hudLoader.item.active) hudLoader.item.active = false
+                        launcherLoader.visibilityController.beginForceVisible("dash")
+                    } else {
                         launcherLoader.visibilityController.endForceVisible("dash")
                         if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
                     }
@@ -119,12 +122,26 @@ Item {
     }
 
     Connections {
+        target: hudLoader.item
+        onActiveChanged: {
+            if (hudLoader.item.active) {
+                if (dashLoader.item.active) dashLoader.item.active = false
+                launcherLoader.visibilityController.beginForceHidden("hud")
+            } else {
+                launcherLoader.visibilityController.endForceHidden("hud")
+            }
+        }
+    }
+
+    Connections {
         target: declarativeView
         onLauncherFocusRequested: {
             launcherLoader.focus = true
             launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
+            if (!declarativeView.focus && hudLoader.item.active) hudLoader.item.active = false
+
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
                if it has it, this doesn't happen with FocusScopes (and Launcher is a FocusScope).
@@ -139,6 +156,9 @@ Item {
         if (declarativeView.screen.screen == 0) {
             var loaderComponent = Qt.createComponent("DashLoader.qml");
             dashLoader = loaderComponent.createObject(shell, {});
+
+            var loaderComponent = Qt.createComponent("HudLoader.qml");
+            hudLoader = loaderComponent.createObject(shell, {});
         }
         declarativeView.show()
     }
@@ -180,6 +200,17 @@ Item {
                 enabled: shellManager.dashMode == ShellManager.DesktopMode
             }
         }
+
+        InputShapeRectangle {
+            id: hudInputShape
+            enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
+
+            InputShapeMask {
+                source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
+                color: "red"
+                position: Qt.point(hudLoader.width - 50, hudLoader.height - 49)
+            }
+        }
     }
 
     Binding {
@@ -204,6 +235,19 @@ Item {
             }
         }
         when: !launcherLoaderXAnimation.running
+    }
+
+    Binding {
+        target: hudInputShape
+        property: "rectangle"
+        value: {
+            if (desktop.isCompositingManagerRunning) {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            } else {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+            }
+        }
+        when: !hudLoader.animating
     }
 
     StrutManager {

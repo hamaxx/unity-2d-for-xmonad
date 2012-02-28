@@ -36,6 +36,7 @@ class ShellManager : public QObject
     Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
     Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
+    Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
 
 public:
     enum DashMode {
@@ -63,6 +64,9 @@ public:
 
     bool superKeyHeld() const;
 
+    bool hudActive() const;
+    void setHudActive(bool active);
+
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
@@ -70,9 +74,11 @@ Q_SIGNALS:
     void dashShellChanged(QObject *shell);
     void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
+    void hudActiveChanged(bool);
 
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
+    void toggleHud();
 
 private Q_SLOTS:
     void onScreenCountChanged(int);
@@ -83,6 +89,7 @@ private Q_SLOTS:
     void onAltF2Pressed();
     void onNumericHotkeyPressed();
     void toggleDash();
+    void toggleHudRequested();
 
     void updateDashAlwaysFullScreen();
 

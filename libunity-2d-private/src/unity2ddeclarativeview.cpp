@@ -35,6 +35,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
+#include "bamf-window.h"
+#include "bamf-matcher.h"
+
 // libwnck
 extern "C" {
 #include <libwnck/libwnck.h>
@@ -107,12 +110,16 @@ void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char
 {
     QDeclarativeComponent* component = new QDeclarativeComponent(engine(), source, this);
     QObject *instance = component->beginCreate(rootContext());
+    qDebug() << component->errors();
     QMap<const char*, QVariant>::const_iterator it = rootObjectProperties.begin();
     QMap<const char*, QVariant>::const_iterator itEnd = rootObjectProperties.end();
     for ( ; it != itEnd; ++it) {
         instance->setProperty(it.key(), it.value());
     }
+    qDebug() << component->errors();
     component->completeCreate();
+    qDebug() << component->errors();
+    qDebug() << "LALAL";
     m_rootItem = qobject_cast<QDeclarativeItem *>(instance);
     connect(m_rootItem, SIGNAL(widthChanged()), SLOT(resizeToRootObject()));
     connect(m_rootItem, SIGNAL(heightChanged()), SLOT(resizeToRootObject()));
@@ -303,6 +310,7 @@ void Unity2DDeclarativeView::forceDeactivateWindow()
     forceActivateThisWindow(m_last_focused_window);
 
     m_last_focused_window = None;
+    Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
 }
 
 void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
@@ -343,13 +351,14 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
 /* Save WId of window with keyboard focus to m_last_focused_window */
 void Unity2DDeclarativeView::saveActiveWindow()
 {
-    Display* display = QX11Info::display();
-    WId active_window;
-    int current_focus_state;
-
-    XGetInputFocus(display, &active_window, &current_focus_state);
-    if( active_window != this->effectiveWinId()){
+    /* Using Bamf here, 'cause XGetFocusInputFocus returned a XId
+       different by 1, which then could not be used with Bamf to
+       get the application. The change does not result in any functional
+       differences, though. */
+    WId active_window = BamfMatcher::get_default().active_window()->xid();
+    if (active_window != this->effectiveWinId()) {
         m_last_focused_window = active_window;
+        Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
     }
 }
 
@@ -363,6 +372,12 @@ ScreenInfo*
 Unity2DDeclarativeView::screen() const
 {
     return m_screenInfo;
+}
+
+unsigned int
+Unity2DDeclarativeView::lastFocusedWindow() const
+{
+    return m_last_focused_window;
 }
 
 #include <unity2ddeclarativeview.moc>

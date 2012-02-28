@@ -39,6 +39,7 @@ class Unity2DDeclarativeView : public QGraphicsView
     Q_PROPERTY(QPoint globalPosition READ globalPosition NOTIFY globalPositionChanged)
     Q_PROPERTY(ScreenInfo* screen READ screen NOTIFY screenChanged)
     Q_PROPERTY(bool visible READ isVisible NOTIFY visibleChanged)
+    Q_PROPERTY(unsigned int lastFocusedWindow READ lastFocusedWindow NOTIFY lastFocusedWindowChanged)
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
@@ -50,6 +51,7 @@ public:
     QUrl source() const;
     QPoint globalPosition() const;
     ScreenInfo* screen() const;
+    unsigned int lastFocusedWindow() const;
 
     // setters
     void setUseOpenGL(bool);
@@ -68,6 +70,7 @@ Q_SIGNALS:
     void visibleChanged(bool);
     void activeWorkspaceChanged();
     void sceneResized(QSize size);
+    void lastFocusedWindowChanged(unsigned int);
 
 protected:
     void setupViewport();
