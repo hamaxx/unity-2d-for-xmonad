@@ -51,17 +51,15 @@ private Q_SLOTS:
     void testAverageColorComputed1()
     {
         ImageUtilities imageUtil;
-        QString imagePath = "file:./verification/Langelinie_Allé_by_SirPecanGum.jpg";
+        QString imagePath = QString::fromUtf8("file:./verification/Langelinie_Allé_by_SirPecanGum.jpg");
         QUrl image(imagePath);
-        qDebug() << image.toLocalFile();
         QColor color;
 
         imageUtil.setSource(image);
         color = imageUtil.averageColor();
-        qDebug() << color.red() << color.green() << color.blue();
-        QCOMPARE(color.red(), 80);
-        QCOMPARE(color.green(), 194);
-        QCOMPARE(color.blue(), 230);
+        QCOMPARE(color.red(), 230);
+        QCOMPARE(color.green(), 126);
+        QCOMPARE(color.blue(), 80);
     }
 
     void testAverageColorComputed2()
