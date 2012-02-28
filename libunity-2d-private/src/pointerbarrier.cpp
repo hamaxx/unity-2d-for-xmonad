@@ -67,14 +67,14 @@ PointerBarrierWrapper::setP1(const QPointF& p)
     if (p == m_p1) {
         return;
     }
-    
+
     if (m_barrier != 0) {
         destroyBarrier();
     }
-        
+
     m_p1 = p;
     Q_EMIT p1Changed(p);
-    
+
     createBarrier();
 }
 
@@ -90,11 +90,11 @@ PointerBarrierWrapper::setP2(const QPointF& p)
     if (p == m_p2) {
         return;
     }
-    
+
     if (m_barrier != 0) {
         destroyBarrier();
     }
-    
+
     m_p2 = p;
     Q_EMIT p2Changed(p);
 
