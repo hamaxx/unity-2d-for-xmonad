@@ -35,7 +35,7 @@ public:
     explicit CursorShapeArea(QDeclarativeItem *parent = 0);
 
     Qt::CursorShape cursorShape() const;
-    Q_INVOKABLE void setCursorShape(Qt::CursorShape cursorShape);
+    void setCursorShape(Qt::CursorShape cursorShape);
 
 private:
     Qt::CursorShape m_currentShape;
