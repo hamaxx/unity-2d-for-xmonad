@@ -63,8 +63,9 @@ AbstractButton {
         width: 22
         height: 22
         anchors.top: divider.bottom
-        anchors.topMargin: divider.visible ? 15 : 0
+        anchors.topMargin: 15
         anchors.left: parent.left
+        anchors.leftMargin: 9
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -75,7 +76,7 @@ AbstractButton {
 
         fontSize: "large"
         anchors.top: divider.bottom
-        anchors.topMargin: divider.visible ? 15 : 0
+        anchors.topMargin: 15
         anchors.left: iconImage.right
         anchors.leftMargin: 8
     }
