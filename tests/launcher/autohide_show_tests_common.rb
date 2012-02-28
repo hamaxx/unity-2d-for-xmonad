@@ -40,25 +40,6 @@ end
 
 
 # Test case objectives:
-#   * Check the Launcher position on desktop with window not in way
-# Pre-conditions
-#   * Desktop with no running applications
-# Test steps
-#   * Open application in position not overlapping Launcher
-#   * Verify Launcher showing
-# Post-conditions
-#   * None
-# References
-#   * None
-def test_position_width_window_not_in_the_way()
-  # Open Terminal with position 100x100
-  xid = TmpWindow.open_window_at(100,100)
-  verify_launcher_visible(TIMEOUT, 'Launcher hiding when window not in the way, should be visible')
-  xid.close!
-end
-
-
-# Test case objectives:
 #   * Check the Launcher position on desktop with window in the way
 # Pre-conditions
 #   * Desktop with no running applications
@@ -73,35 +54,6 @@ def test_position_with_window_in_the_way()
   # Open Terminal with position 40x100
   xid = open_overlapping_window()
   verify_launcher_hidden(TIMEOUT, 'Launcher visible when window in the way, should be hidden')
-  xid.close!
-end
-
-
-# Test case objectives:
-#   * Check Launcher autohide working
-# Pre-conditions
-#   * Desktop with no running applications
-# Test steps
-#   * Open application in position not overlapping Launcher
-#   * Verify Launcher showing
-#   * Move application window to position overlapping Launcher
-#   * Verify Launcher hides
-#   * Move application window to position not overlapping Launcher
-#   * Verify Launcher shows again
-# Post-conditions
-#   * None
-# References
-#   * None
-def test_move_window_positioning_to_check_launcher_action()
-  # Open Terminal with position 100x100
-  xid = TmpWindow.open_window_at(100,100)
-  verify_launcher_visible(TIMEOUT, 'Launcher hiding when window not in the way, should be visible')
-
-  move_window_just_overlapping(xid)
-  verify_launcher_hidden(TIMEOUT, 'Launcher visible when window in the way, should be hidden')
-
-  move_window_just_not_overlapping(xid)
-  verify_launcher_visible(TIMEOUT, 'Launcher hiding when window not in the way, should be visible')
   xid.close!
 end
 
@@ -369,34 +321,6 @@ def test_alt_f1_toggle_focus_launcher_when_dash_open()
   xid.close!
 end
 
-
-# Test case objectives:
-#   * Launcher displays when 'show desktop' engages
-# Pre-conditions
-#   * Desktop with no running applications
-# Test steps
-#   * Open application in position overlapping Launcher
-#   * Verify Launcher hiding
-#   * Engage "Show Desktop" mode
-#   * Verify Launcher showing
-#   * Disengage "Show Desktop" mode
-#   * Verify Launcher hides
-# Post-conditions
-#   * None
-# References
-#   * None
-def test_launcher_visible_show_desktop()
-  xid = open_overlapping_window()
-  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
-
-  XDo::XWindow.toggle_minimize_all # This is effectively the show-desktop shortcut
-  verify_launcher_visible(TIMEOUT, 'Launcher hiding after triggering show-desktop, should be visible')
-
-  XDo::XWindow.toggle_minimize_all
-  verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
-  xid.close!
-end
-
 # Test case objectives:
 #   * Launcher is around for 1 second after removing a tile
 # Pre-conditions
@@ -561,7 +485,6 @@ end
 # Pre-conditions
 # * Desktop with no running applications
 # Test steps
-# * Set hide-mode to 1
 # * Move mouse outside the launcher
 # * Verify Launcher hiding
 # * Press Alt+F1
@@ -574,7 +497,6 @@ end
 # References
 # * None
 def test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb
-  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
   XDo::Mouse.move(300, 300, 0, true)
   verify_launcher_hidden(TIMEOUT, 'Launcher visible, should be hidden')
   XDo::Keyboard.alt_F1 #Must use uppercase F to indicate function keys
