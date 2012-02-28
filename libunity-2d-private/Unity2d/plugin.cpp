@@ -41,6 +41,7 @@
 #include "plugin.h"
 #include "cacheeffect.h"
 #include "iconutilities.h"
+#include "cursorshapearea.h"
 #include "unity2dtr.h"
 #include "giodefaultapplication.h"
 
@@ -148,6 +149,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<Workspaces>(uri, 0, 1, "Workspaces");
 
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
+
+    qmlRegisterType<CursorShapeArea>(uri, 0, 1, "CursorShapeArea");
 
     qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
 

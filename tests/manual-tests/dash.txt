@@ -18,6 +18,13 @@
 
 ----
 
+ * Open Dash, hover mouse over Search Entry box
+
+--> The mouse cursor should change to the I-beam cursor over the Search box, and be standard
+    cursor elsewhere.
+
+----
+
   # Test case objectives:
   #   * Check that Super+s does not type s in the search line
   # Pre-conditions

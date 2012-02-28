@@ -18,6 +18,7 @@
 
 import QtQuick 1.1
 import Effects 1.0
+import Unity2d 1.0
 import "fontUtils.js" as FontUtils
 import "utils.js" as Utils
 
@@ -165,5 +166,10 @@ AbstractButton {
                 }
             }
         }
+    }
+
+    CursorShapeArea {
+        anchors.fill: parent
+        cursorShape: Qt.IBeamCursor
     }
 }

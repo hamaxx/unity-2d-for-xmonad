@@ -38,6 +38,7 @@ set(lib${LIB_NAME}_SRCS
     dragitemwithurl.cpp
     dropitem.cpp
     iconimageprovider.cpp
+    cursorshapearea.cpp
     listaggregatormodel.cpp
     launcheritem.cpp
     application.cpp
