@@ -55,7 +55,7 @@
       </description>
     </key>
     <key name="edge-stop-velocity" type="i">
-      <default>2</default>
+      <default>6500</default>
       <summary>Barrier edge stop velocity</summary>
       <description>The minimum velocity the pointer needs to travel to pass through the barrier without 
         any resistance. Only relevant for multi-monitor setups

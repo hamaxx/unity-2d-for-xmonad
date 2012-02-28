@@ -36,21 +36,12 @@ PointerBarrierManager *PointerBarrierManager::instance()
     return bpm;
 }
 
-PointerBarrierManager::PointerBarrierManager()
+PointerBarrierManager::PointerBarrierManager() :
+    m_detectionEnabled(false)
 {
     Display *display = QX11Info::display();
 
     XFixesQueryExtension(display, &m_eventBase, &m_errorBase);
-
-    int maj, min;
-    XFixesQueryVersion(display, &maj, &min);
-    if (maj < 6) {
-        qDebug() << "XFixes version 6 or greater required for PointerBarrierVelocity";
-        return;
-    }
-
-    /* Enables barrier detection events - only call once!! */
-    XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
 
     Unity2dApplication* application = Unity2dApplication::instance();
     if (application == NULL) {
@@ -60,13 +51,19 @@ PointerBarrierManager::PointerBarrierManager()
     } else {
         application->installX11EventFilter(this);
     }
-qDebug() << "INIT FINISHED";
-    
 }
 
 void PointerBarrierManager::addBarrier(PointerBarrierWrapper *barrier)
 {
     m_barriers += barrier;
+
+    if (!m_detectionEnabled) {
+        Display *display = QX11Info::display();
+        /* Enables barrier detection events - only call once!! */
+        XFixesSelectBarrierInput(display, DefaultRootWindow(display), 0xdeadbeef);
+        m_detectionEnabled = true;
+    }
+
 }
 
 void PointerBarrierManager::removeBarrier(PointerBarrierWrapper *barrier)
@@ -77,13 +74,12 @@ void PointerBarrierManager::removeBarrier(PointerBarrierWrapper *barrier)
 bool PointerBarrierManager::x11EventFilter(XEvent* event)
 {
     if (event->type - m_eventBase == XFixesBarrierNotify) {
-qDebug() << "XFixesBarrierNotify";
         XFixesBarrierNotifyEvent *notifyEvent = (XFixesBarrierNotifyEvent *)event;
 
         if (notifyEvent->subtype == XFixesBarrierHitNotify) {
             Q_FOREACH (PointerBarrierWrapper *barrier, m_barriers) {
                 if (barrier->barrier() == notifyEvent->barrier) {
-                    barrier->doProcess(notifyEvent);                    
+                    barrier->doProcess(notifyEvent);
                     return true;
                 }
             }
