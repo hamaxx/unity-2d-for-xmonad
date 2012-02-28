@@ -106,6 +106,7 @@ AbstractButton {
             font.pixelSize: FontUtils.fontSizeToPixels("xx-large")
             focus: true
             selectByMouse: true
+            cursorDelegate: cursor
             selectionColor: "gray"
 
             onTextChanged: liveSearchTimeout.restart()
@@ -120,6 +121,27 @@ AbstractButton {
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;
+                }
+            }
+
+            Component {
+                id: cursor
+
+                Rectangle {
+                    id: customCursor
+                    color: "white"
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.topMargin: 1
+                    anchors.bottomMargin: 1
+                    width: 1
+                    Timer {
+                        interval: 900; running: true; repeat: true
+                        onTriggered: {
+                            interval = interval == 900 ? 300 : 900
+                            customCursor.visible = !customCursor.visible
+                        }
+                    }
                 }
             }
 
