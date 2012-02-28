@@ -76,7 +76,7 @@ Loader {
     }
 
     Binding {
-        target: item
+        target: launcherLoader.item
         property: "shown"
         value: visibilityController.shown
     }
