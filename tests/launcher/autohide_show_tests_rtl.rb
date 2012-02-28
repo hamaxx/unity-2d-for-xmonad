@@ -56,6 +56,12 @@ context "Launcher Autohide and Show Tests on RTL" do
     XDo::Mouse.move(XDo::XWindow.display_geometry[0], 200, 0, true)
   end
 
+  def mouse_push_screen_edge
+    (1..100).each do |i|
+      $SUT.execute_shell_command 'xdotool mousemove_relative 10 0'
+    end
+  end
+
   def move_mouse_to_launcher_inner_border()
     XDo::Mouse.move(XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH, 200)
   end
