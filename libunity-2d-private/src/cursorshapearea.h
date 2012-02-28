@@ -34,6 +34,7 @@ public:
     void setCursorShape(Qt::CursorShape cursorShape);
 
 private:
+    Q_DISABLE_COPY(CursorShapeArea)
     Qt::CursorShape m_currentShape;
 
 Q_SIGNALS:
