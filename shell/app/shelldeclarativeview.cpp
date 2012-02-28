@@ -149,9 +149,11 @@ ShellDeclarativeView::resizeEvent(QResizeEvent *event)
         const int wantedWidth = rootObject()->property("width").toInt();
         const int wantedHeight = rootObject()->property("height").toInt();
         if (width() != wantedWidth || height() != wantedHeight) {
-            // This sould never happen as we are using SizeViewToRootObject
+            // FIXME This should never happen as we are using SizeViewToRootObject
             // in our QDeclarativeView but it seems it happens sometimes
-            // so force it to the size we want
+            // that we get a size it's not the size the QML wants
+            // so force it to the size we want in those cases
+            // This is just a workaround for the time being
             resize(wantedWidth, wantedHeight);
         }
     }
