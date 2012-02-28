@@ -127,7 +127,10 @@ PointerBarrierWrapper::createBarrier()
     if (m_threshold < 0)
         return;
 
-    if ((m_p1.x() != m_p2.x()) && (m_p1.y() != m_p2.y()) && m_p1 != m_p2)
+    if (m_p1 == m_p2)
+        return;
+
+    if ((m_p1.x() != m_p2.x()) && (m_p1.y() != m_p2.y()))
         return;
 
     Display *display = QX11Info::display();
