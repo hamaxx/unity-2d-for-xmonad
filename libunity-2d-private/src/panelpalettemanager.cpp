@@ -45,6 +45,8 @@ PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), this, SLOT(updatePalette()));
+    connect(DashClient::instance(), SIGNAL(dashScreenChanged(int)), this, SLOT(updatePalette()));
+    connect(DashClient::instance(), SIGNAL(hudScreenChanged(int)), this, SLOT(updatePalette()));
 
     m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name", G_CALLBACK(onThemeChanged), this);
     updatePalette();

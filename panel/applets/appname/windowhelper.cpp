@@ -85,6 +85,8 @@ WindowHelper::WindowHelper(int screen, QObject* parent)
 
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
     connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), SLOT(update()));
+    connect(DashClient::instance(), SIGNAL(dashScreenChanged(int)), SLOT(update()));
+    connect(DashClient::instance(), SIGNAL(hudScreenChanged(int)), SLOT(update()));
     // FIXME: the queued connection should not be needed, however if it's not used when
     // (un)maximizing the dash, the panel will deadlock for some reason.
     connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(update()),
