@@ -84,6 +84,7 @@ struct Unity2dPanelPrivate
 	    struts[0] = m_size;
 	    struts[4] = available.top();
 	    struts[5] = available.bottom() - screen.bottom() - 1; // '... -1' otherwise xmonad thinks panel is on all screens	
+	    break;
 	case Unity2dPanel::RightEdge:
 	    struts[1] = m_size;
 	    struts[6] = available.top();
