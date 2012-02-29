@@ -164,76 +164,55 @@ static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
     return res;
 }
 
-void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
+static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newShell, ShellDeclarativeView* oldShell)
 {
-    if (newShell != m_shellWithDash) {
-        QDeclarativeItem *dash = qobject_cast<QDeclarativeItem*>(m_shellWithDash->rootObject()->property("dashLoader").value<QObject *>());
-        if (dash) {
-            ShellDeclarativeView *oldShell = m_shellWithDash;
+    bool itemMoved = false;
 
+    if (newShell != oldShell) {
+        QDeclarativeItem *item = qobject_cast<QDeclarativeItem*>(oldShell->rootObject()->property(itemName).value<QObject *>());
+        if (item) {
             const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
             const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
             oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
             newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-            // Moving the dash around makes it lose its focus values, remember them and set them later
-            const QList<QDeclarativeItem *> dashChildrenFocusedItems = dumpFocusedItems(dash);
+            // Moving the item around makes it lose its focus values, remember them and set them later
+            const QList<QDeclarativeItem *> itemChildrenFocusedItems = dumpFocusedItems(item);
 
-            oldShell->rootObject()->setProperty("dashLoader", QVariant());
-            oldShell->scene()->removeItem(dash);
+            oldShell->rootObject()->setProperty(itemName, QVariant());
+            oldShell->scene()->removeItem(item);
 
-            dash->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
-            newShell->rootObject()->setProperty("dashLoader", QVariant::fromValue<QObject*>(dash));
+            item->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
+            newShell->rootObject()->setProperty(itemName, QVariant::fromValue<QObject*>(item));
 
-            m_shellWithDash = newShell;
-            Q_EMIT q->dashShellChanged(newShell);
-
-            Q_FOREACH(QDeclarativeItem *item, dashChildrenFocusedItems) {
-                item->setFocus(true);
+            Q_FOREACH(QDeclarativeItem *childrenItem, itemChildrenFocusedItems) {
+                childrenItem->setFocus(true);
             }
 
             oldShell->setViewportUpdateMode(vum1);
             newShell->setViewportUpdateMode(vum2);
+
+            itemMoved = true;
         } else {
-            qWarning() << "moveDashToShell: Could not find the dash";
+            qWarning() << "moveRootItemToShell: Could not find the item" << itemName;
         }
+    }
+
+    return itemMoved;
+}
+
+void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
+{
+    if (moveRootItemToShell("dashLoader", newShell, m_shellWithDash)) {
+        m_shellWithDash = newShell;
+        Q_EMIT q->dashShellChanged(newShell);
     }
 }
 
-// TODO Merge with above
 void ShellManagerPrivate::moveHudToShell(ShellDeclarativeView* newShell)
 {
-    if (newShell != m_shellWithHud) {
-        QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-        if (hud) {
-            ShellDeclarativeView *oldShell = m_shellWithHud;
-
-            const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
-            const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
-            oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-            newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-
-            // Moving the hud around makes it lose its focus values, remember them and set them later
-            const QList<QDeclarativeItem *> hudChildrenFocusedItems = dumpFocusedItems(hud);
-
-            oldShell->rootObject()->setProperty("hudLoader", QVariant());
-            oldShell->scene()->removeItem(hud);
-
-            hud->setParentItem(qobject_cast<QDeclarativeItem*>(newShell->rootObject()));
-            newShell->rootObject()->setProperty("hudLoader", QVariant::fromValue<QObject*>(hud));
-
-            m_shellWithHud = newShell;
-            // Q_EMIT q->dashShellChanged(newShell); TODO ?
-
-            Q_FOREACH(QDeclarativeItem *item, hudChildrenFocusedItems) {
-                item->setFocus(true);
-            }
-
-            oldShell->setViewportUpdateMode(vum1);
-            newShell->setViewportUpdateMode(vum2);
-        } else {
-            qWarning() << "moveHudToShell: Could not find the hud";
-        }
+    if (moveRootItemToShell("hudLoader", newShell, m_shellWithHud)) {
+        m_shellWithHud = newShell;
     }
 }
 
