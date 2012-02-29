@@ -37,8 +37,7 @@ Loader {
 
         property variant modesMap: { 0: '../common/visibilityBehaviors/AlwaysVisibleBehavior.qml',
                                      1: '../common/visibilityBehaviors/AutoHideBehavior.qml',
-                                     2: '../common/visibilityBehaviors/IntelliHideBehavior.qml'
-        }
+                                     2: '../common/visibilityBehaviors/IntelliHideBehavior.qml' }
 
         source: modesMap[Utils.clamp(launcher2dConfiguration.hideMode, 0, 2)]
     }
