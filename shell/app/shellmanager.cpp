@@ -446,15 +446,15 @@ ShellManager::superKeyHeld() const
 bool
 ShellManager::hudActive() const
 {
-    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(d->m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
     return hud->property("hudActive").toBool();
 }
 
 void
 ShellManager::setHudActive(bool active)
 {
-    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-    hu->setProperty("active", active);
+    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(d->m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+    hud->setProperty("active", active);
 }
 
 /*------------------ Hotkeys Handling -----------------------*/
