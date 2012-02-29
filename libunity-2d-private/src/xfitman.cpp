@@ -915,25 +915,30 @@ const QRect XfitMan::availableGeometry(int screen) const
 
     Atom ret;
     int format, status;
-    uchar* data = 0;
-    ulong nitems, after;
+    uint childnum;
+    Window* data = 0;
+    Window root_window, parent_window;
 
-    status = XGetWindowProperty(display, QX11Info::appRootWindow(x11Screen),
-                                atom("_NET_CLIENT_LIST"), 0L, ~0L, False, XA_WINDOW,
-                                &ret, &format, &nitems, &after, &data);
+    status = XQueryTree(display, QX11Info::appRootWindow(x11Screen), &root_window, &parent_window, &data, &childnum);
 
-    if (status == Success && ret == XA_WINDOW && format == 32 && nitems)
+    //if (status == Success && ret == XA_WINDOW && format == 32 && nitems)
+    if (true || status == Success)
     {
         const QRect desktopGeometry = d->rect();
 
-        Window* xids = (Window*) data;
-        for (quint32 i = 0; i < nitems; ++i)
+	Window* xids = (Window*) data;
+	for (uint i = 0; i < childnum; i++)
+	// for (quint32 i = 0; i < nitems; ++i)
         {
-            ulong nitems2;
+	    ulong after;
+	    ulong nitems2;
             uchar* data2 = 0;
-            status = XGetWindowProperty(display, xids[i],
+	    
+	    status = XGetWindowProperty(display, xids[i],
                                         atom("_NET_WM_STRUT_PARTIAL"), 0, 12, False, XA_CARDINAL,
                                         &ret, &format, &nitems2, &after, &data2);
+
+	    qDebug("avGeom: No. %i", i);
 
             if (status == Success && ret == XA_CARDINAL && format == 32 && nitems2 == 12)
             {
