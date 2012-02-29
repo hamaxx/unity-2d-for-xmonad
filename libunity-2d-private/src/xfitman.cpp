@@ -938,8 +938,6 @@ const QRect XfitMan::availableGeometry(int screen) const
                                         atom("_NET_WM_STRUT_PARTIAL"), 0, 12, False, XA_CARDINAL,
                                         &ret, &format, &nitems2, &after, &data2);
 
-	    qDebug("avGeom: No. %i", i);
-
             if (status == Success && ret == XA_CARDINAL && format == 32 && nitems2 == 12)
             {
                 ulong* struts = (ulong*) data2;
