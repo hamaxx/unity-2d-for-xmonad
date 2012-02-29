@@ -48,7 +48,6 @@ private:
     QStringList loadPanelConfiguration() const;
 
 private Q_SLOTS:
-    void onScreenCountChanged(int newCount);
     void onF10Pressed();
 };
 
