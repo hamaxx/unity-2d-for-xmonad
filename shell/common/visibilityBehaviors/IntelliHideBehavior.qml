@@ -20,9 +20,8 @@ import QtQuick 1.0
 import Unity2d 1.0
 import "../utils.js" as Utils
 
-// Shows the target when it has the focus or when you move the
-// mouse for 500 msec to the edge of the target or there are no 
-// windows that intersect with the target
+// Shows the target when it has the focus or when you break the pointer barrier
+// or there are no windows that intersect with the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
 // To use this Behavior your target needs to provide one properties
