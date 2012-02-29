@@ -25,9 +25,10 @@ import "../utils.js" as Utils
 // windows that intersect with the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
-// To use this Behavior your target needs to provide two properties
+// To use this Behavior your target needs to provide one properties
 //  - containsMouse: Defines if the mouse is inside the target
-//  - outerEdgeContainsMouse: Defines if the mouse is in the edge of the target
+// and one signal
+//  - barrierBroken: Defines when the pointer barrier has been broken
 
 BaseBehavior {
     id: intellihide
@@ -47,12 +48,6 @@ BaseBehavior {
     }
 
     Timer {
-        id: edgeHitTimer
-        interval: 500
-        onTriggered: shownBecauseOfMousePosition = true
-    }
-
-    Timer {
         id: mouseLeaveTimer
         interval: 1000
         onTriggered: shownBecauseOfMousePosition = false
@@ -60,8 +55,7 @@ BaseBehavior {
 
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
-        ignoreUnknownSignals: true
+        onBarrierBroken: shownRegardlessOfFocus = true
     }
 
     Connections {
