@@ -897,7 +897,7 @@ QString XfitMan::debugWindow(Window wnd)
 /************************************************
 
  ************************************************/
-const QRect XfitMan::availableGeometry(int screen) const
+const QRect XfitMan::availableGeometry(int screen, Window exclude) const
 {
     QDesktopWidget *d = QApplication::desktop();
 
@@ -921,19 +921,17 @@ const QRect XfitMan::availableGeometry(int screen) const
 
     status = XQueryTree(display, QX11Info::appRootWindow(x11Screen), &root_window, &parent_window, &data, &childnum);
 
-    //if (status == Success && ret == XA_WINDOW && format == 32 && nitems)
     if (true || status == Success)
     {
         const QRect desktopGeometry = d->rect();
 
 	Window* xids = (Window*) data;
 	for (uint i = 0; i < childnum; i++)
-	// for (quint32 i = 0; i < nitems; ++i)
-        {
+        {	    
 	    ulong after;
 	    ulong nitems2;
             uchar* data2 = 0;
-	    
+
 	    status = XGetWindowProperty(display, xids[i],
                                         atom("_NET_WM_STRUT_PARTIAL"), 0, 12, False, XA_CARDINAL,
                                         &ret, &format, &nitems2, &after, &data2);
