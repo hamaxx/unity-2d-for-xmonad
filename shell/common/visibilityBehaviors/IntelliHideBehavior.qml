@@ -54,7 +54,7 @@ BaseBehavior {
 
     Connections {
         target: (intellihide.target !== undefined) ? intellihide.target : null
-        onBarrierBroken: shownRegardlessOfFocus = true
+        onBarrierBroken: shownBecauseOfMousePosition = true
     }
 
     Connections {
