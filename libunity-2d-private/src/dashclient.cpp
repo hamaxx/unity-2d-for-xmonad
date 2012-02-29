@@ -80,6 +80,10 @@ void DashClient::connectToDash()
             SLOT(slotHudActiveChanged(bool)));
     connect(m_dashDbusIface, SIGNAL(alwaysFullScreenChanged(bool)),
             SLOT(slotAlwaysFullScreenChanged(bool)));
+    connect(m_dashDbusIface, SIGNAL(dashScreenChanged(int)),
+            SLOT(slotDashScreenChanged(int)));
+    connect(m_dashDbusIface, SIGNAL(hudScreenChanged(int)),
+            SLOT(slotHudScreenChanged(int)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
@@ -100,6 +104,20 @@ void DashClient::connectToDash()
         m_hudActive = value.toBool();
     } else {
         UQ_WARNING << "Fetching Dash.hudActive property failed";
+    }
+
+    value = m_dashDbusIface->property("dashScreen");
+    if (value.isValid()) {
+        m_dashScreen = value.toInt();
+    } else {
+        UQ_WARNING << "Fetching Dash.dashScreen property failed";
+    }
+
+    value = m_dashDbusIface->property("hudScreen");
+    if (value.isValid()) {
+        m_hudScreen = value.toInt();
+    } else {
+        UQ_WARNING << "Fetching Dash.hudScreen property failed";
     }
 }
 
@@ -172,6 +190,42 @@ void DashClient::slotAlwaysFullScreenChanged(bool value)
 bool DashClient::alwaysFullScreen() const
 {
     return m_alwaysFullScreen;
+}
+
+void DashClient::slotDashScreenChanged(int screen)
+{
+    if (screen != m_dashScreen) {
+        m_dashScreen = screen;
+        Q_EMIT dashScreenChanged(screen);
+    }
+}
+
+int DashClient::dashScreen() const
+{
+    return m_dashScreen;
+}
+
+void DashClient::slotHudScreenChanged(int screen)
+{
+    if (screen != m_hudScreen) {
+        m_hudScreen = screen;
+        Q_EMIT hudScreenChanged(screen);
+    }
+}
+
+int DashClient::hudScreen() const
+{
+    return m_hudScreen;
+}
+
+bool DashClient::dashActiveInScreen(int screen) const
+{
+    return active() && dashScreen() == screen;
+}
+
+bool DashClient::hudActiveInScreen(int screen) const
+{
+    return hudActive() && hudScreen() == screen;
 }
 
 #include "dashclient.moc"

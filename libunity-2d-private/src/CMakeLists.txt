@@ -69,6 +69,7 @@ set(lib${LIB_NAME}_SRCS
     indicatorswidget.cpp
     panelapplet.cpp
     panelstyle.cpp
+    panelpalettemanager.cpp
     percentcoder.cpp
     windowsintersectmonitor.cpp
     abstractdbusservicemonitor.cpp

@@ -250,7 +250,7 @@ struct AppNameAppletPrivate
 
     void setupWindowHelper()
     {
-        m_windowHelper = new WindowHelper(q);
+        m_windowHelper = new WindowHelper(q->panel()->screen(), q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_windowHelper, SIGNAL(nameChanged()),
@@ -322,8 +322,8 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
-    bool dashIsVisible = DashClient::instance()->active();
-    bool hudIsVisible = DashClient::instance()->hudActive();
+    bool dashIsVisible = DashClient::instance()->dashActiveInScreen(panel()->screen());
+    bool hudIsVisible = DashClient::instance()->hudActiveInScreen(panel()->screen());
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;

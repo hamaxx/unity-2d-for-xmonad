@@ -34,7 +34,7 @@ class WindowHelper : public QObject
 {
 Q_OBJECT
 public:
-    WindowHelper(QObject* parent);
+    WindowHelper(int screen, QObject* parent);
     ~WindowHelper();
 
     void setXid(uint);
