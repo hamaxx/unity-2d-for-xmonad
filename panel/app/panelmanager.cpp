@@ -123,12 +123,10 @@ PanelManager::PanelManager(QObject* parent)
 : QObject(parent)
 , m_conf(PANEL_DCONF_SCHEMA)
 {
-    QDesktopWidget* desktop = QApplication::desktop();
     //panel is always only on first screen
     Unity2dPanel* panel = instantiatePanel(0);
     m_panels.append(panel);
     panel->show();
-    panel->move(desktop->screenGeometry(0).topLeft());
     /* A F10 keypress opens the first menu of the visible application or of the first
        indicator on the panel */
     Hotkey* F10 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F10, Qt::NoModifier);
@@ -145,13 +143,7 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     Unity2dPanel* panel = new Unity2dPanel;
     panel->setAccessibleName("Top Panel");
     panel->setEdge(Unity2dPanel::TopEdge);
-    panel->setFixedHeight(24);
-
-    QPoint p;
-    if (QApplication::isRightToLeft()) {
-        p = QPoint(QApplication::desktop()->width() - 1, 0);
-    }
-    int leftmost = QApplication::desktop()->screenNumber(p);
+    panel->setPanelSize(24);
 
     QHash<QString, PanelAppletProviderInterface*> plugins = loadPlugins();
 
@@ -159,6 +151,9 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
     qDebug() << "Configured plugins list is:" << panelConfiguration;
 
     Q_FOREACH(QString appletName, panelConfiguration) {
+
+	// Has been used to identify applets that are only on the Leftmost screen.
+	// Stays for compatibility.
         bool onlyLeftmost = appletName.startsWith('!');
         if (onlyLeftmost) {
             appletName = appletName.mid(1);
@@ -169,62 +164,17 @@ Unity2dPanel* PanelManager::instantiatePanel(int screen)
             qWarning() << "Panel applet" << appletName << "was requested but there's no"
                        << "installed plugin providing it.";
         } else {
-            if (screen == leftmost || !onlyLeftmost) {
-                QWidget* applet = provider->createApplet(panel);
-                if (applet == 0) {
-                    qWarning() << "The panel applet plugin for" << appletName
-                               << "did not return a valid plugin.";
-                } else {
-                    panel->addWidget(applet);
-                }
-            }
+	    QWidget* applet = provider->createApplet(panel);
+	    if (applet == 0) {
+		qWarning() << "The panel applet plugin for" << appletName
+			   << "did not return a valid plugin.";
+	    } else {
+		panel->addWidget(applet);
+	    }
         }
     }
 
     return panel;
-}
-
-void
-PanelManager::onScreenCountChanged(int newCount)
-{
-    if (newCount > 0) {
-        QDesktopWidget* desktop = QApplication::desktop();
-        int size = m_panels.size();
-        Unity2dPanel* panel;
-
-        /* The first panel is always the one on the leftmost screen. */
-        int leftmost = desktop->screenNumber(QPoint());
-        if (size > 0) {
-            panel = m_panels[0];
-        } else {
-            panel = instantiatePanel(leftmost);
-            m_panels.append(panel);
-        }
-        panel->show();
-        panel->move(desktop->screenGeometry(leftmost).topLeft());
-
-        /* Update the position of other existing panels, and instantiate new
-           panels as needed. */
-        int i = 1;
-        for (int screen = 0; screen < newCount; ++screen) {
-            if (screen == leftmost) {
-                continue;
-            }
-            if (i < size) {
-                panel = m_panels[i];
-            } else {
-                panel = instantiatePanel(screen);
-                m_panels.append(panel);
-            }
-            panel->show();
-            panel->move(desktop->screenGeometry(screen).topLeft());
-            ++i;
-        }
-    }
-    /* Remove extra panels if any. */
-    while (m_panels.size() > newCount) {
-        delete m_panels.takeLast();
-    }
 }
 
 void PanelManager::onF10Pressed()
