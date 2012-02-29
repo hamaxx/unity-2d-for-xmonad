@@ -86,7 +86,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
     
     # Set hide mode to intellihide
-    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
 
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
@@ -128,8 +128,16 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_position_with_empty_desktop()
   end
 
+  test "Position with Window not in the way" do
+    test_position_width_window_not_in_the_way()
+  end
+
   test "Position with Window in the way" do
     test_position_with_window_in_the_way()
+  end
+
+  test "Move window positioning to check launcher action" do
+    test_move_window_positioning_to_check_launcher_action()
   end
 
   test "Reveal hidden Launcher with mouse" do
@@ -158,6 +166,10 @@ context "Launcher Autohide and Show Tests on RTL" do
 
   test "Press Alt+F1 to focus Launcher when dash is open, Alt+F1 to unfocus" do
     test_alt_f1_toggle_focus_launcher_when_dash_open()
+  end
+
+  test "Launcher visible on show-desktop" do
+    test_launcher_visible_show_desktop()
   end
 
   test "Launcher hide delay on tile removal" do
