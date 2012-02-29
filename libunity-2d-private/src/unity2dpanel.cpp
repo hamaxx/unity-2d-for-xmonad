@@ -22,6 +22,7 @@
 /*
  * Modified by:
  * - Jure Ham <jure@hamsworld.net>
+ * - Michael Varner <michi.varner@musikvarner.de>
  */
 
 // Self
@@ -75,8 +76,7 @@ struct Unity2dPanelPrivate
     {
         QDesktopWidget* desktop = QApplication::desktop();
 	const QRect screen    = desktop->screenGeometry(m_screen);
-	//        const QRect available = xfitMan().availableGeometry(m_screen);
-        const QRect available = desktop->availableGeometry(m_screen);
+	const QRect available = xfitMan().availableGeometry(m_screen, q->effectiveWinId());
 
         ulong struts[12] = {};
         switch (m_edge) {
@@ -112,12 +112,10 @@ struct Unity2dPanelPrivate
 
     void updateGeometry()
     {
-        QDesktopWidget* desktop = QApplication::desktop();	
-	//        const QRect available = xfitMan().availableGeometry(m_screen);
-        const QRect available = desktop->availableGeometry(m_screen);
+	const QRect available = xfitMan().availableGeometry(m_screen, q->effectiveWinId());
 
         QRect rect;
-        switch (Unity2dPanel::BottomEdge){
+        switch (m_edge){
         case Unity2dPanel::LeftEdge:
 	    rect = QRect(available.left(), available.top(), m_size, available.height());
 	    break;
@@ -128,11 +126,18 @@ struct Unity2dPanelPrivate
             rect = QRect(available.left(), available.top(), available.width(), m_size);
             break;
 	case Unity2dPanel::BottomEdge:
-	    rect = QRect(available.left(), available.bottom() - m_size, available.width(), m_size);
+	    rect = QRect(available.left(), available.bottom(), available.width(), m_size);
 	    break;
 	}
 
+	q->setMinimumWidth(rect.width());
+	q->setMaximumWidth(rect.width());
+	q->setMinimumHeight(rect.height());
+	q->setMaximumHeight(rect.height());
+
         q->setGeometry(rect);
+
+	qDebug("width() v height() = m_size |  %i v %i = %i", q->width(), q->height(), m_size);
     }
 
     void updateLayoutDirection()
@@ -140,16 +145,16 @@ struct Unity2dPanelPrivate
         QBoxLayout::Direction direction;
         switch(m_edge) {
         case Unity2dPanel::TopEdge:
-            direction = QBoxLayout::TopToBottom;
-            break;
-        case Unity2dPanel::BottomEdge:
-            direction = QBoxLayout::BottomToTop;
-	    break;
-        case Unity2dPanel::LeftEdge:
             direction = QBoxLayout::LeftToRight;
             break;
+        case Unity2dPanel::BottomEdge:
+            direction = QBoxLayout::LeftToRight;
+	    break;
+        case Unity2dPanel::LeftEdge:
+            direction = QBoxLayout::TopToBottom;
+            break;
 	case Unity2dPanel::RightEdge:
-            direction = QBoxLayout::RightToLeft;
+            direction = QBoxLayout::TopToBottom;
 	    break;
         }
         m_layout->setDirection(direction);
