@@ -245,8 +245,6 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     /* Alt tap shows the HUD */
     d->m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
     connect(d->m_altHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
-    
-//     TODO hudActiveChanged m_view->rootObject()
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
