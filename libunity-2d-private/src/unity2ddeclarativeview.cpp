@@ -23,7 +23,6 @@
 #include "gobjectcallback.h"
 
 #include <QApplication>
-#include <QDebug>
 #include <QDeclarativeEngine>
 #include <QDeclarativeItem>
 #include <QGLWidget>
@@ -110,16 +109,12 @@ void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char
 {
     QDeclarativeComponent* component = new QDeclarativeComponent(engine(), source, this);
     QObject *instance = component->beginCreate(rootContext());
-    qDebug() << component->errors();
     QMap<const char*, QVariant>::const_iterator it = rootObjectProperties.begin();
     QMap<const char*, QVariant>::const_iterator itEnd = rootObjectProperties.end();
     for ( ; it != itEnd; ++it) {
         instance->setProperty(it.key(), it.value());
     }
-    qDebug() << component->errors();
     component->completeCreate();
-    qDebug() << component->errors();
-    qDebug() << "LALAL";
     m_rootItem = qobject_cast<QDeclarativeItem *>(instance);
     connect(m_rootItem, SIGNAL(widthChanged()), SLOT(resizeToRootObject()));
     connect(m_rootItem, SIGNAL(heightChanged()), SLOT(resizeToRootObject()));
