@@ -15,21 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import QtQuick 1.0
 
 FilterCheckoption {
-    /*TODO: This is a workaround for the unity-core bug
-      Files & Folders-> LastModified should have 3 columns not 2
-      https://bugs.launchpad.net/unity-lens-files/+bug/928208
-      We should remove the following block as soon as
-      unity-core fixes the issue
-    */
-    grid_columns : {
-        if (filterModel.id === "modified") {
-            return 3
-        } else {
-            return 2
-        }
-    }
+    grid_columns : 3
 }

@@ -33,14 +33,6 @@ AbstractButton {
     width: childrenRect.width
     height: childrenRect.height
 
-    effect: DropShadow {
-         blurRadius: 8
-         color: "white"
-         offset.x: 0
-         offset.y: 0
-         enabled: ( tickBox.state == "selected" )
-    }
-
     Rectangle {
         id: container
 

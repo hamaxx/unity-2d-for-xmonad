@@ -22,6 +22,7 @@ import "../common/utils.js" as Utils
 
 FocusScope {
     id: filterLoader
+    objectName: filterModel.rendererName
 
     property variant lens
     property variant filterModel
@@ -96,6 +97,7 @@ FocusScope {
 
     Loader {
         id: filterView
+        objectName: filterModel.rendererName
 
         KeyNavigation.up: header
         anchors.top: header.bottom
