@@ -17,7 +17,6 @@ class DesktopInfo : public QObject
     Q_PROPERTY(WorkspacesInfo *workspaces READ workspaces NOTIFY workspacesChanged)
     Q_PROPERTY(bool isCompositingManagerRunning READ isCompositingManagerRunning
                                                 NOTIFY isCompositingManagerRunningChanged)
-    Q_PROPERTY(int totalWidth READ totalWidth NOTIFY totalWidthChanged)
 
 public:
     static DesktopInfo* instance();
@@ -25,12 +24,10 @@ public:
     /* Getters */
     WorkspacesInfo *workspaces() { return &m_workspacesInfo; }
     bool isCompositingManagerRunning() const;
-    int totalWidth() const;
 
 Q_SIGNALS:
     void workspacesChanged(WorkspacesInfo *workspaces);
     void isCompositingManagerRunningChanged(bool);
-    void totalWidthChanged() const;
 
 private:
     explicit DesktopInfo(QObject *parent = 0);

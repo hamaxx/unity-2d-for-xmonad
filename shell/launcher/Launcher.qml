@@ -35,16 +35,28 @@ LauncherDropItem {
     property variant barrierY
 
     PointerBarrier {
+        id: barrier
+        enabled: true
         p1: Qt.point(barrierX, barrierY)
         p2: Qt.point(barrierX, barrierY + launcher.height)
-        enabled: !launcher.shown
         threshold: launcher2dConfiguration.edgeStopVelocity
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate
-        breakPressure: (p1.x == 0 || p1.x == desktop.totalWidth) ? launcher2dConfiguration.edgeRevealPressure
-                                                                 : launcher2dConfiguration.edgeOvercomePressure
+        breakPressure: launcher.shown ? launcher2dConfiguration.edgeOvercomePressure : launcher2dConfiguration.edgeRevealPressure
 
-        onBarrierBroken: launcher.barrierBroken()
+        onBarrierBroken: {
+            if (launcher.shown) {
+                enabled = false
+            } else {
+                launcher.barrierBroken()
+            }
+        }
+    }
+
+    onShownChanged: {
+        if (!shown) {
+            barrier.enabled = true
+        }
     }
 
     function hideMenu() {

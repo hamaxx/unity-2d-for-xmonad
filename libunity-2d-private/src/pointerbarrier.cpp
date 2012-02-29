@@ -273,8 +273,6 @@ PointerBarrierWrapper::smoother()
     }
     if (m_value >= m_targetPressure)
     {
-        Display *display = QX11Info::display();
-        XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
         m_value = 0;
         m_valueDecayTimer->stop();
 
