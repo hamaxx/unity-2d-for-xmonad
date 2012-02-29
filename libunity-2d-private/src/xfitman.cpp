@@ -927,7 +927,12 @@ const QRect XfitMan::availableGeometry(int screen, Window exclude) const
 
 	Window* xids = (Window*) data;
 	for (uint i = 0; i < childnum; i++)
-        {	    
+        {
+	    // Break if this window is to be excluded
+	    if (exclude)
+		if (xids[i] == exclude)
+		    break;
+
 	    ulong after;
 	    ulong nitems2;
             uchar* data2 = 0;
@@ -977,12 +982,10 @@ const QRect XfitMan::availableGeometry(int screen, Window exclude) const
 
     return available;
 }
-
-
 /************************************************
 
  ************************************************/
-const QRect XfitMan::availableGeometry(const QWidget *widget) const
+const QRect XfitMan::availableGeometry(const QWidget *widget, Window exclude) const
 {
     if (!widget)
     {
@@ -991,19 +994,15 @@ const QRect XfitMan::availableGeometry(const QWidget *widget) const
         return QRect();
     }
 
-    return availableGeometry(QApplication::desktop()->screenNumber(widget));
+    return availableGeometry(QApplication::desktop()->screenNumber(widget), 0);
 }
-
-
 /************************************************
 
  ************************************************/
-const QRect XfitMan::availableGeometry(const QPoint &point) const
+const QRect XfitMan::availableGeometry(const QPoint &point, Window exclude) const
 {
-    return availableGeometry(QApplication::desktop()->screenNumber(point));
+    return availableGeometry(QApplication::desktop()->screenNumber(point), exclude);
 }
-
-
 /************************************************
  The Window Manager MUST set this property on the root window to be the ID of a child
  window created by himself, to indicate that a compliant window manager is active.

@@ -199,19 +199,19 @@ public:
      *   QDesktopWidget have a bug http://bugreports.qt.nokia.com/browse/QTBUG-18380
      *   This workaraund this problem.
      */
-    const QRect availableGeometry(int screen = -1) const;
+    const QRect availableGeometry(int screen = -1, Window exclude = 0) const;
 
     /*!
      *   QDesktopWidget have a bug http://bugreports.qt.nokia.com/browse/QTBUG-18380
      *   This workaraund this problem.
      */
-    const QRect availableGeometry(const QWidget *widget) const;
+    const QRect availableGeometry(const QWidget *widget, Window exclude = 0) const;
 
     /*!
      *   QDesktopWidget have a bug http://bugreports.qt.nokia.com/browse/QTBUG-18380
      *   This workaraund this problem.
      */
-    const QRect availableGeometry(const QPoint &point) const;
+    const QRect availableGeometry(const QPoint &point, Window exclude = 0) const;
 
     int clientMessage(Window _wid, Atom _msg,
                       long unsigned int data0,
