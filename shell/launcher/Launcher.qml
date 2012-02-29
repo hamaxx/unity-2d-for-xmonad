@@ -65,7 +65,7 @@ LauncherDropItem {
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
-        anchors.rightMargin: declarativeView.dashActive ? 0 : border.width
+        anchors.rightMargin: border.visible ? 0 : border.width
         color: "black"
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
@@ -79,7 +79,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
-        visible: declarativeView.dashActive
+        visible: shellManager.dashActive && shellManager.dashShell == declarativeView
         source: "artwork/border.png"
         fillMode: Image.Stretch
     }
@@ -91,7 +91,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? border.anchors.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : border.anchors.left
-        visible: !declarativeView.dashActive
+        visible: !border.visible
 
         color: "white"
         opacity: 0.15

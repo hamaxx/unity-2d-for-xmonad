@@ -94,21 +94,6 @@ Item {
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
 
-        Connections {
-            target: shellManager
-            onDashActiveChanged: {
-                if (shellManager.dashShell == declarativeView) {
-                    if (shellManager.dashActive) {
-                        if (hudLoader != undefined && hudLoader.item.active) hudLoader.item.active = false
-                        launcherLoader.visibilityController.beginForceVisible("dash")
-                    } else {
-                        launcherLoader.visibilityController.endForceVisible("dash")
-                        if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
-                    }
-                }
-            }
-        }
-
         SpreadMonitor {
             id: spread
             onShownChanged: if (shown) {
@@ -122,13 +107,36 @@ Item {
     }
 
     Connections {
-        target: hudLoader.item
-        onActiveChanged: {
-            if (hudLoader.item.active) {
-                if (dashLoader.item.active) dashLoader.item.active = false
-                launcherLoader.visibilityController.beginForceHidden("hud")
+        target: shellManager
+
+        onDashActiveChanged: {
+            if (shellManager.dashActive) {
+                if (hudLoader != undefined && hudLoader.item.active) {
+                    hudLoader.item.active = false
+                }
+                if (dashLoader != undefined) {
+                    launcherLoader.visibilityController.beginForceVisible("dash")
+                }
             } else {
-                launcherLoader.visibilityController.endForceHidden("hud")
+                if (dashLoader != undefined) {
+                    launcherLoader.visibilityController.endForceVisible("dash")
+                    if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                }
+            }
+        }
+
+        onHudActiveChanged: {
+            if (shellManager.hudActive) {
+                if (dashLoader != undefined && dashLoader.item.active) {
+                    dashLoader.item.active = false
+                }
+                if (hudLoader != undefined) {
+                    launcherLoader.visibilityController.beginForceHidden("hud")
+                }
+            } else {
+                if (hudLoader != undefined) {
+                    launcherLoader.visibilityController.endForceHidden("hud")
+                }
             }
         }
     }
@@ -140,7 +148,7 @@ Item {
             launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
-            if (!declarativeView.focus && hudLoader.item.active) hudLoader.item.active = false
+            if (!declarativeView.focus && hudLoader!= undefined && hudLoader.item.active) hudLoader.item.active = false
 
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
@@ -203,12 +211,12 @@ Item {
 
         InputShapeRectangle {
             id: hudInputShape
-            enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
+            enabled: hudLoader != undefined && hudLoader.status == Loader.Ready && hudLoader.item.active
 
             InputShapeMask {
                 source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
-                position: Qt.point(hudLoader.width - 50, hudLoader.height - 49)
+                position: hudLoader != undefined ? Qt.point(hudLoader.width - 50, hudLoader.height - 49) : Qt.point(0, 0)
             }
         }
     }
@@ -241,13 +249,17 @@ Item {
         target: hudInputShape
         property: "rectangle"
         value: {
-            if (desktop.isCompositingManagerRunning) {
-                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            if (hudLoader != undefined) {
+                if (desktop.isCompositingManagerRunning) {
+                    return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+                } else {
+                    return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+                }
             } else {
-                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+                return Qt.rect(0, 0, 0, 0)
             }
         }
-        when: !hudLoader.animating
+        when: hudLoader != undefined && !hudLoader.animating
     }
 
     StrutManager {

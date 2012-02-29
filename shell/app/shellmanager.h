@@ -74,7 +74,7 @@ Q_SIGNALS:
     void dashShellChanged(QObject *shell);
     void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
-    void hudActiveChanged(bool);
+    void hudActiveChanged();
 
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);

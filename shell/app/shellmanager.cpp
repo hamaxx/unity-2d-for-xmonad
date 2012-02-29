@@ -122,6 +122,9 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             m_shellWithDash = m_viewList[0];
             m_shellWithHud = m_viewList[0];
             Q_EMIT q->dashShellChanged(m_shellWithDash);
+
+            QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+            QObject::connect(hud, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
             // TODO Hud?
         }
     }
@@ -447,7 +450,7 @@ bool
 ShellManager::hudActive() const
 {
     QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(d->m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-    return hud->property("hudActive").toBool();
+    return hud->property("active").toBool();
 }
 
 void
