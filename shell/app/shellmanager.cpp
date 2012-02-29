@@ -128,6 +128,7 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             Q_EMIT q->dashScreenChanged(q->dashScreen());
 
             m_shellWithHud = m_viewList[0];
+            Q_EMIT q->hudShellChanged(m_shellWithHud);
             Q_EMIT q->hudScreenChanged(q->hudScreen());
 
             m_hudLoader = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
@@ -215,6 +216,7 @@ void ShellManagerPrivate::moveHudToShell(ShellDeclarativeView* newShell)
 {
     if (moveRootItemToShell("hudLoader", newShell, m_shellWithHud)) {
         m_shellWithHud = newShell;
+        Q_EMIT q->hudShellChanged(newShell);
         Q_EMIT q->hudScreenChanged(q->hudScreen());
     }
 }
@@ -459,6 +461,12 @@ void
 ShellManager::setHudActive(bool active)
 {
     d->m_hudLoader->setProperty("active", active);
+}
+
+QObject *
+ShellManager::hudShell() const
+{
+    return d->m_shellWithHud;
 }
 
 int

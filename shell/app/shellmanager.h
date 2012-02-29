@@ -38,6 +38,7 @@ class ShellManager : public QObject
     Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
+    Q_PROPERTY(QObject *hudShell READ hudShell NOTIFY hudShellChanged)
     Q_PROPERTY(int hudScreen READ hudScreen NOTIFY hudScreenChanged)
 
 public:
@@ -71,6 +72,8 @@ public:
     bool hudActive() const;
     void setHudActive(bool active);
 
+    QObject *hudShell() const;
+
     int hudScreen() const;
 
 Q_SIGNALS:
@@ -82,6 +85,7 @@ Q_SIGNALS:
     void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
     void hudActiveChanged();
+    void hudShellChanged(QObject *shell);
     void hudScreenChanged(int screen);
 
     void dashActivateHome();

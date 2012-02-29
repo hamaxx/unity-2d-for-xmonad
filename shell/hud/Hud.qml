@@ -45,7 +45,7 @@ FocusScope {
 
     WindowInfo {
         id: activeWindow
-        contentXid: declarativeView.lastFocusedWindow
+        contentXid: shellManager.hudShell.lastFocusedWindow
     }
 
     SpreadMonitor {
@@ -55,7 +55,7 @@ FocusScope {
 
     onActiveChanged: {
         if (active) {
-            declarativeView.forceActivateWindow()
+            shellManager.hudShell.forceActivateWindow()
             resultList.focus = true
         } else {
             hudModel.endSearch
@@ -75,12 +75,12 @@ FocusScope {
 
     function toggleHud() {
         if (spread.shown) return
-        if (active) declarativeView.forceDeactivateWindow()
+        if (active) shellManager.hudShell.forceDeactivateWindow()
         active = !active
     }
 
     function executeResult(resultId) {
-        declarativeView.forceDeactivateWindow()
+        shellManager.hudShell.forceDeactivateWindow()
         hudModel.executeResult(resultId)
         active = false
     }
