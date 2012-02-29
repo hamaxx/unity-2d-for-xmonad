@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     Unity2dPanel panel(true);
 
     panel.setEdge(Unity2dPanel::LeftEdge);
-    panel.setFixedWidth(LauncherClient::MaximumWidth);
+    panel.setPanelSize(LauncherClient::MaximumWidth);
     panel.setAccessibleName("Launcher");
 
     VisibilityController* visibilityController = new VisibilityController(&panel);
