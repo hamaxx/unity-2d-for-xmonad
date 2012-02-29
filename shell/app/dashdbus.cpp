@@ -39,6 +39,8 @@ DashDBus::DashDBus(ShellManager* manager, QObject* parent)
     connect(m_manager, SIGNAL(dashActiveLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 
     connect(m_manager, SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
+    connect(m_manager, SIGNAL(dashScreenChanged(int)), SIGNAL(dashScreenChanged(int)));
+    connect(m_manager, SIGNAL(hudScreenChanged(int)), SIGNAL(hudScreenChanged(int)));
 }
 
 DashDBus::~DashDBus()
@@ -120,4 +122,16 @@ DashDBus::setHudActive(bool active)
         m_manager->setHudActive(active);
         Q_EMIT hudActiveChanged(active);
     }
+}
+
+int
+DashDBus::dashScreen() const
+{
+    return m_manager->dashScreen();
+}
+
+int
+DashDBus::hudScreen() const
+{
+    return m_manager->hudScreen();
 }

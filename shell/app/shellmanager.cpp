@@ -30,6 +30,7 @@
 #include <hotkey.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
+#include <screeninfo.h>
 
 // Local
 #include "shelldeclarativeview.h"
@@ -123,12 +124,14 @@ ShellManagerPrivate::updateScreenCount(int newCount)
 
         if (screen == 0) {
             m_shellWithDash = m_viewList[0];
-            m_shellWithHud = m_viewList[0];
             Q_EMIT q->dashShellChanged(m_shellWithDash);
+            Q_EMIT q->dashScreenChanged(q->dashScreen());
+
+            m_shellWithHud = m_viewList[0];
+            Q_EMIT q->hudScreenChanged(q->hudScreen());
 
             m_hudLoader = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
             QObject::connect(m_hudLoader, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
-            // TODO Hud?
         }
     }
 
@@ -138,13 +141,11 @@ ShellManagerPrivate::updateScreenCount(int newCount)
         if (shell == m_shellWithDash) {
             if (newCount > 0) {
                 moveDashToShell(m_viewList[0]);
-                Q_EMIT q->dashShellChanged(m_shellWithDash);
             }
         }
         if (shell == m_shellWithHud) {
             if (newCount > 0) {
                 moveHudToShell(m_viewList[0]);
-//                 TODO ? Q_EMIT q->dashShellChanged(m_shellWithDash);
             }
         }
         shell->deleteLater();
@@ -206,6 +207,7 @@ void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
     if (moveRootItemToShell("dashLoader", newShell, m_shellWithDash)) {
         m_shellWithDash = newShell;
         Q_EMIT q->dashShellChanged(newShell);
+        Q_EMIT q->dashScreenChanged(q->dashScreen());
     }
 }
 
@@ -213,6 +215,7 @@ void ShellManagerPrivate::moveHudToShell(ShellDeclarativeView* newShell)
 {
     if (moveRootItemToShell("hudLoader", newShell, m_shellWithHud)) {
         m_shellWithHud = newShell;
+        Q_EMIT q->hudScreenChanged(q->hudScreen());
     }
 }
 
@@ -338,7 +341,14 @@ ShellManager::dashShell() const
     return d->m_shellWithDash;
 }
 
-bool ShellManager::dashAlwaysFullScreen() const
+int
+ShellManager::dashScreen() const
+{
+    return d->m_shellWithDash->screen()->screen();
+}
+
+bool
+ShellManager::dashAlwaysFullScreen() const
 {
     return d->m_dashAlwaysFullScreen;
 }
@@ -447,6 +457,12 @@ void
 ShellManager::setHudActive(bool active)
 {
     d->m_hudLoader->setProperty("active", active);
+}
+
+int
+ShellManager::hudScreen() const
+{
+    return d->m_shellWithHud->screen()->screen();
 }
 
 /*------------------ Hotkeys Handling -----------------------*/

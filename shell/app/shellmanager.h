@@ -34,9 +34,11 @@ class ShellManager : public QObject
     Q_PROPERTY(QString dashActiveLens READ dashActiveLens WRITE setDashActiveLens NOTIFY dashActiveLensChanged)
     Q_PROPERTY(bool dashHaveCustomHomeShortcuts READ dashHaveCustomHomeShortcuts)
     Q_PROPERTY(QObject *dashShell READ dashShell NOTIFY dashShellChanged)
+    Q_PROPERTY(int dashScreen READ dashScreen NOTIFY dashScreenChanged)
     Q_PROPERTY(bool dashAlwaysFullScreen READ dashAlwaysFullScreen NOTIFY dashAlwaysFullScreenChanged)
     Q_PROPERTY(bool superKeyHeld READ superKeyHeld NOTIFY superKeyHeldChanged)
     Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
+    Q_PROPERTY(int hudScreen READ hudScreen NOTIFY hudScreenChanged)
 
 public:
     enum DashMode {
@@ -60,6 +62,8 @@ public:
 
     QObject *dashShell() const;
 
+    int dashScreen() const;
+
     bool dashAlwaysFullScreen() const;
 
     bool superKeyHeld() const;
@@ -67,14 +71,18 @@ public:
     bool hudActive() const;
     void setHudActive(bool active);
 
+    int hudScreen() const;
+
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
     void dashActiveLensChanged(const QString&);
     void dashShellChanged(QObject *shell);
+    void dashScreenChanged(int screen);
     void dashAlwaysFullScreenChanged(bool dashAlwaysFullScreen);
     void superKeyHeldChanged(bool superKeyHeld);
     void hudActiveChanged();
+    void hudScreenChanged(int screen);
 
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
