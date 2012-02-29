@@ -45,11 +45,24 @@ Item {
 
     onDashLoaderChanged: {
         if (shellManager.dashActive) {
+            // TODO This only works for 2 monitors
             if (dashLoader == undefined)
             {
                 launcherLoader.visibilityController.endForceVisible("dash")
             } else {
                 launcherLoader.visibilityController.beginForceVisible("dash")
+            }
+        }
+    }
+
+    onHudLoaderChanged: {
+        if (shellManager.hudActive) {
+            // TODO This only works for 2 monitors
+            if (hudLoader == undefined)
+            {
+                launcherLoader.visibilityController.endForceHidden("hud")
+            } else {
+                launcherLoader.visibilityController.beginForceHidden("hud")
             }
         }
     }

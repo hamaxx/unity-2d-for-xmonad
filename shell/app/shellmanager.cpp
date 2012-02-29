@@ -45,12 +45,14 @@ static const int DASH_MIN_SCREEN_HEIGHT = 1084;
 struct ShellManagerPrivate
 {
     ShellManagerPrivate()
-        : q(0)
-        , m_shellWithDash(0)
-        , m_shellWithHud(0)
+        : q(NULL)
+        , m_shellWithDash(NULL)
+        , m_shellWithHud(NULL)
+        , m_hudLoader(NULL)
         , m_dashAlwaysFullScreen(false)
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
+        , m_superHotModifier(NULL)
     {}
 
     ShellDeclarativeView* initShell(int screen);
@@ -63,6 +65,7 @@ struct ShellManagerPrivate
     QList<ShellDeclarativeView *> m_viewList;
     ShellDeclarativeView * m_shellWithDash;
     ShellDeclarativeView * m_shellWithHud;
+    QDeclarativeItem* m_hudLoader;
     bool m_dashAlwaysFullScreen;
     QUrl m_sourceFileUrl;
     bool m_dashActive;
@@ -123,8 +126,8 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             m_shellWithHud = m_viewList[0];
             Q_EMIT q->dashShellChanged(m_shellWithDash);
 
-            QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-            QObject::connect(hud, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
+            m_hudLoader = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
+            QObject::connect(m_hudLoader, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
             // TODO Hud?
         }
     }
@@ -393,8 +396,13 @@ ShellManager::toggleHudRequested()
     if (activeShell) {
         const bool differentShell = d->m_shellWithHud != activeShell;
 
-        if (!hudActive() || !differentShell) {
+        if (differentShell) {
             d->moveHudToShell(activeShell);
+
+            if (!hudActive()) {
+                Q_EMIT toggleHud();
+            }
+        } else {
             Q_EMIT toggleHud();
         }
     }
@@ -443,21 +451,25 @@ ShellManager::updateSuperKeyMonitoring()
 bool
 ShellManager::superKeyHeld() const
 {
+    if (d->m_superHotModifier == NULL) // We are just initializing
+        return false;
+
     return d->m_superHotModifier->held();
 }
 
 bool
 ShellManager::hudActive() const
 {
-    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(d->m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-    return hud->property("active").toBool();
+    if (d->m_hudLoader == NULL) // We are just initializing
+        return false;
+
+    return d->m_hudLoader->property("active").toBool();
 }
 
 void
 ShellManager::setHudActive(bool active)
 {
-    QDeclarativeItem *hud = qobject_cast<QDeclarativeItem*>(d->m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-    hud->setProperty("active", active);
+    d->m_hudLoader->setProperty("active", active);
 }
 
 /*------------------ Hotkeys Handling -----------------------*/
