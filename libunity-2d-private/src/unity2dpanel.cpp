@@ -83,20 +83,20 @@ struct Unity2dPanelPrivate
         case Unity2dPanel::LeftEdge:
 	    struts[0] = m_size;
 	    struts[4] = available.top();
-	    struts[5] = available.bottom() - screen.bottom();
+	    struts[5] = available.bottom() - screen.bottom() - 1; // '... -1' otherwise xmonad thinks panel is on all screens	
 	case Unity2dPanel::RightEdge:
 	    struts[1] = m_size;
 	    struts[6] = available.top();
-	    struts[7] = available.bottom() - screen.bottom();
+	    struts[7] = available.bottom() - screen.bottom() - 1;
             break;
         case Unity2dPanel::TopEdge:
             struts[2] = m_size;
             struts[8] = available.left();
-            struts[9] = available.right() - screen.right();
+            struts[9] = available.right() - screen.right() - 1;
         case Unity2dPanel::BottomEdge:
             struts[3]  = m_size;
             struts[10] = available.left();
-            struts[11] = available.right() - screen.right(); //otherwise xmonad thinks panel is on all screens	
+            struts[11] = available.right() - screen.right() - 1;
             break;
         }
 
