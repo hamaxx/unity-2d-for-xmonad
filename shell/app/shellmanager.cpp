@@ -388,6 +388,8 @@ ShellManager::toggleHudRequested()
 
             if (!hudActive()) {
                 Q_EMIT toggleHud();
+            } else {
+                activeShell->forceActivateWindow();
             }
         } else {
             Q_EMIT toggleHud();
