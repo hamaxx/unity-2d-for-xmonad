@@ -88,7 +88,7 @@ include_directories(
 
 # Tests
 enable_testing()
-add_custom_target(check make test)
+add_custom_target(check make test CTEST_OUTPUT_ON_FAILURE=1)
 configure_file(tests/misc/binary_dir.txt.in ${CMAKE_CURRENT_SOURCE_DIR}/tests/misc/binary_dir.txt @ONLY)
 
 # Source
