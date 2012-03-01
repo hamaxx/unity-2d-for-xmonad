@@ -45,7 +45,7 @@ Item {
         var stack = controller.forceVisibleStack
         var wasEmpty = Utils.hashEmpty(stack)
 
-        if (forceHidden) console.log("WARNING: beginForceVisible for id \"" + id +
+        if (forceHidden) console.log("DEBUG: beginForceVisible for id \"" + id +
                         "\" called when forceHidden still true")
 
         if (stack[id]) stack[id] += 1
@@ -64,7 +64,7 @@ Item {
         if (stack[id]) {
             stack[id] -= 1
             if (stack[id] === 0) delete stack[id]
-        } else console.log("WARNING: endForceVisible for id \"" + id +
+        } else console.log("DEBUG: endForceVisible for id \"" + id +
                            "\" called without matching startForceVisible")
 
         controller.forceVisibleStack = stack
@@ -78,7 +78,7 @@ Item {
         var stack = controller.forceHiddenStack
         var wasEmpty = Utils.hashEmpty(stack)
 
-        if (forceVisible) console.log("WARNING: beginForceHidden for id \"" + id +
+        if (forceVisible) console.log("DEBUG: beginForceHidden for id \"" + id +
                         "\" called when forceVisible still true")
 
         if (stack[id]) stack[id] += 1
@@ -97,7 +97,7 @@ Item {
         if (stack[id]) {
             stack[id] -= 1
             if (stack[id] === 0) delete stack[id]
-        } else console.log("WARNING: endForceHidden for id \"" + id +
+        } else console.log("DEBUG: endForceHidden for id \"" + id +
                            "\" called without matching startForceHidden")
 
         controller.forceHiddenStack = stack
