@@ -54,25 +54,18 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
     m_rootItem(NULL)
 {
     setScene(&m_scene);
-// BEGIN from QDeclarativeViewPrivate::init 
+
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameStyle(NoFrame);
 
-    // These seem to give the best performance
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     scene()->setItemIndexMethod(QGraphicsScene::NoIndex);
     viewport()->setFocusPolicy(Qt::NoFocus);
     setFocusPolicy(Qt::StrongFocus);
 
-    scene()->setStickyFocus(true);  //### needed for correct focus handling
-
-    setAttribute(Qt::WA_OpaquePaintEvent);
-    setAttribute(Qt::WA_NoSystemBackground);
-    viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    viewport()->setAttribute(Qt::WA_NoSystemBackground);
-// END from QDeclarativeViewPrivate::init 
+    scene()->setStickyFocus(true);
 
     if (!QFileInfo(UNITY_2D_SCHEMA_FILE).exists()) {
         m_useOpenGL = false;
