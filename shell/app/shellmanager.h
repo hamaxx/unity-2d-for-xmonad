@@ -21,6 +21,8 @@
 #include <QObject>
 struct ShellManagerPrivate;
 
+class ShellDeclarativeView;
+
 class QUrl;
 
 class ShellManager : public QObject
@@ -40,6 +42,7 @@ class ShellManager : public QObject
     Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
     Q_PROPERTY(QObject *hudShell READ hudShell NOTIFY hudShellChanged)
     Q_PROPERTY(int hudScreen READ hudScreen NOTIFY hudScreenChanged)
+    Q_PROPERTY(unsigned int lastFocusedWindow READ lastFocusedWindow NOTIFY lastFocusedWindowChanged)
 
 public:
     enum DashMode {
@@ -76,6 +79,11 @@ public:
 
     int hudScreen() const;
 
+    unsigned int lastFocusedWindow() const;
+
+    void forceActivateShell(ShellDeclarativeView *shell);
+    void forceDeactivateShell(ShellDeclarativeView *shell);
+
 Q_SIGNALS:
     void dashActiveChanged(bool);
     void dashModeChanged(DashMode);
@@ -87,7 +95,9 @@ Q_SIGNALS:
     void hudActiveChanged();
     void hudShellChanged(QObject *shell);
     void hudScreenChanged(int screen);
+    void lastFocusedWindowChanged(unsigned int wid);
 
+    void activeWorkspaceChanged();
     void dashActivateHome();
     void dashActivateLens(const QString& lensId);
     void toggleHud();
@@ -104,6 +114,8 @@ private Q_SLOTS:
     void toggleHudRequested();
 
     void updateDashAlwaysFullScreen();
+
+    void onActiveWorkspaceChanged();
 
 private:
     Q_DISABLE_COPY(ShellManager)

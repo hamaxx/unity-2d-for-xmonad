@@ -17,6 +17,7 @@
 // Local
 #include <config.h>
 #include "shelldeclarativeview.h"
+#include "shellmanager.h"
 #include "dashdbus.h"
 
 // libunity-2d-private
@@ -42,9 +43,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-ShellDeclarativeView::ShellDeclarativeView(const QUrl &sourceFileUrl, int screen)
+ShellDeclarativeView::ShellDeclarativeView(ShellManager *manager, const QUrl &sourceFileUrl, int screen)
     : Unity2DDeclarativeView()
     , m_sourceFileUrl(sourceFileUrl)
+    , m_manager(manager)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
@@ -123,6 +125,17 @@ ShellDeclarativeView::resizeEvent(QResizeEvent *event)
     }
     updateShellPosition();
     Unity2DDeclarativeView::resizeEvent(event);
+}
+
+
+void ShellDeclarativeView::forceActivateWindow()
+{
+    m_manager->forceActivateShell(this);
+}
+
+void ShellDeclarativeView::forceDeactivateWindow()
+{
+    m_manager->forceDeactivateShell(this);
 }
 
 void

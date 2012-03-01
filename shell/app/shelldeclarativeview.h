@@ -28,6 +28,7 @@ class LauncherClient;
 class DashDBus;
 class ScreenInfo;
 class Hotkey;
+class ShellManager;
 
 class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11EventFilter
 {
@@ -46,7 +47,7 @@ class ShellDeclarativeView : public Unity2DDeclarativeView, public AbstractX11Ev
                                                NOTIFY monitoredAreaContainsMouseChanged)
 
 public:
-    explicit ShellDeclarativeView(const QUrl &sourceFileUrl, int screen);
+    ShellDeclarativeView(ShellManager *manager, const QUrl &sourceFileUrl, int screen);
 
     /* getters */
     QRect monitoredArea() const;
@@ -58,6 +59,9 @@ public:
     virtual bool x11EventFilter(XEvent* event);
 
     void toggleLauncher();
+
+    Q_INVOKABLE void forceActivateWindow();
+    Q_INVOKABLE void forceDeactivateWindow();
 
 Q_SIGNALS:
     void focusChanged();
@@ -86,6 +90,7 @@ private:
     QRect m_monitoredArea;
     bool m_monitoredAreaContainsMouse;
     QUrl m_sourceFileUrl;
+    ShellManager *m_manager;
 
     friend class ShellManager;
 };

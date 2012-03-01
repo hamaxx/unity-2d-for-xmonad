@@ -45,7 +45,7 @@ FocusScope {
 
     WindowInfo {
         id: activeWindow
-        contentXid: shellManager.hudShell.lastFocusedWindow
+        contentXid: shellManager.lastFocusedWindow
     }
 
     SpreadMonitor {

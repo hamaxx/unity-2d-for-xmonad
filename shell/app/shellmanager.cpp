@@ -23,8 +23,10 @@
 #include <QDebug>
 #include <QtDeclarative>
 #include <QDesktopWidget>
+#include <QX11Info>
 
 // libunity-2d-private
+#include <debug_p.h>
 #include <hotmodifier.h>
 #include <hotkeymonitor.h>
 #include <hotkey.h>
@@ -38,10 +40,23 @@
 
 // unity-2d
 #include <unity2ddebug.h>
+#include <gobjectcallback.h>
+
+// bamf
+#include "bamf-window.h"
+#include "bamf-matcher.h"
+
+// libwnck
+extern "C" {
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE
+#include <libwnck/libwnck.h>
+}
 
 static const char* COMMANDS_LENS_ID = "commands.lens";
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+
+GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
 struct ShellManagerPrivate
 {
@@ -54,6 +69,7 @@ struct ShellManagerPrivate
         , m_dashActive(false)
         , m_dashMode(ShellManager::DesktopMode)
         , m_superHotModifier(NULL)
+        , m_last_focused_window(None)
     {}
 
     ShellDeclarativeView* initShell(int screen);
@@ -61,6 +77,7 @@ struct ShellManagerPrivate
     ShellDeclarativeView* activeShell() const;
     void moveDashToShell(ShellDeclarativeView* newShell);
     void moveHudToShell(ShellDeclarativeView* newShell);
+    void saveActiveWindow();
 
     ShellManager *q;
     QList<ShellDeclarativeView *> m_viewList;
@@ -75,6 +92,8 @@ struct ShellManagerPrivate
 
     HotModifier* m_superHotModifier;
     HotModifier* m_altHotModifier;
+
+    WId m_last_focused_window;
 };
 
 
@@ -82,7 +101,7 @@ ShellDeclarativeView *
 ShellManagerPrivate::initShell(int screen)
 {
     const QStringList arguments = qApp->arguments();
-    ShellDeclarativeView * view = new ShellDeclarativeView(m_sourceFileUrl, screen);
+    ShellDeclarativeView * view = new ShellDeclarativeView(q, m_sourceFileUrl, screen);
     view->setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view->setUseOpenGL(true);
@@ -284,6 +303,8 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     connect(QApplication::desktop(), SIGNAL(resized(int)), SLOT(updateDashAlwaysFullScreen()));
 
     updateDashAlwaysFullScreen();
+
+    g_signal_connect(G_OBJECT(wnck_screen_get_default()), "active_workspace_changed", G_CALLBACK(activeWorkspaceChangedCB), this);
 }
 
 ShellManager::~ShellManager()
@@ -382,7 +403,7 @@ ShellManager::toggleDash()
 
         if (dashActive() && !differentShell) {
             setDashActive(false);
-            d->m_shellWithDash->forceDeactivateWindow();
+            forceDeactivateShell(d->m_shellWithDash);
         } else {
             d->moveDashToShell(activeShell);
             Q_EMIT dashActivateHome();
@@ -403,7 +424,7 @@ ShellManager::toggleHudRequested()
             if (!hudActive()) {
                 Q_EMIT toggleHud();
             } else {
-                activeShell->forceActivateWindow();
+                forceActivateShell(activeShell);
             }
         } else {
             Q_EMIT toggleHud();
@@ -431,6 +452,13 @@ void ShellManager::updateDashAlwaysFullScreen()
         d->m_dashAlwaysFullScreen = dashAlwaysFullScreen;
         Q_EMIT dashAlwaysFullScreenChanged(dashAlwaysFullScreen);
     }
+}
+
+void ShellManager::onActiveWorkspaceChanged()
+{
+    Q_EMIT activeWorkspaceChanged();
+    d->m_last_focused_window = None;
+    Q_EMIT lastFocusedWindowChanged(d->m_last_focused_window);
 }
 
 /* ----------------- super key handling ---------------- */
@@ -549,4 +577,121 @@ ShellManager::onNumericHotkeyPressed()
             }
         }
     }
+}
+
+unsigned int ShellManager::lastFocusedWindow() const
+{
+    return d->m_last_focused_window;
+}
+
+/* Obtaining & Discarding Keyboard Focus for Window on Demand
+ *
+ * In the X world, activating a window means to give it the input (keyboard)
+ * focus. When a new window opens, X usually makes it active immediately.
+ * Clicking on a window makes it active too.
+ *
+ * Qt does not have the capability to explicitly ask the window manager to
+ * make an existing window active - setFocus() only forwards input focus to
+ * whatever QWidget you specify.
+ *
+ * De-Activating a window is not possible with X (and hence with Qt). So
+ * we work-around this by remembering which application is active prior to
+ * stealing focus, and then Re-Activating it when we're finished. This is
+ * not guaranteed to succeed, as previous window may have closed.
+ *
+ * The following methods deal with these tasks. Note that when the window
+ * has been activated (deactivated), Qt will realise it has obtained (lost)
+ * focus and act appropriately.
+ */
+
+static void forceActivateWindow(WId window, QWidget *w = NULL)
+{
+    /* Workaround focus stealing prevention implemented by some window
+       managers such as Compiz. This is the exact same code you will find in
+       libwnck::wnck_window_activate().
+
+       ref.: http://permalink.gmane.org/gmane.comp.lib.qt.general/4733
+    */
+    Display* display = QX11Info::display();
+    Atom net_wm_active_window = XInternAtom(display, "_NET_ACTIVE_WINDOW",
+                                            False);
+    XEvent xev;
+    xev.xclient.type = ClientMessage;
+    xev.xclient.send_event = True;
+    xev.xclient.display = display;
+    xev.xclient.window = window;
+    xev.xclient.message_type = net_wm_active_window;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = 2;
+    xev.xclient.data.l[1] = CurrentTime;
+    xev.xclient.data.l[2] = 0;
+    xev.xclient.data.l[3] = 0;
+    xev.xclient.data.l[4] = 0;
+
+    XSendEvent(display, QX11Info::appRootWindow(), False,
+               SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+    /* Ensure focus is actually switched to active window */
+    XSetInputFocus(display, window, RevertToParent, CurrentTime);
+    XFlush(display);
+
+    /* Use Qt's setFocus mechanism as a safety guard in case the above failed */
+    if (w != NULL)
+        w->setFocus();
+}
+
+/* Save WId of window with keyboard focus to m_last_focused_window */
+void ShellManagerPrivate::saveActiveWindow()
+{
+    /* Using Bamf here, 'cause XGetFocusInputFocus returned a XId
+       different by 1, which then could not be used with Bamf to
+       get the application. The change does not result in any functional
+       differences, though. */
+    const WId active_window = BamfMatcher::get_default().active_window()->xid();
+
+    bool notAShell = true;
+    Q_FOREACH(ShellDeclarativeView * shell, m_viewList) {
+        notAShell = notAShell && active_window != shell->effectiveWinId();
+    }
+
+    if (notAShell) {
+        m_last_focused_window = active_window;
+        Q_EMIT q->lastFocusedWindowChanged(m_last_focused_window);
+    }
+}
+
+/* Ask Window Manager to activate this window and hence get keyboard focus */
+void ShellManager::forceActivateShell(ShellDeclarativeView *shell)
+{
+    // Save reference to window with current keyboard focus
+    if( d->m_last_focused_window == None ){
+        d->saveActiveWindow();
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateWindow(shell->effectiveWinId(), shell);
+}
+
+/* Ask Window Manager to deactivate this window - not guaranteed to succeed. */
+void ShellManager::forceDeactivateShell(ShellDeclarativeView *shell)
+{
+    if( d->m_last_focused_window == None ){
+        UQ_WARNING << "No previously focused window found, use mouse to select window.";
+        return;
+    }
+
+    // What if previously focused window closed while we we had focus? Check if window
+    // exists by seeing if it has attributes.
+    XWindowAttributes attributes;
+    const int status = XGetWindowAttributes(QX11Info::display(), d->m_last_focused_window, &attributes);
+    if ( status == BadWindow ){
+        UQ_WARNING << "Previously focused window has gone, use mouse to select window.";
+        return;
+    }
+
+    // Show this window by giving it keyboard focus
+    forceActivateWindow(d->m_last_focused_window);
+
+    d->m_last_focused_window = None;
+    Q_EMIT lastFocusedWindowChanged(d->m_last_focused_window);
 }
