@@ -166,7 +166,7 @@ static QList<QDeclarativeItem *> dumpFocusedItems(QObject *obj) {
     return res;
 }
 
-static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newShell, ShellDeclarativeView* oldShell)
+static bool moveRootChildItemToShell(const char *itemName, ShellDeclarativeView* newShell, ShellDeclarativeView* oldShell)
 {
     bool itemMoved = false;
 
@@ -196,7 +196,7 @@ static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newS
 
             itemMoved = true;
         } else {
-            qWarning() << "moveRootItemToShell: Could not find the item" << itemName;
+            qWarning() << "moveRootChildItemToShell: Could not find the item" << itemName;
         }
     }
 
@@ -205,7 +205,7 @@ static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newS
 
 void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
 {
-    if (moveRootItemToShell("dashLoader", newShell, m_shellWithDash)) {
+    if (moveRootChildItemToShell("dashLoader", newShell, m_shellWithDash)) {
         m_shellWithDash = newShell;
         Q_EMIT q->dashShellChanged(newShell);
         Q_EMIT q->dashScreenChanged(q->dashScreen());
@@ -214,7 +214,7 @@ void ShellManagerPrivate::moveDashToShell(ShellDeclarativeView* newShell)
 
 void ShellManagerPrivate::moveHudToShell(ShellDeclarativeView* newShell)
 {
-    if (moveRootItemToShell("hudLoader", newShell, m_shellWithHud)) {
+    if (moveRootChildItemToShell("hudLoader", newShell, m_shellWithHud)) {
         m_shellWithHud = newShell;
         Q_EMIT q->hudShellChanged(newShell);
         Q_EMIT q->hudScreenChanged(q->hudScreen());
