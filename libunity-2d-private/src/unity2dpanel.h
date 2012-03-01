@@ -31,8 +31,6 @@ class IndicatorsManager;
 
 #include "screeninfo.h"
 
-class PanelStyle;
-
 struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
@@ -78,8 +76,6 @@ public:
     void setManualSliding(bool);
 
     QString id() const;
-
-    PanelStyle *style() const;
 
 Q_SIGNALS:
     void manualSlidingChanged(bool);
