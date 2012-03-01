@@ -80,6 +80,7 @@ set(lib${LIB_NAME}_SRCS
     strutmanager.cpp
     pointerbarrier.cpp
     pointerbarriermanager.cpp
+    decayedvalue.cpp
     )
 
 # Build

@@ -18,7 +18,7 @@
 
 import QtQuick 1.0
 
-// Shows the target when it has the focus or when you break the pointer barrier
+// Shows the target when it has the focus or when you trigger the pointer barrier
 // in the edge of the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
@@ -51,6 +51,6 @@ BaseBehavior {
 
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
-        onBarrierBroken: shownRegardlessOfFocus = true
+        onBarrierTriggered: shownRegardlessOfFocus = true
     }
 }

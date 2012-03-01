@@ -25,38 +25,32 @@ LauncherDropItem {
     id: launcher
     Accessible.name: "launcher"
 
-    signal barrierBroken
+    signal barrierTriggered
 
     property bool shown
     property bool showMenus: true
 
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-    property variant barrierX
-    property variant barrierY
+    property variant barrierBreakP1
+    property variant barrierBreakP2
+    property variant barrierTriggerP1
+    property variant barrierTriggerP2
 
     PointerBarrier {
         id: barrier
-        enabled: true
-        p1: Qt.point(barrierX, barrierY)
-        p2: Qt.point(barrierX, barrierY + launcher.height)
+        triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
+        triggerEnabled: !shown
+        breakP1: barrierBreakP1
+        breakP2: barrierBreakP2
+        triggerP1: barrierTriggerP1
+        triggerP2: barrierTriggerP2
         threshold: launcher2dConfiguration.edgeStopVelocity
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate
-        breakPressure: launcher.shown ? launcher2dConfiguration.edgeOvercomePressure : launcher2dConfiguration.edgeRevealPressure
+        triggerPressure: launcher2dConfiguration.edgeRevealPressure
+        breakPressure: launcher2dConfiguration.edgeOvercomePressure
 
-        onBarrierBroken: {
-            if (launcher.shown) {
-                enabled = false
-            } else {
-                launcher.barrierBroken()
-            }
-        }
-    }
-
-    onShownChanged: {
-        if (!shown) {
-            barrier.enabled = true
-        }
+        onBarrierTriggered: launcher.barrierTriggered()
     }
 
     function hideMenu() {

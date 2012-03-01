@@ -94,8 +94,11 @@ Item {
                 }
             }
             onGlobalPositionChanged: {
-                launcherLoader.item.barrierX = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
-                launcherLoader.item.barrierY = declarativeView.globalPosition.y
+                var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+                launcherLoader.item.barrierBreakP1 = Qt.point(x, 0)
+                launcherLoader.item.barrierBreakP2 = Qt.point(x, declarativeView.screen.geometry.height)
+                launcherLoader.item.barrierTriggerP1 = Qt.point(x, declarativeView.globalPosition.y)
+                launcherLoader.item.barrierTriggerP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
             }
         }
 
