@@ -79,9 +79,14 @@ QDeclarativeContext* Unity2DDeclarativeView::rootContext() const
     return engine()->rootContext();
 }
 
-QGraphicsObject* Unity2DDeclarativeView::rootObject() const
+QDeclarativeItem* Unity2DDeclarativeView::rootObject() const
 {
     return m_rootItem;
+}
+
+void Unity2DDeclarativeView::forceActivateWindow()
+{
+    forceActivateWindow(effectiveWinId(), this);
 }
 
 void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char*, QVariant> &rootObjectProperties)
@@ -230,6 +235,42 @@ void Unity2DDeclarativeView::keyPressEvent(QKeyEvent* event)
 void Unity2DDeclarativeView::keyReleaseEvent(QKeyEvent* event)
 {
     QApplication::sendEvent(scene(), event);
+}
+
+void Unity2DDeclarativeView::forceActivateWindow(WId window, QWidget *w)
+{
+    /* Workaround focus stealing prevention implemented by some window
+       managers such as Compiz. This is the exact same code you will find in
+       libwnck::wnck_window_activate().
+
+       ref.: http://permalink.gmane.org/gmane.comp.lib.qt.general/4733
+    */
+    Display* display = QX11Info::display();
+    Atom net_wm_active_window = XInternAtom(display, "_NET_ACTIVE_WINDOW",
+                                            False);
+    XEvent xev;
+    xev.xclient.type = ClientMessage;
+    xev.xclient.send_event = True;
+    xev.xclient.display = display;
+    xev.xclient.window = window;
+    xev.xclient.message_type = net_wm_active_window;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = 2;
+    xev.xclient.data.l[1] = CurrentTime;
+    xev.xclient.data.l[2] = 0;
+    xev.xclient.data.l[3] = 0;
+    xev.xclient.data.l[4] = 0;
+
+    XSendEvent(display, QX11Info::appRootWindow(), False,
+               SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+    /* Ensure focus is actually switched to active window */
+    XSetInputFocus(display, window, RevertToParent, CurrentTime);
+    XFlush(display);
+
+    /* Use Qt's setFocus mechanism as a safety guard in case the above failed */
+    if (w != NULL)
+        w->setFocus();
 }
 
 ScreenInfo*

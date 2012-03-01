@@ -58,7 +58,9 @@ public:
 
     static QDeclarativeEngine *engine();
     QDeclarativeContext* rootContext() const;
-    QGraphicsObject* rootObject() const;
+    QDeclarativeItem* rootObject() const;
+
+    Q_INVOKABLE virtual void forceActivateWindow();
 
 Q_SIGNALS:
     void useOpenGLChanged(bool);
@@ -75,6 +77,8 @@ protected:
     virtual void hideEvent(QHideEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void keyReleaseEvent(QKeyEvent* event);
+
+    static void forceActivateWindow(WId window, QWidget *w = NULL);
 
     ScreenInfo* m_screenInfo;
 

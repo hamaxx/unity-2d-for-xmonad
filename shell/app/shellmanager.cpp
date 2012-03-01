@@ -604,42 +604,6 @@ unsigned int ShellManager::lastFocusedWindow() const
  * focus and act appropriately.
  */
 
-static void forceActivateWindow(WId window, QWidget *w = NULL)
-{
-    /* Workaround focus stealing prevention implemented by some window
-       managers such as Compiz. This is the exact same code you will find in
-       libwnck::wnck_window_activate().
-
-       ref.: http://permalink.gmane.org/gmane.comp.lib.qt.general/4733
-    */
-    Display* display = QX11Info::display();
-    Atom net_wm_active_window = XInternAtom(display, "_NET_ACTIVE_WINDOW",
-                                            False);
-    XEvent xev;
-    xev.xclient.type = ClientMessage;
-    xev.xclient.send_event = True;
-    xev.xclient.display = display;
-    xev.xclient.window = window;
-    xev.xclient.message_type = net_wm_active_window;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = 2;
-    xev.xclient.data.l[1] = CurrentTime;
-    xev.xclient.data.l[2] = 0;
-    xev.xclient.data.l[3] = 0;
-    xev.xclient.data.l[4] = 0;
-
-    XSendEvent(display, QX11Info::appRootWindow(), False,
-               SubstructureRedirectMask | SubstructureNotifyMask, &xev);
-
-    /* Ensure focus is actually switched to active window */
-    XSetInputFocus(display, window, RevertToParent, CurrentTime);
-    XFlush(display);
-
-    /* Use Qt's setFocus mechanism as a safety guard in case the above failed */
-    if (w != NULL)
-        w->setFocus();
-}
-
 /* Save WId of window with keyboard focus to m_last_focused_window */
 void ShellManagerPrivate::saveActiveWindow()
 {
@@ -669,7 +633,7 @@ void ShellManager::forceActivateShell(ShellDeclarativeView *shell)
     }
 
     // Show this window by giving it keyboard focus
-    forceActivateWindow(shell->effectiveWinId(), shell);
+    Unity2DDeclarativeView::forceActivateWindow(shell->effectiveWinId(), shell);
 }
 
 /* Ask Window Manager to deactivate this window - not guaranteed to succeed. */
@@ -690,7 +654,7 @@ void ShellManager::forceDeactivateShell(ShellDeclarativeView *shell)
     }
 
     // Show this window by giving it keyboard focus
-    forceActivateWindow(d->m_last_focused_window);
+    Unity2DDeclarativeView::forceActivateWindow(d->m_last_focused_window);
 
     d->m_last_focused_window = None;
     Q_EMIT lastFocusedWindowChanged(d->m_last_focused_window);

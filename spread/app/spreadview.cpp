@@ -22,6 +22,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QMouseEvent>
+#include <QDeclarativeItem>
 
 #include "screeninfo.h"
 
@@ -39,6 +40,8 @@ void SpreadView::fitToAvailableSpace()
     QRect geometry = m_screenInfo->panelsFreeGeometry();
     setGeometry(geometry);
     setFixedSize(geometry.size());
+    rootObject()->setWidth(geometry.width());
+    rootObject()->setHeight(geometry.height());
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did

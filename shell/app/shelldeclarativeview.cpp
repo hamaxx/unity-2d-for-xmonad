@@ -36,7 +36,7 @@
 #include <QtDBus/QDBusConnectionInterface>
 #include <QtDBus/QDBusInterface>
 #include <QX11Info>
-#include <QGraphicsObject>
+#include <QDeclarativeItem>
 #include <QFileInfo>
 
 // X11
