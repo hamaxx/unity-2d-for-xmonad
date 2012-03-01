@@ -173,8 +173,8 @@ static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newS
     if (newShell != oldShell) {
         QDeclarativeItem *item = qobject_cast<QDeclarativeItem*>(oldShell->rootObject()->property(itemName).value<QObject *>());
         if (item) {
-            const QGraphicsView::ViewportUpdateMode vum1 = oldShell->viewportUpdateMode();
-            const QGraphicsView::ViewportUpdateMode vum2 = newShell->viewportUpdateMode();
+            const QGraphicsView::ViewportUpdateMode oldViewportUpdateMode1 = oldShell->viewportUpdateMode();
+            const QGraphicsView::ViewportUpdateMode oldViewportUpdateMode2 = newShell->viewportUpdateMode();
             oldShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
             newShell->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
@@ -191,8 +191,8 @@ static bool moveRootItemToShell(const char *itemName, ShellDeclarativeView* newS
                 childrenItem->setFocus(true);
             }
 
-            oldShell->setViewportUpdateMode(vum1);
-            newShell->setViewportUpdateMode(vum2);
+            oldShell->setViewportUpdateMode(oldViewportUpdateMode1);
+            newShell->setViewportUpdateMode(oldViewportUpdateMode2);
 
             itemMoved = true;
         } else {
