@@ -38,8 +38,11 @@ void SpreadView::fitToAvailableSpace()
     QRect geometry = m_screenInfo->panelsFreeGeometry();
     setGeometry(geometry);
     setFixedSize(geometry.size());
-    rootObject()->setWidth(geometry.width());
-    rootObject()->setHeight(geometry.height());
+    const int width = geometry.width();
+    const int height = geometry.height();
+    rootObject()->setWidth(width);
+    rootObject()->setHeight(height);
+    setSceneRect(QRectF(0, 0, width, height));
 }
 
 /* To be able to call grabMouse() we need to be 100% sure that X11 did
