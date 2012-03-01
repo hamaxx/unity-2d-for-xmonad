@@ -51,7 +51,6 @@ public:
     /* getters */
     QRect monitoredArea() const;
     bool monitoredAreaContainsMouse() const;
-    int screenNumber() const;
 
     /* setters */
     void setMonitoredArea(QRect monitoredArea);

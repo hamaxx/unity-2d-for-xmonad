@@ -263,9 +263,3 @@ ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
 }
-
-int
-ShellDeclarativeView::screenNumber() const
-{
-    return m_screenInfo->screen();
-}
