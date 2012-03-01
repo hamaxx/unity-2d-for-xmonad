@@ -34,6 +34,7 @@
 #include <QX11Info>
 
 // unity-2d
+#include "panelpalettemanager.h"
 #include "screeninfo.h"
 
 static const int SLIDE_DURATION = 125;
@@ -116,6 +117,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     } else {
         d->m_screenInfo = new ScreenInfo(this, this);
     }
+    new Unity2d::PanelPaletteManager(this);
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
