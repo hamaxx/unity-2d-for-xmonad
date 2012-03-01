@@ -251,7 +251,7 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
     connect(d->m_altHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
 
-    /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
+    /* Alt+F1 reveals the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
     connect(altF1, SIGNAL(pressed()), SLOT(onAltF1Pressed()));
 
