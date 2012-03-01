@@ -37,6 +37,7 @@ class DashDBus : public QObject, protected QDBusContext
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
+    Q_PROPERTY(bool hudActive READ hudActive WRITE setHudActive NOTIFY hudActiveChanged)
 
 public:
     DashDBus(ShellDeclarativeView* view, QObject* parent=0);
@@ -49,6 +50,8 @@ public:
     bool alwaysFullScreen() const;
     QString activeLens() const;
     void setActiveLens(QString activeLens);
+    bool hudActive() const;
+    void setHudActive(bool active);
 
 public Q_SLOTS:
     Q_NOREPLY void activateHome();
@@ -58,6 +61,10 @@ Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged(bool);
     void activeLensChanged(QString);
+    void hudActiveChanged(bool);
+
+private Q_SLOTS:
+    void onHudActiveChanged();
 
 private:
     ShellDeclarativeView* m_view;

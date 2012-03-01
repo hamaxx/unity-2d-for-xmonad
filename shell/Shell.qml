@@ -34,6 +34,8 @@ Item {
 
     Accessible.name: "shell"
 
+    property alias hudActive: hudLoader.active
+
     GestureHandler {
         id: gestureHandler
     }
@@ -75,7 +77,7 @@ Item {
         Binding {
             target: launcherLoader.item
             property: "showMenus"
-            value: !dashLoader.item.active
+            value: !dashLoader.item.active && !hudLoader.item.active
         }
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
@@ -83,8 +85,10 @@ Item {
         Connections {
             target: declarativeView
             onDashActiveChanged: {
-                if (declarativeView.dashActive) launcherLoader.visibilityController.beginForceVisible("dash")
-                else {
+                if (declarativeView.dashActive) {
+                    if (hudLoader.item.active) hudLoader.item.active = false
+                    launcherLoader.visibilityController.beginForceVisible("dash")
+                } else {
                     launcherLoader.visibilityController.endForceVisible("dash")
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
                 }
@@ -120,6 +124,33 @@ Item {
         }
     }
 
+    Loader {
+        id: hudLoader
+        property bool animating: item.animating
+        property bool active: item.active
+        onActiveChanged: item.active = active
+
+        source: "hud/Hud.qml"
+        anchors.top: parent.top
+        x: Utils.isLeftToRight() ? 0 : shell.width - width
+        onLoaded: item.focus = true
+        visible: item.active
+        focus: item.active
+        width: Math.min(shell.width, 1061)
+    }
+
+    Connections {
+        target: hudLoader.item
+        onActiveChanged: {
+            if (hudLoader.item.active) {
+                if (dashLoader.item.active) dashLoader.item.active = false
+                launcherLoader.visibilityController.beginForceHidden("hud")
+            } else {
+                launcherLoader.visibilityController.endForceHidden("hud")
+            }
+        }
+    }
+
     Connections {
         target: declarativeView
         onLauncherFocusRequested: {
@@ -127,6 +158,8 @@ Item {
             launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
+            if (!declarativeView.focus && hudLoader.item.active) hudLoader.item.active = false
+
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
                if it has it, this doesn't happen with FocusScopes (and Launcher is a FocusScope).
@@ -170,6 +203,17 @@ Item {
                 enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
             }
         }
+
+        InputShapeRectangle {
+            id: hudInputShape
+            enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
+
+            InputShapeMask {
+                source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
+                color: "red"
+                position: Qt.point(hudLoader.width - 50, hudLoader.height - 49)
+            }
+        }
     }
 
     Binding {
@@ -194,6 +238,19 @@ Item {
             }
         }
         when: !launcherLoaderXAnimation.running
+    }
+
+    Binding {
+        target: hudInputShape
+        property: "rectangle"
+        value: {
+            if (desktop.isCompositingManagerRunning) {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            } else {
+                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+            }
+        }
+        when: !hudLoader.animating
     }
 
     StrutManager {

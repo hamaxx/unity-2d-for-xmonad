@@ -1,7 +1,7 @@
 /*
  * This file is part of unity-2d
  *
- * Copyright 2010-2011 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+#ifndef CURSORSHAPEAREA_H
+#define CURSORSHAPEAREA_H
 
-FilterCheckoption {
-    /*TODO: This is a workaround for the unity-core bug
-      Files & Folders-> LastModified should have 3 columns not 2
-      https://bugs.launchpad.net/unity-lens-files/+bug/928208
-      We should remove the following block as soon as
-      unity-core fixes the issue
-    */
-    grid_columns : {
-        if (filterModel.id === "modified") {
-            return 3
-        } else {
-            return 2
-        }
-    }
-}
+#include <QDeclarativeItem>
+
+class CursorShapeArea : public QDeclarativeItem
+{
+    Q_OBJECT
+
+    Q_PROPERTY(Qt::CursorShape cursorShape READ cursorShape WRITE setCursorShape NOTIFY cursorShapeChanged)
+
+public:
+    explicit CursorShapeArea(QDeclarativeItem *parent = 0);
+
+    Qt::CursorShape cursorShape() const;
+    void setCursorShape(Qt::CursorShape cursorShape);
+
+private:
+    Q_DISABLE_COPY(CursorShapeArea)
+    Qt::CursorShape m_currentShape;
+
+Q_SIGNALS:
+    void cursorShapeChanged();
+};
+
+#endif // CURSORSHAPEAREA_H

@@ -9,6 +9,7 @@ set(lib${LIB_NAME}_SRCS
     gimageutils.cpp
     gnomesessionclient.cpp
     keyboardmodifiersmonitor.cpp
+    hotmodifier.cpp
     hotkeymonitor.cpp
     hotkey.cpp
     keymonitor.cpp
@@ -37,6 +38,7 @@ set(lib${LIB_NAME}_SRCS
     dragitemwithurl.cpp
     dropitem.cpp
     iconimageprovider.cpp
+    cursorshapearea.cpp
     listaggregatormodel.cpp
     launcheritem.cpp
     application.cpp
@@ -60,6 +62,7 @@ set(lib${LIB_NAME}_SRCS
     checkoptionfilter.cpp
     multirangefilter.cpp
     filters.cpp
+    hud.cpp
     cairoutils.cpp
     indicatorentrywidget.cpp
     indicatorsmanager.cpp

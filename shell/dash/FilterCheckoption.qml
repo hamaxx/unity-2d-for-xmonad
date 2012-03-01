@@ -23,11 +23,13 @@ Filter {
 
     height: filters.height
 
+    property variant grid_columns : 2
+
     GridViewWithSpacing {
         id: filters
 
-        columns: ( filterView.filterModel.id == "genre"
-                  || filterView.filterModel.id == "modified" ) ? 3 : 2
+        columns: grid_columns
+
         rows: Math.ceil(count/columns)
 
         horizontalSpacing: 10

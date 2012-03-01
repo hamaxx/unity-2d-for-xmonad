@@ -23,6 +23,7 @@
 #include <debug_p.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
+#include <hotmodifier.h>
 #include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
 #include <dashclient.h>
@@ -47,8 +48,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-static const int KEY_HOLD_THRESHOLD = 250;
-
 static const char* COMMANDS_LENS_ID = "commands.lens";
 
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
@@ -59,22 +58,24 @@ ShellDeclarativeView::ShellDeclarativeView()
     , m_mode(DesktopMode)
     , m_expanded(true)
     , m_active(false)
-    , m_superKeyPressed(false)
     , m_dashAlwaysFullScreen(false)
-    , m_superKeyHeld(false)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDock, true);
     setTransparentBackground(QX11Info::isCompositingManagerRunning());
 
     m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
 
-    m_superKeyHoldTimer.setSingleShot(true);
-    m_superKeyHoldTimer.setInterval(KEY_HOLD_THRESHOLD);
-    connect(&m_superKeyHoldTimer, SIGNAL(timeout()), SLOT(updateSuperKeyHoldState()));
-    connect(this, SIGNAL(superKeyTapped()), SLOT(toggleDash()));
-
     connect(&launcher2dConfiguration(), SIGNAL(superKeyEnableChanged(bool)), SLOT(updateSuperKeyMonitoring()));
     updateSuperKeyMonitoring();
+
+    /* Super tap shows the dash, super held shows the launcher hints */
+    m_superHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
+    connect(m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDash()));
+    connect(m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
+
+    /* Alt tap shows the HUD */
+    m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
+    connect(m_altHotModifier, SIGNAL(tapped()), SIGNAL(toggleHud()));
 
     /* Alt+F1 reveal the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
@@ -158,6 +159,18 @@ ShellDeclarativeView::focusInEvent(QFocusEvent* event)
 void
 ShellDeclarativeView::resizeEvent(QResizeEvent *event)
 {
+    if (rootObject()) {
+        const int wantedWidth = rootObject()->property("width").toInt();
+        const int wantedHeight = rootObject()->property("height").toInt();
+        if (width() != wantedWidth || height() != wantedHeight) {
+            // FIXME This should never happen as we are using SizeViewToRootObject
+            // in our QDeclarativeView but it seems it happens sometimes
+            // that we get a size it's not the size the QML wants
+            // so force it to the size we want in those cases
+            // This is just a workaround for the time being
+            resize(wantedWidth, wantedHeight);
+        }
+    }
     updateShellPosition();
     Unity2DDeclarativeView::resizeEvent(event);
 }
@@ -319,91 +332,20 @@ void ShellDeclarativeView::updateDashAlwaysFullScreen()
     }
 }
 
-/* ----------------- super key handling ---------------- */
-
-void
-ShellDeclarativeView::updateSuperKeyHoldState()
-{
-    /* If the key was released in the meantime, just do nothing, otherwise
-       consider the key being held, unless we're told to ignore it. */
-    if (m_superKeyPressed && !m_superPressIgnored) {
-        m_superKeyHeld = true;
-        Q_EMIT superKeyHeldChanged(m_superKeyHeld);
-    }
-}
-
 void
 ShellDeclarativeView::updateSuperKeyMonitoring()
 {
     KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
-    KeyMonitor *keyMonitor = KeyMonitor::instance();
     HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
     QVariant value = launcher2dConfiguration().property("superKeyEnable");
     if (!value.isValid() || value.toBool() == true) {
         hotkeyMonitor.enableModifiers(Qt::MetaModifier);
-        QObject::connect(modifiersMonitor,
-                         SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
-                         this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
-        /* Ignore Super presses if another key was pressed simultaneously
-           (i.e. a shortcut). https://bugs.launchpad.net/unity-2d/+bug/801073 */
-        QObject::connect(keyMonitor,
-                         SIGNAL(keyPressed()),
-                         this, SLOT(ignoreSuperPress()));
-        setHotkeysForModifiers(modifiersMonitor->keyboardModifiers());
+        modifiersMonitor->enableModifiers(Qt::MetaModifier);
     } else {
         hotkeyMonitor.disableModifiers(Qt::MetaModifier);
-        QObject::disconnect(modifiersMonitor,
-                            SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
-                            this, SLOT(setHotkeysForModifiers(Qt::KeyboardModifiers)));
-        QObject::disconnect(keyMonitor,
-                            SIGNAL(keyPressed()),
-                            this, SLOT(ignoreSuperPress()));
-        m_superKeyHoldTimer.stop();
-        m_superKeyPressed = false;
-        if (m_superKeyHeld) {
-            m_superKeyHeld = false;
-            Q_EMIT superKeyHeldChanged(false);
-        }
+        modifiersMonitor->disableModifiers(Qt::MetaModifier);
     }
-}
-
-void
-ShellDeclarativeView::setHotkeysForModifiers(Qt::KeyboardModifiers modifiers)
-{
-    /* This is the new new state of the Super key (AKA Meta key), while
-       m_superKeyPressed is the previous state of the key at the last modifiers change. */
-    bool superKeyPressed = modifiers.testFlag(Qt::MetaModifier);
-
-    if (m_superKeyPressed != superKeyPressed) {
-        m_superKeyPressed = superKeyPressed;
-        if (superKeyPressed) {
-            m_superPressIgnored = false;
-            /* If the key is pressed, start up a timer to monitor if it's being held short
-               enough to qualify as just a "tap" or as a proper hold */
-            m_superKeyHoldTimer.start();
-        } else {
-            m_superKeyHoldTimer.stop();
-
-            /* If the key is released, and was not being held, it means that the user just
-               performed a "tap". Unless we're told to ignore that tap, that is. */
-            if (!m_superKeyHeld && !m_superPressIgnored) {
-                Q_EMIT superKeyTapped();
-            }
-            /* Otherwise the user just terminated a hold. */
-            else if(m_superKeyHeld){
-                m_superKeyHeld = false;
-                Q_EMIT superKeyHeldChanged(m_superKeyHeld);
-            }
-        }
-    }
-}
-
-void
-ShellDeclarativeView::ignoreSuperPress()
-{
-    /* There was a key pressed, ignore current super tap/hold */
-    m_superPressIgnored = true;
 }
 
 void
@@ -505,4 +447,10 @@ bool
 ShellDeclarativeView::monitoredAreaContainsMouse() const
 {
     return m_monitoredAreaContainsMouse;
+}
+
+bool
+ShellDeclarativeView::superKeyHeld() const
+{
+    return m_superHotModifier->held();
 }
