@@ -142,11 +142,19 @@ ShellManagerPrivate::updateScreenCount(int newCount)
         if (shell == m_shellWithDash) {
             if (newCount > 0) {
                 moveDashToShell(m_viewList[0]);
+            } else {
+                m_shellWithDash = NULL;
+                Q_EMIT q->dashShellChanged(NULL);
+                Q_EMIT q->dashScreenChanged(-1);
             }
         }
         if (shell == m_shellWithHud) {
             if (newCount > 0) {
                 moveHudToShell(m_viewList[0]);
+            } else {
+                m_shellWithHud = NULL;
+                Q_EMIT q->hudShellChanged(NULL);
+                Q_EMIT q->hudScreenChanged(-1);
             }
         }
         shell->deleteLater();
@@ -346,7 +354,11 @@ ShellManager::dashShell() const
 int
 ShellManager::dashScreen() const
 {
-    return d->m_shellWithDash->screen()->screen();
+    if (d->m_shellWithDash != NULL) {
+        return d->m_shellWithDash->screen()->screen();
+    } else {
+        return -1;
+    }
 }
 
 bool
@@ -472,7 +484,11 @@ ShellManager::hudShell() const
 int
 ShellManager::hudScreen() const
 {
-    return d->m_shellWithHud->screen()->screen();
+    if (d->m_shellWithHud != NULL) {
+        return d->m_shellWithHud->screen()->screen();
+    } else {
+        return -1;
+    }
 }
 
 /*------------------ Hotkeys Handling -----------------------*/
