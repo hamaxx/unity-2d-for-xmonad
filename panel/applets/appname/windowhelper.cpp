@@ -66,8 +66,7 @@ WindowHelper::WindowHelper(int screen, QObject* parent)
     d->m_window = 0;
     d->m_screen = screen;
 
-    WnckScreen* wnck_screen = wnck_screen_get_default();
-    wnck_screen_force_update(wnck_screen);
+    wnck_screen_force_update(wnck_screen_get_default());
 
     update();
 
