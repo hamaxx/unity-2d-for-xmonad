@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("declarativeView", &view);
     view.rootContext()->setContextProperty("spreadView", &view);
     view.setSource(QUrl("./Workspaces.qml"));
+    view.fitToAvailableSpace();
 
     control.connectToBus();
 

@@ -31,8 +31,6 @@ SpreadView::SpreadView()
 {
     m_screenInfo = new ScreenInfo(ScreenInfo::TopLeft, this);
     connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
-
-    fitToAvailableSpace();
 }
 
 void SpreadView::fitToAvailableSpace()
