@@ -166,31 +166,6 @@ ShellDeclarativeView::toggleLauncher()
     }
 }
 
-void
-ShellDeclarativeView::processNumericHotkey(Hotkey* hotkey)
-{
-    /* Shortcuts from 1 to 9 should activate the items with index
-       from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
-       Shortcut for 0 should activate item with index 10.
-       In other words, the indexes are activated in the same order as
-       the keys appear on a standard keyboard. */
-    Qt::Key key = hotkey->key();
-    if (key >= Qt::Key_1 && key <= Qt::Key_9) {
-        int index = key - Qt::Key_0;
-        if (hotkey->modifiers() & Qt::ShiftModifier) {
-            Q_EMIT newInstanceShortcutPressed(index);
-        } else {
-            Q_EMIT activateShortcutPressed(index);
-        }
-    } else if (key == Qt::Key_0) {
-        if (hotkey->modifiers() & Qt::ShiftModifier) {
-            Q_EMIT newInstanceShortcutPressed(10);
-        } else {
-            Q_EMIT activateShortcutPressed(10);
-        }
-    }
-}
-
 /* ----------------- monitored area handling ---------------- */
 
 void

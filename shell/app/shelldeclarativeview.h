@@ -59,8 +59,6 @@ public:
 
     void toggleLauncher();
 
-    void processNumericHotkey(Hotkey*);
-
 Q_SIGNALS:
     void focusChanged();
     void monitoredAreaChanged();
