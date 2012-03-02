@@ -105,8 +105,8 @@ Q_SIGNALS:
     void triggerPressureChanged(int breakPressure);
     void breakPressureChanged(int breakPressure);
 
-    void barrierTriggered();
-    void barrierBroken();
+    void triggered();
+    void broken();
 
 private Q_SLOTS:
     void smoother();

@@ -50,7 +50,7 @@ LauncherDropItem {
         triggerPressure: launcher2dConfiguration.edgeRevealPressure
         breakPressure: launcher2dConfiguration.edgeOvercomePressure
 
-        onBarrierTriggered: launcher.barrierTriggered()
+        onTriggered: launcher.barrierTriggered()
     }
 
     function hideMenu() {

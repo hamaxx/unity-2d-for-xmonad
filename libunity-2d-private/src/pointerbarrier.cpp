@@ -301,14 +301,14 @@ void PointerBarrierWrapper::smoother()
     }
     if (againstTrigger) {
         if (m_triggerValue.addAndCheckExceedingTarget(velocity)) {
-            Q_EMIT barrierTriggered();
+            Q_EMIT triggered();
         }
     } else {
         if (m_breakValue.addAndCheckExceedingTarget(velocity)) {
             Display *display = QX11Info::display();
             XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
 
-            Q_EMIT barrierBroken();
+            Q_EMIT broken();
         }
     }
 
