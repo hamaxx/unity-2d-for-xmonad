@@ -95,10 +95,10 @@ Item {
             }
             onGlobalPositionChanged: {
                 var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
-                launcherLoader.item.barrierBreakP1 = Qt.point(x, 0)
-                launcherLoader.item.barrierBreakP2 = Qt.point(x, declarativeView.screen.geometry.height)
-                launcherLoader.item.barrierTriggerP1 = Qt.point(x, declarativeView.globalPosition.y)
-                launcherLoader.item.barrierTriggerP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
+                launcherLoader.item.barrierP1 = Qt.point(x, 0)
+                launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.height)
+                launcherLoader.item.barrierTriggerZoneP1 = Qt.point(x, declarativeView.globalPosition.y)
+                launcherLoader.item.barrierTriggerZoneP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
             }
         }
 

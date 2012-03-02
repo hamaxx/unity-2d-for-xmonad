@@ -29,7 +29,7 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     : QObject(parent)
     , m_barrier(0)
     , m_triggerDirection(TriggerFromAnywhere)
-    , m_triggerEnabled(false)
+    , m_triggerZoneEnabled(false)
     , m_threshold(-1)
     , m_maxVelocityMultiplier(-1)
     , m_decayRate(-1)
@@ -55,79 +55,71 @@ PointerBarrierWrapper::~PointerBarrierWrapper()
     destroyBarrier();
 }
 
-QPointF PointerBarrierWrapper::triggerP1() const
+QPointF PointerBarrierWrapper::p1() const
 {
-    return m_triggerP1;
+    return m_p1;
 }
 
-void PointerBarrierWrapper::setTriggerP1(const QPointF& p)
+void PointerBarrierWrapper::setP1(const QPointF& p)
 {
-    if (p != m_triggerP1) {
+    if (p != m_p1) {
         if (m_barrier != 0) {
             destroyBarrier();
         }
 
-        m_triggerP1 = p;
-        Q_EMIT triggerP1Changed(p);
+        m_p1 = p;
+        Q_EMIT p1Changed(p);
 
         createBarrier();
     }
 }
 
-QPointF PointerBarrierWrapper::triggerP2() const
+QPointF PointerBarrierWrapper::p2() const
 {
-    return m_triggerP2;
+    return m_p2;
 }
 
-void PointerBarrierWrapper::setTriggerP2(const QPointF& p)
+void PointerBarrierWrapper::setP2(const QPointF& p)
 {
-    if (p != m_triggerP2) {
+    if (p != m_p2) {
         if (m_barrier != 0) {
             destroyBarrier();
         }
 
-        m_triggerP2 = p;
-        Q_EMIT triggerP2Changed(p);
+        m_p2 = p;
+        Q_EMIT p2Changed(p);
 
         createBarrier();
     }
 }
 
-QPointF PointerBarrierWrapper::breakP1() const
+QPointF PointerBarrierWrapper::triggerZoneP1() const
 {
-    return m_breakP1;
+    return m_triggerZoneP1;
 }
 
-void PointerBarrierWrapper::setBreakP1(const QPointF& p)
+void PointerBarrierWrapper::setTriggerZoneP1(const QPointF& p)
 {
-    if (p != m_breakP1) {
-        if (m_barrier != 0) {
-            destroyBarrier();
-        }
+    if (p != m_triggerZoneP1) {
+        m_triggerZoneP1 = p;
+        Q_EMIT triggerZoneP1Changed(p);
 
-        m_breakP1 = p;
-        Q_EMIT breakP1Changed(p);
-
-        createBarrier();
+        handleTriggerZoneChanged();
     }
 }
 
-QPointF PointerBarrierWrapper::breakP2() const
+QPointF PointerBarrierWrapper::triggerZoneP2() const
 {
-    return m_breakP2;
+    return m_triggerZoneP2;
 }
 
-void PointerBarrierWrapper::setBreakP2(const QPointF& p)
+void PointerBarrierWrapper::setTriggerZoneP2(const QPointF& p)
 {
-    if (p != m_breakP2) {
-        if (m_barrier != 0) {
-            destroyBarrier();
-        }
+    if (p != m_triggerZoneP2) {
+        m_triggerZoneP2 = p;
+        Q_EMIT triggerZoneP2Changed(p);
 
-        m_breakP2 = p;
-        Q_EMIT breakP2Changed(p);
-
-        createBarrier();
+        handleTriggerZoneChanged();
     }
 }
 
@@ -144,69 +136,37 @@ void PointerBarrierWrapper::setTriggerDirection(TriggerDirection direction)
     }
 }
 
-bool PointerBarrierWrapper::triggerEnabled() const
+bool PointerBarrierWrapper::triggerZoneEnabled() const
 {
-    return m_triggerEnabled;
+    return m_triggerZoneEnabled;
 }
 
-void PointerBarrierWrapper::setTriggerEnabled(bool enabled)
+void PointerBarrierWrapper::setTriggerZoneEnabled(bool enabled)
 {
-    if (m_triggerEnabled != enabled) {
-        QPointF p1Before, p2Before, p1After, p2After;
-        calculateOuterPoints(&p1Before, &p2Before);
+    if (m_triggerZoneEnabled != enabled) {
+        m_triggerZoneEnabled = enabled;
+        Q_EMIT triggerZoneEnabledChanged(enabled);
 
-        m_triggerEnabled = enabled;
-        Q_EMIT triggerEnabledChanged(enabled);
-
-        calculateOuterPoints(&p1After, &p2After);
-        if (m_barrier != 0 && (p1Before != p1After || p2Before != p2After)) {
-            destroyBarrier();
-            createBarrier();
-        }
-    }
-}
-
-void PointerBarrierWrapper::calculateOuterPoints(QPointF *p1, QPointF *p2)
-{
-    if (m_triggerEnabled) {
-        // The four points need to be aligned either vertically or horizontally
-        if (m_triggerP1.x() == m_triggerP2.x() && m_triggerP1.x() == m_breakP1.x() && m_triggerP1.x() == m_breakP2.x()) {
-            p1->setX(m_triggerP1.x());
-            p2->setX(m_triggerP1.x());
-            p1->setY(qMin(m_triggerP1.y(), m_breakP1.y()));
-            p2->setY(qMax(m_triggerP2.y(), m_breakP2.y()));
-        } else if (m_triggerP1.y() == m_triggerP2.y() && m_triggerP1.y() == m_breakP1.y() && m_triggerP1.y() == m_breakP2.y()) {
-            p1->setY(m_triggerP1.y());
-            p2->setY(m_triggerP1.y());
-            p1->setX(qMin(m_triggerP1.x(), m_breakP1.x()));
-            p2->setX(qMax(m_triggerP2.x(), m_breakP2.x()));
-        }
-    } else {
-        // The two points need to be aligned either vertically or horizontally
-        if (m_breakP1.x() == m_breakP2.x() || m_breakP1.y() == m_breakP2.y()) {
-            *p1 = m_breakP1;
-            *p2 = m_breakP2;
-        }
+        handleTriggerZoneChanged();
     }
 }
 
 void PointerBarrierWrapper::createBarrier()
 {
-    if (m_threshold < 0)
+    if (m_threshold < 0) {
         return;
+    }
 
-    QPointF p1, p2;
-    calculateOuterPoints(&p1, &p2);
-
-    if (p1 == p2)
+    if (!isPointAlignmentCorrect()) {
         return;
+    }
 
     Display *display = QX11Info::display();
 
     m_barrier = XFixesCreatePointerBarrierVelocity(display,
                     DefaultRootWindow(display),
-                    p1.x(), p1.y(),
-                    p2.x(), p2.y(),
+                    m_p1.x(), m_p1.y(),
+                    m_p2.x(), m_p2.y(),
                     0,
                     m_threshold,
                     0,
@@ -329,15 +289,15 @@ void PointerBarrierWrapper::smoother()
     const int velocity = qMin<qreal>(600 * m_maxVelocityMultiplier, m_smoothingAccumulator / m_smoothingCount);
 
     bool againstTrigger = false;
-    if (m_triggerEnabled && m_triggerP1.x() == m_triggerP2.x() && m_triggerP1.y() <= m_lastEventY && m_triggerP2.y() >= m_lastEventY) {
+    if (m_triggerZoneEnabled && m_triggerZoneP1.x() == m_triggerZoneP2.x() && m_triggerZoneP1.y() <= m_lastEventY && m_triggerZoneP2.y() >= m_lastEventY) {
         againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerP1.x()) ||
-                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerP1.x());
+                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerZoneP1.x()) ||
+                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerZoneP1.x());
     }
-    if (m_triggerEnabled && m_triggerP1.y() == m_triggerP2.y() && m_triggerP1.x() <= m_lastEventX && m_triggerP2.x() >= m_lastEventX) {
+    if (m_triggerZoneEnabled && m_triggerZoneP1.y() == m_triggerZoneP2.y() && m_triggerZoneP1.x() <= m_lastEventX && m_triggerZoneP2.x() >= m_lastEventX) {
         againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerP1.y()) ||
-                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerP1.y());
+                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerZoneP1.y()) ||
+                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerZoneP1.y());
     }
     if (againstTrigger) {
         if (m_triggerValue.addAndCheckExceedingTarget(velocity)) {
@@ -366,6 +326,36 @@ void PointerBarrierWrapper::updateRealDecayTargetPressures()
     m_breakValue.setDecayRate(realDecayRate);
     m_triggerValue.setTarget(m_triggerPressure * responsiveness_mult);
     m_breakValue.setTarget(m_breakPressure * responsiveness_mult);
+}
+
+void PointerBarrierWrapper::handleTriggerZoneChanged()
+{
+    // Make sure barrier point alignment is still valid
+    if (!isPointAlignmentCorrect()) {
+        destroyBarrier();
+    }
+    // If there is no barrier try to create one now
+    if (m_barrier == 0) {
+        createBarrier();
+    }
+}
+
+bool PointerBarrierWrapper::isPointAlignmentCorrect() const
+{
+    bool alignmentCorrect = false;
+
+    // Outer points can't be the same
+    if (m_p1 != m_p2) {
+        // The two points need to be aligned either vertically or horizontally
+        if (m_p1.x() == m_p2.x()) {
+            alignmentCorrect = !m_triggerZoneEnabled || (m_triggerZoneP1.x() == m_p1.x() && m_triggerZoneP2.x() == m_p1.x());
+        } else if (m_p1.y() == m_p2.y()) {
+            alignmentCorrect = !m_triggerZoneEnabled || (m_triggerZoneP1.y() == m_p1.y() && m_triggerZoneP2.y() == m_p1.y());
+        }
+    }
+
+    return alignmentCorrect;
+
 }
 
 #include <pointerbarrier.moc>

@@ -31,19 +31,19 @@ LauncherDropItem {
     property bool showMenus: true
 
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-    property variant barrierBreakP1
-    property variant barrierBreakP2
-    property variant barrierTriggerP1
-    property variant barrierTriggerP2
+    property variant barrierP1
+    property variant barrierP2
+    property variant barrierTriggerZoneP1
+    property variant barrierTriggerZoneP2
 
     PointerBarrier {
         id: barrier
         triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
-        triggerEnabled: !shown
-        breakP1: barrierBreakP1
-        breakP2: barrierBreakP2
-        triggerP1: barrierTriggerP1
-        triggerP2: barrierTriggerP2
+        triggerZoneEnabled: !shown
+        p1: barrierP1
+        p2: barrierP2
+        triggerZoneP1: barrierTriggerZoneP1
+        triggerZoneP2: barrierTriggerZoneP2
         threshold: launcher2dConfiguration.edgeStopVelocity
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate

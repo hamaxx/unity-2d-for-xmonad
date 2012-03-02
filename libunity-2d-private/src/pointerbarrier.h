@@ -30,12 +30,12 @@ struct PointerBarrierWrapperPrivate;
 class PointerBarrierWrapper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QPointF triggerP1 READ triggerP1 WRITE setTriggerP1 NOTIFY triggerP1Changed)
-    Q_PROPERTY(QPointF triggerP2 READ triggerP2 WRITE setTriggerP2 NOTIFY triggerP2Changed)
-    Q_PROPERTY(QPointF breakP1 READ breakP1 WRITE setBreakP1 NOTIFY breakP1Changed)
-    Q_PROPERTY(QPointF breakP2 READ breakP2 WRITE setBreakP2 NOTIFY breakP2Changed)
+    Q_PROPERTY(QPointF p1 READ p1 WRITE setP1 NOTIFY p1Changed)
+    Q_PROPERTY(QPointF p2 READ p2 WRITE setP2 NOTIFY p2Changed)
+    Q_PROPERTY(QPointF triggerZoneP1 READ triggerZoneP1 WRITE setTriggerZoneP1 NOTIFY triggerZoneP1Changed)
+    Q_PROPERTY(QPointF triggerZoneP2 READ triggerZoneP2 WRITE setTriggerZoneP2 NOTIFY triggerZoneP2Changed)
     Q_PROPERTY(TriggerDirection triggerDirection READ triggerDirection WRITE setTriggerDirection NOTIFY triggerDirectionChanged)
-    Q_PROPERTY(bool triggerEnabled READ triggerEnabled WRITE setTriggerEnabled NOTIFY triggerEnabledChanged)
+    Q_PROPERTY(bool triggerZoneEnabled READ triggerZoneEnabled WRITE setTriggerZoneEnabled NOTIFY triggerZoneEnabledChanged)
     Q_PROPERTY(int threshold READ threshold WRITE setThreshold NOTIFY thresholdChanged)
     Q_PROPERTY(int maxVelocityMultiplier READ maxVelocityMultiplier WRITE setMaxVelocityMultiplier NOTIFY maxVelocityMultiplierChanged)
     Q_PROPERTY(int decayRate READ decayRate WRITE setDecayRate NOTIFY decayRateChanged)
@@ -57,23 +57,23 @@ public:
     PointerBarrierWrapper(QObject* parent = 0);
     ~PointerBarrierWrapper();
 
-    QPointF triggerP1() const;
-    void setTriggerP1(const QPointF &p);
+    QPointF p1() const;
+    void setP1(const QPointF &p);
 
-    QPointF triggerP2() const;
-    void setTriggerP2(const QPointF &p);
+    QPointF p2() const;
+    void setP2(const QPointF &p);
 
-    QPointF breakP1() const;
-    void setBreakP1(const QPointF &p);
+    QPointF triggerZoneP1() const;
+    void setTriggerZoneP1(const QPointF &p);
 
-    QPointF breakP2() const;
-    void setBreakP2(const QPointF &p);
+    QPointF triggerZoneP2() const;
+    void setTriggerZoneP2(const QPointF &p);
 
     TriggerDirection triggerDirection() const;
     void setTriggerDirection(TriggerDirection direction);
 
-    bool triggerEnabled() const;
-    void setTriggerEnabled(bool enabled);
+    bool triggerZoneEnabled() const;
+    void setTriggerZoneEnabled(bool enabled);
 
     int threshold() const;
     void setThreshold(int threshold);
@@ -93,13 +93,12 @@ public:
     PointerBarrier barrier() const;
 
 Q_SIGNALS:
-    void triggerP1Changed(const QPointF &p1);
-    void triggerP2Changed(const QPointF &p2);
-    void breakP1Changed(const QPointF &p1);
-    void breakP2Changed(const QPointF &p2);
-    void enabledChanged(bool changed);
+    void p1Changed(const QPointF &p1);
+    void p2Changed(const QPointF &p2);
+    void triggerZoneP1Changed(const QPointF &p1);
+    void triggerZoneP2Changed(const QPointF &p2);
     void triggerDirectionChanged(TriggerDirection direction);
-    void triggerEnabledChanged(bool changed);
+    void triggerZoneEnabledChanged(bool changed);
     void thresholdChanged(int threshold);
     void maxVelocityMultiplierChanged(qreal maxVelocityMultiplier);
     void decayRateChanged(int decayRate);
@@ -115,8 +114,6 @@ private Q_SLOTS:
 private:
     Q_DISABLE_COPY(PointerBarrierWrapper);
 
-    void calculateOuterPoints(QPointF *p1, QPointF *p2);
-
     void createBarrier();
     void destroyBarrier();
 
@@ -124,14 +121,18 @@ private:
 
     void updateRealDecayTargetPressures();
 
+    void handleTriggerZoneChanged();
+
+    bool isPointAlignmentCorrect() const;
+
     PointerBarrier m_barrier;
 
-    QPointF m_triggerP1;
-    QPointF m_triggerP2;
-    QPointF m_breakP1;
-    QPointF m_breakP2;
+    QPointF m_p1;
+    QPointF m_p2;
+    QPointF m_triggerZoneP1;
+    QPointF m_triggerZoneP2;
     TriggerDirection m_triggerDirection;
-    bool m_triggerEnabled;
+    bool m_triggerZoneEnabled;
     int m_threshold;
     qreal m_maxVelocityMultiplier;
     int m_decayRate;
