@@ -37,7 +37,10 @@ libunity_2d_tests(
     listaggregatormodeltest
     qsortfilterproxymodeltest
     focuspathtest
+    pointerbarriertest
     )
+
+target_link_libraries(pointerbarriertest Xtst)
     
 # unity2dtrtest - FIXME
 #add_test(NAME unity2dtrtest_check
