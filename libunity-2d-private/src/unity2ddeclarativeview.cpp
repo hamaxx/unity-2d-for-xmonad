@@ -279,7 +279,7 @@ void Unity2DDeclarativeView::saveActiveWindow()
         active_window = bamf_active_window->xid();
     }
 
-    if (active_window != this->effectiveWinId()) {
+    if (active_window != this->effectiveWinId() && active_window != m_last_focused_window) {
         m_last_focused_window = active_window;
         Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
     }
