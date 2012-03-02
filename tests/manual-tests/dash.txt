@@ -6,6 +6,13 @@
     small, Dash should be locked to full-screen mode. (lp:860400)
 
 ----
+ * Newly installed Ubuntu, first boot to Unity 2D session
+ * No applications have yet started or windows appear
+ * Click the BFB in the Launcher *OR* Tap Alt to open HUD
+
+--> Shell should not crash. (lp:944724)
+
+----
  * Press Alt+F2
 
 --> Dash opens and "Run a command" is shown in the search field - (lp:883392)
