@@ -270,7 +270,15 @@ void Unity2DDeclarativeView::saveActiveWindow()
        different by 1, which then could not be used with Bamf to
        get the application. The change does not result in any functional
        differences, though. */
-    WId active_window = BamfMatcher::get_default().active_window()->xid();
+    WId active_window = None;
+    BamfWindow* bamf_active_window = BamfMatcher::get_default().active_window();
+
+    /* Bamf can return a null active window - example case is just after 
+       login when no application has been yet been started. */
+    if (bamf_active_window != NULL) {
+        active_window = bamf_active_window->xid();
+    }
+
     if (active_window != this->effectiveWinId()) {
         m_last_focused_window = active_window;
         Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
