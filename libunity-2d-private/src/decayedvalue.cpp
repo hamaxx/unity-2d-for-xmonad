@@ -25,7 +25,7 @@ DecayedValue::DecayedValue()
     connect(&m_valueDecayTimer, SIGNAL(timeout()), this, SLOT(decay()));
 }
 
-bool DecayedValue::add(int i)
+bool DecayedValue::addAndCheckExceedingTarget(int i)
 {
     m_value += i;
     if (!m_valueDecayTimer.isActive()) {

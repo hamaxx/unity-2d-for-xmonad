@@ -27,7 +27,7 @@ class DecayedValue : public QObject
 public:
     DecayedValue();
 
-    bool add(int i);
+    bool addAndCheckExceedingTarget(int i);
 
     void setDecayRate(int decayRate);
     void setTarget(int target);

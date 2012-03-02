@@ -340,11 +340,11 @@ void PointerBarrierWrapper::smoother()
                         (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerP1.y());
     }
     if (againstTrigger) {
-        if (m_triggerValue.add(velocity)) {
+        if (m_triggerValue.addAndCheckExceedingTarget(velocity)) {
             Q_EMIT barrierTriggered();
         }
     } else {
-        if (m_breakValue.add(velocity)) {
+        if (m_breakValue.addAndCheckExceedingTarget(velocity)) {
             Display *display = QX11Info::display();
             XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
 
