@@ -23,6 +23,7 @@
 #include <unitytestmacro.h>
 #include <debug_p.h>
 #include <imageutilities.h>
+#include <config.h>
 
 const int threshold = 0.001;
 
@@ -37,7 +38,7 @@ private Q_SLOTS:
     void testAverageColorComputed0()
     {
         ImageUtilities imageUtil;
-        QUrl image("file:./verification/JardinPolar_by_CarmenGloria_Gonzalez.jpg");
+        QUrl image("file:" + unity2dDirectory() + "/libunity-2d-private/tests/verification/JardinPolar_by_CarmenGloria_Gonzalez.jpg");
         QColor color;
 
         imageUtil.setSource(image);
@@ -51,8 +52,7 @@ private Q_SLOTS:
     void testAverageColorComputed1()
     {
         ImageUtilities imageUtil;
-        QString imagePath = QString::fromUtf8("file:./verification/Langelinie_Allé_by_SirPecanGum.jpg");
-        QUrl image(imagePath);
+        QUrl image("file:" + unity2dDirectory() + "/libunity-2d-private/tests/verification/Langelinie_Alle_by_SirPecanGum.jpg");
         QColor color;
 
         imageUtil.setSource(image);
@@ -65,7 +65,7 @@ private Q_SLOTS:
     void testAverageColorComputed2()
     {
         ImageUtilities imageUtil;
-        QUrl image("file:./verification/The_Grass_aint_Greener_by_fix_pena.jpg");
+        QUrl image("file:" + unity2dDirectory() + "/libunity-2d-private/tests/verification/The_Grass_aint_Greener_by_fix_pena.jpg");
         QColor color;
 
         imageUtil.setSource(image);
@@ -79,7 +79,7 @@ private Q_SLOTS:
     void testAverageColorComputed3()
     {
         ImageUtilities imageUtil;
-        QUrl image("file:./verification/warty-final-ubuntu.png");
+        QUrl image("file:" + unity2dDirectory() + "/libunity-2d-private/tests/verification/warty-final-ubuntu.png");
         QColor color;
 
         imageUtil.setSource(image);
