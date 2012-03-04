@@ -341,7 +341,6 @@ void AppNameApplet::updateWidgets()
         if (showAppLabel) {
             // Define text
             QString text;
-            QString text;
             if (app) {
                 //Display application name and window title
                 BamfWindow* bamfWindow = BamfMatcher::get_default().active_window();

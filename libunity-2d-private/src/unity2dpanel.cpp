@@ -42,6 +42,10 @@
 // unity-2d
 #include "screeninfo.h"
 
+// X
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+
 static const int SLIDE_DURATION = 125;
 static const int REARRANGE_INTERVALL = 2000; // The intervall between fallback geometry updates in ms
 
@@ -110,8 +114,8 @@ struct Unity2dPanelPrivate
         const QRect available = desktop->availableGeometry(primscr);
 
         //unity 5.4
-        const QRect screen = m_screenInfo->geometry();
-        const QRect available = m_screenInfo->availableGeometry();
+        //const QRect screen = m_screenInfo->geometry();
+        //const QRect available = m_screenInfo->availableGeometry();
 
         QRect rect;
         switch (m_edge) {
@@ -241,7 +245,7 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     d->updateEdge();
-    d->m_slideOutAnimation->setEndValue(-panelSize());
+    //d->m_slideOutAnimation->setEndValue(-panelSize());
 }
 
 //unity 5.4
@@ -249,16 +253,15 @@ void Unity2dPanel::showEvent(QShowEvent* event)
 void Unity2dPanel::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
-    d->m_slideOutAnimation->setEndValue(-panelSize());
-    d->updateEdge();
-}
-
-void Unity2dPanel::slotScreenCountChanged(int screenno) {
-    d->m_slideOutAnimation->setEndValue(-panelSize());
+//    d->m_slideOutAnimation->setEndValue(-panelSize());
     d->updateEdge();
 }
 */
 
+void Unity2dPanel::slotScreenCountChanged(int screenno) {
+//    d->m_slideOutAnimation->setEndValue(-panelSize());
+    d->updateEdge();
+}
 void Unity2dPanel::slotWorkAreaResized(int screen)
 {
     if (x11Info().screen() == screen) {
