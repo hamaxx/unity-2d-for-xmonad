@@ -35,9 +35,6 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
     connect(m_view, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
     connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 
-    /* QML's propertyChanged signals are simple, they don't pass the property value */
-    connect(m_view->rootObject(), SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
-
     new DashAdaptor(this);
 }
 
@@ -81,25 +78,4 @@ void
 DashDBus::setActiveLens(QString activeLens)
 {
     m_view->setActiveLens(activeLens);
-}
-
-bool
-DashDBus::hudActive() const
-{
-    return m_view->rootObject()->property("hudActive").toBool();
-}
-
-void
-DashDBus::onHudActiveChanged()
-{
-    Q_EMIT hudActiveChanged(hudActive());
-}
-
-void
-DashDBus::setHudActive(bool active)
-{
-    if (active != hudActive()) {
-        m_view->rootObject()->setProperty("hudActive", active);
-        Q_EMIT hudActiveChanged(active);
-    }
 }

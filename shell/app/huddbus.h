@@ -1,10 +1,8 @@
 /*
- * This file is part of unity-2d
- *
- * Copyright 2011 Canonical Ltd.
+ * Copyright (C) 2011 Canonical, Ltd.
  *
  * Authors:
- * - Aurélien Gâteau <aurelien.gateau@canonical.com>
+ *  Michał Sawicz <michal.sawicz@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,50 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DASHCLIENT_H
-#define DASHCLIENT_H
 
-// Local
+#ifndef HUDDBus_H
+#define HUDDBus_H
 
-// Qt
-#include <QObject>
-#include <QSize>
+#include <QtCore/QObject>
+#include <QtDBus/QDBusContext>
 
-class QDBusInterface;
+class ShellDeclarativeView;
 
 /**
- * Monitors the dash and provide a single point of entry to its status
- * TODO: rename to reflect transition to Shell.
+ * DBus interface for the HUD.
  */
-class DashClient : public QObject
+class HUDDBus : public QObject, protected QDBusContext
 {
     Q_OBJECT
-    Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
 
 public:
-    static DashClient* instance();
+    HUDDBus(ShellDeclarativeView* view, QObject* parent=0);
 
     bool active() const;
     void setActive(bool active);
 
-    bool alwaysFullScreen() const;
-
 Q_SIGNALS:
     void activeChanged(bool);
-    void alwaysFullScreenChanged();
 
 private Q_SLOTS:
-    void connectToDash();
-    void slotActiveChanged(bool);
-    void slotAlwaysFullScreenChanged(bool);
+    void onHudActiveChanged();
 
 private:
-    DashClient(QObject* parent = 0);
-
-    QDBusInterface* m_dashDbusIface;
-    bool m_active;
-    bool m_alwaysFullScreen;
+    ShellDeclarativeView* m_view;
 };
 
-#endif /* DASHCLIENT_H */
+#endif // HudDBus_H
+

@@ -23,6 +23,7 @@
 #include "plugin.h"
 
 #include "dashclient.h"
+#include "hudclient.h"
 #include "application.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -110,6 +111,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
     qmlRegisterType<DashClient>();
+    qmlRegisterType<HUDClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
