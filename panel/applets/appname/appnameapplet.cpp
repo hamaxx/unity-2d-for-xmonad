@@ -135,8 +135,8 @@ protected:
         }
         bool rtl = layoutDirection() == Qt::RightToLeft;
         int posX;
-        if (!rtl && m_buttonType == PanelStyle::CloseWindowButton ||
-             rtl && m_buttonType != PanelStyle::CloseWindowButton) {
+        if ((!rtl && m_buttonType == PanelStyle::CloseWindowButton) ||
+            ( rtl && m_buttonType != PanelStyle::CloseWindowButton)) {
             posX = width() - pix.width();
         } else {
             posX = 0;
