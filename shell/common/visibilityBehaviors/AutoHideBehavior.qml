@@ -25,7 +25,7 @@ import QtQuick 1.0
 // To use this Behavior your target needs to provide one properties
 //  - containsMouse: Defines if the mouse is inside the target
 // and one signal
-//  - barrierBroken: Defines when the pointer barrier has been broken
+//  - barrierTriggered: Defines when the pointer barrier has been triggered
 
 BaseBehavior {
     id: autoHide
