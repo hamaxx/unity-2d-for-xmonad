@@ -331,7 +331,9 @@ void
 LauncherContextualMenu::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
-    if (key == Qt::Key_Left || key == Qt::Key_Escape) {
+    bool rtl = layoutDirection() == Qt::RightToLeft;
+    if ((!rtl && key == Qt::Key_Left) || 
+        ( rtl && key == Qt::Key_Right) || key == Qt::Key_Escape) {
         Q_EMIT dismissedByKeyEvent();
         hide();
         event->accept();

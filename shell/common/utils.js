@@ -44,3 +44,17 @@ function isLeftToRight() {
 function isRightToLeft() {
     return Qt.application.layoutDirection == Qt.RightToLeft
 }
+
+function switchLeftRightKeys(key) {
+    if (isRightToLeft()) {
+        switch (key) {
+        case Qt.Key_Right:
+            return Qt.Key_Left
+        case Qt.Key_Left:
+            return Qt.Key_Right
+        default:
+            return key
+        }
+    }
+    return key
+}
