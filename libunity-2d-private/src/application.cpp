@@ -85,6 +85,11 @@ Application::Application()
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
 
     // Accumulate geometry changes during 50 msec
+    // This is done because geometry-changed happens VERY often and doing the calculation
+    // all the time just drags down your CPU for no reason
+    // Instead what we do is send the windowGeometryChanged 50 msec after a geometry-changed
+    // ignoring the geometry-changed that happen in that period, so at most we do
+    // the calculation each 50ms instead of every single pixel move
     m_geometryChangedTimer.setSingleShot(true);
     m_geometryChangedTimer.setInterval(50);
     connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
