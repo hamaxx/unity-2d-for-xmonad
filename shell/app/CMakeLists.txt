@@ -5,11 +5,13 @@ pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 # Sources
 set(shell_SRCS
     shell.cpp
+    shelldbus.cpp
     dashdbus.cpp
     shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
+    shelldbus.h
     dashdbus.h
     shelldeclarativeview.h
     )

@@ -41,9 +41,6 @@ class DashDBus : public QObject, protected QDBusContext
 
 public:
     DashDBus(ShellDeclarativeView* view, QObject* parent=0);
-    ~DashDBus();
-
-    bool connectToBus();
 
     bool active() const;
     void setActive(bool active);
