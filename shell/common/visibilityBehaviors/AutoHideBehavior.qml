@@ -44,6 +44,16 @@ BaseBehavior {
         }
     }
 
+    onForcedHiddenChanged:
+    {
+        if (forcedHidden) {
+            if (autoHideTimer.running) {
+                autoHideTimer.stop()
+                shownRegardlessOfFocus = false
+            }
+        }
+    }
+
     Timer {
         id: autoHideTimer
         interval: 1000
