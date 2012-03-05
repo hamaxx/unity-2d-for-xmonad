@@ -132,8 +132,8 @@ AbstractButton {
                     color: "white"
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.topMargin: 1
-                    anchors.bottomMargin: 1
+                    anchors.topMargin: 2
+                    anchors.bottomMargin: 2
                     width: 1
                     Timer {
                         interval: 900; running: true; repeat: true
