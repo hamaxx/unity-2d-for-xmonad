@@ -29,51 +29,12 @@ import "../utils.js" as Utils
 //  - containsMouse: Defines if the mouse is inside the target
 //  - outerEdgeContainsMouse: Defines if the mouse is in the edge of the target
 
-BaseBehavior {
+AutoHideBehavior {
     id: intellihide
 
-    property bool shownBecauseOfMousePosition: false
+    property bool intelliHideShown: autoHideShown || (target !== undefined && !windows.intersects)
 
-    shown: target !== undefined && (target.activeFocus || shownBecauseOfMousePosition || !windows.intersects)
-
-    onForcedVisibleChanged:
-    {
-        if (!forcedVisible) {
-            if (!target.containsMouse && forcedVisibleChangeId != "dash") {
-                shownBecauseOfMousePosition = true
-                mouseLeaveTimer.restart()
-            }
-        }
-    }
-
-    Timer {
-        id: edgeHitTimer
-        interval: 500
-        onTriggered: shownBecauseOfMousePosition = true
-    }
-
-    Timer {
-        id: mouseLeaveTimer
-        interval: 1000
-        onTriggered: shownBecauseOfMousePosition = false
-    }
-
-    Connections {
-        target: (intellihide.target !== undefined) ? intellihide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
-        ignoreUnknownSignals: true
-    }
-
-    Connections {
-        target: (intellihide.target !== undefined) ? intellihide.target : null
-        onContainsMouseChanged: {
-            if ((shown || forcedVisible) && target.containsMouse) {
-                shownBecauseOfMousePosition = true
-            }
-            mouseLeaveTimer.running = !target.containsMouse
-        }
-        ignoreUnknownSignals: true
-    }
+    shown: intelliHideShown
 
     WindowsIntersectMonitor {
         id: windows
