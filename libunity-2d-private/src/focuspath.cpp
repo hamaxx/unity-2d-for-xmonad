@@ -22,6 +22,7 @@
 #include <QtCore/qmath.h>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QApplication>
 
 /*!
     \qmlclass FocusPath
@@ -344,11 +345,25 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
             case QEvent::KeyPress: {
                 int nextFocus = m_currentPosition;
 
+                Flow flow = m_flow;
+                if (QApplication::isRightToLeft()) {
+                    switch (m_flow) {
+                        case FocusPath::LeftToRight:
+                            flow = FocusPath::RightToLeft;
+                            break;
+                        case FocusPath::RightToLeft:
+                            flow = FocusPath::LeftToRight;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
                 switch(keyEvent->key()) {
                     case Qt::Key_Right:
                         if ((m_direction & FocusPath::Horizontal) == FocusPath::Horizontal) {
-                            switch(m_flow) {
+                            switch(flow) {
                                 case FocusPath::LeftToRight:
                                     nextFocus += 1;
                                     break;
@@ -365,7 +380,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                         break;
                     case Qt::Key_Left:
                         if ((m_direction & FocusPath::Horizontal) == FocusPath::Horizontal) {
-                            switch(m_flow) {
+                            switch(flow) {
                                 case FocusPath::LeftToRight:
                                     nextFocus -= 1;
                                     break;
@@ -382,14 +397,14 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                         break;
                     case Qt::Key_Up:
                         if (((m_direction & FocusPath::Vertical) == FocusPath::Vertical) && (m_columns >= 0)) {
-                            nextFocus = (m_flow == FocusPath::TopToBottom) ? nextFocus - 1 : nextFocus - m_columns;
+                            nextFocus = (flow == FocusPath::TopToBottom) ? nextFocus - 1 : nextFocus - m_columns;
                         } else {
                             nextFocus = -1;
                         }
                         break;
                     case Qt::Key_Down:
                         if (((m_direction & FocusPath::Vertical) == FocusPath::Vertical) && (m_columns >= 0)) {
-                            nextFocus = (m_flow == FocusPath::TopToBottom) ? nextFocus + 1 : nextFocus + m_columns;
+                            nextFocus = (flow == FocusPath::TopToBottom) ? nextFocus + 1 : nextFocus + m_columns;
                         } else {
                             nextFocus = -1;
                         }
