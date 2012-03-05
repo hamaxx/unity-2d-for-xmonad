@@ -21,7 +21,8 @@ import QtQuick 1.0
 Filter {
     id: filterView
 
-    height: rating.height
+    property int sectionSpacing: 12
+    height: rating.height + sectionSpacing
 
     RatingStars {
         id: rating

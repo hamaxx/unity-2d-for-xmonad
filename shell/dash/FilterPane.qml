@@ -103,7 +103,6 @@ FocusScope {
         anchors.topMargin: 7
         anchors.bottom: parent.bottom
         orientation: ListView.Vertical
-        spacing: 13
 
         /* Make sure the first section is selected when getting the focus */
         currentIndex: 0
