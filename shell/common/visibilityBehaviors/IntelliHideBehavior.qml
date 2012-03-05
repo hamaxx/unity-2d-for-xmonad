@@ -29,44 +29,12 @@ import "../utils.js" as Utils
 // and one signal
 //  - barrierBroken: Defines when the pointer barrier has been broken
 
-BaseBehavior {
+AutoHideBehavior {
     id: intellihide
 
-    property bool shownBecauseOfMousePosition: false
+    property bool intelliHideShown: autoHideShown || (target !== undefined && !windows.intersects)
 
-    shown: target !== undefined && (target.activeFocus || shownBecauseOfMousePosition || !windows.intersects)
-
-    onForcedVisibleChanged:
-    {
-        if (!forcedVisible) {
-            if (!target.containsMouse && forcedVisibleChangeId != "dash") {
-                shownBecauseOfMousePosition = true
-                mouseLeaveTimer.restart()
-            }
-        }
-    }
-
-    Timer {
-        id: mouseLeaveTimer
-        interval: 1000
-        onTriggered: shownBecauseOfMousePosition = false
-    }
-
-    Connections {
-        target: (intellihide.target !== undefined) ? intellihide.target : null
-        onBarrierTriggered: shownBecauseOfMousePosition = true
-    }
-
-    Connections {
-        target: (intellihide.target !== undefined) ? intellihide.target : null
-        onContainsMouseChanged: {
-            if ((shown || forcedVisible) && target.containsMouse) {
-                shownBecauseOfMousePosition = true
-            }
-            mouseLeaveTimer.running = !target.containsMouse
-        }
-        ignoreUnknownSignals: true
-    }
+    shown: intelliHideShown
 
     WindowsIntersectMonitor {
         id: windows
