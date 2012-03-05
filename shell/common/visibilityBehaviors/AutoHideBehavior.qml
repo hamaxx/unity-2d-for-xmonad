@@ -28,9 +28,21 @@ import QtQuick 1.0
 
 BaseBehavior {
     id: autoHide
-    property bool shownRegardlessOfFocus: true
 
-    shown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
+    property bool shownRegardlessOfFocus: true
+    property bool autoHideShown: target !== undefined && (target.activeFocus || shownRegardlessOfFocus)
+
+    shown: autoHideShown
+
+    onForcedVisibleChanged:
+    {
+        if (!forcedVisible) {
+            if (!target.containsMouse && forcedVisibleChangeId != "dash") {
+                shownRegardlessOfFocus = true
+                autoHideTimer.restart()
+            }
+        }
+    }
 
     Timer {
         id: autoHideTimer
@@ -48,7 +60,7 @@ BaseBehavior {
     Connections {
         target: (autoHide.target !== undefined) ? autoHide.target : null
         onContainsMouseChanged: {
-            if (target.activeFocus) {
+            if ((shown || forcedVisible) && target.containsMouse) {
                 shownRegardlessOfFocus = true
             }
         }
