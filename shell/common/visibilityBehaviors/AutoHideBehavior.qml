@@ -47,8 +47,8 @@ BaseBehavior {
     onForcedHiddenChanged:
     {
         if (forcedHidden) {
-            if (autoHideTimer.running) {
-                autoHideTimer.stop()
+            autoHideTimer.stop()
+            if (!target.containsMouse) {
                 shownRegardlessOfFocus = false
             }
         }
