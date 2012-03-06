@@ -34,9 +34,6 @@ context "Sizing tests" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
-    $SUT.execute_shell_command 'killall unity-2d-panel'
-    $SUT.execute_shell_command 'killall unity-2d-panel'
-
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
@@ -52,18 +49,13 @@ context "Sizing tests" do
                      :arguments => "-testability",
                      :sleeptime => 2 )
 
-    # Make sure the panel is running
-    @app_panel = $SUT.run( :name => UNITY_2D_PANEL, 
-                           :arguments => "-testability", 
-                           :sleeptime => 2 )
-
     # Make certain application is ready for testing
     verify{ @app.Launcher() }
   end
 
   # Run after each test case completes
   teardown do
-    #Need to kill Launcher and Panel as it does not shutdown when politely asked
+    #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
@@ -147,8 +139,6 @@ context "Sizing tests" do
     verify_equal( 'hidden', TIMEOUT, "Progress bar is not visible" ) {
         progressTopImg['state']
     }
-
-    $SUT.execute_shell_command 'sleep 10'
   end
 
 end
