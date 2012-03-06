@@ -39,6 +39,7 @@ public:
 
     bool connectToBus();
 
+private:
     ShellDeclarativeView* m_view;
 };
 
