@@ -36,7 +36,7 @@
 #include <QDesktopWidget>
 #include <QRect>
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Shell";
+static const char* SHELL_DBUS_SERVICE = "com.canonical.Unity2d.Shell";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
@@ -51,13 +51,13 @@ DashClient::DashClient(QObject* parent)
        cause D-Bus to activate the shell and we don’t want this to happen, the
        shell should be started on demand only. */
     QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DASH_DBUS_SERVICE);
+    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SHELL_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToDash();
     } else {
         /* The shell is not running: monitor its registration on the bus so we
            can connect to it when it comes up. */
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(DASH_DBUS_SERVICE,
+        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
                                                                QDBusConnection::sessionBus(),
                                                                QDBusServiceWatcher::WatchForRegistration,
                                                                this);
@@ -71,7 +71,7 @@ void DashClient::connectToDash()
         return;
     }
 
-    m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
+    m_dashDbusIface = new QDBusInterface(SHELL_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotActiveChanged(bool)));
@@ -120,7 +120,7 @@ void DashClient::setActive(bool active)
             m_dashDbusIface->setProperty("active", false);
         }
     } else {
-        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        QDBusInterface iface(SHELL_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
         iface.setProperty("active", true);
     }
 }
