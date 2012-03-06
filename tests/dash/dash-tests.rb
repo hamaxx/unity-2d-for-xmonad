@@ -387,12 +387,12 @@ context "Dash Tests" do
     }
 
     XDo::Keyboard.right
-    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+    verify_equal("true", TIMEOUT, 'Second lens button doesn\'t have focus') {
         buttons[1]['activeFocus']
     }
 
     XDo::Keyboard.right
-    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+    verify_equal("true", TIMEOUT, 'Third lens button doesn\'t have focus') {
         buttons[2]['activeFocus']
     }
 
