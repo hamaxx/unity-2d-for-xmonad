@@ -69,6 +69,12 @@ Loader {
         value: visibilityController.forceVisibleChangeId
     }
 
+    Binding {
+        target: launcherBehavior.item
+        property: "forcedHidden"
+        value: visibilityController.forceHidden
+    }
+
     Connections {
         target: shellManager
         onSuperKeyHeldChanged: {
