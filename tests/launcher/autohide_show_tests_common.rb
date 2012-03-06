@@ -114,7 +114,7 @@ end
 #   * Open application in position overlapping Launcher
 #   * Verify Launcher hiding
 #   * Move mouse to left of screen to reveal Launcher
-#   * Verify Launcher shows but not immediately
+#   * Verify Launcher shows only if we push the barrier
 #   * Move mouse to the right, but still over the Launcher
 #   * Verify Launcher still showing
 #   * Move mouse further right to not overlap Launcher
@@ -128,8 +128,8 @@ def test_reveal_hidden_launcher_with_mouse()
   verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
   move_mouse_to_screen_edge()
-  sleep 0.4
-  verify_launcher_hidden(0, 'Launcher should not be visible immediately after mouse moves to the edge, has to wait 0.5 seconds to show')
+  verify_launcher_hidden(0, 'Launcher should not be visible immediately without pushing the edge')
+  mouse_push_screen_edge()
   verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
 
   move_mouse_to_launcher_inner_border()
@@ -422,6 +422,7 @@ def test_launcher_hide_delay_on_tile_removal()
   if !tiles.empty?
     tile = tiles[0]
     move_mouse_to_screen_edge()
+    mouse_push_screen_edge()
     verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen, should be visible')
     tile.move_mouse()
     XDo::Mouse.click(nil, nil, :right)
@@ -457,6 +458,7 @@ def test_launcher_visible_after_toggling_dash()
 
   bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
   move_mouse_to_screen_edge()
+  mouse_push_screen_edge()
   verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen, should be visible')
   bfb.move_mouse()
   bfb.tap()
