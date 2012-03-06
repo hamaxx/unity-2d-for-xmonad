@@ -27,9 +27,6 @@
 #include <QtDBus/QDBusConnection>
 #include <QGraphicsObject>
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
-static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
-
 DashDBus::DashDBus(ShellManager* manager, QObject* parent)
 : QObject(parent)
 , m_manager(manager)
@@ -38,27 +35,9 @@ DashDBus::DashDBus(ShellManager* manager, QObject* parent)
     connect(m_manager, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
     connect(m_manager, SIGNAL(dashActiveLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
 
-    connect(m_manager, SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
-    connect(m_manager, SIGNAL(dashScreenChanged(int)), SIGNAL(dashScreenChanged(int)));
-    connect(m_manager, SIGNAL(hudScreenChanged(int)), SIGNAL(hudScreenChanged(int)));
-}
+    connect(m_manager, SIGNAL(dashScreenChanged(int)), SIGNAL(screenChanged(int)));
 
-DashDBus::~DashDBus()
-{
-    QDBusConnection::sessionBus().unregisterService(DASH_DBUS_SERVICE);
-}
-
-bool
-DashDBus::connectToBus()
-{
-    bool ok = QDBusConnection::sessionBus().registerService(DASH_DBUS_SERVICE);
-    if (!ok) {
-        return false;
-    }
     new DashAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, this);
-
-    return true;
 }
 
 void
@@ -103,35 +82,8 @@ DashDBus::setActiveLens(QString activeLens)
     m_manager->setDashActiveLens(activeLens);
 }
 
-bool
-DashDBus::hudActive() const
-{
-    return m_manager->hudActive();
-}
-
-void
-DashDBus::onHudActiveChanged()
-{
-    Q_EMIT hudActiveChanged(hudActive());
-}
-
-void
-DashDBus::setHudActive(bool active)
-{
-    if (active != hudActive()) {
-        m_manager->setHudActive(active);
-        Q_EMIT hudActiveChanged(active);
-    }
-}
-
 int
-DashDBus::dashScreen() const
+DashDBus::screen() const
 {
     return m_manager->dashScreen();
-}
-
-int
-DashDBus::hudScreen() const
-{
-    return m_manager->hudScreen();
 }

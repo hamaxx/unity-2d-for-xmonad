@@ -30,6 +30,7 @@
 #include "unity2dpanel.h"
 #include "windowhelper.h"
 #include "dashclient.h"
+#include "hudclient.h"
 
 // Unity-2d
 #include <debug_p.h>
@@ -322,8 +323,8 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
-    bool dashIsVisible = DashClient::instance()->dashActiveInScreen(panel()->screen());
-    bool hudIsVisible = DashClient::instance()->hudActiveInScreen(panel()->screen());
+    bool dashIsVisible = DashClient::instance()->activeInScreen(panel()->screen());
+    bool hudIsVisible = HUDClient::instance()->activeInScreen(panel()->screen());
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;

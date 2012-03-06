@@ -61,6 +61,9 @@ Item {
     Row {
         id: stars
 
+        // Required for right-to-left mirroring
+        anchors.left: parent.left
+
         Repeater {
             model: size
             Star {
@@ -95,6 +98,8 @@ Item {
 
             /* What unit is the mouse over? This is the integer part of the rating (plus one)*/
             var rating = (posX - posXOverUnit) / unitWidth + 1
+            if (Utils.isRightToLeft())
+                rating = size + 1 - rating
 
             return Utils.clamp( rating, 0, size )
         }

@@ -30,8 +30,8 @@
 
 // Local
 #include "config.h"
-#include "dashdbus.h"
 #include "shellmanager.h"
+#include "shelldbus.h"
 
 int main(int argc, char *argv[])
 {
@@ -75,9 +75,9 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    DashDBus dashDBus (&shells);
-    if (!dashDBus.connectToBus()) {
-        qCritical() << "Another instance of the Dash already exists. Quitting.";
+    ShellDBus shellDBus(&shells);
+    if (!shellDBus.connectToBus()) {
+        qCritical() << "Another instance of the Shell already exists. Quitting.";
         return -1;
     }
 
