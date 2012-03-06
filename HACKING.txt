@@ -23,7 +23,7 @@ To build trunk:
 
  4. Test:
 
-  killall -9 unity-2d
+  killall -9 unity-2d-shell
   ./shell/app/unity-2d-shell &
 
  To do iterative compile+test, you can use the command:
@@ -33,17 +33,18 @@ To build trunk:
  5. Test again with non-compositing window-manager mode (eg. different assets
   such as './shell/common/artwork/desktop_dash_background_no_transparency.sci'):
   
-  gconftool-2 --set --type=bool /apps/metacity/general/compositing_manager false
-  killall metacity
-  killall -9 unity-2d
-  ./shell/app/unity-2d-shell &
+  killall unity-2d-shell
+  killall unity-2d-shell
+  metacity --replace --no-composite
 
  6. Restore compositing mode:
 
-  gconftool-2 --set --type=bool /apps/metacity/general/compositing_manager true
-  killall metacity
-  killall -9 unity-2d
-  ./shell/app/unity-2d-shell &
+  killall unity-2d-shell
+  killall unity-2d-shell
+  metacity --replace --composite
+
+  (The double killall is to defeat the auto-respawn)
+
 
 Debugging output:
 
@@ -53,7 +54,7 @@ Debugging output:
 
 Finally:
 
-If you want to proposed and merge your changes back into the main tree, see:
+If you want to propose your changes for merging back into the main tree, see:
 
   http://wiki.ubuntu.com/Unity2D#Coding
 
