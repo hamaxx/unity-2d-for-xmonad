@@ -349,4 +349,57 @@ context "Dash Tests" do
       @app.Dash()['active']
     }
   end
+
+  # Test case objectives:
+  #   * Check navigation to and in lens bar
+  # Pre-conditions
+  # Test steps
+  #   * Invoke dash
+  #   * Go down 7 times (twice for each category in the Home lens + down to lens bar)
+  #   * Verify that the lens bar has focus
+  #   * Verify that the first lens button has focus
+  #   * Go right
+  #   * Verify that the second lens button has focus
+  #   * Go right
+  #   * Verify that the third lens button has focus
+  #   * Go left twice
+  #   * Verify that the first lens button has focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check navigation down from dash leads to lens bar" do
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    for i in 1..7 do
+      XDo::Keyboard.down
+    end
+    verify_equal("true", TIMEOUT, 'Lens bar doesn\'t have focus') {
+        @app.LensBar()['activeFocus']
+    }
+
+    buttons = @app.LensBar().children( { :type => "LensButton" } )
+
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[0]['activeFocus']
+    }
+
+    XDo::Keyboard.right
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[1]['activeFocus']
+    }
+
+    XDo::Keyboard.right
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[2]['activeFocus']
+    }
+
+    XDo::Keyboard.left
+    XDo::Keyboard.left
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[0]['activeFocus']
+    }
+  end
 end
