@@ -27,6 +27,7 @@
 #include <gconnector.h>
 #include <gscopedpointer.h>
 #include <dashclient.h>
+#include <hudclient.h>
 
 // Qt
 #include <QApplication>
@@ -69,7 +70,7 @@ public:
         gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
         QPalette pal;
-        if (DashClient::instance()->active() || DashClient::instance()->hudActive()) {
+        if (DashClient::instance()->active() || HUDClient::instance()->active()) {
             pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
         } else {
             pal.setBrush(QPalette::Window, generateBackgroundBrush());
@@ -180,7 +181,7 @@ PanelStyle::PanelStyle(QObject* parent)
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
     QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
-    QObject::connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
+    QObject::connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
     d->updatePalette();
 }
 

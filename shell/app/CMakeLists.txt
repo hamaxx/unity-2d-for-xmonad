@@ -5,12 +5,16 @@ pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 # Sources
 set(shell_SRCS
     shell.cpp
+    shelldbus.cpp
     dashdbus.cpp
+    huddbus.cpp
     shelldeclarativeview.cpp
     )
 
 set(shell_MOC_HDRS
+    shelldbus.h
     dashdbus.h
+    huddbus.h
     shelldeclarativeview.h
     )
 
@@ -19,6 +23,7 @@ qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
 # Build
 configure_file(unity-2d-places.service.in unity-2d-places.service)
 qt4_add_dbus_adaptor(shell_SRCS dash.xml dashdbus.h DashDBus)
+qt4_add_dbus_adaptor(shell_SRCS hud.xml huddbus.h HUDDBus)
 
 add_executable(unity-2d-shell ${shell_SRCS} ${shell_MOC_SRCS})
 
