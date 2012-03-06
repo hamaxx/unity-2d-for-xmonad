@@ -136,9 +136,9 @@ AbstractButton {
                     anchors.bottomMargin: 2
                     width: 1
                     Timer {
-                        interval: 900; running: true; repeat: true
+                        interval: 800; running: true; repeat: true
                         onTriggered: {
-                            interval = interval == 900 ? 300 : 900
+                            interval = interval == 800 ? 400 : 800
                             customCursor.visible = !customCursor.visible
                         }
                     }
