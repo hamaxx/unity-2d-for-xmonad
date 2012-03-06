@@ -93,6 +93,12 @@ LauncherItem::belongsToDifferentWorkspace()
 }
 
 bool
+LauncherItem::belongsToDifferentScreen(int)
+{
+    return false;
+}
+
+bool
 LauncherItem::progressBarVisible() const
 {
     return false;

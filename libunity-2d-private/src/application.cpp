@@ -35,8 +35,7 @@
 #include "bamf-indicator.h"
 
 #include "dbusmenuimporter.h"
-
-#include <X11/X.h>
+#include "gobjectcallback.h"
 
 #include <gio/gio.h>
 
@@ -46,7 +45,9 @@
 
 // Qt
 #include <Qt>
+#include <QApplication>
 #include <QDebug>
+#include <QDesktopWidget>
 #include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -56,11 +57,15 @@
 #include <QScopedPointer>
 #include <QX11Info>
 
+#include <X11/X.h>
+
 extern "C" {
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <libsn/sn.h>
 }
+
+GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
 
@@ -78,6 +83,16 @@ Application::Application()
     m_launching_timer.setSingleShot(true);
     m_launching_timer.setInterval(8000);
     QObject::connect(&m_launching_timer, SIGNAL(timeout()), this, SLOT(onLaunchingTimeouted()));
+
+    // Accumulate geometry changes during 50 msec
+    // This is done because geometry-changed happens VERY often and doing the calculation
+    // all the time just drags down your CPU for no reason
+    // Instead what we do is send the windowGeometryChanged 50 msec after a geometry-changed
+    // ignoring the geometry-changed that happen in that period, so at most we do
+    // the calculation each 50ms instead of every single pixel move
+    m_geometryChangedTimer.setSingleShot(true);
+    m_geometryChangedTimer.setInterval(50);
+    connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
 }
 
 Application::Application(const Application& other)
@@ -91,6 +106,7 @@ Application::Application(const Application& other)
 
 Application::~Application()
 {
+    disconnectWindowSignals();
 }
 
 bool
@@ -526,6 +542,34 @@ Application::connectWindowSignals()
         WnckWindow* window = wnck_window_get(xids->at(i));
         g_signal_connect(G_OBJECT(window), "workspace-changed",
             G_CALLBACK(Application::onWindowWorkspaceChanged), this);
+        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+    }
+}
+
+void
+Application::disconnectWindowSignals()
+{
+    if (m_application == NULL || m_application->running() == false) {
+        return;
+    }
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    int size = xids->size();
+    if (size < 1) {
+        return;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        WnckWindow *window = wnck_window_get(xids->at(i));
+        if (window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            window = wnck_window_get(xids->at(i));
+            if (window == NULL) {
+                continue;
+            }
+        }
+
+        g_signal_handlers_disconnect_by_func(window, gpointer(geometryChangedCB), this);
     }
 }
 
@@ -537,6 +581,7 @@ Application::onWindowAdded(BamfWindow* window)
         WnckWindow* wnck_window = wnck_window_get(window->xid());
         g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
              G_CALLBACK(Application::onWindowWorkspaceChanged), this);
+        g_signal_connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
     }
 }
 
@@ -986,6 +1031,44 @@ Application::belongsToDifferentWorkspace()
     return false;
 }
 
+bool
+Application::belongsToDifferentScreen(int screen)
+{
+    if (!m_application) {
+        return false;
+    }
+
+    if (QApplication::desktop()->screenCount() == 1) {
+        return false;
+    }
+
+    QScopedPointer<BamfUintList> xids(m_application->xids());
+    for (int i = 0; i < xids->size(); i++) {
+        /* When geting the wnck window, it's possible we get a NULL
+           return value because wnck hasn't updated its internal list yet,
+           so we need to force it once to be sure */
+        WnckWindow *window = wnck_window_get(xids->at(i));
+        if (window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            window = wnck_window_get(xids->at(i));
+            if (window == NULL) {
+                continue;
+            }
+        }
+
+        // Check the window screen
+        int x, y, width, height;
+        wnck_window_get_geometry(window, &x, &y, &width, &height);
+        const QRect windowRect(x, y, width, height);
+        const QPoint pos = windowRect.center();
+        if (QApplication::desktop()->screenNumber(pos) == screen) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void
 Application::onIndicatorMenuUpdated()
 {
@@ -1107,6 +1190,13 @@ Application::onWindowWorkspaceChanged(WnckWindow *window, gpointer user_data)
 {
     Q_UNUSED(window);
     ((Application*)user_data)->windowWorkspaceChanged();
+}
+
+void
+Application::onWindowGeometryChanged()
+{
+    if (!m_geometryChangedTimer.isActive())
+      m_geometryChangedTimer.start();
 }
 
 void

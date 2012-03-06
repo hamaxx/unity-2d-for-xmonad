@@ -21,6 +21,7 @@
 // libunity-2d
 #include <cairoutils.h>
 #include <dashclient.h>
+#include <hudclient.h>
 #include <panelstyle.h>
 #include <unity2dpanel.h>
 
@@ -44,9 +45,7 @@ PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
  : m_panel(panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
-    connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), this, SLOT(updatePalette()));
-    connect(DashClient::instance(), SIGNAL(dashScreenChanged(int)), this, SLOT(updatePalette()));
-    connect(DashClient::instance(), SIGNAL(hudScreenChanged(int)), this, SLOT(updatePalette()));
+    connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
 
     m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name", G_CALLBACK(onThemeChanged), this);
     updatePalette();
@@ -75,7 +74,7 @@ void PanelPaletteManager::updatePalette()
     gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
     QPalette pal;
-    if (DashClient::instance()->active() || DashClient::instance()->hudActive()) {
+    if (DashClient::instance()->active() || HUDClient::instance()->active()) {
         pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
     } else {
         pal.setBrush(QPalette::Window, generateBackgroundBrush());
