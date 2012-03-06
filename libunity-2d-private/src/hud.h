@@ -41,6 +41,7 @@ public:
     enum Roles {
         ResultIdRole = Qt::UserRole+1,
         FormattedTextRole,
+        PlainTextRole,
         IconNameRole,
         ItemIconRole,
         CompletionTextRole,

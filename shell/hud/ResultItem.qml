@@ -23,16 +23,8 @@ AbstractButton {
     id: delegate
     property string icon: ""
 
-    Accessible.name: htmlEscape(formattedText) // completionText not available from HUD right now
+    Accessible.name: plainText
     Accessible.role: Accessible.Button
-
-    // basic remove html-tags and un-escape &, <, >
-    function htmlEscape(string) {
-        return string.replace(/<(?:.|\n)*?>/gm, '')
-                     .replace("&amp;","&")
-                     .replace("&gt;",">")
-                     .replace("&lt;","<")
-    }
 
     Rectangle {
         id: line

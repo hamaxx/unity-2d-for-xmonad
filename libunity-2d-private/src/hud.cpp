@@ -28,6 +28,7 @@
 
 // Qt
 #include <QDateTime>
+#include <QTextDocument>
 
 static const char* HUD_DBUS_SERVICE = "com.canonical.hud";
 static const char* HUD_DBUS_PATH = "/com/canonical/hud";
@@ -39,6 +40,7 @@ Hud::Hud(QObject *parent) :
     QHash<int, QByteArray> names;
     names[ResultIdRole] = "resultId";
     names[FormattedTextRole] = "formattedText";
+    names[PlainTextRole] = "plainText";
     names[IconNameRole] = "iconName";
     names[ItemIconRole] = "itemIcon";
     names[CompletionTextRole] = "completionText";
@@ -71,6 +73,7 @@ QVariant Hud::data(const QModelIndex& index, int role) const
     if (!index.isValid() || m_searchQuery.isEmpty()) {
         return QVariant();
     }
+    QTextDocument formattedText;
 
     std::shared_ptr<unity::hud::Query> result;
 
@@ -86,6 +89,10 @@ QVariant Hud::data(const QModelIndex& index, int role) const
         return index.row();
     case Hud::FormattedTextRole:
         return QString::fromStdString(result->formatted_text);
+    /* Work around the fact that HUD does not return plain text results for a11y */
+    case Hud::PlainTextRole:
+        formattedText.setHtml(QString::fromStdString(result->formatted_text));
+        return formattedText.toPlainText();
     case Hud::IconNameRole:
         return QString::fromStdString(result->icon_name);
     case Hud::ItemIconRole:
