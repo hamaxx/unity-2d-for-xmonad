@@ -30,8 +30,7 @@
 class QDBusInterface;
 
 /**
- * Monitors the dash and provide a single point of entry to its status
- * TODO: rename to reflect transition to Shell.
+ * Monitor the dash and provide a single point of entry to its status
  */
 class DashClient : public QObject
 {

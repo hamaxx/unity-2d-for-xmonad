@@ -45,16 +45,16 @@ HUDClient::HUDClient(QObject* parent)
 , m_hudDbusIface(0)
 , m_active(false)
 {
-    /* Check if the hud is already up and running by asking the bus instead of
+    /* Check if the shell is already up and running by asking the bus instead of
        trying to create an instance of the interface. Creating an instance would
-       cause D-Bus to activate the dash and we don’t want this to happen, the
-       dash should be started on demand only. */
+       cause D-Bus to activate the shell and we don’t want this to happen, the
+       shell should be started on demand only. */
     QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
     QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SHELL_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToHud();
     } else {
-        /* The dash is not running: monitor its registration on the bus so we
+        /* The shell is not running: monitor its registration on the bus so we
            can connect to it when it comes up. */
         QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
                                                                QDBusConnection::sessionBus(),
@@ -105,7 +105,7 @@ bool HUDClient::active() const
 void HUDClient::setActive(bool active)
 {
     if (!active) {
-        // Use m_hudDbusIface only if the dash is running
+        // Use m_hudDbusIface only if the shell is running
         if (m_hudDbusIface) {
             m_hudDbusIface->setProperty("active", false);
         }

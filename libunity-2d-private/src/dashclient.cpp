@@ -46,16 +46,16 @@ DashClient::DashClient(QObject* parent)
 , m_active(false)
 , m_alwaysFullScreen(false)
 {
-    /* Check if the dash is already up and running by asking the bus instead of
+    /* Check if the shell is already up and running by asking the bus instead of
        trying to create an instance of the interface. Creating an instance would
-       cause D-Bus to activate the dash and we don’t want this to happen, the
-       dash should be started on demand only. */
+       cause D-Bus to activate the shell and we don’t want this to happen, the
+       shell should be started on demand only. */
     QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
     QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DASH_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToDash();
     } else {
-        /* The dash is not running: monitor its registration on the bus so we
+        /* The shell is not running: monitor its registration on the bus so we
            can connect to it when it comes up. */
         QDBusServiceWatcher* watcher = new QDBusServiceWatcher(DASH_DBUS_SERVICE,
                                                                QDBusConnection::sessionBus(),
