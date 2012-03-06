@@ -189,4 +189,8 @@ context "Launcher Autohide and Show Tests" do
     test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb()
   end
 
+  test "Auto Hide: Launcher hide timer and Hud interaction" do
+    test_auto_hide_launcher_hide_timer_and_hud_interaction()
+  end
+
 end

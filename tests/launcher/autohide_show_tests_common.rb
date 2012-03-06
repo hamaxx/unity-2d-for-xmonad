@@ -586,3 +586,34 @@ def test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb
     verify_launcher_hidden(2)
   }
 end
+
+# Test case objectives:
+# * Auto Hide: Launcher does not show when auto hide timer is running after showing hud
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Set hide-mode to 1
+# * Make mouse show the launcher
+# * Verify Launcher showing
+# * Move mouse away from the launcher
+# * Press Alt
+# * Verify HUD is showing
+# * Verify Launcher is hidden
+# * Press Alt
+# * Verify Launcher does not show
+# Post-conditions
+# * None
+# References
+# * None
+def test_auto_hide_launcher_hide_timer_and_hud_interaction
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+  move_mouse_to_screen_edge()
+  verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
+  XDo::Mouse.move(300, 300, 0, true)
+  XDo::Keyboard.alt
+  verify_launcher_hidden(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
+  XDo::Keyboard.alt
+  verify_not(0, 'Launcher showing after on alt tapping while the hide timer was running') {
+    verify_launcher_visible(2)
+  }
+end

@@ -44,6 +44,16 @@ BaseBehavior {
         }
     }
 
+    onForcedHiddenChanged:
+    {
+        if (forcedHidden) {
+            autoHideTimer.stop()
+            if (!target.containsMouse) {
+                shownRegardlessOfFocus = false
+            }
+        }
+    }
+
     Timer {
         id: autoHideTimer
         interval: 1000
