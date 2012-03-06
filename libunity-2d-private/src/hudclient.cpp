@@ -33,8 +33,6 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
-#include <QDesktopWidget>
-#include <QRect>
 
 static const char* SHELL_DBUS_SERVICE = "com.canonical.Unity2d.Shell";
 static const char* HUD_DBUS_PATH = "/HUD";
