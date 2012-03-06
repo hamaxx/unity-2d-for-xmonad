@@ -401,5 +401,10 @@ context "Dash Tests" do
     verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
         buttons[0]['activeFocus']
     }
+
+    XDo::Keyboard.up
+    verify_equal("true", TIMEOUT, 'Dash contents don\'t have focus') {
+        @app.QDeclarativeLoader( { :objectName => "pageLoader" } )['activeFocus']
+    }
   end
 end
