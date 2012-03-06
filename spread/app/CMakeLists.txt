@@ -3,11 +3,13 @@ set(spread_SRCS
     spread.cpp
     spreadview.cpp
     spreadcontrol.cpp
+    spreadmanager.cpp
    )
 
 set(spread_MOC_HDRS
     spreadview.h
     spreadcontrol.h
+    spreadmanager.h
     )
 
 qt4_wrap_cpp(spread_MOC_SRCS ${spread_MOC_HDRS})

@@ -77,6 +77,7 @@ public:
     QString icon() const;
     QString desktopFile() const;
     int workspace() const;
+    int screen() const;
 
     /* setters */
     void setContentXid(unsigned int contentXid);
@@ -89,7 +90,8 @@ public:
     enum RoleNames {
         RoleWindowInfo,
         RoleDesktopFile,
-        RoleWorkspace
+        RoleWorkspace,
+        RoleScreen
     };
 
 Q_SIGNALS:

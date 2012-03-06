@@ -56,6 +56,10 @@ Q_SIGNALS:
     void activeWorkspaceChanged();
     void lastFocusedWindowChanged(unsigned int);
 
+public Q_SLOTS:
+    void forceActivateWindow();
+    void forceDeactivateWindow();
+
 protected:
     void setupViewport();
     virtual void moveEvent(QMoveEvent* event);
@@ -63,10 +67,6 @@ protected:
     virtual void hideEvent(QHideEvent* event);
 
     ScreenInfo* m_screenInfo;
-
-protected Q_SLOTS:
-    void forceActivateWindow();
-    void forceDeactivateWindow();
 
 private Q_SLOTS:
     void onActiveWorkspaceChanged();
