@@ -76,7 +76,7 @@ void PanelPaletteManager::updatePalette()
     gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
     QPalette pal;
-    if (DashClient::instance()->activeInScreen(m_panel->screen()) || DashClient::instance()->activeInScreen(m_panel->screen())) {
+    if (DashClient::instance()->activeInScreen(m_panel->screen()) || HUDClient::instance()->activeInScreen(m_panel->screen())) {
         pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
     } else {
         pal.setBrush(QPalette::Window, generateBackgroundBrush());
