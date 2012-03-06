@@ -32,17 +32,12 @@ struct _GtkStyleContext;
 
 class PanelStylePrivate;
 /**
- * Provides easy access to panel style context and track platform theme to
- * ensure we have the correct background brush.
- *
- * FIXME: This class does not have a very clear focus and has side-effects
- * (background brush handling). It should be refactored.
+ * Provides easy access to panel style context and track platform theme.
  */
-class PanelStyle : public QObject
+class PanelStyle
 {
-    Q_OBJECT
 public:
-    PanelStyle(QObject* parent = 0);
+    PanelStyle();
     ~PanelStyle();
 
     enum WindowButtonType {
@@ -63,9 +58,6 @@ public:
     struct _GtkStyleContext* styleContext() const;
 
     QPixmap windowButtonPixmap(WindowButtonType, WindowButtonState);
-
-private Q_SLOTS:
-    void onDashActiveChanged(bool active);
 
 private:
     friend class PanelStylePrivate;
