@@ -30,8 +30,6 @@ require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Launcher Contextual Menu Tests" do
-  hide_mode = 0
-
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-shell'
@@ -47,7 +45,10 @@ context "Launcher Contextual Menu Tests" do
 
   # Run before each test case begins
   setup do
-    # Execute the application 
+    # Ensure mouse out of the way
+    XDo::Mouse.move(200,200,10,true)
+
+    # Execute the application
     @app = $SUT.run( :name => UNITY_2D_SHELL,
                      :arguments => "-testability",
                      :sleeptime => 2)
@@ -59,7 +60,7 @@ context "Launcher Contextual Menu Tests" do
   teardown do
     #@app.close
     #@app.close
-    #Need to kill Launcher as it does not shutdown when politely asked
+    #Need to kill Shell as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
@@ -80,7 +81,7 @@ context "Launcher Contextual Menu Tests" do
   #   * None
   test "Display launcher item hint" do
     tiles = ""
-    verify( 0, 'Could not find any application tile' ) {
+    verify( TIMEOUT, 'Could not find any application tile' ) {
       tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
@@ -89,10 +90,10 @@ context "Launcher Contextual Menu Tests" do
       @app.LauncherContextualMenu()
     }
     actions = ""
-    verify( 0, 'Could not find any actions in the menu' ) {
+    verify( TIMEOUT, 'Could not find any actions in the menu' ) {
       actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
     }
-    verify_equal( 2, 0, 'There was an unexpected number of actions in the menu' ) {
+    verify_equal( 2, TIMEOUT, 'There was an unexpected number of actions in the menu' ) {
       actions.count
     }
   end
@@ -111,7 +112,7 @@ context "Launcher Contextual Menu Tests" do
   #   * None
   test "Display launcher menu after right click" do
     tiles = ""
-    verify( 0, 'Could not find any application tile' ) {
+    verify( TIMEOUT, 'Could not find any application tile' ) {
       tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
@@ -121,10 +122,10 @@ context "Launcher Contextual Menu Tests" do
       @app.LauncherContextualMenu()
     }
     actions = ""
-    verify( 0, 'Could not find any actions in the menu' ) {
+    verify( TIMEOUT, 'Could not find any actions in the menu' ) {
       actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
     }
-    verify_true( 0, 'There was not enough actions in the menu' ) {
+    verify_true( TIMEOUT, 'There was not enough actions in the menu' ) {
       actions.count >= 4
     }
   end
@@ -149,10 +150,10 @@ context "Launcher Contextual Menu Tests" do
       @app.LauncherContextualMenu()
     }
     actions = ""
-    verify( 0, 'Could not find any actions in the menu' ) {
+    verify( TIMEOUT, 'Could not find any actions in the menu' ) {
       actions = @app.LauncherContextualMenu().children( { :type => "QAction" } )
     }
-    verify_true( 0, 'There was not enough actions in the menu' ) {
+    verify_true( TIMEOUT, 'There was not enough actions in the menu' ) {
       actions.count >= 4
     }
   end
@@ -216,11 +217,11 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.right
     XDo::Keyboard.escape
     tiles = ""
-    verify( 0, 'Could not find any application tile' ) {
+    verify( TIMEOUT, 'Could not find any application tile' ) {
       tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
-    verify_equal( "true", 0, 'Launcher item didn\'t regain focus' ) {
+    verify_equal( "true", TIMEOUT, 'Launcher item didn\'t regain focus' ) {
       tile['activeFocus']
     }
   end
@@ -242,11 +243,11 @@ context "Launcher Contextual Menu Tests" do
     XDo::Keyboard.right
     XDo::Keyboard.left
     tiles = ""
-    verify( 0, 'Could not find any application tile' ) {
+    verify( TIMEOUT, 'Could not find any application tile' ) {
       tiles = @app.LauncherList( :name => 'main' ).children( { :desktopFile => /^.*.desktop$/ } )
     }
     tile = tiles[0]
-    verify_equal( "true", 0, 'Launcher item didn\'t regain focus' ) {
+    verify_equal( "true", TIMEOUT, 'Launcher item didn\'t regain focus' ) {
       tile['activeFocus']
     }
   end
