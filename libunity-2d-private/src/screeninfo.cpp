@@ -75,9 +75,9 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
     QRect availableGeometry(
-        screenRect.left() + LauncherClient::MaximumWidth,
+        screenRect.left() + (m_screen == 0 ? LauncherClient::MaximumWidth : 0),
         availableRect.top(),
-        screenRect.width() - LauncherClient::MaximumWidth,
+        screenRect.width() - (m_screen == 0 ? LauncherClient::MaximumWidth : 0),
         availableRect.height()
         );
     if (QApplication::isRightToLeft()) {
