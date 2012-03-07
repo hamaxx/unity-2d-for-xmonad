@@ -17,6 +17,7 @@
  */
 
 import QtQuick 1.0
+import "../common/utils.js" as Utils
 
 GridView {
     property int horizontalSpacing: 0
@@ -25,6 +26,8 @@ GridView {
     property int rows: 2
 
     function delegateX(column) {
+        if (Utils.isRightToLeft())
+            column = columns - 1 - column
         return column * horizontalSpacing / columns
     }
     function delegateY(row) {
