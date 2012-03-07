@@ -167,6 +167,20 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
             }
             break;
 
+            case QEvent::KeyPress:
+            case QEvent::KeyRelease:
+            {
+                QWidget *w = qApp->widgetAt(QCursor::pos());
+                if (w != NULL && w != m_grabber->viewport()) {
+                    SpreadView *v = qobject_cast<SpreadView*>(w->window());
+                    if (v != NULL) {
+                        qApp->sendEvent(w, event);
+                        return true;
+                    }
+                }
+            }
+            break;
+
             case QEvent::FocusIn:
                 /* To be able to call grabMouse() we need to be 100% sure that X11 did
                 already map the window. Otherwise grabMouse() will silently fail (and
