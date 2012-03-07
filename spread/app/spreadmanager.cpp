@@ -187,12 +187,14 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
                     in the view won't work.
                     */
                     m_grabber->viewport()->grabMouse();
+                    m_grabber->viewport()->grabKeyboard();
                 }
             break;
 
             case QEvent::Hide:
                 if (obj == m_grabber && QWidget::mouseGrabber() != NULL) {
                     m_grabber->viewport()->releaseMouse();
+                    m_grabber->viewport()->releaseKeyboard();
                 }
             break;
 
