@@ -113,6 +113,7 @@ void Unity2DDeclarativeView::resizeToRootObject()
 {
     QSize size(m_rootItem->width(), m_rootItem->height());
     resize(size);
+    setSceneRect(QRectF(0, 0, size.width(), size.height()));
     Q_EMIT sceneResized(size);
 }
 
