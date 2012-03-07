@@ -125,7 +125,12 @@ void SpreadManager::onViewVisibleChanged(bool visible)
     }
 }
 
-
+// TODO This event filtering is a bit ugly
+// We need it to detect mouse press events outside the
+// spread so we can close it
+// Explore other possible solutions not based in the
+// mouse clicking itself but for example based on
+// focus loss
 bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
     if (m_grabber != NULL) {
         switch (event->type()) {
