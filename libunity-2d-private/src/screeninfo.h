@@ -63,7 +63,7 @@ private Q_SLOTS:
 
 private:
     void updateScreen();
-    int cornerScreen(Corner corner);
+    int cornerScreen(Corner corner) const;
     int m_screen;
     QWidget* m_widget;
     Corner m_corner;
