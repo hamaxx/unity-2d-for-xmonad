@@ -45,7 +45,6 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
-    bool m_manualSliding;
     StrutManager m_strutManager;
     ScreenInfo* m_screenInfo;
 
@@ -101,7 +100,6 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
     d->m_indicatorsManager = 0;
-    d->m_manualSliding = false;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
@@ -210,19 +208,6 @@ void Unity2dPanel::setUseStrut(bool value)
 int Unity2dPanel::panelSize() const
 {
     return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
-}
-
-bool Unity2dPanel::manualSliding() const
-{
-    return d->m_manualSliding;
-}
-
-void Unity2dPanel::setManualSliding(bool manualSliding)
-{
-    if (d->m_manualSliding != manualSliding) {
-        d->m_manualSliding = manualSliding;
-        Q_EMIT manualSlidingChanged(d->m_manualSliding);
-    }
 }
 
 QString Unity2dPanel::id() const

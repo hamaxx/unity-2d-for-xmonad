@@ -35,7 +35,6 @@ struct Unity2dPanelPrivate;
 class Unity2dPanel : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int manualSliding READ manualSliding WRITE setManualSliding NOTIFY manualSlidingChanged)
     Q_PROPERTY(bool useStrut READ useStrut WRITE setUseStrut NOTIFY useStrutChanged)
     Q_ENUMS(Edge)
 
@@ -72,13 +71,9 @@ public:
 
     int panelSize() const;
 
-    bool manualSliding() const;
-    void setManualSliding(bool);
-
     QString id() const;
 
 Q_SIGNALS:
-    void manualSlidingChanged(bool);
     void useStrutChanged(bool);
 
 protected:
