@@ -1,6 +1,7 @@
 #include "application.h"
 #include "applicationslistdbus.h"
 #include "applicationslist.h"
+#include "applicationslistmanager.h"
 
 ApplicationsListDBUS::ApplicationsListDBUS(QObject *parent) :
     QDBusAbstractAdaptor(parent)
@@ -19,12 +20,14 @@ ApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString title,
     Q_UNUSED(icon_size)
     Q_UNUSED(aptdaemon_task)
 
-    ApplicationsList* applicationsList = qobject_cast<ApplicationsList*>(parent());
-    if (applicationsList != NULL && !desktop_file.isEmpty()) {
-        applicationsList->insertFavoriteApplication(desktop_file);
-        Application *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
-        if (application != NULL) {
-            application->beginForceUrgent(1500);
+    ApplicationsListManager* applicationsListManager = qobject_cast<ApplicationsListManager*>(parent());
+    if (applicationsListManager != NULL && !desktop_file.isEmpty()) {
+        Q_FOREACH(ApplicationsList *applicationsList, applicationsListManager->m_lists) {
+            applicationsList->insertFavoriteApplication(desktop_file);
+            Application *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
+            if (application != NULL) {
+                application->beginForceUrgent(1500);
+            }
         }
     }
 }

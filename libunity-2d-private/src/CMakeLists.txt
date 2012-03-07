@@ -45,6 +45,7 @@ set(lib${LIB_NAME}_SRCS
     application.cpp
     applicationslist.cpp
     applicationslistdbus.cpp
+    applicationslistmanager.cpp
     launcherdevice.cpp
     launcherdeviceslist.cpp
     launcherutility.cpp
