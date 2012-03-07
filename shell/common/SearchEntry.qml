@@ -120,27 +120,20 @@ AbstractButton {
                 id: cursor
 
                 Rectangle {
+                    id: customCursor
                     color: "white"
-                    width: 2
-                    height: 16
-
-                    /* WARNING: that animation uses resources */
-                    /* The following animation would behave exactly like
-                       Unity if only 'search_input' could be referenced from
-                       within the cursor Component.
-                    /*
-                    SequentialAnimation on opacity {
-                        id: cursor_pulse
-                        loops: 30
-                        running: false
-                        PropertyAnimation { duration: 1000; to: 0; easing.type: Easing.InOutQuad }
-                        PropertyAnimation { duration: 1000; to: 1; easing.type: Easing.InOutQuad }
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.topMargin: 2
+                    anchors.bottomMargin: 2
+                    width: 1
+                    Timer {
+                        interval: 800; running: true; repeat: true
+                        onTriggered: {
+                            interval = interval == 800 ? 400 : 800
+                            customCursor.visible = !customCursor.visible
+                        }
                     }
-                    Connections {
-                        target: search_input
-                        onTextChanged: cursor_pulse.running = true
-                        onActiveFocusChanged: cursor_pulse.running = search_input.activeFocus
-                    }*/
                 }
             }
 
