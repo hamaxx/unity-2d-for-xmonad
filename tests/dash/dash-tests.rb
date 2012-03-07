@@ -81,7 +81,7 @@ context "Dash Tests" do
   # References
   #   * None
   test "Alt+F2, Alt+F4 hides dash" do
-    verify_equal("false", 2, 'There should not be a Dash declarative view on startup') {
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view on startup') {
       @app.Dash()['active']
     }
     XDo::Keyboard.alt_F2
@@ -89,7 +89,7 @@ context "Dash Tests" do
       @app.Dash()['active']
     }
     XDo::Keyboard.alt_F4
-    verify_equal("false", 2, 'There should not be a Dash declarative view after pressing Escape') {
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view after pressing Escape') {
       @app.Dash()['active']
     }
   end
