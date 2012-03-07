@@ -136,7 +136,7 @@ ShellManagerPrivate::updateScreenCount(int newCount)
 {
     const int previousCount = m_viewList.size();
 
-    /* Update the position of other existing Shells, and instantiate new Shells as needed. */
+    /* Instantiate new Shells as needed. */
     for (int screen = previousCount; screen < newCount; ++screen) {
         ShellDeclarativeView *shell = initShell(screen);
         m_viewList.append(shell);
