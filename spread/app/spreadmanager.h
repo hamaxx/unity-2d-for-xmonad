@@ -53,6 +53,7 @@ private:
     QList<SpreadView *> m_viewList;
     SpreadControl m_control;
     SpreadView *m_grabber;
+    SpreadView *m_focusedView;
 };
 
 #endif // SPREADMANAGER_H

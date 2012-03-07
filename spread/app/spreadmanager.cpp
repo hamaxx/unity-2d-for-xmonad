@@ -31,6 +31,7 @@
 SpreadManager::SpreadManager(QObject* parent)
  : QObject(parent)
  , m_grabber(NULL)
+ , m_focusedView(NULL)
 {
     QDesktopWidget* desktop = QApplication::desktop();
 
@@ -47,17 +48,11 @@ SpreadManager::~SpreadManager()
 
 QObject *SpreadManager::currentSwitcher() const
 {
-    QWidget *w = qApp->widgetAt(QCursor::pos());
-    if (w == NULL) {
+    if (m_focusedView == NULL) {
         return NULL;
     }
 
-    SpreadView *v = qobject_cast<SpreadView*>(w->window());
-    if (v == NULL) {
-        return NULL;
-    }
-
-    return v->rootObject();
+    return m_focusedView->rootObject();
 }
 
 SpreadView *SpreadManager::initSpread(int screen)
@@ -125,6 +120,7 @@ void SpreadManager::onViewVisibleChanged(bool visible)
     m_control.setIsShown(visible);
     if (m_grabber != NULL) {
         m_grabber->forceActivateWindow();
+        m_focusedView = m_grabber;
         Q_EMIT currentSwitcherChanged();
     }
 }
@@ -150,6 +146,7 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
                     if (v != NULL) {
                         if (!v->hasFocus()) {
                             v->forceActivateWindow();
+                            m_focusedView = v;
                             Q_EMIT currentSwitcherChanged();
                         }
                         QMouseEvent me2(event->type(), w->mapFromGlobal(globalPos), me->button(), me->buttons(), me->modifiers());
@@ -161,6 +158,7 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
                 } else {
                     if (!m_grabber->hasFocus()) {
                         m_grabber->forceActivateWindow();
+                        m_focusedView = m_grabber;
                         Q_EMIT currentSwitcherChanged();
                     }
                 }
@@ -170,13 +168,9 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
             case QEvent::KeyPress:
             case QEvent::KeyRelease:
             {
-                QWidget *w = qApp->widgetAt(QCursor::pos());
-                if (w != NULL && w != m_grabber->viewport()) {
-                    SpreadView *v = qobject_cast<SpreadView*>(w->window());
-                    if (v != NULL) {
-                        qApp->sendEvent(w, event);
-                        return true;
-                    }
+                if (m_focusedView != NULL && m_focusedView != m_grabber) {
+                    qApp->sendEvent(m_focusedView, event);
+                    return true;
                 }
             }
             break;
