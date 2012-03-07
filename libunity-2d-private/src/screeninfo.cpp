@@ -72,7 +72,7 @@ QRect ScreenInfo::panelsFreeGeometry() const
     /* We cannot just return the system's availableGeometry(), because that
      * doesn't consider the Launcher, if it's set to auto-hide. */
     QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
-    QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);    
+    QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
     const bool topLeft = m_screen == cornerScreen(TopLeft);
 
