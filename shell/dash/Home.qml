@@ -187,11 +187,5 @@ FocusScope {
             anchors.fill: parent
             source: "HomeShortcutsCustomized.qml"
         }
-        Loader {
-            id: defaultShortcutsLoader
-            focus: !customShortcutsLoader.focus
-            anchors.fill: parent
-            source: (customShortcutsLoader.status == Loader.Error) ? "HomeShortcuts.qml" : ""
-        }
     }
 }

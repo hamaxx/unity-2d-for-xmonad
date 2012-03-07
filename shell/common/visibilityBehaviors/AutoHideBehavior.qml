@@ -18,13 +18,14 @@
 
 import QtQuick 1.0
 
-// Shows the target when it has the focus or when you move the
-// mouse for 500 msec to the edge of the target
+// Shows the target when it has the focus or when you trigger the pointer barrier
+// in the edge of the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
-// To use this Behavior your target needs to provide two properties
+// To use this Behavior your target needs to provide one properties
 //  - containsMouse: Defines if the mouse is inside the target
-//  - outerEdgeContainsMouse: Defines if the mouse is in the edge of the target
+// and one signal
+//  - barrierTriggered: Defines when the pointer barrier has been triggered
 
 BaseBehavior {
     id: autoHide
@@ -44,17 +45,21 @@ BaseBehavior {
         }
     }
 
+    onForcedHiddenChanged:
+    {
+        if (forcedHidden) {
+            autoHideTimer.stop()
+            if (!target.containsMouse) {
+                shownRegardlessOfFocus = false
+            }
+        }
+    }
+
     Timer {
         id: autoHideTimer
         interval: 1000
         running: (target !== undefined) ? !target.containsMouse : false
         onTriggered: shownRegardlessOfFocus = false
-    }
-
-    Timer {
-        id: edgeHitTimer
-        interval: 500
-        onTriggered: shownRegardlessOfFocus = true
     }
 
     Connections {
@@ -68,7 +73,6 @@ BaseBehavior {
 
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
-        onOuterEdgeContainsMouseChanged: edgeHitTimer.running = target.outerEdgeContainsMouse
-        ignoreUnknownSignals: true
+        onBarrierTriggered: shownRegardlessOfFocus = true
     }
 }

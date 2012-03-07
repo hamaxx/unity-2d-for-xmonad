@@ -92,8 +92,4 @@ context "Shell input shape tests" do
   test "Shape of launcher and fullscreen mode dash" do
     test_shape_of_launcher_and_fullscreen_mode_dash()
   end
-
-  test "Shape of launcher and collapsed desktop mode dash" do
-      test_shape_of_launcher_and_collapsed_desktop_mode_dash()
-  end
 end

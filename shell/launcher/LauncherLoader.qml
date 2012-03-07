@@ -26,7 +26,6 @@ Loader {
     source: "Launcher.qml"
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
-    property alias outerEdgeMouseArea: outerEdge
 
     VisibilityController {
         id: visibilityController
@@ -69,6 +68,12 @@ Loader {
         value: visibilityController.forceVisibleChangeId
     }
 
+    Binding {
+        target: launcherBehavior.item
+        property: "forcedHidden"
+        value: visibilityController.forceHidden
+    }
+
     Connections {
         target: declarativeView
         onSuperKeyHeldChanged: {
@@ -79,16 +84,7 @@ Loader {
 
     Binding {
         target: launcherLoader.item
-        property: "outerEdgeContainsMouse"
-        value: outerEdge.containsMouse && outerEdge.enabled
+        property: "shown"
+        value: visibilityController.shown
     }
-
-    MouseArea {
-        id: outerEdge
-        anchors.fill: parent
-        anchors.margins: -1
-        hoverEnabled: !visibilityController.shown
-        enabled: !visibilityController.shown
-    }
-
 }

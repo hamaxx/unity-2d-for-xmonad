@@ -45,15 +45,6 @@
                         <dox:d>The currently active lens</dox:d>
                 </arg>
         </signal>
-        <property name="hudActive" type="b" access="readwrite">
-            <dox:d>True if the HUD is active</dox:d>
-        </property>
-        <signal name="hudActiveChanged">
-                <dox:d>Signals when the active status of the HUD changes</dox:d>
-                <arg name="hudActive" type="b" direction="out">
-                        <dox:d>True if the HUD is active</dox:d>
-                </arg>
-        </signal>
     </interface>
 </node>
 

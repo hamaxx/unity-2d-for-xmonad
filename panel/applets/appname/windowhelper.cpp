@@ -27,6 +27,7 @@
 
 // unity-2d
 #include <dashclient.h>
+#include <hudclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
 
@@ -82,7 +83,7 @@ WindowHelper::WindowHelper(QObject* parent)
         SLOT(update()));
 
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
-    connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), SLOT(update()));
+    connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
     // FIXME: the queued connection should not be needed, however if it's not used when
     // (un)maximizing the dash, the panel will deadlock for some reason.
     connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(update()),
@@ -167,8 +168,8 @@ void WindowHelper::close()
 {
     if (DashClient::instance()->active()) {
         DashClient::instance()->setActive(false);
-    } else if (DashClient::instance()->hudActive()) {
-        DashClient::instance()->setHudActive(false);
+    } else if (HUDClient::instance()->active()) {
+        HUDClient::instance()->setActive(false);
     } else {
         guint32 timestamp = QDateTime::currentDateTime().toTime_t();
         wnck_window_close(d->m_window, timestamp);

@@ -1,0 +1,23 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+    <dox:d><![CDATA[
+      @mainpage
+
+      An interface to control the HUD in Unity-2d.
+    ]]></dox:d>
+    <interface name="com.canonical.Unity2d.HUD" xmlns:dox="http://www.ayatana.org/dbus/dox.dtd">
+        <dox:d>
+          An interface to control the HUD in Unity-2d.
+        </dox:d>
+        <property name="active" type="b" access="readwrite">
+            <dox:d>True if the HUD is active</dox:d>
+        </property>
+        <signal name="activeChanged">
+                <dox:d>Signals when the active status of the HUD changes</dox:d>
+                <arg name="active" type="b" direction="out">
+                        <dox:d>True if the HUD is active</dox:d>
+                </arg>
+        </signal>
+    </interface>
+</node>
+

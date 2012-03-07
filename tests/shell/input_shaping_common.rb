@@ -143,38 +143,3 @@ def test_shape_of_launcher_and_fullscreen_mode_dash(isRTL = false)
 
     verify_true(0, "The actual shape does not match the expected shape") { identical }
 end
-
-def test_shape_of_launcher_and_collapsed_desktop_mode_dash(isRTL = false)
-    XDo::Keyboard.simulate('{SUPER}')
-    sleep 1
-    @app.AbstractButton(:name => 'closeShortcutsButton').tap
-    sleep 1
-
-    maskpath = get_shell_shape()
-
-    # Since the shape of the launcher is dependent on screen geometry, calculate what it should be,
-    # then draw a black rectangle and compose it at the left side of the dash verification image.
-
-    screen_width, screen_height = XDo::XWindow.display_geometry()
-    screen_height -= PANEL_HEIGHT
-
-    pwd = File.expand_path(File.dirname(__FILE__))
-    verifypath = pwd + "/verification/dash_collapsed.png"
-
-    comparepath = tempfilename('shape', '.png')
-
-    flopstring = ""
-    if isRTL
-        flopstring = "-flop"
-    end
-    %x{convert xc:white -extent #{screen_width}x#{screen_height} #{verifypath} -geometry +#{LAUNCHER_WIDTH}+0 -composite  \
-       \\( xc:black -background black -extent #{LAUNCHER_WIDTH}x#{screen_height} \\) \
-       -gravity northwest -compose over -composite #{flopstring} #{comparepath}}
-
-    identical = compare_images(maskpath, comparepath)
-
-    File.unlink(maskpath)
-    File.unlink(comparepath)
-
-    verify_true(0, "The actual shape does not match the expected shape") { identical }
-end
