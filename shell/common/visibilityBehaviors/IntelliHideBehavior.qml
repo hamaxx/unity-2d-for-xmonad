@@ -20,14 +20,14 @@ import QtQuick 1.0
 import Unity2d 1.0
 import "../utils.js" as Utils
 
-// Shows the target when it has the focus or when you move the
-// mouse for 500 msec to the edge of the target or there are no 
-// windows that intersect with the target
+// Shows the target when it has the focus or when you trigger the pointer barrier
+// or there are no windows that intersect with the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
-// To use this Behavior your target needs to provide two properties
+// To use this Behavior your target needs to provide one properties
 //  - containsMouse: Defines if the mouse is inside the target
-//  - outerEdgeContainsMouse: Defines if the mouse is in the edge of the target
+// and one signal
+//  - barrierTriggered: Defines when the pointer barrier has been triggered
 
 AutoHideBehavior {
     id: intellihide
