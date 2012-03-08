@@ -22,8 +22,10 @@ import "../common"
 import "../common/utils.js" as Utils
 
 Loader {
+    property bool launcherOnlyInOneScreen: false // TODO Read this from dconf
+    property bool loadLauncher: !launcherOnlyInOneScreen || declarativeView.screen.screen == 0
     id: launcherLoader
-    source: "Launcher.qml"
+    source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
 
@@ -52,7 +54,7 @@ Loader {
     Binding {
         target: declarativeView
         property: "monitoredArea"
-        value: Qt.rect(launcherLoader.x, launcherLoader.item.y, launcherLoader.item.width, launcherLoader.item.height)
+        value: loadLauncher ? Qt.rect(launcherLoader.x, launcherLoader.item.y, launcherLoader.item.width, launcherLoader.item.height) : Qt.rect(0, 0, 0, 0)
         when: launcherBehavior.status == Loader.Ready && !launcherLoaderXAnimation.running
     }
 
