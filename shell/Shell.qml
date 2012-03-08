@@ -174,8 +174,8 @@ Item {
 
     function updateLauncherBarrierPosition() {
         var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
-        launcherLoader.item.barrierP1 = Qt.point(x, 0)
-        launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.height)
+        launcherLoader.item.barrierP1 = Qt.point(x, declarativeView.screen.geometry.y)
+        launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
         launcherLoader.item.barrierTriggerZoneP1 = Qt.point(x, declarativeView.globalPosition.y)
         launcherLoader.item.barrierTriggerZoneP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
     }
