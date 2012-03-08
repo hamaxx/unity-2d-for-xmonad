@@ -48,7 +48,6 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-common,
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
@@ -83,7 +82,7 @@ Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-2d-common (= ${binary:Version}),
+         unity-2d-common (= ${source:Version}),
          libunity-2d-private0 (= ${binary:Version}),
 Provides: indicator-renderer
 Recommends: indicator-application,
@@ -109,7 +108,7 @@ Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-2d-common (= ${binary:Version}),
+         unity-2d-common (= ${source:Version}),
          libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Spread
@@ -122,7 +121,7 @@ Package: unity-2d-shell
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-2d-common (= ${binary:Version}),
+         unity-2d-common (= ${source:Version}),
          unity-asset-pool,
          libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg,
