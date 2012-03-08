@@ -93,7 +93,8 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            var nWindows = item.windowsOnCurrentWorkspaceScreen(declarativeView.screen.screen);
+            var launcherOnlyInOneScreen = false // TODO Read this from dconf
+            var nWindows = item.windowsOnCurrentWorkspaceScreen(launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen);
             if (nWindows == 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";

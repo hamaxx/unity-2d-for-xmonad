@@ -1048,13 +1048,17 @@ Application::windowsOnCurrentWorkspaceScreen(int screen)
         } else {
             WnckWorkspace *workspace = wnck_window_get_workspace(window);
             if (workspace == current) {
-                // Check the window screen
-                int x, y, width, height;
-                wnck_window_get_geometry(window, &x, &y, &width, &height);
-                const QRect windowRect(x, y, width, height);
-                const QPoint pos = windowRect.center();
-                if (QApplication::desktop()->screenNumber(pos) == screen) {
+                if (screen == -1) {
                     windowCount++;
+                } else {
+                    // Check the window screen
+                    int x, y, width, height;
+                    wnck_window_get_geometry(window, &x, &y, &width, &height);
+                    const QRect windowRect(x, y, width, height);
+                    const QPoint pos = windowRect.center();
+                    if (QApplication::desktop()->screenNumber(pos) == screen) {
+                        windowCount++;
+                    }
                 }
             }
         }
