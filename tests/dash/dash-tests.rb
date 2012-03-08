@@ -435,5 +435,4 @@ context "Dash Tests" do
         @app.QDeclarativeLoader( { :objectName => "pageLoader" } )['activeFocus']
     }
   end
-
 end
