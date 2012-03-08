@@ -93,11 +93,12 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            if (item.belongsToDifferentWorkspace() || item.belongsToDifferentScreen(declarativeView.screen.screen)) {
+            var nWindows = item.windowsOnCurrentWorkspaceScreen(declarativeView.screen.screen);
+            if (nWindows == 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
             } else {
-                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pips = Math.min(nWindows, 3)
                 launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
             }
         }
@@ -115,7 +116,6 @@ AutoScrollingListView {
         active: item.active
         urgent: item.urgent
         launching: item.launching
-        pips: Math.min(item.windowCount, 3)
 
         counter: item.counter
         counterVisible: item.counterVisible

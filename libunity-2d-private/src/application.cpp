@@ -1019,28 +1019,15 @@ Application::createStaticMenuActions()
     } 
 }
 
-bool
-Application::belongsToDifferentWorkspace()
-{
-    int totalWindows = windowCount();
-    int windowsInCurrentWorkspace = windowCountOnCurrentWorkspace();
-    if (totalWindows > 0 && windowsInCurrentWorkspace == 0) {
-        return true;
-    }
-
-    return false;
-}
-
-bool
-Application::belongsToDifferentScreen(int screen)
+int
+Application::windowsOnCurrentWorkspaceScreen(int screen)
 {
     if (!m_application) {
-        return false;
+        return 0;
     }
 
-    if (QApplication::desktop()->screenCount() == 1) {
-        return false;
-    }
+    int windowCount = 0;
+    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
     QScopedPointer<BamfUintList> xids(m_application->xids());
     for (int i = 0; i < xids->size(); i++) {
@@ -1056,17 +1043,24 @@ Application::belongsToDifferentScreen(int screen)
             }
         }
 
-        // Check the window screen
-        int x, y, width, height;
-        wnck_window_get_geometry(window, &x, &y, &width, &height);
-        const QRect windowRect(x, y, width, height);
-        const QPoint pos = windowRect.center();
-        if (QApplication::desktop()->screenNumber(pos) == screen) {
-            return false;
+        if (wnck_window_is_pinned(window)) {
+            windowCount++;
+        } else {
+            WnckWorkspace *workspace = wnck_window_get_workspace(window);
+            if (workspace == current) {
+                // Check the window screen
+                int x, y, width, height;
+                wnck_window_get_geometry(window, &x, &y, &width, &height);
+                const QRect windowRect(x, y, width, height);
+                const QPoint pos = windowRect.center();
+                if (QApplication::desktop()->screenNumber(pos) == screen) {
+                    windowCount++;
+                }
+            }
         }
     }
 
-    return true;
+    return windowCount;
 }
 
 void

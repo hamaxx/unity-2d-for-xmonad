@@ -104,8 +104,7 @@ public:
     Q_INVOKABLE virtual void launchNewInstance();
 
     Q_INVOKABLE virtual void createMenuActions();
-    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
-    Q_INVOKABLE virtual bool belongsToDifferentScreen(int screen);
+    Q_INVOKABLE virtual int windowsOnCurrentWorkspaceScreen(int screen);
     Q_INVOKABLE void connectWindowSignals();
     void disconnectWindowSignals();
 

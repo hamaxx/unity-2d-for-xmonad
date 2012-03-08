@@ -79,8 +79,7 @@ public:
     Q_INVOKABLE virtual void activate() = 0;
     Q_INVOKABLE virtual void createMenuActions() = 0;
     Q_INVOKABLE virtual void launchNewInstance();
-    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
-    Q_INVOKABLE virtual bool belongsToDifferentScreen(int screen);
+    Q_INVOKABLE virtual int windowsOnCurrentWorkspaceScreen(int screen);
 
 protected:
     LauncherContextualMenu* m_menu;
