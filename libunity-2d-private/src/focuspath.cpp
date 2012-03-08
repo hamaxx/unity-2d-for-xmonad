@@ -346,7 +346,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                 int nextFocus = m_currentPosition;
 
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-                switch(switchLeftRightKeys(keyEvent->key())) {
+                switch(Unity2dUtils::switchLeftRightKeys(keyEvent->key())) {
                     case Qt::Key_Right:
                         if ((m_direction & FocusPath::Horizontal) == FocusPath::Horizontal) {
                             switch(m_flow) {

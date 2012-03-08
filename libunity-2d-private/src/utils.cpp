@@ -21,6 +21,8 @@
 
 #include <QApplication>
 
+namespace Unity2dUtils {
+
 /* If using a right-to-left locale, switch the left and right keys. */
 int switchLeftRightKeys(int key)
 {
@@ -36,3 +38,6 @@ int switchLeftRightKeys(int key)
     }
     return key;
 }
+
+} // namespace
+

@@ -20,7 +20,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+namespace Unity2dUtils {
+
 /* If using a right-to-left locale, switch the left and right keys. */
 int switchLeftRightKeys(int key);
+
+} // namespace
     
 #endif // UTILS_H
