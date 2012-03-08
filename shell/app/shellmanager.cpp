@@ -492,8 +492,9 @@ ShellManager::updateSuperKeyMonitoring()
 bool
 ShellManager::superKeyHeld() const
 {
-    if (d->m_superHotModifier == NULL) // We are just initializing
+    if (d->m_superHotModifier == NULL) { // We are just initializing
         return false;
+    }
 
     return d->m_superHotModifier->held();
 }
@@ -501,8 +502,9 @@ ShellManager::superKeyHeld() const
 bool
 ShellManager::hudActive() const
 {
-    if (d->m_hudLoader == NULL) // We are just initializing
+    if (d->m_hudLoader == NULL) { // We are just initializing
         return false;
+    }
 
     return d->m_hudLoader->property("active").toBool();
 }
