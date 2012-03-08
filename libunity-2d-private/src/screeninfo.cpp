@@ -74,12 +74,13 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
     QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
-    const bool topLeft = m_screen == cornerScreen(TopLeft);
+    const bool onlyOneLauncher = false; // TODO read this from dconf
+    const bool accountForLauncher = !onlyOneLauncher || m_screen == 0;
 
     QRect availableGeometry(
-        screenRect.left() + (topLeft ? LauncherClient::MaximumWidth : 0),
+        screenRect.left() + (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.top(),
-        screenRect.width() - (topLeft ? LauncherClient::MaximumWidth : 0),
+        screenRect.width() - (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.height()
         );
     if (QApplication::isRightToLeft()) {
