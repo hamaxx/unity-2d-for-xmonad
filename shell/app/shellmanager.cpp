@@ -72,9 +72,14 @@ struct ShellManagerPrivate
         , m_last_focused_window(None)
     {}
 
+    enum ActiveShellUsage {
+        ActiveShellGeneralUse,
+        ActiveShellLauncherRelatedUse
+    };
+
     ShellDeclarativeView* initShell(int screen);
     void updateScreenCount(int newCount);
-    ShellDeclarativeView* activeShell() const;
+    ShellDeclarativeView* activeShell(ActiveShellUsage usage) const;
     void moveDashToShell(ShellDeclarativeView* newShell);
     void moveHudToShell(ShellDeclarativeView* newShell);
     void saveActiveWindow();
@@ -120,8 +125,13 @@ ShellManagerPrivate::initShell(int screen)
 }
 
 ShellDeclarativeView *
-ShellManagerPrivate::activeShell() const
+ShellManagerPrivate::activeShell(ActiveShellUsage usage) const
 {
+    bool launcherOnlyInOneScreen = false;
+    if (usage == ActiveShellLauncherRelatedUse && launcherOnlyInOneScreen) {
+        return m_viewList.isEmpty() ? NULL : m_viewList[0];
+    }
+
     int cursorScreen = QApplication::desktop()->screenNumber(QCursor::pos());
     Q_FOREACH(ShellDeclarativeView * shell, m_viewList) {
         if (shell->screen()->screen() == cursorScreen) {
@@ -397,7 +407,7 @@ ShellManager::onScreenCountChanged(int newCount)
 void
 ShellManager::toggleDash()
 {
-    ShellDeclarativeView * activeShell = d->activeShell();
+    ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellLauncherRelatedUse);
     if (activeShell) {
         const bool differentShell = d->m_shellWithDash != activeShell;
 
@@ -414,7 +424,7 @@ ShellManager::toggleDash()
 void
 ShellManager::toggleHudRequested()
 {
-    ShellDeclarativeView * activeShell = d->activeShell();
+    ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellGeneralUse);
     if (activeShell) {
         const bool differentShell = d->m_shellWithHud != activeShell;
 
@@ -524,24 +534,16 @@ ShellManager::hudScreen() const
 void
 ShellManager::onAltF1Pressed()
 {
-    bool launcherOnlyInOneScreen = false; // TODO Read from dconf
-    ShellDeclarativeView * shell = NULL;
-    if (!d->m_viewList.isEmpty()) {
-        if (launcherOnlyInOneScreen) {
-            shell = d->m_viewList[0];
-        } else {
-            shell = d->activeShell();
-        }
-    }
-    if (shell) {
+    ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellLauncherRelatedUse);
+    if (activeShell) {
         if (dashActive()) {
             // focus the launcher instead of the dash
             setDashActive(false);
-            Q_EMIT shell->launcherFocusRequested();
+            Q_EMIT activeShell->launcherFocusRequested();
         }
         else
         {
-            shell->toggleLauncher();
+            activeShell->toggleLauncher();
         }
     }
 }
@@ -549,7 +551,7 @@ ShellManager::onAltF1Pressed()
 void
 ShellManager::onAltF2Pressed()
 {
-    ShellDeclarativeView * activeShell = d->activeShell();
+    ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellLauncherRelatedUse);
     if (activeShell) {
         d->moveDashToShell(activeShell);
         Q_EMIT dashActivateLens(COMMANDS_LENS_ID);
@@ -561,7 +563,7 @@ ShellManager::onNumericHotkeyPressed()
 {
     Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
     if (hotkey) {
-        ShellDeclarativeView * activeShell = d->activeShell();
+        ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellLauncherRelatedUse);
         if (activeShell) {
             /* Shortcuts from 1 to 9 should activate the items with index
             from 1 to 9 (index 0 being the so-called "BFB" or Dash launcher).
