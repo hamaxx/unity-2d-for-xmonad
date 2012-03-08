@@ -100,7 +100,7 @@ public:
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE void close();
     Q_INVOKABLE void spread(bool showAllWorkspaces = false);
-    Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, uint xid=0);
+    Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, int screen, uint xid=0);
     Q_INVOKABLE virtual void launchNewInstance();
 
     Q_INVOKABLE virtual void createMenuActions();

@@ -263,9 +263,11 @@ AutoScrollingListView {
 
         function setIconGeometry() {
             if (running) {
+                var launcherOnlyInOneScreen = false // TODO Read this from dconf
+                var screen = launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen
                 item.setIconGeometry(x + declarativeView.globalPosition.x,
                                      y + declarativeView.globalPosition.y,
-                                     width, height)
+                                     width, height, screen)
             }
         }
 
@@ -305,12 +307,19 @@ AutoScrollingListView {
 
         Connections {
             target: item
-            onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
-                                                y + declarativeView.globalPosition.y,
-                                                width, height, xid)
+            onWindowAdded: {
+                var launcherOnlyInOneScreen = false // TODO Read this from dconf
+                var screen = launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen
+                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                                     y + declarativeView.globalPosition.y,
+                                     width, height, screen, xid)
+            }
             onWindowCountChanged: updatePips()
             onWindowWorkspaceChanged: updatePips()
-            onWindowGeometryChanged: updatePips()
+            onWindowGeometryChanged: {
+                updatePips()
+                setIconGeometry()
+            }
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }

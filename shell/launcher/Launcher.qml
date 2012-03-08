@@ -30,6 +30,7 @@ LauncherDropItem {
     property bool shown
     property bool showMenus: true
 
+    property bool edgeStickinessEnabled: false // TODO Read from dconf
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
     property variant barrierP1
     property variant barrierP2
@@ -47,7 +48,7 @@ LauncherDropItem {
         threshold: launcher2dConfiguration.edgeStopVelocity
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate
-        triggerPressure: launcher2dConfiguration.edgeRevealPressure
+        triggerPressure: !launcherAlwaysVisible || edgeStickinessEnabled ? launcher2dConfiguration.edgeRevealPressure : -1
         breakPressure: launcher2dConfiguration.edgeOvercomePressure
 
         onTriggered: launcher.barrierTriggered()

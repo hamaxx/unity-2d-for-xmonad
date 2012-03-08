@@ -69,6 +69,16 @@ GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
 
+static int windowScreen(WnckWindow *window)
+{
+    // Check the window screen
+    int x, y, width, height;
+    wnck_window_get_geometry(window, &x, &y, &width, &height);
+    const QRect windowRect(x, y, width, height);
+    const QPoint pos = windowRect.center();
+    return QApplication::desktop()->screenNumber(pos);
+}
+
 Application::Application()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
@@ -494,7 +504,7 @@ Application::setSnStartupSequence(SnStartupSequence* sequence)
 }
 
 void
-Application::setIconGeometry(int x, int y, int width, int height, uint xid)
+Application::setIconGeometry(int x, int y, int width, int height, int screen, uint xid)
 {
     if (m_application == NULL) {
         return;
@@ -513,12 +523,13 @@ Application::setIconGeometry(int x, int y, int width, int height, uint xid)
         return;
     }
 
-    WnckScreen* screen = wnck_screen_get_default();
-    wnck_screen_force_update(screen);
+    wnck_screen_force_update(wnck_screen_get_default());
 
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
-        wnck_window_set_icon_geometry(window, x, y, width, height);
+        if (screen == -1 || windowScreen(window) == screen) {
+            wnck_window_set_icon_geometry(window, x, y, width, height);
+        }
     }
 }
 
@@ -1050,15 +1061,8 @@ Application::windowsOnCurrentWorkspaceScreen(int screen)
             if (workspace == current) {
                 if (screen == -1) {
                     windowCount++;
-                } else {
-                    // Check the window screen
-                    int x, y, width, height;
-                    wnck_window_get_geometry(window, &x, &y, &width, &height);
-                    const QRect windowRect(x, y, width, height);
-                    const QPoint pos = windowRect.center();
-                    if (QApplication::desktop()->screenNumber(pos) == screen) {
-                        windowCount++;
-                    }
+                } else if (windowScreen(window) == screen) {
+                    windowCount++;
                 }
             }
         }

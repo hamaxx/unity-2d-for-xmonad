@@ -28,6 +28,7 @@ Loader {
     source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
+    property bool launcherAlwaysVisible: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
 
     VisibilityController {
         id: visibilityController
