@@ -524,16 +524,24 @@ ShellManager::hudScreen() const
 void
 ShellManager::onAltF1Pressed()
 {
-    ShellDeclarativeView * activeShell = d->activeShell();
-    if (activeShell) {
+    bool launcherOnlyInOneScreen = false; // TODO Read from dconf
+    ShellDeclarativeView * shell = NULL;
+    if (!d->m_viewList.isEmpty()) {
+        if (launcherOnlyInOneScreen) {
+            shell = d->m_viewList[0];
+        } else {
+            shell = d->activeShell();
+        }
+    }
+    if (shell) {
         if (dashActive()) {
             // focus the launcher instead of the dash
             setDashActive(false);
-            Q_EMIT activeShell->launcherFocusRequested();
+            Q_EMIT shell->launcherFocusRequested();
         }
         else
         {
-            activeShell->toggleLauncher();
+            shell->toggleLauncher();
         }
     }
 }
