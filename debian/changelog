@@ -1,4 +1,4 @@
-unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (5.6.1-0ubuntu2) UNRELEASED; urgency=low
 
   * debian/unity-2d.gconf-defaults:
     - removed: not used anymore and causing regression with hide-mode=2
