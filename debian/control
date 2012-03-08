@@ -139,6 +139,13 @@ Description: Dash and Launcher for the Unity 2D environment
  * Launcher: displays in a panel at the left of the screen a list of running
              and favorite applications as well as highlighting their notifications.
 
+Package: unity-2d-common
+Architecture: all
+Depends: ${misc:Depends},
+Description: Common files for Unity 2D Shell
+ This is part of Unity 2D and contains the common files needed by multiple
+ components of it.
+
 Package: unity-2d-dbg
 Architecture: any
 Section: debug
