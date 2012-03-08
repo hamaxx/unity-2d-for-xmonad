@@ -118,6 +118,36 @@ context "HUD Show and Hide tests" do
       @app.Hud()
     }
   end
+ 
+  # Test case objectives:
+  #   * Check Alt+F4 key closes HUD
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Check HUD closed
+  #   * Tap the Alt key
+  #   * Check HUD open
+  #   * Tap Alt+F4 key
+  #   * Check HUD closed
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "HUD hides with ALT+F4 key" do
+    verify_not(1, 'HUD should be hidden at startup') {
+      @app.Hud()
+    }
+
+    XDo::Keyboard.alt
+    verify_equal('true', TIMEOUT, 'HUD should be visible, as the Alt key was tapped') {
+      @app.Hud()['active']
+    }
+
+    XDo::Keyboard.alt_F4
+    verify_not(1, 'HUD should be hidden, as the ALT+F4 key should dismiss it') {
+      @app.Hud()
+    }
+  end
   
   # Test case objectives:
   #   * Check outside mouse-click closes HUD
