@@ -5,6 +5,13 @@ unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
       by default, converted to the gsettings key (LP: #942772)
   * debian/unity-2d.preinst:
     - removed, was a natty -> oneiric transition
+  * debian/control, debian/unity-2d-common.install:
+    - create unity-2d-common and make some packages depending on it
+    - move some files from unity-2d package to unity-2d-common
+      (gsettings and apport hook) to have packaging shipping their schema
+      (LP: #925457)
+  * debian/unity-2d-common.install.in:
+    - no more gconf -> gsettings migration shipped
   * debian/unity-2d.postinst, prerm, trigger:
     - moved to unity-2d-common new package, to ensure even people uninstalling
       unity-2d got the right metacity configuration in the session

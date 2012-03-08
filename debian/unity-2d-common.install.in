@@ -4,4 +4,3 @@ debian/20_ubuntu-2d-gconf-mandatory @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADI
 debian/20_ubuntu-2d-gconf-default @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/ubuntu-2d/default
 @DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/locale/*/LC_MESSAGES/unity-2d.mo
 @DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/glib-2.0/schemas/com.canonical.Unity2d.gschema.xml
-@DEBIAN_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/GConf/gsettings
