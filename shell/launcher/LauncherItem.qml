@@ -86,8 +86,9 @@ DropItem {
     property bool isBeingDragged: false
     property int dragPosition
 
-    property int pips
-    property string pipSource
+    property int pips: 0
+    property string pipSource: "launcher/artwork/launcher_" +
+                               ((pips <= 1) ? "arrow" : "pip") + "_ltr.png"
     function getPipOffset(index) {
         /* Pips need to always be centered, regardless if they are an even or odd
            number. The following simple conditional code works and is less
