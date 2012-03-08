@@ -1,4 +1,4 @@
-unity-2d (5.6.1-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
 
   * debian/unity-2d.gconf-defaults:
     - removed: not used anymore and causing regression with hide-mode=2
@@ -16,6 +16,10 @@ unity-2d (5.6.1-0ubuntu2) UNRELEASED; urgency=low
     - moved to unity-2d-common new package, to ensure even people uninstalling
       unity-2d got the right metacity configuration in the session
     - update the trigger to the correct directory
+  * debian/control:
+    - bump to latest Standards-Version
+    - fix some too long description
+    - put the transitional packages in the oldlibs/extra section
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
 

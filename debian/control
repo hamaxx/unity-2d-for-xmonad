@@ -26,7 +26,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libnux-2.0-dev (>= 2.4),
                libxi-dev,
                libxtst-dev,
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Vcs-Bzr: https://code.launchpad.net/~unity-2d-team/unity-2d/trunk
 
 Package: unity-2d
@@ -42,6 +42,8 @@ Description: Unity interface for non-accelerated graphics cards
  offer a session called Unity 2D in your login manager.
  .
  Unity 2D is designed to run smoothly without any graphics acceleration.
+ .
+ This metapackage will install all required unity-2d components.
 
 Package: libunity-2d-private0
 Section: libs
@@ -72,6 +74,8 @@ Description: Unity 2D shared library - development files
 
 Package: unity-2d-launcher
 Architecture: all
+Section: oldlibs
+Priority: extra
 Depends: ${misc:Depends},
          unity-2d-shell,
 Description: Transitional package for unity-2d-launcher
@@ -98,6 +102,8 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: all
+Section: oldlibs
+Priority: extra
 Depends: ${misc:Depends},
          unity-2d-shell,
 Description: Transitional package for unity-2d-places
@@ -139,7 +145,8 @@ Description: Dash and Launcher for the Unity 2D environment
  * Dash: an overlay over the desktop to provide quick access to
          various categories of applications.
  * Launcher: displays in a panel at the left of the screen a list of running
-             and favorite applications as well as highlighting their notifications.
+             and favorite applications as well as highlighting their
+             notifications.
 
 Package: unity-2d-common
 Architecture: all
@@ -154,7 +161,7 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends:
-    unity-2d (= ${binary:Version}),
+    unity-2d (= ${source:Version}),
     ${misc:Depends}
 Description: Debugging symbols for unity-2d
  The Unity 2D interface installs a fully usable 2D session and provides the 
