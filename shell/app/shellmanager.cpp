@@ -542,9 +542,7 @@ ShellManager::onAltF1Pressed()
             // focus the launcher instead of the dash
             setDashActive(false);
             Q_EMIT activeShell->launcherFocusRequested();
-        }
-        else
-        {
+        } else {
             activeShell->toggleLauncher();
         }
     }
