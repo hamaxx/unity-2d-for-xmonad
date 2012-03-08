@@ -2,7 +2,7 @@ TL;DR:
 
   sudo apt-get build-dep unity-2d
   cmake .
-  make -j4 && (killall -9 unity-2d-shell ; sleep 1 && ./shell/app/unity-2d-shell &)
+  make -j4 && (killall unity-2d-shell; sleep 1; killall unity-2d-shell; sleep 1 && ./shell/app/unity-2d-shell &)
 
 
 Longer version
@@ -23,12 +23,16 @@ To build trunk:
 
  4. Test:
 
-  killall -9 unity-2d-shell
+  killall unity-2d-shell
+  killall unity-2d-shell
   ./shell/app/unity-2d-shell &
 
  To do iterative compile+test, you can use the command:
 
-  make -j4 && (killall -9 unity-2d-shell ; sleep 1 && ./shell/app/unity-2d-shell &)
+  make -j4 && (killall unity-2d-shell; sleep 1 && ./shell/app/unity-2d-shell &)
+
+ (A double killall is only needed the first time after session
+ login.  This is to break the default automagic respawn cycle).
 
  5. Test again with non-compositing window-manager mode (eg. different assets
   such as './shell/common/artwork/desktop_dash_background_no_transparency.sci'):
