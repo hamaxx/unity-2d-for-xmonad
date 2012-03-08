@@ -66,6 +66,34 @@ context "Dash Tests" do
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
+  # Test case objectives:
+  #   * Check that Alt+F4 hides dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Press Alt+F4
+  #   * Verify dash is not showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Alt+F2, Alt+F4 hides dash" do
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view on startup') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F2
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F4
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view after pressing Escape') {
+      @app.Dash()['active']
+    }
+  end
+
   #####################################################################################
   # Test casess
 
