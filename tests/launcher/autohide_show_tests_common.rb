@@ -114,7 +114,7 @@ end
 #   * Open application in position overlapping Launcher
 #   * Verify Launcher hiding
 #   * Move mouse to left of screen to reveal Launcher
-#   * Verify Launcher shows but not immediately
+#   * Verify Launcher shows only if we push the barrier
 #   * Move mouse to the right, but still over the Launcher
 #   * Verify Launcher still showing
 #   * Move mouse further right to not overlap Launcher
@@ -128,8 +128,8 @@ def test_reveal_hidden_launcher_with_mouse()
   verify_launcher_hidden(TIMEOUT, 'Launcher visible with window in the way, should be hidden')
 
   move_mouse_to_screen_edge()
-  sleep 0.4
-  verify_launcher_hidden(0, 'Launcher should not be visible immediately after mouse moves to the edge, has to wait 0.5 seconds to show')
+  verify_launcher_hidden(0, 'Launcher should not be visible immediately without pushing the edge')
+  mouse_push_screen_edge()
   verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
 
   move_mouse_to_launcher_inner_border()
@@ -422,6 +422,7 @@ def test_launcher_hide_delay_on_tile_removal()
   if !tiles.empty?
     tile = tiles[0]
     move_mouse_to_screen_edge()
+    mouse_push_screen_edge()
     verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen, should be visible')
     tile.move_mouse()
     XDo::Mouse.click(nil, nil, :right)
@@ -457,6 +458,7 @@ def test_launcher_visible_after_toggling_dash()
 
   bfb = @app.LauncherList( :name => 'main' ).LauncherList( :isBfb => true );
   move_mouse_to_screen_edge()
+  mouse_push_screen_edge()
   verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen, should be visible')
   bfb.move_mouse()
   bfb.tap()
@@ -584,5 +586,36 @@ def test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb
   XDo::Keyboard.escape
   verify_not(0, 'Launcher hiding after on Esc after Alt+F1 with mouse over bfb') {
     verify_launcher_hidden(2)
+  }
+end
+
+# Test case objectives:
+# * Auto Hide: Launcher does not show when auto hide timer is running after showing hud
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Set hide-mode to 1
+# * Make mouse show the launcher
+# * Verify Launcher showing
+# * Move mouse away from the launcher
+# * Press Alt
+# * Verify HUD is showing
+# * Verify Launcher is hidden
+# * Press Alt
+# * Verify Launcher does not show
+# Post-conditions
+# * None
+# References
+# * None
+def test_auto_hide_launcher_hide_timer_and_hud_interaction
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+  move_mouse_to_screen_edge()
+  verify_launcher_visible(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
+  XDo::Mouse.move(300, 300, 0, true)
+  XDo::Keyboard.alt
+  verify_launcher_hidden(TIMEOUT, 'Launcher hiding when mouse at edge of screen')
+  XDo::Keyboard.alt
+  verify_not(0, 'Launcher showing after on alt tapping while the hide timer was running') {
+    verify_launcher_visible(2)
   }
 end

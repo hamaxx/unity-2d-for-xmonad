@@ -25,6 +25,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libunity-core-5.0-dev (>= 5.2.0),
                libnux-2.0-dev (>= 2.4),
                libxi-dev,
+               libxtst-dev,
 Standards-Version: 3.9.2
 Vcs-Bzr: https://code.launchpad.net/~unity-2d-team/unity-2d/trunk
 

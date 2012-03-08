@@ -66,6 +66,34 @@ context "Dash Tests" do
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
   end
 
+  # Test case objectives:
+  #   * Check that Alt+F4 hides dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Alt+F2
+  #   * Verify dash is showing
+  #   * Press Alt+F4
+  #   * Verify dash is not showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Alt+F2, Alt+F4 hides dash" do
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view on startup') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F2
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
+      @app.Dash()['active']
+    }
+    XDo::Keyboard.alt_F4
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view after pressing Escape') {
+      @app.Dash()['active']
+    }
+  end
+
   #####################################################################################
   # Test casess
 
@@ -347,6 +375,64 @@ context "Dash Tests" do
     XDo::Keyboard.alt_F2 #Must use uppercase F to indicate function keys
     verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
       @app.Dash()['active']
+    }
+  end
+
+  # Test case objectives:
+  #   * Check navigation to and in lens bar
+  # Pre-conditions
+  # Test steps
+  #   * Invoke dash
+  #   * Go down 7 times (twice for each category in the Home lens + down to lens bar)
+  #   * Verify that the lens bar has focus
+  #   * Verify that the first lens button has focus
+  #   * Go right
+  #   * Verify that the second lens button has focus
+  #   * Go right
+  #   * Verify that the third lens button has focus
+  #   * Go left twice
+  #   * Verify that the first lens button has focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * None
+  test "Check navigation down from dash leads to lens bar" do
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+    for i in 1..7 do
+      XDo::Keyboard.down
+    end
+    verify_equal("true", TIMEOUT, 'Lens bar doesn\'t have focus') {
+        @app.LensBar()['activeFocus']
+    }
+
+    buttons = @app.LensBar().children( { :type => "LensButton" } )
+
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[0]['activeFocus']
+    }
+
+    XDo::Keyboard.right
+    verify_equal("true", TIMEOUT, 'Second lens button doesn\'t have focus') {
+        buttons[1]['activeFocus']
+    }
+
+    XDo::Keyboard.right
+    verify_equal("true", TIMEOUT, 'Third lens button doesn\'t have focus') {
+        buttons[2]['activeFocus']
+    }
+
+    XDo::Keyboard.left
+    XDo::Keyboard.left
+    verify_equal("true", TIMEOUT, 'First lens button doesn\'t have focus') {
+        buttons[0]['activeFocus']
+    }
+
+    XDo::Keyboard.up
+    verify_equal("true", TIMEOUT, 'Dash contents don\'t have focus') {
+        @app.QDeclarativeLoader( { :objectName => "pageLoader" } )['activeFocus']
     }
   end
 end

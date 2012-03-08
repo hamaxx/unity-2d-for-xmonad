@@ -55,6 +55,12 @@ context "Launcher Autohide and Show Tests" do
     XDo::Mouse.move(0, 200, 0, true)
   end
 
+  def mouse_push_screen_edge
+    (1..100).each do |i|
+      $SUT.execute_shell_command 'xdotool mousemove_relative -- -10 0'
+    end
+  end
+
   def move_mouse_to_launcher_inner_border()
     XDo::Mouse.move(LAUNCHER_WIDTH-1,200)
   end
@@ -187,6 +193,10 @@ context "Launcher Autohide and Show Tests" do
   
   test "Auto Hide: Launcher does not hide on Esc after Alt+F1 and mouse on BFB" do
     test_auto_hide_launcher_does_not_hide_on_esc_after_alt_f1_mouse_on_bfb()
+  end
+
+  test "Auto Hide: Launcher hide timer and Hud interaction" do
+    test_auto_hide_launcher_hide_timer_and_hud_interaction()
   end
 
 end

@@ -1,3 +1,33 @@
+unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
+
+  * debian/unity-2d.gconf-defaults:
+    - removed: not used anymore and causing regression with hide-mode=2
+      by default, converted to the gsettings key (LP: #942772)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
+
+unity-2d (5.6.0-0ubuntu1) precise; urgency=low
+
+  * New upstream release
+    - [dash] [hud] If no active window, shell processes crashes (LP: #944724)
+    - Long delay on session logout (LP: #812104)
+    - apps/docs are not launched when performing a search on the home lens
+      (LP: #932092)
+    - [unity-2d] FF exception to add HUD to Unity2d (LP: #942045)
+    - There's a gap between the launcher and the upper panel (LP: #942031)
+    - Dash - Genre filter category in the Music Lens should use a 3 column
+      layout (LP: #841902)
+    - selected lens arrow should be on top instead of bottom (LP: #932291)
+    - [launcher] pixel-perfection fixes, new assets, tile & pip position,
+      border line & context menu position (LP: #936881)
+    - Workspace switcher icon should not generate background from icon
+      (LP: #939586)
+    - No glow assets still needed X Y Z (LP: #934059)
+  * Revert an upstream commit to ensure that there is not regression with
+    libunity-core 5.4 (change will be introduced again when unity 5.6 released)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 05 Mar 2012 09:52:30 +0100
+
 unity-2d (5.4.0-0ubuntu1) precise; urgency=low
 
   * New upstream release

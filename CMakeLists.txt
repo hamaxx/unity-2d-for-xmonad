@@ -45,6 +45,10 @@ pkg_check_modules(NUXCORE REQUIRED nux-core-2.0)
 pkg_check_modules(PANGO REQUIRED pango)
 pkg_check_modules(DCONFQT REQUIRED dconf-qt)
 
+# X11_XTest_FOUND is defined by find_package(X11 REQUIRED)
+if (NOT X11_XTest_FOUND)
+    message(SEND_ERROR "Xtest library not found")
+endif (NOT X11_XTest_FOUND)
 
 # GSettings schemas
 pkg_check_modules(GLIB REQUIRED glib-2.0)

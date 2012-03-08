@@ -51,6 +51,9 @@ FocusScope {
         anchors.top: background.top
         anchors.bottom: background.bottom
 
+        focus: true
+        onActiveFocusChanged: if (activeFocus) selectChild(currentIndex)
+
         Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
 
         /* The Home lens is unfortunately not supplied by the "lenses" list

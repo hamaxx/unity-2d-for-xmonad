@@ -1,7 +1,9 @@
 /*
- * This file is part of unity-2d
+ * Copyright (C) 2011 Canonical, Ltd.
  *
- * Copyright 2012 Canonical Ltd.
+ * Authors:
+ *  Ugo Riboni <ugo.riboni@canonical.com>
+ *  Michał Sawicz <michal.sawicz@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+#ifndef ShellDBus_H
+#define ShellDBus_H
 
-Item {
-    // true if the behaviour wants the target to be shown, false otherwise
-    property bool shown
+#include <QtCore/QObject>
+#include <QtDBus/QDBusContext>
 
-    // The target the behavior will be deciding if has to be shown or not
-    property variant target
+class ShellDeclarativeView;
 
-    // Whether the target has been shown by an external reason
-    property bool forcedVisible: false
+/**
+ * DBus interface for the shell.
+ */
+class ShellDBus : public QObject, protected QDBusContext
+{
+    Q_OBJECT
 
-    // Whether the target has been hidden by an external reason
-    property bool forcedHidden: false
+public:
+    ShellDBus(ShellDeclarativeView* view, QObject* parent=0);
+    ~ShellDBus();
 
-    // The id that triggered the last forcedVisible change
-    property variant forcedVisibleChangeId
-}
+    bool connectToBus();
+
+private:
+    ShellDeclarativeView* m_view;
+};
+
+#endif // ShellDBus_H
+

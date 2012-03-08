@@ -23,6 +23,7 @@
 #include "plugin.h"
 
 #include "dashclient.h"
+#include "hudclient.h"
 #include "application.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -80,6 +81,8 @@
 #include "unity2dpanel.h"
 #include "strutmanager.h"
 
+#include "pointerbarrier.h"
+
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
@@ -110,6 +113,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
     qmlRegisterType<DashClient>();
+    qmlRegisterType<HUDClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -183,6 +187,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Unity2dPanel>(uri, 0, 1, "Unity2dPanel");
     qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
+    
+    qmlRegisterType<PointerBarrierWrapper>(uri, 0, 1, "PointerBarrier");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

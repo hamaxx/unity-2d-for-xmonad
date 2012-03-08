@@ -30,6 +30,7 @@
 #include "unity2dpanel.h"
 #include "windowhelper.h"
 #include "dashclient.h"
+#include "hudclient.h"
 
 // Unity-2d
 #include <debug_p.h>
@@ -133,8 +134,10 @@ protected:
                 pix = m_normalPix;
             }
         }
+        bool rtl = layoutDirection() == Qt::RightToLeft;
         int posX;
-        if (m_buttonType == PanelStyle::CloseWindowButton) {
+        if ((!rtl && m_buttonType == PanelStyle::CloseWindowButton) ||
+            ( rtl && m_buttonType != PanelStyle::CloseWindowButton)) {
             posX = width() - pix.width();
         } else {
             posX = 0;
@@ -323,7 +326,7 @@ void AppNameApplet::updateWidgets()
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
     bool dashIsVisible = DashClient::instance()->active();
-    bool hudIsVisible = DashClient::instance()->hudActive();
+    bool hudIsVisible = HUDClient::instance()->active();
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;
