@@ -18,11 +18,11 @@
  */
 
 #include "focuspath.h"
+#include "utils.h"
 
 #include <QtCore/qmath.h>
 #include <QEvent>
 #include <QKeyEvent>
-#include <QApplication>
 
 /*!
     \qmlclass FocusPath
@@ -346,21 +346,7 @@ bool FocusPath::eventFilter(QObject* obj, QEvent* event)
                 int nextFocus = m_currentPosition;
 
                 QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-                int key = keyEvent->key();
-                if (QApplication::isRightToLeft()) {
-                    switch(key) {
-                        case Qt::Key_Right:
-                            key = Qt::Key_Left;
-                            break;
-                        case Qt::Key_Left:
-                            key = Qt::Key_Right;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                switch(key) {
+                switch(switchLeftRightKeys(keyEvent->key())) {
                     case Qt::Key_Right:
                         if ((m_direction & FocusPath::Horizontal) == FocusPath::Horizontal) {
                             switch(m_flow) {
