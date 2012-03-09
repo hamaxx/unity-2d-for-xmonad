@@ -272,7 +272,6 @@ void WindowInfo::onWindowClosed()
     setContentXid(0);
 }
 
-
 void WindowInfo::updateGeometry()
 {
     int x, y, w, h;
