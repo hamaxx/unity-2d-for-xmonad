@@ -95,7 +95,7 @@ AutoScrollingListView {
         function updatePips() {
             var launcherOnlyInOneScreen = false // TODO Read this from dconf
             var windowCount = item.windowsOnCurrentWorkspaceScreen(launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen);
-            if (windowCount == 0) {
+            if (windowCount == 0 && item.windowCount != 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
             } else {
@@ -115,6 +115,7 @@ AutoScrollingListView {
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
         running: item.running
         active: item.active
+        activeOnThisScreen: item.activeScreen == declarativeView.screen.screen
         urgent: item.urgent
         launching: item.launching
 

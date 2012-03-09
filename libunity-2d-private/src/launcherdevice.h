@@ -39,6 +39,7 @@ public:
 
     /* getters */
     virtual bool active() const;
+    virtual int activeScreen() const;
     virtual bool running() const;
     virtual int windowCount() const;
     virtual bool urgent() const;

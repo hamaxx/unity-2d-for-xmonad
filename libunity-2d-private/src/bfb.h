@@ -35,6 +35,7 @@ public:
 
     /* getters */
     virtual bool active() const;
+    virtual int activeScreen() const;
     virtual bool running() const;
     virtual int windowCount() const;
     virtual bool urgent() const;
@@ -51,10 +52,12 @@ public:
 
 private Q_SLOTS:
     void slotDashActiveChanged(bool active);
+    void slotDashScreenChanged(int screen);
 
 private:
     Q_DISABLE_COPY(BfbItem)
     bool m_active;
+    int m_activeScreen;
     QObject* m_manager;
 };
 

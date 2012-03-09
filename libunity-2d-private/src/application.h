@@ -71,6 +71,7 @@ public:
 
     /* getters */
     virtual bool active() const;
+    virtual int activeScreen() const;
     virtual bool running() const;
     virtual int windowCount() const;
     virtual bool urgent() const;
@@ -127,6 +128,7 @@ private Q_SLOTS:
     void updateHasVisibleWindow();
     void updateWindowCount();
     void updateCounterVisible();
+    void announceActiveScreenChangedIfNeeded();
 
     bool launch();
     void show();
@@ -171,6 +173,7 @@ private:
     QString m_emblem;
     bool m_emblemVisible;
     bool m_forceUrgent;
+    int m_previousActiveScreen;
 
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);

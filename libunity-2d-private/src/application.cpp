@@ -88,6 +88,7 @@ Application::Application()
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
+    , m_previousActiveScreen(-1)
     , m_dynamicQuicklistServiceWatcher(NULL)
 {
     m_launching_timer.setSingleShot(true);
@@ -103,6 +104,7 @@ Application::Application()
     m_geometryChangedTimer.setSingleShot(true);
     m_geometryChangedTimer.setInterval(50);
     connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
+    connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SLOT(announceActiveScreenChangedIfNeeded()));
 }
 
 Application::Application(const Application& other)
@@ -471,6 +473,15 @@ Application::updateBamfApplicationDependentProperties()
 }
 
 void
+Application::announceActiveScreenChangedIfNeeded()
+{
+    if (m_previousActiveScreen != activeScreen()) {
+        m_previousActiveScreen = activeScreen();
+        Q_EMIT activeScreenChanged(m_previousActiveScreen);
+    }
+}
+
+void
 Application::onBamfApplicationClosed(bool running)
 {
     if(running)
@@ -540,8 +551,8 @@ Application::connectWindowSignals()
         return;
     }
 
-    QScopedPointer<BamfUintList> xids(m_application->xids());
-    int size = xids->size();
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    const int size = windows->size();
     if (size < 1) {
         return;
     }
@@ -550,10 +561,8 @@ Application::connectWindowSignals()
     wnck_screen_force_update(screen);
 
     for (int i = 0; i < size; ++i) {
-        WnckWindow* window = wnck_window_get(xids->at(i));
-        g_signal_connect(G_OBJECT(window), "workspace-changed",
-            G_CALLBACK(Application::onWindowWorkspaceChanged), this);
-        g_signal_connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        BamfWindow *window = windows->at(i);
+        onWindowAdded(window);
     }
 }
 
@@ -593,6 +602,7 @@ Application::onWindowAdded(BamfWindow* window)
         g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
              G_CALLBACK(Application::onWindowWorkspaceChanged), this);
         g_signal_connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        connect(window, SIGNAL(ActiveChanged(bool)), this, SLOT(announceActiveScreenChangedIfNeeded()));
     }
 }
 
@@ -719,6 +729,26 @@ Application::windowCountOnCurrentWorkspace()
         }
     }
     return windowCount;
+}
+
+int
+Application::activeScreen() const
+{
+    if (!active()) {
+        return -1;
+    }
+
+    BamfWindow *bamfWindow = BamfMatcher::get_default().active_window();
+    if (bamfWindow == NULL) {
+        return -1;
+    }
+
+    WnckWindow *wnckWindow = wnck_window_get(bamfWindow->xid());
+    if (wnckWindow == NULL) {
+        return -1;
+    }
+
+    return windowScreen(wnckWindow);
 }
 
 void

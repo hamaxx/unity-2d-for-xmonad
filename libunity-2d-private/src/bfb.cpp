@@ -27,7 +27,7 @@
 // Qt
 
 BfbItem::BfbItem()
-: m_active(false), m_manager(NULL)
+: m_active(false), m_activeScreen(-1), m_manager(NULL)
 {
 }
 
@@ -38,6 +38,15 @@ BfbItem::~BfbItem()
 bool BfbItem::active() const
 {
     return m_active;
+}
+
+int  BfbItem::activeScreen() const
+{
+    if (active()) {
+        return m_activeScreen;
+    } else {
+        return -1;
+    }
 }
 
 bool BfbItem::running() const
@@ -83,6 +92,7 @@ void BfbItem::setDashManager(QObject* manager)
     m_manager = manager;
     if (m_manager != NULL) {
         connect(manager, SIGNAL(dashActiveChanged(bool)), this, SLOT(slotDashActiveChanged(bool)));
+        connect(manager, SIGNAL(dashScreenChanged(int)), this, SLOT(slotDashScreenChanged(int)));
     }
 }
 
@@ -103,6 +113,19 @@ void BfbItem::slotDashActiveChanged(bool active)
     if (m_active != active) {
         m_active = active;
         Q_EMIT activeChanged(m_active);
+        if (m_active) {
+            Q_EMIT activeScreenChanged(m_activeScreen);
+        }
+    }
+}
+
+void BfbItem::slotDashScreenChanged(int activeScreen)
+{
+    if (m_activeScreen != activeScreen) {
+        m_activeScreen = activeScreen;
+        if (m_active) {
+            Q_EMIT activeScreenChanged(m_activeScreen);
+        }
     }
 }
 
