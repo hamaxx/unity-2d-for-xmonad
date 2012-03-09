@@ -35,6 +35,9 @@ FocusScope {
             var result = lensView.model.results.get(i)
             if (result.column_2 < firstCategory || firstCategory == -1) {
                 firstCategory = result.column_2
+                if (firstCategory == 0) {
+                    break
+                }
             }
         }
         var category = lensView.model.categories.get(firstCategory)
