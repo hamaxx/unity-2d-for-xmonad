@@ -63,6 +63,7 @@ context "Dash Tests" do
   #   * Check Dash moving with Alt+F2
   # Pre-conditions
   #   * Desktop with no running applications
+  #   * You have two screens, the second on the right of the first
   # Test steps
   #   * Verify dash is not showing
   #   * Move mouse to the first screen
@@ -93,6 +94,10 @@ context "Dash Tests" do
     }
 
     XDo::Mouse.move(XDo::XWindow.display_geometry()[0] + 100, 200, 0, true)
+    verify_equal(XDo::XWindow.display_geometry()[0] + 100, TIMEOUT, 'The Dash should be in the second screen') {
+      XDo::Mouse.position[0]
+    }
+
     XDo::Keyboard.alt_F2
     verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
       @app.Dash()['active']
