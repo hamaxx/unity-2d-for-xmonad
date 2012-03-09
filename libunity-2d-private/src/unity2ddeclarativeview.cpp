@@ -158,7 +158,12 @@ void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground
 
 QPoint Unity2DDeclarativeView::globalPosition() const
 {
-    return mapToGlobal(QPoint(0,0));
+    // FIXME This used to be mapToGlobal(QPoint(0,0)) that is the correct
+    // thing for all kind of widgets, but seems to fail sometimes if we
+    // call it just after a moveEvent, which is bad
+    // Since all our Unity2DDeclarativeView are toplevel windows we
+    // are workarounding it by just returning pos()
+    return pos();
 }
 
 void Unity2DDeclarativeView::setupViewport()
