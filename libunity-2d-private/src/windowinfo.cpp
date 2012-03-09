@@ -277,18 +277,15 @@ void WindowInfo::updateGeometry()
     int x, y, w, h;
 
     if (m_wnckWindow == NULL) {
-        m_position.setX(0);
-        m_position.setY(0);
-        m_size.setWidth(0);
-        m_size.setHeight(0);
+        x = y = w = h = 0;
     } else {
         wnck_window_get_geometry(m_wnckWindow, &x, &y, &w, &h);
-
-        m_position.setX(x);
-        m_position.setY(y);
-        m_size.setWidth(w);
-        m_size.setHeight(h);
     }
+
+    m_position.setX(x);
+    m_position.setY(y);
+    m_size.setWidth(w);
+    m_size.setHeight(h);
 
     Q_EMIT positionChanged(m_position);
     Q_EMIT sizeChanged(m_size);
