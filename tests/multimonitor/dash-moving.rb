@@ -97,7 +97,6 @@ context "Dash Tests" do
     verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Alt+F2') {
       @app.Dash()['active']
     }
-    puts @app.Dash()['x_absolute'].to_i
     verify_equal(XDo::XWindow.display_geometry()[0] + LAUNCHER_WIDTH, TIMEOUT, 'The Dash should be in the second screen') {
       @app.Dash()['x_absolute'].to_i
     }
