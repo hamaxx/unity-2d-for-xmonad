@@ -72,9 +72,9 @@ private:
     IndicatorEntryWidgetList m_widgetList;
 
     void onSynced();
-    void onEntryShowMenu(const std::string&, int x, int y, int timestamp, int button);
+    void onEntryShowMenu(const std::string&, unsigned int, int, int, unsigned int, unsigned int);
     void onEntryActivateRequest(const std::string& entryId);
-    void onEntryActivated(const std::string& entryId);
+    void onEntryActivated(const std::string& entryId, const nux::Rect& menu_geo);
 };
 
 #endif /* INDICATORSMANAGER_H */
