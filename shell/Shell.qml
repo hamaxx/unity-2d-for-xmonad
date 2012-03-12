@@ -180,7 +180,7 @@ Item {
     Component.onCompleted: declarativeView.show()
 
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape) {
+        if (event.key == Qt.Key_Escape || (event.key == Qt.Key_F4 && event.modifiers == Qt.AltModifier )) {
             declarativeView.forceDeactivateWindow()
         }
     }

@@ -36,6 +36,17 @@ AbstractButton {
 
     Accessible.name: "%1 %2 %3".arg(title.text).arg(label.text).arg(folded ? u2d.tr("not expanded") : u2d.tr("expanded"))
 
+    Rectangle {
+        id: divider
+
+        visible: !isFirst
+        color: "#21ffffff"
+        height: 1
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
+
     Image {
         id: iconImage
 
@@ -43,9 +54,10 @@ AbstractButton {
 
         width: 22
         height: 22
-        anchors.bottom: underline.top
-        anchors.bottomMargin: 5
+        anchors.top: divider.bottom
+        anchors.topMargin: 13
         anchors.left: parent.left
+        anchors.leftMargin: 4
         fillMode: Image.PreserveAspectFit
         sourceSize.width: width
         sourceSize.height: height
@@ -55,8 +67,8 @@ AbstractButton {
         id: title
 
         fontSize: "large"
-        anchors.baseline: underline.top
-        anchors.baselineOffset: -10
+        anchors.top: divider.bottom
+        anchors.topMargin: 13
         anchors.left: iconImage.right
         anchors.leftMargin: 8
     }
@@ -95,16 +107,5 @@ AbstractButton {
             anchors.leftMargin: 10
             anchors.bottom: label.baseline
         }
-    }
-
-    Rectangle {
-        id: underline
-
-        color: "#21ffffff"
-
-        height: 1
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
     }
 }
