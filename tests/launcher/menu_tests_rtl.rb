@@ -33,11 +33,11 @@ require $library_path + '/../../launcher/menu_tests_common.rb'
 context "Launcher Contextual Menu Tests" do
 
   def keyboard_tap_right()
-    XDo::Keyboard.right
+    XDo::Keyboard.left
   end
 
   def keyboard_tap_left()
-    XDo::Keyboard.left
+    XDo::Keyboard.right
   end
 
   # Run once at the beginning of this test suite
@@ -60,7 +60,7 @@ context "Launcher Contextual Menu Tests" do
 
     # Execute the application
     @app = $SUT.run( :name => UNITY_2D_SHELL,
-                     :arguments => "-testability",
+                     :arguments => "-testability,-reverse",
                      :sleeptime => 2)
     # Make certain application is ready for testing
     verify{ @app.Launcher() }
