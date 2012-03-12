@@ -316,7 +316,7 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
+    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(panel()->screen());
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
     bool isOpened = isOnSameScreen &&
         (isUnderMouse
