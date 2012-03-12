@@ -28,7 +28,7 @@ Loader {
     source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
-    property bool launcherAlwaysVisible: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+    property bool launcherInHideMode: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) != 0
 
     VisibilityController {
         id: visibilityController
@@ -83,11 +83,5 @@ Loader {
             if (superKeyHeld) visibilityController.beginForceVisible()
             else visibilityController.endForceVisible()
         }
-    }
-
-    Binding {
-        target: launcherLoader.item
-        property: "shown"
-        value: visibilityController.shown
     }
 }

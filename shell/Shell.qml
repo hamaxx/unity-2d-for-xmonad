@@ -169,17 +169,6 @@ Item {
                See: https://bugreports.qt.nokia.com/browse/QTBUG-19688 */
             if (!declarativeView.focus && launcherLoader.activeFocus) shell.focus = true
         }
-        onGlobalPositionChanged: updateLauncherBarrierPosition()
-    }
-
-    function updateLauncherBarrierPosition() {
-        if (launcherLoader.loadLauncher) {
-            var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
-            launcherLoader.item.barrierP1 = Qt.point(x, declarativeView.screen.geometry.y)
-            launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
-            launcherLoader.item.barrierTriggerZoneP1 = Qt.point(x, declarativeView.globalPosition.y)
-            launcherLoader.item.barrierTriggerZoneP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
-        }
     }
 
     Component.onCompleted: {
@@ -191,7 +180,6 @@ Item {
             hudLoader = loaderComponent.createObject(shell, {});
         }
         declarativeView.show()
-        updateLauncherBarrierPosition()
     }
 
     Keys.onPressed: {
@@ -278,5 +266,24 @@ Item {
         height: launcherLoader.height
         width: launcherLoader.width
         enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+    }
+
+    PointerBarrier {
+        property int x: declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+
+        id: leftBarrier
+        triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
+        triggerZoneEnabled: !launcherLoader.visibilityController.shown
+        p1: Qt.point(x, declarativeView.screen.geometry.y)
+        p2: Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
+        triggerZoneP1: Qt.point(x, declarativeView.globalPosition.y)
+        triggerZoneP2: Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
+        threshold: launcherLoader.launcherInHideMode && launcherLoader.loadLauncher ? launcher2dConfiguration.edgeStopVelocity : -1
+        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
+        decayRate: launcher2dConfiguration.edgeDecayrate
+        triggerPressure: launcher2dConfiguration.edgeRevealPressure
+        breakPressure: launcher2dConfiguration.edgeOvercomePressure
+
+        onTriggered: launcherLoader.item.barrierTriggered()
     }
 }

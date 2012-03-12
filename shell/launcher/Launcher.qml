@@ -27,32 +27,9 @@ LauncherDropItem {
 
     signal barrierTriggered
 
-    property bool shown
     property bool showMenus: true
 
-    property bool edgeStickinessEnabled: false // TODO Read from dconf
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-    property variant barrierP1
-    property variant barrierP2
-    property variant barrierTriggerZoneP1
-    property variant barrierTriggerZoneP2
-
-    PointerBarrier {
-        id: barrier
-        triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
-        triggerZoneEnabled: !shown
-        p1: barrierP1
-        p2: barrierP2
-        triggerZoneP1: barrierTriggerZoneP1
-        triggerZoneP2: barrierTriggerZoneP2
-        threshold: launcher2dConfiguration.edgeStopVelocity
-        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
-        decayRate: launcher2dConfiguration.edgeDecayrate
-        triggerPressure: !launcherAlwaysVisible || edgeStickinessEnabled ? launcher2dConfiguration.edgeRevealPressure : -1
-        breakPressure: launcher2dConfiguration.edgeOvercomePressure
-
-        onTriggered: launcher.barrierTriggered()
-    }
 
     function hideMenu() {
         if (main.visibleMenu !== undefined) {
