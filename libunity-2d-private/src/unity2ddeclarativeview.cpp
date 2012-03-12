@@ -63,6 +63,8 @@ Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
 
 Unity2DDeclarativeView::~Unity2DDeclarativeView()
 {
+    WnckScreen* screen = wnck_screen_get_default();
+    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWorkspaceChangedCB), this);
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const
