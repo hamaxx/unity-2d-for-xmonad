@@ -90,33 +90,6 @@ private Q_SLOTS:
         QCOMPARE(triggeredSpy.count(), 0);
     }
 
-    void testStopArea()
-    {
-        Display *display = QX11Info::display();
-        PointerBarrierWrapper barrier;
-
-        QSignalSpy brokenSpy(&barrier, SIGNAL(broken()));
-        QSignalSpy triggeredSpy(&barrier, SIGNAL(triggered()));
-
-        XTestFakeMotionEvent(display, -1, 50, 150, 0);
-        QCOMPARE(QCursor::pos(), QPoint(50, 150));
-
-        barrier.setP1(QPointF(100, 0));
-        barrier.setP2(QPointF(100, 100));
-        barrier.setThreshold(6500);
-        barrier.setMaxVelocityMultiplier(2);
-        barrier.setDecayRate(1500);
-        barrier.setBreakPressure(2000);
-
-        XTestFakeRelativeMotionEvent(display, 300, 0, 0);
-        // We are not stopped by the barrier because it's above us
-        // and are in 350, 150
-        QCOMPARE(QCursor::pos(), QPoint(350, 150));
-
-        QCOMPARE(brokenSpy.count(), 0);
-        QCOMPARE(triggeredSpy.count(), 0);
-    }
-
     void testTrigger()
     {
         Display *display = QX11Info::display();
@@ -304,6 +277,33 @@ private Q_SLOTS:
         QVERIFY(QCursor::pos() != QPoint(99, 100));
         QCOMPARE(brokenSpy.count(), 2);
         QCOMPARE(triggeredSpy.count(), 1);
+    }
+
+    void testStopArea()
+    {
+        Display *display = QX11Info::display();
+        PointerBarrierWrapper barrier;
+
+        QSignalSpy brokenSpy(&barrier, SIGNAL(broken()));
+        QSignalSpy triggeredSpy(&barrier, SIGNAL(triggered()));
+
+        XTestFakeMotionEvent(display, -1, 50, 150, 0);
+        QCOMPARE(QCursor::pos(), QPoint(50, 150));
+
+        barrier.setP1(QPointF(100, 0));
+        barrier.setP2(QPointF(100, 100));
+        barrier.setThreshold(6500);
+        barrier.setMaxVelocityMultiplier(2);
+        barrier.setDecayRate(1500);
+        barrier.setBreakPressure(2000);
+
+        XTestFakeRelativeMotionEvent(display, 300, 0, 0);
+        // We are not stopped by the barrier because it's above us
+        // and are in 350, 150
+        QCOMPARE(QCursor::pos(), QPoint(350, 150));
+
+        QCOMPARE(brokenSpy.count(), 0);
+        QCOMPARE(triggeredSpy.count(), 0);
     }
 };
 

@@ -1,2 +1,0 @@
-interest @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/unity-2d/default
-interest @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DATADIR@/gconf/unity-2d/mandatory

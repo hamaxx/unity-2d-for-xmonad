@@ -325,7 +325,6 @@ FocusScope {
             KeyNavigation.down: lensBar
 
             anchors.top: search_entry.bottom
-            anchors.topMargin: 9
             anchors.bottom: lensBar.top
             anchors.left: parent.left
             anchors.right: !filterPane.visible || filterPane.folded ? parent.right : filterPane.left

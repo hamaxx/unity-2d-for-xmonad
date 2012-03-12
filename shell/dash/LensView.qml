@@ -25,6 +25,29 @@ FocusScope {
 
     /* An instance of Lens */
     property variant model
+    property string firstNonEmptyCategory
+
+    function updateFirstCategory() {
+        if (lensView.model.results.count == 0)
+            return
+        var firstCategory = -1
+        for (var i = 0; i < lensView.model.results.count; i++) {
+            var result = lensView.model.results.get(i)
+            if (result.column_2 < firstCategory || firstCategory == -1) {
+                firstCategory = result.column_2
+                if (firstCategory == 0) {
+                    break
+                }
+            }
+        }
+        var category = lensView.model.categories.get(firstCategory)
+        firstNonEmptyCategory = category.column_0
+    }
+
+    Connections {
+        target: lensView.model.results
+        onCountChanged: updateFirstCategory()
+    }
 
     function activateFirstResult() {
         var firstResult = null
@@ -48,7 +71,7 @@ FocusScope {
 
         focus: true
         anchors.fill: parent
-        anchors.leftMargin: 18
+        anchors.leftMargin: 15
 
         /* The category's delegate is chosen dynamically depending on what
            rendererName is returned by the CategoriesModel.
@@ -72,6 +95,7 @@ FocusScope {
 
             source: rendererName ? Utils.convertToCamelCase(rendererName) + ".qml" : ""
             onStatusChanged: {
+                updateFirstCategory()
                 if (status == Loader.Error) {
                     console.log("Failed to load renderer %1. Using default renderer instead.".arg(rendererName))
                     source = "TileVertical.qml"
@@ -108,8 +132,9 @@ FocusScope {
 
         headerDelegate: CategoryHeader {
             visible: body.item ? body.item.needHeader && body.visible : false
-            height: visible ? 32 : 0
+            height: visible ? 35 : 0
 
+            property bool isFirst: firstNonEmptyCategory == body.name
             property bool foldable: body.item ? body.item.folded != undefined : false
             availableCount: body.item ? foldable ? body.category_model.count - body.item.cellsPerRow : 0 : 0
             folded: body.item ? foldable ? body.item.folded : false : false
