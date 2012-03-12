@@ -53,10 +53,8 @@ endif (NOT X11_XTest_FOUND)
 # GSettings schemas
 pkg_check_modules(GLIB REQUIRED glib-2.0)
 set (UNITY_2D_SCHEMAS "com.canonical.Unity2d.gschema.xml")
-set (UNITY_2D_GCONF_CONVERT "unity-2d.convert")
 set (GSETTINGS_DIR "${CMAKE_INSTALL_PREFIX}/share/glib-2.0/schemas/")
 set (UNITY_2D_SCHEMA_FILE "${GSETTINGS_DIR}${UNITY_2D_SCHEMAS}")
-set (GCONF_CONVERT_DIR "${CMAKE_INSTALL_PREFIX}/share/GConf/gsettings")
 execute_process (COMMAND ${PKG_CONFIG_EXECUTABLE} gio-2.0 --variable glib_compile_schemas  OUTPUT_VARIABLE GLIB_COMPILE_SCHEMAS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 # Run the schemas validator and error if it fails
@@ -73,9 +71,6 @@ install (CODE "message (STATUS \"Compiling GSettings schemas\")")
 install (CODE "execute_process (COMMAND ${GLIB_COMPILE_SCHEMAS} ${GSETTINGS_DIR})")
 
 configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
-
-# Install GConf to GSettings conversion file
-install (FILES ${UNITY_2D_DATA_DIR}/${UNITY_2D_GCONF_CONVERT} DESTINATION ${GCONF_CONVERT_DIR})
 
 include_directories(
     ${CMAKE_BINARY_DIR}
