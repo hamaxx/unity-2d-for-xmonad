@@ -118,7 +118,6 @@ Application::Application(const Application& other)
 
 Application::~Application()
 {
-    disconnectWindowSignals();
 }
 
 bool
@@ -567,41 +566,14 @@ Application::connectWindowSignals()
 }
 
 void
-Application::disconnectWindowSignals()
-{
-    if (m_application == NULL || m_application->running() == false) {
-        return;
-    }
-
-    QScopedPointer<BamfUintList> xids(m_application->xids());
-    int size = xids->size();
-    if (size < 1) {
-        return;
-    }
-
-    for (int i = 0; i < size; ++i) {
-        WnckWindow *window = wnck_window_get(xids->at(i));
-        if (window == NULL) {
-            wnck_screen_force_update(wnck_screen_get_default());
-            window = wnck_window_get(xids->at(i));
-            if (window == NULL) {
-                continue;
-            }
-        }
-
-        g_signal_handlers_disconnect_by_func(window, gpointer(geometryChangedCB), this);
-    }
-}
-
-void
 Application::onWindowAdded(BamfWindow* window)
 {
     if (window != NULL) {
         windowAdded(window->xid());
         WnckWindow* wnck_window = wnck_window_get(window->xid());
-        g_signal_connect(G_OBJECT(wnck_window), "workspace-changed",
+        m_gConnector.connect(G_OBJECT(wnck_window), "workspace-changed",
              G_CALLBACK(Application::onWindowWorkspaceChanged), this);
-        g_signal_connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        m_gConnector.connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
         connect(window, SIGNAL(ActiveChanged(bool)), this, SLOT(announceActiveScreenChangedIfNeeded()));
     }
 }

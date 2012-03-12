@@ -319,6 +319,8 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
 
 ShellManager::~ShellManager()
 {
+    g_signal_handlers_disconnect_by_func(G_OBJECT(wnck_screen_get_default()), gpointer(activeWorkspaceChangedCB), this);
+
     qDeleteAll(d->m_viewList);
     delete d;
 }
