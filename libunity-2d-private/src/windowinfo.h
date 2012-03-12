@@ -103,6 +103,9 @@ Q_SIGNALS:
     void desktopFileChanged(QString desktopFile);
     void workspaceChanged(int workspace);
 
+private Q_SLOTS:
+    void onWindowClosed();
+
 private:
     void updateGeometry();
     void updateWorkspace();
