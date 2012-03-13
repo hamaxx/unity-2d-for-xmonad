@@ -26,6 +26,7 @@
 #include "launcheritem.h"
 
 // libunity-2d
+#include <gconnector.h>
 #include <gscopedpointer.h>
 
 // Qt
@@ -105,6 +106,7 @@ public:
 
     Q_INVOKABLE virtual void createMenuActions();
     Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
+    Q_INVOKABLE virtual bool belongsToDifferentScreen(int screen);
     Q_INVOKABLE void connectWindowSignals();
 
     void updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties);
@@ -151,6 +153,8 @@ private Q_SLOTS:
     void onDragEnter(DeclarativeDragDropEvent*);
     void onDrop(DeclarativeDragDropEvent*);
 
+    void onWindowGeometryChanged();
+
 private:
     QPointer<BamfApplication> m_application;
     QFileSystemWatcher *m_desktopFileWatcher;
@@ -188,6 +192,8 @@ private:
     QDBusServiceWatcher* m_dynamicQuicklistServiceWatcher;
     void setDynamicQuicklistImporter(const QString& service);
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
+    QTimer m_geometryChangedTimer;
+    GConnector m_gConnector;
 };
 
 Q_DECLARE_METATYPE(Application*)

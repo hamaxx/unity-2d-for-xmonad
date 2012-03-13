@@ -25,7 +25,7 @@
 #include <QTimer>
 
 class LauncherClient;
-class DashDBus;
+class ShellDBus;
 class ScreenInfo;
 class HotModifier;
 

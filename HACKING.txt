@@ -1,0 +1,66 @@
+TL;DR:
+
+  sudo apt-get build-dep unity-2d
+  cmake .
+  make -j4 && (killall unity-2d-shell; sleep 1; killall unity-2d-shell; sleep 1 && ./shell/app/unity-2d-shell &)
+
+
+Longer version
+
+To build trunk:
+
+ 1. Install build dependencies (on Ubuntu):
+
+  apt-get build-dep unity-2d
+
+ 2. Qt/QML preprocessing/preparation stage (the '.' is essential):
+
+  cmake .
+
+ 3. Compile (in parallel on four CPUs):
+
+  make -j4
+
+ 4. Test:
+
+  killall unity-2d-shell
+  killall unity-2d-shell
+  ./shell/app/unity-2d-shell &
+
+ To do iterative compile+test, you can use the command:
+
+  make -j4 && (killall unity-2d-shell; sleep 1 && ./shell/app/unity-2d-shell &)
+
+ (A double killall is only needed the first time after session
+ login.  This is to break the default automagic respawn cycle).
+
+ 5. Test again with non-compositing window-manager mode (eg. different assets
+  such as './shell/common/artwork/desktop_dash_background_no_transparency.sci'):
+  
+  killall unity-2d-shell
+  killall unity-2d-shell
+  metacity --replace --no-composite
+
+ 6. Restore compositing mode:
+
+  killall unity-2d-shell
+  killall unity-2d-shell
+  metacity --replace --composite
+
+  (The double killall is to defeat the auto-respawn)
+
+
+Debugging output:
+
+ a. From Qt C++ code:
+
+  qDebug() << "foobar=" << foobar;
+
+Finally:
+
+If you want to propose your changes for merging back into the main tree, see:
+
+  http://wiki.ubuntu.com/Unity2D#Coding
+
+
+Have fun!  -Paul Sladen, 2012-02-24 from advices of the DX team!

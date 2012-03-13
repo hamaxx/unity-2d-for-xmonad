@@ -25,8 +25,11 @@ Item {
     // The target the behavior will be deciding if has to be shown or not
     property variant target
 
-    // Wheter the target has been shown by an external reason
+    // Whether the target has been shown by an external reason
     property bool forcedVisible: false
+
+    // Whether the target has been hidden by an external reason
+    property bool forcedHidden: false
 
     // The id that triggered the last forcedVisible change
     property variant forcedVisibleChangeId

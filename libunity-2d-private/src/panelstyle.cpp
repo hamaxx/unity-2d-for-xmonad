@@ -22,12 +22,9 @@
 #include "panelstyle.h"
 
 // libunity-2d
-#include <cairoutils.h>
 #include <debug_p.h>
 #include <gconnector.h>
 #include <gscopedpointer.h>
-#include <dashclient.h>
-#include <config.h>
 
 // Qt
 #include <QApplication>
@@ -51,46 +48,15 @@ public:
     static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
     {
         PanelStylePrivate* priv = reinterpret_cast<PanelStylePrivate*>(data);
-        priv->updatePalette();
+        priv->updateTheme();
     }
 
-    void updatePalette()
+    void updateTheme()
     {
         gchar* themeName = 0;
         g_object_get(gtk_settings_get_default(), "gtk-theme-name", &themeName, NULL);
         m_themeName = QString::fromUtf8(themeName);
         g_free(themeName);
-
-        GtkStyleContext* context = m_styleContext.data();
-        gtk_style_context_invalidate(context);
-
-        // Without this line, it seems the GtkStyleContext is not correctly
-        // initialized and we get some uninitialized pixels in the background
-        // brush.
-        gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
-
-        QPalette pal;
-        if (DashClient::instance()->active() || DashClient::instance()->hudActive()) {
-            /* The background color is the same as in the launcher */
-            QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
-            QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 168);
-            backgroundColor = backgroundColor.darker(800);
-            pal.setBrush(QPalette::Window, backgroundColor);
-        } else {
-            pal.setBrush(QPalette::Window, generateBackgroundBrush());
-        }
-        QApplication::setPalette(pal);
-    }
-
-    QBrush generateBackgroundBrush()
-    {
-        QImage image(100, 24, QImage::Format_ARGB32_Premultiplied); // FIXME: Hardcoded
-        image.fill(Qt::transparent);
-        CairoUtils::SurfacePointer surface(CairoUtils::createSurfaceForQImage(&image));
-        CairoUtils::Pointer cr(cairo_create(surface.data()));
-        gtk_render_background(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
-        gtk_render_frame(m_styleContext.data(), cr.data(), 0, 0, image.width(), image.height());
-        return QBrush(image);
     }
 
     QPixmap windowButtonPixmapFromWMTheme(PanelStyle::WindowButtonType type, PanelStyle::WindowButtonState state)
@@ -165,7 +131,7 @@ public:
     }
 };
 
-PanelStyle::PanelStyle(QObject* parent)
+PanelStyle::PanelStyle()
 : d(new PanelStylePrivate)
 {
     d->q = this;
@@ -184,10 +150,7 @@ PanelStyle::PanelStyle(QObject* parent)
     d->m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name",
         G_CALLBACK(PanelStylePrivate::onThemeChanged), d);
 
-    QObject::connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
-    QObject::connect(DashClient::instance(), SIGNAL(hudActiveChanged(bool)), this, SLOT(onDashActiveChanged(bool)));
-    QObject::connect(&unityConfiguration(), SIGNAL(averageBgColor(QVariant)), this, SLOT(onWallpaperColorChanged(QVariant)));
-    d->updatePalette();
+    d->updateTheme();
 }
 
 PanelStyle::~PanelStyle()
@@ -216,16 +179,6 @@ QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelS
     } else {
         return d->genericWindowButtonPixmap(type, state);
     }
-}
-
-void PanelStyle::onDashActiveChanged(bool active)
-{
-    d->updatePalette();
-}
-
-void PanelStyle::onWallpaperColorChanged(QVariant color)
-{
-    d->updatePalette();
 }
 
 #include "panelstyle.moc"

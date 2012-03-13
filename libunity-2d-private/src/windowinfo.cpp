@@ -35,7 +35,9 @@ WindowInfo::WindowInfo(unsigned int contentXid, QObject *parent) :
 
 WindowInfo::~WindowInfo()
 {
-    g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    if (m_wnckWindow != NULL) {
+        g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    }
 }
 
 unsigned int WindowInfo::contentXid() const
@@ -104,6 +106,22 @@ void WindowInfo::setContentXid(unsigned int contentXid)
         return;
     }
 
+    if (contentXid == 0) {
+        m_contentXid = 0;
+        m_decoratedXid = 0;
+        m_bamfApplication = NULL;
+        m_bamfWindow = NULL;
+        m_wnckWindow = NULL;
+        Q_EMIT contentXidChanged(m_contentXid);
+        Q_EMIT decoratedXidChanged(m_decoratedXid);
+        Q_EMIT zChanged(z());
+        Q_EMIT titleChanged(title());
+        Q_EMIT iconChanged(icon());
+        Q_EMIT desktopFileChanged(desktopFile());
+        Q_EMIT workspaceChanged(workspace());
+        return;
+    }
+
     /* First figure out what's the BamfApplication to which the content Xid
        belongs. However what we need is the actual BamfWindow, so we search
        for it among all the BamfWindows for that app. */
@@ -144,6 +162,7 @@ void WindowInfo::setContentXid(unsigned int contentXid)
 
     g_signal_connect(G_OBJECT(m_wnckWindow), "workspace-changed",
                      G_CALLBACK(WindowInfo::onWorkspaceChanged), this);
+    connect(m_bamfWindow, SIGNAL(Closed()), this, SLOT(onWindowClosed()));
 
     Q_EMIT contentXidChanged(m_contentXid);
     Q_EMIT decoratedXidChanged(m_decoratedXid);
@@ -159,8 +178,10 @@ void WindowInfo::setContentXid(unsigned int contentXid)
 
 void WindowInfo::setWorkspace(int workspaceNumber)
 {
-    WnckWorkspace* workspace = wnck_screen_get_workspace(wnck_screen_get_default(), workspaceNumber);
-    wnck_window_move_to_workspace(m_wnckWindow, workspace);
+    if (m_wnckWindow != NULL) {
+        WnckWorkspace* workspace = wnck_screen_get_workspace(wnck_screen_get_default(), workspaceNumber);
+        wnck_window_move_to_workspace(m_wnckWindow, workspace);
+    }
 }
 
 unsigned int WindowInfo::decoratedXid() const
@@ -181,15 +202,17 @@ QSize WindowInfo::size() const
 unsigned int WindowInfo::z() const
 {
     int z = 0;
-    GList *stack = wnck_screen_get_windows_stacked(wnck_screen_get_default());
-    GList *cur = stack;
-    while (cur) {
-        z++;
-        WnckWindow *window = (WnckWindow*) cur->data;
-        if (wnck_window_get_xid(window) == m_contentXid) {
-            break;
+    if (contentXid() != 0) {
+        GList *stack = wnck_screen_get_windows_stacked(wnck_screen_get_default());
+        GList *cur = stack;
+        while (cur) {
+            z++;
+            WnckWindow *window = (WnckWindow*) cur->data;
+            if (wnck_window_get_xid(window) == m_contentXid) {
+                break;
+            }
+            cur = g_list_next(cur);
         }
-        cur = g_list_next(cur);
     }
     return z;
 }
@@ -246,11 +269,20 @@ void WindowInfo::activate()
     showWindow(m_wnckWindow);
 }
 
+void WindowInfo::onWindowClosed()
+{
+    setContentXid(0);
+}
+
 void WindowInfo::updateGeometry()
 {
     int x, y, w, h;
 
-    wnck_window_get_geometry(m_wnckWindow, &x, &y, &w, &h);
+    if (m_wnckWindow == NULL) {
+        x = y = w = h = 0;
+    } else {
+        wnck_window_get_geometry(m_wnckWindow, &x, &y, &w, &h);
+    }
 
     m_position.setX(x);
     m_position.setY(y);
@@ -263,7 +295,9 @@ void WindowInfo::updateGeometry()
 
 void WindowInfo::showWindow(WnckWindow* window)
 {
-    wnck_window_activate(window, CurrentTime);
+    if (window != NULL) {
+        wnck_window_activate(window, CurrentTime);
+    }
 }
 
 bool WindowInfo::isSameBamfWindow(BamfWindow *other)

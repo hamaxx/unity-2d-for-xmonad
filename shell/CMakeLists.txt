@@ -26,3 +26,7 @@ install(DIRECTORY launcher
 install(DIRECTORY dash
     DESTINATION ${UNITY_2D_DIR}/shell
     )
+
+install(DIRECTORY hud
+    DESTINATION ${UNITY_2D_DIR}/shell
+    )

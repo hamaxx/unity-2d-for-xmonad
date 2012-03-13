@@ -25,7 +25,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                libunity-core-5.0-dev (>= 5.2.0),
                libnux-2.0-dev (>= 2.4),
                libxi-dev,
-Standards-Version: 3.9.2
+               libxtst-dev,
+Standards-Version: 3.9.3
 Vcs-Bzr: https://code.launchpad.net/~unity-2d-team/unity-2d/trunk
 
 Package: unity-2d
@@ -41,13 +42,14 @@ Description: Unity interface for non-accelerated graphics cards
  offer a session called Unity 2D in your login manager.
  .
  Unity 2D is designed to run smoothly without any graphics acceleration.
+ .
+ This metapackage will install all required unity-2d components.
 
 Package: libunity-2d-private0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         unity-common,
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
@@ -72,6 +74,8 @@ Description: Unity 2D shared library - development files
 
 Package: unity-2d-launcher
 Architecture: all
+Section: oldlibs
+Priority: extra
 Depends: ${misc:Depends},
          unity-2d-shell,
 Description: Transitional package for unity-2d-launcher
@@ -82,6 +86,7 @@ Package: unity-2d-panel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         unity-2d-common (= ${source:Version}),
          libunity-2d-private0 (= ${binary:Version}),
 Provides: indicator-renderer
 Recommends: indicator-application,
@@ -97,6 +102,8 @@ Description: Unity 2D Panel
 
 Package: unity-2d-places
 Architecture: all
+Section: oldlibs
+Priority: extra
 Depends: ${misc:Depends},
          unity-2d-shell,
 Description: Transitional package for unity-2d-places
@@ -107,6 +114,7 @@ Package: unity-2d-spread
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         unity-2d-common (= ${source:Version}),
          libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg
 Description: Unity 2D Spread
@@ -119,6 +127,7 @@ Package: unity-2d-shell
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         unity-2d-common (= ${source:Version}),
          unity-asset-pool,
          libunity-2d-private0 (= ${binary:Version}),
          libqt4-svg,
@@ -136,14 +145,23 @@ Description: Dash and Launcher for the Unity 2D environment
  * Dash: an overlay over the desktop to provide quick access to
          various categories of applications.
  * Launcher: displays in a panel at the left of the screen a list of running
-             and favorite applications as well as highlighting their notifications.
+             and favorite applications as well as highlighting their
+             notifications.
+
+Package: unity-2d-common
+Architecture: all
+Depends: ${misc:Depends},
+Replaces: unity-2d (<< 5.6.0-0ubuntu2)
+Description: Common files for Unity 2D Shell
+ This is part of Unity 2D and contains the common files needed by multiple
+ components of it.
 
 Package: unity-2d-dbg
 Architecture: any
 Section: debug
 Priority: extra
 Depends:
-    unity-2d (= ${binary:Version}),
+    unity-2d (= ${source:Version}),
     ${misc:Depends}
 Description: Debugging symbols for unity-2d
  The Unity 2D interface installs a fully usable 2D session and provides the 

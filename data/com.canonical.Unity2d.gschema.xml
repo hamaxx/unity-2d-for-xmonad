@@ -31,6 +31,44 @@
         2: intellihide; same as auto hide but the launcher will disappear if a window is placed on top of it
        </description>
     </key>
+    <key name="edge-responsiveness" type="d">
+      <default>2</default>
+      <summary>Responsiveness of the Launcher</summary>
+      <description>How quickly the Launcher will reveal when you push the pointer against the 
+        monitor edge
+      </description>
+    </key>
+    <key name="edge-decayrate" type="i">
+      <default>1500</default>
+      <summary>Decay rate of mouse pressure against barrier</summary>
+      <description>The pressures against the monitor edge are continually added up, and when the sum
+        hits a certain threshold the launcher reveals. To prevent a series of distinct gentle pushes  
+        of the pointer against the barrier from causing the launcher to reveal, we substract this  
+        parameter - the decay rate - at a steady rate
+      </description>
+    </key>
+    <key name="edge-reveal-pressure" type="i">
+      <default>2000</default>
+      <summary>Launcher reveal edge pressure</summary>
+      <description>The minimum pressure to press the pointer against the monitor edge to 
+        cause the launcher to reveal
+      </description>
+    </key>
+    <key name="edge-stop-velocity" type="i">
+      <default>6500</default>
+      <summary>Barrier edge stop velocity</summary>
+      <description>The minimum velocity the pointer needs to travel to pass through the barrier without 
+        any resistance. Only relevant for multi-monitor setups
+      </description>
+    </key>
+    <key name="edge-overcome-pressure" type="i">
+      <default>2000</default>
+      <summary>Barrier edge overcome pressure
+      </summary>
+      <description>Minimum pressure the pointer needs to exert on the barrier for the barrier to drop.
+        Only relevant for multi-monitor setups
+      </description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">
     <key type="as" name="applets">

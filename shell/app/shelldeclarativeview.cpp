@@ -115,25 +115,27 @@ ShellDeclarativeView::updateShellPosition()
     const QRect availableGeometry = m_screenInfo->availableGeometry();
     QPoint posToMove = availableGeometry.topLeft();
     if (qApp->isRightToLeft()) {
-        posToMove.setX(availableGeometry.width() - width());
+        posToMove.rx() += (availableGeometry.width() - width());
     }
 
-    QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
-    Q_FOREACH(StrutManager *strutManager, strutManagers) {
-        if (strutManager->enabled()) {
-            // Do not push ourselves
-            switch (strutManager->edge()) {
-                case Unity2dPanel::TopEdge:
-                    posToMove.ry() -= strutManager->realHeight();
-                break;
+    if (rootObject() != NULL) {
+        QList<StrutManager *> strutManagers = rootObject()->findChildren<StrutManager*>();
+        Q_FOREACH(StrutManager *strutManager, strutManagers) {
+            if (strutManager->enabled()) {
+                // Do not push ourselves
+                switch (strutManager->edge()) {
+                    case Unity2dPanel::TopEdge:
+                        posToMove.ry() -= strutManager->realHeight();
+                    break;
 
-                case Unity2dPanel::LeftEdge:
-                    if (qApp->isLeftToRight()) {
-                        posToMove.rx() -= strutManager->realWidth();
-                    } else {
-                        posToMove.rx() += strutManager->realWidth();
-                    }
-                break;
+                    case Unity2dPanel::LeftEdge:
+                        if (qApp->isLeftToRight()) {
+                            posToMove.rx() -= strutManager->realWidth();
+                        } else {
+                            posToMove.rx() += strutManager->realWidth();
+                        }
+                    break;
+                }
             }
         }
     }

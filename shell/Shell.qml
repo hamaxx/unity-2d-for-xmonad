@@ -97,6 +97,13 @@ Item {
                     if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
                 }
             }
+            onGlobalPositionChanged: {
+                var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+                launcherLoader.item.barrierP1 = Qt.point(x, 0)
+                launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.height)
+                launcherLoader.item.barrierTriggerZoneP1 = Qt.point(x, declarativeView.globalPosition.y)
+                launcherLoader.item.barrierTriggerZoneP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
+            }
         }
 
         SpreadMonitor {
@@ -177,7 +184,7 @@ Item {
     Component.onCompleted: declarativeView.show()
 
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape) {
+        if (event.key == Qt.Key_Escape || (event.key == Qt.Key_F4 && event.modifiers == Qt.AltModifier )) {
             declarativeView.forceDeactivateWindow()
         }
     }
@@ -223,24 +230,10 @@ Item {
     Binding {
         target: launcherInputShape
         property: "rectangle"
-        value: {
-            // FIXME: this results in a 1px wide white rectangle on the launcher edge, we should switch
-            //        to cpp-based edge detection, and later XFixes barriers to get rid of that completely
-            var somewhatShown = Utils.isLeftToRight() ? -launcherLoader.x < launcherLoader.width : launcherLoader.x < shell.width
-            if (somewhatShown) {
-                return Qt.rect(launcherLoader.x,
-                                launcherLoader.y,
-                                launcherLoader.width,
-                                launcherLoader.height)
-            } else {
-                // The outerEdgeMouseArea is one pixel bigger on each side so use it
-                // when the launcher is hidden to have that extra pixel in the border
-                return Qt.rect(launcherLoader.x + launcherLoader.outerEdgeMouseArea.x,
-                                launcherLoader.y,
-                                launcherLoader.outerEdgeMouseArea.width,
-                                launcherLoader.height)
-            }
-        }
+        value: Qt.rect(launcherLoader.x,
+                       launcherLoader.y,
+                       launcherLoader.width,
+                       launcherLoader.height)
         when: !launcherLoaderXAnimation.running
     }
 

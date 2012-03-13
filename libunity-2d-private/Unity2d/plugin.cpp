@@ -23,6 +23,7 @@
 #include "plugin.h"
 
 #include "dashclient.h"
+#include "hudclient.h"
 #include "application.h"
 #include "launcherdevice.h"
 #include "trash.h"
@@ -42,6 +43,7 @@
 #include "cacheeffect.h"
 #include "colorizeeffect.h"
 #include "iconutilities.h"
+#include "cursorshapearea.h"
 #include "unity2dtr.h"
 #include "giodefaultapplication.h"
 
@@ -81,6 +83,7 @@
 #include "strutmanager.h"
 
 #include "imageutilities.h"
+#include "pointerbarrier.h"
 
 #include <QtDeclarative/qdeclarative.h>
 #include <QDeclarativeEngine>
@@ -112,6 +115,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterProxyModel");
 
     qmlRegisterType<DashClient>();
+    qmlRegisterType<HUDClient>();
 
     qmlRegisterType<WindowInfo>(uri, 0, 1, "WindowInfo");
     qmlRegisterType<WindowsList>(uri, 0, 1, "WindowsList");
@@ -153,6 +157,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<IconUtilities>(); // Register the type as non creatable
 
+    qmlRegisterType<CursorShapeArea>(uri, 0, 1, "CursorShapeArea");
+
     qmlRegisterType<GioDefaultApplication>(uri, 0, 1, "GioDefaultApplication");
 
     qmlRegisterType<Lenses>(uri, 1, 0, "Lenses");
@@ -186,6 +192,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
 
     qmlRegisterType<ImageUtilities>(uri, 0, 1, "ImageUtilities");
+    
+    qmlRegisterType<PointerBarrierWrapper>(uri, 0, 1, "PointerBarrier");
 }
 
 void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri)

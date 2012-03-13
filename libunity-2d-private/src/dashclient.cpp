@@ -33,32 +33,29 @@
 #include <QDBusConnectionInterface>
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
-#include <QDesktopWidget>
-#include <QRect>
 
-static const char* DASH_DBUS_SERVICE = "com.canonical.Unity2d.Dash";
+static const char* SHELL_DBUS_SERVICE = "com.canonical.Unity2d.Shell";
 static const char* DASH_DBUS_PATH = "/Dash";
 static const char* DASH_DBUS_INTERFACE = "com.canonical.Unity2d.Dash";
 
 DashClient::DashClient(QObject* parent)
 : QObject(parent)
 , m_dashDbusIface(0)
-, m_dashActive(false)
-, m_hudActive(false)
+, m_active(false)
 , m_alwaysFullScreen(false)
 {
-    /* Check if the dash is already up and running by asking the bus instead of
+    /* Check if the shell is already up and running by asking the bus instead of
        trying to create an instance of the interface. Creating an instance would
-       cause D-Bus to activate the dash and we don’t want this to happen, the
-       dash should be started on demand only. */
+       cause D-Bus to activate the shell and we don’t want this to happen, the
+       shell should be started on demand only. */
     QDBusConnectionInterface* sessionBusIFace = QDBusConnection::sessionBus().interface();
-    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(DASH_DBUS_SERVICE);
+    QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SHELL_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToDash();
     } else {
-        /* The dash is not running: monitor its registration on the bus so we
+        /* The shell is not running: monitor its registration on the bus so we
            can connect to it when it comes up. */
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(DASH_DBUS_SERVICE,
+        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
                                                                QDBusConnection::sessionBus(),
                                                                QDBusServiceWatcher::WatchForRegistration,
                                                                this);
@@ -72,18 +69,16 @@ void DashClient::connectToDash()
         return;
     }
 
-    m_dashDbusIface = new QDBusInterface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
+    m_dashDbusIface = new QDBusInterface(SHELL_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE,
                                          QDBusConnection::sessionBus(), this);
     connect(m_dashDbusIface, SIGNAL(activeChanged(bool)),
-            SLOT(slotDashActiveChanged(bool)));
-    connect(m_dashDbusIface, SIGNAL(hudActiveChanged(bool)),
-            SLOT(slotHudActiveChanged(bool)));
+            SLOT(slotActiveChanged(bool)));
     connect(m_dashDbusIface, SIGNAL(alwaysFullScreenChanged(bool)),
             SLOT(slotAlwaysFullScreenChanged(bool)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
-        m_dashActive = value.toBool();
+        m_active = value.toBool();
     } else {
         UQ_WARNING << "Fetching Dash.active property failed";
     }
@@ -94,13 +89,6 @@ void DashClient::connectToDash()
     } else {
         UQ_WARNING << "Fetching Dash.alwaysFullScreen property failed";
     }
-
-    value = m_dashDbusIface->property("hudActive");
-    if (value.isValid()) {
-        m_hudActive = value.toBool();
-    } else {
-        UQ_WARNING << "Fetching Dash.hudActive property failed";
-    }
 }
 
 DashClient* DashClient::instance()
@@ -109,30 +97,17 @@ DashClient* DashClient::instance()
     return client;
 }
 
-void DashClient::slotDashActiveChanged(bool value)
+void DashClient::slotActiveChanged(bool value)
 {
-    if (m_dashActive != value) {
-        m_dashActive = value;
+    if (m_active != value) {
+        m_active = value;
     }
     Q_EMIT activeChanged(value);
 }
 
-void DashClient::slotHudActiveChanged(bool value)
-{
-    if (m_hudActive != value) {
-        m_hudActive = value;
-    }
-    Q_EMIT hudActiveChanged(value);
-}
-
 bool DashClient::active() const
 {
-    return m_dashActive;
-}
-
-bool DashClient::hudActive() const
-{
-    return m_hudActive;
+    return m_active;
 }
 
 void DashClient::setActive(bool active)
@@ -143,21 +118,8 @@ void DashClient::setActive(bool active)
             m_dashDbusIface->setProperty("active", false);
         }
     } else {
-        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
+        QDBusInterface iface(SHELL_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
         iface.setProperty("active", true);
-    }
-}
-
-void DashClient::setHudActive(bool active)
-{
-    if (!active) {
-        // Use m_dashDbusIface only if the shell is running
-        if (m_dashDbusIface) {
-            m_dashDbusIface->setProperty("hudActive", false);
-        }
-    } else {
-        QDBusInterface iface(DASH_DBUS_SERVICE, DASH_DBUS_PATH, DASH_DBUS_INTERFACE);
-        iface.setProperty("hudActive", true);
     }
 }
 
