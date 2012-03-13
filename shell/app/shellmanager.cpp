@@ -127,7 +127,7 @@ ShellManagerPrivate::initShell(int screen)
 ShellDeclarativeView *
 ShellManagerPrivate::activeShell(ActiveShellUsage usage) const
 {
-    bool launcherOnlyInOneScreen = false;
+    bool launcherOnlyInOneScreen = launcher2dConfiguration().property("onlyOneLauncher").toBool();
     if (usage == ActiveShellLauncherRelatedUse && launcherOnlyInOneScreen) {
         return m_viewList.isEmpty() ? NULL : m_viewList[0];
     }
