@@ -33,54 +33,39 @@ Item {
 
     Item {
         anchors.fill: parent
-        /* Extra Item seemingly unnecessary but actually useful to avoid a
-           redrawing bug that happens when applying an effect on a clipped item.
-           In this particular case, doing the Colorize on the clipped child item
-           would prevent proper repainting when maximizing then unmaximizing the
-           dash.
-        */
-        effect: ColorizeEffect {
-            color: unityConfiguration.averageBgColor
-            saturation: 0.4
+        anchors.bottomMargin: bottomBorderThickness
+        anchors.rightMargin: rightBorderThickness
+        clip: true
+
+        Image {
+            id: blurredBackground
+
+            effect: Blur {blurRadius: 12}
+
+            /* 'source' needs to be set when this becomes visible, that is when active
+               becomes true, so that a screenshot of the desktop is taken at that point.
+               See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
+            */
+
+            /* Use an image of the root window which essentially is a
+               capture of the entire screen */
+            source: active ? "image://window/root" : ""
+            cache: false
+
+            fillMode: Image.PreserveAspectCrop
+
+            /* Place the screenshot of the desktop background on top of the desktop background,
+               no matter where the DeclarativeView or the parent object are placed.
+            */
+            property variant origin: parent.mapFromItem(null, -declarativeView.globalPosition.x, -declarativeView.globalPosition.y)
+            x: origin.x
+            y: origin.y
         }
 
-        Item {
+        Image {
             anchors.fill: parent
-            anchors.bottomMargin: bottomBorderThickness
-            anchors.rightMargin: rightBorderThickness
-            clip: true
-
-            Image {
-                id: blurredBackground
-
-                effect: Blur {blurRadius: 12}
-
-                /* 'source' needs to be set when this becomes visible, that is when active
-                   becomes true, so that a screenshot of the desktop is taken at that point.
-                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
-                */
-
-                /* Use an image of the root window which essentially is a
-                   capture of the entire screen */
-                source: active ? "image://window/root" : ""
-                cache: false
-
-                fillMode: Image.PreserveAspectCrop
-
-                /* Place the screenshot of the desktop background on top of the desktop background,
-                   no matter where the DeclarativeView or the parent object are placed.
-                */
-                property variant origin: parent.mapFromItem(null, -declarativeView.globalPosition.x, -declarativeView.globalPosition.y)
-                x: origin.x
-                y: origin.y
-            }
-
-            Image {
-                anchors.fill: parent
-                fillMode: Image.PreserveAspectCrop
-                source: "artwork/background_sheen.png"
-                opacity: 0.8
-            }
+            fillMode: Image.PreserveAspectCrop
+            source: "artwork/background_sheen.png"
         }
     }
 
