@@ -131,7 +131,8 @@ void SpreadManager::onViewVisibleChanged(bool visible)
 // Explore other possible solutions not based in the
 // mouse clicking itself but for example based on
 // focus loss
-bool SpreadManager::eventFilter(QObject *obj, QEvent *event) {
+bool SpreadManager::eventFilter(QObject *obj, QEvent *event)
+{
     if (m_grabber != NULL) {
         switch (event->type()) {
             case QEvent::MouseButtonPress:
