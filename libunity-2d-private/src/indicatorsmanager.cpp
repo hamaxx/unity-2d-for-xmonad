@@ -145,18 +145,18 @@ void IndicatorsManager::checkMousePosition()
     QWidget* widget = QApplication::widgetAt(pos);
     Display* display = QX11Info::display();
 
-    QPoint relPos = widget != 0 ? widget->mapFromGlobal(pos) : pos;
+    QPoint relPos = widget != 0 ? widget->window()->mapFromGlobal(pos) : pos;
     XMotionEvent event = {
         MotionNotify,
         0,
         False,
         display,
-        widget != 0 ? widget->effectiveWinId() : 0,
+        widget != 0 ? widget->window()->effectiveWinId() : 0,
         widget != 0 ? RootWindow(display, widget->x11Info().screen()) : 0,
         0,
         CurrentTime,
-        pos.x(), pos.y(),
         relPos.x(), relPos.y(),
+        pos.x(), pos.y(),
         0,
         False,
         True
