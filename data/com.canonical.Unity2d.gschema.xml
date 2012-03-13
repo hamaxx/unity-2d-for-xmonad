@@ -15,6 +15,11 @@
         Unity will adapt its shape and form to the device it is running on.
       </description>
     </key>
+    <key type="b" name="sticky-edges">
+      <default>true</default>
+      <summary>Sticky edges.</summary>
+      <description>Whether the edges in a multi-monitor setup should be sticky or not (Edges with autohide launchers are always sticky).</description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">
@@ -68,6 +73,11 @@
       <description>Minimum pressure the pointer needs to exert on the barrier for the barrier to drop.
         Only relevant for multi-monitor setups
       </description>
+    </key>
+    <key type="b" name="only-one-launcher">
+      <default>true</default>
+      <summary>Show only one launcher.</summary>
+      <description>Whether in a multi-monitor setup there should be just one launcher in the primary screen or one in each.</description>
     </key>
   </schema>
   <schema path="/com/canonical/unity-2d/panel/" id="com.canonical.Unity2d.Panel" gettext-domain="unity-2d">

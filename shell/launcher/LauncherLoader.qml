@@ -22,8 +22,7 @@ import "../common"
 import "../common/utils.js" as Utils
 
 Loader {
-    property bool launcherOnlyInOneScreen: false // TODO Read this from dconf
-    property bool loadLauncher: !launcherOnlyInOneScreen || declarativeView.screen.screen == 0
+    property bool loadLauncher: !launcher2dConfiguration.onlyOneLauncher || declarativeView.screen.screen == 0
     id: launcherLoader
     source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController

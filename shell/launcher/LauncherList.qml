@@ -93,8 +93,7 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            var launcherOnlyInOneScreen = false // TODO Read this from dconf
-            var windowCount = item.windowsOnCurrentWorkspaceScreen(launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen);
+            var windowCount = item.windowsOnCurrentWorkspaceScreen(launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen);
             if (windowCount == 0 && item.windowCount != 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
@@ -264,8 +263,7 @@ AutoScrollingListView {
 
         function setIconGeometry() {
             if (running) {
-                var launcherOnlyInOneScreen = false // TODO Read this from dconf
-                var screen = launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
                 item.setIconGeometry(x + declarativeView.globalPosition.x,
                                      y + declarativeView.globalPosition.y,
                                      width, height, screen)
@@ -309,8 +307,7 @@ AutoScrollingListView {
         Connections {
             target: item
             onWindowAdded: {
-                var launcherOnlyInOneScreen = false // TODO Read this from dconf
-                var screen = launcherOnlyInOneScreen ? -1 : declarativeView.screen.screen
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
                 item.setIconGeometry(x + declarativeView.globalPosition.x,
                                      y + declarativeView.globalPosition.y,
                                      width, height, screen, xid)
