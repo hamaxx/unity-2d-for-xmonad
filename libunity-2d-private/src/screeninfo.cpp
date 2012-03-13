@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QVariant>
 #include <QX11Info>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
@@ -74,8 +75,7 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
     QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
-    const bool onlyOneLauncher = false; // TODO read this from dconf
-    const bool accountForLauncher = !onlyOneLauncher || m_screen == 0;
+    const bool accountForLauncher = !launcher2dConfiguration().property("onlyOneLauncher").toBool() || m_screen == 0;
 
     QRect availableGeometry(
         screenRect.left() + (accountForLauncher ? LauncherClient::MaximumWidth : 0),
