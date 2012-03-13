@@ -64,7 +64,6 @@ static QBrush generateBackgroundBrush()
     gtk_render_background(context, cr.data(), 0, 0, image.width(), image.height());
     gtk_render_frame(context, cr.data(), 0, 0, image.width(), image.height());
     return QBrush(image);
-
 }
 
 void PanelPaletteManager::updatePalette()
