@@ -30,7 +30,7 @@ SpreadView::SpreadView(int screen)
 : Unity2DDeclarativeView()
 {
     m_screenInfo = new ScreenInfo(screen, this);
-    connect(m_screenInfo, SIGNAL(availableGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
+    connect(m_screenInfo, SIGNAL(panelsFreeGeometryChanged(QRect)), SLOT(fitToAvailableSpace()));
 }
 
 void SpreadView::fitToAvailableSpace()

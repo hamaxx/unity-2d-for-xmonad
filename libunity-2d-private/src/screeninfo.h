@@ -60,6 +60,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
+    void updatePanelsFreeGeometry();
 
 private:
     void updateScreen();

@@ -17,6 +17,7 @@ ScreenInfo::ScreenInfo(QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(int screen, QObject *parent) :
@@ -29,6 +30,7 @@ ScreenInfo::ScreenInfo(int screen, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
@@ -42,6 +44,7 @@ ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
@@ -54,6 +57,7 @@ ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::~ScreenInfo()
@@ -112,6 +116,13 @@ void ScreenInfo::updateAvailableGeometry(int screen)
 {
     if (screen == m_screen) {
         Q_EMIT availableGeometryChanged(availableGeometry());
+        Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
+    }
+}
+
+void ScreenInfo::updatePanelsFreeGeometry()
+{
+    if (m_screen != 0) {
         Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
 }
