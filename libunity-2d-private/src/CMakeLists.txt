@@ -33,6 +33,7 @@ set(lib${LIB_NAME}_SRCS
     screeninfo.cpp
     desktopinfo.cpp
     cacheeffect.cpp
+    colorizeeffect.cpp
     workspacesinfo.cpp
     signalwaiter.cpp
     dragitem.cpp
@@ -81,6 +82,7 @@ set(lib${LIB_NAME}_SRCS
     inputshaperectangle.cpp
     inputshapemask.cpp
     strutmanager.cpp
+    imageutilities.cpp
     pointerbarrier.cpp
     pointerbarriermanager.cpp
     decayedvalue.cpp

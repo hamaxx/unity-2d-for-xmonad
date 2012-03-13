@@ -62,12 +62,13 @@ LauncherDropItem {
         }
     }
 
+    /* The background color is the same as in the panel */
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
         anchors.rightMargin: Utils.isLeftToRight() && !border.visible ? border.width : 0
         anchors.leftMargin:  Utils.isRightToLeft() && !border.visible ? border.width : 0
-        color: "black"
+        color: Qt.darker(unityConfiguration.averageBgColor, 8.0)
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
     }

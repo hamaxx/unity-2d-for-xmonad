@@ -120,6 +120,8 @@ AbstractButton {
                 id: cursor
 
                 Rectangle {
+                    property bool timerShowCursor: true
+
                     id: customCursor
                     color: "white"
                     anchors.top: parent.top
@@ -127,11 +129,12 @@ AbstractButton {
                     anchors.topMargin: 2
                     anchors.bottomMargin: 2
                     width: 1
+                    visible: parent.activeFocus && timerShowCursor
                     Timer {
-                        interval: 800; running: true; repeat: true
+                        interval: 800; running: customCursor.parent.activeFocus; repeat: true
                         onTriggered: {
                             interval = interval == 800 ? 400 : 800
-                            customCursor.visible = !customCursor.visible
+                            customCursor.timerShowCursor = !customCursor.timerShowCursor
                         }
                     }
                 }
