@@ -27,6 +27,8 @@ Rectangle {
 
     signal cancelAndExitStarted ()
 
+    property variant declarativeView
+
     property int columns: desktop.workspaces.columns
     property int rows: desktop.workspaces.rows
 

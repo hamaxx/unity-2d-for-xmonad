@@ -33,6 +33,8 @@ SpreadManager::SpreadManager(QObject* parent)
  , m_grabber(NULL)
  , m_focusedView(NULL)
 {
+    qmlRegisterUncreatableType<SpreadView>("Unity2d", 1, 0, "SpreadView", "This can only be created from C++");
+
     QDesktopWidget* desktop = QApplication::desktop();
 
     onScreenCountChanged(desktop->screenCount());
@@ -77,10 +79,11 @@ SpreadView *SpreadManager::initSpread(int screen)
     connect(view, SIGNAL(visibleChanged(bool)), this, SLOT(onViewVisibleChanged(bool)));
     view->rootContext()->setContextProperty("control", &m_control);
     view->rootContext()->setContextProperty("spreadManager", this);
-    view->rootContext()->setContextProperty("declarativeView", view);
 
     /* Load the QML UI, focus and show the window */
-    view->setSource(QUrl("./Workspaces.qml"));
+    QMap<const char*, QVariant> rootObjectProperties;
+    rootObjectProperties.insert("declarativeView", QVariant::fromValue(view));
+    view->setSource(QUrl("./Workspaces.qml"), rootObjectProperties);
     view->fitToAvailableSpace();
 
     connect(view->rootObject(), SIGNAL(cancelAndExitStarted()), this, SIGNAL(startCancelAndExit()));

@@ -36,5 +36,7 @@ public Q_SLOTS:
     void fitToAvailableSpace();
 };
 
+Q_DECLARE_METATYPE(SpreadView*)
+
 #endif // SPREADVIEW_H
 
