@@ -30,7 +30,7 @@
 
 SpreadManager::SpreadManager(QObject* parent)
  : QObject(parent)
- , m_grabber(NULL)
+ , m_eventGrabbingView(NULL)
  , m_focusedView(NULL)
 {
     QDesktopWidget* desktop = QApplication::desktop();
@@ -86,7 +86,7 @@ SpreadView *SpreadManager::initSpread(int screen)
     connect(view->rootObject(), SIGNAL(cancelAndExitStarted()), this, SIGNAL(startCancelAndExit()));
 
     if (screen == 0) {
-        m_grabber = view;
+        m_eventGrabbingView = view;
         view->viewport()->installEventFilter(this);
         view->installEventFilter(this);
     }
@@ -111,16 +111,16 @@ void SpreadManager::onScreenCountChanged(int newCount)
     }
 
     if (newCount == 0) {
-        m_grabber = NULL;
+        m_eventGrabbingView = NULL;
     }
 }
 
 void SpreadManager::onViewVisibleChanged(bool visible)
 {
     m_control.setIsShown(visible);
-    if (m_grabber != NULL) {
-        m_grabber->forceActivateWindow();
-        m_focusedView = m_grabber;
+    if (m_eventGrabbingView != NULL) {
+        m_eventGrabbingView->forceActivateWindow();
+        m_focusedView = m_eventGrabbingView;
         Q_EMIT currentSwitcherChanged();
     }
 }
@@ -133,21 +133,21 @@ void SpreadManager::onViewVisibleChanged(bool visible)
 // focus loss
 bool SpreadManager::eventFilter(QObject *obj, QEvent *event)
 {
-    if (m_grabber != NULL) {
+    if (m_eventGrabbingView != NULL) {
         switch (event->type()) {
             case QEvent::MouseButtonPress:
             case QEvent::MouseButtonRelease:
             case QEvent::MouseMove:
             {
                 QMouseEvent *me = (QMouseEvent*)event;
-                const QPoint globalPos = m_grabber->viewport()->mapToGlobal(me->pos());
+                const QPoint globalPos = m_eventGrabbingView->viewport()->mapToGlobal(me->pos());
                 QWidget *w = qApp->widgetAt(globalPos);
                 if (w == NULL) {
                     if (event->type() == QEvent::MouseButtonPress) {
                         Q_EMIT startCancelAndExit();
                         return true;
                     }
-                } else if (w != m_grabber->viewport()) {
+                } else if (w != m_eventGrabbingView->viewport()) {
                     SpreadView *v = qobject_cast<SpreadView*>(w->window());
                     if (v != NULL) {
                         if (!v->hasFocus()) {
@@ -162,9 +162,9 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event)
                         qWarning() << "The impossible happened, MouseEvent and window was not a SpreadView";
                     }
                 } else {
-                    if (!m_grabber->hasFocus()) {
-                        m_grabber->forceActivateWindow();
-                        m_focusedView = m_grabber;
+                    if (!m_eventGrabbingView->hasFocus()) {
+                        m_eventGrabbingView->forceActivateWindow();
+                        m_focusedView = m_eventGrabbingView;
                         Q_EMIT currentSwitcherChanged();
                     }
                 }
@@ -174,7 +174,7 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event)
             case QEvent::KeyPress:
             case QEvent::KeyRelease:
             {
-                if (m_focusedView != NULL && m_focusedView != m_grabber) {
+                if (m_focusedView != NULL && m_focusedView != m_eventGrabbingView) {
                     qApp->sendEvent(m_focusedView, event);
                     return true;
                 }
@@ -196,19 +196,19 @@ bool SpreadManager::eventFilter(QObject *obj, QEvent *event)
 
                 The first time the window seems to be actually visible is in focusEvent.
                 */
-                if (obj == m_grabber && QWidget::mouseGrabber() == NULL) {
+                if (obj == m_eventGrabbingView && QWidget::mouseGrabber() == NULL) {
                     /* Note that we grab mouse input from the viewport because doing it directly
                     in the view won't work.
                     */
-                    m_grabber->viewport()->grabMouse();
-                    m_grabber->viewport()->grabKeyboard();
+                    m_eventGrabbingView->viewport()->grabMouse();
+                    m_eventGrabbingView->viewport()->grabKeyboard();
                 }
             break;
 
             case QEvent::Hide:
-                if (obj == m_grabber && QWidget::mouseGrabber() != NULL) {
-                    m_grabber->viewport()->releaseMouse();
-                    m_grabber->viewport()->releaseKeyboard();
+                if (obj == m_eventGrabbingView && QWidget::mouseGrabber() != NULL) {
+                    m_eventGrabbingView->viewport()->releaseMouse();
+                    m_eventGrabbingView->viewport()->releaseKeyboard();
                 }
             break;
 
