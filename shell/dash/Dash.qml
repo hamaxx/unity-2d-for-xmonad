@@ -103,6 +103,7 @@ FocusScope {
         for (var i=0; i<lenses.rowCount(); i++) {
             lenses.get(i).viewType = Lens.Hidden
         }
+        pageLoader.item.scrollToTop()
         declarativeView.activeLens = ""
     }
 

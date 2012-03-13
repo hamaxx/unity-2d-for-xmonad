@@ -27,6 +27,10 @@ FocusScope {
     property variant model
     property string firstNonEmptyCategory
 
+    function scrollToTop() {
+        results.scrollbar.targetFlickable.contentY = 0
+    }
+
     function updateFirstCategory() {
         if (lensView.model.results.count == 0)
             return
