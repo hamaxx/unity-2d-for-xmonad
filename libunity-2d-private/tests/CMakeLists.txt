@@ -38,6 +38,7 @@ libunity_2d_tests(
     listaggregatormodeltest
     qsortfilterproxymodeltest
     focuspathtest
+    imageutilitiestest
     pointerbarriertest
     )
 

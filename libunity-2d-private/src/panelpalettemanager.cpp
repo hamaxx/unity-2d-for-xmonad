@@ -24,10 +24,12 @@
 #include <hudclient.h>
 #include <panelstyle.h>
 #include <unity2dpanel.h>
+#include <config.h>
 
 // Qt
 #include <QBrush>
 #include <QPalette>
+#include <QVariant>
 
 // GTK
 #include <gtk/gtk.h>
@@ -46,6 +48,7 @@ PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
+    connect(&unityConfiguration(), SIGNAL(averageBgColor(QVariant)), this, SLOT(updatePalette()));
 
     m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name", G_CALLBACK(onThemeChanged), this);
     updatePalette();
@@ -75,7 +78,11 @@ void PanelPaletteManager::updatePalette()
 
     QPalette pal;
     if (DashClient::instance()->active() || HUDClient::instance()->active()) {
-        pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
+        /* The background color is the same as in the launcher */
+        QColor wallpaperColor(unityConfiguration().property("averageBgColor").toString());
+        QColor backgroundColor(wallpaperColor.red(), wallpaperColor.green(), wallpaperColor.blue(), 168);
+        backgroundColor = backgroundColor.darker(800);
+        pal.setBrush(QPalette::Window, backgroundColor);
     } else {
         pal.setBrush(QPalette::Window, generateBackgroundBrush());
     }

@@ -36,6 +36,10 @@ Item {
 
     property alias hudActive: hudLoader.active
 
+
+    WallpaperColor {
+    }
+
     GestureHandler {
         id: gestureHandler
     }
