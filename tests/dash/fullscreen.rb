@@ -71,7 +71,7 @@ context "Dash fullscreen tests" do
                     :arguments => "-testability",
                     :sleeptime => 2)
 
-    verify(10){ @panel.Unity2dPanel() }
+    verify(10){ @panel.Unity2dPanel( :name => '0' ) }
     verify(10){ @shell.ShellDeclarativeView() }
   end
 

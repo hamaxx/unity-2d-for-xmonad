@@ -56,6 +56,8 @@ context "Dash Tests" do
     @app_spread = $SUT.run( :name => UNITY_2D_SPREAD, 
                             :arguments => "-testability", 
                             :sleeptime => 2 )
+    # Move mouse out of way
+    XDo::Mouse.move(200, 200, 0, true)
   end
 
   # Run after each test case completes
@@ -240,7 +242,6 @@ context "Dash Tests" do
   # References
   #   * None
   test "Super, Super and Alt+F1 interaction" do
-    XDo::Mouse.move(200, 200, 0, true)
     xid = TmpWindow.open_window_at(10,100)
     hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode').to_i
     verify_equal( xid.id, TIMEOUT, 'terminal should have focus after starting it' ) {

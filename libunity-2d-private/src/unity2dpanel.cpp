@@ -114,6 +114,7 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
 
     setAttribute(Qt::WA_X11NetWmWindowTypeDock);
     setAttribute(Qt::WA_Hover);
+    setObjectName(QString::number(screen));
 
     if (QX11Info::isCompositingManagerRunning() && requiresTransparency) {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -147,6 +148,7 @@ Unity2dPanel::Edge Unity2dPanel::edge() const
 void Unity2dPanel::setScreen(int screen)
 {
     d->m_screenInfo->setScreen(screen);
+    setObjectName(QString::number(screen));
 }
 
 int Unity2dPanel::screen() const
