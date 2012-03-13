@@ -40,7 +40,9 @@ WindowInfo::WindowInfo(unsigned int contentXid, QObject *parent) :
 
 WindowInfo::~WindowInfo()
 {
-    g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    if (m_wnckWindow != NULL) {
+        g_signal_handlers_disconnect_by_func(m_wnckWindow, gpointer(WindowInfo::onWorkspaceChanged), this);
+    }
 }
 
 unsigned int WindowInfo::contentXid() const

@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 1.0
+import QtQuick 1.1
+import "../common/utils.js" as Utils
 
 Item {
     id: multiRangeSelectionBar
@@ -26,7 +27,7 @@ Item {
     property int leftPos: 0
     property int rightPos: 100
 
-    x: leftPos
+    x: !Utils.isRightToLeft() ? leftPos : parent.width - rightPos
     width: rightPos - leftPos
     height: childrenRect.height
 
@@ -38,6 +39,7 @@ Item {
         height: sourceSize.height
         anchors.left: parent.left
         anchors.top: parent.top
+        mirror: Utils.isRightToLeft()
     }
 
     Image {
@@ -59,6 +61,7 @@ Item {
         height: sourceSize.height
         anchors.top: parent.top
         anchors.right: parent.right
+        mirror: Utils.isRightToLeft()
     }
 
 }
