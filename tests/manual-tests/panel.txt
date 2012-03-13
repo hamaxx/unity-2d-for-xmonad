@@ -12,3 +12,11 @@
  * Hit super key to Open Dash.
 
 --> Verify top panel is transparent
+----
+ * Have a two monitor setup in a side by side configuration
+ * Open a program and move its window to the rightmost monitor
+ * Make sure that window is the active one
+ * Click on the indicators in the panel of the rightmost monitor
+ * While the indicators menu is open, move the mouse to the left over the menu area of the rightmost monitor
+
+--> Verify menu appears
