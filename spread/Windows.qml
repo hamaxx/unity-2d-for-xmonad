@@ -73,6 +73,17 @@ GridView {
         filterRegExp: RegExp("%1".arg(switcher.applicationFilter))
     }
 
+    /* This proxy model takes care of removing all windows that are not on
+       the screen of this spread. */
+    SortFilterProxyModel {
+        id: filteredByScreen
+        model: filteredByApplication
+        dynamicSortFilter: true
+
+        filterRole: WindowInfo.RoleScreen
+        filterRegExp: RegExp("%1".arg(declarativeView.screen.screen))
+    }
+
     property int columns: Math.ceil(Math.sqrt(count))
     property int rows: Math.ceil(count / columns)
     property int cellSpacing: 10
@@ -84,7 +95,7 @@ GridView {
      * initialization gets somehow messed up and the "columns" and "rows"
      * variables are set to those of the first workspace. */
     Component.onCompleted: {
-        model = filteredByApplication
+        model = filteredByScreen
     }
 
     delegate:
@@ -130,7 +141,7 @@ GridView {
                 property bool animateFollow: false
                 property bool followCell: true
 
-                isSelected: cell.activeFocus
+                isSelected: cell.activeFocus && spreadManager.currentSwitcher == switcher
 
                 onEntered: {
                     windows.currentIndex = index

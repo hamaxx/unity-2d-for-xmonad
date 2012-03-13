@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QVariant>
 #include <QX11Info>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
@@ -74,14 +75,16 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
     QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
+    const bool accountForLauncher = !launcher2dConfiguration().property("onlyOneLauncher").toBool() || m_screen == 0;
+
     QRect availableGeometry(
-        LauncherClient::MaximumWidth,
+        screenRect.left() + (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.top(),
-        screenRect.width() - LauncherClient::MaximumWidth,
+        screenRect.width() - (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.height()
         );
     if (QApplication::isRightToLeft()) {
-        availableGeometry.moveLeft(0);
+        availableGeometry.moveLeft(screenRect.left());
     }
     return availableGeometry;
 }
@@ -126,7 +129,7 @@ void ScreenInfo::updateScreen()
 }
 
 int
-ScreenInfo::cornerScreen(Corner corner)
+ScreenInfo::cornerScreen(Corner corner) const
 {
     QDesktopWidget* desktop = QApplication::desktop();
     switch(corner) {

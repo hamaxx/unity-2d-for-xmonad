@@ -70,6 +70,10 @@ Q_SIGNALS:
     void visibleChanged(bool);
     void sceneResized(QSize size);
 
+public Q_SLOTS:
+    void forceActivateWindow();
+    void forceDeactivateWindow();
+
 protected:
     void setupViewport();
     virtual void moveEvent(QMoveEvent* event);
