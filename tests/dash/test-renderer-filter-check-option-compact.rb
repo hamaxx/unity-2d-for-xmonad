@@ -84,7 +84,9 @@ context "Dash - Filter Results renderer tests" do
 
     loader = ""
     verify( TIMEOUT, 'Could not find FilterCheckOption Loader' ) {
-        loader = @app.Dash().FilterPane().FilterLoader(:name => 'filter-checkoption').QDeclarativeLoader( :name => 'filter-checkoption' )
+        loader = @app.Dash().FilterPane() \
+                     .children( :type => 'FilterLoader', :name => 'filter-checkoption')[0] \
+                     .QDeclarativeLoader()
     }
 
     verify_equal(2, TIMEOUT, 'FilterCheckOption don\'t have two columns' ) {
