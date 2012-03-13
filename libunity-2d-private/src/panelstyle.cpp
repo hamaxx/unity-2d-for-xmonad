@@ -180,5 +180,3 @@ QPixmap PanelStyle::windowButtonPixmap(PanelStyle::WindowButtonType type, PanelS
         return d->genericWindowButtonPixmap(type, state);
     }
 }
-
-#include "panelstyle.moc"
