@@ -82,9 +82,7 @@ test_directories = ['launcher', 'panel', 'dash', 'spread', 'shell', 'window-mana
 if __FILE__ == $0
     $INIT_COMPLETED = true # Prevent this file being included by test cases
 
-    if ARGV[0] == 'multimonitor':
-        test_directories << 'multimonitor'
-    end
+    test_directories << 'multimonitor' if ARGV.delete('-multimonitor')
 
     # Scan through the above directories and execute test cases contained.
     test_directories.each do | directory |
