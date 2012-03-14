@@ -39,7 +39,7 @@ QString PercentCoder::unencoded() const
 
 void PercentCoder::setEncoded(const QString &string)
 {
-    QString str = QUrl::fromPercentEncoding(string.toUtf8());
+    QString str = QUrl::fromPercentEncoding(string.toAscii());
     if (str != m_string) {
         m_string = str;
         Q_EMIT stringChanged();
