@@ -22,12 +22,22 @@ import "../common"
 import "../common/utils.js" as Utils
 
 Loader {
-    property bool loadLauncher: !launcher2dConfiguration.onlyOneLauncher || declarativeView.screen.screen == 0
+    property bool onlyOneLauncher: true
+    property bool loadLauncher: !onlyOneLauncher || declarativeView.screen.screen == 0
+
     id: launcherLoader
     source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
     property bool launcherInHideMode: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) != 0
+
+    Timer {
+        // FIXME We need this timer because otherwise changing from
+        // onlyOneLauncher to !onlyOneLauncher gets us in what seems to be a dbus deadlock
+        id: launcher2dConfigurationWorkaround
+        interval: 1
+        onTriggered: launcherLoader.onlyOneLauncher = launcher2dConfiguration.onlyOneLauncher
+    }
 
     VisibilityController {
         id: visibilityController
@@ -83,4 +93,13 @@ Loader {
             else visibilityController.endForceVisible()
         }
     }
+
+    Connections {
+        target: launcher2dConfiguration
+        onOnlyOneLauncherChanged: {
+            launcher2dConfigurationWorkaround.start()
+        }
+    }
+
+    Component.onCompleted: launcherLoader.onlyOneLauncher = launcher2dConfiguration.onlyOneLauncher
 }
