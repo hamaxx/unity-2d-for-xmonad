@@ -29,6 +29,7 @@ Item {
     property int rightBorderThickness
     property bool activeTriggerHelper: true
     property bool reallyActive: active && activeTriggerHelper
+    property variant view: undefined
 
     function trigger()
     {
@@ -65,7 +66,8 @@ Item {
             /* Place the screenshot of the desktop background on top of the desktop background,
                no matter where the DeclarativeView or the parent object are placed.
             */
-            property variant origin: parent.mapFromItem(null, -declarativeView.globalPosition.x, -declarativeView.globalPosition.y)
+            property variant origin: parent.mapFromItem(null, background.view != undefined ? -background.view.globalPosition.x : -declarativeView.globalPosition.x,
+                                                              background.view != undefined ? -background.view.globalPosition.y : -declarativeView.globalPosition.y)
             x: origin.x
             y: origin.y
         }

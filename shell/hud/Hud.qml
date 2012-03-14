@@ -98,6 +98,7 @@ FocusScope {
         anchors.fill: parent
 
         active: hud.active
+        view: shellManager.hudShell
     }
 
     Item {

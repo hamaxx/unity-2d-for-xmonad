@@ -235,6 +235,7 @@ FocusScope {
 
         active: dash.active
         fullscreen: shellManager.dashMode != ShellManager.DesktopMode
+        view: shellManager.dashShell
     }
 
     Item {
