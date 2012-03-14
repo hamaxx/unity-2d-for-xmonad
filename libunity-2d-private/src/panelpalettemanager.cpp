@@ -42,7 +42,7 @@ static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
 }
 
 PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
- : m_panel(panel)
+ : QObject(panel), m_panel(panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
