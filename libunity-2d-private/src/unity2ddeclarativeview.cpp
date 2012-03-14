@@ -93,8 +93,9 @@ void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char
 {
     QDeclarativeComponent* component = new QDeclarativeComponent(engine(), source, this);
     QObject *instance = component->beginCreate(rootContext());
-    if (component->isError())
+    if (component->isError()) {
         qDebug() << component->errors();
+    }
     QMap<const char*, QVariant>::const_iterator it = rootObjectProperties.begin();
     QMap<const char*, QVariant>::const_iterator itEnd = rootObjectProperties.end();
     for ( ; it != itEnd; ++it) {
