@@ -459,7 +459,17 @@ ApplicationsList::data(const QModelIndex &index, int role) const
 }
 
 void
-ApplicationsList::move(int from, int to)
+ApplicationsList::moveFinished(int from, int to)
+{
+    Q_FOREACH(ApplicationsList *other, ApplicationsListManager::instance()->m_lists) {
+        if (other != this) {
+            other->doMove(from, to);
+        }
+    }
+}
+
+void
+ApplicationsList::doMove(int from, int to)
 {
     QModelIndex parent;
     /* When moving an item down, the destination index needs to be incremented
@@ -468,6 +478,12 @@ ApplicationsList::move(int from, int to)
     beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
     m_applications.move(from, to);
     endMoveRows();
+}
+
+void
+ApplicationsList::move(int from, int to)
+{
+    doMove(from, to);
 
     if (m_applications[from]->sticky() || m_applications[to]->sticky()) {
         /* Update favorites only if at least one of the applications is a favorite */

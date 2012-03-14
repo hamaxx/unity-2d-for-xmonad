@@ -56,6 +56,7 @@ public:
 
 public Q_SLOTS:
     void move(int from, int to);
+    void moveFinished(int from, int to);
 
 Q_SIGNALS:
     void applicationBecameUrgent(int index);
@@ -76,6 +77,8 @@ private:
     void writeFavoritesToGConf();
 
     void remoteEntryUpdated(const QString& desktopFile, const QString& sender, const QString& applicationURI, const QMap<QString, QVariant>& properties);
+
+    void doMove(int from, int to);
 
     /* List of Application displayed in the launcher. */
     QList<Application*> m_applications;

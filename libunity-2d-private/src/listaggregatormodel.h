@@ -62,6 +62,8 @@ public Q_SLOTS:
        The item must remain in the same model. */
     void move(int from, int to);
 
+    void moveFinished(int from, int to);
+
 protected:
     QList<QAbstractItemModel*> m_models;
 

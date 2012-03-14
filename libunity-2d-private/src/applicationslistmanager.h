@@ -28,6 +28,7 @@ class ApplicationsListManager : public QObject, protected QDBusContext
 {
     Q_OBJECT
     friend class ApplicationsListDBUS;
+    friend class ApplicationsList;
 
 public:
     static ApplicationsListManager *instance();
