@@ -57,6 +57,7 @@ FocusScope {
         target: shellManager
         onDashShellChanged: {
             if (dash.active) {
+                background.trigger()
                 shellManager.dashShell.forceActivateWindow()
             }
         }

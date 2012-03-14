@@ -67,6 +67,11 @@ FocusScope {
         target: shellManager
 
         onToggleHud: toggleHud()
+        onHudShellChanged: {
+            if (active) {
+                background.trigger()
+            }
+        }
     }
 
     Keys.onPressed: {

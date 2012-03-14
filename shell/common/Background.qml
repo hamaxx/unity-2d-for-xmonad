@@ -27,6 +27,14 @@ Item {
     property bool fullscreen: false
     property int bottomBorderThickness
     property int rightBorderThickness
+    property bool activeTriggerHelper: true
+    property bool reallyActive: active && activeTriggerHelper
+
+    function trigger()
+    {
+        activeTriggerHelper = false
+        activeTriggerHelper = true
+    }
 
     /* Avoid redraw at rendering */
     effect: CacheEffect {}
@@ -49,7 +57,7 @@ Item {
 
             /* Use an image of the root window which essentially is a
                capture of the entire screen */
-            source: active ? "image://window/root" : ""
+            source: reallyActive ? "image://window/root" : ""
             cache: false
 
             fillMode: Image.PreserveAspectCrop
