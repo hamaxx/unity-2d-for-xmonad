@@ -161,7 +161,11 @@ ShellManagerPrivate::updateScreenCount(int newCount)
             Q_EMIT q->hudScreenChanged(q->hudScreen());
 
             m_hudLoader = qobject_cast<QDeclarativeItem*>(m_shellWithHud->rootObject()->property("hudLoader").value<QObject *>());
-            QObject::connect(m_hudLoader, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
+            if (m_hudLoader != NULL) {
+                QObject::connect(m_hudLoader, SIGNAL(activeChanged()), q, SIGNAL(hudActiveChanged()));
+            } else {
+                qWarning() << "Could not find the hudLoader";
+            }
         }
     }
 
@@ -514,7 +518,9 @@ ShellManager::hudActive() const
 void
 ShellManager::setHudActive(bool active)
 {
-    d->m_hudLoader->setProperty("active", active);
+    if (d->m_hudLoader != NULL) {
+        d->m_hudLoader->setProperty("active", active);
+    }
 }
 
 QObject *
