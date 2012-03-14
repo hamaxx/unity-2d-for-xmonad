@@ -1141,6 +1141,13 @@ void
 Application::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
+        if (m_progress < 0.0f) {
+            m_progress = 0.0f;
+        } else {
+            if (m_progress > 1.0f) {
+                m_progress = 1.0f;
+            }
+        }
         Q_EMIT progressChanged(m_progress);
     }
     if (updateOverlayState(properties, "progress-visible", &m_progressBarVisible)) {
