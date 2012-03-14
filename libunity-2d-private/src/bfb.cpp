@@ -40,7 +40,7 @@ bool BfbItem::active() const
     return m_active;
 }
 
-int  BfbItem::activeScreen() const
+int BfbItem::activeScreen() const
 {
     if (active()) {
         return m_activeScreen;
