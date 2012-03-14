@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QRect>
 
+// libunity-2d
+#include <gconnector.h>
+
 class QEvent;
 class QWidget;
 
@@ -61,13 +64,16 @@ private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
     void updatePanelsFreeGeometry();
+    void onMonitorsChanged();
 
 private:
+    void connectSignals();
     void updateScreen();
     int cornerScreen(Corner corner) const;
     int m_screen;
     QWidget* m_widget;
     Corner m_corner;
+    GConnector m_gConnector;
 };
 
 #endif // SCREENINFO_H

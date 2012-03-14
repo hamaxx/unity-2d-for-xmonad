@@ -1,11 +1,16 @@
 #include "config.h"
 #include "launcherclient.h"
 #include "screeninfo.h"
+#include "gobjectcallback.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QVariant>
 #include <QX11Info>
+
+#include <gdk/gdk.h>
+
+GOBJECT_CALLBACK0(monitorsChangedCB, "onMonitorsChanged")
 
 ScreenInfo::ScreenInfo(QObject *parent) :
     QObject(parent),
@@ -13,11 +18,7 @@ ScreenInfo::ScreenInfo(QObject *parent) :
     m_widget(NULL),
     m_corner(InvalidCorner)
 {
-    connect(QApplication::desktop(), SIGNAL(resized(int)),
-                                     SLOT(updateGeometry(int)));
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
-                                     SLOT(updateAvailableGeometry(int)));
-    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
+    connectSignals();
 }
 
 ScreenInfo::ScreenInfo(int screen, QObject *parent) :
@@ -26,11 +27,7 @@ ScreenInfo::ScreenInfo(int screen, QObject *parent) :
     m_widget(NULL),
     m_corner(InvalidCorner)
 {
-    connect(QApplication::desktop(), SIGNAL(resized(int)),
-                                     SLOT(updateGeometry(int)));
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
-                                     SLOT(updateAvailableGeometry(int)));
-    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
+    connectSignals();
 }
 
 ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
@@ -40,11 +37,7 @@ ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
     m_corner(InvalidCorner)
 {
     m_widget->installEventFilter(this);
-    connect(QApplication::desktop(), SIGNAL(resized(int)),
-                                     SLOT(updateGeometry(int)));
-    connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
-                                     SLOT(updateAvailableGeometry(int)));
-    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
+    connectSignals();
 }
 
 ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
@@ -53,11 +46,18 @@ ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
     m_widget(NULL),
     m_corner(corner)
 {
+    connectSignals();
+}
+
+void ScreenInfo::connectSignals()
+{
     connect(QApplication::desktop(), SIGNAL(resized(int)),
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
     connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
+
+    m_gConnector.connect(gdk_screen_get_default(), "monitors-changed", G_CALLBACK(monitorsChangedCB), this);
 }
 
 ScreenInfo::~ScreenInfo()
@@ -125,6 +125,12 @@ void ScreenInfo::updatePanelsFreeGeometry()
     if (m_screen != 0) {
         Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
     }
+}
+
+void ScreenInfo::onMonitorsChanged()
+{
+    updateGeometry(m_screen);
+    updateAvailableGeometry(m_screen);
 }
 
 void ScreenInfo::updateScreen()
