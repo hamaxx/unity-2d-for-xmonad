@@ -360,8 +360,6 @@ FocusScope {
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: shellManager.dashShell != undefined ? shellManager.dashShell.screen.availableGeometry.width : 0
-    property int fullscreenHeight: shellManager.dashShell != undefined ? shellManager.dashShell.screen.availableGeometry.height : 0
 
     states: [
         State {
@@ -378,8 +376,8 @@ FocusScope {
             when: shellManager.dashMode == ShellManager.FullScreenMode
             PropertyChanges {
                 target: dash
-                width: fullscreenWidth
-                height: fullscreenHeight
+                width: shellManager.dashShell != undefined ? shellManager.dashShell.screen.panelsFreeGeometry.width : 0
+                height: shellManager.dashShell != undefined ? shellManager.dashShell.screen.panelsFreeGeometry.height : 0
             }
         }
     ]
