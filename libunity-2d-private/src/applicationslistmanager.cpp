@@ -74,7 +74,7 @@ void ApplicationsListManager::addList(ApplicationsList *list)
 
 void ApplicationsListManager::removeList(ApplicationsList *list)
 {
-    m_lists += list;
+    m_lists -= list;
 }
 
 void
