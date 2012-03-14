@@ -49,11 +49,13 @@ public:
 Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged();
+    void dashDisconnected();
 
 private Q_SLOTS:
     void connectToDash();
     void slotActiveChanged(bool);
     void slotAlwaysFullScreenChanged(bool);
+    void onDashDisconnect();
 
 private:
     DashClient(QObject* parent = 0);

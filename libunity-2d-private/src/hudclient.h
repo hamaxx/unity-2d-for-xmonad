@@ -45,10 +45,12 @@ public:
 
 Q_SIGNALS:
     void activeChanged(bool);
+    void hudDisconnected();
 
 private Q_SLOTS:
     void connectToHud();
     void slotActiveChanged(bool);
+    void onHudDisconnect();
 
 private:
     HUDClient(QObject* parent = 0);

@@ -290,6 +290,7 @@ AppNameApplet::AppNameApplet(Unity2dPanel* panel)
     d->setupKeyboardModifiersMonitor();
 
     connect(DashClient::instance(), SIGNAL(alwaysFullScreenChanged()), SLOT(updateWidgets()));
+    connect(DashClient::instance(), SIGNAL(dashDisconnected()), SLOT(updateWidgets()));
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setMargin(0);
