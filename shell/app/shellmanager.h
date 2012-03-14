@@ -110,7 +110,7 @@ private Q_SLOTS:
     void onAltF1Pressed();
     void onAltF2Pressed();
     void onNumericHotkeyPressed();
-    void toggleDash();
+    void toggleDashRequested();
     void toggleHudRequested();
 
     void updateDashAlwaysFullScreen();

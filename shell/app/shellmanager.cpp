@@ -281,7 +281,7 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
 
     /* Super tap shows the dash, super held shows the launcher hints */
     d->m_superHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
-    connect(d->m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDash()));
+    connect(d->m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDashRequested()));
     connect(d->m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
 
     /* Alt tap shows the HUD */
@@ -407,7 +407,7 @@ ShellManager::onScreenCountChanged(int newCount)
 }
 
 void
-ShellManager::toggleDash()
+ShellManager::toggleDashRequested()
 {
     ShellDeclarativeView * activeShell = d->activeShell(ShellManagerPrivate::ActiveShellLauncherRelatedUse);
     if (activeShell) {

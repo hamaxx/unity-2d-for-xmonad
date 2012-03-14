@@ -100,7 +100,7 @@ void BfbItem::activate()
 {
     Q_ASSERT(m_manager != NULL);
     if (m_manager != NULL) {
-        QMetaObject::invokeMethod(m_manager, "toggleDash");
+        QMetaObject::invokeMethod(m_manager, "toggleDashRequested");
     }
 }
 
