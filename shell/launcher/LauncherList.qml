@@ -319,7 +319,7 @@ AutoScrollingListView {
                     left += declarativeView.screen.geometry.width - x - width
                 else
                     left += x
-                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                item.setIconGeometry(left,
                                      y + declarativeView.globalPosition.y,
                                      width, height, screen, xid)
             }
