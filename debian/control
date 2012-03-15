@@ -154,7 +154,7 @@ Description: Dash and Launcher for the Unity 2D environment
 Package: unity-2d-common
 Architecture: all
 Depends: ${misc:Depends},
-Replaces: unity-2d (<< 5.6.0-0ubuntu2)
+Replaces: unity-2d (<< 5.7.0)
 Description: Common files for Unity 2D Shell
  This is part of Unity 2D and contains the common files needed by multiple
  components of it.
