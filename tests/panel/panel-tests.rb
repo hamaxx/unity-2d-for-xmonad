@@ -96,4 +96,36 @@ context "Panel visual verification tests" do
         @panel.Unity2dPanel(:name=>'0').AppNameApplet().CroppedLabel()['x_absolute'].to_i
     }
   end
+
+  # Test case objectives:
+  #  * Check that killing shell while hud is open resets panel
+  # Pre-conditions
+  #  * Desktop with no running apps
+  # Test steps
+  #   * Press Alt
+  #   * Verify hud is showing
+  #   * kill shell process
+  #   * Verify panel caption says 'Ubuntu Desktop'
+  #   * Verify caption absolute x position is 0 (=no window buttons are displayed)
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/953168
+  test "Killing shell while hud is active resets panel to sane state" do
+    XDo::Keyboard.alt
+
+    verify_equal("true", TIMEOUT, 'There should be a Hud after pressing Alt') {
+      @launcher.Hud()['active']
+    }
+    
+    $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
+
+    verify_equal('Ubuntu Desktop', TIMEOUT, 'Panel caption should be Ubuntu Desktop') {
+        @panel.Unity2dPanel(:name=>'0').AppNameApplet().CroppedLabel()['text']
+    }
+
+    verify_equal(0, TIMEOUT, 'Panel label should start at left edge of screen, meaning no window buttons are displayed') {
+        @panel.Unity2dPanel(:name=>'0').AppNameApplet().CroppedLabel()['x_absolute'].to_i
+    }
+  end
 end
