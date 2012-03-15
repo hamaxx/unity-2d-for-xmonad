@@ -22,10 +22,22 @@ import "../common"
 import "../common/utils.js" as Utils
 
 Loader {
+    property bool onlyOneLauncher: true
+    property bool loadLauncher: !onlyOneLauncher || declarativeView.screen.screen == 0
+
     id: launcherLoader
-    source: "Launcher.qml"
+    source: loadLauncher ? "Launcher.qml" : ""
     property variant visibilityController: visibilityController
     onLoaded: item.focus = true
+    property bool launcherInHideMode: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) != 0
+
+    Timer {
+        // FIXME We need this timer because otherwise changing from
+        // onlyOneLauncher to !onlyOneLauncher gets us in what seems to be a dbus deadlock
+        id: launcher2dConfigurationWorkaround
+        interval: 1
+        onTriggered: launcherLoader.onlyOneLauncher = launcher2dConfiguration.onlyOneLauncher
+    }
 
     VisibilityController {
         id: visibilityController
@@ -52,7 +64,7 @@ Loader {
     Binding {
         target: declarativeView
         property: "monitoredArea"
-        value: Qt.rect(launcherLoader.x, launcherLoader.item.y, launcherLoader.item.width, launcherLoader.item.height)
+        value: loadLauncher ? Qt.rect(launcherLoader.x, launcherLoader.item.y, launcherLoader.item.width, launcherLoader.item.height) : Qt.rect(0, 0, 0, 0)
         when: launcherBehavior.status == Loader.Ready && !launcherLoaderXAnimation.running
     }
 
@@ -75,16 +87,19 @@ Loader {
     }
 
     Connections {
-        target: declarativeView
+        target: shellManager
         onSuperKeyHeldChanged: {
             if (superKeyHeld) visibilityController.beginForceVisible()
             else visibilityController.endForceVisible()
         }
     }
 
-    Binding {
-        target: launcherLoader.item
-        property: "shown"
-        value: visibilityController.shown
+    Connections {
+        target: launcher2dConfiguration
+        onOnlyOneLauncherChanged: {
+            launcher2dConfigurationWorkaround.start()
+        }
     }
+
+    Component.onCompleted: launcherLoader.onlyOneLauncher = launcher2dConfiguration.onlyOneLauncher
 }

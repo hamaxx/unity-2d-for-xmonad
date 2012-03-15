@@ -62,6 +62,12 @@ Trash::active() const
     return false;
 }
 
+int
+Trash::activeScreen() const
+{
+    return -1;
+}
+
 bool
 Trash::isTrashWindow(WnckWindow* window) const
 {

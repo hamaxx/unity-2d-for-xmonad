@@ -12,10 +12,19 @@
         <property name="active" type="b" access="readwrite">
             <dox:d>True if the HUD is active</dox:d>
         </property>
+        <property name="screen" type="i" access="read">
+            <dox:d>The screen with the HUD</dox:d>
+        </property>
         <signal name="activeChanged">
                 <dox:d>Signals when the active status of the HUD changes</dox:d>
                 <arg name="active" type="b" direction="out">
                         <dox:d>True if the HUD is active</dox:d>
+                </arg>
+        </signal>
+        <signal name="screenChanged">
+                <dox:d>Signals when the screen changes</dox:d>
+                <arg name="active" type="i" direction="out">
+                        <dox:d>The screen with the HUD</dox:d>
                 </arg>
         </signal>
     </interface>

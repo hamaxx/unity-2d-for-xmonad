@@ -57,16 +57,17 @@ struct WindowHelperPrivate
 {
     WnckWindow* m_window;
     GConnector m_connector;
+    int m_screen;
 };
 
-WindowHelper::WindowHelper(QObject* parent)
+WindowHelper::WindowHelper(int screen, QObject* parent)
 : QObject(parent)
 , d(new WindowHelperPrivate)
 {
     d->m_window = 0;
+    d->m_screen = screen;
 
-    WnckScreen* screen = wnck_screen_get_default();
-    wnck_screen_force_update(screen);
+    wnck_screen_force_update(wnck_screen_get_default());
 
     update();
 
@@ -84,6 +85,8 @@ WindowHelper::WindowHelper(QObject* parent)
 
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), SLOT(update()));
+    connect(DashClient::instance(), SIGNAL(screenChanged(int)), SLOT(update()));
+    connect(HUDClient::instance(), SIGNAL(screenChanged(int)), SLOT(update()));
     // FIXME: the queued connection should not be needed, however if it's not used when
     // (un)maximizing the dash, the panel will deadlock for some reason.
     connect(&dash2dConfiguration(), SIGNAL(fullScreenChanged(bool)), SLOT(update()),
@@ -130,7 +133,7 @@ void WindowHelper::update()
 
 bool WindowHelper::isMaximized() const
 {
-    if (DashClient::instance()->active()) {
+    if (DashClient::instance()->activeInScreen(d->m_screen)) {
         return dash2dConfiguration().property("fullScreen").toBool();
     } else {
         if (d->m_window) {
@@ -166,9 +169,9 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 
 void WindowHelper::close()
 {
-    if (DashClient::instance()->active()) {
+    if (DashClient::instance()->activeInScreen(d->m_screen)) {
         DashClient::instance()->setActive(false);
-    } else if (HUDClient::instance()->active()) {
+    } else if (HUDClient::instance()->activeInScreen(d->m_screen)) {
         HUDClient::instance()->setActive(false);
     } else {
         guint32 timestamp = QDateTime::currentDateTime().toTime_t();
@@ -178,14 +181,14 @@ void WindowHelper::close()
 
 void WindowHelper::minimize()
 {
-    if (!DashClient::instance()->active()) {
+    if (!DashClient::instance()->activeInScreen(d->m_screen)) {
         wnck_window_minimize(d->m_window);
     }
 }
 
 void WindowHelper::maximize()
 {
-    if (DashClient::instance()->active()) {
+    if (DashClient::instance()->activeInScreen(d->m_screen)) {
         dash2dConfiguration().setProperty("fullScreen", QVariant(true));
     } else {
         /* This currently cannot happen, because the window buttons are not
@@ -197,7 +200,7 @@ void WindowHelper::maximize()
 
 void WindowHelper::unmaximize()
 {
-    if (DashClient::instance()->active()) {
+    if (DashClient::instance()->activeInScreen(d->m_screen)) {
         dash2dConfiguration().setProperty("fullScreen", QVariant(false));
     } else {
         wnck_window_unmaximize(d->m_window);

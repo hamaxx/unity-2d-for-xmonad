@@ -41,12 +41,12 @@ AutoHideBehavior {
         monitoredArea: {
             if (intellihide.target) {
                 if (Utils.isLeftToRight()) {
-                    return Qt.rect(0,
+                    return Qt.rect(declarativeView.screen.geometry.x,
                                    intellihide.target.y,
                                    intellihide.target.width,
                                    intellihide.target.height)
                 } else {
-                    return Qt.rect(declarativeView.screen.availableGeometry.width - intellihide.target.width,
+                    return Qt.rect(declarativeView.screen.geometry.x + declarativeView.screen.availableGeometry.width - intellihide.target.width,
                                    intellihide.target.y,
                                    intellihide.target.width,
                                    intellihide.target.height)

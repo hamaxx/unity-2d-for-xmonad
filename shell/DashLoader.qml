@@ -1,9 +1,7 @@
 /*
- * Copyright (C) 2010 Canonical, Ltd.
+ * This file is part of unity-2d
  *
- * Authors:
- *  Ugo Riboni <ugo.riboni@canonical.com>
- *  Florian Boucault <florian.boucault@canonical.com>
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "spreadmanager.h"
+import QtQuick 1.1
+import "common/utils.js" as Utils
 
-#include <unity2dapplication.h>
+Loader {
+    id: dashLoader
+    source: "dash/Dash.qml"
+    anchors.top: parent != undefined ? parent.top : undefined
+    x: Utils.isLeftToRight() ? launcherLoader.width : (parent != undefined ? parent.width - width - launcherLoader.width : 0)
+    onLoaded: item.focus = true
+    opacity: item.active ? 1.0 : 0.0
+    focus: item.active
 
-int main(int argc, char *argv[])
-{
-    Unity2dApplication::earlySetup(argc, argv);
-    Unity2dApplication application(argc, argv);
-    application.setApplicationName("Unity 2D Workspace Switcher");
-
-    SpreadManager spreads;
-
-    return application.exec();
+    Binding {
+        target: dashLoader.item
+        property: "fullscreenWidth"
+        value: shell.width - launcherLoader.width
+    }
 }

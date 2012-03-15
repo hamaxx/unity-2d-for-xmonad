@@ -21,6 +21,7 @@
 #include <QList>
 #include <QVariant>
 #include <QString>
+#include <QStringList>
 #include <QUrl>
 #include <QObject>
 #include <QtDeclarative/qdeclarative.h>
@@ -37,10 +38,11 @@ class Application;
 class BamfApplication;
 class BamfView;
 
-class ApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter, protected QDBusContext
+class ApplicationsList : public QAbstractListModel, protected AbstractX11EventFilter
 {
     Q_OBJECT
     friend class ApplicationsListDBUS;
+    friend class ApplicationsListManager;
 
 public:
     ApplicationsList(QObject *parent = 0);
@@ -54,6 +56,7 @@ public:
 
 public Q_SLOTS:
     void move(int from, int to);
+    void moveFinished(int from, int to);
 
 Q_SIGNALS:
     void applicationBecameUrgent(int index);
@@ -72,6 +75,10 @@ private:
     QString favoriteFromDesktopFilePath(const QString& desktop_file) const;
 
     void writeFavoritesToGConf();
+
+    void remoteEntryUpdated(const QString& desktopFile, const QString& sender, const QString& applicationURI, const QMap<QString, QVariant>& properties);
+
+    void doMove(int from, int to);
 
     /* List of Application displayed in the launcher. */
     QList<Application*> m_applications;
@@ -102,8 +109,6 @@ private Q_SLOTS:
     void onApplicationLaunchingChanged(bool launching);
     void onApplicationUrgentChanged(bool urgent);
     void onApplicationUserVisibleChanged(bool user_visible);
-    void onRemoteEntryUpdated(QString applicationURI,
-                              QMap<QString, QVariant> properties);
 };
 
 QML_DECLARE_TYPE(ApplicationsList)

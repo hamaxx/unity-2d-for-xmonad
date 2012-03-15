@@ -36,6 +36,7 @@ class HUDClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(int screen READ screen NOTIFY screenChanged)
 
 public:
     static HUDClient* instance();
@@ -43,18 +44,25 @@ public:
     bool active() const;
     void setActive(bool active);
 
+    int screen() const;
+
+    bool activeInScreen(int screen) const;
+
 Q_SIGNALS:
     void activeChanged(bool);
+    void screenChanged(int);
 
 private Q_SLOTS:
     void connectToHud();
     void slotActiveChanged(bool);
+    void slotScreenChanged(int);
 
 private:
     HUDClient(QObject* parent = 0);
 
     QDBusInterface* m_hudDbusIface;
     bool m_active;
+    int m_screen;
 };
 
 #endif /* HUDCLIENT_H */

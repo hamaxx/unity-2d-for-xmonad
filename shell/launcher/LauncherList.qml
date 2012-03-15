@@ -93,11 +93,12 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            if (item.belongsToDifferentWorkspace()) {
+            var windowCount = item.windowsOnCurrentWorkspaceScreen(launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen);
+            if (windowCount == 0 && item.windowCount != 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
             } else {
-                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pips = Math.min(windowCount, 3)
                 launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
             }
         }
@@ -113,9 +114,9 @@ AutoScrollingListView {
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
         running: item.running
         active: item.active
+        activeOnThisScreen: item.activeScreen == declarativeView.screen.screen
         urgent: item.urgent
         launching: item.launching
-        pips: Math.min(item.windowCount, 3)
 
         counter: item.counter
         counterVisible: item.counterVisible
@@ -125,7 +126,7 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
-        shortcutVisible: declarativeView.superKeyHeld &&
+        shortcutVisible: shellManager.superKeyHeld &&
                          ((item.toString().indexOf("Application") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
@@ -157,7 +158,7 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            item.menu.show(width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
+            item.menu.show(declarativeView.globalPosition.x + width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
                                   y + height - selectionOutlineSize / 2)
         }
 
@@ -262,9 +263,10 @@ AutoScrollingListView {
 
         function setIconGeometry() {
             if (running) {
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
                 item.setIconGeometry(x + declarativeView.globalPosition.x,
                                      y + declarativeView.globalPosition.y,
-                                     width, height)
+                                     width, height, screen)
             }
         }
 
@@ -304,11 +306,18 @@ AutoScrollingListView {
 
         Connections {
             target: item
-            onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
-                                                y + declarativeView.globalPosition.y,
-                                                width, height, xid)
+            onWindowAdded: {
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
+                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                                     y + declarativeView.globalPosition.y,
+                                     width, height, screen, xid)
+            }
             onWindowCountChanged: updatePips()
             onWindowWorkspaceChanged: updatePips()
+            onWindowGeometryChanged: {
+                updatePips()
+                setIconGeometry()
+            }
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }
@@ -353,7 +362,7 @@ AutoScrollingListView {
         }
 
         Connections {
-            target: declarativeView
+            target: shellManager
             onActiveWorkspaceChanged: updatePips()
         }
         Component.onCompleted: updatePips()

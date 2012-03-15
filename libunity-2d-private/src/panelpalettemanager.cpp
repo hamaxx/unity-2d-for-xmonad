@@ -42,10 +42,12 @@ static void onThemeChanged(GObject*, GParamSpec*, gpointer data)
 }
 
 PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
- : m_panel(panel)
+ : QObject(panel), m_panel(panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
+    connect(DashClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));
+    connect(HUDClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));
 
     m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name", G_CALLBACK(onThemeChanged), this);
     updatePalette();
@@ -74,7 +76,7 @@ void PanelPaletteManager::updatePalette()
     gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, NULL);
 
     QPalette pal;
-    if (DashClient::instance()->active() || HUDClient::instance()->active()) {
+    if (DashClient::instance()->activeInScreen(m_panel->screen()) || HUDClient::instance()->activeInScreen(m_panel->screen())) {
         pal.setBrush(QPalette::Window, QColor(0, 0, 0, 168));
     } else {
         pal.setBrush(QPalette::Window, generateBackgroundBrush());

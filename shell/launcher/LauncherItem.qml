@@ -65,6 +65,7 @@ DropItem {
     property alias urgentAnimation: urgentAnimation
     property bool running: false
     property bool active: false
+    property bool activeOnThisScreen: false
     property bool urgent: false
     property bool launching: false
     property alias interactive: mouse.enabled
@@ -138,7 +139,7 @@ DropItem {
             mirror: Utils.isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("launcher/artwork/launcher_arrow_rtl.png")
+                  .arg("launcher/artwork/launcher_arrow_" + (activeOnThisScreen ? "" : "outline_" ) + "rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 

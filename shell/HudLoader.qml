@@ -1,9 +1,7 @@
 /*
- * Copyright (C) 2011 Canonical, Ltd.
+ * This file is part of unity-2d
  *
- * Authors:
- *  Ugo Riboni <ugo.riboni@canonical.com>
- *  Michał Sawicz <michal.sawicz@canonical.com>
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ShellDBus_H
-#define ShellDBus_H
+import QtQuick 1.1
+import "common/utils.js" as Utils
 
-#include <QtCore/QObject>
-#include <QtDBus/QDBusContext>
+Loader {
+    id: hudLoader
+    property bool animating: item.animating
+    property bool active: item.active
+    onActiveChanged: item.active = active
 
-class ShellManager;
-
-/**
- * DBus interface for the shell.
- */
-class ShellDBus : public QObject, protected QDBusContext
-{
-    Q_OBJECT
-
-public:
-    ShellDBus(ShellManager* manager, QObject* parent=0);
-    ~ShellDBus();
-
-    bool connectToBus();
-
-private:
-    ShellManager* m_manager;
-};
-
-#endif // ShellDBus_H
-
+    source: "hud/Hud.qml"
+    anchors.top: parent != undefined ? parent.top : undefined
+    x: Utils.isLeftToRight() ? 0 : shell.width - width
+    onLoaded: item.focus = true
+    visible: item.active
+    focus: item.active
+    width: Math.min(shell.width, 1061)
+}

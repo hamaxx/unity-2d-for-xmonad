@@ -108,7 +108,7 @@ FocusScope {
                 }
                 active: {
                     /* we need this in order to activate the arrow when using a custom shortcuts file */
-                    if (item.id == "home.lens" && declarativeView.activeLens == "") {
+                    if (item.id == "home.lens" && shellManager.dashActiveLens == "") {
                         return true
                     }
                     return item.viewType == Lens.LensView

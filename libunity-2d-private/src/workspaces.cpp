@@ -49,6 +49,12 @@ Workspaces::active() const
     return false;
 }
 
+int
+Workspaces::activeScreen() const
+{
+    return -1;
+}
+
 bool
 Workspaces::running() const
 {

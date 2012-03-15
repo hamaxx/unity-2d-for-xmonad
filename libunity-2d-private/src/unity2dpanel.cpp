@@ -45,8 +45,6 @@ struct Unity2dPanelPrivate
     Unity2dPanel::Edge m_edge;
     mutable IndicatorsManager* m_indicatorsManager;
     QHBoxLayout* m_layout;
-    int m_delta;
-    bool m_manualSliding;
     StrutManager m_strutManager;
     ScreenInfo* m_screenInfo;
 
@@ -60,15 +58,12 @@ struct Unity2dPanelPrivate
         case Unity2dPanel::LeftEdge:
             if (QApplication::isLeftToRight()) {
                 rect = QRect(screen.left(), available.top(), q->width(), available.height());
-                rect.moveLeft(m_delta);
             } else {
                 rect = QRect(screen.right() - q->width(), available.top(), q->width(), available.height());
-                rect.moveRight(screen.right() - m_delta);
             }
             break;
         case Unity2dPanel::TopEdge:
             rect = QRect(screen.left(), screen.top(), screen.width(), q->height());
-            rect.moveTop(m_delta);
             break;
         }
 
@@ -105,8 +100,6 @@ Unity2dPanel::Unity2dPanel(bool requiresTransparency, int screen, ScreenInfo::Co
     d->q = this;
     d->m_edge = Unity2dPanel::TopEdge;
     d->m_indicatorsManager = 0;
-    d->m_delta = 0;
-    d->m_manualSliding = false;
     d->m_layout = new QHBoxLayout(this);
     d->m_layout->setMargin(0);
     d->m_layout->setSpacing(0);
@@ -214,37 +207,9 @@ void Unity2dPanel::setUseStrut(bool value)
     d->m_strutManager.setEnabled(value);
 }
 
-int Unity2dPanel::delta() const
-{
-    return d->m_delta;
-}
-
-void Unity2dPanel::setDelta(int delta)
-{
-    /* Clamp delta to be between 0 and minus its size */
-    int minDelta = -panelSize();
-    int maxDelta = 0;
-
-    d->m_delta = qMax(qMin(delta, maxDelta), minDelta);
-    d->updateGeometry();
-}
-
 int Unity2dPanel::panelSize() const
 {
     return (d->m_edge == Unity2dPanel::TopEdge) ? height() : width();
-}
-
-bool Unity2dPanel::manualSliding() const
-{
-    return d->m_manualSliding;
-}
-
-void Unity2dPanel::setManualSliding(bool manualSliding)
-{
-    if (d->m_manualSliding != manualSliding) {
-        d->m_manualSliding = manualSliding;
-        Q_EMIT manualSlidingChanged(d->m_manualSliding);
-    }
 }
 
 QString Unity2dPanel::id() const

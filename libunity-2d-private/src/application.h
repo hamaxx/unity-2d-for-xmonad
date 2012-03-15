@@ -72,6 +72,7 @@ public:
 
     /* getters */
     virtual bool active() const;
+    virtual int activeScreen() const;
     virtual bool running() const;
     virtual int windowCount() const;
     virtual bool urgent() const;
@@ -101,12 +102,11 @@ public:
     Q_INVOKABLE virtual void activate();
     Q_INVOKABLE void close();
     Q_INVOKABLE void spread(bool showAllWorkspaces = false);
-    Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, uint xid=0);
+    Q_INVOKABLE void setIconGeometry(int x, int y, int width, int height, int screen, uint xid=0);
     Q_INVOKABLE virtual void launchNewInstance();
 
     Q_INVOKABLE virtual void createMenuActions();
-    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
-    Q_INVOKABLE virtual bool belongsToDifferentScreen(int screen);
+    Q_INVOKABLE virtual int windowsOnCurrentWorkspaceScreen(int screen);
     Q_INVOKABLE void connectWindowSignals();
 
     void updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties);
@@ -128,6 +128,7 @@ private Q_SLOTS:
     void updateHasVisibleWindow();
     void updateWindowCount();
     void updateCounterVisible();
+    void announceActiveScreenChangedIfNeeded();
 
     bool launch();
     void show();
@@ -172,6 +173,7 @@ private:
     QString m_emblem;
     bool m_emblemVisible;
     bool m_forceUrgent;
+    int m_previousActiveScreen;
 
     void updateBamfApplicationDependentProperties();
     void monitorDesktopFile(const QString&);

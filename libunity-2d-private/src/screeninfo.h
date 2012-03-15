@@ -60,10 +60,11 @@ Q_SIGNALS:
 private Q_SLOTS:
     void updateGeometry(int screen);
     void updateAvailableGeometry(int screen);
+    void updatePanelsFreeGeometry();
 
 private:
     void updateScreen();
-    int cornerScreen(Corner corner);
+    int cornerScreen(Corner corner) const;
     int m_screen;
     QWidget* m_widget;
     Corner m_corner;
