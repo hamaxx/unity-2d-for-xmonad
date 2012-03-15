@@ -20,8 +20,18 @@ unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
     - bump to latest Standards-Version
     - fix some too long description
     - put the transitional packages in the oldlibs/extra section
+    - dep on libxfixes
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
+
+unity-2d (5.6.0-0ubuntu2) precise; urgency=low
+
+  * debian/control:
+    - rebuild against latest libunity-core-5.0-dev and libnux-2.0-dev for ABI
+      break
+  * removed distro-patch as not anymore needed with latest unity
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 12 Mar 2012 13:43:13 +0100
 
 unity-2d (5.6.0-0ubuntu1) precise; urgency=low
 
