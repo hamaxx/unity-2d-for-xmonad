@@ -21,6 +21,7 @@ unity-2d (5.7.0-0ubuntu1) UNRELEASED; urgency=low
     - fix some too long description
     - put the transitional packages in the oldlibs/extra section
     - build-dep on libxtst-dev, libxfixes-dev for barrier change
+    - need latest metacity for barriers to work
 
  -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
 
