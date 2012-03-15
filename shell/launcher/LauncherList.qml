@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
+import "../common/utils.js" as Utils
 
 AutoScrollingListView {
     id: list
@@ -264,7 +265,12 @@ AutoScrollingListView {
         function setIconGeometry() {
             if (running) {
                 var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
-                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                var left = declarativeView.globalPosition.x
+                if (Utils.isRightToLeft())
+                    left += declarativeView.screen.geometry.width - x - width
+                else
+                    left += x
+                item.setIconGeometry(left,
                                      y + declarativeView.globalPosition.y,
                                      width, height, screen)
             }
@@ -308,6 +314,11 @@ AutoScrollingListView {
             target: item
             onWindowAdded: {
                 var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
+                var left = declarativeView.globalPosition.x
+                if (Utils.isRightToLeft())
+                    left += declarativeView.screen.geometry.width - x - width
+                else
+                    left += x
                 item.setIconGeometry(x + declarativeView.globalPosition.x,
                                      y + declarativeView.globalPosition.y,
                                      width, height, screen, xid)
