@@ -1,0 +1,170 @@
+# Tigrinya translation for unity-2d
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the unity-2d package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: unity-2d\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"PO-Revision-Date: 2012-03-08 15:40+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Tigrinya <ti@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Launchpad-Export-Date: 2012-03-15 05:15+0000\n"
+"X-Generator: Launchpad (build 14933)\n"
+
+#: panel/applets/appname/appnameapplet.cpp:364
+msgid "Ubuntu Desktop"
+msgstr ""
+
+#: shell/hud/Hud.qml:192
+msgid "Type your Command"
+msgstr ""
+
+#: launcher/LauncherList.qml:82
+#, qt-format
+msgid "%1 window opened"
+msgid_plural "%1 windows opened"
+msgstr[0] ""
+msgstr[1] ""
+
+#: launcher/LauncherList.qml:85
+msgid "not running"
+msgstr ""
+
+#: places/CategoryHeader.qml:36
+msgid "not expanded"
+msgstr ""
+
+#: places/CategoryHeader.qml:36
+msgid "expanded"
+msgstr ""
+
+#: places/CategoryHeader.qml:97
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: places/CategoryHeader.qml:99
+msgid "See fewer results"
+msgstr ""
+
+#: places/Home.qml:80
+msgid "Shortcuts"
+msgstr ""
+
+#: places/HomeShortcuts.qml:56
+msgid "Media Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:62
+msgid "Internet Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:68
+msgid "More Apps"
+msgstr ""
+
+#: places/HomeShortcuts.qml:74
+msgid "Find Files"
+msgstr ""
+
+#: places/HomeShortcuts.qml:81
+msgid "Browse the Web"
+msgstr ""
+
+#: places/HomeShortcuts.qml:86
+msgid "View Photos"
+msgstr ""
+
+#: places/HomeShortcuts.qml:92
+msgid "Check Email"
+msgstr ""
+
+#: places/HomeShortcuts.qml:97
+msgid "Listen to Music"
+msgstr ""
+
+#: places/FilterPane.qml:69
+msgid "Filter results"
+msgstr ""
+
+#: places/SearchEntry.qml:176
+msgid "Search"
+msgstr ""
+
+#: places/FilterLoader.qml:36
+#, qt-format
+msgid "Filter %1 active"
+msgstr ""
+
+#: places/FilterLoader.qml:38
+#, qt-format
+msgid "Filter %1 inactive"
+msgstr ""
+
+#: places/FilterLoader.qml:90
+msgid "All"
+msgstr ""
+
+#: libunity-2d-private/src/unity2dapplication.cpp:151
+msgid "QT_LAYOUT_DIRECTION"
+msgstr ""
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Keep in launcher"
+msgstr ""
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Remove from launcher"
+msgstr ""
+
+#: libunity-2d-private/src/launcherapplication.cpp:910
+msgid "Quit"
+msgstr ""
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home"
+msgstr ""
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home screen"
+msgstr ""
+
+#: libunity-2d-private/src/bfb.cpp:71
+msgid "Dash home"
+msgstr ""
+
+#: libunity-2d-private/src/workspaces.cpp:73
+msgid "Workspaces"
+msgstr ""
+
+#: libunity-2d-private/src/trash.cpp:128
+msgid "Trash"
+msgstr ""
+
+#: libunity-2d-private/src/trash.cpp:208
+#, c-format, qt-plural-format
+msgid "%n item in trash"
+msgid_plural "%n items in trash"
+msgstr[0] ""
+msgstr[1] ""
+
+#: libunity-2d-private/src/trash.cpp:215
+msgid "Empty Trash"
+msgstr ""
+
+#: libunity-2d-private/src/launcherdevice.cpp:273
+msgid "Eject"
+msgstr ""
+
+#: libunity-2d-private/src/launcherdevice.cpp:281
+msgid "Safely remove"
+msgstr ""
