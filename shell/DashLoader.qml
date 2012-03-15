@@ -23,7 +23,7 @@ Loader {
     id: dashLoader
     source: "dash/Dash.qml"
     anchors.top: parent != undefined ? parent.top : undefined
-    x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
+    x: Utils.isLeftToRight() ? launcherLoader.width : (parent != undefined ? parent.width - width - launcherLoader.width : 0)
     onLoaded: item.focus = true
     opacity: item.active ? 1.0 : 0.0
     focus: item.active
