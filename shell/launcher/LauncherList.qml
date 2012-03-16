@@ -267,7 +267,7 @@ AutoScrollingListView {
                 var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
                 var left = declarativeView.globalPosition.x
                 if (Utils.isRightToLeft())
-                    left += declarativeView.screen.geometry.width - x - width
+                    left += shell.width - x - width
                 else
                     left += x
                 item.setIconGeometry(left,
@@ -316,7 +316,7 @@ AutoScrollingListView {
                 var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
                 var left = declarativeView.globalPosition.x
                 if (Utils.isRightToLeft())
-                    left += declarativeView.screen.geometry.width - x - width
+                    left += shell.width - x - width
                 else
                     left += x
                 item.setIconGeometry(left,
