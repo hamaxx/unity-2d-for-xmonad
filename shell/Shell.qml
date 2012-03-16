@@ -265,7 +265,7 @@ Item {
         widget: declarativeView
         height: launcherLoader.height
         width: launcherLoader.width
-        enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+        enabled: launcherLoader.loadLauncher && Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
     }
 
     PointerBarrier {
