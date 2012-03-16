@@ -74,9 +74,7 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
            in the spirit of Qt's qkeymapper_x11.cpp.  */
         if (key >= Qt::Key_0 && key <= Qt::Key_9) {
             /* Please note that we don't set Mod2Mask (NumLock) modifier. It appears that Mod2 is reported
-               when it's actually held during numkey key press. This also means that modifiers() method won't
-               report Qt::KeypadModifier, meaning it is not possible to distinguish if 1..9 on the keypad
-               or above the letters was pressed with our current API.
+               when it's actually held during numkey key press.
             */
             m_x11key = XKeysymToKeycode(QX11Info::display(), XK_KP_9 - (Qt::Key_9 - key));
         } else {
