@@ -28,6 +28,10 @@
 #include <X11/extensions/XKB.h>
 #include <X11/Xproto.h>
 
+// XK_MISCELLANY is needed for XK_KP_* keysymdef definitions
+#define XK_MISCELLANY
+#include <X11/keysymdef.h>
+
 #include <debug_p.h>
 
 static int (*_x_old_errhandler)(Display *, XErrorEvent *);
@@ -64,24 +68,39 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     if (modifiers.testFlag(Qt::MetaModifier)) {
         m_x11modifiers |= Mod4Mask;
     }
+    if (modifiers.testFlag(Qt::KeypadModifier)) {
+        /* Support 0..9 numpad keys only.
+           If we ever need to support additional numpad keys, then this logic should be extended
+           in the spirit of Qt's qkeymapper_x11.cpp.  */
+        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
+            /* Please note that we don't set Mod2Mask (NumLock) modifier. It appears that Mod2 is reported
+               when it's actually held during numkey key press. This also means that modifiers() method won't
+               report Qt::KeypadModifier, meaning it is not possible to distinguish if 1..9 on the keypad
+               or above the letters was pressed with our current API.
+            */
+            m_x11key = XKeysymToKeycode(QX11Info::display(), XK_KP_9 - (Qt::Key_9 - key));
+        } else {
+            UQ_WARNING << "Can't map numpad keys other than 0..9";
+        }
+    } else {
+        /* Translate the QT key to X11 keycode */
 
-    /* Translate the QT key to X11 keycode */
-
-    /* QKeySequence can be used to translate a Qt::Key in a format that is
-       understood by XStringToKeysym if the sequence is composed only by the key */
-    QString keyString = QKeySequence(key).toString();
-    KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
-    if (keysym == NoSymbol) {
-        /* XStringToKeysym doesn’t work well with exotic characters (such as
-          'É'). Note that this fallback code path looks much simpler but doesn’t
-          work for special keys such as the function keys (e.g. F1), which is
-          why the translation with XStringToKeysym is attempted first. */
-        keysym = (ushort) key;
-    }
-    m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
-    if (m_x11key == 0) {
-        UQ_WARNING << "Could not get keycode for keysym" << keysym
-                   << "(" << keyString << ")";
+        /* QKeySequence can be used to translate a Qt::Key in a format that is
+           understood by XStringToKeysym if the sequence is composed only by the key */
+        QString keyString = QKeySequence(key).toString();
+        KeySym keysym = XStringToKeysym(keyString.toLatin1().data());
+        if (keysym == NoSymbol) {
+            /* XStringToKeysym doesn’t work well with exotic characters (such as
+              'É'). Note that this fallback code path looks much simpler but doesn’t
+              work for special keys such as the function keys (e.g. F1), which is
+              why the translation with XStringToKeysym is attempted first. */
+            keysym = (ushort) key;
+        }
+        m_x11key = XKeysymToKeycode(QX11Info::display(), keysym);
+        if (m_x11key == 0) {
+            UQ_WARNING << "Could not get keycode for keysym" << keysym
+                       << "(" << keyString << ")";
+        }
     }
 }
 
