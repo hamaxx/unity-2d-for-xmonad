@@ -200,13 +200,14 @@ AutoScrollingListView {
         }
 
         Keys.onPressed: {
-            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Space) {
+            var key = Utils.switchLeftRightKeys(event.key)
+            if (key == Qt.Key_Return || key == Qt.Key_Enter || key == Qt.Key_Space) {
                 item.menu.hide()
                 item.activate()
                 event.accepted = true
             }
-            else if ((event.key == Qt.Key_Right && list.showMenus) ||
-                    (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
+            else if ((key == Qt.Key_Right && list.showMenus) ||
+                    (key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
                    adjusts the position of the menu in case it goes offscreen
@@ -217,7 +218,7 @@ AutoScrollingListView {
                 item.menu.setFocus()
                 event.accepted = true
             }
-            else if (event.key == Qt.Key_Left) {
+            else if (key == Qt.Key_Left) {
                 item.menu.hide()
                 event.accepted = true
             }

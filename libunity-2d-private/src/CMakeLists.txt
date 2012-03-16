@@ -81,6 +81,7 @@ set(lib${LIB_NAME}_SRCS
     inputshaperectangle.cpp
     inputshapemask.cpp
     strutmanager.cpp
+    utils.cpp
     pointerbarrier.cpp
     pointerbarriermanager.cpp
     decayedvalue.cpp

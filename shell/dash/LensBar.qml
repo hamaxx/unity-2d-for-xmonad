@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import "../common/utils.js" as Utils
 
 FocusScope {
     id: lensBar
@@ -71,7 +72,7 @@ FocusScope {
         }
 
         function handleKeyPress(key) {
-            switch (key) {
+            switch (Utils.switchLeftRightKeys(key)) {
             case Qt.Key_Right:
                 return selectChild(currentIndex+1)
             case Qt.Key_Left:
