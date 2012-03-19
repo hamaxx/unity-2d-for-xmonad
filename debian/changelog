@@ -1,4 +1,4 @@
-unity-2d (5.7.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (5.7.0-0ubuntu1) precise; urgency=low
 
   * New upstream release:
     - unity-2d-panel crashed with SIGABRT in Unity2dDebug::unity2dQtHandler()
@@ -57,7 +57,7 @@ unity-2d (5.7.0-0ubuntu1) UNRELEASED; urgency=low
     - build-dep on libxtst-dev, libxfixes-dev for barrier change
     - need latest metacity for barriers to work
 
- -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 19 Mar 2012 14:07:10 +0100
 
 unity-2d (5.6.0-0ubuntu2) precise; urgency=low
 
