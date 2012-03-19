@@ -21,7 +21,6 @@ import QtQuick 1.0
 Filter {
     id: filterView
 
-    property int sectionSpacing: 12
     height: filters.height + sectionSpacing
 
     MultiRangeView {

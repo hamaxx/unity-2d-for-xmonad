@@ -23,6 +23,7 @@ FocusScope {
 
     property variant lens
     property variant filterModel
+    property int sectionSpacing: 12
 
     height: childrenRect.height
 }

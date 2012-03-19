@@ -24,7 +24,6 @@ Filter {
     height: filters.height
 
     property variant grid_columns : 2
-    property int sectionSpacing: 12
 
     GridViewWithSpacing {
         id: filters
