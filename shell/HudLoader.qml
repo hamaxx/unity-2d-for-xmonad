@@ -37,5 +37,5 @@ Loader {
     onLoaded: item.focus = true
     visible: item.active
     focus: item.active
-    width: Math.min(shell.width, 1061)
+    width: Math.min(shell.width, (launcher2dConfiguration.hideMode == 0) ? 1061 - launcherLoader.width : 1061)
 }

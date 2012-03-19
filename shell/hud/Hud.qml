@@ -129,7 +129,8 @@ FocusScope {
 
             anchors.left: parent.left
             anchors.top: parent.top
-            width: 65
+            width: (launcher2dConfiguration.hideMode == 0) ? 0 : launcherLoader.width
+            visible: (launcher2dConfiguration.hideMode != 0)
 
             Image {
                 id: pip
