@@ -23,6 +23,11 @@
 #include "bamf-window.h"
 
 #include "windowinfo.h"
+
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QRect>
+
 #include <X11/Xlib.h>
 #include <QX11Info>
 
@@ -259,6 +264,21 @@ int WindowInfo::workspace() const
                 return -2;
             }
         }
+    }
+
+    return -1;
+}
+
+int WindowInfo::screen() const
+{
+    if (m_wnckWindow != NULL) {
+        // Check the window screen
+        int x, y, width, height;
+        wnck_window_get_geometry(m_wnckWindow, &x, &y, &width, &height);
+
+        const QRect windowRect(x, y, width, height);
+        const QPoint pos = windowRect.center();
+        return QApplication::desktop()->screenNumber(pos);
     }
 
     return -1;

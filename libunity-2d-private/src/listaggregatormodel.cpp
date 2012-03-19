@@ -130,6 +130,27 @@ ListAggregatorModel::move(int from, int to)
                               Q_ARG(int, to - offset));
 }
 
+void
+ListAggregatorModel::moveFinished(int from, int to)
+{
+    QAbstractItemModel* model = modelAtIndex(from);
+    if (modelAtIndex(to) != model) {
+        UQ_WARNING << "cannot move an item from one model to another";
+        return;
+    }
+
+    if (qobject_cast<QSortFilterProxyModel*>(model) != NULL) {
+        UQ_WARNING << "cannot move the items of a QSortFilterProxyModel";
+        return;
+    }
+
+    int offset = computeOffset(model);
+    // "moveFinished" is not a member of QAbstractItemModel, cannot be invoked directly
+    QMetaObject::invokeMethod(model, "moveFinished",
+                              Q_ARG(int, from - offset),
+                              Q_ARG(int, to - offset));
+}
+
 int
 ListAggregatorModel::computeOffset(QAbstractItemModel* model) const
 {

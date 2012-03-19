@@ -21,19 +21,21 @@
 #include "dashadaptor.h"
 
 // Local
-#include <shelldeclarativeview.h>
+#include <shellmanager.h>
 
 // Qt
 #include <QtDBus/QDBusConnection>
 #include <QGraphicsObject>
 
-DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
+DashDBus::DashDBus(ShellManager* manager, QObject* parent)
 : QObject(parent)
-, m_view(view)
+, m_manager(manager)
 {
-    connect(m_view, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
-    connect(m_view, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
-    connect(m_view, SIGNAL(activeLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
+    connect(m_manager, SIGNAL(dashActiveChanged(bool)), SIGNAL(activeChanged(bool)));
+    connect(m_manager, SIGNAL(dashAlwaysFullScreenChanged(bool)), SIGNAL(alwaysFullScreenChanged(bool)));
+    connect(m_manager, SIGNAL(dashActiveLensChanged(QString)), SIGNAL(activeLensChanged(QString)));
+
+    connect(m_manager, SIGNAL(dashScreenChanged(int)), SIGNAL(screenChanged(int)));
 
     new DashAdaptor(this);
 }
@@ -41,41 +43,47 @@ DashDBus::DashDBus(ShellDeclarativeView* view, QObject* parent)
 void
 DashDBus::activateHome()
 {
-    Q_EMIT m_view->activateHome();
+    Q_EMIT m_manager->dashActivateHome();
 }
 
 void
 DashDBus::activateLens(const QString& lensId)
 {
-    Q_EMIT m_view->activateLens(lensId);
+    Q_EMIT m_manager->dashActivateLens(lensId);
 }
 
 bool
 DashDBus::active() const
 {
-    return m_view->dashActive();
+    return m_manager->dashActive();
 }
 
 void
 DashDBus::setActive(bool active)
 {
-    m_view->setDashActive(active);
+    m_manager->setDashActive(active);
 }
 
 bool
 DashDBus::alwaysFullScreen() const
 {
-    return m_view->dashAlwaysFullScreen();
+    return m_manager->dashAlwaysFullScreen();
 }
 
 QString
 DashDBus::activeLens() const
 {
-    return m_view->activeLens();
+    return m_manager->dashActiveLens();
 }
 
 void
 DashDBus::setActiveLens(QString activeLens)
 {
-    m_view->setActiveLens(activeLens);
+    m_manager->setDashActiveLens(activeLens);
+}
+
+int
+DashDBus::screen() const
+{
+    return m_manager->dashScreen();
 }

@@ -69,6 +69,16 @@ GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
 
+static int windowScreen(WnckWindow *window)
+{
+    // Check the window screen
+    int x, y, width, height;
+    wnck_window_get_geometry(window, &x, &y, &width, &height);
+    const QRect windowRect(x, y, width, height);
+    const QPoint pos = windowRect.center();
+    return QApplication::desktop()->screenNumber(pos);
+}
+
 Application::Application()
     : m_application(NULL)
     , m_desktopFileWatcher(NULL)
@@ -78,6 +88,7 @@ Application::Application()
     , m_counter(0), m_counterVisible(false)
     , m_emblem(QString()), m_emblemVisible(false)
     , m_forceUrgent(false)
+    , m_previousActiveScreen(-1)
     , m_dynamicQuicklistServiceWatcher(NULL)
 {
     m_launching_timer.setSingleShot(true);
@@ -93,6 +104,7 @@ Application::Application()
     m_geometryChangedTimer.setSingleShot(true);
     m_geometryChangedTimer.setInterval(50);
     connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
+    connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SLOT(announceActiveScreenChangedIfNeeded()));
 }
 
 Application::Application(const Application& other)
@@ -460,6 +472,15 @@ Application::updateBamfApplicationDependentProperties()
 }
 
 void
+Application::announceActiveScreenChangedIfNeeded()
+{
+    if (m_previousActiveScreen != activeScreen()) {
+        m_previousActiveScreen = activeScreen();
+        Q_EMIT activeScreenChanged(m_previousActiveScreen);
+    }
+}
+
+void
 Application::onBamfApplicationClosed(bool running)
 {
     if(running)
@@ -493,7 +514,7 @@ Application::setSnStartupSequence(SnStartupSequence* sequence)
 }
 
 void
-Application::setIconGeometry(int x, int y, int width, int height, uint xid)
+Application::setIconGeometry(int x, int y, int width, int height, int screen, uint xid)
 {
     if (m_application == NULL) {
         return;
@@ -512,12 +533,13 @@ Application::setIconGeometry(int x, int y, int width, int height, uint xid)
         return;
     }
 
-    WnckScreen* screen = wnck_screen_get_default();
-    wnck_screen_force_update(screen);
+    wnck_screen_force_update(wnck_screen_get_default());
 
     for (int i = 0; i < size; ++i) {
         WnckWindow* window = wnck_window_get(xids->at(i));
-        wnck_window_set_icon_geometry(window, x, y, width, height);
+        if (screen == -1 || windowScreen(window) == screen) {
+            wnck_window_set_icon_geometry(window, x, y, width, height);
+        }
     }
 }
 
@@ -528,8 +550,8 @@ Application::connectWindowSignals()
         return;
     }
 
-    QScopedPointer<BamfUintList> xids(m_application->xids());
-    int size = xids->size();
+    QScopedPointer<BamfWindowList> windows(m_application->windows());
+    const int size = windows->size();
     if (size < 1) {
         return;
     }
@@ -538,10 +560,8 @@ Application::connectWindowSignals()
     wnck_screen_force_update(screen);
 
     for (int i = 0; i < size; ++i) {
-        WnckWindow* window = wnck_window_get(xids->at(i));
-        m_gConnector.connect(G_OBJECT(window), "workspace-changed",
-            G_CALLBACK(Application::onWindowWorkspaceChanged), this);
-        m_gConnector.connect(G_OBJECT(window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        BamfWindow *window = windows->at(i);
+        onWindowAdded(window);
     }
 }
 
@@ -554,6 +574,7 @@ Application::onWindowAdded(BamfWindow* window)
         m_gConnector.connect(G_OBJECT(wnck_window), "workspace-changed",
              G_CALLBACK(Application::onWindowWorkspaceChanged), this);
         m_gConnector.connect(G_OBJECT(wnck_window), "geometry-changed", G_CALLBACK(geometryChangedCB), this);
+        connect(window, SIGNAL(ActiveChanged(bool)), this, SLOT(announceActiveScreenChangedIfNeeded()));
     }
 }
 
@@ -680,6 +701,26 @@ Application::windowCountOnCurrentWorkspace()
         }
     }
     return windowCount;
+}
+
+int
+Application::activeScreen() const
+{
+    if (!active()) {
+        return -1;
+    }
+
+    BamfWindow *bamfWindow = BamfMatcher::get_default().active_window();
+    if (bamfWindow == NULL) {
+        return -1;
+    }
+
+    WnckWindow *wnckWindow = wnck_window_get(bamfWindow->xid());
+    if (wnckWindow == NULL) {
+        return -1;
+    }
+
+    return windowScreen(wnckWindow);
 }
 
 void
@@ -991,28 +1032,15 @@ Application::createStaticMenuActions()
     } 
 }
 
-bool
-Application::belongsToDifferentWorkspace()
-{
-    int totalWindows = windowCount();
-    int windowsInCurrentWorkspace = windowCountOnCurrentWorkspace();
-    if (totalWindows > 0 && windowsInCurrentWorkspace == 0) {
-        return true;
-    }
-
-    return false;
-}
-
-bool
-Application::belongsToDifferentScreen(int screen)
+int
+Application::windowsOnCurrentWorkspaceScreen(int screen)
 {
     if (!m_application) {
-        return false;
+        return 0;
     }
 
-    if (QApplication::desktop()->screenCount() == 1) {
-        return false;
-    }
+    int windowCount = 0;
+    WnckWorkspace *current = wnck_screen_get_active_workspace(wnck_screen_get_default());
 
     QScopedPointer<BamfUintList> xids(m_application->xids());
     for (int i = 0; i < xids->size(); i++) {
@@ -1028,17 +1056,21 @@ Application::belongsToDifferentScreen(int screen)
             }
         }
 
-        // Check the window screen
-        int x, y, width, height;
-        wnck_window_get_geometry(window, &x, &y, &width, &height);
-        const QRect windowRect(x, y, width, height);
-        const QPoint pos = windowRect.center();
-        if (QApplication::desktop()->screenNumber(pos) == screen) {
-            return false;
+        if (wnck_window_is_pinned(window)) {
+            windowCount++;
+        } else {
+            WnckWorkspace *workspace = wnck_window_get_workspace(window);
+            if (workspace == current) {
+                if (screen == -1) {
+                    windowCount++;
+                } else if (windowScreen(window) == screen) {
+                    windowCount++;
+                }
+            }
         }
     }
 
-    return true;
+    return windowCount;
 }
 
 void
@@ -1109,6 +1141,13 @@ void
 Application::updateOverlaysState(const QString& sender, const QMap<QString, QVariant>& properties)
 {
     if (updateOverlayState(properties, "progress", &m_progress)) {
+        if (m_progress < 0.0f) {
+            m_progress = 0.0f;
+        } else {
+            if (m_progress > 1.0f) {
+                m_progress = 1.0f;
+            }
+        }
         Q_EMIT progressChanged(m_progress);
     }
     if (updateOverlayState(properties, "progress-visible", &m_progressBarVisible)) {

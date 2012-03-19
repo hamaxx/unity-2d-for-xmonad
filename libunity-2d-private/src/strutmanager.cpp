@@ -181,17 +181,22 @@ void StrutManager::reserveStrut()
     switch (m_edge) {
     case Unity2dPanel::LeftEdge:
         if (QApplication::isLeftToRight()) {
-            struts[0] = realWidth();
+            struts[0] = screen.x() + realWidth();
             struts[4] = available.top();
             struts[5] = available.y() + available.height();
         } else {
-            struts[1] = realWidth();
+            // Find the right-most X
+            int rightMostX = 0;
+            for (int i = 0; i < desktop->screenCount(); ++i) {
+              rightMostX = qMax(rightMostX, desktop->screenGeometry(i).right());
+            }
+            struts[1] = (rightMostX - screen.right()) + realWidth();
             struts[6] = available.top();
             struts[7] = available.y() + available.height();
         }
         break;
     case Unity2dPanel::TopEdge:
-        struts[2] = realHeight();
+        struts[2] = screen.y() + realHeight();
         struts[8] = screen.left();
         struts[9] = screen.x() + screen.width();
         break;

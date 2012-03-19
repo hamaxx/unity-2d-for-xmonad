@@ -27,31 +27,9 @@ LauncherDropItem {
 
     signal barrierTriggered
 
-    property bool shown
     property bool showMenus: true
 
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
-    property variant barrierP1
-    property variant barrierP2
-    property variant barrierTriggerZoneP1
-    property variant barrierTriggerZoneP2
-
-    PointerBarrier {
-        id: barrier
-        triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
-        triggerZoneEnabled: !shown
-        p1: barrierP1
-        p2: barrierP2
-        triggerZoneP1: barrierTriggerZoneP1
-        triggerZoneP2: barrierTriggerZoneP2
-        threshold: launcher2dConfiguration.edgeStopVelocity
-        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
-        decayRate: launcher2dConfiguration.edgeDecayrate
-        triggerPressure: launcher2dConfiguration.edgeRevealPressure
-        breakPressure: launcher2dConfiguration.edgeOvercomePressure
-
-        onTriggered: launcher.barrierTriggered()
-    }
 
     function hideMenu() {
         if (main.visibleMenu !== undefined) {
@@ -87,8 +65,8 @@ LauncherDropItem {
     Rectangle {
         Accessible.name: "background"
         anchors.fill: parent
-        anchors.rightMargin: Utils.isLeftToRight() && !declarativeView.dashActive ? border.width : 0
-        anchors.leftMargin:  Utils.isRightToLeft() && !declarativeView.dashActive ? border.width : 0
+        anchors.rightMargin: Utils.isLeftToRight() && !border.visible ? border.width : 0
+        anchors.leftMargin:  Utils.isRightToLeft() && !border.visible ? border.width : 0
         color: "black"
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
@@ -102,7 +80,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
-        visible: declarativeView.dashActive
+        visible: shellManager.dashActive && shellManager.dashShell == declarativeView
         source: "artwork/border.png"
         fillMode: Image.Stretch
     }
@@ -114,7 +92,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? border.anchors.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : border.anchors.left
-        visible: !declarativeView.dashActive
+        visible: !border.visible
 
         color: "white"
         opacity: 0.15
@@ -216,7 +194,7 @@ LauncherDropItem {
 
     BfbModel {
         id: bfbModel
-        dashView: declarativeView
+        dashManager: shellManager
     }
 
     ApplicationsList {

@@ -61,7 +61,9 @@ To get started, install all these and additional dependencies with:
 
 $ sudo apt-get install rubygems testability-qttas \
   ruby-testability-driver-qt-sut-plugin testability-visualizer \
-  librmagick-ruby1.8 xdotool xsel x11-utils
+  librmagick-ruby1.8 xdotool xsel x11-utils gir1.2-unity-5.0 python-gi
+
+Note: gir1.2-unity-5.0 and python-gi are required by fake_progress.py.
 
 You need to configure Testability for your usage. Assuming you’ll be testing on 
 your host machine, this involves editing /etc/tdriver/tdriver_parameters.xml to 

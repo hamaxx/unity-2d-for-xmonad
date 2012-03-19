@@ -27,6 +27,9 @@
         <property name="activeLens" type="s" access="readwrite">
             <dox:d>The currently active lens</dox:d>
         </property>
+        <property name="screen" type="i" access="read">
+            <dox:d>The screen with the dash</dox:d>
+        </property>
         <signal name="activeChanged">
                 <dox:d>Signals when the active status of the Dash changes</dox:d>
                 <arg name="active" type="b" direction="out">
@@ -43,6 +46,12 @@
                 <dox:d>Signals when the currently lens in the Dash changes</dox:d>
                 <arg name="activeLens" type="s" direction="out">
                         <dox:d>The currently active lens</dox:d>
+                </arg>
+        </signal>
+        <signal name="screenChanged">
+                <dox:d>Signals when the screen changes</dox:d>
+                <arg name="active" type="i" direction="out">
+                        <dox:d>The screen with the dash</dox:d>
                 </arg>
         </signal>
     </interface>

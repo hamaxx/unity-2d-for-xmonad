@@ -86,16 +86,10 @@ LauncherItem::launchNewInstance()
     /* Default to doing nothing. */
 }
 
-bool
-LauncherItem::belongsToDifferentWorkspace()
+int
+LauncherItem::windowsOnCurrentWorkspaceScreen(int screen)
 {
-    return false;
-}
-
-bool
-LauncherItem::belongsToDifferentScreen(int)
-{
-    return false;
+    return 0;
 }
 
 bool

@@ -78,8 +78,10 @@ private:
     int m_padding;
     bool m_hasIcon;
     bool m_hasLabel;
+    bool m_activatedByThisEntry;
     struct _GtkWidgetPath* m_gtkWidgetPath;
     void updatePix();
+    void onActiveChanged(bool active);
     QPixmap decodeIcon();
     void paintActiveBackground(QImage*);
 

@@ -63,6 +63,8 @@ QVariant WindowsList::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(info->desktopFile());
     case WindowInfo::RoleWorkspace:
         return QVariant::fromValue(info->workspace());
+    case WindowInfo::RoleScreen:
+        return QVariant::fromValue(info->screen());
     default:
         UQ_DEBUG << "Requested invalid role (index" << role << ")";
         return QVariant();

@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import "../common/utils.js" as Utils
 
 FocusScope {
     id: lensBar
@@ -71,7 +72,7 @@ FocusScope {
         }
 
         function handleKeyPress(key) {
-            switch (key) {
+            switch (Utils.switchLeftRightKeys(key)) {
             case Qt.Key_Right:
                 return selectChild(currentIndex+1)
             case Qt.Key_Left:
@@ -108,7 +109,7 @@ FocusScope {
                 }
                 active: {
                     /* we need this in order to activate the arrow when using a custom shortcuts file */
-                    if (item.id == "home.lens" && declarativeView.activeLens == "") {
+                    if (item.id == "home.lens" && shellManager.dashActiveLens == "") {
                         return true
                     }
                     return item.viewType == Lens.LensView

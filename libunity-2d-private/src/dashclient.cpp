@@ -75,6 +75,8 @@ void DashClient::connectToDash()
             SLOT(slotActiveChanged(bool)));
     connect(m_dashDbusIface, SIGNAL(alwaysFullScreenChanged(bool)),
             SLOT(slotAlwaysFullScreenChanged(bool)));
+    connect(m_dashDbusIface, SIGNAL(screenChanged(int)),
+            SLOT(slotScreenChanged(int)));
 
     QVariant value = m_dashDbusIface->property("active");
     if (value.isValid()) {
@@ -88,6 +90,13 @@ void DashClient::connectToDash()
         m_alwaysFullScreen = value.toBool();
     } else {
         UQ_WARNING << "Fetching Dash.alwaysFullScreen property failed";
+    }
+
+    value = m_dashDbusIface->property("screen");
+    if (value.isValid()) {
+        m_screen = value.toInt();
+    } else {
+        UQ_WARNING << "Fetching Dash.screen property failed";
     }
 }
 
@@ -134,6 +143,24 @@ void DashClient::slotAlwaysFullScreenChanged(bool value)
 bool DashClient::alwaysFullScreen() const
 {
     return m_alwaysFullScreen;
+}
+
+void DashClient::slotScreenChanged(int screen)
+{
+    if (screen != m_screen) {
+        m_screen = screen;
+        Q_EMIT screenChanged(screen);
+    }
+}
+
+int DashClient::screen() const
+{
+    return m_screen;
+}
+
+bool DashClient::activeInScreen(int screen) const
+{
+    return active() && m_screen == screen;
 }
 
 #include "dashclient.moc"

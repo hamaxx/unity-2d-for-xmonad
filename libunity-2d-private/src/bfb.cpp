@@ -27,7 +27,7 @@
 // Qt
 
 BfbItem::BfbItem()
-: m_active(false), m_view(NULL)
+: m_active(false), m_activeScreen(-1), m_manager(NULL)
 {
 }
 
@@ -38,6 +38,15 @@ BfbItem::~BfbItem()
 bool BfbItem::active() const
 {
     return m_active;
+}
+
+int BfbItem::activeScreen() const
+{
+    if (active()) {
+        return m_activeScreen;
+    } else {
+        return -1;
+    }
 }
 
 bool BfbItem::running() const
@@ -70,27 +79,28 @@ bool BfbItem::launching() const
     return false;
 }
 
-QObject* BfbItem::dashView() const
+QObject* BfbItem::dashManager() const
 {
-    return m_view;
+    return m_manager;
 }
 
-void BfbItem::setDashView(QObject* view)
+void BfbItem::setDashManager(QObject* manager)
 {
-    if (m_view != NULL) {
-        disconnect(view);
+    if (m_manager != NULL) {
+        disconnect(m_manager);
     }
-    m_view = view;
-    if (m_view != NULL) {
-        connect(view, SIGNAL(dashActiveChanged(bool)), this, SLOT(slotDashActiveChanged(bool)));
+    m_manager = manager;
+    if (m_manager != NULL) {
+        connect(manager, SIGNAL(dashActiveChanged(bool)), this, SLOT(slotDashActiveChanged(bool)));
+        connect(manager, SIGNAL(dashScreenChanged(int)), this, SLOT(slotDashScreenChanged(int)));
     }
 }
 
 void BfbItem::activate()
 {
-    Q_ASSERT(m_view != NULL);
-    if (m_view != NULL) {
-        QMetaObject::invokeMethod(m_view, "toggleDash");
+    Q_ASSERT(m_manager != NULL);
+    if (m_manager != NULL) {
+        QMetaObject::invokeMethod(m_manager, "toggleDashRequested");
     }
 }
 
@@ -103,6 +113,19 @@ void BfbItem::slotDashActiveChanged(bool active)
     if (m_active != active) {
         m_active = active;
         Q_EMIT activeChanged(m_active);
+        if (m_active) {
+            Q_EMIT activeScreenChanged(m_activeScreen);
+        }
+    }
+}
+
+void BfbItem::slotDashScreenChanged(int activeScreen)
+{
+    if (m_activeScreen != activeScreen) {
+        m_activeScreen = activeScreen;
+        if (m_active) {
+            Q_EMIT activeScreenChanged(m_activeScreen);
+        }
     }
 }
 
@@ -132,14 +155,14 @@ QVariant BfbModel::data(const QModelIndex& index, int /*role*/) const
     return QVariant::fromValue(m_bfbItem);
 }
 
-QObject* BfbModel::dashView() const
+QObject* BfbModel::dashManager() const
 {
-    return m_bfbItem->dashView();
+    return m_bfbItem->dashManager();
 }
 
-void BfbModel::setDashView(QObject* view)
+void BfbModel::setDashManager(QObject* manager)
 {
-    m_bfbItem->setDashView(view);
+    m_bfbItem->setDashManager(manager);
 }
 
 #include <bfb.moc>

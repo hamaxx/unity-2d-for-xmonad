@@ -9,6 +9,7 @@ set(shell_SRCS
     dashdbus.cpp
     huddbus.cpp
     shelldeclarativeview.cpp
+    shellmanager.cpp
     )
 
 set(shell_MOC_HDRS
@@ -16,6 +17,7 @@ set(shell_MOC_HDRS
     dashdbus.h
     huddbus.h
     shelldeclarativeview.h
+    shellmanager.h
     )
 
 qt4_wrap_cpp(shell_MOC_SRCS ${shell_MOC_HDRS})
@@ -33,6 +35,8 @@ include_directories(
     ${QTGCONF_INCLUDE_DIRS}
     ${DCONFQT_INCLUDE_DIRS}
     ${GTK_INCLUDE_DIRS}
+    ${QTBAMF_INCLUDE_DIRS}
+    ${WNCK_INCLUDE_DIRS}
     ${libunity-2d-private_SOURCE_DIR}/src
     )
 
@@ -44,6 +48,8 @@ target_link_libraries(unity-2d-shell
     ${QTGCONF_LDFLAGS}
     ${DCONFQT_LDFLAGS}
     ${GTK_LDFLAGS}
+    ${WNCK_LDFLAGS}
+    ${QTBAMF_LDFLAGS}
     ${X11_Xext_LIB}
     ${X11_X11_LIB}
     unity-2d-private
