@@ -27,7 +27,13 @@ Loader {
 
     source: "hud/Hud.qml"
     anchors.top: parent != undefined ? parent.top : undefined
-    x: Utils.isLeftToRight() ? 0 : shell.width - width
+    x: {
+        if (launcher2dConfiguration.hideMode == 0) {
+            return Utils.isLeftToRight() ? launcherLoader.width : (parent != undefined ? parent.width - width - launcherLoader.width : 0)
+        } else {
+            return Utils.isLeftToRight() ? 0 : (parent != undefined ? parent.width - width : 0)
+        }
+    }
     onLoaded: item.focus = true
     visible: item.active
     focus: item.active

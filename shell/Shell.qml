@@ -55,7 +55,7 @@ Item {
     }
 
     onHudLoaderChanged: {
-        if (shellManager.hudActive) {
+        if (shellManager.hudActive && launcher2dConfiguration.hideMode != 0) {
             if (hudLoader == undefined)
             {
                 launcherLoader.visibilityController.endForceHidden("hud")
@@ -141,11 +141,11 @@ Item {
                 if (dashLoader != undefined && dashLoader.item.active) {
                     dashLoader.item.active = false
                 }
-                if (hudLoader != undefined) {
+                if (hudLoader != undefined && launcher2dConfiguration.hideMode != 0) {
                     launcherLoader.visibilityController.beginForceHidden("hud")
                 }
             } else {
-                if (hudLoader != undefined) {
+                if (hudLoader != undefined && launcher2dConfiguration.hideMode != 0) {
                     launcherLoader.visibilityController.endForceHidden("hud")
                 }
             }
