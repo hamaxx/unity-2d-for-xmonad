@@ -23,7 +23,7 @@
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
 
-class ShellDeclarativeView;
+class ShellManager;
 
 /**
  * DBus interface for the dash.
@@ -37,15 +37,17 @@ class DashDBus : public QObject, protected QDBusContext
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
     Q_PROPERTY(QString activeLens READ activeLens WRITE setActiveLens NOTIFY activeLensChanged)
+    Q_PROPERTY(int screen READ screen NOTIFY screenChanged)
 
 public:
-    DashDBus(ShellDeclarativeView* view, QObject* parent=0);
+    DashDBus(ShellManager* manager, QObject* parent=0);
 
     bool active() const;
     void setActive(bool active);
     bool alwaysFullScreen() const;
     QString activeLens() const;
     void setActiveLens(QString activeLens);
+    int screen() const;
 
 public Q_SLOTS:
     Q_NOREPLY void activateHome();
@@ -55,9 +57,10 @@ Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged(bool);
     void activeLensChanged(QString);
+    void screenChanged(int);
 
 private:
-    ShellDeclarativeView* m_view;
+    ShellManager* m_manager;
 };
 
 #endif // DashDBus_H

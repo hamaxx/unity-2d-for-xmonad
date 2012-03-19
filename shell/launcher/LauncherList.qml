@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0 /* required for drag’n’drop handling */
+import "../common/utils.js" as Utils
 
 AutoScrollingListView {
     id: list
@@ -93,11 +94,12 @@ AutoScrollingListView {
         }
 
         function updatePips() {
-            if (item.belongsToDifferentWorkspace()) {
+            var windowCount = item.windowsOnCurrentWorkspaceScreen(launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen);
+            if (windowCount == 0 && item.windowCount != 0) {
                 launcherItem.pips = 1
                 launcherItem.pipSource = "launcher/artwork/launcher_arrow_outline_ltr.png";
             } else {
-                launcherItem.pips = Math.min(item.windowCount, 3)
+                launcherItem.pips = Math.min(windowCount, 3)
                 launcherItem.pipSource = ("launcher/artwork/launcher_" + ((pips <= 1) ? "arrow" : "pip") + "_ltr.png")
             }
         }
@@ -113,9 +115,9 @@ AutoScrollingListView {
         icon: item.icon != "" ? "image://icons/" + item.icon : "image://icons/unknown"
         running: item.running
         active: item.active
+        activeOnThisScreen: item.activeScreen == declarativeView.screen.screen
         urgent: item.urgent
         launching: item.launching
-        pips: Math.min(item.windowCount, 3)
 
         counter: item.counter
         counterVisible: item.counterVisible
@@ -125,7 +127,7 @@ AutoScrollingListView {
         emblemVisible: item.emblemVisible
 
         /* Launcher of index 0 is the so-called BFB or Dash launcher */
-        shortcutVisible: declarativeView.superKeyHeld &&
+        shortcutVisible: shellManager.superKeyHeld &&
                          ((item.toString().indexOf("Application") == 0 && index > 0 && index <= 10) ||
                           item.shortcutKey != 0)
         shortcutText: {
@@ -157,7 +159,7 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            item.menu.show(width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
+            item.menu.show(declarativeView.globalPosition.x + width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
                                   y + height - selectionOutlineSize / 2)
         }
 
@@ -198,13 +200,14 @@ AutoScrollingListView {
         }
 
         Keys.onPressed: {
-            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter || event.key == Qt.Key_Space) {
+            var key = Utils.switchLeftRightKeys(event.key)
+            if (key == Qt.Key_Return || key == Qt.Key_Enter || key == Qt.Key_Space) {
                 item.menu.hide()
                 item.activate()
                 event.accepted = true
             }
-            else if ((event.key == Qt.Key_Right && list.showMenus) ||
-                    (event.key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
+            else if ((key == Qt.Key_Right && list.showMenus) ||
+                    (key == Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                 /* Show the menu first, then unfold it. Doing things in this
                    order is required because at the moment the code path that
                    adjusts the position of the menu in case it goes offscreen
@@ -215,7 +218,7 @@ AutoScrollingListView {
                 item.menu.setFocus()
                 event.accepted = true
             }
-            else if (event.key == Qt.Key_Left) {
+            else if (key == Qt.Key_Left) {
                 item.menu.hide()
                 event.accepted = true
             }
@@ -262,9 +265,15 @@ AutoScrollingListView {
 
         function setIconGeometry() {
             if (running) {
-                item.setIconGeometry(x + declarativeView.globalPosition.x,
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
+                var left = declarativeView.globalPosition.x
+                if (Utils.isRightToLeft())
+                    left += shell.width - x - width
+                else
+                    left += x
+                item.setIconGeometry(left,
                                      y + declarativeView.globalPosition.y,
-                                     width, height)
+                                     width, height, screen)
             }
         }
 
@@ -304,11 +313,23 @@ AutoScrollingListView {
 
         Connections {
             target: item
-            onWindowAdded: item.setIconGeometry(x + declarativeView.globalPosition.x,
-                                                y + declarativeView.globalPosition.y,
-                                                width, height, xid)
+            onWindowAdded: {
+                var screen = launcher2dConfiguration.onlyOneLauncher ? -1 : declarativeView.screen.screen
+                var left = declarativeView.globalPosition.x
+                if (Utils.isRightToLeft())
+                    left += shell.width - x - width
+                else
+                    left += x
+                item.setIconGeometry(left,
+                                     y + declarativeView.globalPosition.y,
+                                     width, height, screen, xid)
+            }
             onWindowCountChanged: updatePips()
             onWindowWorkspaceChanged: updatePips()
+            onWindowGeometryChanged: {
+                updatePips()
+                setIconGeometry()
+            }
             /* Not all items are applications. */
             ignoreUnknownSignals: true
         }
@@ -353,7 +374,7 @@ AutoScrollingListView {
         }
 
         Connections {
-            target: declarativeView
+            target: shellManager
             onActiveWorkspaceChanged: updatePips()
         }
         Component.onCompleted: updatePips()

@@ -21,18 +21,18 @@
 #include "hudadaptor.h"
 
 // Local
-#include <shelldeclarativeview.h>
+#include <shellmanager.h>
 
 // Qt
 #include <QtDBus/QDBusConnection>
 #include <QGraphicsObject>
 
-HUDDBus::HUDDBus(ShellDeclarativeView* view, QObject* parent)
+HUDDBus::HUDDBus(ShellManager* manager, QObject* parent)
 : QObject(parent)
-, m_view(view)
+, m_manager(manager)
 {
-    /* QML's propertyChanged signals are simple, they don't pass the property value */
-    connect(m_view->rootObject(), SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
+    connect(m_manager, SIGNAL(hudActiveChanged()), SLOT(onHudActiveChanged()));
+    connect(m_manager, SIGNAL(hudScreenChanged(int)), SIGNAL(screenChanged(int)));
 
     new HUDAdaptor(this);
 }
@@ -40,7 +40,7 @@ HUDDBus::HUDDBus(ShellDeclarativeView* view, QObject* parent)
 bool
 HUDDBus::active() const
 {
-    return m_view->rootObject()->property("hudActive").toBool();
+    return m_manager->hudActive();
 }
 
 void
@@ -53,7 +53,13 @@ void
 HUDDBus::setActive(bool hudActive)
 {
     if (hudActive != active()) {
-        m_view->rootObject()->setProperty("hudActive", hudActive);
+        m_manager->setHudActive(hudActive);
         Q_EMIT activeChanged(hudActive);
     }
+}
+
+int
+HUDDBus::screen() const
+{
+    return m_manager->hudScreen();
 }

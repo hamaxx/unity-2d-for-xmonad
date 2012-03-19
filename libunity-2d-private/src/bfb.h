@@ -35,6 +35,7 @@ public:
 
     /* getters */
     virtual bool active() const;
+    virtual int activeScreen() const;
     virtual bool running() const;
     virtual int windowCount() const;
     virtual bool urgent() const;
@@ -42,8 +43,8 @@ public:
     virtual QString icon() const;
     virtual bool launching() const;
 
-    QObject* dashView() const;
-    void setDashView(QObject* view);
+    QObject* dashManager() const;
+    void setDashManager(QObject* manager);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -51,11 +52,13 @@ public:
 
 private Q_SLOTS:
     void slotDashActiveChanged(bool active);
+    void slotDashScreenChanged(int screen);
 
 private:
     Q_DISABLE_COPY(BfbItem)
     bool m_active;
-    QObject* m_view;
+    int m_activeScreen;
+    QObject* m_manager;
 };
 
 Q_DECLARE_METATYPE(BfbItem*)
@@ -64,7 +67,7 @@ Q_DECLARE_METATYPE(BfbItem*)
 class BfbModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(QObject* dashView READ dashView WRITE setDashView)
+    Q_PROPERTY(QObject* dashManager READ dashManager WRITE setDashManager)
 public:
     BfbModel(QObject* parent = 0);
     ~BfbModel();
@@ -72,8 +75,8 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
-    QObject* dashView() const;
-    void setDashView(QObject* view);
+    QObject* dashManager() const;
+    void setDashManager(QObject* manager);
 
 private:
     Q_DISABLE_COPY(BfbModel)

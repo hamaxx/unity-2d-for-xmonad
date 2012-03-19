@@ -1,5 +1,39 @@
-unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (5.7.0-0ubuntu1) precise; urgency=low
 
+  * New upstream release:
+    - unity-2d-panel crashed with SIGABRT in Unity2dDebug::unity2dQtHandler()
+      (LP: #925457)
+    - unity-2d-shell crashed with SIGSEGV in ref() (LP: #947278)
+    - Launcher - Make Launcher left of screen reveal more responsive and less
+      prone to false positives (LP: #765819)
+    - [dash] [launcher] [panel] Tinting based on wallpaper missing
+      (LP: #882101)
+    - [launcher] In multimonitor setup Unity-2D only shows launcher on one
+      monitor (fails MM UX spec #2.8) (LP: #780204)
+    - [unity-2d] FF exception to add PointerBarrier to Unity2d (LP: #947976)
+    - multimonitor, launcher: Provide an option to display either a single
+      launcher or a launcher on each display in a multi-monitor environment
+      (LP: #950136)
+    - lens switching is not keyboard navigable (LP: #945220)
+    - [panel] [multi-monitor] On secondary screen, unable to scrub from
+      indicator menu to app menu (LP: #844809)
+    - "Workspaces" button displays previous wallpaper (LP: #900019)
+    - Dash - cursor should change when pointer is over the search field
+      (LP: #849175)
+    - Filter checkboxes are without margins in right to left locales
+      (LP: #949319)
+    - [panel] [multi-monitor] Open indicator menu on one screen causes other
+      indicator to look open too (LP: #844798)
+    - Dash - horizental divider line in between categories incorrectly drawn
+      (LP: #841750)
+    - [launcher] Tile Progress bar starting from left of launcher, not
+      container (LP: #912777)
+    - Dash - dash is not closed with alt+f4 (LP: #891818)
+    - [dash] Rating stars in right-to-left locales behave inconsistently.
+      (LP: #945719)
+    - LensButton.qml:72 warning when running unity-2d (LP: #947276)
+    - [dash] Multi-range filters are rendered incorrectly in right-to-left
+      locales (LP: #950649)
   * debian/unity-2d.gconf-defaults:
     - removed: not used anymore and causing regression with hide-mode=2
       by default, converted to the gsettings key (LP: #942772)
@@ -20,8 +54,19 @@ unity-2d (5.6.0-0ubuntu2) UNRELEASED; urgency=low
     - bump to latest Standards-Version
     - fix some too long description
     - put the transitional packages in the oldlibs/extra section
+    - build-dep on libxtst-dev, libxfixes-dev for barrier change
+    - need latest metacity for barriers to work
 
- -- Didier Roche <didrocks@ubuntu.com>  Wed, 07 Mar 2012 18:43:46 +0100
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 19 Mar 2012 14:07:10 +0100
+
+unity-2d (5.6.0-0ubuntu2) precise; urgency=low
+
+  * debian/control:
+    - rebuild against latest libunity-core-5.0-dev and libnux-2.0-dev for ABI
+      break
+  * removed distro-patch as not anymore needed with latest unity
+
+ -- Didier Roche <didrocks@ubuntu.com>  Mon, 12 Mar 2012 13:43:13 +0100
 
 unity-2d (5.6.0-0ubuntu1) precise; urgency=low
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-06-07 18:21+0200\n"
-"PO-Revision-Date: 2011-04-20 08:50+0000\n"
+"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"PO-Revision-Date: 2012-03-08 16:01+0000\n"
 "Last-Translator: Samir Ribić <Unknown>\n"
 "Language-Team: Bosnian <bs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,75 +16,142 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
-"X-Generator: Launchpad (build 13388)\n"
+"X-Launchpad-Export-Date: 2012-03-15 05:15+0000\n"
+"X-Generator: Launchpad (build 14933)\n"
 
-#: places/GroupHeader.qml:88
-msgid "See one more result"
-msgstr "Vidi još jedan rezultat"
+#: panel/applets/appname/appnameapplet.cpp:364
+msgid "Ubuntu Desktop"
+msgstr ""
 
-#: places/GroupHeader.qml:90
+#: shell/hud/Hud.qml:192
+msgid "Type your Command"
+msgstr ""
+
+#: launcher/LauncherList.qml:82
 #, qt-format
-msgid "See %1 more results"
-msgstr "Vidi %1 dodatnih rezultata"
+msgid "%1 window opened"
+msgid_plural "%1 windows opened"
+msgstr[0] ""
+msgstr[1] ""
 
-#: places/GroupHeader.qml:93
+#: launcher/LauncherList.qml:85
+msgid "not running"
+msgstr ""
+
+#: places/CategoryHeader.qml:36
+msgid "not expanded"
+msgstr ""
+
+#: places/CategoryHeader.qml:36
+msgid "expanded"
+msgstr ""
+
+#: places/CategoryHeader.qml:97
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: places/CategoryHeader.qml:99
 msgid "See fewer results"
 msgstr "Vidi manje rezultata"
 
-#: places/HomeShortcuts.qml:32
-msgid "Media Apps"
-msgstr "Medijalni programi"
-
-#: places/HomeShortcuts.qml:38
-msgid "Internet Apps"
-msgstr "Internet programi"
-
-#: places/HomeShortcuts.qml:44
-msgid "More Apps"
-msgstr "Još programa"
-
-#: places/HomeShortcuts.qml:50
-msgid "Find Files"
-msgstr "Traži datoteke"
-
-#: places/HomeShortcuts.qml:57
-msgid "Browse the Web"
-msgstr "Pregled Interneta"
-
-#: places/HomeShortcuts.qml:62
-msgid "View Photos"
-msgstr "Pregled slika"
-
-#: places/HomeShortcuts.qml:67
-msgid "Check Email"
-msgstr "Provjerite elektronsku poštu"
-
-#: places/HomeShortcuts.qml:72
-msgid "Listen to Music"
-msgstr "Slušajte muziku"
-
-#: places/Home.qml:79
+#: places/Home.qml:80
 msgid "Shortcuts"
 msgstr "Prečice"
 
-#: places/SearchRefine.qml:61
-msgid "Refine search"
-msgstr "Doradi pretragu"
+#: places/HomeShortcuts.qml:56
+msgid "Media Apps"
+msgstr "Medijalni programi"
 
-#: places/SearchRefine.qml:84
-msgid "Type"
-msgstr "Tip"
+#: places/HomeShortcuts.qml:62
+msgid "Internet Apps"
+msgstr "Internet programi"
 
-#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
-msgid "Eject"
-msgstr "Izbaci"
+#: places/HomeShortcuts.qml:68
+msgid "More Apps"
+msgstr "Još programa"
 
-#: libunity-2d-private/Unity2d/trash.cpp:125
+#: places/HomeShortcuts.qml:74
+msgid "Find Files"
+msgstr "Traži datoteke"
+
+#: places/HomeShortcuts.qml:81
+msgid "Browse the Web"
+msgstr "Pregled Interneta"
+
+#: places/HomeShortcuts.qml:86
+msgid "View Photos"
+msgstr "Pregled slika"
+
+#: places/HomeShortcuts.qml:92
+msgid "Check Email"
+msgstr "Provjerite elektronsku poštu"
+
+#: places/HomeShortcuts.qml:97
+msgid "Listen to Music"
+msgstr "Slušajte muziku"
+
+#: places/FilterPane.qml:69
+msgid "Filter results"
+msgstr ""
+
+#: places/SearchEntry.qml:176
+msgid "Search"
+msgstr ""
+
+#: places/FilterLoader.qml:36
+#, qt-format
+msgid "Filter %1 active"
+msgstr ""
+
+#: places/FilterLoader.qml:38
+#, qt-format
+msgid "Filter %1 inactive"
+msgstr ""
+
+#: places/FilterLoader.qml:90
+msgid "All"
+msgstr ""
+
+#: libunity-2d-private/src/unity2dapplication.cpp:151
+msgid "QT_LAYOUT_DIRECTION"
+msgstr ""
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Keep in launcher"
+msgstr "Čuvaj u pokretaču"
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Remove from launcher"
+msgstr "Ukloni iz pokretača"
+
+#: libunity-2d-private/src/launcherapplication.cpp:910
+msgid "Quit"
+msgstr "Izlaz"
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home"
+msgstr ""
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home screen"
+msgstr ""
+
+#: libunity-2d-private/src/bfb.cpp:71
+msgid "Dash home"
+msgstr ""
+
+#: libunity-2d-private/src/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Radni prostori"
+
+#: libunity-2d-private/src/trash.cpp:128
 msgid "Trash"
 msgstr "Smeće"
 
-#: libunity-2d-private/Unity2d/trash.cpp:255
+#: libunity-2d-private/src/trash.cpp:208
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
@@ -92,22 +159,14 @@ msgstr[0] "%n datoteka u smeću"
 msgstr[1] "%n datoteke u smeću"
 msgstr[2] "%n datoteka u smeću"
 
-#: libunity-2d-private/Unity2d/trash.cpp:262
+#: libunity-2d-private/src/trash.cpp:215
 msgid "Empty Trash"
 msgstr "Isprazni kantu"
 
-#: libunity-2d-private/Unity2d/workspaces.cpp:73
-msgid "Workspaces"
-msgstr "Radni prostori"
+#: libunity-2d-private/src/launcherdevice.cpp:273
+msgid "Eject"
+msgstr "Izbaci"
 
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep in launcher"
-msgstr "Čuvaj u pokretaču"
-
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove from launcher"
-msgstr "Ukloni iz pokretača"
-
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
-msgid "Quit"
-msgstr "Izlaz"
+#: libunity-2d-private/src/launcherdevice.cpp:281
+msgid "Safely remove"
+msgstr ""

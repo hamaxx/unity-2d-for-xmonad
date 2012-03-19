@@ -20,9 +20,11 @@
 #include <config.h>
 
 #include "screeninfo.h"
-#include "gobjectcallback.h"
 
+#include <QApplication>
 #include <QDebug>
+#include <QDeclarativeEngine>
+#include <QDeclarativeItem>
 #include <QGLWidget>
 #include <QVariant>
 #include <QX11Info>
@@ -32,39 +34,88 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include "bamf-window.h"
-#include "bamf-matcher.h"
-
-// libwnck
-extern "C" {
-#include <libwnck/libwnck.h>
-}
-
-GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
-
 Unity2DDeclarativeView::Unity2DDeclarativeView(QWidget *parent) :
-    QDeclarativeView(parent),
+    QGraphicsView(parent),
     m_screenInfo(NULL),
     m_useOpenGL(false),
     m_transparentBackground(false),
-    m_last_focused_window(None)
+    m_rootItem(NULL)
 {
+    setScene(&m_scene);
+
+    setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setFrameStyle(NoFrame);
+
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    scene()->setItemIndexMethod(QGraphicsScene::NoIndex);
+    viewport()->setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(Qt::StrongFocus);
+
+    scene()->setStickyFocus(true);
+
     if (!QFileInfo(UNITY_2D_SCHEMA_FILE).exists()) {
         m_useOpenGL = false;
     } else {
         m_useOpenGL = unity2dConfiguration().property("useOpengl").toBool();
     }
 
-    WnckScreen* screen = wnck_screen_get_default();
-    g_signal_connect(G_OBJECT(screen), "active_workspace_changed", G_CALLBACK(activeWorkspaceChangedCB), this);
-
     setupViewport();
 }
 
 Unity2DDeclarativeView::~Unity2DDeclarativeView()
 {
-    WnckScreen* screen = wnck_screen_get_default();
-    g_signal_handlers_disconnect_by_func(G_OBJECT(screen), gpointer(activeWorkspaceChangedCB), this);
+}
+
+QDeclarativeEngine* Unity2DDeclarativeView::engine()
+{
+    static QDeclarativeEngine* engine = new QDeclarativeEngine();
+    return engine;
+}
+
+QDeclarativeContext* Unity2DDeclarativeView::rootContext() const
+{
+    return engine()->rootContext();
+}
+
+QDeclarativeItem* Unity2DDeclarativeView::rootObject() const
+{
+    return m_rootItem;
+}
+
+void Unity2DDeclarativeView::forceActivateWindow()
+{
+    forceActivateWindow(effectiveWinId(), this);
+}
+
+void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char*, QVariant> &rootObjectProperties)
+{
+    QDeclarativeComponent* component = new QDeclarativeComponent(engine(), source, this);
+    QObject *instance = component->beginCreate(rootContext());
+    if (component->isError()) {
+        qDebug() << component->errors();
+    }
+    QMap<const char*, QVariant>::const_iterator it = rootObjectProperties.begin();
+    QMap<const char*, QVariant>::const_iterator itEnd = rootObjectProperties.end();
+    for ( ; it != itEnd; ++it) {
+        instance->setProperty(it.key(), it.value());
+    }
+    component->completeCreate();
+    m_rootItem = qobject_cast<QDeclarativeItem *>(instance);
+    connect(m_rootItem, SIGNAL(widthChanged()), SLOT(resizeToRootObject()));
+    connect(m_rootItem, SIGNAL(heightChanged()), SLOT(resizeToRootObject()));
+    resizeToRootObject();
+    m_scene.addItem(m_rootItem);
+    m_source = source;
+}
+
+void Unity2DDeclarativeView::resizeToRootObject()
+{
+    QSize size(m_rootItem->width(), m_rootItem->height());
+    resize(size);
+    setSceneRect(QRectF(0, 0, size.width(), size.height()));
+    Q_EMIT sceneResized(size);
 }
 
 bool Unity2DDeclarativeView::useOpenGL() const
@@ -89,6 +140,11 @@ bool Unity2DDeclarativeView::transparentBackground() const
     return m_transparentBackground;
 }
 
+QUrl Unity2DDeclarativeView::source() const
+{
+    return m_source;
+}
+
 void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground)
 {
     if (transparentBackground == m_transparentBackground) {
@@ -103,7 +159,12 @@ void Unity2DDeclarativeView::setTransparentBackground(bool transparentBackground
 
 QPoint Unity2DDeclarativeView::globalPosition() const
 {
-    return mapToGlobal(QPoint(0,0));
+    // FIXME This used to be mapToGlobal(QPoint(0,0)) that is the correct
+    // thing for all kind of widgets, but seems to fail sometimes if we
+    // call it just after a moveEvent, which is bad
+    // Since all our Unity2DDeclarativeView are toplevel windows we
+    // are workarounding it by just returning pos()
+    return pos();
 }
 
 void Unity2DDeclarativeView::setupViewport()
@@ -163,74 +224,27 @@ void Unity2DDeclarativeView::moveEvent(QMoveEvent* event)
 
 void Unity2DDeclarativeView::showEvent(QShowEvent* event)
 {
-    QDeclarativeView::showEvent(event);
+    QGraphicsView::showEvent(event);
     Q_EMIT visibleChanged(true);
 }
 
 void Unity2DDeclarativeView::hideEvent(QHideEvent* event)
 {
-    QDeclarativeView::hideEvent(event);
+    QGraphicsView::hideEvent(event);
     Q_EMIT visibleChanged(false);
 }
 
-/* Obtaining & Discarding Keyboard Focus for Window on Demand
- *
- * In the X world, activating a window means to give it the input (keyboard)
- * focus. When a new window opens, X usually makes it active immediately.
- * Clicking on a window makes it active too.
- *
- * Qt does not have the capability to explicitly ask the window manager to
- * make an existing window active - setFocus() only forwards input focus to
- * whatever QWidget you specify.
- *
- * De-Activating a window is not possible with X (and hence with Qt). So
- * we work-around this by remembering which application is active prior to
- * stealing focus, and then Re-Activating it when we're finished. This is
- * not guaranteed to succeed, as previous window may have closed.
- *
- * The following methods deal with these tasks. Note that when the window
- * has been activated (deactivated), Qt will realise it has obtained (lost)
- * focus and act appropriately.
- */
-
-/* Ask Window Manager to activate this window and hence get keyboard focus */
-void Unity2DDeclarativeView::forceActivateWindow()
+void Unity2DDeclarativeView::keyPressEvent(QKeyEvent* event)
 {
-    // Save reference to window with current keyboard focus
-    if( m_last_focused_window == None ){
-        saveActiveWindow();
-    }
-
-    // Show this window by giving it keyboard focus
-    forceActivateThisWindow(this->effectiveWinId());
+    QApplication::sendEvent(scene(), event);
 }
 
-/* Ask Window Manager to deactivate this window - not guaranteed to succeed. */
-void Unity2DDeclarativeView::forceDeactivateWindow()
+void Unity2DDeclarativeView::keyReleaseEvent(QKeyEvent* event)
 {
-    if( m_last_focused_window == None ){
-        UQ_WARNING << "No previously focused window found, use mouse to select window.";
-        return;
-    }
-
-    // What if previously focused window closed while we we had focus? Check if window
-    // exists by seeing if it has attributes.
-    int status;
-    XWindowAttributes attributes;
-    status = XGetWindowAttributes(QX11Info::display(), m_last_focused_window, &attributes);
-    if ( status == BadWindow ){
-        UQ_WARNING << "Previously focused window has gone, use mouse to select window.";
-        return;
-    }
-
-    // Show this window by giving it keyboard focus
-    forceActivateThisWindow(m_last_focused_window);
-
-    m_last_focused_window = None;
-    Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
+    QApplication::sendEvent(scene(), event);
 }
 
-void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
+void Unity2DDeclarativeView::forceActivateWindow(WId window, QWidget *w)
 {
     /* Workaround focus stealing prevention implemented by some window
        managers such as Compiz. This is the exact same code you will find in
@@ -262,47 +276,14 @@ void Unity2DDeclarativeView::forceActivateThisWindow(WId window)
     XFlush(display);
 
     /* Use Qt's setFocus mechanism as a safety guard in case the above failed */
-    setFocus();
-}
-
-/* Save WId of window with keyboard focus to m_last_focused_window */
-void Unity2DDeclarativeView::saveActiveWindow()
-{
-    /* Using Bamf here, 'cause XGetFocusInputFocus returned a XId
-       different by 1, which then could not be used with Bamf to
-       get the application. The change does not result in any functional
-       differences, though. */
-    WId active_window = None;
-    BamfWindow* bamf_active_window = BamfMatcher::get_default().active_window();
-
-    /* Bamf can return a null active window - example case is just after 
-       login when no application has been yet been started. */
-    if (bamf_active_window != NULL) {
-        active_window = bamf_active_window->xid();
-    }
-
-    if (active_window != this->effectiveWinId() && active_window != m_last_focused_window) {
-        m_last_focused_window = active_window;
-        Q_EMIT lastFocusedWindowChanged(m_last_focused_window);
-    }
-}
-
-void Unity2DDeclarativeView::onActiveWorkspaceChanged() 
-{
-    m_last_focused_window = None;
-    Q_EMIT activeWorkspaceChanged();
+    if (w != NULL)
+        w->setFocus();
 }
 
 ScreenInfo*
 Unity2DDeclarativeView::screen() const
 {
     return m_screenInfo;
-}
-
-unsigned int
-Unity2DDeclarativeView::lastFocusedWindow() const
-{
-    return m_last_focused_window;
 }
 
 #include <unity2ddeclarativeview.moc>

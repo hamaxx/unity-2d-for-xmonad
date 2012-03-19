@@ -30,19 +30,13 @@ class SpreadView : public Unity2DDeclarativeView
     Q_OBJECT
 
 public:
-    explicit SpreadView();
+    explicit SpreadView(int screen);
 
 public Q_SLOTS:
     void fitToAvailableSpace();
-
-protected:
-    virtual void focusInEvent( QFocusEvent * event );
-    virtual void focusOutEvent( QFocusEvent * event );
-    bool eventFilter(QObject *obj, QEvent *event);
-
-Q_SIGNALS:
-    void outsideClick();
 };
+
+Q_DECLARE_METATYPE(SpreadView*)
 
 #endif // SPREADVIEW_H
 

@@ -50,6 +50,7 @@ IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 , m_padding(PADDING)
 , m_hasIcon(false)
 , m_hasLabel(false)
+, m_activatedByThisEntry(false)
 , m_gtkWidgetPath(gtk_widget_path_new())
 {
     gtk_widget_path_append_type(m_gtkWidgetPath, GTK_TYPE_WINDOW);
@@ -59,6 +60,7 @@ IndicatorEntryWidget::IndicatorEntryWidget(const Entry::Ptr& entry)
 
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     m_entry->updated.connect(sigc::mem_fun(this, &IndicatorEntryWidget::updatePix));
+    m_entry->active_changed.connect(sigc::mem_fun(this, &IndicatorEntryWidget::onActiveChanged));
 }
 
 IndicatorEntryWidget::~IndicatorEntryWidget()
@@ -166,7 +168,7 @@ void IndicatorEntryWidget::updatePix()
         img.fill(Qt::transparent);
         QPainter painter(&img);
         painter.initFrom(this);
-        if (m_entry->active()) {
+        if (m_activatedByThisEntry) {
             paintActiveBackground(&img);
         }
         if (m_hasIcon) {
@@ -197,6 +199,13 @@ void IndicatorEntryWidget::updatePix()
         // slot. I assume this is because this method is called as a response
         // to a sigc++ signal.
         QMetaObject::invokeMethod(this, "isEmptyChanged", Qt::QueuedConnection);
+    }
+}
+
+void IndicatorEntryWidget::onActiveChanged(bool active)
+{
+    if (!active) {
+        m_activatedByThisEntry = false;
     }
 }
 
@@ -266,7 +275,7 @@ void IndicatorEntryWidget::paintLabel(QImage* image, PangoLayout* layout, int la
     gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUBAR);
     gtk_style_context_add_class(styleContext, GTK_STYLE_CLASS_MENUITEM);
 
-    if (m_entry->active()) {
+    if (m_activatedByThisEntry) {
         gtk_style_context_set_state(styleContext, GTK_STATE_FLAG_PRELIGHT);
     }
 
@@ -332,7 +341,7 @@ void IndicatorEntryWidget::wheelEvent(QWheelEvent* event)
 
 void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
 {
-    if (m_entry->active()) {
+    if (m_activatedByThisEntry) {
         return;
     }
     int nuxButton = qtButton == Qt::NoButton ? 0 : 1;
@@ -341,6 +350,7 @@ void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
         time(NULL),
         nuxButton
         );
+    m_activatedByThisEntry = true;
 }
 
 void IndicatorEntryWidget::setPadding(int padding)

@@ -26,6 +26,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                libnux-2.0-dev (>= 2.4),
                libxi-dev,
                libxtst-dev,
+               libxfixes-dev (>= 1:5.0-4ubuntu4~),
 Standards-Version: 3.9.3
 Vcs-Bzr: https://code.launchpad.net/~unity-2d-team/unity-2d/trunk
 
@@ -35,7 +36,7 @@ Depends: ${misc:Depends},
          unity-2d-panel,
          unity-2d-spread,
          unity-2d-shell,
-         metacity (>= 2.30.3-0ubuntu5)
+         metacity (>= 1:2.34.1-1ubuntu8)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
@@ -50,6 +51,7 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         libxfixes3 (>= 1:5.0-4ubuntu4),
 Description: Unity 2D shared library
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
@@ -65,6 +67,7 @@ Depends: ${shlibs:Depends},
          libwnck-3-dev,
          libglib2.0-dev,
          libpango1.0-dev,
+         libxfixes-dev (>= 1:5.0-4ubuntu4),
 Description: Unity 2D shared library - development files
  This library is used to host common code used by several Unity 2D components
  It is only used internally, there is no use case for it outside of the unity-2d
@@ -151,7 +154,7 @@ Description: Dash and Launcher for the Unity 2D environment
 Package: unity-2d-common
 Architecture: all
 Depends: ${misc:Depends},
-Replaces: unity-2d (<< 5.6.0-0ubuntu2)
+Replaces: unity-2d (<< 5.7.0)
 Description: Common files for Unity 2D Shell
  This is part of Unity 2D and contains the common files needed by multiple
  components of it.

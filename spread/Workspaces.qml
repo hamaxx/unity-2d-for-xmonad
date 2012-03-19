@@ -25,6 +25,10 @@ Rectangle {
 
     color: "black"
 
+    signal cancelAndExitStarted ()
+
+    property variant declarativeView
+
     property int columns: desktop.workspaces.columns
     property int rows: desktop.workspaces.rows
 
@@ -104,7 +108,7 @@ Rectangle {
             z: -1
             width: workspaces.cellWidth
             height: workspaces.cellHeight
-            visible: workspaces.currentItem.state == "unzoomed"
+            visible: workspaces.currentItem.state == "unzoomed" && spreadManager.currentSwitcher == switcher
         }
         highlightFollowsCurrentItem: false
 
@@ -210,8 +214,7 @@ Rectangle {
     function show() {
         allWindows.load()
 
-        spreadView.show()
-        spreadView.forceActivateWindow()
+        declarativeView.show()
         workspaces.currentIndex = desktop.workspaces.current
         /* This is necessary otherwise we don't get keypresses until the user does a
            mouse over on a window */
@@ -228,7 +231,7 @@ Rectangle {
         id: exitTransitionTimer
         interval: Utils.transitionDuration
         onTriggered: {
-            spreadView.hide()
+            declarativeView.hide()
 
             /* Nothing should be allowed to touch the windows anymore here, so it should
                be safe to unload them all to save memory.
@@ -263,11 +266,16 @@ Rectangle {
     }
 
     Connections {
-        target: spreadView
-        onOutsideClick: cancelAndExit()
+        target: spreadManager
+        onStartCancelAndExit: {
+            cancelAndExit(true)
+        }
     }
 
-    function cancelAndExit() {
+    function cancelAndExit(fromSpreadManager) {
+        if (!fromSpreadManager) {
+            cancelAndExitStarted()
+        }
         initial = true
 
         /* Let the transition finish and then hide the switcher and perform cleanup */

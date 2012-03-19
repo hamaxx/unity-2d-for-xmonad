@@ -45,7 +45,7 @@ FocusScope {
 
     WindowInfo {
         id: activeWindow
-        contentXid: declarativeView.lastFocusedWindow
+        contentXid: shellManager.lastFocusedWindow
     }
 
     SpreadMonitor {
@@ -55,7 +55,7 @@ FocusScope {
 
     onActiveChanged: {
         if (active) {
-            declarativeView.forceActivateWindow()
+            shellManager.hudShell.forceActivateWindow()
             resultList.focus = true
         } else {
             hudModel.endSearch
@@ -64,9 +64,14 @@ FocusScope {
     }
 
     Connections {
-        target: declarativeView
+        target: shellManager
 
         onToggleHud: toggleHud()
+        onHudShellChanged: {
+            if (active) {
+                background.trigger()
+            }
+        }
     }
 
     Keys.onPressed: {
@@ -75,12 +80,12 @@ FocusScope {
 
     function toggleHud() {
         if (spread.shown) return
-        if (active) declarativeView.forceDeactivateWindow()
+        if (active) shellManager.hudShell.forceDeactivateWindow()
         active = !active
     }
 
     function executeResult(resultId) {
-        declarativeView.forceDeactivateWindow()
+        shellManager.hudShell.forceDeactivateWindow()
         hudModel.executeResult(resultId)
         active = false
     }
@@ -93,6 +98,7 @@ FocusScope {
         anchors.fill: parent
 
         active: hud.active
+        view: shellManager.hudShell
     }
 
     Item {

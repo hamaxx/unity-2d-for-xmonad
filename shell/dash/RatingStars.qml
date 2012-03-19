@@ -47,7 +47,7 @@ Item {
 
     Keys.onPressed: if (handleKeyPress(event.key)) event.accepted = true
     function handleKeyPress(key) {
-        switch (key) {
+        switch (Utils.switchLeftRightKeys(key)) {
         case Qt.Key_Right:
             incrementRating()
             return true

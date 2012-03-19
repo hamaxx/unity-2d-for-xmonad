@@ -37,6 +37,7 @@ class DashClient : public QObject
     Q_OBJECT
     Q_PROPERTY(bool alwaysFullScreen READ alwaysFullScreen NOTIFY alwaysFullScreenChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(int screen READ screen NOTIFY screenChanged)
 
 public:
     static DashClient* instance();
@@ -46,16 +47,22 @@ public:
 
     bool alwaysFullScreen() const;
 
+    int screen() const;
+
+    bool activeInScreen(int screen) const;
+
 Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged();
     void dashDisconnected();
+    void screenChanged(int);
 
 private Q_SLOTS:
     void connectToDash();
     void slotActiveChanged(bool);
     void slotAlwaysFullScreenChanged(bool);
     void onDashDisconnect();
+    void slotScreenChanged(int);
 
 private:
     DashClient(QObject* parent = 0);
@@ -63,6 +70,7 @@ private:
     QDBusInterface* m_dashDbusIface;
     bool m_active;
     bool m_alwaysFullScreen;
+    int m_screen;
 };
 
 #endif /* DASHCLIENT_H */

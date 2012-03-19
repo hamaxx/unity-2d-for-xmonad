@@ -32,9 +32,9 @@ static const char* SHELL_DBUS_SERVICE = "com.canonical.Unity2d.Shell";
 static const char* DASH_DBUS_OBJECT_PATH = "/Dash";
 static const char* HUD_DBUS_OBJECT_PATH = "/HUD";
 
-ShellDBus::ShellDBus(ShellDeclarativeView* view, QObject* parent)
+ShellDBus::ShellDBus(ShellManager* manager, QObject* parent)
 : QObject(parent)
-, m_view(view)
+, m_manager(manager)
 {
 }
 
@@ -51,10 +51,10 @@ ShellDBus::connectToBus()
         return false;
     }
 
-    DashDBus *dashDBus = new DashDBus(m_view, this);
+    DashDBus *dashDBus = new DashDBus(m_manager, this);
     QDBusConnection::sessionBus().registerObject(DASH_DBUS_OBJECT_PATH, dashDBus);
 
-    HUDDBus *hudDBus = new HUDDBus(m_view, this);
+    HUDDBus *hudDBus = new HUDDBus(m_manager, this);
     QDBusConnection::sessionBus().registerObject(HUD_DBUS_OBJECT_PATH, hudDBus);
 
     return true;

@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QVariant>
 #include <QX11Info>
 
 ScreenInfo::ScreenInfo(QObject *parent) :
@@ -16,6 +17,7 @@ ScreenInfo::ScreenInfo(QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(int screen, QObject *parent) :
@@ -28,6 +30,7 @@ ScreenInfo::ScreenInfo(int screen, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
@@ -41,6 +44,7 @@ ScreenInfo::ScreenInfo(QWidget *widget, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
@@ -53,6 +57,7 @@ ScreenInfo::ScreenInfo(Corner corner, QObject *parent) :
                                      SLOT(updateGeometry(int)));
     connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
                                      SLOT(updateAvailableGeometry(int)));
+    connect(&launcher2dConfiguration(), SIGNAL(onlyOneLauncherChanged(bool)), SLOT(updatePanelsFreeGeometry()));
 }
 
 ScreenInfo::~ScreenInfo()
@@ -74,14 +79,16 @@ QRect ScreenInfo::panelsFreeGeometry() const
     QRect screenRect = QApplication::desktop()->screenGeometry(m_screen);
     QRect availableRect = QApplication::desktop()->availableGeometry(m_screen);
 
+    const bool accountForLauncher = !launcher2dConfiguration().property("onlyOneLauncher").toBool() || m_screen == 0;
+
     QRect availableGeometry(
-        LauncherClient::MaximumWidth,
+        screenRect.left() + (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.top(),
-        screenRect.width() - LauncherClient::MaximumWidth,
+        screenRect.width() - (accountForLauncher ? LauncherClient::MaximumWidth : 0),
         availableRect.height()
         );
     if (QApplication::isRightToLeft()) {
-        availableGeometry.moveLeft(0);
+        availableGeometry.moveLeft(screenRect.left());
     }
     return availableGeometry;
 }
@@ -113,6 +120,13 @@ void ScreenInfo::updateAvailableGeometry(int screen)
     }
 }
 
+void ScreenInfo::updatePanelsFreeGeometry()
+{
+    if (m_screen != 0) {
+        Q_EMIT panelsFreeGeometryChanged(panelsFreeGeometry());
+    }
+}
+
 void ScreenInfo::updateScreen()
 {
     int screen;
@@ -126,7 +140,7 @@ void ScreenInfo::updateScreen()
 }
 
 int
-ScreenInfo::cornerScreen(Corner corner)
+ScreenInfo::cornerScreen(Corner corner) const
 {
     QDesktopWidget* desktop = QApplication::desktop();
     switch(corner) {

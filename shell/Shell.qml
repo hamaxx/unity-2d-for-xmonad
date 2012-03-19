@@ -23,6 +23,11 @@ import "common/utils.js" as Utils
 
 Item {
     id: shell
+
+    property variant declarativeView
+    property variant dashLoader
+    property variant hudLoader
+
     /* Space reserved by strutManager is taken off screen.availableGeometry but
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */
@@ -34,10 +39,30 @@ Item {
 
     Accessible.name: "shell"
 
-    property alias hudActive: hudLoader.active
-
     GestureHandler {
         id: gestureHandler
+    }
+
+    onDashLoaderChanged: {
+        if (shellManager.dashActive) {
+            if (dashLoader == undefined)
+            {
+                launcherLoader.visibilityController.endForceVisible("dash")
+            } else {
+                launcherLoader.visibilityController.beginForceVisible("dash")
+            }
+        }
+    }
+
+    onHudLoaderChanged: {
+        if (shellManager.hudActive) {
+            if (hudLoader == undefined)
+            {
+                launcherLoader.visibilityController.endForceHidden("hud")
+            } else {
+                launcherLoader.visibilityController.beginForceHidden("hud")
+            }
+        }
     }
 
     LauncherLoader {
@@ -72,35 +97,13 @@ Item {
             }
         }
 
-        KeyNavigation.right: dashLoader
-
         Binding {
             target: launcherLoader.item
             property: "showMenus"
-            value: !dashLoader.item.active && !hudLoader.item.active
+            value: (dashLoader == undefined || !dashLoader.item.active) && (hudLoader == undefined || !hudLoader.item.active)
         }
 
         Behavior on x { NumberAnimation { id: launcherLoaderXAnimation; duration: 125 } }
-
-        Connections {
-            target: declarativeView
-            onDashActiveChanged: {
-                if (declarativeView.dashActive) {
-                    if (hudLoader.item.active) hudLoader.item.active = false
-                    launcherLoader.visibilityController.beginForceVisible("dash")
-                } else {
-                    launcherLoader.visibilityController.endForceVisible("dash")
-                    if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
-                }
-            }
-            onGlobalPositionChanged: {
-                var x = declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
-                launcherLoader.item.barrierP1 = Qt.point(x, 0)
-                launcherLoader.item.barrierP2 = Qt.point(x, declarativeView.screen.geometry.height)
-                launcherLoader.item.barrierTriggerZoneP1 = Qt.point(x, declarativeView.globalPosition.y)
-                launcherLoader.item.barrierTriggerZoneP2 = Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
-            }
-        }
 
         SpreadMonitor {
             id: spread
@@ -114,46 +117,37 @@ Item {
         }
     }
 
-
-    Loader {
-        id: dashLoader
-        source: "dash/Dash.qml"
-        anchors.top: parent.top
-        x: Utils.isLeftToRight() ? launcherLoader.width : shell.width - width - launcherLoader.width
-        onLoaded: item.focus = true
-        opacity: item.active ? 1.0 : 0.0
-        focus: item.active
-
-        Binding {
-            target: dashLoader.item
-            property: "fullscreenWidth"
-            value: shell.width - launcherLoader.width
-        }
-    }
-
-    Loader {
-        id: hudLoader
-        property bool animating: item.animating
-        property bool active: item.active
-        onActiveChanged: item.active = active
-
-        source: "hud/Hud.qml"
-        anchors.top: parent.top
-        x: Utils.isLeftToRight() ? 0 : shell.width - width
-        onLoaded: item.focus = true
-        visible: item.active
-        focus: item.active
-        width: Math.min(shell.width, 1061)
-    }
-
     Connections {
-        target: hudLoader.item
-        onActiveChanged: {
-            if (hudLoader.item.active) {
-                if (dashLoader.item.active) dashLoader.item.active = false
-                launcherLoader.visibilityController.beginForceHidden("hud")
+        target: shellManager
+
+        onDashActiveChanged: {
+            if (shellManager.dashActive) {
+                if (hudLoader != undefined && hudLoader.item.active) {
+                    hudLoader.item.active = false
+                }
+                if (dashLoader != undefined) {
+                    launcherLoader.visibilityController.beginForceVisible("dash")
+                }
             } else {
-                launcherLoader.visibilityController.endForceHidden("hud")
+                if (dashLoader != undefined) {
+                    launcherLoader.visibilityController.endForceVisible("dash")
+                    if (dashLoader.status == Loader.Ready) dashLoader.item.deactivateAllLenses()
+                }
+            }
+        }
+
+        onHudActiveChanged: {
+            if (shellManager.hudActive) {
+                if (dashLoader != undefined && dashLoader.item.active) {
+                    dashLoader.item.active = false
+                }
+                if (hudLoader != undefined) {
+                    launcherLoader.visibilityController.beginForceHidden("hud")
+                }
+            } else {
+                if (hudLoader != undefined) {
+                    launcherLoader.visibilityController.endForceHidden("hud")
+                }
             }
         }
     }
@@ -165,7 +159,7 @@ Item {
             launcherLoader.item.focusBFB()
         }
         onFocusChanged: {
-            if (!declarativeView.focus && hudLoader.item.active) hudLoader.item.active = false
+            if (!declarativeView.focus && hudLoader!= undefined && hudLoader.item.active) hudLoader.item.active = false
 
             /* FIXME: The launcher is forceVisible while it has activeFocus. However even though
                the documentation says that setting focus=false will make an item lose activeFocus
@@ -177,7 +171,16 @@ Item {
         }
     }
 
-    Component.onCompleted: declarativeView.show()
+    Component.onCompleted: {
+        if (declarativeView.screen.screen == 0) {
+            var loaderComponent = Qt.createComponent("DashLoader.qml");
+            dashLoader = loaderComponent.createObject(shell, {});
+
+            var loaderComponent = Qt.createComponent("HudLoader.qml");
+            hudLoader = loaderComponent.createObject(shell, {});
+        }
+        declarativeView.show()
+    }
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape || (event.key == Qt.Key_F4 && event.modifiers == Qt.AltModifier )) {
@@ -194,31 +197,37 @@ Item {
         }
 
         InputShapeRectangle {
-            rectangle: if (desktop.isCompositingManagerRunning) {
-                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
-            } else {
-                Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+            rectangle: {
+                if (dashLoader != undefined) {
+                    if (desktop.isCompositingManagerRunning) {
+                        return Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width, dashLoader.height)
+                    } else {
+                        return Qt.rect(dashLoader.x, dashLoader.y, dashLoader.width - 7, dashLoader.height - 9)
+                    }
+                } else {
+                    return Qt.rect(0, 0, 0, 0)
+                }
             }
-            enabled: dashLoader.status == Loader.Ready && dashLoader.item.active
+            enabled: dashLoader != undefined && dashLoader.status == Loader.Ready && dashLoader.item.active
             mirrorHorizontally: Utils.isRightToLeft()
 
             InputShapeMask {
                 id: shape1
                 source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
-                position: Qt.point(dashLoader.width - 50, dashLoader.height - 49)
-                enabled: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+                position: dashLoader != undefined ? Qt.point(dashLoader.width - 50, dashLoader.height - 49) : Qt.point(0, 0)
+                enabled: shellManager.dashMode == ShellManager.DesktopMode
             }
         }
 
         InputShapeRectangle {
             id: hudInputShape
-            enabled: hudLoader.status == Loader.Ready && hudLoader.item.active
+            enabled: hudLoader != undefined && hudLoader.status == Loader.Ready && hudLoader.item.active
 
             InputShapeMask {
                 source: "shell/common/artwork/desktop_dash_background_no_transparency.png"
                 color: "red"
-                position: Qt.point(hudLoader.width - 50, hudLoader.height - 49)
+                position: hudLoader != undefined ? Qt.point(hudLoader.width - 50, hudLoader.height - 49) : Qt.point(0, 0)
             }
         }
     }
@@ -237,13 +246,17 @@ Item {
         target: hudInputShape
         property: "rectangle"
         value: {
-            if (desktop.isCompositingManagerRunning) {
-                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+            if (hudLoader != undefined) {
+                if (desktop.isCompositingManagerRunning) {
+                    return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width, hudLoader.height)
+                } else {
+                    return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+                }
             } else {
-                return Qt.rect(hudLoader.x, hudLoader.y, hudLoader.width - 7, hudLoader.height - 9)
+                return Qt.rect(0, 0, 0, 0)
             }
         }
-        when: !hudLoader.animating
+        when: hudLoader != undefined && !hudLoader.animating
     }
 
     StrutManager {
@@ -252,6 +265,25 @@ Item {
         widget: declarativeView
         height: launcherLoader.height
         width: launcherLoader.width
-        enabled: Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+        enabled: launcherLoader.loadLauncher && Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+    }
+
+    PointerBarrier {
+        property int x: declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+
+        id: leftBarrier
+        triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
+        triggerZoneEnabled: !launcherLoader.visibilityController.shown
+        p1: Qt.point(x, declarativeView.screen.geometry.y)
+        p2: Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
+        triggerZoneP1: Qt.point(x, declarativeView.globalPosition.y)
+        triggerZoneP2: Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
+        threshold: launcherLoader.launcherInHideMode && launcherLoader.loadLauncher ? launcher2dConfiguration.edgeStopVelocity : -1
+        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
+        decayRate: launcher2dConfiguration.edgeDecayrate
+        triggerPressure: launcher2dConfiguration.edgeRevealPressure
+        breakPressure: launcher2dConfiguration.edgeOvercomePressure
+
+        onTriggered: launcherLoader.item.barrierTriggered()
     }
 }

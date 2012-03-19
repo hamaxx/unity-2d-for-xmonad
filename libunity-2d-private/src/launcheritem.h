@@ -33,6 +33,7 @@ class LauncherItem : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool active READ active NOTIFY activeChanged)
+    Q_PROPERTY(int activeScreen READ activeScreen NOTIFY activeScreenChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
     Q_PROPERTY(int windowCount READ windowCount NOTIFY windowCountChanged)
     Q_PROPERTY(bool urgent READ urgent NOTIFY urgentChanged)
@@ -56,6 +57,7 @@ public:
 
     /* getters */
     virtual bool active() const = 0;
+    virtual int activeScreen() const = 0;
     virtual bool running() const = 0;
     virtual int windowCount() const = 0;
     virtual bool urgent() const = 0;
@@ -79,14 +81,14 @@ public:
     Q_INVOKABLE virtual void activate() = 0;
     Q_INVOKABLE virtual void createMenuActions() = 0;
     Q_INVOKABLE virtual void launchNewInstance();
-    Q_INVOKABLE virtual bool belongsToDifferentWorkspace();
-    Q_INVOKABLE virtual bool belongsToDifferentScreen(int screen);
+    Q_INVOKABLE virtual int windowsOnCurrentWorkspaceScreen(int screen);
 
 protected:
     LauncherContextualMenu* m_menu;
 
 Q_SIGNALS:
     void activeChanged(bool);
+    void activeScreenChanged(int);
     void runningChanged(bool);
     void windowCountChanged(int);
     void urgentChanged(bool);

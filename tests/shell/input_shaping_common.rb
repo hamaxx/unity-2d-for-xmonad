@@ -121,10 +121,11 @@ end
 def test_shape_of_launcher_and_fullscreen_mode_dash(isRTL = false)
     XDo::Keyboard.simulate('{SUPER}')
     sleep 1
-    @app.ShellDeclarativeView()['dashMode'] = 'FullScreenMode'
+    $SUT.execute_shell_command "dconf write /com/canonical/unity-2d/dash/full-screen true"
     sleep 1
 
     maskpath = get_shell_shape()
+    $SUT.execute_shell_command "dconf write /com/canonical/unity-2d/dash/full-screen false"
 
     # Compare with just one big rectangle filling the entire screen minus the panel area
     screen_width, screen_height = XDo::XWindow.display_geometry()

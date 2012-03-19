@@ -105,3 +105,8 @@ If the drag is acceptable, mouse cursor will have a '+' sign. but this feedback 
 to take one second time to update.
 
 ----
+
+ * In a multimonitor environment, set launcher to always show and to show in only one screen
+
+Verify there is no strut in the rest of screens where the launcher would be
+----

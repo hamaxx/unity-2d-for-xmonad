@@ -70,6 +70,8 @@ void HUDClient::connectToHud()
                                          QDBusConnection::sessionBus(), this);
     connect(m_hudDbusIface, SIGNAL(activeChanged(bool)),
             SLOT(slotActiveChanged(bool)));
+    connect(m_hudDbusIface, SIGNAL(screenChanged(int)),
+            SLOT(slotScreenChanged(int)));
 
     QVariant value = m_hudDbusIface->property("active");
     if (value.isValid()) {
@@ -77,6 +79,14 @@ void HUDClient::connectToHud()
     } else {
         UQ_WARNING << "Fetching HUD.active property failed";
     }
+
+    value = m_hudDbusIface->property("screen");
+    if (value.isValid()) {
+        m_screen = value.toInt();
+    } else {
+        UQ_WARNING << "Fetching Hud.screen property failed";
+    }
+
 }
 
 HUDClient* HUDClient::instance()
@@ -117,6 +127,24 @@ void HUDClient::setActive(bool active)
         QDBusInterface iface(SHELL_DBUS_SERVICE, HUD_DBUS_PATH, HUD_DBUS_INTERFACE);
         iface.setProperty("active", true);
     }
+}
+
+void HUDClient::slotScreenChanged(int screen)
+{
+    if (screen != m_screen) {
+        m_screen = screen;
+        Q_EMIT screenChanged(screen);
+    }
+}
+
+int HUDClient::screen() const
+{
+    return m_screen;
+}
+
+bool HUDClient::activeInScreen(int screen) const
+{
+    return active() && m_screen == screen;
 }
 
 #include "hudclient.moc"

@@ -35,6 +35,8 @@ MouseArea {
 
     /* list index of the tile being dragged */
     property int draggedTileIndex
+    /* first list index of the tile being dragged */
+    property int firstDraggedTileIndex
     /* id (desktop file path) of the tile being dragged */
     property string draggedTileId: ""
     /* absolute mouse coordinates in the list */
@@ -65,10 +67,14 @@ MouseArea {
            events for other mouse areas below, which is not desired). */
         var coord = mapToItem(list.contentItem, mouse.x, mouse.y)
         draggedTileIndex = list.indexAt(coord.x, coord.y)
+        firstDraggedTileIndex = draggedTileIndex
         longPressDelay.start()
     }
     function drop() {
         longPressDelay.stop()
+        if (draggedTileId != "" && firstDraggedTileIndex != draggedTileIndex) {
+            items.moveFinished(firstDraggedTileIndex, draggedTileIndex)
+        }
         draggedTileId = ""
         parent.interactive = true
     }

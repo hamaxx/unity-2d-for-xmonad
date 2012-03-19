@@ -253,7 +253,7 @@ struct AppNameAppletPrivate
 
     void setupWindowHelper()
     {
-        m_windowHelper = new WindowHelper(q);
+        m_windowHelper = new WindowHelper(q->panel()->screen(), q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_windowHelper, SIGNAL(nameChanged()),
@@ -317,7 +317,7 @@ void AppNameApplet::updateWidgets()
 
     bool isMaximized = d->m_windowHelper->isMaximized();
     bool isUserVisibleApp = app ? app->user_visible() : false;
-    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(QApplication::desktop()->screenNumber(this));
+    bool isOnSameScreen = d->m_windowHelper->isMostlyOnScreen(panel()->screen());
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
     bool isOpened = isOnSameScreen &&
         (isUnderMouse
@@ -326,8 +326,8 @@ void AppNameApplet::updateWidgets()
         );
     bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
-    bool dashIsVisible = DashClient::instance()->active();
-    bool hudIsVisible = HUDClient::instance()->active();
+    bool dashIsVisible = DashClient::instance()->activeInScreen(panel()->screen());
+    bool hudIsVisible = HUDClient::instance()->activeInScreen(panel()->screen());
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
     bool showDesktopLabel = !app;

@@ -16,8 +16,8 @@
 
 #include "application.h"
 #include "applicationslist.h"
+#include "applicationslistmanager.h"
 #include "webfavorite.h"
-#include "applicationslistdbus.h"
 
 #include "bamf-matcher.h"
 #include "bamf-application.h"
@@ -29,8 +29,6 @@
 
 #include <QStringList>
 #include <QDir>
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QFileInfo>
 #include <QProcess>
 #include <QX11Info>
@@ -41,12 +39,6 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
-
-#define DBUS_SERVICE_UNITY "com.canonical.Unity"
-#define DBUS_SERVICE_LAUNCHER_ENTRY "com.canonical.Unity.LauncherEntry"
-#define DBUS_SERVICE_LAUNCHER "com.canonical.Unity.Launcher"
-#define DBUS_OBJECT_LAUNCHER "/com/canonical/Unity/Launcher"
-
 /* List of executables that are too generic to be matched against a single application. */
 static const QStringList EXECUTABLES_BLACKLIST = (QStringList() << "xdg-open");
 static const QByteArray LATEST_SETTINGS_MIGRATION = "3.2.10";
@@ -54,34 +46,6 @@ static const QByteArray LATEST_SETTINGS_MIGRATION = "3.2.10";
 ApplicationsList::ApplicationsList(QObject *parent) :
     QAbstractListModel(parent)
 {
-    QDBusConnection session = QDBusConnection::sessionBus();
-    /* FIXME: libunity will send out the Update signal for LauncherEntries
-       only if it finds com.canonical.Unity on the bus, so let's just quickly
-       register ourselves as Unity here. Should be moved somewhere else more proper */
-    if (!session.registerService(DBUS_SERVICE_UNITY)) {
-        UQ_WARNING << "The name" << DBUS_SERVICE_UNITY << "is already taken on DBUS";
-    } else {
-        /* Set ourselves up to receive any Update signal coming from any
-           LauncherEntry */
-        session.connect(QString(), QString(),
-                        DBUS_SERVICE_LAUNCHER_ENTRY, "Update",
-                        this, SLOT(onRemoteEntryUpdated(QString,QMap<QString,QVariant>)));
-    }
-
-    if (!session.registerService(DBUS_SERVICE_LAUNCHER)) {
-        UQ_WARNING << "The name" << DBUS_SERVICE_LAUNCHER << "is already taken on DBUS";
-    } else {
-        /* Set ourselves up to receive a method call from Software Center asking us to add
-           to favorites an application that is being installed and that the user requested
-           to be added. */
-        ApplicationsListDBUS *dbusAdapter = new ApplicationsListDBUS(this);
-        if (!session.registerObject(DBUS_OBJECT_LAUNCHER, dbusAdapter,
-                                    QDBusConnection::ExportAllSlots)) {
-            UQ_WARNING << "The object" << DBUS_OBJECT_LAUNCHER << "on" << DBUS_SERVICE_LAUNCHER
-                       << "is already present on DBUS.";
-        }
-    }
-
     /* Register the display to receive startup notifications */
     Display *xdisplay = QX11Info::display();
     m_snDisplay = sn_display_new(xdisplay, NULL, NULL);
@@ -108,6 +72,8 @@ ApplicationsList::ApplicationsList(QObject *parent) :
     }
 
     load();
+
+    ApplicationsListManager::instance()->addList(this);
 }
 
 void
@@ -151,19 +117,8 @@ ApplicationsList::x11EventFilter(XEvent* xevent)
     return false;
 }
 
-void
-ApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
+void ApplicationsList::remoteEntryUpdated(const QString& desktopFile, const QString& sender, const QString& applicationURI, const QMap<QString, QVariant>& properties)
 {
-    UQ_RETURN_IF_FAIL(calledFromDBus());
-    QString sender = message().service();
-    QString desktopFile;
-    if (applicationURI.indexOf("application://") == 0) {
-        desktopFile = applicationURI.mid(14);
-    } else {
-        UQ_WARNING << "Ignoring update that didn't come from an application:// URI but from:" << applicationURI;
-        return;
-    }
-
     Q_FOREACH(Application *application, m_applications) {
         if (QFileInfo(application->desktop_file()).fileName() == desktopFile) {
             application->updateOverlaysState(sender, properties);
@@ -176,6 +131,8 @@ ApplicationsList::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVa
 
 ApplicationsList::~ApplicationsList()
 {
+    ApplicationsListManager::instance()->removeList(this);
+
     sn_monitor_context_unref(m_snContext);
     sn_display_unref(m_snDisplay);
 
@@ -502,7 +459,17 @@ ApplicationsList::data(const QModelIndex &index, int role) const
 }
 
 void
-ApplicationsList::move(int from, int to)
+ApplicationsList::moveFinished(int from, int to)
+{
+    Q_FOREACH(ApplicationsList *other, ApplicationsListManager::instance()->m_lists) {
+        if (other != this) {
+            other->doMove(from, to);
+        }
+    }
+}
+
+void
+ApplicationsList::doMove(int from, int to)
 {
     QModelIndex parent;
     /* When moving an item down, the destination index needs to be incremented
@@ -511,6 +478,12 @@ ApplicationsList::move(int from, int to)
     beginMoveRows(parent, from, from, parent, to + (to > from ? 1 : 0));
     m_applications.move(from, to);
     endMoveRows();
+}
+
+void
+ApplicationsList::move(int from, int to)
+{
+    doMove(from, to);
 
     if (m_applications[from]->sticky() || m_applications[to]->sticky()) {
         /* Update favorites only if at least one of the applications is a favorite */

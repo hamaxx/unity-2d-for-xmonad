@@ -27,6 +27,15 @@ Item {
     property bool fullscreen: false
     property int bottomBorderThickness
     property int rightBorderThickness
+    property bool activeTriggerHelper: true
+    property bool reallyActive: active && activeTriggerHelper
+    property variant view: undefined
+
+    function trigger()
+    {
+        activeTriggerHelper = false
+        activeTriggerHelper = true
+    }
 
     /* Avoid redraw at rendering */
     effect: CacheEffect {}
@@ -49,7 +58,7 @@ Item {
 
             /* Use an image of the root window which essentially is a
                capture of the entire screen */
-            source: active ? "image://window/root" : ""
+            source: reallyActive ? "image://window/root" : ""
             cache: false
 
             fillMode: Image.PreserveAspectCrop
@@ -57,7 +66,8 @@ Item {
             /* Place the screenshot of the desktop background on top of the desktop background,
                no matter where the DeclarativeView or the parent object are placed.
             */
-            property variant origin: parent.mapFromItem(null, -declarativeView.globalPosition.x, -declarativeView.globalPosition.y)
+            property variant origin: parent.mapFromItem(null, background.view != undefined ? -background.view.globalPosition.x : -declarativeView.globalPosition.x,
+                                                              background.view != undefined ? -background.view.globalPosition.y : -declarativeView.globalPosition.y)
             x: origin.x
             y: origin.y
         }

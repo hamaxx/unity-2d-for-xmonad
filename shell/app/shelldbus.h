@@ -24,7 +24,7 @@
 #include <QtCore/QObject>
 #include <QtDBus/QDBusContext>
 
-class ShellDeclarativeView;
+class ShellManager;
 
 /**
  * DBus interface for the shell.
@@ -34,13 +34,13 @@ class ShellDBus : public QObject, protected QDBusContext
     Q_OBJECT
 
 public:
-    ShellDBus(ShellDeclarativeView* view, QObject* parent=0);
+    ShellDBus(ShellManager* manager, QObject* parent=0);
     ~ShellDBus();
 
     bool connectToBus();
 
 private:
-    ShellDeclarativeView* m_view;
+    ShellManager* m_manager;
 };
 
 #endif // ShellDBus_H

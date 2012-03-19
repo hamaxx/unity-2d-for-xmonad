@@ -21,27 +21,16 @@
 // QT
 #include <QApplication>
 #include <QDebug>
-#include <QtDeclarative>
-#include <QDeclarativeEngine>
-#include <QDeclarativeView>
-#include <QDesktopWidget>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-#include <QDeclarativeContext>
-#include <QAbstractEventDispatcher>
 #include <QDir>
-
-// X11
-#include <X11/Xlib.h>
+#include <QUrl>
 
 // unity-2d
 #include <gnomesessionclient.h>
 #include <unity2dapplication.h>
-#include <unity2ddebug.h>
 
 // Local
 #include "config.h"
-#include "shelldeclarativeview.h"
+#include "shellmanager.h"
 #include "shelldbus.h"
 
 int main(int argc, char *argv[])
@@ -69,22 +58,7 @@ int main(int argc, char *argv[])
     GnomeSessionClient client(INSTALL_PREFIX "/share/applications/unity-2d-shell.desktop");
     client.connectToSessionManager();
 
-    qmlRegisterType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView");
-    ShellDeclarativeView view;
-    view.setAccessibleName("Shell");
-    if (arguments.contains("-opengl")) {
-        view.setUseOpenGL(true);
-    }
-
-    application.installX11EventFilter(&view);
-
-    view.engine()->addImportPath(unity2dImportPath());
-    view.engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
-
-    /* Load the QML UI, focus and show the window */
-    view.setResizeMode(QDeclarativeView::SizeViewToRootObject);
-    view.rootContext()->setContextProperty("declarativeView", &view);
-    view.setSource(rootFileUrl);
+    ShellManager shells(rootFileUrl);
 
     /* Unset DESKTOP_AUTOSTART_ID in order to avoid child processes (launched
        applications) to use the same client id.
@@ -101,7 +75,7 @@ int main(int argc, char *argv[])
        (see e.g. https://bugs.launchpad.net/bugs/684471). */
     QDir::setCurrent(QDir::homePath());
 
-    ShellDBus shellDBus(&view);
+    ShellDBus shellDBus(&shells);
     if (!shellDBus.connectToBus()) {
         qCritical() << "Another instance of the Shell already exists. Quitting.";
         return -1;

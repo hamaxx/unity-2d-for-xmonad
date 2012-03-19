@@ -31,48 +31,60 @@ FocusScope {
     LayoutMirroring.childrenInherit: true
 
     property variant currentPage
-    /* FIXME: 'active' property exactly mirrors 'declarativeView.dashActive'.
+    /* FIXME: 'active' property exactly mirrors 'shellManager.dashActive'.
        The final goal is to transition to using exclusively the QML 'active' property
-       and drop the C++ 'declarativeView.dashActive'.
+       and drop the C++ 'shellManager.dashActive'.
     */
     property variant active
-    /* The following way of mirroring the values of 'declarativeView.dashActive'
+    /* The following way of mirroring the values of 'shellManager.dashActive'
        and 'active' works now and QML does not see it as a binding loop but we
        cannot count on it long term.
     */
     Binding {
-        target: declarativeView
+        target: shellManager
         property: "dashActive"
         value: dash.active
     }
     Binding {
         target: dash
         property: "active"
-        value: declarativeView.dashActive
+        value: shellManager.dashActive
     }
 
-    onActiveChanged: if (dash.active) declarativeView.forceActivateWindow()
+    onActiveChanged: if (dash.active) shellManager.dashShell.forceActivateWindow()
+
+    Connections {
+        target: shellManager
+        onDashShellChanged: {
+            if (dash.active) {
+                background.trigger()
+                shellManager.dashShell.forceActivateWindow()
+            }
+        }
+    }
 
     property variant queuedLensId
 
-    Binding {
-        target: declarativeView
-        property: "expanded"
-        value: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
-    }
+    property bool expanded: (currentPage && currentPage.expanded != undefined) ? currentPage.expanded : true
 
     Binding {
-        target: declarativeView
+        target: shellManager
         property: "dashMode"
-        value: declarativeView.dashAlwaysFullScreen || dash2dConfiguration.fullScreen ?
-               ShellDeclarativeView.FullScreenMode : ShellDeclarativeView.DesktopMode
+        value: shellManager.alwaysFullScreen || dash2dConfiguration.fullScreen ?
+               ShellManager.FullScreenMode : ShellManager.DesktopMode
     }
 
     Connections {
-        target: declarativeView
+        target: shellManager
 
-        onActivateHome: activateHome()
-        onActivateLens: activateLens(lensId)
+        onDashActivateHome: activateHome()
+        onDashActivateLens: activateLens(lensId)
+    }
+
+    Connections {
+        target: shellManager.dashShell
+
+        onFocusChanged: if (!shellManager.dashShell.focus) active = false
     }
 
     function activatePage(page) {
@@ -103,7 +115,7 @@ FocusScope {
         for (var i=0; i<lenses.rowCount(); i++) {
             lenses.get(i).viewType = Lens.Hidden
         }
-        declarativeView.activeLens = ""
+        shellManager.dashActiveLens = ""
     }
 
     SpreadMonitor {
@@ -125,7 +137,7 @@ FocusScope {
             return
         }
 
-        if (lensId == declarativeView.activeLens && dash.active) {
+        if (lensId == shellManager.dashActiveLens && dash.active) {
             /* we don't need to activate the lens, just show its UI */
             buildLensPage(lens)
             return
@@ -147,13 +159,13 @@ FocusScope {
         }
 
         buildLensPage(lens)
-        declarativeView.activeLens = lens.id
+        shellManager.dashActiveLens = lens.id
         dash.active = true
     }
 
     function activateHome() {
         if (spreadMonitor.shown) return
-        if (declarativeView.haveCustomHomeShortcuts) {
+        if (shellManager.dashHaveCustomHomeShortcuts) {
             for (var i=0; i<lenses.rowCount(); i++) {
                 lenses.get(i).viewType = Lens.Hidden
             }
@@ -161,7 +173,7 @@ FocusScope {
             /* Take advantage of the fact that the loaded qml is local and setting
                the source loads it immediately making pageLoader.item valid */
             activatePage(pageLoader.item)
-            declarativeView.activeLens = ""
+            shellManager.dashActiveLens = ""
             dash.active = true
         } else {
             activateLens("home.lens")
@@ -222,7 +234,8 @@ FocusScope {
         anchors.fill: parent
 
         active: dash.active
-        fullscreen: declarativeView.dashMode != ShellDeclarativeView.DesktopMode
+        fullscreen: shellManager.dashMode != ShellManager.DesktopMode
+        view: shellManager.dashShell
     }
 
     Item {
@@ -289,7 +302,7 @@ FocusScope {
             KeyNavigation.left: search_entry
 
             /* FilterPane is only to be displayed for lenses, not in the home page or Alt+F2 Run page */
-            visible: declarativeView.activeLens != "home.lens" && declarativeView.activeLens != "" && declarativeView.activeLens != "commands.lens"
+            visible: shellManager.dashActiveLens != "home.lens" && shellManager.dashActiveLens != "" && shellManager.dashActiveLens != "commands.lens"
             lens: visible && currentPage != undefined ? currentPage.model : undefined
 
             anchors.top: search_entry.anchors.top
@@ -342,33 +355,31 @@ FocusScope {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 44
-            visible: declarativeView.expanded
+            visible: expanded
         }
     }
 
     property int desktopCollapsedHeight: 115
     property int desktopExpandedHeight: 615
     property int desktopWidth: 996
-    property int fullscreenWidth: declarativeView.screen.availableGeometry.width
-    property int fullscreenHeight: declarativeView.screen.availableGeometry.height
 
     states: [
         State {
             name: "desktop"
-            when: declarativeView.dashMode == ShellDeclarativeView.DesktopMode
+            when: shellManager.dashMode == ShellManager.DesktopMode
             PropertyChanges {
                 target: dash
                 width: desktopWidth
-                height: declarativeView.expanded ? desktopExpandedHeight : desktopCollapsedHeight
+                height: expanded ? desktopExpandedHeight : desktopCollapsedHeight
             }
         },
         State {
             name: "fullscreen"
-            when: declarativeView.dashMode == ShellDeclarativeView.FullScreenMode
+            when: shellManager.dashMode == ShellManager.FullScreenMode
             PropertyChanges {
                 target: dash
-                width: fullscreenWidth
-                height: fullscreenHeight
+                width: shellManager.dashShell != undefined ? shellManager.dashShell.screen.panelsFreeGeometry.width : 0
+                height: shellManager.dashShell != undefined ? shellManager.dashShell.screen.panelsFreeGeometry.height : 0
             }
         }
     ]

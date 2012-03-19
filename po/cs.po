@@ -7,83 +7,152 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-06-07 18:21+0200\n"
-"PO-Revision-Date: 2011-04-20 07:17+0000\n"
+"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"PO-Revision-Date: 2012-03-16 15:17+0000\n"
 "Last-Translator: Vojtěch Trefný <vojtech.trefny@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-07-11 15:20+0000\n"
-"X-Generator: Launchpad (build 13388)\n"
+"X-Launchpad-Export-Date: 2012-03-17 05:30+0000\n"
+"X-Generator: Launchpad (build 14951)\n"
 
-#: places/GroupHeader.qml:88
-msgid "See one more result"
-msgstr "Zobrazit jeden další výsledek"
+#: panel/applets/appname/appnameapplet.cpp:364
+msgid "Ubuntu Desktop"
+msgstr "Prostředí Ubuntu"
 
-#: places/GroupHeader.qml:90
+#: shell/hud/Hud.qml:192
+msgid "Type your Command"
+msgstr "Napište příkaz"
+
+#: launcher/LauncherList.qml:82
 #, qt-format
-msgid "See %1 more results"
-msgstr "Zobrazit %1 dalších výsledků"
+msgid "%1 window opened"
+msgid_plural "%1 windows opened"
+msgstr[0] "%1 otevřené okno"
+msgstr[1] "%1 otevřená okna"
+msgstr[2] "%1 otevřených oken"
 
-#: places/GroupHeader.qml:93
+#: launcher/LauncherList.qml:85
+msgid "not running"
+msgstr "není spuštěno"
+
+#: places/CategoryHeader.qml:36
+msgid "not expanded"
+msgstr "nerozbaleno"
+
+#: places/CategoryHeader.qml:36
+msgid "expanded"
+msgstr "rozbaleno"
+
+#: places/CategoryHeader.qml:97
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] "Zobrazit %1 další výsledek"
+msgstr[1] "Zobrazit %1 další výsledky"
+msgstr[2] "Zobrazit %1 dalších výsledků"
+
+#: places/CategoryHeader.qml:99
 msgid "See fewer results"
 msgstr "Zobrazit méně výsledků"
 
-#: places/HomeShortcuts.qml:32
-msgid "Media Apps"
-msgstr "Mediální aplikace"
-
-#: places/HomeShortcuts.qml:38
-msgid "Internet Apps"
-msgstr "Internetové aplikace"
-
-#: places/HomeShortcuts.qml:44
-msgid "More Apps"
-msgstr "Více aplikací"
-
-#: places/HomeShortcuts.qml:50
-msgid "Find Files"
-msgstr "Najít soubory"
-
-#: places/HomeShortcuts.qml:57
-msgid "Browse the Web"
-msgstr "Prohlížet web"
-
-#: places/HomeShortcuts.qml:62
-msgid "View Photos"
-msgstr "Prohlédnout fotografie"
-
-#: places/HomeShortcuts.qml:67
-msgid "Check Email"
-msgstr "Zkontrolovat e-maily"
-
-#: places/HomeShortcuts.qml:72
-msgid "Listen to Music"
-msgstr "Poslouchat hudbu"
-
-#: places/Home.qml:79
+#: places/Home.qml:80
 msgid "Shortcuts"
 msgstr "Rychlý přístup"
 
-#: places/SearchRefine.qml:61
-msgid "Refine search"
-msgstr "Upřesnit vyhledávání"
+#: places/HomeShortcuts.qml:56
+msgid "Media Apps"
+msgstr "Mediální aplikace"
 
-#: places/SearchRefine.qml:84
-msgid "Type"
-msgstr "Kategorie"
+#: places/HomeShortcuts.qml:62
+msgid "Internet Apps"
+msgstr "Internetové aplikace"
 
-#: libunity-2d-private/Unity2d/launcherdevice.cpp:238
-msgid "Eject"
-msgstr "Vysunout"
+#: places/HomeShortcuts.qml:68
+msgid "More Apps"
+msgstr "Více aplikací"
 
-#: libunity-2d-private/Unity2d/trash.cpp:125
+#: places/HomeShortcuts.qml:74
+msgid "Find Files"
+msgstr "Najít soubory"
+
+#: places/HomeShortcuts.qml:81
+msgid "Browse the Web"
+msgstr "Prohlížet web"
+
+#: places/HomeShortcuts.qml:86
+msgid "View Photos"
+msgstr "Prohlédnout fotografie"
+
+#: places/HomeShortcuts.qml:92
+msgid "Check Email"
+msgstr "Zkontrolovat e-maily"
+
+#: places/HomeShortcuts.qml:97
+msgid "Listen to Music"
+msgstr "Poslouchat hudbu"
+
+#: places/FilterPane.qml:69
+msgid "Filter results"
+msgstr "Filtrovat výsledky"
+
+#: places/SearchEntry.qml:176
+msgid "Search"
+msgstr "Hledat"
+
+#: places/FilterLoader.qml:36
+#, qt-format
+msgid "Filter %1 active"
+msgstr "Filtr %1 aktivní"
+
+#: places/FilterLoader.qml:38
+#, qt-format
+msgid "Filter %1 inactive"
+msgstr "Filtr %1 neaktivní"
+
+#: places/FilterLoader.qml:90
+msgid "All"
+msgstr "Vše"
+
+#: libunity-2d-private/src/unity2dapplication.cpp:151
+msgid "QT_LAYOUT_DIRECTION"
+msgstr "QT_LAYOUT_DIRECTION"
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Keep in launcher"
+msgstr "Ponechat ve spouštěči"
+
+#: libunity-2d-private/src/launcherapplication.cpp:903
+msgid "Remove from launcher"
+msgstr "Odstranit ze spouštěče"
+
+#: libunity-2d-private/src/launcherapplication.cpp:910
+msgid "Quit"
+msgstr "Ukončit"
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home"
+msgstr "Domů"
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home screen"
+msgstr "Domovská obrazovka"
+
+#: libunity-2d-private/src/bfb.cpp:71
+msgid "Dash home"
+msgstr "Hlavní nabídka Dash"
+
+#: libunity-2d-private/src/workspaces.cpp:73
+msgid "Workspaces"
+msgstr "Pracovní plochy"
+
+#: libunity-2d-private/src/trash.cpp:128
 msgid "Trash"
 msgstr "Koš"
 
-#: libunity-2d-private/Unity2d/trash.cpp:255
+#: libunity-2d-private/src/trash.cpp:208
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
@@ -91,22 +160,14 @@ msgstr[0] "%n položka v koši"
 msgstr[1] "%n položky v koši"
 msgstr[2] "%n položek v koši"
 
-#: libunity-2d-private/Unity2d/trash.cpp:262
+#: libunity-2d-private/src/trash.cpp:215
 msgid "Empty Trash"
 msgstr "Vyprázdnit koš"
 
-#: libunity-2d-private/Unity2d/workspaces.cpp:73
-msgid "Workspaces"
-msgstr "Pracovní plochy"
+#: libunity-2d-private/src/launcherdevice.cpp:273
+msgid "Eject"
+msgstr "Vysunout"
 
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Keep in launcher"
-msgstr "Ponechat ve spouštěči"
-
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:863
-msgid "Remove from launcher"
-msgstr "Odstranit ze spouštěče"
-
-#: libunity-2d-private/Unity2d/launcherapplication.cpp:870
-msgid "Quit"
-msgstr "Ukončit"
+#: libunity-2d-private/src/launcherdevice.cpp:281
+msgid "Safely remove"
+msgstr "Bezpečně odebrat"

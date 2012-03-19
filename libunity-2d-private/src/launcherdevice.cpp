@@ -59,6 +59,12 @@ LauncherDevice::active() const
     return false;
 }
 
+int
+LauncherDevice::activeScreen() const
+{
+    return -1;
+}
+
 bool
 LauncherDevice::running() const
 {
