@@ -80,7 +80,7 @@ LauncherDropItem {
         height: parent.height
         anchors.right: Utils.isLeftToRight() ? parent.right : undefined
         anchors.left:  Utils.isLeftToRight() ? undefined : parent.left
-        visible: shellManager.dashActive && shellManager.dashShell == declarativeView
+        visible: (shellManager.hudActive || shellManager.dashActive) && shellManager.dashShell == declarativeView
         source: "artwork/border.png"
         fillMode: Image.Stretch
     }
