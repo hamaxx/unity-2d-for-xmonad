@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import "../common"
 import "../common/utils.js" as Utils
 
 FocusScope {
@@ -64,6 +65,15 @@ FocusScope {
         var uri = firstResult.column_0
         var mimetype = firstResult.column_3
         dash.activateUriWithLens(model, uri, mimetype)
+    }
+
+    TextCustom {
+            text: lensView.model != undefined ? lensView.model.noResultsHint : ""
+            fontSize: "medium"
+            color: "white"
+            visible: lensView.model != undefined && lensView.model.noResultsHint != ""
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
     }
 
     ListViewWithScrollbar {

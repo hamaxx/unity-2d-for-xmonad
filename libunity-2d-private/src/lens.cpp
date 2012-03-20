@@ -22,6 +22,7 @@
 
 // libunity-2d
 #include <debug_p.h>
+#include <unity2dtr.h>
 #include "application.h"
 #include "filters.h"
 
@@ -126,6 +127,11 @@ QString Lens::globalSearchQuery() const
 {
     return m_globalSearchQuery;
 }
+    
+QString Lens::noResultsHint() const
+{
+    return m_noResultsHint;
+}
 
 void Lens::setViewType(const Lens::ViewType& viewType)
 {
@@ -157,6 +163,13 @@ void Lens::setGlobalSearchQuery(const QString& search_query)
         m_globalSearchQuery = search_query;
         m_unityLens->GlobalSearch(search_query.toStdString());
         Q_EMIT globalSearchQueryChanged();
+    }
+}
+    
+void Lens::setNoResultsHint(const QString& hint) {
+    if (m_noResultsHint != hint) {
+        m_noResultsHint = hint;
+        Q_EMIT noResultsHintChanged();
     }
 }
 
@@ -263,6 +276,8 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     /* Signals forwarding */
     m_unityLens->search_finished.connect(sigc::mem_fun(this, &Lens::searchFinished));
     m_unityLens->global_search_finished.connect(sigc::mem_fun(this, &Lens::globalSearchFinished));
+    connect(this, SIGNAL(searchFinished(unity::dash::Lens::Hints const &)), SLOT(onSearchFinished(unity::dash::Lens::Hints const &)));
+    connect(this, SIGNAL(globalSearchFinished(unity::dash::Lens::Hints const &)), SLOT(onSearchFinished(unity::dash::Lens::Hints const &)));
 
     /* FIXME: signal should be forwarded instead of calling the handler directly */
     m_unityLens->activated.connect(sigc::mem_fun(this, &Lens::onActivated));
@@ -320,6 +335,23 @@ void Lens::onCategoriesChanged(unity::dash::Categories::Ptr categories)
 void Lens::onViewTypeChanged(unity::dash::ViewType viewType)
 {
     Q_EMIT viewTypeChanged( (Lens::ViewType) viewType);
+}
+    
+void Lens::onSearchFinished(unity::dash::Lens::Hints const &hints)
+{
+    QString hint;
+
+    if (!m_unityLens->results()->count()) {
+        unity::dash::Lens::Hints::const_iterator it = hints.find("no-results-hint");
+        if (it != hints.end()) {
+            hint = QString::fromStdString(it->second.GetString());
+            UQ_DEBUG << "no-results-hint is" << m_noResultsHint;
+        } else {
+            hint =  u2dTr("Sorry, there is nothing that matches your search.");
+        }
+    }
+
+    setNoResultsHint(hint);
 }
 
 #include "lens.moc"
