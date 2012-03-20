@@ -91,7 +91,7 @@ void IndicatorApplet::onObjectAdded(Indicator::Ptr const& indicator)
     QString name = QString::fromStdString(indicator->name());
 
     // appmenu indicator is handled by AppNameApplet
-    if (name != "libappmenu.so") {
+    if (!indicator->IsAppmenu()) {
         m_indicatorsWidget->addIndicator(indicator);
     }
 }
@@ -101,7 +101,7 @@ void IndicatorApplet::onObjectRemoved(Indicator::Ptr const& indicator)
     QString name = QString::fromStdString(indicator->name());
 
     // appmenu indicator is handled by AppNameApplet
-    if (name != "libappmenu.so") {
+    if (!indicator->IsAppmenu()) {
         m_indicatorsWidget->removeIndicator(indicator);
     }
 }

@@ -92,7 +92,7 @@ unity::indicator::DBusIndicators::Ptr IndicatorsManager::indicators() const
     return m_indicators;
 }
 
-void IndicatorsManager::onEntryShowMenu(const std::string& /*entryId*/, int posX, int posY, int /*timestamp*/, int /*button*/)
+void IndicatorsManager::onEntryShowMenu(const std::string& /*entryId*/, unsigned int /*xid*/, int posX, int posY, unsigned int /*button*/, unsigned int /*timestamp*/)
 {
     // Copied from plugins/unityshell/src/PanelView.cpp, in OnEntryShowMenu()
     // Without this code, menus cannot be shown from mousePressEvent() (but can
@@ -188,7 +188,7 @@ void IndicatorsManager::onEntryActivateRequest(const std::string& entryId)
     widget->showMenu(Qt::NoButton);
 }
 
-void IndicatorsManager::onEntryActivated(const std::string& entryId)
+void IndicatorsManager::onEntryActivated(const std::string& entryId, const nux::Rect& menu_geo)
 {
     if (entryId.empty()) {
         m_mouseTrackerTimer->stop();
@@ -237,7 +237,7 @@ void IndicatorsManager::syncGeometries()
             continue;
         }
         Entry::Ptr entry = widget->entry();
-        if (entry->IsUnused()) {
+        if (!entry->visible()) {
             continue;
         }
         QPoint topLeft = widget->mapToGlobal(QPoint(0, 0));
