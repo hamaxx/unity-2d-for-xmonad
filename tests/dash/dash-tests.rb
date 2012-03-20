@@ -7,6 +7,7 @@
  *
  * Authors:
  * - Albert Astals Cid <albert.astals@canonical.com>
+ * - Pawel Stolowski <pawel.stolowski@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,6 +435,57 @@ context "Dash Tests" do
     XDo::Keyboard.up
     verify_equal("true", TIMEOUT, 'Dash contents don\'t have focus') {
         @app.QDeclarativeLoader( { :objectName => "pageLoader" } )['activeFocus']
+    }
+  end
+
+  # Test case objectives:
+  #   * Check no-results-hint text is displayed in search yields no results
+  # Pre-conditions
+  # Test steps
+  #   * Invoke dash
+  #   * Verify there is no no-results-hint
+  #   * Type "qwqwqw" in the dash search entry
+  #   * Verify that the no-results-hint is displayed and its not empty
+  #   * Press Backspace 6 times to clear search entry
+  #   * Verify that hint is no longer visible
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/711199
+  test "Check no-results-hint is displayed on no search results" do
+    XDo::Keyboard.super
+  
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+
+    verify_not(TIMEOUT, 'There should be no noResultsText hint') {
+      @app.TextCustom( { :objectName => "noResultsText" } )
+    }
+
+    3.times {
+        XDo::Keyboard.q
+        XDo::Keyboard.w
+    }
+
+    hint = {}
+
+    verify(TIMEOUT, 'There should be noResultsText hint') {
+      hint = @app.TextCustom( { :objectName => "noResultsText" } )
+    }
+
+    verify_true(TIMEOUT, 'Hint should contain a message and be visible') {
+        hint['text'].length > 0 &&
+        hint['opacity'].to_f > 0.9 &&
+        hint['visible'] == "true"
+    }
+
+    6.times {
+        XDo::Keyboard.simulate("{BS}")
+    }
+
+    verify_not(TIMEOUT, 'There should be no noResultsText hint') {
+      @app.TextCustom( { :objectName => "noResultsText" } )
     }
   end
 end
