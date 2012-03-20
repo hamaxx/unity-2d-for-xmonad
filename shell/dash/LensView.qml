@@ -71,6 +71,7 @@ FocusScope {
      */
     TextCustom {
             id: noResultsText
+            objectName: "noResultsText"
             fontSize: "medium"
             color: "white"
             visible: false
@@ -80,9 +81,11 @@ FocusScope {
                 target: lensView.model != undefined ? lensView.model : null
                 onNoResultsHintChanged: {
                     noResultsText.text = lensView.model.noResultsHint
-                    hideNoResultHintAnimation.stop()
-                    noResultsText.visible = true
-                    noResultsText.opacity = 1.0
+                    if (lensView.model.noResultsHint != "") {
+                        hideNoResultHintAnimation.stop()
+                        noResultsText.visible = true
+                        noResultsText.opacity = 1.0
+                    }
                 }
 
                 onSearchQueryChanged: {
