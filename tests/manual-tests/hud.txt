@@ -7,3 +7,11 @@
 --> check tile is updated to reflect the app/indicator listed
 --> click on one and ensure the action is performed
 --> Check HUD closes
+
+----
+ * Enable Accessibility and Orca speech output
+ * Tap Alt key
+ * Enter a few characters
+ * Use arrow keys to navigate up/down through the options returned
+
+--> Check Orca speaks the contents of the results
