@@ -39,6 +39,9 @@ Item {
 
     Accessible.name: "shell"
 
+    WallpaperColor {
+    }
+
     GestureHandler {
         id: gestureHandler
     }

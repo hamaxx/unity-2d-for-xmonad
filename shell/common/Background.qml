@@ -46,36 +46,48 @@ Item {
         anchors.rightMargin: rightBorderThickness
         clip: true
 
-        Image {
-            id: blurredBackground
+        /* Extra Item seemingly unnecessary but actually useful to avoid a
+           redrawing bug that happens when applying an effect on a clipped item.
+           In this particular case, doing the Colorize on the clipped child item
+           would prevent proper repainting when maximizing then unmaximizing the
+           dash.
+        */
+        effect: ColorizeEffect {
+            color: unityConfiguration.averageBgColor
+            saturation: 0.4
 
-            effect: Blur {blurRadius: 12}
+            Image {
+                id: blurredBackground
 
-            /* 'source' needs to be set when this becomes visible, that is when active
-               becomes true, so that a screenshot of the desktop is taken at that point.
-               See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
-            */
+                effect: Blur {blurRadius: 12}
 
-            /* Use an image of the root window which essentially is a
-               capture of the entire screen */
-            source: reallyActive ? "image://window/root" : ""
-            cache: false
+                /* 'source' needs to be set when this becomes visible, that is when active
+                   becomes true, so that a screenshot of the desktop is taken at that point.
+                   See http://doc.qt.nokia.com/4.7-snapshot/qml-image.html#cache-prop
+                */
 
-            fillMode: Image.PreserveAspectCrop
+                /* Use an image of the root window which essentially is a
+                   capture of the entire screen */
+                source: reallyActive ? "image://window/root" : ""
+                cache: false
 
-            /* Place the screenshot of the desktop background on top of the desktop background,
-               no matter where the DeclarativeView or the parent object are placed.
-            */
-            property variant origin: parent.mapFromItem(null, background.view != undefined ? -background.view.globalPosition.x : -declarativeView.globalPosition.x,
-                                                              background.view != undefined ? -background.view.globalPosition.y : -declarativeView.globalPosition.y)
-            x: origin.x
-            y: origin.y
-        }
+                fillMode: Image.PreserveAspectCrop
 
-        Image {
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            source: "artwork/background_sheen.png"
+                /* Place the screenshot of the desktop background on top of the desktop background,
+                   no matter where the DeclarativeView or the parent object are placed.
+                */
+                property variant origin: parent.mapFromItem(null, background.view != undefined ? -background.view.globalPosition.x : -declarativeView.globalPosition.x,
+                                                                  background.view != undefined ? -background.view.globalPosition.y : -declarativeView.globalPosition.y)
+                x: origin.x
+                y: origin.y
+            }
+
+            Image {
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                source: "artwork/background_sheen.png"
+                opacity: 0.8
+            }
         }
     }
 
