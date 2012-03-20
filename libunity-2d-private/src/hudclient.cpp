@@ -51,15 +51,13 @@ HUDClient::HUDClient(QObject* parent)
     QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SHELL_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToHud();
-    } else {
-        /* The shell is not running: monitor its registration on the bus so we
-           can connect to it when it comes up. */
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
-                                                               QDBusConnection::sessionBus(),
-                                                               QDBusServiceWatcher::WatchForRegistration,
-                                                               this);
-        connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToHud()));
     }
+    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
+                                                               QDBusConnection::sessionBus(),
+                                                               QDBusServiceWatcher::WatchForRegistration|QDBusServiceWatcher::WatchForUnregistration,
+                                                               this);
+    connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToHud()));
+    connect(watcher, SIGNAL(serviceUnregistered(QString)), SLOT(onHudDisconnect()));
 }
 
 void HUDClient::connectToHud()
@@ -95,6 +93,14 @@ HUDClient* HUDClient::instance()
 {
     static HUDClient* client = new HUDClient(qApp);
     return client;
+}
+
+void HUDClient::onHudDisconnect()
+{
+    m_active = false;
+    delete m_hudDbusIface;
+    m_hudDbusIface = NULL;
+    Q_EMIT hudDisconnected();
 }
 
 void HUDClient::slotActiveChanged(bool value)

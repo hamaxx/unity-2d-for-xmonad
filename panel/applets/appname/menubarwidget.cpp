@@ -87,8 +87,7 @@ QList<IndicatorEntryWidget*> MenuBarWidget::entries() const
 
 void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indicator)
 {
-    QString name = QString::fromStdString(indicator->name());
-    if (name == "libappmenu.so") {
+    if (indicator->IsAppmenu()) {
         m_indicator = indicator;
         entry_added = m_indicator->on_entry_added.connect(
                           sigc::mem_fun(this, &MenuBarWidget::onEntryAdded)
@@ -102,7 +101,7 @@ void MenuBarWidget::onObjectAdded(const unity::indicator::Indicator::Ptr& indica
 void MenuBarWidget::onObjectRemoved(const unity::indicator::Indicator::Ptr& indicator)
 {
     QString name = QString::fromStdString(indicator->name());
-    if (name == "libappmenu.so" && indicator.get()) {
+    if (indicator->IsAppmenu() && indicator.get()) {
         entry_added.disconnect();
         entry_removed.disconnect();
 
@@ -160,7 +159,7 @@ void MenuBarWidget::updateIsEmpty()
     }
 }
 
-void MenuBarWidget::onEntryActivated(const std::string& id)
+void MenuBarWidget::onEntryActivated(const std::string& id, const nux::Rect& menu_geo)
 {
     bool isOpened = false;
     if (!id.empty()) {

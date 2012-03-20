@@ -52,15 +52,13 @@ DashClient::DashClient(QObject* parent)
     QDBusReply<bool> reply = sessionBusIFace->isServiceRegistered(SHELL_DBUS_SERVICE);
     if (reply.isValid() && reply.value()) {
         connectToDash();
-    } else {
-        /* The shell is not running: monitor its registration on the bus so we
-           can connect to it when it comes up. */
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
-                                                               QDBusConnection::sessionBus(),
-                                                               QDBusServiceWatcher::WatchForRegistration,
-                                                               this);
-        connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
     }
+    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(SHELL_DBUS_SERVICE,
+                                                           QDBusConnection::sessionBus(),
+                                                           QDBusServiceWatcher::WatchForRegistration|QDBusServiceWatcher::WatchForUnregistration,
+                                                           this);
+    connect(watcher, SIGNAL(serviceRegistered(QString)), SLOT(connectToDash()));
+    connect(watcher, SIGNAL(serviceUnregistered(QString)), SLOT(onDashDisconnect()));
 }
 
 void DashClient::connectToDash()
@@ -104,6 +102,14 @@ DashClient* DashClient::instance()
 {
     static DashClient* client = new DashClient(qApp);
     return client;
+}
+
+void DashClient::onDashDisconnect()
+{
+    m_active = false;
+    delete m_dashDbusIface;
+    m_dashDbusIface = NULL;
+    Q_EMIT dashDisconnected();
 }
 
 void DashClient::slotActiveChanged(bool value)

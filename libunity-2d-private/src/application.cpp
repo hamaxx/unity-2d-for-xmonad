@@ -996,7 +996,7 @@ Application::createStaticMenuActions()
         QAction* keep = new QAction(m_menu);
         keep->setCheckable(is_running);
         keep->setChecked(sticky());
-        keep->setText(is_running ? u2dTr("Keep in launcher") : u2dTr("Remove from launcher"));
+        keep->setText(is_running ? u2dTr("Lock to Launcher") : u2dTr("Unlock from Launcher"));
         actions.append(keep);
         QObject::connect(keep, SIGNAL(triggered()), this, SLOT(onKeepTriggered()));
     }

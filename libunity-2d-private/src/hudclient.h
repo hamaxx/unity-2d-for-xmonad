@@ -50,11 +50,13 @@ public:
 
 Q_SIGNALS:
     void activeChanged(bool);
+    void hudDisconnected();
     void screenChanged(int);
 
 private Q_SLOTS:
     void connectToHud();
     void slotActiveChanged(bool);
+    void onHudDisconnect();
     void slotScreenChanged(int);
 
 private:

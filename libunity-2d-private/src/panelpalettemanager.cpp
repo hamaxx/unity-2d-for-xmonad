@@ -45,6 +45,7 @@ PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
  : QObject(panel), m_panel(panel)
 {
     connect(DashClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
+    connect(DashClient::instance(), SIGNAL(dashDisconnected()), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(DashClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));

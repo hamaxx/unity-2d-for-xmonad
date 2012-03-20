@@ -54,12 +54,14 @@ public:
 Q_SIGNALS:
     void activeChanged(bool);
     void alwaysFullScreenChanged();
+    void dashDisconnected();
     void screenChanged(int);
 
 private Q_SLOTS:
     void connectToDash();
     void slotActiveChanged(bool);
     void slotAlwaysFullScreenChanged(bool);
+    void onDashDisconnect();
     void slotScreenChanged(int);
 
 private:

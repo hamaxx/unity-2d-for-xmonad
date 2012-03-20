@@ -36,7 +36,7 @@ Depends: ${misc:Depends},
          unity-2d-panel,
          unity-2d-spread,
          unity-2d-shell,
-         metacity (>= 2.30.3-0ubuntu5)
+         metacity (>= 1:2.34.1-1ubuntu8)
 Description: Unity interface for non-accelerated graphics cards
  The Unity 2D interface installs a fully usable 2D session and provides the 
  common configuration files and defaults. Installing this package will 
