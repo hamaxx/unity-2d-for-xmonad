@@ -306,6 +306,8 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
         connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
         hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::ShiftModifier);
         connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
+        hotkey = HotkeyMonitor::instance().getHotkeyFor(key, Qt::MetaModifier | Qt::KeypadModifier);
+        connect(hotkey, SIGNAL(pressed()), SLOT(onNumericHotkeyPressed()));
     }
 
     // FIXME: we need to use a queued connection here otherwise QConf will deadlock for some reason
