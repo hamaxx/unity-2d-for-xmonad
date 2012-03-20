@@ -23,7 +23,7 @@ AbstractButton {
     id: delegate
     property string icon: ""
 
-    Accessible.name: completionText
+    Accessible.name: plainText
     Accessible.role: Accessible.Button
 
     Rectangle {
