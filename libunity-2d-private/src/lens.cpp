@@ -278,7 +278,6 @@ void Lens::setUnityLens(unity::dash::Lens::Ptr lens)
     m_unityLens->search_finished.connect(sigc::mem_fun(this, &Lens::searchFinished));
     m_unityLens->global_search_finished.connect(sigc::mem_fun(this, &Lens::globalSearchFinished));
     connect(this, SIGNAL(searchFinished(unity::dash::Lens::Hints const &)), SLOT(onSearchFinished(unity::dash::Lens::Hints const &)));
-    connect(this, SIGNAL(globalSearchFinished(unity::dash::Lens::Hints const &)), SLOT(onSearchFinished(unity::dash::Lens::Hints const &)));
 
     /* FIXME: signal should be forwarded instead of calling the handler directly */
     m_unityLens->activated.connect(sigc::mem_fun(this, &Lens::onActivated));
