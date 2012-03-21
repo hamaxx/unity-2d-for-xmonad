@@ -39,7 +39,7 @@
 -> The visible context is updated - closing the application should be notified in launcher menu(lp:784541)
 
 ----
- * Right-click on a non running application tile in the launcher. Click the "Remove from Launcher" option.
+ * Right-click on a non running application tile in the launcher. Click the "Unlock from Launcher" option.
 
 -> Launcher is still shown for a while - it should not close immediately  (lp:884410)
 

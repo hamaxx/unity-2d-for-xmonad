@@ -47,13 +47,13 @@ Item {
         smooth: true
 
         source: {
-            if (selectedTileBackgroundImage != "" && declarativeView.focus && activeFocus) {
+            if (selectedTileBackgroundImage != "" && declarativeView.focus && iconTile.activeFocus) {
                 return selectedTileBackgroundImage
             } else if (tileBackgroundImage != "") {
                 return tileBackgroundImage
             }
 
-            var actualColor = declarativeView.focus && activeFocus ? selectedBackgroundColor : color
+            var actualColor = declarativeView.focus && iconTile.activeFocus ? selectedBackgroundColor : color
             return "image://blended/%1color=%2alpha=%3"
                 .arg("common/artwork/round_corner_54x54.png")
                 .arg(actualColor.toString().replace("#", ""))

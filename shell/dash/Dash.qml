@@ -116,6 +116,7 @@ FocusScope {
             lenses.get(i).viewType = Lens.Hidden
         }
         shellManager.dashActiveLens = ""
+        pageLoader.setSource("")
     }
 
     SpreadMonitor {
