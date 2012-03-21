@@ -105,12 +105,12 @@ FocusScope {
             }
 
             SequentialAnimation {
-                    id: hideNoResultHintAnimation
-                    PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
-                    PauseAnimation { duration: 150 }
-                    NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
-                    PropertyAction { target: noResultsText; property: "visible"; value: false }
-                }
+                id: hideNoResultHintAnimation
+                PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
+                PauseAnimation { duration: 150 }
+                NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
+                PropertyAction { target: noResultsText; property: "visible"; value: false }
+            }
     }
 
     ListViewWithScrollbar {
