@@ -75,12 +75,12 @@ FocusScope {
             fontSize: "medium"
             color: "white"
             visible: false
+            text: lensView.model.noResultsHint
             anchors.centerIn: parent
 
             Connections {
                 target: lensView.model != undefined ? lensView.model : null
                 onNoResultsHintChanged: {
-                    noResultsText.text = lensView.model.noResultsHint
                     if (lensView.model.noResultsHint != "") {
                         hideNoResultHintAnimation.stop()
                         noResultsText.visible = true
