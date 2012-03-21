@@ -70,47 +70,47 @@ FocusScope {
     /* Optional 'No results...' hint for lens search results.
      */
     TextCustom {
-            id: noResultsText
-            objectName: "noResultsText"
-            fontSize: "large"
-            color: "white"
-            visible: false
-            text: lensView.model.noResultsHint
-            anchors.centerIn: parent
+        id: noResultsText
+        objectName: "noResultsText"
+        fontSize: "large"
+        color: "white"
+        visible: false
+        text: lensView.model.noResultsHint
+        anchors.centerIn: parent
 
-            Connections {
-                target: lensView.model != undefined ? lensView.model : null
-                onNoResultsHintChanged: {
-                    if (lensView.model.noResultsHint != "") {
-                        hideNoResultHintAnimation.stop()
-                        noResultsText.visible = true
-                        noResultsText.opacity = 1.0
-                    }
-                }
-
-                onSearchQueryChanged: {
-                    if (noResultsText.visible) {
-                        hideNoResultHintAnimation.start()
-                    }
+        Connections {
+            target: lensView.model != undefined ? lensView.model : null
+            onNoResultsHintChanged: {
+                if (lensView.model.noResultsHint != "") {
+                    hideNoResultHintAnimation.stop()
+                    noResultsText.visible = true
+                    noResultsText.opacity = 1.0
                 }
             }
 
-            Connections {
-                target: lensView != undefined ? lensView : null
-                onModelChanged: {
-                    if (noResultsText.visible) {
-                        hideNoResultHintAnimation.start()
-                    }
+            onSearchQueryChanged: {
+                if (noResultsText.visible) {
+                    hideNoResultHintAnimation.start()
                 }
             }
+        }
 
-            SequentialAnimation {
-                id: hideNoResultHintAnimation
-                PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
-                PauseAnimation { duration: 150 }
-                NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
-                PropertyAction { target: noResultsText; property: "visible"; value: false }
+        Connections {
+            target: lensView != undefined ? lensView : null
+            onModelChanged: {
+                if (noResultsText.visible) {
+                    hideNoResultHintAnimation.start()
+                }
             }
+        }
+
+        SequentialAnimation {
+            id: hideNoResultHintAnimation
+            PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
+            PauseAnimation { duration: 150 }
+            NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
+            PropertyAction { target: noResultsText; property: "visible"; value: false }
+        }
     }
 
     ListViewWithScrollbar {
