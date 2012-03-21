@@ -69,12 +69,10 @@ FocusScope {
 
     /* Optional 'No results...' hint for lens search results.
      */
-    Text {
+    TextCustom {
             id: noResultsText
             objectName: "noResultsText"
-            font.family: "Ubuntu"
-            font.pixelSize: 17
-            font.bold: false
+            fontSize: "large"
             color: "white"
             visible: false
             text: lensView.model.noResultsHint
