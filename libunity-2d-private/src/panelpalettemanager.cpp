@@ -51,7 +51,7 @@ PanelPaletteManager::PanelPaletteManager(Unity2dPanel* panel)
     connect(HUDClient::instance(), SIGNAL(activeChanged(bool)), this, SLOT(updatePalette()));
     connect(DashClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));
     connect(HUDClient::instance(), SIGNAL(screenChanged(int)), this, SLOT(updatePalette()));
-    connect(&unity2dConfiguration(), SIGNAL(averageBgColor(QString)), this, SLOT(updatePalette()));
+    connect(&unity2dConfiguration(), SIGNAL(averageBgColorChanged(QString)), this, SLOT(updatePalette()));
 
     m_gConnector.connect(gtk_settings_get_default(), "notify::gtk-theme-name", G_CALLBACK(onThemeChanged), this);
     updatePalette();
