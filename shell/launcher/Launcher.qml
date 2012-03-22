@@ -68,7 +68,7 @@ LauncherDropItem {
         anchors.fill: parent
         anchors.rightMargin: Utils.isLeftToRight() && !border.visible ? border.width : 0
         anchors.leftMargin:  Utils.isRightToLeft() && !border.visible ? border.width : 0
-        color: Qt.darker(unityConfiguration.averageBgColor, 8.0)
+        color: Qt.darker(unity2dConfiguration.averageBgColor, 8.0)
         opacity: 0.66
         visible: desktop.isCompositingManagerRunning
     }
