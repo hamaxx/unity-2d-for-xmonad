@@ -198,8 +198,10 @@ FocusScope {
                 placeHolderText: u2d.tr("Type your Command")
 
                 onSearchQueryChanged: {
-                    hudModel.searchQuery = searchQuery
-                    resultList.currentIndex = 0
+                    if (hud.active) {
+                        hudModel.searchQuery = searchQuery
+                        resultList.currentIndex = 0
+                    }
                 }
                 onActivateFirstResult: executeResult(0)
             }
