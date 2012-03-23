@@ -115,11 +115,16 @@ QString Hud::searchQuery() const
 
 void Hud::setSearchQuery(const QString& searchQuery)
 {
-    if (searchQuery != m_searchQuery) {
-        m_searchQuery = searchQuery;
-        m_unityHud->RequestQuery(m_searchQuery.toStdString());
-        beginResetModel();
-        Q_EMIT searchQueryChanged();
+    if (!connected()) {
+        UQ_DEBUG << "No connection to HUD service available. Unable to search.";
+    } else {
+        if (searchQuery != m_searchQuery) {
+            m_searchQuery = searchQuery;
+            m_unityHud->RequestQuery(m_searchQuery.toStdString());
+            m_hudQueryOpen = true;
+            beginResetModel();
+            Q_EMIT searchQueryChanged();
+        }
     }
 }
 
@@ -146,8 +151,14 @@ void Hud::executeResultBySearch(const QString& searchQuery) const
 
 void Hud::endSearch()
 {
-    m_unityHud->CloseQuery();
+    if (m_hudQueryOpen) {
+        m_unityHud->CloseQuery();
+        m_hudQueryOpen = false;
+    }
     m_searchQuery.clear();
+    beginResetModel();
+    m_unityHudResults.clear();
+    endResetModel();
 }
 
 void Hud::onResultsUpdated(const unity::hud::Hud::Queries results)
