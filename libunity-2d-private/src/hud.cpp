@@ -151,7 +151,7 @@ void Hud::executeResultBySearch(const QString& searchQuery) const
 
 void Hud::endSearch()
 {
-    if (m_hudQueryOpen) {
+    if (m_hudQueryOpen && connected()) {
         m_unityHud->CloseQuery();
         m_hudQueryOpen = false;
     }
