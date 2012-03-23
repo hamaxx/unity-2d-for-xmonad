@@ -1,3 +1,11 @@
+unity-2d (5.8.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - build-dep on latest nux and unity-core
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 23 Mar 2012 15:33:38 +0100
+
 unity-2d (5.7.0-0ubuntu1) precise; urgency=low
 
   * New upstream release:
