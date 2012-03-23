@@ -20,6 +20,11 @@
       <summary>Sticky edges.</summary>
       <description>Whether the edges in a multi-monitor setup should be sticky or not (Edges with autohide launchers are always sticky).</description>
     </key>
+    <key type="s" name="average-bg-color">
+      <default>'#75507B'</default>
+      <summary>Average background color</summary>
+      <description>The average color derived from the currently set desktop-wallpaper.</description>
+    </key>
   </schema>
   <schema path="/com/canonical/unity-2d/launcher/" id="com.canonical.Unity2d.Launcher" gettext-domain="unity-2d">
     <key type="b" name="super-key-enable">

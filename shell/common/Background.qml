@@ -53,7 +53,7 @@ Item {
            dash.
         */
         effect: ColorizeEffect {
-            color: unityConfiguration.averageBgColor
+            color: unity2dConfiguration.averageBgColor
             saturation: 0.4
         }
         Image {

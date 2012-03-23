@@ -58,7 +58,7 @@ Item {
     }
 
     Binding {
-        target: unityConfiguration
+        target: unity2dConfiguration
         property: "averageBgColor"
         value: desktopBackground.pictureUri != "" ? imageUtilities.averageColor : desktopBackground.primaryColor
     }
