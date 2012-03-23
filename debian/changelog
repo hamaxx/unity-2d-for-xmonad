@@ -1,6 +1,16 @@
 unity-2d (5.8.0-0ubuntu1) UNRELEASED; urgency=low
 
   * New upstream release
+    - Loss of DBus connection with active Dash/Hud results in broken panel
+      (LP: #953168)
+    - [launcher] super key and number from _keypad_ doesn't work (LP: #750514)
+    - [dash] Home lens state not reset if dash closed & reopened (LP: #948299)
+    - HUD is silent to screen readers (LP: #949445)
+    - Use title case capitalization "Lock to Launcher" & "Unlock from
+      Launcher" (LP: #949636)
+    - tiles highlight incorrect, highlight only visible at edge (LP: #953403)
+    - [UIFe] Use average color of wallpaper to tint launcher/dash/panel/hud
+      (LP: #960194)
   * debian/control:
     - build-dep on latest nux and unity-core
 
