@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-03-15 05:14+0000\n"
-"X-Generator: Launchpad (build 14933)\n"
+"X-Launchpad-Export-Date: 2012-03-23 05:10+0000\n"
+"X-Generator: Launchpad (build 14996)\n"
 
 #: panel/applets/appname/appnameapplet.cpp:364
 msgid "Ubuntu Desktop"
@@ -26,107 +26,109 @@ msgstr ""
 msgid "Type your Command"
 msgstr ""
 
-#: launcher/LauncherList.qml:82
+#: shell/launcher/LauncherList.qml:88
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
 msgstr[0] ""
 msgstr[1] ""
 
-#: launcher/LauncherList.qml:85
+#: shell/launcher/LauncherList.qml:91
 msgid "not running"
 msgstr ""
 
-#: places/CategoryHeader.qml:36
+#: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:36
+#: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:97
+#: shell/dash/CategoryHeader.qml:81
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: places/CategoryHeader.qml:99
+#: shell/dash/CategoryHeader.qml:83
 msgid "See fewer results"
 msgstr "ጥቂት ውጤቶች መመልከቻ"
 
-#: places/Home.qml:80
+#: shell/dash/Home.qml:82
 msgid "Shortcuts"
 msgstr "አቋራጮች"
 
-#: places/HomeShortcuts.qml:56
+#: shell/dash/HomeShortcuts.qml:47
 msgid "Media Apps"
 msgstr "የብዙሀን መገናኛ መተግበሪያዎች"
 
-#: places/HomeShortcuts.qml:62
+#: shell/dash/HomeShortcuts.qml:53
 msgid "Internet Apps"
 msgstr "የኢንተርኔት መተግበሪያዎች"
 
-#: places/HomeShortcuts.qml:68
+#: shell/dash/HomeShortcuts.qml:59
 msgid "More Apps"
 msgstr "ተጨማሪ መተግበሪያዎች"
 
-#: places/HomeShortcuts.qml:74
+#: shell/dash/HomeShortcuts.qml:65
 msgid "Find Files"
 msgstr "ፋይሎች መፈለጊያ"
 
-#: places/HomeShortcuts.qml:81
+#: shell/dash/HomeShortcuts.qml:72
 msgid "Browse the Web"
 msgstr "ዌብ መቃኛ"
 
-#: places/HomeShortcuts.qml:86
+#: shell/dash/HomeShortcuts.qml:77
 msgid "View Photos"
 msgstr "ፎቶ መመልከቻ"
 
-#: places/HomeShortcuts.qml:92
+#: shell/dash/HomeShortcuts.qml:83
 msgid "Check Email"
 msgstr "ኢሜይል መፈለጊያ"
 
-#: places/HomeShortcuts.qml:97
+#: shell/dash/HomeShortcuts.qml:88
 msgid "Listen to Music"
 msgstr "ሙዚቃ ማድመጫ"
 
-#: places/FilterPane.qml:69
+#: shell/dash/FilterPane.qml:71
 msgid "Filter results"
 msgstr ""
 
-#: places/SearchEntry.qml:176
+#: shell/dash/Dash.qml:279 libunity-2d-private/src/lenses.cpp:41
 msgid "Search"
 msgstr ""
 
-#: places/FilterLoader.qml:36
+#: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
 msgstr ""
 
-#: places/FilterLoader.qml:38
+#: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
 msgstr ""
 
-#: places/FilterLoader.qml:90
+#: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
 msgstr ""
 
-#: libunity-2d-private/src/unity2dapplication.cpp:151
+#. TRANSLATORS: This refers to the direction of text
+#. (left-to-right or right-to-left): possible values are LTR or RTL
+#: libunity-2d-private/src/unity2dapplication.cpp:170
 msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
 
-#: libunity-2d-private/src/launcherapplication.cpp:903
+#: libunity-2d-private/src/application.cpp:986
 msgid "Keep in launcher"
 msgstr "ማስነሻው ውስጥ ይቀመጥ"
 
-#: libunity-2d-private/src/launcherapplication.cpp:903
+#: libunity-2d-private/src/application.cpp:986
 msgid "Remove from launcher"
 msgstr "ከማስነሻው ውስጥ ማስወገጃ"
 
-#: libunity-2d-private/src/launcherapplication.cpp:910
+#: libunity-2d-private/src/application.cpp:993
 msgid "Quit"
 msgstr "ማጥፊያ"
 
@@ -138,7 +140,7 @@ msgstr ""
 msgid "Home screen"
 msgstr ""
 
-#: libunity-2d-private/src/bfb.cpp:71
+#: libunity-2d-private/src/bfb.cpp:60
 msgid "Dash home"
 msgstr ""
 
