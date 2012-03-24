@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: l 10n\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"POT-Creation-Date: 2012-03-20 10:08+0100\n"
 "PO-Revision-Date: 2012-03-08 16:54+0000\n"
 "Last-Translator: Luca Ferretti <elle.uca@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -15,90 +15,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-03-23 05:10+0000\n"
-"X-Generator: Launchpad (build 14996)\n"
+"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 "Language: \n"
 
-#: panel/applets/appname/appnameapplet.cpp:364
-msgid "Ubuntu Desktop"
-msgstr "Ubuntu Desktop"
-
-#: shell/hud/Hud.qml:192
-msgid "Type your Command"
-msgstr "Digitare il comando"
-
-#: shell/launcher/LauncherList.qml:88
+#: shell/launcher/LauncherList.qml:89
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
 msgstr[0] ""
 msgstr[1] ""
 
-#: shell/launcher/LauncherList.qml:91
+#: shell/launcher/LauncherList.qml:92
 msgid "not running"
 msgstr ""
 
-#: shell/dash/CategoryHeader.qml:37
-msgid "not expanded"
-msgstr ""
-
-#: shell/dash/CategoryHeader.qml:37
-msgid "expanded"
-msgstr ""
-
-#: shell/dash/CategoryHeader.qml:81
-#, qt-format
-msgid "See %1 more result"
-msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
-
-#: shell/dash/CategoryHeader.qml:83
-msgid "See fewer results"
-msgstr "Mostra meno risultati"
-
-#: shell/dash/Home.qml:82
-msgid "Shortcuts"
-msgstr "Scorciatoie"
-
-#: shell/dash/HomeShortcuts.qml:47
-msgid "Media Apps"
-msgstr "Applicazioni multimediali"
-
-#: shell/dash/HomeShortcuts.qml:53
-msgid "Internet Apps"
-msgstr "Applicazioni per internet"
-
-#: shell/dash/HomeShortcuts.qml:59
-msgid "More Apps"
-msgstr "Altre applicazioni"
-
-#: shell/dash/HomeShortcuts.qml:65
-msgid "Find Files"
-msgstr "Trova file"
-
-#: shell/dash/HomeShortcuts.qml:72
-msgid "Browse the Web"
-msgstr "Esplora il web"
-
-#: shell/dash/HomeShortcuts.qml:77
-msgid "View Photos"
-msgstr "Visualizza foto"
-
-#: shell/dash/HomeShortcuts.qml:83
-msgid "Check Email"
-msgstr "Controlla email"
-
-#: shell/dash/HomeShortcuts.qml:88
-msgid "Listen to Music"
-msgstr "Ascolta musica"
+#: shell/hud/Hud.qml:198
+msgid "Type your Command"
+msgstr "Digitare il comando"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
-
-#: shell/dash/Dash.qml:279 libunity-2d-private/src/lenses.cpp:41
-msgid "Search"
 msgstr ""
 
 #: shell/dash/FilterLoader.qml:38
@@ -115,23 +52,62 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+msgid "Search"
+msgstr ""
+
+#: shell/dash/CategoryHeader.qml:37
+msgid "not expanded"
+msgstr ""
+
+#: shell/dash/CategoryHeader.qml:37
+msgid "expanded"
+msgstr ""
+
+#: shell/dash/CategoryHeader.qml:93
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: shell/dash/CategoryHeader.qml:95
+msgid "See fewer results"
+msgstr "Mostra meno risultati"
+
+#: shell/dash/Home.qml:82
+msgid "Shortcuts"
+msgstr "Scorciatoie"
+
+#: libunity-2d-private/src/launcherdevice.cpp:279
+msgid "Eject"
+msgstr "Espelli"
+
+#: libunity-2d-private/src/launcherdevice.cpp:287
+msgid "Safely remove"
+msgstr ""
+
+#: libunity-2d-private/src/application.cpp:999
+msgid "Lock to Launcher"
+msgstr ""
+
+#: libunity-2d-private/src/application.cpp:999
+msgid "Unlock from Launcher"
+msgstr ""
+
+#: libunity-2d-private/src/application.cpp:1006
+msgid "Quit"
+msgstr "Esci"
+
+#: libunity-2d-private/src/bfb.cpp:69
+msgid "Dash home"
+msgstr ""
+
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:170
 msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
-
-#: libunity-2d-private/src/application.cpp:986
-msgid "Keep in launcher"
-msgstr "Mantieni nel Launcher"
-
-#: libunity-2d-private/src/application.cpp:986
-msgid "Remove from launcher"
-msgstr "Rimuovi dal Launcher"
-
-#: libunity-2d-private/src/application.cpp:993
-msgid "Quit"
-msgstr "Esci"
 
 #: libunity-2d-private/src/lenses.cpp:41
 msgid "Home"
@@ -141,33 +117,55 @@ msgstr "Home"
 msgid "Home screen"
 msgstr "Schermata home"
 
-#: libunity-2d-private/src/bfb.cpp:60
-msgid "Dash home"
-msgstr ""
-
-#: libunity-2d-private/src/workspaces.cpp:73
-msgid "Workspaces"
-msgstr "Spazi di lavoro"
-
-#: libunity-2d-private/src/trash.cpp:128
+#: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
 msgstr "Cestino"
 
-#: libunity-2d-private/src/trash.cpp:208
+#: libunity-2d-private/src/trash.cpp:214
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
 msgstr[0] "%n elemento nel cestino"
 msgstr[1] "%n elementi nel cestino"
 
-#: libunity-2d-private/src/trash.cpp:215
+#: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
 msgstr "Svuota cestino"
 
-#: libunity-2d-private/src/launcherdevice.cpp:273
-msgid "Eject"
-msgstr "Espelli"
+#: libunity-2d-private/src/workspaces.cpp:79
+msgid "Workspaces"
+msgstr "Spazi di lavoro"
 
-#: libunity-2d-private/src/launcherdevice.cpp:281
-msgid "Safely remove"
-msgstr ""
+#: panel/applets/appname/appnameapplet.cpp:367
+msgid "Ubuntu Desktop"
+msgstr "Ubuntu Desktop"
+
+#~ msgid "Find Files"
+#~ msgstr "Trova file"
+
+#~ msgid "Browse the Web"
+#~ msgstr "Esplora il web"
+
+#~ msgid "View Photos"
+#~ msgstr "Visualizza foto"
+
+#~ msgid "Check Email"
+#~ msgstr "Controlla email"
+
+#~ msgid "Listen to Music"
+#~ msgstr "Ascolta musica"
+
+#~ msgid "Media Apps"
+#~ msgstr "Applicazioni multimediali"
+
+#~ msgid "More Apps"
+#~ msgstr "Altre applicazioni"
+
+#~ msgid "Internet Apps"
+#~ msgstr "Applicazioni per internet"
+
+#~ msgid "Keep in launcher"
+#~ msgstr "Mantieni nel Launcher"
+
+#~ msgid "Remove from launcher"
+#~ msgstr "Rimuovi dal Launcher"

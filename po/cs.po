@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"POT-Creation-Date: 2012-03-20 10:08+0100\n"
 "PO-Revision-Date: 2012-03-16 15:17+0000\n"
 "Last-Translator: Vojtěch Trefný <vojtech.trefny@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -15,18 +15,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-23 05:10+0000\n"
-"X-Generator: Launchpad (build 14996)\n"
+"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 
-#: panel/applets/appname/appnameapplet.cpp:364
-msgid "Ubuntu Desktop"
-msgstr "Prostředí Ubuntu"
-
-#: shell/hud/Hud.qml:192
-msgid "Type your Command"
-msgstr "Napište příkaz"
-
-#: shell/launcher/LauncherList.qml:88
+#: shell/launcher/LauncherList.qml:89
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
@@ -34,73 +26,17 @@ msgstr[0] "%1 otevřené okno"
 msgstr[1] "%1 otevřená okna"
 msgstr[2] "%1 otevřených oken"
 
-#: shell/launcher/LauncherList.qml:91
+#: shell/launcher/LauncherList.qml:92
 msgid "not running"
 msgstr "není spuštěno"
 
-#: shell/dash/CategoryHeader.qml:37
-msgid "not expanded"
-msgstr "nerozbaleno"
-
-#: shell/dash/CategoryHeader.qml:37
-msgid "expanded"
-msgstr "rozbaleno"
-
-#: shell/dash/CategoryHeader.qml:81
-#, qt-format
-msgid "See %1 more result"
-msgid_plural "See %1 more results"
-msgstr[0] "Zobrazit %1 další výsledek"
-msgstr[1] "Zobrazit %1 další výsledky"
-msgstr[2] "Zobrazit %1 dalších výsledků"
-
-#: shell/dash/CategoryHeader.qml:83
-msgid "See fewer results"
-msgstr "Zobrazit méně výsledků"
-
-#: shell/dash/Home.qml:82
-msgid "Shortcuts"
-msgstr "Rychlý přístup"
-
-#: shell/dash/HomeShortcuts.qml:47
-msgid "Media Apps"
-msgstr "Mediální aplikace"
-
-#: shell/dash/HomeShortcuts.qml:53
-msgid "Internet Apps"
-msgstr "Internetové aplikace"
-
-#: shell/dash/HomeShortcuts.qml:59
-msgid "More Apps"
-msgstr "Více aplikací"
-
-#: shell/dash/HomeShortcuts.qml:65
-msgid "Find Files"
-msgstr "Najít soubory"
-
-#: shell/dash/HomeShortcuts.qml:72
-msgid "Browse the Web"
-msgstr "Prohlížet web"
-
-#: shell/dash/HomeShortcuts.qml:77
-msgid "View Photos"
-msgstr "Prohlédnout fotografie"
-
-#: shell/dash/HomeShortcuts.qml:83
-msgid "Check Email"
-msgstr "Zkontrolovat e-maily"
-
-#: shell/dash/HomeShortcuts.qml:88
-msgid "Listen to Music"
-msgstr "Poslouchat hudbu"
+#: shell/hud/Hud.qml:198
+msgid "Type your Command"
+msgstr "Napište příkaz"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
 msgstr "Filtrovat výsledky"
-
-#: shell/dash/Dash.qml:279 libunity-2d-private/src/lenses.cpp:41
-msgid "Search"
-msgstr "Hledat"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
@@ -116,23 +52,63 @@ msgstr "Filtr %1 neaktivní"
 msgid "All"
 msgstr "Vše"
 
+#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+msgid "Search"
+msgstr "Hledat"
+
+#: shell/dash/CategoryHeader.qml:37
+msgid "not expanded"
+msgstr "nerozbaleno"
+
+#: shell/dash/CategoryHeader.qml:37
+msgid "expanded"
+msgstr "rozbaleno"
+
+#: shell/dash/CategoryHeader.qml:93
+#, qt-format
+msgid "See %1 more result"
+msgid_plural "See %1 more results"
+msgstr[0] "Zobrazit %1 další výsledek"
+msgstr[1] "Zobrazit %1 další výsledky"
+msgstr[2] "Zobrazit %1 dalších výsledků"
+
+#: shell/dash/CategoryHeader.qml:95
+msgid "See fewer results"
+msgstr "Zobrazit méně výsledků"
+
+#: shell/dash/Home.qml:82
+msgid "Shortcuts"
+msgstr "Rychlý přístup"
+
+#: libunity-2d-private/src/launcherdevice.cpp:279
+msgid "Eject"
+msgstr "Vysunout"
+
+#: libunity-2d-private/src/launcherdevice.cpp:287
+msgid "Safely remove"
+msgstr "Bezpečně odebrat"
+
+#: libunity-2d-private/src/application.cpp:999
+msgid "Lock to Launcher"
+msgstr "Přidat do Launcheru"
+
+#: libunity-2d-private/src/application.cpp:999
+msgid "Unlock from Launcher"
+msgstr "Odebrat z Launcheru"
+
+#: libunity-2d-private/src/application.cpp:1006
+msgid "Quit"
+msgstr "Ukončit"
+
+#: libunity-2d-private/src/bfb.cpp:69
+msgid "Dash home"
+msgstr "Hlavní nabídka Dash"
+
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:170
 msgid "QT_LAYOUT_DIRECTION"
 msgstr "QT_LAYOUT_DIRECTION"
-
-#: libunity-2d-private/src/application.cpp:986
-msgid "Keep in launcher"
-msgstr "Ponechat ve spouštěči"
-
-#: libunity-2d-private/src/application.cpp:986
-msgid "Remove from launcher"
-msgstr "Odstranit ze spouštěče"
-
-#: libunity-2d-private/src/application.cpp:993
-msgid "Quit"
-msgstr "Ukončit"
 
 #: libunity-2d-private/src/lenses.cpp:41
 msgid "Home"
@@ -142,19 +118,11 @@ msgstr "Domů"
 msgid "Home screen"
 msgstr "Domovská obrazovka"
 
-#: libunity-2d-private/src/bfb.cpp:60
-msgid "Dash home"
-msgstr "Hlavní nabídka Dash"
-
-#: libunity-2d-private/src/workspaces.cpp:73
-msgid "Workspaces"
-msgstr "Pracovní plochy"
-
-#: libunity-2d-private/src/trash.cpp:128
+#: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
 msgstr "Koš"
 
-#: libunity-2d-private/src/trash.cpp:208
+#: libunity-2d-private/src/trash.cpp:214
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
@@ -162,14 +130,44 @@ msgstr[0] "%n položka v koši"
 msgstr[1] "%n položky v koši"
 msgstr[2] "%n položek v koši"
 
-#: libunity-2d-private/src/trash.cpp:215
+#: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
 msgstr "Vyprázdnit koš"
 
-#: libunity-2d-private/src/launcherdevice.cpp:273
-msgid "Eject"
-msgstr "Vysunout"
+#: libunity-2d-private/src/workspaces.cpp:79
+msgid "Workspaces"
+msgstr "Pracovní plochy"
 
-#: libunity-2d-private/src/launcherdevice.cpp:281
-msgid "Safely remove"
-msgstr "Bezpečně odebrat"
+#: panel/applets/appname/appnameapplet.cpp:367
+msgid "Ubuntu Desktop"
+msgstr "Prostředí Ubuntu"
+
+#~ msgid "Listen to Music"
+#~ msgstr "Poslouchat hudbu"
+
+#~ msgid "Browse the Web"
+#~ msgstr "Prohlížet web"
+
+#~ msgid "Find Files"
+#~ msgstr "Najít soubory"
+
+#~ msgid "Check Email"
+#~ msgstr "Zkontrolovat e-maily"
+
+#~ msgid "View Photos"
+#~ msgstr "Prohlédnout fotografie"
+
+#~ msgid "Media Apps"
+#~ msgstr "Mediální aplikace"
+
+#~ msgid "Internet Apps"
+#~ msgstr "Internetové aplikace"
+
+#~ msgid "More Apps"
+#~ msgstr "Více aplikací"
+
+#~ msgid "Keep in launcher"
+#~ msgstr "Ponechat ve spouštěči"
+
+#~ msgid "Remove from launcher"
+#~ msgstr "Odstranit ze spouštěče"
