@@ -77,6 +77,7 @@ FocusScope {
         visible: false
         text: lensView.model.noResultsHint
         anchors.centerIn: parent
+        anchors.verticalCenterOffset: -6
 
         Connections {
             target: lensView.model != undefined ? lensView.model : null
