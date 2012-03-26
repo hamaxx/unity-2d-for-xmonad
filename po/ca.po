@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-06 17:07+0100\n"
+"POT-Creation-Date: 2012-03-20 10:08+0100\n"
 "PO-Revision-Date: 2012-03-08 16:02+0000\n"
 "Last-Translator: David Planella <david.planella@ubuntu.com>\n"
 "Language-Team: Catalan <ca@li.org>\n"
@@ -15,156 +15,156 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-03-15 05:15+0000\n"
-"X-Generator: Launchpad (build 14933)\n"
+"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
+"X-Generator: Launchpad (build 14981)\n"
 
-#: panel/applets/appname/appnameapplet.cpp:364
-msgid "Ubuntu Desktop"
-msgstr ""
-
-#: shell/hud/Hud.qml:192
-msgid "Type your Command"
-msgstr ""
-
-#: launcher/LauncherList.qml:82
+#: shell/launcher/LauncherList.qml:89
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
 msgstr[0] ""
 msgstr[1] ""
 
-#: launcher/LauncherList.qml:85
+#: shell/launcher/LauncherList.qml:92
 msgid "not running"
 msgstr ""
 
-#: places/CategoryHeader.qml:36
+#: shell/hud/Hud.qml:198
+msgid "Type your Command"
+msgstr "Escriviu una ordre"
+
+#: shell/dash/FilterPane.qml:71
+msgid "Filter results"
+msgstr ""
+
+#: shell/dash/FilterLoader.qml:38
+#, qt-format
+msgid "Filter %1 active"
+msgstr ""
+
+#: shell/dash/FilterLoader.qml:40
+#, qt-format
+msgid "Filter %1 inactive"
+msgstr ""
+
+#: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
+msgid "All"
+msgstr ""
+
+#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+msgid "Search"
+msgstr ""
+
+#: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:36
+#: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
 msgstr ""
 
-#: places/CategoryHeader.qml:97
+#: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
 msgstr[0] ""
 msgstr[1] ""
 
-#: places/CategoryHeader.qml:99
+#: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
 msgstr "Mostra menys resultats"
 
-#: places/Home.qml:80
+#: shell/dash/Home.qml:82
 msgid "Shortcuts"
 msgstr "Dreceres"
 
-#: places/HomeShortcuts.qml:56
-msgid "Media Apps"
-msgstr "Aplicacions multimèdia"
+#: libunity-2d-private/src/launcherdevice.cpp:279
+msgid "Eject"
+msgstr "Expulsa"
 
-#: places/HomeShortcuts.qml:62
-msgid "Internet Apps"
-msgstr "Aplicacions d'Internet"
-
-#: places/HomeShortcuts.qml:68
-msgid "More Apps"
-msgstr "Més aplicacions"
-
-#: places/HomeShortcuts.qml:74
-msgid "Find Files"
-msgstr "Cerca fitxers"
-
-#: places/HomeShortcuts.qml:81
-msgid "Browse the Web"
-msgstr "Navegueu per la web"
-
-#: places/HomeShortcuts.qml:86
-msgid "View Photos"
-msgstr "Mostra fotografies"
-
-#: places/HomeShortcuts.qml:92
-msgid "Check Email"
-msgstr "Comprova el correu"
-
-#: places/HomeShortcuts.qml:97
-msgid "Listen to Music"
-msgstr "Reprodueix música"
-
-#: places/FilterPane.qml:69
-msgid "Filter results"
+#: libunity-2d-private/src/launcherdevice.cpp:287
+msgid "Safely remove"
 msgstr ""
 
-#: places/SearchEntry.qml:176
-msgid "Search"
+#: libunity-2d-private/src/application.cpp:999
+msgid "Lock to Launcher"
 msgstr ""
 
-#: places/FilterLoader.qml:36
-#, qt-format
-msgid "Filter %1 active"
+#: libunity-2d-private/src/application.cpp:999
+msgid "Unlock from Launcher"
 msgstr ""
 
-#: places/FilterLoader.qml:38
-#, qt-format
-msgid "Filter %1 inactive"
-msgstr ""
-
-#: places/FilterLoader.qml:90
-msgid "All"
-msgstr ""
-
-#: libunity-2d-private/src/unity2dapplication.cpp:151
-msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
-
-#: libunity-2d-private/src/launcherapplication.cpp:903
-msgid "Keep in launcher"
-msgstr "Mantén al llançador"
-
-#: libunity-2d-private/src/launcherapplication.cpp:903
-msgid "Remove from launcher"
-msgstr "Suprimeix del llançador"
-
-#: libunity-2d-private/src/launcherapplication.cpp:910
+#: libunity-2d-private/src/application.cpp:1006
 msgid "Quit"
 msgstr "Surt"
 
-#: libunity-2d-private/src/lenses.cpp:41
-msgid "Home"
-msgstr ""
-
-#: libunity-2d-private/src/lenses.cpp:41
-msgid "Home screen"
-msgstr ""
-
-#: libunity-2d-private/src/bfb.cpp:71
+#: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
 msgstr ""
 
-#: libunity-2d-private/src/workspaces.cpp:73
-msgid "Workspaces"
-msgstr "Espais de treball"
+#. TRANSLATORS: This refers to the direction of text
+#. (left-to-right or right-to-left): possible values are LTR or RTL
+#: libunity-2d-private/src/unity2dapplication.cpp:170
+msgid "QT_LAYOUT_DIRECTION"
+msgstr ""
 
-#: libunity-2d-private/src/trash.cpp:128
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home"
+msgstr "Inici"
+
+#: libunity-2d-private/src/lenses.cpp:41
+msgid "Home screen"
+msgstr "Pantalla d'inici"
+
+#: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
 msgstr "Paperera"
 
-#: libunity-2d-private/src/trash.cpp:208
+#: libunity-2d-private/src/trash.cpp:214
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
 msgstr[0] "%n element a la paperera"
 msgstr[1] "%n elements a la paperera"
 
-#: libunity-2d-private/src/trash.cpp:215
+#: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
 msgstr "Buida la paperera"
 
-#: libunity-2d-private/src/launcherdevice.cpp:273
-msgid "Eject"
-msgstr "Expulsa"
+#: libunity-2d-private/src/workspaces.cpp:79
+msgid "Workspaces"
+msgstr "Espais de treball"
 
-#: libunity-2d-private/src/launcherdevice.cpp:281
-msgid "Safely remove"
-msgstr ""
+#: panel/applets/appname/appnameapplet.cpp:367
+msgid "Ubuntu Desktop"
+msgstr "Escriptori de l'Ubuntu"
+
+#~ msgid "Browse the Web"
+#~ msgstr "Navegueu per la web"
+
+#~ msgid "Listen to Music"
+#~ msgstr "Reprodueix música"
+
+#~ msgid "Find Files"
+#~ msgstr "Cerca fitxers"
+
+#~ msgid "Check Email"
+#~ msgstr "Comprova el correu"
+
+#~ msgid "View Photos"
+#~ msgstr "Mostra fotografies"
+
+#~ msgid "Media Apps"
+#~ msgstr "Aplicacions multimèdia"
+
+#~ msgid "Internet Apps"
+#~ msgstr "Aplicacions d'Internet"
+
+#~ msgid "More Apps"
+#~ msgstr "Més aplicacions"
+
+#~ msgid "Keep in launcher"
+#~ msgstr "Mantén al llançador"
+
+#~ msgid "Remove from launcher"
+#~ msgstr "Suprimeix del llançador"

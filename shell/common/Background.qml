@@ -46,6 +46,16 @@ Item {
         anchors.rightMargin: rightBorderThickness
         clip: true
 
+        /* Extra Item seemingly unnecessary but actually useful to avoid a
+           redrawing bug that happens when applying an effect on a clipped item.
+           In this particular case, doing the Colorize on the clipped child item
+           would prevent proper repainting when maximizing then unmaximizing the
+           dash.
+        */
+        effect: ColorizeEffect {
+            color: unity2dConfiguration.averageBgColor
+            saturation: 0.4
+        }
         Image {
             id: blurredBackground
 
@@ -76,6 +86,7 @@ Item {
             anchors.fill: parent
             fillMode: Image.PreserveAspectCrop
             source: "artwork/background_sheen.png"
+            opacity: 0.8
         }
     }
 

@@ -18,7 +18,6 @@
 
 import QtQuick 1.1
 import Unity2d 1.0
-import Effects 1.0
 import "../common"
 import "../common/utils.js" as Utils
 

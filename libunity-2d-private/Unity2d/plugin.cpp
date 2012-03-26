@@ -41,6 +41,7 @@
 #include "desktopinfo.h"
 #include "plugin.h"
 #include "cacheeffect.h"
+#include "colorizeeffect.h"
 #include "iconutilities.h"
 #include "cursorshapearea.h"
 #include "unity2dtr.h"
@@ -81,6 +82,7 @@
 #include "unity2dpanel.h"
 #include "strutmanager.h"
 
+#include "imageutilities.h"
 #include "pointerbarrier.h"
 
 #include <QtDeclarative/qdeclarative.h>
@@ -122,6 +124,7 @@ void Unity2dPlugin::registerTypes(const char *uri)
     qmlRegisterType<WorkspacesInfo>(); // Register the type as non creatable
 
     qmlRegisterType<CacheEffect>(uri, 0, 1, "CacheEffect");
+    qmlRegisterType<ColorizeEffect>("Effects", 0, 1, "ColorizeEffect");
     qmlRegisterType<QGraphicsBlurEffect>("Effects", 1, 0, "Blur");
     qmlRegisterType<QGraphicsColorizeEffect>("Effects", 1, 0, "Colorize");
     qmlRegisterType<QGraphicsDropShadowEffect>("Effects", 1, 0, "DropShadow");
@@ -187,6 +190,8 @@ void Unity2dPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Unity2dPanel>(uri, 0, 1, "Unity2dPanel");
     qmlRegisterType<StrutManager>(uri, 0, 1, "StrutManager");
+
+    qmlRegisterType<ImageUtilities>(uri, 0, 1, "ImageUtilities");
     
     qmlRegisterType<PointerBarrierWrapper>(uri, 0, 1, "PointerBarrier");
 }
@@ -208,6 +213,7 @@ void Unity2dPlugin::initializeEngine(QDeclarativeEngine *engine, const char *uri
 
     /* Expose QConf objects as a context property not to initialize it multiple times */
     engine->rootContext()->setContextProperty("unity2dConfiguration", &unity2dConfiguration());
+    engine->rootContext()->setContextProperty("unityConfiguration", &unityConfiguration());
     engine->rootContext()->setContextProperty("launcher2dConfiguration", &launcher2dConfiguration());
     engine->rootContext()->setContextProperty("dash2dConfiguration", &dash2dConfiguration());
 
