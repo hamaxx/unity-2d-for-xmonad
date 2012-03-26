@@ -117,7 +117,7 @@ QString Hud::searchQuery() const
 void Hud::setSearchQuery(const QString& searchQuery)
 {
     if (!connected()) {
-        UQ_DEBUG << "No connection to HUD service available. Unable to search.";
+        UQ_WARNING << "No connection to HUD service available. Unable to search.";
     } else {
         if (searchQuery != m_searchQuery) {
             m_searchQuery = searchQuery;
