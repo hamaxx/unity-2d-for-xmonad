@@ -345,7 +345,6 @@ void Lens::onSearchFinished(unity::dash::Lens::Hints const &hints)
         unity::dash::Lens::Hints::const_iterator it = hints.find("no-results-hint");
         if (it != hints.end()) {
             hint = QString::fromStdString(it->second.GetString());
-            UQ_DEBUG << "no-results-hint is" << m_noResultsHint;
         } else {
             hint =  u2dTr("Sorry, there is nothing that matches your search.");
         }
