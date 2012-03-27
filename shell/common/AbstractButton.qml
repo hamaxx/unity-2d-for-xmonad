@@ -28,6 +28,8 @@ FocusScope {
        (see http://bugreports.qt.nokia.com/browse/QTBUG-13007). */
     property bool pressed: false
 
+    property alias hasmouse: mouse_area.containsMouse
+
     signal clicked
 
     Accessible.role: Accessible.PushButton
@@ -56,10 +58,10 @@ FocusScope {
     state: {
         if(pressed || mouse_area.pressed)
             return "pressed"
-        else if(mouse_area.containsMouse)
-            return "hovered"
         else if(activeFocus)
             return "selected"
+        else if(mouse_area.containsMouse)
+            return "hovered"
         else
             return "default"
     }

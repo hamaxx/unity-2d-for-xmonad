@@ -227,6 +227,7 @@ FocusScope {
                     icon: iconName /* expose this property for tile */
 
                     onClicked: executeResult(resultId)
+                    onMouseOverChanged: { if (mouseOver >= 0) resultList.currentIndex = mouseOver }
                 }
             }
         }
