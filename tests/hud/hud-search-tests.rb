@@ -40,6 +40,8 @@ def get_search_results(shell)
     return shell.Hud().QDeclarativeItem().QDeclarativeRectangle().QDeclarativeListView().QDeclarativeItem().children({:type=>:ResultItem}, false)
 end
 
+#
+# Verify that given ResultItem is highlighted and active.
 def item_is_highlighted(results, index)
     verify_equal('true', TIMEOUT, "Result item ##{index+1} should have focus") {
         results[index]['activeFocus']
@@ -50,6 +52,8 @@ def item_is_highlighted(results, index)
     }
 end
 
+#
+# Verify that exactly one item is highlighted and active.
 def only_one_item_highlighted(results)
     verify_equal(1, TIMEOUT, 'Exactly one item should be highlighted') {
         results.count {|x| x.QDeclarativeRectangle(:name=>'container')['color'] == HUD_HIGHLIGHT_COLOR}
@@ -115,6 +119,9 @@ context "HUD Search tests" do
   # References
   #   * https://bugs.launchpad.net/unity-2d/+bug/948441
   test "First result should be highlighted by default" do
+    # wait for hud to become ready
+    sleep(1);
+
     XDo::Keyboard.alt
 
     verify_equal('true', TIMEOUT, 'HUD should be visible') {
@@ -150,6 +157,9 @@ context "HUD Search tests" do
   # References
   #   * https://bugs.launchpad.net/unity-2d/+bug/948441
  test "Highlight should follow keyboard" do
+    # wait for hud to become ready
+    sleep(1);
+
     XDo::Keyboard.alt
 
     verify_equal('true', TIMEOUT, 'HUD should be visible') {
@@ -186,6 +196,9 @@ context "HUD Search tests" do
   # References
   #   * https://bugs.launchpad.net/unity-2d/+bug/948441
   test "Highlight should follow mouse" do
+    # wait for hud to become ready
+    sleep(1);
+
     XDo::Keyboard.alt
 
     verify_equal('true', TIMEOUT, 'HUD should be visible') {
@@ -227,6 +240,9 @@ context "HUD Search tests" do
   # References
   #   * https://bugs.launchpad.net/unity-2d/+bug/948441
   test "Mixing Keyboard & Mouse navigation should highlight only one item" do
+    # wait for hud to become ready
+    sleep(1);
+
     XDo::Keyboard.alt
 
     verify_equal('true', TIMEOUT, 'HUD should be visible') {
