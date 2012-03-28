@@ -65,6 +65,8 @@ extern "C" {
 #include <libsn/sn.h>
 }
 
+Q_GLOBAL_STATIC(QFileSystemWatcher, desktopFileWatcher)
+
 GOBJECT_CALLBACK0(geometryChangedCB, "onWindowGeometryChanged")
 
 const char* SHORTCUT_NICK_PROPERTY = "nick";
@@ -81,7 +83,6 @@ static int windowScreen(WnckWindow *window)
 
 Application::Application()
     : m_application(NULL)
-    , m_desktopFileWatcher(NULL)
     , m_sticky(false)
     , m_has_visible_window(false)
     , m_progress(0), m_progressBarVisible(false)
@@ -105,6 +106,8 @@ Application::Application()
     m_geometryChangedTimer.setInterval(50);
     connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(windowGeometryChanged()));
     connect(&m_geometryChangedTimer, SIGNAL(timeout()), this, SLOT(announceActiveScreenChangedIfNeeded()));
+
+    connect(desktopFileWatcher(), SIGNAL(fileChanged(const QString&)), SLOT(onDesktopFileChanged(const QString&)));
 }
 
 Application::Application(const Application& other)
@@ -351,16 +354,10 @@ Application::setDesktopFile(const QString& desktop_file)
 void
 Application::monitorDesktopFile(const QString& path)
 {
-    /* Monitor the desktop file for live changes */
-    if (m_desktopFileWatcher == NULL) {
-        /* FIXME: deleting a QFileSystemWatcher can be quite slow (sometimes
-           around 100ms on a powerful computer) and can provoke visual glitches
-           where the user interface is blocked for a short moment.
-         */
-        m_desktopFileWatcher = new QFileSystemWatcher(this);
-        connect(m_desktopFileWatcher, SIGNAL(fileChanged(const QString&)),
-                SLOT(onDesktopFileChanged(const QString&)));
+    if (desktopFileWatcher()->files().contains(m_monitoredDesktopFile)) {
+        desktopFileWatcher()->removePath(m_monitoredDesktopFile);
     }
+    m_monitoredDesktopFile = path;
 
     /* If the file is already being monitored, we shouldn’t need to do anything.
        However it seems that in some cases, a change to the file will stop
@@ -368,19 +365,23 @@ Application::monitorDesktopFile(const QString& path)
        list of monitored files. This is the case when the desktop file is being
        edited in gedit for example. This may be a bug in QT itself.
        To work around this issue, remove the path and add it again. */
-    if (m_desktopFileWatcher->files().contains(path)) {
-        m_desktopFileWatcher->removePath(path);
+    if (desktopFileWatcher()->files().contains(path)) {
+        desktopFileWatcher()->removePath(path);
     }
 
     if (!path.isEmpty()) {
-        m_desktopFileWatcher->addPath(path);
+        desktopFileWatcher()->addPath(path);
     }
 }
 
 void
 Application::onDesktopFileChanged(const QString& path)
 {
-    if (m_desktopFileWatcher->files().contains(path) || QFile::exists(path)) {
+    if (path != m_monitoredDesktopFile) {
+      return;
+    }
+
+    if (desktopFileWatcher()->files().contains(path) || QFile::exists(path)) {
         /* The contents of the file have changed. */
         setDesktopFile(path);
     } else {
