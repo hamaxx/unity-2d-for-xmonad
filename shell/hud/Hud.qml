@@ -227,7 +227,13 @@ FocusScope {
                     icon: iconName /* expose this property for tile */
 
                     onClicked: executeResult(resultId)
-                    onMouseOverChanged: { if (mouseOver >= 0) resultList.currentIndex = mouseOver }
+                    onMouseOverChanged: { 
+                        if (mouseOver >= 0) {
+                            resultList.currentIndex = mouseOver;
+                            // workaround for loosing highlight for mouse if search entry steals focus - see https://bugs.launchpad.net/unity-2d/+bug/966180
+                            forceActiveFocus();
+                        }
+                    }
                 }
             }
         }
