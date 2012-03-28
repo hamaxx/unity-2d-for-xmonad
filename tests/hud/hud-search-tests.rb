@@ -126,7 +126,7 @@ context "HUD Search tests" do
 
     results = get_search_results(@app)
 
-    verify_equal(6, 0, 'Should get exactly 5 rows') {  # FIXME:
+    verify_equal(6, 0, 'Should get exactly 6 rows') {
         results.length
     }
 
