@@ -20,6 +20,10 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
     sudo apt-get install unity-2d
 
+### Install build dependencies for unity-2d from Ubuntu repository
+
+    sudo apt-get build-dep unity-2d
+
 ### Compile unity-2d-for-xmonad
 
     cd unity-2d-for-xmonad
@@ -46,10 +50,6 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
 ![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss2.png)
 ![Screen shot 2](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss3.png)
-
-## Known bugs
-
-* Unity dash and places open on the current screen, not on the primary one
 
 ### If you experience problems with Xmonad not redrawing windows while switching workspaces, try disabling desktop icons
 
