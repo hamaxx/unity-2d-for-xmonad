@@ -378,7 +378,7 @@ void
 Application::onDesktopFileChanged(const QString& path)
 {
     if (path != m_monitoredDesktopFile) {
-      return;
+        return;
     }
 
     if (desktopFileWatcher()->files().contains(path) || QFile::exists(path)) {
