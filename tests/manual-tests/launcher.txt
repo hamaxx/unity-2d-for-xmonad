@@ -110,3 +110,8 @@ to take one second time to update.
 
 Verify there is no strut in the rest of screens where the launcher would be
 ----
+
+ * In a 64 bit machine (32 bit seems not affected, at least in a VM) add lots of favorites to the launcher (at least 22)
+
+Verify that the shell starts without problems (does not segfault) (Do it multiple times since there's the odd time it works)
+----
