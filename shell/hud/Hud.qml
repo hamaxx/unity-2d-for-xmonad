@@ -58,7 +58,7 @@ FocusScope {
             shellManager.hudShell.forceActivateWindow()
             resultList.focus = true
         } else {
-            hudModel.endSearch
+            hudModel.endSearch()
             resultList.currentIndex = -1
         }
     }
@@ -194,8 +194,9 @@ FocusScope {
 
                 opacity: 1
 
-                active: hud.active
-                placeHolderText: u2d.tr("Type your Command")
+                active: hudModel.connected && hud.active
+                placeHolderText: (hudModel.connected) ? u2d.tr("Type your Command")
+                                                      : u2d.tr("Error: HUD service not connected")
 
                 onSearchQueryChanged: {
                     hudModel.searchQuery = searchQuery
