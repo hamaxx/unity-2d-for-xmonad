@@ -76,7 +76,7 @@ SpreadView *SpreadManager::initSpread(int screen)
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/spread/"));
 
     /* Add a SpreadControl instance to the QML context */
-    connect(view, SIGNAL(visibleChanged(bool)), this, SLOT(onViewVisibleChanged(bool)));
+    connect(view, SIGNAL(visibleChanged(bool)), this, SLOT(onViewVisibleChanged(bool)), Qt::QueuedConnection);
     view->rootContext()->setContextProperty("control", &m_control);
     view->rootContext()->setContextProperty("spreadManager", this);
 
