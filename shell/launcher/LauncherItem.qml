@@ -61,7 +61,7 @@ DropItem {
     property int selectionOutlineSize
     property alias name: looseItem.objectName
     property string desktopFile: ""
-    property alias icon: icon.source
+    property string icon: "image://icons/unknown"
     property alias urgentAnimation: urgentAnimation
     property bool running: false
     property bool active: false
@@ -200,6 +200,7 @@ DropItem {
                 activeFocus: item.activeFocus
                 backgroundFromIcon: item.backgroundFromIcon
 
+                source: (shellManager.hudActive && isBfb && hudLoader) ? hudLoader.item.appIcon : item.icon
                 tileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_54.png" : ""
                 tileShineImage: (item.isBfb) ? "../launcher/artwork/squircle_shine_54.png" : ""
                 selectedTileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_selected_54.png" : ""

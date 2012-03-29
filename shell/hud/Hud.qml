@@ -35,6 +35,7 @@ FocusScope {
     property int resultHeight: 42
 
     property bool animating: heightAnimation.running
+    property string appIcon: ""
 
     height: layout.childrenRect.height + layout.anchors.bottomMargin + 10
 
@@ -56,6 +57,7 @@ FocusScope {
     onActiveChanged: {
         if (active) {
             shellManager.hudShell.forceActivateWindow()
+            appIcon = getActiveWindowIcon()
             resultList.focus = true
         } else {
             hudModel.endSearch
@@ -88,6 +90,11 @@ FocusScope {
         shellManager.hudShell.forceDeactivateWindow()
         hudModel.executeResult(resultId)
         active = false
+    }
+
+    function getActiveWindowIcon() {
+        return activeWindow.icon ? "image://icons/" + activeWindow.icon
+                                 : "image://icons/unknown"
     }
 
     property variant hudModel: Hud {}
@@ -155,11 +162,7 @@ FocusScope {
                 width: 54
                 height: 54
 
-                source: (resultList.currentItem != null && resultList.count > 0)
-                        ? "image://icons/" + resultList.currentItem.icon
-                        : (activeWindow.icon
-                           ? "image://icons/" + activeWindow.icon
-                           : "image://icons/unknown")
+                source: appIcon
             }
         }
 
@@ -225,9 +228,15 @@ FocusScope {
                     height: resultHeight
                     width: ListView.view.width
 
-                    icon: iconName /* expose this property for tile */
-
                     onClicked: executeResult(resultId)
+                }
+
+                onCurrentItemChanged: {
+                    if (currentItem != null && count > 0) {
+                        appIcon = currentItem.iconName ? currentItem.iconName : "image://icons/unknown"
+                    } else {
+                        appIcon = getActiveWindowIcon()
+                    }
                 }
             }
         }
