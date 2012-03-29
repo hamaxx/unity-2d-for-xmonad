@@ -127,7 +127,7 @@ context "Spread Tests" do
   # Post-conditions
   #   * None
   # References
-  #   * None
+  #   * https://bugs.launchpad.net/unity-2d/+bug/968146
   test "Spread launcher item toggles the spread" do
     hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode')
     $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
