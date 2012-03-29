@@ -345,7 +345,7 @@ void Lens::onSearchFinished(unity::dash::Lens::Hints const &hints)
         if (it != hints.end()) {
             hint = QString::fromStdString(it->second.GetString());
         } else {
-            hint =  u2dTr("Sorry, there is nothing that matches your search.");
+            hint = u2dTr("Sorry, there is nothing that matches your search.");
         }
     }
 
