@@ -67,10 +67,10 @@ context "Spread Tests" do
     $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
     # Need to wait for the spread to really die, otherwise bad things happen
     # on the second test
-    spread = $SUT.execute_shell_command 'bash -c "ps -A | grep unity-2d-spread"'
+    spread = $SUT.execute_shell_command 'pgrep unity-2d-spread'
     while spread != ""
       sleep 0.1
-      spread = $SUT.execute_shell_command 'bash -c "ps -A | grep unity-2d-spread"'
+      spread = $SUT.execute_shell_command 'pgrep unity-2d-spread'
     end
   end
 
