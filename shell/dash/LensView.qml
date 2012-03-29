@@ -74,34 +74,29 @@ FocusScope {
         objectName: "noResultsText"
         fontSize: "large"
         color: "white"
-        visible: false
-        text: lensView.model.noResultsHint
+        visible: lensView.model == undefined ? false : lensView.model.noResultsHint != ""
+        text: lensView.model != undefined ? lensView.model.noResultsHint : ""
         anchors.centerIn: parent
         anchors.verticalCenterOffset: -6
 
         Connections {
             target: lensView.model != undefined ? lensView.model : null
-            onNoResultsHintChanged: {
-                if (lensView.model.noResultsHint != "") {
-                    hideNoResultHintAnimation.stop()
-                    noResultsText.visible = true
-                    noResultsText.opacity = 1.0
-                }
-            }
-
             onSearchQueryChanged: {
                 if (noResultsText.visible) {
                     hideNoResultHintAnimation.start()
                 }
+            }
+
+            onSearchFinished: {
+                hideNoResultHintAnimation.stop();
+                noResultsText.opacity = 1.0
             }
         }
 
         Connections {
             target: lensView != undefined ? lensView : null
             onModelChanged: {
-                if (noResultsText.visible) {
-                    hideNoResultHintAnimation.start()
-                }
+                lensView.model.noResultsHint = "";
             }
         }
 
@@ -110,7 +105,6 @@ FocusScope {
             PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
             PauseAnimation { duration: 150 }
             NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
-            PropertyAction { target: noResultsText; property: "visible"; value: false }
         }
     }
 

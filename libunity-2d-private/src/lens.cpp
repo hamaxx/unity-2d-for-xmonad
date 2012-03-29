@@ -167,11 +167,10 @@ void Lens::setGlobalSearchQuery(const QString& search_query)
 }
     
 void Lens::setNoResultsHint(const QString& hint) {
-    /* Always update and send the hint, since same value will be reported multiple times for
-       different search strings, and sending this signal every time is needed for correct functioning
-       of qml part */
-    m_noResultsHint = hint;
-    Q_EMIT noResultsHintChanged();
+    if (hint != m_noResultsHint) {
+        m_noResultsHint = hint;
+        Q_EMIT noResultsHintChanged();
+    }
 }
 
 void Lens::activate(const QString& uri)
