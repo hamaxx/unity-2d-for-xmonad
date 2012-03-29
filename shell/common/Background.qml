@@ -37,6 +37,13 @@ Item {
         activeTriggerHelper = true
     }
 
+    // This is here to workaround https://bugs.launchpad.net/unity-2d/+bug/968215
+    // caused by https://bugreports.qt-project.org/browse/QTBUG-25037
+    Rectangle {
+        anchors.fill: parent
+        color: "transparent"
+    }
+
     /* Avoid redraw at rendering */
     effect: CacheEffect {}
 
