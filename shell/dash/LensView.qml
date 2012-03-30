@@ -18,6 +18,7 @@
 
 import QtQuick 1.0
 import Unity2d 1.0
+import "../common"
 import "../common/utils.js" as Utils
 
 FocusScope {
@@ -64,6 +65,47 @@ FocusScope {
         var uri = firstResult.column_0
         var mimetype = firstResult.column_3
         dash.activateUriWithLens(model, uri, mimetype)
+    }
+
+    /* Optional 'No results...' hint for lens search results.
+     */
+    TextCustom {
+        id: noResultsText
+        objectName: "noResultsText"
+        fontSize: "large"
+        color: "white"
+        visible: lensView.model == undefined ? false : lensView.model.noResultsHint != ""
+        text: lensView.model != undefined ? lensView.model.noResultsHint : ""
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: -6
+
+        Connections {
+            target: lensView.model != undefined ? lensView.model : null
+            onSearchQueryChanged: {
+                if (noResultsText.visible) {
+                    hideNoResultHintAnimation.start()
+                }
+            }
+
+            onSearchFinished: {
+                hideNoResultHintAnimation.stop();
+                noResultsText.opacity = 1.0
+            }
+        }
+
+        Connections {
+            target: lensView != undefined ? lensView : null
+            onModelChanged: {
+                lensView.model.noResultsHint = "";
+            }
+        }
+
+        SequentialAnimation {
+            id: hideNoResultHintAnimation
+            PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
+            PauseAnimation { duration: 150 }
+            NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
+        }
     }
 
     ListViewWithScrollbar {

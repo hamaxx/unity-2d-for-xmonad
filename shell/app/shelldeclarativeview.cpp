@@ -45,6 +45,7 @@
 
 ShellDeclarativeView::ShellDeclarativeView(ShellManager *manager, const QUrl &sourceFileUrl, int screen)
     : Unity2DDeclarativeView()
+    , m_monitoredAreaContainsMouse(false)
     , m_sourceFileUrl(sourceFileUrl)
     , m_manager(manager)
 {

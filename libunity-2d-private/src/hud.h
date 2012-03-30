@@ -78,7 +78,8 @@ private Q_SLOTS:
     void onResultsUpdated(const unity::hud::Hud::Queries);
 
 private:
-    bool m_connected;
+    bool m_connected; //Unity-Core's GlibDbusWrapper is connected to the service and is listening to the service signals
+    bool m_hudQueryOpen; //status of the HUD query connection with HUD service
     QString m_searchQuery;
     unity::hud::Hud* m_unityHud;
     unity::hud::Hud::Queries m_unityHudResults; //doubly-ended queue of 'Query's.

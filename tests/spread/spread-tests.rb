@@ -65,6 +65,13 @@ context "Spread Tests" do
     #Need to kill Launcher as it does not shutdown when politely asked
     $SUT.execute_shell_command 'pkill -nf unity-2d-shell'
     $SUT.execute_shell_command 'pkill -nf unity-2d-spread'
+    # Need to wait for the spread to really die, otherwise bad things happen
+    # on the second test
+    spread = $SUT.execute_shell_command 'pgrep unity-2d-spread'
+    while spread != ""
+      sleep 0.1
+      spread = $SUT.execute_shell_command 'pgrep unity-2d-spread'
+    end
   end
 
   #####################################################################################
@@ -105,5 +112,41 @@ context "Spread Tests" do
       @app_shell.Launcher()['x_absolute'].to_i
     }
     xid.close!
+  end
+
+  # Test case objectives:
+  #   * Check that clicking in the spread item of the launcher toggles the spread
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify spread is not showing
+  #   * Click in the spread item of the launcher
+  #   * Verify spread is showing
+  #   * Click in the spread item of the launcher
+  #   * Verify spread is not showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/968146
+  test "Spread launcher item toggles the spread" do
+    hide_mode = $SUT.execute_shell_command('gsettings get com.canonical.Unity2d.Launcher hide-mode')
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 0'
+
+    verify_not(2, 'There should not be a Spread declarative view on startup') {
+      @app_spread.SpreadView()
+    }
+    spreadItem = @app_shell.LauncherList( :name => 'main' ).LauncherList( :icon => "image://icons/unity-icon-theme/workspace-switcher" );
+    spreadItem.move_mouse()
+    XDo::Mouse.click
+
+    verify_equal("true", TIMEOUT, 'There should be a visible Spread declarative view after clicking on the spread item') {
+      @app_spread.SpreadView()['visible']
+    }
+    sleep 2 # Do not really need it, but otherwise the animation looks weird
+    XDo::Mouse.click
+    verify_not(2, 'There should not be a visible Spread declarative view after clicking again on the spread item') {
+      @app_spread.SpreadView()
+    }
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 end

@@ -59,6 +59,7 @@ class Lens : public QObject
 
     Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
     Q_PROPERTY(QString globalSearchQuery READ globalSearchQuery WRITE setGlobalSearchQuery NOTIFY globalSearchQueryChanged)
+    Q_PROPERTY(QString noResultsHint READ noResultsHint WRITE setNoResultsHint NOTIFY noResultsHintChanged)
 
 public:
     explicit Lens(QObject *parent = 0);
@@ -88,11 +89,13 @@ public:
     Filters* filters() const;
     QString searchQuery() const;
     QString globalSearchQuery() const;
+    QString noResultsHint() const;
 
     /* setters */
     void setViewType(const ViewType& viewType);
     void setSearchQuery(const QString& search_query);
     void setGlobalSearchQuery(const QString& search_query);
+    void setNoResultsHint(const QString& hint);
 
     Q_INVOKABLE void activate(const QString& uri);
     void setUnityLens(unity::dash::Lens::Ptr lens);
@@ -118,9 +121,11 @@ Q_SIGNALS:
     void globalSearchFinished(unity::dash::Lens::Hints const&);
     void searchQueryChanged();
     void globalSearchQueryChanged();
+    void noResultsHintChanged();
 
 private Q_SLOTS:
     void synchronizeStates();
+    void onSearchFinished(unity::dash::Lens::Hints const &);
 
 private:
     void onResultsSwarmNameChanged(std::string);
@@ -140,6 +145,7 @@ private:
     DeeListModel* m_categories;
     QString m_searchQuery;
     QString m_globalSearchQuery;
+    QString m_noResultsHint;
     Filters* m_filters;
 };
 

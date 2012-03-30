@@ -158,7 +158,7 @@ private Q_SLOTS:
 
 private:
     QPointer<BamfApplication> m_application;
-    QFileSystemWatcher *m_desktopFileWatcher;
+    QString m_monitoredDesktopFile;
     GAppInfoPointer m_appInfo;
     SnStartupSequencePointer m_snStartupSequence;
     bool m_sticky;
