@@ -84,6 +84,9 @@ DropItem {
     property alias shortcutVisible: shortcut.visible
     property alias shortcutText: shortcutText.text
 
+    property bool beHudItem: shellManager.hudActive && shellManager.hudShell == declarativeView
+                             && isBfb && launcher2dConfiguration.hideMode == 0
+
     property bool isBeingDragged: false
     property int dragPosition
 
@@ -153,7 +156,7 @@ DropItem {
            As a workaround I center all of them, then shift up or down
            depending on the index. */
         Repeater {
-            model: item.pips
+            model: (beHudItem) ? 1 : item.pips
             delegate: Image {
                 objectName: "pips-" + index
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
@@ -200,7 +203,7 @@ DropItem {
                 activeFocus: item.activeFocus
                 backgroundFromIcon: item.backgroundFromIcon
 
-                source: (shellManager.hudActive && isBfb && hudLoader) ? hudLoader.item.appIcon : item.icon
+                source: (beHudItem && hudLoader) ? hudLoader.item.appIcon : item.icon
                 tileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_54.png" : ""
                 tileShineImage: (item.isBfb) ? "../launcher/artwork/squircle_shine_54.png" : ""
                 selectedTileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_selected_54.png" : ""
