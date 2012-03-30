@@ -74,5 +74,11 @@ BaseBehavior {
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
         onBarrierTriggered: shownRegardlessOfFocus = true
+        onAnimatingChanged:
+        {
+            if (!target.animating && !target.containsMouse && shownRegardlessOfFocus) {
+                autoHideTimer.start();
+            }
+        }
     }
 }
