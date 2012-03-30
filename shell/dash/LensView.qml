@@ -46,7 +46,7 @@ FocusScope {
     }
 
     Connections {
-        target: lensView.model.results
+        target: lensView.model != undefined ? lensView.model.results : null
         onCountChanged: updateFirstCategory()
     }
 
