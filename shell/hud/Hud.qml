@@ -229,12 +229,14 @@ FocusScope {
                     height: resultHeight
                     width: ListView.view.width
 
+                    icon: iconName /* expose this property for tile */
+
                     onClicked: executeResult(resultId)
                 }
 
                 onCurrentItemChanged: {
                     if (currentItem != null && count > 0) {
-                        appIcon = currentItem.iconName ? currentItem.iconName : "image://icons/unknown"
+                        appIcon = "image://icons/" + (currentItem.icon ? currentItem.icon : "unknown")
                     } else {
                         appIcon = getActiveWindowIcon()
                     }
