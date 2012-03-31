@@ -142,7 +142,9 @@ DropItem {
             mirror: Utils.isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("launcher/artwork/launcher_arrow_" + (activeOnThisScreen || beHudItem ? "" : "outline_" ) + "rtl.png")
+                  .arg("launcher/artwork/launcher_arrow_" 
+                       + (activeOnThisScreen || beHudItem ? "" : "outline_" ) 
+                       + "rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 
