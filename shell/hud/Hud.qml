@@ -139,19 +139,6 @@ FocusScope {
             width: (launcher2dConfiguration.hideMode == 0) ? 0 : launcherLoader.width
             visible: (launcher2dConfiguration.hideMode != 0)
 
-            Image {
-                id: pip
-
-                anchors.verticalCenter: iconTile.verticalCenter
-                anchors.horizontalCenterOffset: -1
-                anchors.left: parent.left
-                mirror: Utils.isRightToLeft()
-
-                source: "image://blended/%1color=%2alpha=%3"
-                        .arg("launcher/artwork/launcher_arrow_ltr.png")
-                        .arg("lightgrey").arg(1.0)
-            }
-
             IconTile {
                 id: iconTile
 
@@ -167,6 +154,18 @@ FocusScope {
                 tileBackgroundImage: "../launcher/artwork/squircle_base_54.png"
                 tileShineImage: "../launcher/artwork/squircle_shine_54.png"
                 selectedTileBackgroundImage: "../launcher/artwork/squircle_base_selected_54.png"
+            }
+
+            Image {
+                id: pip
+
+                anchors.verticalCenter: iconTile.verticalCenter
+                anchors.right: tile.right
+                mirror: Utils.isRightToLeft()
+
+                source: "image://blended/%1color=%2alpha=%3"
+                        .arg("launcher/artwork/launcher_arrow_rtl.png")
+                        .arg("lightgrey").arg(1.0)
             }
         }
 
