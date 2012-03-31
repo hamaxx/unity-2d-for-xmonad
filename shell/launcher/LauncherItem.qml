@@ -156,7 +156,7 @@ DropItem {
            As a workaround I center all of them, then shift up or down
            depending on the index. */
         Repeater {
-            model: (beHudItem) ? 1 : item.pips
+            model: item.pips
             delegate: Image {
                 objectName: "pips-" + index
                 /* FIXME: It seems that when the image is created (or re-used) by the Repeater
