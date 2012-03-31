@@ -142,11 +142,11 @@ DropItem {
             mirror: Utils.isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("launcher/artwork/launcher_arrow_" + (activeOnThisScreen ? "" : "outline_" ) + "rtl.png")
+                  .arg("launcher/artwork/launcher_arrow_" + (activeOnThisScreen || beHudItem ? "" : "outline_" ) + "rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 
-            visible: active && (looseItem.state != "beingDragged")
+            visible: (active && (looseItem.state != "beingDragged")) || beHudItem
         }
 
         /* This is the area on the left of the tile where the pips/arrow end up.
