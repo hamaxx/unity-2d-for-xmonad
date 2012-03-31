@@ -163,6 +163,10 @@ FocusScope {
                 height: 54
 
                 source: appIcon
+
+                tileBackgroundImage: "../launcher/artwork/squircle_base_54.png"
+                tileShineImage: "../launcher/artwork/squircle_shine_54.png"
+                selectedTileBackgroundImage: "../launcher/artwork/squircle_base_selected_54.png"
             }
         }
 
