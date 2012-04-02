@@ -98,4 +98,18 @@
   #   * Verify dash is showing maximized
   #   * Verify that pressing dash maximize button has no effect (dash stays in maximized mode).
 
-----
+-----
+
+  # Test case objectives:
+  #   * Check that search query is applied to lenses on lens change
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open dash
+  #   * Enter a search query
+  #   * Switch between lenses and verify that search query is applied to all lenses.
+  #   * Enter the same search query manually on every lens page - the results should be more less the same as in previous step.
+  #   * Close dash
+  #   * Open dash and verify that all results are displayed in 'Home' lens, and no search query is applied.
+
+-----
