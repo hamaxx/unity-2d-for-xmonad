@@ -20,10 +20,7 @@
 #include <QString>
 #include <QX11Info>
 
-#include <X11/Xlib.h>
 #include <X11/XKBlib.h>
-#include <X11/extensions/XKB.h>
-#include <X11/Xproto.h>
 
 bool GKeySequenceParser::parse(const QString &keySequence, int *x11KeyCode, Qt::KeyboardModifiers *modifiers)
 {
