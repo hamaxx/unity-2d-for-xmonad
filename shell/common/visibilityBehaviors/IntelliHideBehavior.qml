@@ -24,8 +24,9 @@ import "../utils.js" as Utils
 // or there are no windows that intersect with the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
-// To use this Behavior your target needs to provide one properties
+// To use this Behavior your target needs to provide two properties
 //  - containsMouse: Defines if the mouse is inside the target
+//  - animating: Defines if the target is being animated
 // and one signal
 //  - barrierTriggered: Defines when the pointer barrier has been triggered
 

@@ -200,4 +200,8 @@ context "Launcher Autohide and Show Tests on RTL" do
     test_auto_hide_launcher_hide_timer_and_hud_interaction()
   end
 
+  test "Auto Hide: Launcher mouse move just after barrier trigger" do
+    test_auto_hide_launcher_mouse_move_just_after_barrier_trigger()
+  end
+
 end

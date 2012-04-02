@@ -31,6 +31,8 @@ LauncherDropItem {
 
     property bool containsMouse: declarativeView.monitoredAreaContainsMouse
 
+    property bool animating: launcherLoaderXAnimation.running
+
     function hideMenu() {
         if (main.visibleMenu !== undefined) {
             main.visibleMenu.hide()

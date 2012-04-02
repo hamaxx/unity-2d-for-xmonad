@@ -22,8 +22,9 @@ import QtQuick 1.0
 // in the edge of the target
 // Hides the target when none of the above conditions are met
 // and you have not had the mouse over it during more than 1000 msec
-// To use this Behavior your target needs to provide one properties
+// To use this Behavior your target needs to provide two properties
 //  - containsMouse: Defines if the mouse is inside the target
+//  - animating: Defines if the target is being animated
 // and one signal
 //  - barrierTriggered: Defines when the pointer barrier has been triggered
 
@@ -74,5 +75,11 @@ BaseBehavior {
     Connections {
         target: autoHide.target !== undefined ? autoHide.target : null
         onBarrierTriggered: shownRegardlessOfFocus = true
+        onAnimatingChanged:
+        {
+            if (!target.animating && !target.containsMouse && shownRegardlessOfFocus) {
+                autoHideTimer.start();
+            }
+        }
     }
 }
