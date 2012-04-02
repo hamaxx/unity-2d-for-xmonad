@@ -494,6 +494,9 @@ void ShellManager::onActiveWorkspaceChanged()
 
 void ShellManager::onHudActivationShortcutChanged()
 {
+    // TODO It might make sense to abstract this logic
+    // of switching between hotkey and hotmodifier and put it
+    // in a class in libunity-2d-private
     if (d->m_hudHotModifier) {
         d->m_hudHotModifier->disconnect(this);
         d->m_hudHotModifier = NULL;

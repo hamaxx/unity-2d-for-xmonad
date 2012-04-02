@@ -24,6 +24,10 @@
 
 bool GKeySequenceParser::parse(const QString &keySequence, int *x11KeyCode, Qt::KeyboardModifiers *modifiers)
 {
+    // Parses a string in the form created by the gtk shortcut dialog into x11 keycode and qt modifiers
+    // The expected format is
+    // <Modifier>*Keyname?
+    // i.e. there can be none or multiple modifiers followed or not by the name of a key
     bool success = true;
     *x11KeyCode = 0;
     *modifiers = Qt::NoModifier;
