@@ -114,6 +114,12 @@ AbstractButton {
                     activateFirstResult()
                     event.accepted = true;
                 }
+                if (event.key == Qt.Key_Escape) {
+                    if (searchInput.text != "") {
+                        searchInput.text = ""
+                        event.accepted = true;
+                    }
+                }
             }
 
             Component {

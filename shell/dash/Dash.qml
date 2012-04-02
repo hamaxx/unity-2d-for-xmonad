@@ -29,6 +29,7 @@ FocusScope {
     LayoutMirroring.enabled: Utils.isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
+    property alias searchQuery: search_entry.searchQuery
     property variant currentPage
     /* FIXME: 'active' property exactly mirrors 'shellManager.dashActive'.
        The final goal is to transition to using exclusively the QML 'active' property

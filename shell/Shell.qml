@@ -186,8 +186,18 @@ Item {
     }
 
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape || (event.key == Qt.Key_F4 && event.modifiers == Qt.AltModifier )) {
+        if (event.key == Qt.Key_F4 && event.modifiers == Qt.AltModifier ) {
             declarativeView.forceDeactivateWindow()
+        }
+        if (event.key == Qt.Key_Escape) {
+            /* if dash is active its search query must be empty for Esc to dismiss it */
+            if (shellManager.dashActive) {
+                if (dashLoader.item.searchQuery == "") {
+                    declarativeView.forceDeactivateWindow()
+                }
+            } else {
+                declarativeView.forceDeactivateWindow()
+            }
         }
     }
 
