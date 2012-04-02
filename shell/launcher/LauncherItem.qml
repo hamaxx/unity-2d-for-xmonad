@@ -61,7 +61,7 @@ DropItem {
     property int selectionOutlineSize
     property alias name: looseItem.objectName
     property string desktopFile: ""
-    property alias icon: icon.source
+    property string icon: "image://icons/unknown"
     property alias urgentAnimation: urgentAnimation
     property bool running: false
     property bool active: false
@@ -83,6 +83,9 @@ DropItem {
 
     property alias shortcutVisible: shortcut.visible
     property alias shortcutText: shortcutText.text
+
+    property bool beHudItem: shellManager.hudActive && shellManager.hudShell == declarativeView
+                             && isBfb && launcher2dConfiguration.hideMode == 0
 
     property bool isBeingDragged: false
     property int dragPosition
@@ -139,11 +142,13 @@ DropItem {
             mirror: Utils.isRightToLeft()
 
             source: "image://blended/%1color=%2alpha=%3"
-                  .arg("launcher/artwork/launcher_arrow_" + (activeOnThisScreen ? "" : "outline_" ) + "rtl.png")
+                  .arg("launcher/artwork/launcher_arrow_" 
+                       + (activeOnThisScreen || beHudItem ? "" : "outline_" ) 
+                       + "rtl.png")
                   .arg("lightgrey")
                   .arg(1.0)
 
-            visible: active && (looseItem.state != "beingDragged")
+            visible: (active && (looseItem.state != "beingDragged")) || beHudItem
         }
 
         /* This is the area on the left of the tile where the pips/arrow end up.
@@ -200,6 +205,7 @@ DropItem {
                 activeFocus: item.activeFocus
                 backgroundFromIcon: item.backgroundFromIcon
 
+                source: (beHudItem && hudLoader) ? hudLoader.item.appIcon : item.icon
                 tileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_54.png" : ""
                 tileShineImage: (item.isBfb) ? "../launcher/artwork/squircle_shine_54.png" : ""
                 selectedTileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_selected_54.png" : ""
