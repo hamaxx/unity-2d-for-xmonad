@@ -78,6 +78,21 @@ HotkeyMonitor::getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers)
     return hotkey;
 }
 
+Hotkey*
+HotkeyMonitor::getHotkeyFor(uint x11Keycode, Qt::KeyboardModifiers modifiers)
+{
+    Q_FOREACH(Hotkey* currentHotkey, m_hotkeys) {
+        if (currentHotkey->x11key() == x11Keycode &&
+            currentHotkey->modifiers() == modifiers) {
+            return currentHotkey;
+        }
+    }
+
+    Hotkey *hotkey = new Hotkey(x11Keycode, modifiers, this);
+    m_hotkeys.append(hotkey);
+    return hotkey;
+}
+
 void HotkeyMonitor::disableModifiers(Qt::KeyboardModifiers modifiers)
 {
     m_disabledModifiers |= modifiers;

@@ -29,6 +29,7 @@ HotModifier::HotModifier(Qt::KeyboardModifiers modifiers, QObject *parent) :
     QObject(parent)
 ,   m_modifiers(modifiers)
 ,   m_pressed(false)
+,   m_partiallyPressed(false)
 ,   m_held(false)
 ,   m_ignored(false)
 ,   m_otherModifierPressed(false)
@@ -56,13 +57,14 @@ HotModifier::held() const
 void
 HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    bool pressed = m_modifiers & modifiers;
-    bool otherModifierPressed = modifiers ^ m_modifiers;
+    const bool partiallyPressed = m_modifiers & modifiers;
+    const bool pressed = m_modifiers == modifiers;
+    const bool otherModifierPressed = modifiers & ~m_modifiers;
 
     /* if a modifier other than m_modifier is pressed, we take note of it because when the
        other modifier is released, m_modifier is emitted again. If we don't ignore this
        event, we generate a tap, which is wrong */
-    if (otherModifierPressed && pressed) {
+    if (otherModifierPressed && partiallyPressed) {
         m_otherModifierPressed = true;
     }
 
@@ -72,17 +74,18 @@ HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
         m_held = false;
         Q_EMIT heldChanged(m_held);
     }
-    if (!m_pressed && pressed) {
+    if (!m_partiallyPressed && partiallyPressed) {
         m_ignored = false;
         m_holdTimer.start();
     }
     /* Case where "other modifier" is released while m_modifier still pressed. In this case
        we want to have the entire modifier press event ignored, to prevent generating a tap */
-    if (m_otherModifierPressed && otherModifierPressed && pressed) {
+    if (m_otherModifierPressed && otherModifierPressed && partiallyPressed) {
         m_otherModifierPressed = false;
         m_ignored = true;
     }
     m_pressed = pressed;
+    m_partiallyPressed = partiallyPressed;
 }
 
 void
@@ -109,6 +112,7 @@ HotModifier::disable()
 {
     m_holdTimer.stop();
     m_pressed = false;
+    m_partiallyPressed = false;
     m_ignored = false;
     if (m_held) {
         m_held = false;
