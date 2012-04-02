@@ -619,3 +619,31 @@ def test_auto_hide_launcher_hide_timer_and_hud_interaction
     verify_launcher_visible(2)
   }
 end
+
+# Test case objectives:
+# * Auto Hide: Launcher mouse move just after barrier trigger
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Set hide-mode to 1
+# * Move mouse away from launcher
+# * Verify Launcher hides
+# * Move mouse to screen edge
+# * Verify Launcher still hiding
+# * Fake a barrier triggering
+# * Move mouse away from the launcher
+# * Verify Launcher hides
+# Post-conditions
+# * None
+# References
+# * https://bugs.launchpad.net/unity-2d/+bug/943296
+def test_auto_hide_launcher_mouse_move_just_after_barrier_trigger
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+  XDo::Mouse.move(300, 300, 0, true)
+  verify_launcher_hidden(TIMEOUT, 'Launcher should not be visible immediately without pushing the edge')
+  move_mouse_to_screen_edge()
+  verify_launcher_hidden(0, 'Launcher should not be visible immediately without pushing the edge')
+  @app.Launcher(:visibleOnScreen  => 'false' ).call_method('barrierTriggered()')
+  XDo::Mouse.move(300, 300, 0, true)
+  verify_launcher_hidden(TIMEOUT, 'Launcher should not be visible after moving the mouse away')
+end

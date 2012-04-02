@@ -87,6 +87,20 @@
 
 ----
   # Test case objectives:
+  #   * Check that dash fullscreen mode is forced on small screens
+  # Pre-conditions
+  #   * Small screen (anything less than 1280x1084), e.g. 1024x768
+  #   * form-factor dconf option set to "desktop"
+  #   * full-screen dconf option for dash is unset
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Super
+  #   * Verify dash is showing maximized
+  #   * Verify that pressing dash maximize button has no effect (dash stays in maximized mode).
+
+-----
+
+  # Test case objectives:
   #   * Check that search query is applied to lenses on lens change
   # Pre-conditions
   #   * None
@@ -97,4 +111,5 @@
   #   * Enter the same search query manually on every lens page - the results should be more less the same as in previous step.
   #   * Close dash
   #   * Open dash and verify that all results are displayed in 'Home' lens, and no search query is applied.
-----
+
+-----
