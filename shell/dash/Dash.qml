@@ -78,7 +78,6 @@ FocusScope {
 
         onDashActivateHome: activateHome()
         onDashActivateLens: activateLens(lensId)
-        onDashActiveLensChanged: dash.currentPage.model.searchQuery = search_entry.searchQuery /* this also resets search query on dash open */
     }
 
     Connections {
@@ -293,8 +292,14 @@ FocusScope {
                     return u2d.tr("Search")
             }
 
-            onSearchQueryChanged: if (dash.currentPage != undefined) dash.currentPage.model.searchQuery = searchQuery
             onActivateFirstResult: if (dash.currentPage != undefined) dash.currentPage.activateFirstResult()
+        }
+
+        Binding {
+            /* not using 'when' clause since target needs these check anyway, otherwise it gives warnings if dash.currentPage is undefined */
+            target: dash.currentPage != undefined ? dash.currentPage.model : null
+            property: "searchQuery"
+            value: search_entry.searchQuery
         }
 
         FilterPane {
