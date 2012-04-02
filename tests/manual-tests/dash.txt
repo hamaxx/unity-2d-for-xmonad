@@ -70,3 +70,19 @@
   #   * None
 
 ----
+
+  # Test case objectives:
+  #   * Check maximizing/unmaximizing does not leave graphic noise on screen
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Press the maximize button in the panel
+  #   * Verify dash is showing maximized
+  #   * Press the maximize button in the panel
+  #   * Verify dash is showing normal
+  #   * Verify there is no graphic noise left on screen
+
+----
