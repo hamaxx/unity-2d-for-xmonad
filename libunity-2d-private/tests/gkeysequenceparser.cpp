@@ -52,6 +52,12 @@ private Q_SLOTS:
 
         success = GKeySequenceParser::parse("<Alt>+p", &x11Code, &modifiers);
         QVERIFY(!success);
+
+        success = GKeySequenceParser::parse("<>", &x11Code, &modifiers);
+        QVERIFY(!success);
+
+        success = GKeySequenceParser::parse("><", &x11Code, &modifiers);
+        QVERIFY(!success);
     }
 };
 
