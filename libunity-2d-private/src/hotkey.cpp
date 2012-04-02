@@ -103,7 +103,11 @@ Hotkey::connectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 0) {
-        UQ_DEBUG << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        if (m_key != 0) {
+            UQ_DEBUG << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        } else {
+            UQ_DEBUG.nospace() << "Grabbing hotkey" << QKeySequence(m_modifiers).toString() << XKeysymToString(XKeycodeToKeysym(QX11Info::display(), m_x11key, 0));
+        }
         _x_old_errhandler = XSetErrorHandler(_x_grabkey_errhandler);
         XGrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                  QX11Info::appRootWindow(), True, GrabModeAsync, GrabModeAsync);
@@ -118,7 +122,11 @@ Hotkey::disconnectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 1) {
-        UQ_DEBUG << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        if (m_key != 0) {
+            UQ_DEBUG << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        } else {
+            UQ_DEBUG.nospace() << "Ungrabbing hotkey" << QKeySequence(m_modifiers).toString() << XKeysymToString(XKeycodeToKeysym(QX11Info::display(), m_x11key, 0));
+        }
         XUngrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                    QX11Info::appRootWindow());
     }
