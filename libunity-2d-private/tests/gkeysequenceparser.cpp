@@ -36,9 +36,9 @@ private Q_SLOTS:
         QCOMPARE(x11Code, 0);
         QCOMPARE(modifiers, Qt::AltModifier);
 
-        success = GKeySequenceParser::parse("<Control><Shift><Alt><Super>ccedilla", &x11Code, &modifiers);
+        success = GKeySequenceParser::parse("<Control><Shift><Alt><Super>k", &x11Code, &modifiers);
         QVERIFY(success);
-        QCOMPARE(x11Code, 51);
+        QCOMPARE(x11Code, 45);
         QCOMPARE(modifiers, Qt::AltModifier | Qt::ShiftModifier | Qt::ControlModifier | Qt::MetaModifier);
 
         success = GKeySequenceParser::parse("<Control><Shift><Alt><Super>ccedillaj", &x11Code, &modifiers);
