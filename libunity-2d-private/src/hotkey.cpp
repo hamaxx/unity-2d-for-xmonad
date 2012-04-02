@@ -54,20 +54,8 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     m_key(key), m_modifiers(modifiers),
     m_x11key(0), m_x11modifiers(0)
 {
-    /* Translate the QT modifiers to X11 modifiers */
+    translateModifiers(modifiers);
 
-    if (modifiers.testFlag(Qt::ShiftModifier)) {
-        m_x11modifiers |= ShiftMask ;
-    }
-    if (modifiers.testFlag(Qt::ControlModifier)) {
-        m_x11modifiers |= ControlMask ;
-    }
-    if (modifiers.testFlag(Qt::AltModifier)) {
-        m_x11modifiers |= Mod1Mask;
-    }
-    if (modifiers.testFlag(Qt::MetaModifier)) {
-        m_x11modifiers |= Mod4Mask;
-    }
     if (modifiers.testFlag(Qt::KeypadModifier)) {
         /* Support 0..9 numpad keys only.
            If we ever need to support additional numpad keys, then this logic should be extended
@@ -102,12 +90,24 @@ Hotkey::Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent) :
     }
 }
 
+Hotkey::Hotkey(uint x11key, Qt::KeyboardModifiers modifiers, QObject *parent)
+ : QObject(parent), m_connections(0),
+   m_key(0), m_modifiers(modifiers),
+   m_x11key(x11key), m_x11modifiers(0)
+{
+    translateModifiers(modifiers);
+}
+
 void
 Hotkey::connectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 0) {
-        UQ_DEBUG << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        if (m_key != 0) {
+            UQ_DEBUG << "Grabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        } else {
+            UQ_DEBUG.nospace() << "Grabbing hotkey" << QKeySequence(m_modifiers).toString() << XKeysymToString(XKeycodeToKeysym(QX11Info::display(), m_x11key, 0));
+        }
         _x_old_errhandler = XSetErrorHandler(_x_grabkey_errhandler);
         XGrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                  QX11Info::appRootWindow(), True, GrabModeAsync, GrabModeAsync);
@@ -122,7 +122,11 @@ Hotkey::disconnectNotify(const char * signal)
 {
     Q_UNUSED(signal);
     if (m_connections == 1) {
-        UQ_DEBUG << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        if (m_key != 0) {
+            UQ_DEBUG << "Ungrabbing hotkey" << QKeySequence(m_key | m_modifiers).toString();
+        } else {
+            UQ_DEBUG.nospace() << "Ungrabbing hotkey" << QKeySequence(m_modifiers).toString() << XKeysymToString(XKeycodeToKeysym(QX11Info::display(), m_x11key, 0));
+        }
         XUngrabKey(QX11Info::display(), m_x11key, m_x11modifiers,
                    QX11Info::appRootWindow());
     }
@@ -137,6 +141,24 @@ Hotkey::processNativeEvent(uint x11Keycode, uint x11Modifiers, bool isPressEvent
         return true;
     }
     return false;
+}
+
+void
+Hotkey::translateModifiers(Qt::KeyboardModifiers modifiers)
+{
+    /* Translate the QT modifiers to X11 modifiers */
+    if (modifiers.testFlag(Qt::ShiftModifier)) {
+        m_x11modifiers |= ShiftMask ;
+    }
+    if (modifiers.testFlag(Qt::ControlModifier)) {
+        m_x11modifiers |= ControlMask ;
+    }
+    if (modifiers.testFlag(Qt::AltModifier)) {
+        m_x11modifiers |= Mod1Mask;
+    }
+    if (modifiers.testFlag(Qt::MetaModifier)) {
+        m_x11modifiers |= Mod4Mask;
+    }
 }
 
 #include "hotkey.moc"

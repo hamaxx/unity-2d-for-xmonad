@@ -52,6 +52,7 @@ private:
     QTimer m_holdTimer;
     Qt::KeyboardModifiers m_modifiers;
     bool m_pressed;
+    bool m_partiallyPressed;
     bool m_held;
     bool m_ignored;
     bool m_otherModifierPressed;

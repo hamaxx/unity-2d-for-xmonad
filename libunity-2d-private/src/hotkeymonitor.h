@@ -34,6 +34,7 @@ public:
     ~HotkeyMonitor();
 
     Hotkey* getHotkeyFor(Qt::Key key, Qt::KeyboardModifiers modifiers);
+    Hotkey* getHotkeyFor(uint x11Keycode, Qt::KeyboardModifiers modifiers);
 
     void disableModifiers(Qt::KeyboardModifiers modifiers);
     void enableModifiers(Qt::KeyboardModifiers modifiers);

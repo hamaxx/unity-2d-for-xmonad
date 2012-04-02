@@ -15,3 +15,13 @@
  * Use arrow keys to navigate up/down through the options returned
 
 --> Check Orca speaks the contents of the results
+
+----
+ * Go into ccsm
+ * Change Key to Show HUD to Super+Alt
+--> Verify Super+Alt shows the HUD
+
+----
+ * Go into ccsm
+ * Change Key to Show HUD to Super+Alt
+--> Verify Super+Alt shows the HUD

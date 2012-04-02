@@ -27,6 +27,7 @@
 
 // libunity-2d-private
 #include <debug_p.h>
+#include <gkeysequenceparser.h>
 #include <hotmodifier.h>
 #include <hotkeymonitor.h>
 #include <hotkey.h>
@@ -42,6 +43,9 @@
 #include <unity2ddebug.h>
 #include <gobjectcallback.h>
 
+// libqtgconf
+#include <gconfitem-qml-wrapper.h>
+
 // bamf
 #include "bamf-window.h"
 #include "bamf-matcher.h"
@@ -55,6 +59,7 @@ extern "C" {
 static const char* COMMANDS_LENS_ID = "commands.lens";
 static const int DASH_MIN_SCREEN_WIDTH = 1280;
 static const int DASH_MIN_SCREEN_HEIGHT = 1084;
+static const char* HUD_SHORTCUT_KEY = "/apps/compiz-1/plugins/unityshell/screen0/options/show_hud";
 
 GOBJECT_CALLBACK1(activeWorkspaceChangedCB, "onActiveWorkspaceChanged");
 
@@ -96,9 +101,14 @@ struct ShellManagerPrivate
     QString m_dashActiveLens; /* Lens id of the active lens */
 
     HotModifier* m_superHotModifier;
-    HotModifier* m_altHotModifier;
+
+    // Only one of the two is non null at a time
+    HotModifier* m_hudHotModifier;
+    Hotkey* m_hudHotKey;
 
     WId m_last_focused_window;
+
+    GConfItemQmlWrapper *m_gconfItem;
 };
 
 
@@ -270,6 +280,13 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
 {
     d->q = this;
     d->m_sourceFileUrl = sourceFileUrl;
+    d->m_hudHotModifier = NULL;
+    d->m_hudHotKey = NULL;
+
+    d->m_gconfItem = new GConfItemQmlWrapper(this);
+    connect(d->m_gconfItem, SIGNAL(valueChanged()), this, SLOT(onHudActivationShortcutChanged()));
+    d->m_gconfItem->setKey(HUD_SHORTCUT_KEY);
+    onHudActivationShortcutChanged();
 
     qmlRegisterUncreatableType<ShellDeclarativeView>("Unity2d", 1, 0, "ShellDeclarativeView", "This can only be created from C++");
     qmlRegisterUncreatableType<ShellManager>("Unity2d", 1, 0, "ShellManager", "This can only be created from C++");
@@ -287,10 +304,6 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     d->m_superHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
     connect(d->m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDashRequested()));
     connect(d->m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
-
-    /* Alt tap shows the HUD */
-    d->m_altHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::AltModifier);
-    connect(d->m_altHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
 
     /* Alt+F1 reveals the launcher and gives the keyboard focus to the Dash Button. */
     Hotkey* altF1 = HotkeyMonitor::instance().getHotkeyFor(Qt::Key_F1, Qt::AltModifier);
@@ -479,6 +492,37 @@ void ShellManager::onActiveWorkspaceChanged()
     Q_EMIT lastFocusedWindowChanged(d->m_last_focused_window);
 }
 
+void ShellManager::onHudActivationShortcutChanged()
+{
+    // TODO It might make sense to abstract this logic
+    // of switching between hotkey and hotmodifier and put it
+    // in a class in libunity-2d-private
+    if (d->m_hudHotModifier) {
+        d->m_hudHotModifier->disconnect(this);
+        d->m_hudHotModifier = NULL;
+    }
+    if (d->m_hudHotKey) {
+        d->m_hudHotKey->disconnect(this);
+        d->m_hudHotKey = NULL;
+    }
+
+    int x11KeyCode;
+    Qt::KeyboardModifiers modifiers;
+    const QString shortcut = d->m_gconfItem->getValue().toString();
+    const bool success = GKeySequenceParser::parse(shortcut, &x11KeyCode, &modifiers);
+    if (success) {
+        if (x11KeyCode != 0) {
+            d->m_hudHotKey = HotkeyMonitor::instance().getHotkeyFor(x11KeyCode, modifiers);
+            connect(d->m_hudHotKey, SIGNAL(pressed()), SLOT(toggleHudRequested()));
+        } else if (modifiers != Qt::NoModifier) {
+            d->m_hudHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(modifiers);
+            connect(d->m_hudHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
+        }
+    } else {
+        qWarning().nospace() << "Could not parse the key sequence " << shortcut << ". HUD won't be activated";
+    }
+}
+
 /* ----------------- super key handling ---------------- */
 
 void
@@ -580,7 +624,7 @@ ShellManager::onNumericHotkeyPressed()
             Shortcut for 0 should activate item with index 10.
             In other words, the indexes are activated in the same order as
             the keys appear on a standard keyboard. */
-            Qt::Key key = hotkey->key();
+            const int key = hotkey->key();
             if (key >= Qt::Key_1 && key <= Qt::Key_9) {
                 int index = key - Qt::Key_0;
                 if (hotkey->modifiers() & Qt::ShiftModifier) {
