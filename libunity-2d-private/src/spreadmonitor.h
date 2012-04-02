@@ -41,6 +41,14 @@ protected Q_SLOTS:
 
 Q_SIGNALS:
     void shownChanged(bool visible);
+
+private Q_SLOTS:
+    void internalSetShown(bool shown);
+
+private:
+    bool dbusShown() const;
+
+    bool m_shown;
 };
 
 Q_DECLARE_METATYPE(SpreadMonitor*)
