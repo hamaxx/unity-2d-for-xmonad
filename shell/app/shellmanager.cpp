@@ -519,7 +519,7 @@ void ShellManager::onHudActivationShortcutChanged()
             connect(d->m_hudHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
         }
     } else {
-        qWarning() << "Could not parse the key sequence" << shortcut << ". HUD won't be activated";
+        qWarning().nospace() << "Could not parse the key sequence " << shortcut << ". HUD won't be activated";
     }
 }
 
