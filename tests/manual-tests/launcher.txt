@@ -115,3 +115,8 @@ Verify there is no strut in the rest of screens where the launcher would be
 
 Verify that the shell starts without problems (does not segfault) (Do it multiple times since there's the odd time it works)
 ----
+
+ * Use hide-mode 1. killall both unity-2d-shell and unity-2d-spread. Start only the shell. Click twice on the launcher spread icon. Move the mouse away from the launcher
+
+Verify that the launcher hides correctly
+----

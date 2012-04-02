@@ -28,7 +28,8 @@
 
 SpreadMonitor::SpreadMonitor(QObject *parent)
     : AbstractDBusServiceMonitor("com.canonical.Unity2d.Spread", "/Spread",
-                                "com.canonical.Unity2d.Spread", parent)
+                                "com.canonical.Unity2d.Spread", parent),
+      m_shown(false)
 {
     connect(this, SIGNAL(serviceAvailableChanged(bool)), SLOT(onServiceAvailableChanged(bool)));
 
@@ -40,21 +41,34 @@ SpreadMonitor::SpreadMonitor(QObject *parent)
 void SpreadMonitor::onServiceAvailableChanged(bool available)
 {
     if (available) {
-        connect(dbusInterface(), SIGNAL(IsShownChanged(bool)), SIGNAL(shownChanged(bool)));
+        connect(dbusInterface(), SIGNAL(IsShownChanged(bool)), SLOT(internalSetShown(bool)));
 
         /* In SpreadMonitor::shown() we assume shown is false if the service is not
            available therefore there is no need to emit shownChanged if it is still false */
-        if (shown()) {
-            Q_EMIT shownChanged(true);
+        if (dbusShown()) {
+            internalSetShown(true);
         }
     } else {
         /* At this point we cannot know for sure that the spread was shown so
            we emit the changed signal unconditionally */
-        Q_EMIT shownChanged(false);
+        internalSetShown(false);
     }
 }
 
 bool SpreadMonitor::shown() const
+{
+    return m_shown;
+}
+
+void SpreadMonitor::internalSetShown(bool shown)
+{
+    if (shown != m_shown) {
+        m_shown = shown;
+        Q_EMIT shownChanged(m_shown);
+    }
+}
+
+bool SpreadMonitor::dbusShown() const
 {
     if (dbusInterface() == 0) {
         return false;
