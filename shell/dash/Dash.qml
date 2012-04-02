@@ -78,6 +78,7 @@ FocusScope {
 
         onDashActivateHome: activateHome()
         onDashActivateLens: activateLens(lensId)
+        onDashActiveLensChanged: dash.currentPage.model.searchQuery = search_entry.searchQuery /* this also resets search query on dash open */
     }
 
     Connections {
