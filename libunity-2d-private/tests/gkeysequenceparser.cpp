@@ -36,6 +36,11 @@ private Q_SLOTS:
         QCOMPARE(x11Code, 0);
         QCOMPARE(modifiers, Qt::AltModifier);
 
+        success = GKeySequenceParser::parse("<Alt_L>", &x11Code, &modifiers);
+        QVERIFY(success);
+        QCOMPARE(x11Code, 0);
+        QCOMPARE(modifiers, Qt::AltModifier);
+
         success = GKeySequenceParser::parse("<Control><Shift><Alt><Super>k", &x11Code, &modifiers);
         QVERIFY(success);
         QCOMPARE(x11Code, 45);
