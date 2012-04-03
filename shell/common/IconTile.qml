@@ -24,7 +24,7 @@ Item {
 
     property bool activeFocus: false
     property bool backgroundFromIcon: true
-    property alias source: icon.source
+    property string source: "image://icons/unknown"
     property alias backgroundOpacity: tileBackground.opacity
 
     /* For icons that do not follow usual tile design, can specify custom tile background,
@@ -94,4 +94,6 @@ Item {
 
         source: (tileShineImage != "") ? tileShineImage : "artwork/round_shine_54x54.png"
     }
+
+    onSourceChanged: icon.source = iconTile.source
 }

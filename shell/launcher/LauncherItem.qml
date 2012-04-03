@@ -205,12 +205,7 @@ DropItem {
                 activeFocus: item.activeFocus
                 backgroundFromIcon: item.backgroundFromIcon
 
-                Binding
-                {
-                    target: icon;
-                    property: "source";
-                    value: (beHudItem && hudLoader) ? hudLoader.item.appIcon : item.icon
-                }
+                source: (beHudItem && hudLoader) ? hudLoader.item.appIcon : item.icon
                 tileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_54.png" : ""
                 tileShineImage: (item.isBfb) ? "../launcher/artwork/squircle_shine_54.png" : ""
                 selectedTileBackgroundImage: (item.isBfb) ? "../launcher/artwork/squircle_base_selected_54.png" : ""
