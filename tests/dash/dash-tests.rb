@@ -381,6 +381,59 @@ context "Dash Tests" do
   end
 
   # Test case objectives:
+  #   * Check that Esc clears dash search entry first, tapping Esc for the 2nd time closes dash
+  # Pre-conditions
+  #   * Desktop with no running applications
+  # Test steps
+  #   * Verify dash is not showing
+  #   * Press Super
+  #   * Verify dash is showing
+  #   * Type search query
+  #   * Verify dash search entry is populated
+  #   * Press Esc
+  #   * Verify dash search entry is cleared
+  #   * Verify dash is still showing
+  #   * Press Esc
+  #   * Verify dash is not showing
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/966121
+  test "Esc clears dash search query first, then closes dash" do
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative view on startup') {
+      @app.Dash()['active']
+    }
+
+    XDo::Keyboard.super
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+
+    # type search string
+    XDo::Keyboard.a
+    XDo::Keyboard.b
+    XDo::Keyboard.c
+    
+    verify_equal('abc', TIMEOUT, 'Search query should be populated') {
+      @app.Dash().QDeclarativeItem.SearchEntry()['searchQuery']
+    }
+
+    XDo::Keyboard.escape
+    verify_equal("true", TIMEOUT, 'Dash should still be visible') {
+      @app.Dash()['active']
+    }
+
+    verify_equal('', TIMEOUT, 'Search query should be empty') {
+      @app.Dash().QDeclarativeItem.SearchEntry()['searchQuery']
+    }
+
+    XDo::Keyboard.escape
+    verify_equal("false", TIMEOUT, 'There should not be a Dash declarative') {
+      @app.Dash()['active']
+    }
+  end
+ 
+  # Test case objectives:
   #   * Check navigation to and in lens bar
   # Pre-conditions
   # Test steps

@@ -128,6 +128,58 @@ context "HUD Show and Hide tests" do
   end
  
   # Test case objectives:
+  #   * Check Escape key clears search query first, then closes HUD
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Check HUD closed
+  #   * Tap the Alt key
+  #   * Check HUD open
+  #   * Type search string
+  #   * Verify that search string appears in the HUD
+  #   * Tap Escape key
+  #   * Verify that search string was cleared
+  #   * Tap Escape key
+  #   * Check that HUD was closed
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/966121
+  test "Esc clears HUD search query, then hides HUD" do
+    verify_not(1, 'HUD should be hidden at startup') {
+      @app.Hud()
+    }
+
+    XDo::Keyboard.alt
+    verify_equal('true', TIMEOUT, 'HUD should be visible, as the Alt key was tapped') {
+      @app.Hud()['active']
+    }
+
+    # type search string
+    XDo::Keyboard.a
+    XDo::Keyboard.b
+    XDo::Keyboard.c
+
+    verify_equal('abc', TIMEOUT, 'HUD search text should be "abc"') {
+        @app.Hud().SearchEntry()['searchQuery']
+    }
+
+    XDo::Keyboard.escape
+    verify_equal('true', TIMEOUT, 'HUD should still be visible') {
+      @app.Hud()['active']
+    }
+
+    verify_equal('', TIMEOUT, 'HUD search text should be empty') {
+        @app.Hud().SearchEntry()['searchQuery']
+    }
+
+    XDo::Keyboard.escape
+    verify_not(1, 'HUD should be hidden, as the Escape key should dismiss it') {
+      @app.Hud()
+    }
+  end
+
+  # Test case objectives:
   #   * Check Alt+F4 key closes HUD
   # Pre-conditions
   #   * None
