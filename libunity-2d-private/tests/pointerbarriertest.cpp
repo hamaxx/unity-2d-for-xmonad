@@ -342,7 +342,7 @@ private Q_SLOTS:
         QCOMPARE(brokenSpy.count(), 0);
         QCOMPARE(triggeredSpy.count(), 0);
 
-        QTest::qWait(1000); // Wait until X reenables the barrier
+        QTest::qWait(100); // Wait until X reenables the barrier
 
         XTestFakeRelativeMotionEvent(display, -300, 0, 0);
         // We are stopped by the barrier and instead in 50, 50 we are in 100, 50
