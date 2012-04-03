@@ -2,3 +2,15 @@
  * Logout of a Unity-2d session
 
 -> Logout is "fast", with "fast" meaning it is not 30 seconds (gnome-session timeout) nor 10 (Qt clipboard manager timeout on app shutdown)
+
+----
+ * Have 2 screens stacked vertically
+ * Enable sticky edges
+
+-> Verify that there is a mouse barrier between the two screens
+
+----
+ * Have 2 screens stacked vertically
+ * Disable sticky edges
+
+-> Verify that there is no mouse barrier between the two screens
