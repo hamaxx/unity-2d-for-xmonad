@@ -111,7 +111,7 @@ context "HUD Search tests" do
   #   * Tap Alt to open HUD
   #   * Check that HUD is visible
   #   * Type search string (letter 'a')
-  #   * Verify that exactly 5 result items are displayed
+  #   * Verify that exactly 6 result items are displayed
   #   * Verify that first result item is highlighted and has focus
   #   * Verify that exactly one result item is highlighted
   # Post-conditions
