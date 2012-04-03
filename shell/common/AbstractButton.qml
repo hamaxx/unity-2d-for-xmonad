@@ -28,7 +28,7 @@ FocusScope {
        (see http://bugreports.qt.nokia.com/browse/QTBUG-13007). */
     property bool pressed: false
 
-    property alias hasmouse: mouse_area.containsMouse
+    property alias mouseOver: mouse_area.containsMouse
 
     signal clicked
 

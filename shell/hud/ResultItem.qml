@@ -22,7 +22,6 @@ import "../common"
 AbstractButton {
     id: delegate
     property string icon: ""
-    property int mouseOver: hasmouse ? model.index : -1
 
     Accessible.name: plainText
     Accessible.role: Accessible.Button
