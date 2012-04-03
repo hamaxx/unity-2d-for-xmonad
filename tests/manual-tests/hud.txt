@@ -25,3 +25,9 @@
  * Go into ccsm
  * Change Key to Show HUD to Super+Alt
 --> Verify Super+Alt shows the HUD
+
+----
+ * Have a fixed launcher
+ * Find a program without icon (i.e. uses the ? icon) (dconf-editor works here)
+ * Show and hide the hud
+--> Verify the BFB icon goes back to the ubuntu logo and does not get stuck in ?
