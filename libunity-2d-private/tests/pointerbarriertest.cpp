@@ -305,6 +305,61 @@ private Q_SLOTS:
         QCOMPARE(brokenSpy.count(), 0);
         QCOMPARE(triggeredSpy.count(), 0);
     }
+
+    void testTriggerOnly()
+    {
+        Display *display = QX11Info::display();
+        PointerBarrierWrapper barrier;
+
+        QSignalSpy brokenSpy(&barrier, SIGNAL(broken()));
+        QSignalSpy triggeredSpy(&barrier, SIGNAL(triggered()));
+
+        XTestFakeMotionEvent(display, -1, 50, 50, 0);
+        QCOMPARE(QCursor::pos(), QPoint(50, 50));
+
+        barrier.setP1(QPointF(100, 0));
+        barrier.setP2(QPointF(100, 100));
+        barrier.setTriggerZoneP1(QPointF(100, 0));
+        barrier.setTriggerZoneP2(QPointF(100, 100));
+        barrier.setTriggerZoneEnabled(true);
+        barrier.setTriggerOnly(true);
+        barrier.setTriggerDirection(PointerBarrierWrapper::TriggerFromRight);
+        barrier.setThreshold(6500);
+        barrier.setMaxVelocityMultiplier(2);
+        barrier.setDecayRate(1500);
+        barrier.setTriggerPressure(2000);
+        barrier.setBreakPressure(2000);
+
+        for (int i = 0; i < 100; ++i) {
+            XTestFakeRelativeMotionEvent(display, 1, 0, 0);
+            QTest::qWait(1);
+        }
+
+        // We are not stopped by the barrier because
+        // we are not hitting it from the trigger direction
+        QVERIFY(QCursor::pos() != QPoint(99, 50));
+
+        QCOMPARE(brokenSpy.count(), 0);
+        QCOMPARE(triggeredSpy.count(), 0);
+
+        QTest::qWait(1000); // Wait until X reenables the barrier
+
+        XTestFakeRelativeMotionEvent(display, -300, 0, 0);
+        // We are stopped by the barrier and instead in 50, 50 we are in 100, 50
+        QCOMPARE(QCursor::pos(), QPoint(100, 50));
+
+        QCOMPARE(brokenSpy.count(), 0);
+        QCOMPARE(triggeredSpy.count(), 0);
+
+        for (int i = 0; i < 10; ++i) {
+            XTestFakeRelativeMotionEvent(display, -100, 0, 0);
+            QTest::qWait(100);
+        }
+        // We have triggered the barrier and are still there
+        QCOMPARE(QCursor::pos(), QPoint(100, 50));
+        QCOMPARE(brokenSpy.count(), 0);
+        QVERIFY(triggeredSpy.count() >= 1);
+    }
 };
 
 UAPP_TEST_MAIN(PointerBarrierTest)
