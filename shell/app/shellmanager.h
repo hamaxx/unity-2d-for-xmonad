@@ -117,6 +117,8 @@ private Q_SLOTS:
 
     void onActiveWorkspaceChanged();
 
+    void onHudActivationShortcutChanged();
+
 private:
     Q_DISABLE_COPY(ShellManager)
     ShellManagerPrivate * const d;

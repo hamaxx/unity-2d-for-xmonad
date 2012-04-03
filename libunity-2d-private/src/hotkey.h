@@ -27,15 +27,16 @@ class Hotkey : public QObject
     friend class HotkeyMonitor;
 
     Q_OBJECT
-    Q_PROPERTY(Qt::Key key READ key NOTIFY keyChanged)
+    Q_PROPERTY(int key READ key NOTIFY keyChanged)
     Q_PROPERTY(Qt::KeyboardModifiers modifiers READ modifiers NOTIFY modifiersChanged)
 
 public:
-    Qt::Key key() const { return m_key; }
+    int key() const { return m_key; }
+    uint x11key() const { return m_x11key; }
     Qt::KeyboardModifiers modifiers() const { return m_modifiers; }
 
 Q_SIGNALS:
-    void keyChanged(Qt::Key key);
+    void keyChanged(int key);
     void modifiersChanged(Qt::KeyboardModifiers modifiers);
     void pressed();
     void released();
@@ -46,11 +47,13 @@ protected:
 
 private:
     Hotkey(Qt::Key key, Qt::KeyboardModifiers modifiers, QObject *parent);
+    Hotkey(uint x11key, Qt::KeyboardModifiers modifiers, QObject *parent);
     bool processNativeEvent(uint x11Keycode, uint x11Modifiers, bool isPressEvent);
+    void translateModifiers(Qt::KeyboardModifiers modifiers);
 
 private:
     uint m_connections;
-    Qt::Key m_key;
+    int m_key;
     Qt::KeyboardModifiers m_modifiers;
     uint m_x11key;
     uint m_x11modifiers;

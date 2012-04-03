@@ -87,6 +87,7 @@ set(lib${LIB_NAME}_SRCS
     pointerbarrier.cpp
     pointerbarriermanager.cpp
     decayedvalue.cpp
+    gkeysequenceparser.cpp
     )
 
 # Build

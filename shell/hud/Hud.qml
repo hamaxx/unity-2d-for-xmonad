@@ -35,6 +35,7 @@ FocusScope {
     property int resultHeight: 42
 
     property bool animating: heightAnimation.running
+    property string appIcon: ""
 
     height: layout.childrenRect.height + layout.anchors.bottomMargin + 10
 
@@ -56,6 +57,7 @@ FocusScope {
     onActiveChanged: {
         if (active) {
             shellManager.hudShell.forceActivateWindow()
+            appIcon = getActiveWindowIcon()
             resultList.focus = true
         } else {
             hudModel.endSearch()
@@ -88,6 +90,11 @@ FocusScope {
         shellManager.hudShell.forceDeactivateWindow()
         hudModel.executeResult(resultId)
         active = false
+    }
+
+    function getActiveWindowIcon() {
+        return activeWindow.icon ? "image://icons/" + activeWindow.icon
+                                 : "image://icons/unknown"
     }
 
     property variant hudModel: Hud {}
@@ -129,20 +136,8 @@ FocusScope {
 
             anchors.left: parent.left
             anchors.top: parent.top
-            width: 65
-
-            Image {
-                id: pip
-
-                anchors.verticalCenter: iconTile.verticalCenter
-                anchors.horizontalCenterOffset: -1
-                anchors.left: parent.left
-                mirror: Utils.isRightToLeft()
-
-                source: "image://blended/%1color=%2alpha=%3"
-                        .arg("launcher/artwork/launcher_arrow_ltr.png")
-                        .arg("lightgrey").arg(1.0)
-            }
+            width: (launcher2dConfiguration.hideMode == 0) ? 0 : launcherLoader.width
+            visible: (launcher2dConfiguration.hideMode != 0)
 
             IconTile {
                 id: iconTile
@@ -154,11 +149,23 @@ FocusScope {
                 width: 54
                 height: 54
 
-                source: (resultList.currentItem != null && resultList.count > 0)
-                        ? "image://icons/" + resultList.currentItem.icon
-                        : (activeWindow.icon
-                           ? "image://icons/" + activeWindow.icon
-                           : "image://icons/unknown")
+                source: appIcon
+
+                tileBackgroundImage: "../launcher/artwork/squircle_base_54.png"
+                tileShineImage: "../launcher/artwork/squircle_shine_54.png"
+                selectedTileBackgroundImage: "../launcher/artwork/squircle_base_selected_54.png"
+            }
+
+            Image {
+                id: pip
+
+                anchors.verticalCenter: iconTile.verticalCenter
+                anchors.right: tile.right
+                mirror: Utils.isRightToLeft()
+
+                source: "image://blended/%1color=%2alpha=%3"
+                        .arg("launcher/artwork/launcher_arrow_rtl.png")
+                        .arg("lightgrey").arg(1.0)
             }
         }
 
@@ -228,6 +235,14 @@ FocusScope {
                     icon: iconName /* expose this property for tile */
 
                     onClicked: executeResult(resultId)
+                }
+
+                onCurrentItemChanged: {
+                    if (currentItem != null && count > 0) {
+                        appIcon = "image://icons/" + (currentItem.icon ? currentItem.icon : "unknown")
+                    } else {
+                        appIcon = getActiveWindowIcon()
+                    }
                 }
             }
         }

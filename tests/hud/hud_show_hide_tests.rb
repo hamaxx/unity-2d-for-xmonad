@@ -26,15 +26,23 @@ require 'xdo/mouse'
 
 ############################# Test Suite #############################
 context "HUD Show and Hide tests" do
+  hide_mode = 0
 
   # Run once at the beginning of this test suite
   startup do
     $SUT.execute_shell_command 'killall unity-2d-shell'
     $SUT.execute_shell_command 'killall unity-2d-shell'
+
+    # Save current hide-mode
+    hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
+    # Set hide-mode to 1 (auto-hide)
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
   end
 
   # Run once at the end of this test suite
   shutdown do
+    # Restore hide-mode to original setting
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
   end
 
   # Run before each test case begins

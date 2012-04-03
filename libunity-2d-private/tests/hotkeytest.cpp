@@ -51,7 +51,7 @@ public Q_SLOTS:
     void onKeyPressed() {
         Hotkey* hotkey = qobject_cast<Hotkey*>(sender());
 
-        m_key = hotkey->key();
+        m_key = (Qt::Key)hotkey->key();
         m_modifiers = hotkey->modifiers();
        ++m_count;
     }
