@@ -30,7 +30,6 @@ FocusScope {
     LayoutMirroring.enabled: Utils.isRightToLeft()
     LayoutMirroring.childrenInherit: true
 
-    property alias searchQuery: searchEntry.searchQuery
     property bool active: false
 
     property int resultHeight: 42
@@ -76,7 +75,7 @@ FocusScope {
     }
 
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape && searchEntry.searchQuery == "") toggleHud()
+        if (event.key == Qt.Key_Escape) toggleHud()
     }
 
     function toggleHud() {
