@@ -24,12 +24,6 @@ require 'xdo/xwindow'
 require 'xdo/keyboard'
 require 'xdo/mouse'
 
-######################### Helper functions ############################
-
-def get_hud_query_string(shell)
-    return shell.Hud().QDeclarativeItem().QDeclarativeRectangle().SearchEntry().QDeclarativeItem().QDeclarativeTextInput()['text']
-end
-
 ############################# Test Suite #############################
 context "HUD Show and Hide tests" do
 
@@ -159,7 +153,7 @@ context "HUD Show and Hide tests" do
     XDo::Keyboard.c
 
     verify_equal('abc', TIMEOUT, 'HUD search text should be "abc"') {
-        get_hud_query_string(@app)
+        @app.Hud().SearchEntry()['searchQuery']
     }
 
     XDo::Keyboard.escape
@@ -168,7 +162,7 @@ context "HUD Show and Hide tests" do
     }
 
     verify_equal('', TIMEOUT, 'HUD search text should be empty') {
-        get_hud_query_string(@app)
+        @app.Hud().SearchEntry()['searchQuery']
     }
 
     XDo::Keyboard.escape
