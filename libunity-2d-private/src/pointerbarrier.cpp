@@ -30,6 +30,7 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     , m_barrier(0)
     , m_triggerDirection(TriggerFromAnywhere)
     , m_triggerZoneEnabled(false)
+    , m_triggerOnly(false)
     , m_threshold(-1)
     , m_maxVelocityMultiplier(-1)
     , m_decayRate(-1)
@@ -148,6 +149,19 @@ void PointerBarrierWrapper::setTriggerZoneEnabled(bool enabled)
         Q_EMIT triggerZoneEnabledChanged(enabled);
 
         handleTriggerZoneChanged();
+    }
+}
+
+bool PointerBarrierWrapper::triggerOnly() const
+{
+    return m_triggerOnly;
+}
+
+void PointerBarrierWrapper::setTriggerOnly(bool triggerOnly)
+{
+    if (triggerOnly != m_triggerOnly) {
+        m_triggerOnly = triggerOnly;
+        Q_EMIT triggerOnlyChanged(triggerOnly);
     }
 }
 
@@ -304,11 +318,13 @@ void PointerBarrierWrapper::smoother()
             Q_EMIT triggered();
         }
     } else {
-        if (m_breakValue.addAndCheckExceedingTarget(velocity)) {
+        if (m_triggerOnly || m_breakValue.addAndCheckExceedingTarget(velocity)) {
             Display *display = QX11Info::display();
             XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
 
-            Q_EMIT broken();
+            if (!m_triggerOnly) {
+                Q_EMIT broken();
+            }
         }
     }
 
