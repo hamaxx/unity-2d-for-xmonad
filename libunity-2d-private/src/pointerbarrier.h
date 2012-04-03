@@ -130,6 +130,8 @@ private:
 
     bool isPointAlignmentCorrect() const;
 
+    bool isLastEventAgainstTrigger() const;
+
     PointerBarrier m_barrier;
 
     QPointF m_p1;

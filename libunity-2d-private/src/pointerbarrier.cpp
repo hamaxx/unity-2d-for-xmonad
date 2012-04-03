@@ -208,6 +208,13 @@ void PointerBarrierWrapper::doProcess(XFixesBarrierNotifyEvent *notifyEvent)
     if (!m_smoothingTimer->isActive()) {
         m_smoothingTimer->start();
     }
+
+    if (m_triggerOnly && !isLastEventAgainstTrigger()) {
+        // We got to the barrier from the non triggering direction
+        // Release it so the mouse can continue its travel
+        Display *display = QX11Info::display();
+        XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
+    }
 }
 
 int PointerBarrierWrapper::threshold() const
@@ -302,29 +309,16 @@ void PointerBarrierWrapper::smoother()
     }
     const int velocity = qMin<qreal>(600 * m_maxVelocityMultiplier, m_smoothingAccumulator / m_smoothingCount);
 
-    bool againstTrigger = false;
-    if (m_triggerZoneEnabled && m_triggerZoneP1.x() == m_triggerZoneP2.x() && m_triggerZoneP1.y() <= m_lastEventY && m_triggerZoneP2.y() >= m_lastEventY) {
-        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerZoneP1.x()) ||
-                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerZoneP1.x());
-    }
-    if (m_triggerZoneEnabled && m_triggerZoneP1.y() == m_triggerZoneP2.y() && m_triggerZoneP1.x() <= m_lastEventX && m_triggerZoneP2.x() >= m_lastEventX) {
-        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerZoneP1.y()) ||
-                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerZoneP1.y());
-    }
-    if (againstTrigger) {
+    if (isLastEventAgainstTrigger()) {
         if (m_triggerValue.addAndCheckExceedingTarget(velocity)) {
             Q_EMIT triggered();
         }
     } else {
-        if (m_triggerOnly || m_breakValue.addAndCheckExceedingTarget(velocity)) {
+        if (m_breakValue.addAndCheckExceedingTarget(velocity)) {
             Display *display = QX11Info::display();
             XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
 
-            if (!m_triggerOnly) {
-                Q_EMIT broken();
-            }
+            Q_EMIT broken();
         }
     }
 
@@ -372,6 +366,22 @@ bool PointerBarrierWrapper::isPointAlignmentCorrect() const
 
     return alignmentCorrect;
 
+}
+
+bool PointerBarrierWrapper::isLastEventAgainstTrigger() const
+{
+    bool againstTrigger = false;
+    if (m_triggerZoneEnabled && m_triggerZoneP1.x() == m_triggerZoneP2.x() && m_triggerZoneP1.y() <= m_lastEventY && m_triggerZoneP2.y() >= m_lastEventY) {
+        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
+                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerZoneP1.x()) ||
+                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerZoneP1.x());
+    }
+    if (m_triggerZoneEnabled && m_triggerZoneP1.y() == m_triggerZoneP2.y() && m_triggerZoneP1.x() <= m_lastEventX && m_triggerZoneP2.x() >= m_lastEventX) {
+        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
+                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerZoneP1.y()) ||
+                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerZoneP1.y());
+    }
+    return againstTrigger;
 }
 
 #include <pointerbarrier.moc>
