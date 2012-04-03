@@ -29,7 +29,7 @@ require 'xdo/mouse'
 
 HUD_HIGHLIGHT_COLOR = '#ffffff'
 HUD_NO_HIGHLIGHT_COLOR = '#000000'
-HUD_RESULTS_START_Y = 53
+HUD_RESULTS_START_Y = 77
 HUD_RESULT_ITEM_HEIGHT = 42
 
 ######################### Helper functions ############################
