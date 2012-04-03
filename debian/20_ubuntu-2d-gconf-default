@@ -3,3 +3,4 @@
 /apps/metacity/general/capture_before_unmap true
 /apps/metacity/general/compositing_manager true
 /apps/metacity/general/compositor_effects false
+/apps/compiz-1/plugins/unityshell/screen0/options/show_hud "<Alt>"
