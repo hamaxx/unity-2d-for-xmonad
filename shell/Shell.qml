@@ -282,6 +282,7 @@ Item {
         id: leftBarrier
         triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
         triggerZoneEnabled: enableTrigger && !launcherLoader.visibilityController.shown
+        triggerOnly: enableTrigger && !enableSticky
         p1: Qt.point(x, declarativeView.screen.geometry.y)
         p2: Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
         triggerZoneP1: Qt.point(x, declarativeView.globalPosition.y)
