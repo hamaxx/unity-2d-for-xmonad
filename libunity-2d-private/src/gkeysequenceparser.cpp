@@ -44,7 +44,7 @@ bool GKeySequenceParser::parse(const QString &keySequence, int *x11KeyCode, Qt::
                 *modifiers = *modifiers | Qt::ControlModifier;
             } else if (modifier == "Shift") {
                 *modifiers = *modifiers | Qt::ShiftModifier;
-            } else if (modifier == "Alt") {
+            } else if (modifier == "Alt" || modifier == "Alt_L") {
                 *modifiers = *modifiers | Qt::AltModifier;
             } else if (modifier == "Super") {
                 *modifiers = *modifiers | Qt::MetaModifier;
