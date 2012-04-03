@@ -22,8 +22,12 @@
 
 // Local
 #include "lens.h"
+#include "hotkey.h"
+#include "hotkeymonitor.h"
 
 // Qt
+#include <QDebug>
+#include <QKeySequence>
 
 // libunity-core
 #include <UnityCore/FilesystemLenses.h>
@@ -44,6 +48,8 @@ Lenses::Lenses(QObject *parent) :
     m_homeLens->lens_added.connect(sigc::mem_fun(this, &Lenses::onLensAdded));
     unity::dash::HomeLens::Ptr homeLensPtr(m_homeLens);
     addUnityLens(homeLensPtr, 0);
+
+    connect(&m_shortcutMapper, SIGNAL(mapped(QString)), this, SIGNAL(activateLensRequested(QString)));
 }
 
 Lenses::~Lenses()
@@ -115,12 +121,48 @@ void Lenses::addUnityLens(unity::dash::Lens::Ptr unity_lens, int index)
     /* DOCME */
     QObject::connect(lens, SIGNAL(visibleChanged(bool)), this, SLOT(onLensPropertyChanged()));
     m_lenses.insert(index, lens);
+
+    setLensShortcut(lens);
+    connect(lens, SIGNAL(shortcutChanged(std::string)), this, SLOT(onLensShortcutChanged()));
 }
 
 void Lenses::removeUnityLens(int index)
 {
     Lens* lens = m_lenses.takeAt(index);
+
+    Hotkey *hk = m_lensShorcuts.take(lens);
+    if (hk != NULL) {
+        m_shortcutMapper.removeMappings(hk);
+    }
+
     delete lens;
+}
+
+void Lenses::onLensShortcutChanged()
+{
+    Lens *lens = qobject_cast<Lens*>(sender());
+    Q_ASSERT(lens != 0);
+    if (lens != 0) {
+        setLensShortcut(lens);
+    }
+}
+
+void Lenses::setLensShortcut(Lens *lens)
+{
+    Hotkey *hk = m_lensShorcuts.take(lens);
+    if (hk != NULL) {
+        m_shortcutMapper.removeMappings(hk);
+    }
+    if (!lens->shortcut().isEmpty()) {
+        const QKeySequence ks(lens->shortcut());
+        if (ks.count() == 1) {
+            hk = HotkeyMonitor::instance().getHotkeyFor((Qt::Key)ks[0], Qt::MetaModifier);
+            m_shortcutMapper.setMapping(hk, lens->id());
+            connect(hk, SIGNAL(pressed()), &m_shortcutMapper, SLOT(map()));
+        } else {
+            qWarning() << "Couldn't parse shortcut for Lens. Shorcut is " << lens->shortcut();
+        }
+    }
 }
 
 #include "lenses.moc"
