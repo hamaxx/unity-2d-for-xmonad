@@ -273,20 +273,37 @@ Item {
 
     PointerBarrier {
         property int x: declarativeView.globalPosition.x + (Utils.isLeftToRight() ? 0 : shell.width)
+        property bool enableTrigger: launcherLoader.launcherInHideMode && launcherLoader.loadLauncher
+        // This enableSticky logic has a 'bug' int RTL where the right most screen will still have enableSticky
+        // set to true, but it won't cause any issue other than consuming a few bytes of mememory and calculating the 
+        // rightmost x is probably more expensive and error prone than just enabling the extra barrier
+        property bool enableSticky: unity2dConfiguration.stickyEdges && declarativeView.screen.geometry.x > 0
 
         id: leftBarrier
         triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
-        triggerZoneEnabled: !launcherLoader.visibilityController.shown
+        triggerZoneEnabled: enableTrigger && !launcherLoader.visibilityController.shown
         p1: Qt.point(x, declarativeView.screen.geometry.y)
         p2: Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
         triggerZoneP1: Qt.point(x, declarativeView.globalPosition.y)
         triggerZoneP2: Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
-        threshold: launcherLoader.launcherInHideMode && launcherLoader.loadLauncher ? launcher2dConfiguration.edgeStopVelocity : -1
+        threshold: (enableSticky || enableTrigger) ? launcher2dConfiguration.edgeStopVelocity : -1
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate
         triggerPressure: launcher2dConfiguration.edgeRevealPressure
         breakPressure: launcher2dConfiguration.edgeOvercomePressure
 
         onTriggered: launcherLoader.item.barrierTriggered()
+    }
+
+    PointerBarrier {
+        property bool enableSticky: unity2dConfiguration.stickyEdges && declarativeView.screen.geometry.y > 0
+
+        id: topBarrier
+        p1: Qt.point(declarativeView.screen.geometry.x, declarativeView.screen.geometry.y)
+        p2: Qt.point(declarativeView.screen.geometry.x + declarativeView.screen.geometry.width, declarativeView.screen.geometry.y)
+        threshold: enableSticky ? launcher2dConfiguration.edgeStopVelocity : -1
+        maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
+        decayRate: launcher2dConfiguration.edgeDecayrate
+        breakPressure: launcher2dConfiguration.edgeOvercomePressure
     }
 }
