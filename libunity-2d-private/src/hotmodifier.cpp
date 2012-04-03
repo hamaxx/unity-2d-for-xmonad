@@ -68,7 +68,7 @@ HotModifier::onModifiersChanged(Qt::KeyboardModifiers modifiers)
         m_otherModifierPressed = true;
     }
 
-    if (!m_ignored && m_pressed && !m_held && !pressed) {
+    if (!m_ignored && m_pressed && !m_held && !pressed && !otherModifierPressed) {
         Q_EMIT tapped();
     } else if (m_pressed && m_held && !pressed) {
         m_held = false;
