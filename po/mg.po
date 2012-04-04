@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: Mariot Tsitoara <mariot.tsitoara@gmail.com>\n"
 "POT-Creation-Date: 2012-03-20 10:08+0100\n"
-"PO-Revision-Date: 2012-03-08 17:21+0000\n"
+"PO-Revision-Date: 2012-04-03 20:39+0000\n"
 "Last-Translator: Mariot Tsitoara <mariot.tsitoara@gmail.com>\n"
 "Language-Team: Malagasy <mg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-04 05:18+0000\n"
+"X-Generator: Launchpad (build 15055)\n"
 
 #: shell/launcher/LauncherList.qml:89
 #, qt-format
@@ -27,7 +27,7 @@ msgstr[1] ""
 
 #: shell/launcher/LauncherList.qml:92
 msgid "not running"
-msgstr ""
+msgstr "tsy mandeha"
 
 #: shell/hud/Hud.qml:198
 msgid "Type your Command"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "Hanivana ny valiny"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
@@ -49,11 +49,11 @@ msgstr ""
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "Izy rehetra"
 
 #: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
 msgid "Search"
-msgstr ""
+msgstr "Karoka"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
@@ -96,17 +96,17 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1006
 msgid "Quit"
-msgstr ""
+msgstr "Hiala"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Hiverina an-trano"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:170
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "QT_LAYOUT_DIRECTION"
 
 #: libunity-2d-private/src/lenses.cpp:41
 msgid "Home"
@@ -124,15 +124,15 @@ msgstr "Daba"
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
-msgstr[0] "Zavatra %n anaty daba"
+msgstr[0] "Misy zavatra %n anaty daba"
 
 #: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
-msgstr "Hamoana ny daba"
+msgstr "Handio ny daba"
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
-msgstr ""
+msgstr "Toeram-piasana"
 
 #: panel/applets/appname/appnameapplet.cpp:367
 msgid "Ubuntu Desktop"
