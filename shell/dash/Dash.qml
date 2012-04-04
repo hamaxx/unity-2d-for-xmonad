@@ -254,6 +254,34 @@ FocusScope {
            necessarily focusing the search bar first. */
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Tab && event.modifiers == Qt.ControlModifier) {
+                changeLensWithStep(1);
+                event.accepted = true
+            } else if (event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) {
+                changeLensWithStep(lenses.rowCount() - 1);
+                event.accepted = true
+            }
+        }
+
+        function changeLensWithStep(step)
+        {
+            var activeLens = 0
+            var count = lenses.rowCount()
+            for (var i = 0; i < count; i++) {
+                if (lenses.get(i).id == shellManager.dashActiveLens) {
+                    activeLens = i
+                    break
+                }
+            }
+            var nextLensIndex = (activeLens + step) % count
+            var nextLens = lenses.get(nextLensIndex)
+            while (!nextLens.visible && nextLensIndex != activeLens) {
+                nextLensIndex = (nextLensIndex + step) % count
+                nextLens = lenses.get(nextLensIndex)
+            }
+            activateLens(nextLens.id)
+        }
 
         Image {
             id: panelBorder
