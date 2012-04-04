@@ -93,6 +93,9 @@ context "Launcher Autohide and Show Tests" do
     # Set hide mode to intellihide
     $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
 
+    # Set reveal mode to side
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher reveal-mode 0'
+
     # Minimize all windows
     XDo::XWindow.toggle_minimize_all
   end
