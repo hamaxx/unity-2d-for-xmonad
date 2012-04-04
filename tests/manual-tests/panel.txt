@@ -20,3 +20,7 @@
  * While the indicators menu is open, move the mouse to the left over the menu area of the rightmost monitor
 
 --> Verify menu appears
+----
+ * Launch a program that creates problems to unity-2d-panel (in my case tdriver_visualizer)
+
+--> Verify the panel is not empty (should say TDriver Visualizer bla bla)
