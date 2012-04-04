@@ -39,8 +39,8 @@ Filter {
         delegateHeight: 30
 
         /* Substracting verticalSpacing so that the last row does
-           not have padding below it */
-        height: cellHeight * rows - verticalSpacing
+           not have padding below it in case rows != 1 */
+        height: rows == 1 ? cellHeight + sectionSpacing : cellHeight * rows
         boundsBehavior: Flickable.StopAtBounds
 
         focus: true

@@ -42,7 +42,6 @@ AbstractButton {
         color: "white"
         text: multiRangeButton.text
         elide: Text.ElideRight
-
     }
 
     Rectangle {
