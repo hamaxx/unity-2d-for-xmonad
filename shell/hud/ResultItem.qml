@@ -47,10 +47,10 @@ AbstractButton {
         anchors.bottom: parent.bottom
 
         border.color: "white"
-        border.width: (parent.state == "selected" || parent.state == "hovered"
+        border.width: (parent.state == "selected"
                        || parent.state == "pressed") ? 2 : 0
         color: {
-            if (parent.state == "selected" || parent.state == "hovered") return "#21ffffff"
+            if (parent.state == "selected") return "#21ffffff"
             else if ( parent.state == "pressed" ) return "white"
             else return "transparent"
         }
