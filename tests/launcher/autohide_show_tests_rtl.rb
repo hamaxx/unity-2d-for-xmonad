@@ -33,6 +33,7 @@ require $library_path + '/../../launcher/autohide_show_tests_common.rb'
 context "Launcher Autohide and Show Tests on RTL" do
   launcher_favorites = ""
   hide_mode = 0
+  reveal_mode = false
 
   def verify_launcher_visible(timeout, message = '')
     verify_equal( XDo::XWindow.display_geometry[0] - LAUNCHER_WIDTH, timeout, message ) {
@@ -54,6 +55,10 @@ context "Launcher Autohide and Show Tests on RTL" do
 
   def move_mouse_to_screen_edge()
     XDo::Mouse.move(XDo::XWindow.display_geometry[0], 200, 0, true)
+  end
+
+  def move_mouse_to_screen_corner()
+    XDo::Mouse.move(XDo::XWindow.display_geometry[0], 0, 0, true)
   end
 
   def mouse_push_screen_edge
@@ -84,6 +89,7 @@ context "Launcher Autohide and Show Tests on RTL" do
     $SUT.execute_shell_command 'killall unity-2d-shell'
 
     hide_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher hide-mode'
+    reveal_mode = $SUT.execute_shell_command 'gsettings get com.canonical.Unity2d.Launcher reveal-mode'
     
     # Set hide mode to intellihide
     $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 2'
@@ -95,6 +101,7 @@ context "Launcher Autohide and Show Tests on RTL" do
   # Run once at the end of this test suite
   shutdown do
     $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode ' + hide_mode
+    $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher reveal-mode ' + reveal_mode
   end
 
   # Run before each test case begins
@@ -202,6 +209,10 @@ context "Launcher Autohide and Show Tests on RTL" do
 
   test "Auto Hide: Launcher mouse move just after barrier trigger" do
     test_auto_hide_launcher_mouse_move_just_after_barrier_trigger()
+  end
+
+  test "Auto Hide: Launcher mouse corner reveal" do
+    test_auto_hide_launcher_mouse_corner_reveal()
   end
 
 end

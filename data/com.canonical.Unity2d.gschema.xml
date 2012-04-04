@@ -41,6 +41,14 @@
         2: intellihide; same as auto hide but the launcher will disappear if a window is placed on top of it
        </description>
     </key>
+    <key type="i" name="reveal-mode">
+      <default>0</default>
+      <summary>Reveal mode</summary>
+      <description>Possible values:
+        0: Reveal the launcher by pushing the mouse against the left side of the screen (right in RTL)
+        1: Reveal the launcher by pushing the mouse against the top-left corner of the screen (top-right in RTL)
+       </description>
+    </key>
     <key name="edge-responsiveness" type="d">
       <default>2</default>
       <summary>Responsiveness of the Launcher</summary>
