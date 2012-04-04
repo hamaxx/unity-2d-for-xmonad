@@ -21,12 +21,12 @@
 #include "lenses.h"
 
 // Local
+#include "debug_p.h"
 #include "lens.h"
 #include "hotkey.h"
 #include "hotkeymonitor.h"
 
 // Qt
-#include <QDebug>
 #include <QKeySequence>
 
 // libunity-core
@@ -160,7 +160,7 @@ void Lenses::setLensShortcut(Lens *lens)
             m_shortcutMapper.setMapping(hk, lens->id());
             connect(hk, SIGNAL(pressed()), &m_shortcutMapper, SLOT(map()));
         } else {
-            qWarning() << "Couldn't parse shortcut for Lens. Shorcut is " << lens->shortcut();
+            UQ_WARNING << "Couldn't parse shortcut for Lens. Shorcut is " << lens->shortcut();
         }
     }
 }
