@@ -226,6 +226,7 @@ FocusScope {
                 }
             }
         }
+        onActivateLensRequested: activateLens(lens_id)
     }
 
     Background {

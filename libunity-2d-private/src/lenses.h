@@ -23,6 +23,7 @@
 // Qt
 #include <QAbstractListModel>
 #include <QList>
+#include <QSignalMapper>
 
 // libunity-core
 #include <UnityCore/Lens.h>
@@ -36,6 +37,7 @@ class Lenses;
 }
 }
 
+class Hotkey;
 class Lens;
 
 class Lenses : public QAbstractListModel
@@ -59,15 +61,22 @@ public:
     Q_INVOKABLE QVariant get(int row) const;
     Q_INVOKABLE QVariant get(const QString& lens_id) const;
 
+Q_SIGNALS:
+    void activateLensRequested(const QString& lens_id);
+
 private Q_SLOTS:
     void onLensAdded(unity::dash::Lens::Ptr& lens);
     void onLensPropertyChanged();
+    void onLensShortcutChanged();
 
 private:
     unity::dash::Lenses* m_unityLenses;
     unity::dash::HomeLens* m_homeLens;
     QList<Lens*> m_lenses;
+    QHash<Lens*, Hotkey*> m_lensShorcuts;
+    QSignalMapper m_shortcutMapper;
 
+    void setLensShortcut(Lens *lens);
     void addUnityLens(unity::dash::Lens::Ptr unity_lens, int index);
     void removeUnityLens(int index);
 };
