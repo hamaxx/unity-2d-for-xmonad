@@ -123,6 +123,10 @@ void WindowHelper::update()
     }
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
+        if (d->m_window == NULL) {
+            wnck_screen_force_update(wnck_screen_get_default());
+            d->m_window = wnck_window_get(xid);
+        }
 
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
