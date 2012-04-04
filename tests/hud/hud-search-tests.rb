@@ -43,7 +43,7 @@ end
 #
 # Verify that given ResultItem is highlighted and active.
 def item_is_highlighted(results, index)
-    verify_equal('true', TIMEOUT, "Result item ##{index+1} should have focus") {
+    verify_equal('false', TIMEOUT, "Result item ##{index+1} should not have focus") {
         results[index]['activeFocus']
     }
 
@@ -57,14 +57,6 @@ end
 def only_one_item_highlighted(results)
     verify_equal(1, TIMEOUT, 'Exactly one item should be highlighted') {
         results.count {|x| x.QDeclarativeRectangle(:name=>'container')['color'] == HUD_HIGHLIGHT_COLOR}
-    }
-
-    verify_equal(1, 0, 'Exactly one item has focus') {
-        results.count {|x| x['activeFocus'] == 'true'}
-    }
-
-    verify_equal(1, 0, "Exactly one item has 'selected' state ") {
-        results.count {|x| x['state'] == 'selected'}
     }
 end
 
