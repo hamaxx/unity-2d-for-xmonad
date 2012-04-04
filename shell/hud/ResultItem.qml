@@ -50,8 +50,8 @@ AbstractButton {
         border.color: "white"
         border.width: (current || parent.state == "pressed") ? 2 : 0
         color: {
-            if (current) return "#21ffffff"
-            else if ( parent.state == "pressed" ) return "white"
+            if ( parent.state == "pressed" ) return "white"
+            else if (current) return "#21ffffff"
             else return "transparent"
         }
         radius: 7
