@@ -119,7 +119,7 @@ Trash::show()
 int
 Trash::windowCount() const
 {
-    return trashWindows().length();
+    return 0;
 }
 
 bool
