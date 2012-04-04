@@ -36,6 +36,7 @@ class PointerBarrierWrapper : public QObject
     Q_PROPERTY(QPointF triggerZoneP2 READ triggerZoneP2 WRITE setTriggerZoneP2 NOTIFY triggerZoneP2Changed)
     Q_PROPERTY(TriggerDirection triggerDirection READ triggerDirection WRITE setTriggerDirection NOTIFY triggerDirectionChanged)
     Q_PROPERTY(bool triggerZoneEnabled READ triggerZoneEnabled WRITE setTriggerZoneEnabled NOTIFY triggerZoneEnabledChanged)
+    Q_PROPERTY(bool triggerOnly READ triggerOnly WRITE setTriggerOnly NOTIFY triggerOnlyChanged)
     Q_PROPERTY(int threshold READ threshold WRITE setThreshold NOTIFY thresholdChanged)
     Q_PROPERTY(int maxVelocityMultiplier READ maxVelocityMultiplier WRITE setMaxVelocityMultiplier NOTIFY maxVelocityMultiplierChanged)
     Q_PROPERTY(int decayRate READ decayRate WRITE setDecayRate NOTIFY decayRateChanged)
@@ -75,6 +76,9 @@ public:
     bool triggerZoneEnabled() const;
     void setTriggerZoneEnabled(bool enabled);
 
+    bool triggerOnly() const;
+    void setTriggerOnly(bool triggerOnly);
+
     int threshold() const;
     void setThreshold(int threshold);
 
@@ -99,6 +103,7 @@ Q_SIGNALS:
     void triggerZoneP2Changed(const QPointF &p2);
     void triggerDirectionChanged(TriggerDirection direction);
     void triggerZoneEnabledChanged(bool changed);
+    void triggerOnlyChanged(bool triggerOnly);
     void thresholdChanged(int threshold);
     void maxVelocityMultiplierChanged(qreal maxVelocityMultiplier);
     void decayRateChanged(int decayRate);
@@ -125,6 +130,8 @@ private:
 
     bool isPointAlignmentCorrect() const;
 
+    bool isLastEventAgainstTrigger() const;
+
     PointerBarrier m_barrier;
 
     QPointF m_p1;
@@ -133,6 +140,7 @@ private:
     QPointF m_triggerZoneP2;
     TriggerDirection m_triggerDirection;
     bool m_triggerZoneEnabled;
+    bool m_triggerOnly;
     int m_threshold;
     qreal m_maxVelocityMultiplier;
     int m_decayRate;

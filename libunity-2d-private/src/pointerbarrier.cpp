@@ -30,6 +30,7 @@ PointerBarrierWrapper::PointerBarrierWrapper(QObject *parent)
     , m_barrier(0)
     , m_triggerDirection(TriggerFromAnywhere)
     , m_triggerZoneEnabled(false)
+    , m_triggerOnly(false)
     , m_threshold(-1)
     , m_maxVelocityMultiplier(-1)
     , m_decayRate(-1)
@@ -151,6 +152,19 @@ void PointerBarrierWrapper::setTriggerZoneEnabled(bool enabled)
     }
 }
 
+bool PointerBarrierWrapper::triggerOnly() const
+{
+    return m_triggerOnly;
+}
+
+void PointerBarrierWrapper::setTriggerOnly(bool triggerOnly)
+{
+    if (triggerOnly != m_triggerOnly) {
+        m_triggerOnly = triggerOnly;
+        Q_EMIT triggerOnlyChanged(triggerOnly);
+    }
+}
+
 void PointerBarrierWrapper::createBarrier()
 {
     if (m_threshold < 0) {
@@ -193,6 +207,13 @@ void PointerBarrierWrapper::doProcess(XFixesBarrierNotifyEvent *notifyEvent)
     /* Gathers events for m_smoothingTimer->interval() miliseconds, then takes average */
     if (!m_smoothingTimer->isActive()) {
         m_smoothingTimer->start();
+    }
+
+    if (m_triggerOnly && !isLastEventAgainstTrigger()) {
+        // We got to the barrier from the non triggering direction
+        // Release it so the mouse can continue its travel
+        Display *display = QX11Info::display();
+        XFixesBarrierReleasePointer (display, m_barrier, m_lastEventId);
     }
 }
 
@@ -288,18 +309,7 @@ void PointerBarrierWrapper::smoother()
     }
     const int velocity = qMin<qreal>(600 * m_maxVelocityMultiplier, m_smoothingAccumulator / m_smoothingCount);
 
-    bool againstTrigger = false;
-    if (m_triggerZoneEnabled && m_triggerZoneP1.x() == m_triggerZoneP2.x() && m_triggerZoneP1.y() <= m_lastEventY && m_triggerZoneP2.y() >= m_lastEventY) {
-        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerZoneP1.x()) ||
-                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerZoneP1.x());
-    }
-    if (m_triggerZoneEnabled && m_triggerZoneP1.y() == m_triggerZoneP2.y() && m_triggerZoneP1.x() <= m_lastEventX && m_triggerZoneP2.x() >= m_lastEventX) {
-        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
-                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerZoneP1.y()) ||
-                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerZoneP1.y());
-    }
-    if (againstTrigger) {
+    if (isLastEventAgainstTrigger()) {
         if (m_triggerValue.addAndCheckExceedingTarget(velocity)) {
             Q_EMIT triggered();
         }
@@ -356,6 +366,22 @@ bool PointerBarrierWrapper::isPointAlignmentCorrect() const
 
     return alignmentCorrect;
 
+}
+
+bool PointerBarrierWrapper::isLastEventAgainstTrigger() const
+{
+    bool againstTrigger = false;
+    if (m_triggerZoneEnabled && m_triggerZoneP1.x() == m_triggerZoneP2.x() && m_triggerZoneP1.y() <= m_lastEventY && m_triggerZoneP2.y() >= m_lastEventY) {
+        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
+                        (m_triggerDirection == TriggerFromRight && m_lastEventX >= m_triggerZoneP1.x()) ||
+                        (m_triggerDirection == TriggerFromLeft && m_lastEventX < m_triggerZoneP1.x());
+    }
+    if (m_triggerZoneEnabled && m_triggerZoneP1.y() == m_triggerZoneP2.y() && m_triggerZoneP1.x() <= m_lastEventX && m_triggerZoneP2.x() >= m_lastEventX) {
+        againstTrigger = m_triggerDirection == TriggerFromAnywhere ||
+                        (m_triggerDirection == TriggerFromTop && m_lastEventY >= m_triggerZoneP1.y()) ||
+                        (m_triggerDirection == TriggerFromBottom && m_lastEventY < m_triggerZoneP1.y());
+    }
+    return againstTrigger;
 }
 
 #include <pointerbarrier.moc>
