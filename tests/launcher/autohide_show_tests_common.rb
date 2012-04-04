@@ -647,3 +647,39 @@ def test_auto_hide_launcher_mouse_move_just_after_barrier_trigger
   XDo::Mouse.move(300, 300, 0, true)
   verify_launcher_hidden(TIMEOUT, 'Launcher should not be visible after moving the mouse away')
 end
+
+# Test case objectives:
+# * Auto Hide: Launcher reveal with mouse on the corner
+# Pre-conditions
+# * Desktop with no running applications
+# Test steps
+# * Set hide-mode to 1
+# * Set reveal-mode to 1
+# * Move mouse away from launcher
+# * Verify Launcher hides
+# * Move mouse to screen edge
+# * Verify Launcher still hiding
+# * Press the edge
+# * Verify Launcher still hiding
+# * Move mouse to screen corner
+# * Verify Launcher still hiding
+# * Press the corner
+# * Verify Launcher shows
+# Post-conditions
+# * None
+# References
+# * None
+def test_auto_hide_launcher_mouse_corner_reveal
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher hide-mode 1'
+  $SUT.execute_shell_command 'gsettings set com.canonical.Unity2d.Launcher reveal-mode 1'
+  XDo::Mouse.move(300, 300, 0, true)
+  verify_launcher_hidden(TIMEOUT, 'Launcher should not be visible immediately without pushing the edge')
+  move_mouse_to_screen_edge()
+  verify_launcher_hidden(0, 'Launcher should not be visible immediately without pushing the corner')
+  mouse_push_screen_edge()
+  verify_launcher_hidden(2, 'Launcher should not be visible by pushing the edge on corner-reveal enabled')
+  move_mouse_to_screen_corner()
+  verify_launcher_hidden(0, 'Launcher should not be visible immediately without pushing the corner')
+  mouse_push_screen_edge()
+  verify_launcher_visible(TIMEOUT, 'Launcher hidden, should be visible')
+end

@@ -285,8 +285,8 @@ Item {
         triggerOnly: enableTrigger && !enableSticky
         p1: Qt.point(x, declarativeView.screen.geometry.y)
         p2: Qt.point(x, declarativeView.screen.geometry.y + declarativeView.screen.geometry.height)
-        triggerZoneP1: Qt.point(x, declarativeView.globalPosition.y)
-        triggerZoneP2: Qt.point(x, declarativeView.globalPosition.y + launcherLoader.height)
+        triggerZoneP1: Qt.point(x, launcher2dConfiguration.revealMode == 1 ? declarativeView.screen.geometry.y : declarativeView.globalPosition.y)
+        triggerZoneP2: Qt.point(x, launcher2dConfiguration.revealMode == 1 ? declarativeView.screen.geometry.y + 1 : declarativeView.globalPosition.y + launcherLoader.height)
         threshold: (enableSticky || enableTrigger) ? launcher2dConfiguration.edgeStopVelocity : -1
         maxVelocityMultiplier: launcher2dConfiguration.edgeResponsiveness
         decayRate: launcher2dConfiguration.edgeDecayrate
