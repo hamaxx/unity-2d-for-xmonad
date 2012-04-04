@@ -78,7 +78,8 @@ RendererGrid {
             Image {
                 id: icon
 
-                source: iconHint != "" ? "image://icons/"+iconHint : "image://icons/unknown"
+                source: iconHint.indexOf("http://") == 0 ? iconHint
+                                                         : "image://icons/" + (iconHint != "" ? iconHint : "unknown")
                 onStatusChanged: if (status == Image.Error) source = "image://icons/unknown"
                 width: 64
                 height: 64
