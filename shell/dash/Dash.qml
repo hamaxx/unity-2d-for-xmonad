@@ -255,10 +255,11 @@ FocusScope {
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
         Keys.onPressed: {
-            if (event.key == Qt.Key_Tab && event.modifiers == Qt.ControlModifier) {
+            if ((event.key == Qt.Key_Tab || event.key == Qt.Key_PageDown) && event.modifiers == Qt.ControlModifier) {
                 changeLensWithStep(1);
                 event.accepted = true
-            } else if (event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) {
+            } else if ((event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) ||
+                       (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
                 changeLensWithStep(lenses.rowCount() - 1);
                 event.accepted = true
             }
