@@ -21,6 +21,7 @@ import "../common"
 
 AbstractButton {
     id: delegate
+    property bool current: false
     property string icon: ""
 
     Accessible.name: plainText
@@ -47,11 +48,10 @@ AbstractButton {
         anchors.bottom: parent.bottom
 
         border.color: "white"
-        border.width: (parent.state == "selected"
-                       || parent.state == "pressed") ? 2 : 0
+        border.width: (current || parent.state == "pressed") ? 2 : 0
         color: {
-            if (parent.state == "selected") return "#21ffffff"
-            else if ( parent.state == "pressed" ) return "white"
+            if ( parent.state == "pressed" ) return "white"
+            else if (current) return "#21ffffff"
             else return "transparent"
         }
         radius: 7

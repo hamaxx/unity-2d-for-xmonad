@@ -58,7 +58,6 @@ FocusScope {
         if (active) {
             shellManager.hudShell.forceActivateWindow()
             appIcon = getActiveWindowIcon()
-            resultList.focus = true
         } else {
             hudModel.endSearch()
             resultList.currentIndex = -1
@@ -78,6 +77,12 @@ FocusScope {
 
     Keys.onPressed: {
         if (event.key == Qt.Key_Escape) toggleHud()
+        else if (event.key == Qt.Key_Down) {
+            resultList.incrementCurrentIndex()
+        }
+        else if (event.key == Qt.Key_Up) {
+            resultList.decrementCurrentIndex()
+        }
     }
 
     function toggleHud() {
@@ -193,6 +198,7 @@ FocusScope {
 
             SearchEntry {
                 id: searchEntry
+                focus: true
 
                 anchors.top: parent.top
                 anchors.left: parent.left
@@ -215,7 +221,7 @@ FocusScope {
             ListView {
                 id: resultList
 
-                focus: true
+                focus: false
 
                 Accessible.name: "result list"
 
@@ -234,12 +240,12 @@ FocusScope {
 
                     icon: iconName /* expose this property for tile */
 
+                    current: ListView.isCurrentItem
+
                     onClicked: executeResult(resultId)
                     onMouseOverChanged: {
                         if (mouseOver) {
                             resultList.currentIndex = model.index;
-                            // workaround for loosing highlight for mouse if search entry steals focus - see https://bugs.launchpad.net/unity-2d/+bug/966180
-                            forceActiveFocus();
                         }
                     }
                 }
