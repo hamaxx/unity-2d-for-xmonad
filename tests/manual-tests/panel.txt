@@ -20,3 +20,13 @@
  * While the indicators menu is open, move the mouse to the left over the menu area of the rightmost monitor
 
 --> Verify menu appears
+
+----
+ * Have no application windows open
+ * Verify 'Ubuntu Desktop' caption is displayed on the panel
+ * Move mouse over over it.
+ * Verify desktop menu is displayed, containing subset of Nautilus menu items + special items (e.g. Edit > Change Desktop Background).
+ * Open an application
+ * Verify that application menu replaces desktop menu when application has focus.
+ * Click on the desktop.
+ * Verify that desktop menu is available again when mouse is over it.
