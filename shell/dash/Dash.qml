@@ -87,9 +87,6 @@ FocusScope {
     }
 
     function activatePage(page) {
-        /* Always give the focus to the search entry when switching pages */
-        search_entry.forceActiveFocus()
-
         if (page == currentPage) {
             return
         }
@@ -102,6 +99,9 @@ FocusScope {
     }
 
     function buildLensPage(lens) {
+        /* Always give the focus to the search entry when switching pages */
+        search_entry.focus = true
+
         pageLoader.setSource("LensView.qml")
         /* Take advantage of the fact that the loaded qml is local and setting
            the source loads it immediately making pageLoader.item valid */
