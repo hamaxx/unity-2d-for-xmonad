@@ -88,7 +88,7 @@ FocusScope {
 
     function activatePage(page) {
         /* Always give the focus to the search entry when switching pages */
-        search_entry.focus = true
+        search_entry.forceActiveFocus()
 
         if (page == currentPage) {
             return
