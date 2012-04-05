@@ -256,16 +256,16 @@ FocusScope {
         //Keys.forwardTo: [search_entry]
         Keys.onPressed: {
             if ((event.key == Qt.Key_Tab || event.key == Qt.Key_PageDown) && event.modifiers == Qt.ControlModifier) {
-                changeLensWithStep(1);
+                changeLens(1);
                 event.accepted = true
             } else if ((event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) ||
                        (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
-                changeLensWithStep(lenses.rowCount() - 1);
+                changeLens(lenses.rowCount() - 1);
                 event.accepted = true
             }
         }
 
-        function changeLensWithStep(step)
+        function changeLens(step)
         {
             var activeLens = 0
             var count = lenses.rowCount()
@@ -282,6 +282,7 @@ FocusScope {
                 nextLens = lenses.get(nextLensIndex)
             }
             activateLens(nextLens.id)
+            search_entry.forceActiveFocus()
         }
 
         Image {
