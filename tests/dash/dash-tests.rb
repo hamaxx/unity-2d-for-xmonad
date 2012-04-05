@@ -541,4 +541,47 @@ context "Dash Tests" do
       @app.TextCustom( { :objectName => "noResultsText" } )
     }
   end
+
+  # Test case objectives:
+  #   * Check focus goes to the search bar on lens switch
+  # Pre-conditions
+  # Test steps
+  #   * Invoke dash
+  #   * Verify dash shows
+  #   * Verify search entry has focus
+  #   * Change to the second lens (clicking on it)
+  #   * Press key down
+  #   * Verify search entry does not have focus
+  #   * Change to the first lens (clicking on it)
+  #   * Verify search entry does has focus
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/974235
+  test "Check focus goes to the search bar on lens switch" do
+    XDo::Keyboard.super
+
+    verify_equal("true", TIMEOUT, 'There should be a Dash declarative view after pressing Super') {
+      @app.Dash()['active']
+    }
+
+    verify_equal("true", TIMEOUT, 'Search entry should have focus after starting') {
+        @app.Dash().SearchEntry()['activeFocus']
+    }
+
+    buttons = @app.LensBar().children( { :type => "LensButton" } )
+    buttons[1].move_mouse
+    buttons[1].tap
+    XDo::Keyboard.down
+    verify_equal("false", TIMEOUT, 'Search entry should not have focus after key down') {
+        @app.Dash().SearchEntry()['activeFocus']
+    }
+    buttons[0].move_mouse
+    buttons[0].tap
+    verify_equal("true", TIMEOUT, 'Search entry should have focus after lens change') {
+        @app.Dash().SearchEntry()['activeFocus']
+    }
+
+  end
+
 end
