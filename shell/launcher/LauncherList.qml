@@ -93,7 +93,7 @@ AutoScrollingListView {
                     return "%1 %2".arg(item.name).arg(u2d.tr("not running"))
                 }
             } else {
-                return "%1 %2".arg(item.name)
+                return "%1".arg(item.name)
             }
         }
 
