@@ -169,6 +169,10 @@ FocusScope {
             for (var i=0; i<lenses.rowCount(); i++) {
                 lenses.get(i).viewType = Lens.Hidden
             }
+
+            /* Give the focus to the search entry when switching pages */
+            search_entry.focus = true
+
             pageLoader.setSource("Home.qml")
             /* Take advantage of the fact that the loaded qml is local and setting
                the source loads it immediately making pageLoader.item valid */
