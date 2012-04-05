@@ -286,7 +286,6 @@ FocusScope {
                 nextLens = lenses.get(nextLensIndex)
             }
             activateLens(nextLens.id)
-            search_entry.forceActiveFocus()
         }
 
         Image {
