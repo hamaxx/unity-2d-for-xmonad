@@ -20,7 +20,18 @@
  * While the indicators menu is open, move the mouse to the left over the menu area of the rightmost monitor
 
 --> Verify menu appears
+
 ----
  * Launch a program that creates problems to unity-2d-panel (in my case tdriver_visualizer)
-
 --> Verify the panel is not empty (should say TDriver Visualizer bla bla)
+
+----
+ * Have no application windows open
+ * Verify 'Ubuntu Desktop' caption is displayed on the panel
+ * Move mouse over over it.
+ * Verify desktop menu is displayed, containing subset of Nautilus menu items + special items (e.g. Edit > Change Desktop Background).
+ * Open an application
+ * Verify that application menu replaces desktop menu when application has focus.
+ * Click on the desktop.
+ * Verify that desktop menu is available again when mouse is over it.
+----

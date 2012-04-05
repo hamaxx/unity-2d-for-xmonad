@@ -324,13 +324,13 @@ void AppNameApplet::updateWidgets()
         || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
-    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && isUserVisibleApp;
+    bool showDesktopLabel = !app;
+    bool showMenu = isOpened && !d->m_menuBarWidget->isEmpty() && (isUserVisibleApp || showDesktopLabel);
     bool dashCanResize = !DashClient::instance()->alwaysFullScreen();
     bool dashIsVisible = DashClient::instance()->activeInScreen(panel()->screen());
     bool hudIsVisible = HUDClient::instance()->activeInScreen(panel()->screen());
     bool showWindowButtons = (isOpened && isMaximized) || dashIsVisible || hudIsVisible;
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
-    bool showDesktopLabel = !app;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
