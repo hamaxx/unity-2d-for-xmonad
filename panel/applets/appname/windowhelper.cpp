@@ -124,6 +124,7 @@ void WindowHelper::update()
     if (xid != 0) {
         d->m_window = wnck_window_get(xid);
         if (d->m_window == NULL) {
+            // wnck is async, so force an update to get the xid
             wnck_screen_force_update(wnck_screen_get_default());
             d->m_window = wnck_window_get(xid);
         }
