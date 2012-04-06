@@ -8,26 +8,25 @@ msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-03-20 10:08+0100\n"
-"PO-Revision-Date: 2012-03-08 16:54+0000\n"
-"Last-Translator: ubuntuki <Unknown>\n"
+"PO-Revision-Date: 2012-04-05 12:55+0000\n"
+"Last-Translator: kulkke <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-06 05:09+0000\n"
+"X-Generator: Launchpad (build 15060)\n"
 
 #: shell/launcher/LauncherList.qml:89
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 pencere açıldı"
 
 #: shell/launcher/LauncherList.qml:92
 msgid "not running"
-msgstr ""
+msgstr "çalışmıyor"
 
 #: shell/hud/Hud.qml:198
 msgid "Type your Command"
@@ -35,40 +34,39 @@ msgstr "Komutunuzu yazın"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "Sonuçları süz"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
-msgstr ""
+msgstr "%1 süzgeci etkin"
 
 #: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
-msgstr ""
+msgstr "%1 süzgeci etkin değil"
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "Tümü"
 
 #: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
 msgid "Search"
-msgstr ""
+msgstr "Ara"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "genişletilmemiş"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "genişletilmiş"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 sonuç daha gör"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
@@ -84,15 +82,15 @@ msgstr "Çıkar"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "Güvenle kaldır"
 
 #: libunity-2d-private/src/application.cpp:999
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "Başlatıcıya Sabitle"
 
 #: libunity-2d-private/src/application.cpp:999
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "Başlatıcıdan Ayır"
 
 #: libunity-2d-private/src/application.cpp:1006
 msgid "Quit"
