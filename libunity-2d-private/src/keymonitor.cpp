@@ -99,7 +99,7 @@ bool KeyMonitor::registerEvents()
     devices = XListInputDevices(m_display, &num_devices);
 
     /* Check returned list pointer as XListInputDevices may return NULL with num_devices>0, see LP: #965464 */
-    if (devices) {
+    if (devices != NULL) {
         for(i=0; i<num_devices; i++) {
             device = XOpenDevice(m_display, devices[i].id);
             if (device == NULL) {
