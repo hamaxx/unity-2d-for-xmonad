@@ -262,6 +262,19 @@ FocusScope {
                        (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
                 changeLens(lenses.rowCount() - 1);
                 event.accepted = true
+            } else if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
+                if (search_entry.activeFocus || lensBar.activeFocus || filterPane.activeFocus) {
+                    pageLoader.item.focusFirstHeader()
+                } else if (pageLoader.activeFocus) {
+                    if (filterPane.visible) {
+                        filterPane.focusFirstHeader()
+                    } else {
+                        pageLoader.item.focusFirstHeader()
+                    }
+                } else {
+                    console.log("Dash: Tab pressed with focus in unexpected item")
+                }
+                event.accepted = true
             }
         }
 

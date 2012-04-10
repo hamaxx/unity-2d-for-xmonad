@@ -254,6 +254,21 @@ void FocusPath::reset()
     Q_EMIT currentItemChanged();
 }
 
+bool FocusPath::moveToNext()
+{
+    if (m_currentPosition + 1 < m_path.size()) {
+        updatePosition(m_currentPosition + 1);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void FocusPath::focusLastRow()
+{
+    updatePosition(((m_path.size() - 1) / m_columns) * m_columns);
+}
+
 void FocusPath::addItem(QDeclarativeItem *item)
 {
     if (item->flags() & QGraphicsItem::ItemIsFocusScope) {

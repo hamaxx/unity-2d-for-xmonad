@@ -73,6 +73,8 @@ public:
     QList<PathItem > path() const;
 
     Q_INVOKABLE void reset();
+    Q_INVOKABLE bool moveToNext();
+    Q_INVOKABLE void focusLastRow();
 
     static FocusPathAttached *qmlAttachedProperties(QObject *object);
 

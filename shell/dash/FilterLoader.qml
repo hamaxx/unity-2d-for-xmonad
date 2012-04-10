@@ -28,6 +28,11 @@ FocusScope {
     property variant filterModel
     property bool isFirst
 
+    function focusHeader() {
+        header.focus = true
+        filterView.item.focusFirstItem()
+    }
+
     height: childrenRect.height
 
     FocusScope {

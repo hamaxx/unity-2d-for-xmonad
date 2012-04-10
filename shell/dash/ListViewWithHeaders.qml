@@ -43,6 +43,23 @@ FocusScope {
 
     property bool giveFocus: false
 
+    function focusFirstHeader() {
+        focusPath.reset()
+        categories.itemAt(focusPath.currentIndex).body.item.focusFirstElement()
+        categories.itemAt(focusPath.currentIndex).header.forceActiveFocus()
+    }
+
+    function focusNextHeader() {
+        var previousIndex = focusPath.currentIndex
+        var moved = focusPath.moveToNext()
+        if (moved) {
+            categories.itemAt(previousIndex).body.item.focusLastRow()
+            categories.itemAt(focusPath.currentIndex).body.item.focusFirstElement()
+            categories.itemAt(focusPath.currentIndex).header.forceActiveFocus()
+        }
+        return moved
+    }
+
     FocusPath {
         id: focusPath
         item: categoriesColumn
@@ -101,6 +118,8 @@ FocusScope {
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.item.visible && !bodyLoader.item.visible
 
+                    property alias body: bodyLoader.item
+                    property alias header: headerLoader.item
 
                     Column {
 
