@@ -35,6 +35,15 @@ FocusScope {
         options.currentIndex = 0
     }
 
+    function focusLastHeader() {
+        if (folded) {
+            focusFirstHeader()
+        } else {
+            options.currentIndex = options.count - 1
+            options.forceActiveFocus()
+        }
+    }
+
     AbstractButton {
         id: header
         objectName: "filterResults"
@@ -105,6 +114,16 @@ FocusScope {
                     options.currentIndex++
                     event.accepted = true
                 }
+            }
+        } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+            if (!folded && !header.focus) {
+                if (options.currentIndex > 0) {
+                    options.currentItem.focusHeader()
+                    options.currentIndex--
+                } else {
+                    header.forceActiveFocus()
+                }
+                event.accepted = true
             }
         }
     }

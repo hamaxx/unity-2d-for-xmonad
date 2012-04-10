@@ -33,6 +33,11 @@ FocusScope {
         forceActiveFocus()
     }
 
+    function focusLastHeader() {
+        results.focusLastHeader()
+        forceActiveFocus()
+    }
+
     function updateFirstCategory() {
         if (lensView.model.results.count == 0)
             return
@@ -116,6 +121,10 @@ FocusScope {
     Keys.onPressed: {
         if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
             if (results.focusNextHeader()) {
+                event.accepted = true
+            }
+        } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+            if (results.focusPreviousHeader()) {
                 event.accepted = true
             }
         }

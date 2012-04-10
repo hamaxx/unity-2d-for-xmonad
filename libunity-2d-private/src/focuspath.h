@@ -74,6 +74,7 @@ public:
 
     Q_INVOKABLE void reset();
     Q_INVOKABLE bool moveToNext();
+    Q_INVOKABLE bool moveToPrevious();
     Q_INVOKABLE void focusLastRow();
 
     static FocusPathAttached *qmlAttachedProperties(QObject *object);

@@ -264,6 +264,16 @@ bool FocusPath::moveToNext()
     }
 }
 
+bool FocusPath::moveToPrevious()
+{
+    if (m_currentPosition - 1 >= 0) {
+        updatePosition(m_currentPosition - 1);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void FocusPath::focusLastRow()
 {
     updatePosition(((m_path.size() - 1) / m_columns) * m_columns);

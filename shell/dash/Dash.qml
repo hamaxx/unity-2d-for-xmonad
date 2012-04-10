@@ -279,6 +279,19 @@ FocusScope {
                     console.log("Dash: Tab pressed with focus in unexpected item")
                 }
                 event.accepted = true
+            } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+                if (filterPane.activeFocus) {
+                    pageLoader.item.focusLastHeader()
+                } else if (search_entry.activeFocus || lensBar.activeFocus || pageLoader.activeFocus) {
+                    if (filterPane.visible) {
+                        filterPane.focusLastHeader()
+                    } else {
+                        pageLoader.item.focusLastHeader()
+                    }
+                } else {
+                    console.log("Dash: Tab pressed with focus in unexpected item")
+                }
+                event.accepted = true
             }
         }
 
