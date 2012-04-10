@@ -117,7 +117,6 @@ ShellManagerPrivate::initShell(int screen)
 {
     const QStringList arguments = qApp->arguments();
     ShellDeclarativeView * view = new ShellDeclarativeView(q, m_sourceFileUrl, screen);
-    view->setAccessibleName("Shell");
     if (arguments.contains("-opengl")) {
         view->setUseOpenGL(true);
     }

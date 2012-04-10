@@ -109,11 +109,14 @@ static bool arrayContains(char** begin, char** end, const char* string)
     return false;
 }
 
-QAccessibleInterface *panelFactory(const QString &classname, QObject *object)
+QAccessibleInterface *accessibilityFactory(const QString &classname, QObject *object)
 {
     QAccessibleInterface *interface = 0;
 
-    if (classname == "Unity2dPanel" && object && object->isWidgetType()) {
+    if (classname == "ShellDeclarativeView" && object && object->isWidgetType()) {
+        interface = new QAccessibleWidget(static_cast<QWidget *>(object), QAccessible::Pane);
+    }
+    else if (classname == "Unity2dPanel" && object && object->isWidgetType()) {
         interface = new QAccessibleWidget(static_cast<QWidget *>(object), QAccessible::ToolBar);
     }
 
@@ -179,7 +182,7 @@ Unity2dApplication::Unity2dApplication(int& argc, char** argv)
         qputenv("GSETTINGS_SCHEMA_DIR", unity2dDirectory().toLocal8Bit() + "/data");
     }
 
-    QAccessible::installFactory(panelFactory);
+    QAccessible::installFactory(accessibilityFactory);
 }
 
 Unity2dApplication::~Unity2dApplication()
