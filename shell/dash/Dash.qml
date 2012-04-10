@@ -258,6 +258,47 @@ FocusScope {
            necessarily focusing the search bar first. */
         /* FIXME: deactivated because it makes the user lose the focus very often */
         //Keys.forwardTo: [search_entry]
+        Keys.onPressed: {
+            if ((event.key == Qt.Key_Tab || event.key == Qt.Key_PageDown) && event.modifiers == Qt.ControlModifier) {
+                changeLens(1);
+                event.accepted = true
+            } else if ((event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) ||
+                       (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
+                changeLens(-1);
+                event.accepted = true
+            }
+        }
+
+        function activeLensIndex() {
+            var count = lenses.rowCount()
+            for (var i = 0; i < count; i++) {
+                if (lenses.get(i).id == shellManager.dashActiveLens) {
+                    return i
+                }
+            }
+            return -1
+        }
+
+        function changeLens(step) {
+            var activeLens = activeLensIndex()
+            if (activeLens != -1) {
+                var lensesCount = lenses.rowCount()
+                if (step < 0) {
+                    // Can't do lenses.get(negativeNumber) so instead of adding a negative step
+                    // we add the positive number that results in the same value when doing the modulus
+                    step = lensesCount + step
+                }
+                var nextLensIndex = (activeLens + step) % lensesCount
+                var nextLens = lenses.get(nextLensIndex)
+                while (!nextLens.visible && nextLensIndex != activeLens) {
+                    nextLensIndex = (nextLensIndex + step) % lensesCount
+                    nextLens = lenses.get(nextLensIndex)
+                }
+                activateLens(nextLens.id)
+            } else {
+                console.log("Could not find the active dash lens")
+            }
+        }
 
         Image {
             id: panelBorder
