@@ -2,32 +2,33 @@
 # Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the unity-2d package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+# Efstathios Iosifidis <iosifidis@opensuse.org>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-03-20 10:08+0100\n"
-"PO-Revision-Date: 2012-03-08 16:26+0000\n"
-"Last-Translator: Konstantinos Togias <ktogias@math.upatras.gr>\n"
-"Language-Team: Greek <el@li.org>\n"
+"PO-Revision-Date: 2012-04-09 21:39+0000\n"
+"Last-Translator: stavros daliakopoulos <Unknown>\n"
+"Language-Team: Ελληνικά, Σύγχρονα <opensuse-translation-el@opensuse.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-10 05:47+0000\n"
+"X-Generator: Launchpad (build 15070)\n"
 
 #: shell/launcher/LauncherList.qml:89
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 ανοικτό παράθυρο"
+msgstr[1] "%1 ανοικτά παράθυρα"
 
 #: shell/launcher/LauncherList.qml:92
 msgid "not running"
-msgstr ""
+msgstr "δεν εκτελείται"
 
 #: shell/hud/Hud.qml:198
 msgid "Type your Command"
@@ -35,40 +36,40 @@ msgstr "Πληκτρολογήστε την εντολή σας"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "Φιλτράρισμα αποτελεσμάτων"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
-msgstr ""
+msgstr "Ενεργό φίλτρο %1"
 
 #: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
-msgstr ""
+msgstr "Μη ενεργό φίλτρο %1"
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "Όλα"
 
 #: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
 msgid "Search"
-msgstr ""
+msgstr "Αναζήτηση"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "μη ανεπτυγμένο"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "ανεπτυγμένο"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Δείτε %1 παραπάνω αποτέλεσμα"
+msgstr[1] "Δείτε %1 παραπάνω αποτελέσματα"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
@@ -84,15 +85,15 @@ msgstr "Εξαγωγή"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "Ασφαλή αφαίρεση"
 
 #: libunity-2d-private/src/application.cpp:999
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "Κλείδωμα στον εκκινητή"
 
 #: libunity-2d-private/src/application.cpp:999
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "Ξεκλείδωμα από τον εκκινητή"
 
 #: libunity-2d-private/src/application.cpp:1006
 msgid "Quit"
@@ -106,7 +107,7 @@ msgstr ""
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:170
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "QT_LAYOUT_DIRECTION"
 
 #: libunity-2d-private/src/lenses.cpp:41
 msgid "Home"
