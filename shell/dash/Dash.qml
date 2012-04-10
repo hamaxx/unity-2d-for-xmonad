@@ -264,7 +264,7 @@ FocusScope {
                 event.accepted = true
             } else if ((event.key == Qt.Key_Backtab && event.modifiers == (Qt.ControlModifier | Qt.ShiftModifier)) ||
                        (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
-                changeLens(lenses.rowCount() - 1);
+                changeLens(-1);
                 event.accepted = true
             } else if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
                 if (search_entry.activeFocus || lensBar.activeFocus || filterPane.activeFocus) {
@@ -295,24 +295,35 @@ FocusScope {
             }
         }
 
-        function changeLens(step)
-        {
-            var activeLens = 0
+        function activeLensIndex() {
             var count = lenses.rowCount()
             for (var i = 0; i < count; i++) {
                 if (lenses.get(i).id == shellManager.dashActiveLens) {
-                    activeLens = i
-                    break
+                    return i
                 }
             }
-            var nextLensIndex = (activeLens + step) % count
-            var nextLens = lenses.get(nextLensIndex)
-            while (!nextLens.visible && nextLensIndex != activeLens) {
-                nextLensIndex = (nextLensIndex + step) % count
-                nextLens = lenses.get(nextLensIndex)
+            return -1
+        }
+
+        function changeLens(step) {
+            var activeLens = activeLensIndex()
+            if (activeLens != -1) {
+                var lensesCount = lenses.rowCount()
+                if (step < 0) {
+                    // Can't do lenses.get(negativeNumber) so instead of adding a negative step
+                    // we add the positive number that results in the same value when doing the modulus
+                    step = lensesCount + step
+                }
+                var nextLensIndex = (activeLens + step) % lensesCount
+                var nextLens = lenses.get(nextLensIndex)
+                while (!nextLens.visible && nextLensIndex != activeLens) {
+                    nextLensIndex = (nextLensIndex + step) % lensesCount
+                    nextLens = lenses.get(nextLensIndex)
+                }
+                activateLens(nextLens.id)
+            } else {
+                console.log("Could not find the active dash lens")
             }
-            activateLens(nextLens.id)
-            search_entry.forceActiveFocus()
         }
 
         Image {
