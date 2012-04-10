@@ -28,6 +28,20 @@ Item {
     property variant dashLoader
     property variant hudLoader
 
+    Binding {
+        target: declarativeView
+        property: "accessibleName"
+        value: {
+            if (shellManager.hudActive) {
+                return "Hud";
+            }
+            if (shellManager.dashActive) {
+                return "Dash";
+            }
+            return "Launcher";
+        }
+    }
+
     /* Space reserved by strutManager is taken off screen.availableGeometry but
        we want the shell to take all the available space, including the one we
        reserved ourselves via strutManager. */

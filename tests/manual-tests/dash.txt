@@ -113,3 +113,15 @@
   #   * Open dash and verify that all results are displayed in 'Home' lens, and no search query is applied.
 
 -----
+
+  # Test case objectives:
+  #   * Check that remote icons show in the dash
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open dash
+  #   * Go to the music lens
+  #   * Type some song you don't have on the local computer and that is on the music store
+  #   * Verify the results have the cover of the song/album and not the ? icon
+
+-----
