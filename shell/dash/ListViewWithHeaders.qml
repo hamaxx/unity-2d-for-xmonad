@@ -108,7 +108,7 @@ FocusScope {
             var newContentY = -1;
 
             if (scroll.contentY > itemTop) {
-                newContentY = itemTop
+                newContentY = Math.max(0, itemTop)
             } else if ((scroll.contentY + scroll.height) < itemBottom) {
                 newContentY = itemBottom - scroll.height;
             }
