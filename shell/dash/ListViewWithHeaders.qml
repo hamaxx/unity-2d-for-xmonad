@@ -63,13 +63,11 @@ FocusScope {
 
     function focusPreviousHeader() {
         if (!focusPath.currentItem.header.activeFocus) {
-            focusPath.currentItem.body.item.focusFirstElement()
             focusPath.currentItem.header.forceActiveFocus()
             return true
         } else {
             var moved = focusPath.moveToPrevious()
             if (moved) {
-                focusPath.currentItem.body.item.focusFirstElement()
                 focusPath.currentItem.header.forceActiveFocus()
             }
             return moved
