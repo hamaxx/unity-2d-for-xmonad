@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-20 10:08+0100\n"
+"POT-Creation-Date: 2012-04-10 10:59+0100\n"
 "PO-Revision-Date: 2012-03-08 16:51+0000\n"
 "Last-Translator: Thambaru Wijesekara <Unknown>\n"
 "Language-Team: Sinhalese <si@li.org>\n"
@@ -15,22 +15,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
+"X-Generator: Launchpad (build 15070)\n"
 
-#: shell/launcher/LauncherList.qml:89
+#: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
 msgstr[0] ""
 msgstr[1] ""
 
-#: shell/launcher/LauncherList.qml:92
+#: shell/launcher/LauncherList.qml:93
 msgid "not running"
 msgstr ""
 
-#: shell/hud/Hud.qml:198
+#: shell/hud/Hud.qml:211
 msgid "Type your Command"
+msgstr ""
+
+#: shell/hud/Hud.qml:212
+msgid "Error: HUD service not connected"
 msgstr ""
 
 #: shell/dash/FilterPane.qml:71
@@ -51,7 +55,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+#: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
 msgstr ""
 
@@ -86,15 +90,15 @@ msgstr "බැහැර කරන්න"
 msgid "Safely remove"
 msgstr ""
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
 msgstr ""
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
 msgstr ""
 
-#: libunity-2d-private/src/application.cpp:1006
+#: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
 msgstr "ඉවත් වීම"
 
@@ -104,15 +108,15 @@ msgstr ""
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
-#: libunity-2d-private/src/unity2dapplication.cpp:170
+#: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
 msgstr ""
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
 msgstr ""
 
@@ -131,11 +135,15 @@ msgstr[1] "ඉවතලන බදුන තුල අයිතම %n ක් ඇ�
 msgid "Empty Trash"
 msgstr "ඉවතලන බහලුම හිස් කරන්න"
 
+#: libunity-2d-private/src/lens.cpp:348
+msgid "Sorry, there is nothing that matches your search."
+msgstr ""
+
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
 msgstr "කර්යාවකාශ"
 
-#: panel/applets/appname/appnameapplet.cpp:367
+#: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-20 10:08+0100\n"
+"POT-Creation-Date: 2012-04-10 10:59+0100\n"
 "PO-Revision-Date: 2012-03-08 15:55+0000\n"
 "Last-Translator: Nawfel <Unknown>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -16,10 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n % 100 >= "
 "3 && n % 100 <= 10 ? 3 : n % 100 >= 11 && n % 100 <= 99 ? 4 : 5;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
+"X-Generator: Launchpad (build 15070)\n"
 
-#: shell/launcher/LauncherList.qml:89
+#: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
@@ -30,13 +30,17 @@ msgstr[3] "%1 نوافذ مفتوحة"
 msgstr[4] "%1 نافذة مفتوحة"
 msgstr[5] "%1 نافذة مفتوحة"
 
-#: shell/launcher/LauncherList.qml:92
+#: shell/launcher/LauncherList.qml:93
 msgid "not running"
 msgstr ""
 
-#: shell/hud/Hud.qml:198
+#: shell/hud/Hud.qml:211
 msgid "Type your Command"
 msgstr "اكتب امرا"
+
+#: shell/hud/Hud.qml:212
+msgid "Error: HUD service not connected"
+msgstr ""
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -56,7 +60,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+#: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
 msgstr ""
 
@@ -95,17 +99,17 @@ msgstr ""
 msgid "Safely remove"
 msgstr ""
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "ثبّت في الشريط"
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "فُك التثبيت من الشريط"
 
-#: libunity-2d-private/src/application.cpp:1006
+#: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
-msgstr "أخرُج"
+msgstr "أغلق"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
@@ -113,15 +117,15 @@ msgstr ""
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
-#: libunity-2d-private/src/unity2dapplication.cpp:170
+#: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
 msgstr ""
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
 msgstr "المنزل"
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
 msgstr "الشاشة الرئيسية"
 
@@ -140,11 +144,15 @@ msgstr[1] ""
 msgid "Empty Trash"
 msgstr "أفرغ المُهملات"
 
+#: libunity-2d-private/src/lens.cpp:348
+msgid "Sorry, there is nothing that matches your search."
+msgstr ""
+
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
 msgstr "مساحات العمل"
 
-#: panel/applets/appname/appnameapplet.cpp:367
+#: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
 msgstr "سطح مكتب أبونتو"
 
