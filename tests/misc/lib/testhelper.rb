@@ -4,7 +4,7 @@ dir = File.dirname(File.expand_path(__FILE__))
 $LOAD_PATH.unshift File.expand_path(dir + '/../lib')
 $TEST_DIR = File.dirname(File.expand_path(__FILE__))
 
-# Enable a startup and shutdwn method for each test case 
+# Enable a startup and shutdown method for each test case 
 # From https://github.com/freerange/test_startup
 module TestStartupAndShutdown
   def startup(&block)
