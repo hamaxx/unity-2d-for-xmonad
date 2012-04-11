@@ -125,3 +125,79 @@
   #   * Verify the results have the cover of the song/album and not the ? icon
 
 -----
+
+  # Test case objectives:
+  #   * Check that tab moves between headers on the dash
+  # Pre-conditions
+  #   * Have a files and folders lens with 3 categories and all of them have a "More results text"
+  # Test steps
+  #   * Open dash
+  #   * Switch to the files and folders lens
+  #   * Verify focus is on the search entry
+  #   * Press Tab
+  #   * Verify focus is on the first category header
+  #   * Press Enter to expand the results
+  #   * Press Tab
+  #   * Verify focus is on the second category header
+  #   * Press Enter to expand the results
+  #   * Press Tab
+  #   * Verify focus is on the third category header
+  #   * Press Enter to expand the results
+  #   * Press Tab
+  #   * Verify focus is on the "Filter results" text
+  #   * Press Enter to expand the filters
+  #   * Press Tab
+  #   * Verify focus is on the "Last Modified" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the "Type" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the "Size" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the first category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the first category
+  #   * Press Shift+Tab
+  #   * Verify focus is on the first category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the first category
+  #   * Press Tab
+  #   * Verify focus is on the second category header
+  #   * Press Up Arrow
+  #   * Verify focus is on the first element of the last row of the first category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the second category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the second category
+  #   * Press Shift+Tab
+  #   * Verify focus is on the second category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the second category
+  #   * Press Tab
+  #   * Verify focus is on the third category header
+  #   * Press Up Arrow
+  #   * Verify focus is on the first element of the last row of the second category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the third category header
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the third category
+  #   * Press Shift+Tab
+  #   * Verify focus is on the third category header
+  #   * Press Shift+Tab
+  #   * Verify focus is on the second category header
+  #   * Press Shift+Tab
+  #   * Verify focus is on the first category header
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Size" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Type" filter "All" button
+  #   * Press Down Arrow
+  #   * Verify focus is on the "Audio" filter
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Type" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Last Modified" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Filter results" text
+  #   * Press Shift+Tab
+  #   * Verify focus is on the third category header
+-----
