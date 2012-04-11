@@ -30,12 +30,10 @@ FocusScope {
 
     function focusFirstHeader() {
         results.focusFirstHeader()
-        forceActiveFocus()
     }
 
     function focusLastHeader() {
         results.focusLastHeader()
-        forceActiveFocus()
     }
 
     function updateFirstCategory() {
