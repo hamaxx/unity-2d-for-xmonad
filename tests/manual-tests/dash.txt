@@ -127,11 +127,11 @@
 -----
 
   # Test case objectives:
-  #   * Verify the 4 finger gesture toggles the dash
+  #   * Verify the 4 finger tap gesture toggles the dash
   # Pre-conditions
   #   * None
   # Test steps
-  #   * Use the 4 finger gesture to open the dash
-  #   * Use the 4 finger gesture to close the dash
+  #   * Use the 4 finger tap gesture to open the dash
+  #   * Use the 4 finger tap gesture to close the dash
 
 -----
