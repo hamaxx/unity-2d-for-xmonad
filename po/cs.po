@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-03-20 10:08+0100\n"
+"POT-Creation-Date: 2012-04-10 10:59+0100\n"
 "PO-Revision-Date: 2012-03-16 15:17+0000\n"
 "Last-Translator: Vojtěch Trefný <vojtech.trefny@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -15,10 +15,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-03-24 05:38+0000\n"
-"X-Generator: Launchpad (build 14981)\n"
+"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
+"X-Generator: Launchpad (build 15070)\n"
 
-#: shell/launcher/LauncherList.qml:89
+#: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
@@ -26,13 +26,17 @@ msgstr[0] "%1 otevřené okno"
 msgstr[1] "%1 otevřená okna"
 msgstr[2] "%1 otevřených oken"
 
-#: shell/launcher/LauncherList.qml:92
+#: shell/launcher/LauncherList.qml:93
 msgid "not running"
 msgstr "není spuštěno"
 
-#: shell/hud/Hud.qml:198
+#: shell/hud/Hud.qml:211
 msgid "Type your Command"
 msgstr "Napište příkaz"
+
+#: shell/hud/Hud.qml:212
+msgid "Error: HUD service not connected"
+msgstr ""
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -52,7 +56,7 @@ msgstr "Filtr %1 neaktivní"
 msgid "All"
 msgstr "Vše"
 
-#: shell/dash/Dash.qml:292 libunity-2d-private/src/lenses.cpp:41
+#: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
 msgstr "Hledat"
 
@@ -88,15 +92,15 @@ msgstr "Vysunout"
 msgid "Safely remove"
 msgstr "Bezpečně odebrat"
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
 msgstr "Přidat do Launcheru"
 
-#: libunity-2d-private/src/application.cpp:999
+#: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
 msgstr "Odebrat z Launcheru"
 
-#: libunity-2d-private/src/application.cpp:1006
+#: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
 msgstr "Ukončit"
 
@@ -106,15 +110,15 @@ msgstr "Hlavní nabídka Dash"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
-#: libunity-2d-private/src/unity2dapplication.cpp:170
+#: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
 msgstr "QT_LAYOUT_DIRECTION"
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
 msgstr "Domů"
 
-#: libunity-2d-private/src/lenses.cpp:41
+#: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
 msgstr "Domovská obrazovka"
 
@@ -134,11 +138,15 @@ msgstr[2] "%n položek v koši"
 msgid "Empty Trash"
 msgstr "Vyprázdnit koš"
 
+#: libunity-2d-private/src/lens.cpp:348
+msgid "Sorry, there is nothing that matches your search."
+msgstr ""
+
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
 msgstr "Pracovní plochy"
 
-#: panel/applets/appname/appnameapplet.cpp:367
+#: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
 msgstr "Prostředí Ubuntu"
 

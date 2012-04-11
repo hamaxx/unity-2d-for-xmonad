@@ -98,29 +98,31 @@ bool KeyMonitor::registerEvents()
 
     devices = XListInputDevices(m_display, &num_devices);
 
-    for(i=0; i<num_devices; i++) {
-        device = XOpenDevice(m_display, devices[i].id);
-        if (device == NULL) {
-            /* That's not critical since "Virtual core..." devices don't
-               allow opening. */
-            UQ_DEBUG << "Could not open device: " << devices[i].name;
-            continue;
-        }
+    /* Check returned list pointer as XListInputDevices may return NULL with num_devices>0, see LP: #965464 */
+    if (devices != NULL) {
+        for(i=0; i<num_devices; i++) {
+            device = XOpenDevice(m_display, devices[i].id);
+            if (device == NULL) {
+                /* That's not critical since "Virtual core..." devices don't
+                allow opening. */
+                UQ_DEBUG << "Could not open device: " << devices[i].name;
+                continue;
+            }
 
-        if (devices[i].use == IsXExtensionKeyboard) {
-            for (info=device->classes, j=0; j < device->num_classes; j++, info++) {
-                if (info->input_class == KeyClass) {
-                    DeviceKeyPress(device, key_press_type, event_class);
-                    m_eventList.append(event_class);
-                    DeviceMappingNotify(device, notify_type, event_class);
-                    m_eventList.append(event_class);
+            if (devices[i].use == IsXExtensionKeyboard) {
+                for (info=device->classes, j=0; j < device->num_classes; j++, info++) {
+                    if (info->input_class == KeyClass) {
+                        DeviceKeyPress(device, key_press_type, event_class);
+                        m_eventList.append(event_class);
+                        DeviceMappingNotify(device, notify_type, event_class);
+                        m_eventList.append(event_class);
+                    }
                 }
             }
+            XCloseDevice(m_display, device);
         }
-        XCloseDevice(m_display, device);
+        XFreeDeviceList(devices);
     }
-
-    XFreeDeviceList(devices);
 
     if (m_eventList.size() == 0) {
         UQ_WARNING << "No input devices found.";
