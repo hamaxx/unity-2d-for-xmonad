@@ -132,6 +132,7 @@ FocusScope {
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.item.visible && !bodyLoader.item.visible
 
+                    property alias bodyLoader: bodyLoader
                     property alias body: bodyLoader.item
                     property alias header: headerLoader.item
 
@@ -161,6 +162,7 @@ FocusScope {
                                     var categoryOnTopIndex = focusPath.previousIndex()
                                     if (categoryOnTopIndex != -1) {
                                         categories.itemAt(categoryOnTopIndex).body.item.focusLastRow()
+                                        categories.itemAt(categoryOnTopIndex).bodyLoader.focus = true
                                     }
 
                                     focusPath.currentItem.body.item.focusFirstElement()

@@ -49,7 +49,6 @@ Renderer {
 
     function focusLastRow() {
         focusPath.focusLastRow()
-        focusPath.currentItem.forceActiveFocus()
     }
 
     FocusPath {
