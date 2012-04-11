@@ -193,8 +193,8 @@ void FocusPath::updatePosition(int index)
         (index < m_path.size())) {
         QDeclarativeItem* focus = m_path[index].second;
         Q_ASSERT(focus);
-        focus->setFocus(true);
         m_currentPosition = index;
+        focus->setFocus(true);
         Q_EMIT currentIndexChanged();
         Q_EMIT currentItemChanged();
     }
@@ -254,6 +254,11 @@ void FocusPath::reset()
     Q_EMIT currentItemChanged();
 }
 
+void FocusPath::focusLastRow()
+{
+    updatePosition(((m_path.size() - 1) / m_columns) * m_columns);
+}
+
 bool FocusPath::moveToNext()
 {
     if (m_currentPosition + 1 < m_path.size()) {
@@ -274,9 +279,13 @@ bool FocusPath::moveToPrevious()
     }
 }
 
-void FocusPath::focusLastRow()
+int FocusPath::previousIndex()
 {
-    updatePosition(((m_path.size() - 1) / m_columns) * m_columns);
+    if (m_currentPosition - 1 >= 0) {
+        return m_path[m_currentPosition - 1].first;
+    } else {
+        return -1;
+    }
 }
 
 void FocusPath::addItem(QDeclarativeItem *item)

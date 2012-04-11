@@ -45,31 +45,17 @@ FocusScope {
 
     function focusFirstHeader() {
         focusPath.reset()
-        focusPath.currentItem.body.item.focusFirstElement()
         focusPath.currentItem.header.forceActiveFocus()
     }
 
     function focusLastHeader() {
         focusPath.focusLastRow()
-        // Find out what is the category on top to put the focus in the last row
-        var categoryOnTopIndex = -1
-        if (focusPath.moveToPrevious()) {
-            categoryOnTopIndex = focusPath.currentIndex
-            focusPath.moveToNext()
-        }
-        if (categoryOnTopIndex != -1) {
-            categories.itemAt(categoryOnTopIndex).body.item.focusLastRow()
-        }
-        focusPath.currentItem.body.item.focusFirstElement()
         focusPath.currentItem.header.forceActiveFocus()
     }
 
     function focusNextHeader() {
-        var previousIndex = focusPath.currentIndex
         var moved = focusPath.moveToNext()
         if (moved) {
-            categories.itemAt(previousIndex).body.item.focusLastRow()
-            focusPath.currentItem.body.item.focusFirstElement()
             focusPath.currentItem.header.forceActiveFocus()
         }
         return moved
@@ -83,15 +69,6 @@ FocusScope {
         } else {
             var moved = focusPath.moveToPrevious()
             if (moved) {
-                // Find out what is the category on top to put the focus in the last row
-                var categoryOnTopIndex = -1
-                if (focusPath.moveToPrevious()) {
-                    categoryOnTopIndex = focusPath.currentIndex
-                    focusPath.moveToNext()
-                }
-                if (categoryOnTopIndex != -1) {
-                    categories.itemAt(categoryOnTopIndex).body.item.focusLastRow()
-                }
                 focusPath.currentItem.body.item.focusFirstElement()
                 focusPath.currentItem.header.forceActiveFocus()
             }
@@ -183,6 +160,12 @@ FocusScope {
 
                             onActiveFocusChanged: {
                                 if (visible && item && item.activeFocus) {
+                                    var categoryOnTopIndex = focusPath.previousIndex()
+                                    if (categoryOnTopIndex != -1) {
+                                        categories.itemAt(categoryOnTopIndex).body.item.focusLastRow()
+                                    }
+
+                                    focusPath.currentItem.body.item.focusFirstElement()
                                     scroll.moveToPosition(item)
                                 }
                             }
