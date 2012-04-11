@@ -117,11 +117,15 @@ FocusScope {
             }
         } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
             if (!folded && !header.focus) {
-                if (options.currentIndex > 0) {
-                    options.currentItem.focusHeader()
-                    options.currentIndex--
+                if (options.currentItem.header.activeFocus) {
+                    if (options.currentIndex > 0) {
+                        options.currentIndex--
+                        options.currentItem.focusHeader()
+                    } else {
+                        header.forceActiveFocus()
+                    }
                 } else {
-                    header.forceActiveFocus()
+                    options.currentItem.focusHeader()
                 }
                 event.accepted = true
             }
