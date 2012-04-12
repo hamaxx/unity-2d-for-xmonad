@@ -3,8 +3,10 @@ unity-2d (5.8.0-0ubuntu2) UNRELEASED; urgency=low
   * debian/20_ubuntu-2d-gconf-default:
     - set a default key for HUD showing on Alt, in case unity-3d isn't
       installed or run before unity-2d.
+  * debian/control:
+    - bump libnux-2.0-dev to latest for ABI break
 
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 03 Apr 2012 11:14:50 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 12 Apr 2012 11:02:08 +0200
 
 unity-2d (5.8.0-0ubuntu1) precise-proposed; urgency=low
 
