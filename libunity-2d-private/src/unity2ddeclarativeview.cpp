@@ -108,6 +108,8 @@ void Unity2DDeclarativeView::setSource(const QUrl &source, const QMap<const char
     resizeToRootObject();
     m_scene.addItem(m_rootItem);
     m_source = source;
+
+    Q_EMIT rootObjectChanged();
 }
 
 void Unity2DDeclarativeView::resizeToRootObject()
