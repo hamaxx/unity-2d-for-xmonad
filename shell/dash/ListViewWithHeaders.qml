@@ -74,6 +74,15 @@ FocusScope {
         }
     }
 
+    function isListEmpty() {
+        var empty = true
+        for (var i = 0; empty && i < categories.count; i++) {
+            var category = categories.itemAt(i);
+            empty = !category.body.visible && !category.header.visible
+        }
+        return empty
+    }
+
     FocusPath {
         id: focusPath
         item: categoriesColumn

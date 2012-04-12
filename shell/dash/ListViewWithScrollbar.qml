@@ -41,6 +41,10 @@ FocusScope {
         return list.focusPreviousHeader()
     }
 
+    function isListEmpty() {
+        return list.isListEmpty()
+    }
+
     ListViewWithHeaders {
         id: list
 

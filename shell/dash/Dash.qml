@@ -268,11 +268,15 @@ FocusScope {
                 event.accepted = true
             } else if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
                 if (search_entry.activeFocus || lensBar.activeFocus || filterPane.activeFocus) {
-                    pageLoader.item.focusFirstHeader()
+                    if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusFirstHeader()
+                    } else if (filterPane.visible) {
+                        filterPane.focusFirstHeader()
+                    }
                 } else if (pageLoader.activeFocus) {
                     if (filterPane.visible) {
                         filterPane.focusFirstHeader()
-                    } else {
+                    } else if (!pageLoader.item.isListEmpty()) {
                         pageLoader.item.focusFirstHeader()
                     }
                 } else {
@@ -281,11 +285,13 @@ FocusScope {
                 event.accepted = true
             } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
                 if (filterPane.activeFocus) {
-                    pageLoader.item.focusLastHeader()
+                    if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusLastHeader()
+                    }
                 } else if (search_entry.activeFocus || lensBar.activeFocus || pageLoader.activeFocus) {
                     if (filterPane.visible) {
                         filterPane.focusLastHeader()
-                    } else {
+                    } else if (!pageLoader.item.isListEmpty()) {
                         pageLoader.item.focusLastHeader()
                     }
                 } else {

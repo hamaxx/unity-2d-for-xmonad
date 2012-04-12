@@ -36,6 +36,10 @@ FocusScope {
         results.focusLastHeader()
     }
 
+    function isListEmpty() {
+        return results.isListEmpty()
+    }
+
     function updateFirstCategory() {
         if (lensView.model.results.count == 0)
             return
