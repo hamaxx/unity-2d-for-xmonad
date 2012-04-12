@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-10 10:59+0100\n"
-"PO-Revision-Date: 2012-04-09 21:39+0000\n"
-"Last-Translator: stavros daliakopoulos <Unknown>\n"
+"PO-Revision-Date: 2012-04-11 16:37+0000\n"
+"Last-Translator: Giannis Katsampirhs <juankatsampirhs@gmail.com>\n"
 "Language-Team: Ελληνικά, Σύγχρονα <opensuse-translation-el@opensuse.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
+"X-Launchpad-Export-Date: 2012-04-12 05:21+0000\n"
 "X-Generator: Launchpad (build 15070)\n"
 
 #: shell/launcher/LauncherList.qml:90
@@ -105,13 +105,13 @@ msgstr "Έξοδος"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Κεντρικό μενού Dash"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
-msgstr "QT_LAYOUT_DIRECTION"
+msgstr "LTR"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
