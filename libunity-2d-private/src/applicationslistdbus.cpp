@@ -9,11 +9,10 @@ ApplicationsListDBUS::ApplicationsListDBUS(QObject *parent) :
 }
 
 void
-ApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString title,
+ApplicationsListDBUS::AddLauncherItemFromPosition(QString title, QString icon,
                                                           int icon_x, int icon_y, int icon_size,
                                                           QString desktop_file, QString aptdaemon_task)
 {
-    Q_UNUSED(icon)
     Q_UNUSED(title)
     Q_UNUSED(icon_x)
     Q_UNUSED(icon_y)
@@ -26,6 +25,7 @@ ApplicationsListDBUS::AddLauncherItemFromPosition(QString icon, QString title,
             applicationsList->insertFavoriteApplication(desktop_file);
             Application *application = applicationsList->m_applicationForDesktopFile.value(desktop_file, NULL);
             if (application != NULL) {
+                application->setIcon(icon);
                 application->beginForceUrgent(1500);
             }
         }
