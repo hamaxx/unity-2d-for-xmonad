@@ -8,22 +8,22 @@ msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-10 10:59+0100\n"
-"PO-Revision-Date: 2012-03-08 17:43+0000\n"
-"Last-Translator: Thalysson Sarmento <sarmento@bsd.com.br>\n"
+"PO-Revision-Date: 2012-04-12 15:48+0000\n"
+"Last-Translator: Tiago Hillebrandt <tiagohillebrandt@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
+"X-Launchpad-Export-Date: 2012-04-13 14:55+0000\n"
 "X-Generator: Launchpad (build 15070)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 janela aberta"
+msgstr[1] "%1 janelas abertas"
 
 #: shell/launcher/LauncherList.qml:93
 msgid "not running"
@@ -35,44 +35,44 @@ msgstr "Digite seu comando"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Erro: Serviço HUD não conectado"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "Filtrar resultados"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
-msgstr ""
+msgstr "Filtro %1 ativo"
 
 #: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
-msgstr ""
+msgstr "Filtro %1 inativo"
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "Tudo"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
-msgstr ""
+msgstr "Pesquisar"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "não expandido"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "expandido"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ver mais %1 resultado"
+msgstr[1] "Ver mais %1 resultados"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
@@ -88,7 +88,7 @@ msgstr "Ejetar"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "Remover com segurança"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
@@ -104,7 +104,7 @@ msgstr "Sair"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Painel inicial"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -137,7 +137,7 @@ msgstr "Esvaziar lixeira"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Desculpe, não há nada que coincida com sua busca."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
