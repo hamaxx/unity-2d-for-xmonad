@@ -10,7 +10,7 @@ GETTEXT_FILES=$(mktemp --tmpdir unity-2d.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
 cd ..
 find \( -name '*.cpp' -o -name '*.qml' \) \
-    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*'  -o -path './libunity-2d-private/tests/*' \) \
+    -a ! \( -path './debian/*' -o -path './build/*' -o -path './obj-*-linux-gnu/*' -o -path './.bzr/*'  -o -path './libunity-2d-private/tests/*' \) | sort \
 > $GETTEXT_FILES
 
 # Generate pot from our list
