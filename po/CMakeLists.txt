@@ -50,7 +50,7 @@ set(GETTEXT_PACKAGE "unity-2d")
 
 create_translation_targets(${GETTEXT_PACKAGE}.pot ${PO_FILES})
 
-add_custom_target(${GETTEXT_PACKAGE}.pot
+add_custom_target(${GETTEXT_PACKAGE}.pot ALL
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/update-unity-2d-pot
     )
 
