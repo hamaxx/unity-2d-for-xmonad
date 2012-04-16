@@ -33,6 +33,7 @@ class GestureHandler : public QObject
     Q_OBJECT
     Q_PROPERTY(double dragDelta READ dragDelta NOTIFY dragDeltaChanged)
     Q_PROPERTY(bool isDragging READ isDragging NOTIFY isDraggingChanged)
+    Q_PROPERTY(QObject *dashManager READ dashManager WRITE setDashManager)
 
 public:
     explicit GestureHandler(QObject *parent = 0);
@@ -40,6 +41,9 @@ public:
 
     double dragDelta() const;
     bool isDragging() const;
+
+    QObject *dashManager() const;
+    void setDashManager(QObject *dashManager);
 
 Q_SIGNALS:
     void dragDeltaChanged();
@@ -70,6 +74,7 @@ private:
     int m_pinchPreviousTimestamp;
     float m_dragDelta;
     bool m_isDragging;
+    QObject *m_dashManager;
 };
 
 Q_DECLARE_METATYPE(GestureHandler*)

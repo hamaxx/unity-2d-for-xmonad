@@ -226,3 +226,13 @@
   #   * Verify focus is on the third category header
 
 -----
+
+# Test case objectives:
+  #   * Verify the 4 finger tap gesture toggles the dash
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Use the 4 finger tap gesture to open the dash
+  #   * Use the 4 finger tap gesture to close the dash
+
+-----

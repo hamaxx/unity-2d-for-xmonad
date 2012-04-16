@@ -29,6 +29,7 @@ GestureHandler::GestureHandler(QObject *parent)
 : QObject(parent)
 , m_geisInstance(NULL)
 , m_isDragging(false)
+, m_dashManager(NULL)
 {
     if (geisInitialize() != GEIS_STATUS_SUCCESS) {
         UQ_WARNING << "GEIS initialization failed: multitouch support disabled";
@@ -115,23 +116,6 @@ GeisStatus GestureHandler::geisSubscribeGestures()
 
     return geis_subscribe(m_geisInstance, GEIS_ALL_INPUT_DEVICES, gestures,
                           &m_gestureFuncs, this);
-}
-
-
-static void toggleDash()
-{
-    /* A 4 fingers tap will either:
-        - show the home page of the dash if the dash is closed
-        - close the dash, if the dash is opened
-    */
-    QDBusInterface dashInterface("com.canonical.Unity2d.Dash", "/Dash", "com.canonical.Unity2d.Dash");
-    bool dashActive = dashInterface.property("active").toBool();
-
-    if (dashActive) {
-        dashInterface.setProperty("active", false);
-    } else {
-        dashInterface.call(QDBus::Block, "activateHome");
-    }
 }
 
 /* FIXME: zooming in/out in the spread should have 3 levels:
@@ -232,7 +216,10 @@ void GestureHandler::gestureUpdate(GeisGestureType type, GeisGestureId id,
 
     if (gestureName == GEIS_GESTURE_TYPE_TAP4) {
         /* 4 fingers tap toggles the dash on and off */
-        toggleDash();
+        Q_ASSERT(m_dashManager != NULL);
+        if (m_dashManager != NULL) {
+            QMetaObject::invokeMethod(m_dashManager, "toggleDashRequested");
+        }
     } else if (gestureName == GEIS_GESTURE_TYPE_PINCH3) {
         /* Continuing a 3 fingers pinch inwards/outwards shows/hides the workspace switcher. */
         int timestamp = attributes[GEIS_GESTURE_ATTRIBUTE_TIMESTAMP].integer_val;
@@ -289,6 +276,16 @@ double GestureHandler::dragDelta() const
 bool GestureHandler::isDragging() const
 {
     return m_isDragging;
+}
+
+QObject *GestureHandler::dashManager() const
+{
+    return m_dashManager;
+}
+
+void GestureHandler::setDashManager(QObject *dashManager)
+{
+    m_dashManager = dashManager;
 }
 
 #include "gesturehandler.moc"

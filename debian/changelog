@@ -1,10 +1,47 @@
-unity-2d (5.8.0-0ubuntu2) UNRELEASED; urgency=low
+unity-2d (5.10.0-0ubuntu1) precise-proposed; urgency=low
 
+  * New upstream release:
+    - unity-2d-shell crashed with SIGSEGV in
+      QCoreApplication::notifyInternal() (LP: #918566)
+    - Unity-2d-shell crashes on startup on 64bit machines with 20+ tiles in
+      launcher (LP: #967012)
+    - Unity 2-d launcher doesn't hide or display properly (LP: #940590)
+    - [dash] search terms aren't applied on lens change / dash show
+      (LP: #947985)
+    - [5.8 pre staging] "sticky edge" option does nothing visible
+      (LP: #961285)
+    - [dash] Maximise, then restore - much of background not removed from
+      screen (LP: #968215)
+    - [hud] shows up when using ctrl+alt and pressing alt first (LP: #972318)
+    - [UIFe] Dash - No message displayed when no results are returned in the
+      Dash (LP: #711199)
+    - Missing lens shortcuts (Super-A, Super-F) (LP: #834078)
+    - [dash] Unable to scroll Filter Results (LP: #920878)
+    - [launcher] stays open if you mouseOut before reveal animation completes
+      (LP: #943296)
+    - HUD on wrong screen on mutli monitor system (LP: #947145)
+    - [a11y] Orca reports "Shell" when opening HUD, Dash or Launcher
+      (LP: #948033)
+    - multimonitor: Please give me a way to turn off sticky monitor edges
+      (LP: #946104)
+    - [dash] Esc key behavior inconsistent with Unity (LP: #966121)
+    - toggling the spread from the launcher does not work (LP: #968146)
+    - unity-2d-shell crashed with SIGSEGV in KeyMonitor::registerEvents()
+      (LP: #965464)
+    - [Dash] Focus is lost when switching with the mouse (LP: #974235)
+    - Multiple items selected in HUD list (LP: #948441)
+    - Hud hides launcher even if set to always show (LP: #948960)
+    - [launcher] Pointer reveal barrier should be 1 way only (LP: #960175)
+    - [hud] connection to HUD being created on startup (LP: #965106)
+    - [dash] On 1024x786 screen, dash not fullscreen so border truncated
+      (LP: #967305)
   * debian/20_ubuntu-2d-gconf-default:
     - set a default key for HUD showing on Alt, in case unity-3d isn't
       installed or run before unity-2d.
+  * debian/control:
+    - bump libnux-2.0-dev to latest for ABI break
 
- -- Didier Roche <didrocks@ubuntu.com>  Tue, 03 Apr 2012 11:14:50 +0200
+ -- Didier Roche <didrocks@ubuntu.com>  Thu, 12 Apr 2012 11:02:08 +0200
 
 unity-2d (5.8.0-0ubuntu1) precise-proposed; urgency=low
 
