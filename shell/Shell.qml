@@ -27,6 +27,7 @@ Item {
     property variant declarativeView
     property variant dashLoader
     property variant hudLoader
+    property bool launcherAlwaysVisible: launcherLoader.loadLauncher && !launcherLoader.launcherInHideMode
 
     Binding {
         target: declarativeView
@@ -283,7 +284,7 @@ Item {
         widget: declarativeView
         height: launcherLoader.height
         width: launcherLoader.width
-        enabled: launcherLoader.loadLauncher && Utils.clamp(launcher2dConfiguration.hideMode, 0, 2) == 0
+        enabled: launcherAlwaysVisible
     }
 
     PointerBarrier {
