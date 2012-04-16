@@ -59,6 +59,7 @@ Item {
 
     GestureHandler {
         id: gestureHandler
+        dashManager: shellManager
     }
 
     onDashLoaderChanged: {

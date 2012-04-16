@@ -37,3 +37,10 @@
  * Set the launcher to not autohide and be shown only on one monitor
  * Toggle the hud on the monitor that does not have launcher
 --> Verify the hud shows on the left edge of the monitor and with icon
+
+----
+ * Open an application
+ * Hit Alt key
+ * Navigate through results with keyboard arrow keys
+ * Navigate to a result row different than the top one
+ * Hit Enter to activate an action

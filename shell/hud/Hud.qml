@@ -215,7 +215,7 @@ FocusScope {
                     hudModel.searchQuery = searchQuery
                     resultList.currentIndex = 0
                 }
-                onActivateFirstResult: executeResult(0)
+                onActivateFirstResult: executeResult(resultList.currentIndex)
             }
 
             ListView {
