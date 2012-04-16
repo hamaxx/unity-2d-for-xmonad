@@ -125,3 +125,13 @@
   #   * Verify the results have the cover of the song/album and not the ? icon
 
 -----
+
+  # Test case objectives:
+  #   * Verify the 4 finger tap gesture toggles the dash
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Use the 4 finger tap gesture to open the dash
+  #   * Use the 4 finger tap gesture to close the dash
+
+-----
