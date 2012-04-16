@@ -121,7 +121,7 @@ Verify that the shell starts without problems (does not segfault) (Do it multipl
 Verify that the launcher hides correctly
 ----
 
- * Open the launch. Put the mouse at the position of a tile where the right pip appears (to the right of the icon itself)
+ * Open the launcher. Put the mouse at the position of a tile where the right pip appears (to the right of the icon itself)
 
 Verify that the tooltip appears and does not enter an infinite flickering loop
 ----
