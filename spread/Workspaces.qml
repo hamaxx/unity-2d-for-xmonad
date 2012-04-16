@@ -163,7 +163,11 @@ Rectangle {
                 if (zoomedWorkspace == workspaceNumber) {
                     activateWorkspace(workspaceNumber)
                 } else if (zoomedWorkspace == -1) {
-                    if (windowCount <= 1) {
+                    if (windowCount == 1) {
+                        zoomedWorkspace = workspaceNumber
+                        workspace.setFocusOnFirstWindow()
+                        activateWindow(workspace.currentWindow().windowInfo)
+                    } else if (windowCount < 1) {
                         activateWorkspace(workspaceNumber)
                     } else {
                         workspaces.currentIndex = index
