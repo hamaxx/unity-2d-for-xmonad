@@ -266,6 +266,38 @@ FocusScope {
                        (event.key == Qt.Key_PageUp && event.modifiers == Qt.ControlModifier)) {
                 changeLens(-1);
                 event.accepted = true
+            } else if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
+                if (search_entry.activeFocus || lensBar.activeFocus || filterPane.activeFocus) {
+                    if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusFirstHeader()
+                    } else if (filterPane.visible) {
+                        filterPane.focusFirstHeader()
+                    }
+                } else if (pageLoader.activeFocus) {
+                    if (filterPane.visible) {
+                        filterPane.focusFirstHeader()
+                    } else if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusFirstHeader()
+                    }
+                } else {
+                    console.log("Dash: Tab pressed with focus in unexpected item")
+                }
+                event.accepted = true
+            } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+                if (filterPane.activeFocus) {
+                    if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusLastHeader()
+                    }
+                } else if (search_entry.activeFocus || lensBar.activeFocus || pageLoader.activeFocus) {
+                    if (filterPane.visible) {
+                        filterPane.focusLastHeader()
+                    } else if (!pageLoader.item.isListEmpty()) {
+                        pageLoader.item.focusLastHeader()
+                    }
+                } else {
+                    console.log("Dash: Tab pressed with focus in unexpected item")
+                }
+                event.accepted = true
             }
         }
 

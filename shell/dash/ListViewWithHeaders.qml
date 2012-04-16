@@ -43,6 +43,46 @@ FocusScope {
 
     property bool giveFocus: false
 
+    function focusFirstHeader() {
+        focusPath.reset()
+        focusPath.currentItem.header.forceActiveFocus()
+    }
+
+    function focusLastHeader() {
+        focusPath.focusLastRow()
+        focusPath.currentItem.header.forceActiveFocus()
+    }
+
+    function focusNextHeader() {
+        var moved = focusPath.moveToNext()
+        if (moved) {
+            focusPath.currentItem.header.forceActiveFocus()
+        }
+        return moved
+    }
+
+    function focusPreviousHeader() {
+        if (!focusPath.currentItem.header.activeFocus) {
+            focusPath.currentItem.header.forceActiveFocus()
+            return true
+        } else {
+            var moved = focusPath.moveToPrevious()
+            if (moved) {
+                focusPath.currentItem.header.forceActiveFocus()
+            }
+            return moved
+        }
+    }
+
+    function isListEmpty() {
+        var empty = true
+        for (var i = 0; empty && i < categories.count; i++) {
+            var category = categories.itemAt(i);
+            empty = !category.body.visible && !category.header.visible
+        }
+        return empty
+    }
+
     FocusPath {
         id: focusPath
         item: categoriesColumn
@@ -75,7 +115,7 @@ FocusScope {
             var newContentY = -1;
 
             if (scroll.contentY > itemTop) {
-                newContentY = itemTop
+                newContentY = Math.max(0, itemTop)
             } else if ((scroll.contentY + scroll.height) < itemBottom) {
                 newContentY = itemBottom - scroll.height;
             }
@@ -101,6 +141,9 @@ FocusScope {
                     FocusPath.index: index
                     FocusPath.skip: !headerLoader.item.visible && !bodyLoader.item.visible
 
+                    property alias bodyLoader: bodyLoader
+                    property alias body: bodyLoader.item
+                    property alias header: headerLoader.item
 
                     Column {
 
@@ -125,6 +168,13 @@ FocusScope {
 
                             onActiveFocusChanged: {
                                 if (visible && item && item.activeFocus) {
+                                    var categoryOnTopIndex = focusPath.previousIndex()
+                                    if (categoryOnTopIndex != -1) {
+                                        categories.itemAt(categoryOnTopIndex).body.item.focusLastRow()
+                                        categories.itemAt(categoryOnTopIndex).bodyLoader.focus = true
+                                    }
+
+                                    focusPath.currentItem.body.item.focusFirstElement()
                                     scroll.moveToPosition(item)
                                 }
                             }

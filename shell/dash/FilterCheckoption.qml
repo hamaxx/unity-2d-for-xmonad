@@ -25,6 +25,10 @@ Filter {
 
     property variant grid_columns : 2
 
+    function focusFirstItem() {
+        filters.currentIndex = 0
+    }
+
     GridViewWithSpacing {
         id: filters
 

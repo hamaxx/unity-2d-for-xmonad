@@ -26,4 +26,7 @@ FocusScope {
     property int sectionSpacing: 12
 
     height: childrenRect.height
+
+    function focusFirstItem() {
+    }
 }
