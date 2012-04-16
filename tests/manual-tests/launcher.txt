@@ -120,3 +120,8 @@ Verify that the shell starts without problems (does not segfault) (Do it multipl
 
 Verify that the launcher hides correctly
 ----
+
+ * Use hide-mode 0. Open the software-center. Start (just until the passowrd is asked, no need to continue) installing an app (I tried Kalzium)
+
+Verify that the tile that appears in the launcher has the app icon and not the questionmark icon
+----

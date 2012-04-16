@@ -97,6 +97,7 @@ public:
     void setSticky(bool sticky);
     void setBamfApplication(BamfApplication *application);
     void setSnStartupSequence(SnStartupSequence* sequence);
+    void setIcon(const QString& iconPath);
 
     /* methods */
     Q_INVOKABLE virtual void activate();
@@ -196,6 +197,7 @@ private:
     IndicatorDesktopShortcutsPointer m_staticShortcuts;
     QTimer m_geometryChangedTimer;
     GConnector m_gConnector;
+    QString m_overrideIconPath;
 };
 
 Q_DECLARE_METATYPE(Application*)
