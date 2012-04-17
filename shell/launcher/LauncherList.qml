@@ -163,7 +163,15 @@ AutoScrollingListView {
                 list.visibleMenu.hide()
             }
             list.visibleMenu = item.menu
-            item.menu.show(declarativeView.globalPosition.x + width - 5, declarativeView.globalPosition.y + list.y - list.contentY +
+
+            var xPos
+            if (Utils.isLeftToRight()) {
+                xPos = declarativeView.globalPosition.x + width
+            } else {
+                // We need to substract the menu width too, that's done inside show() itself
+                xPos = declarativeView.globalPosition.x + declarativeView.width - width
+            }
+            item.menu.show(xPos, declarativeView.globalPosition.y + list.y - list.contentY +
                                   y + height - selectionOutlineSize / 2)
         }
 
