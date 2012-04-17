@@ -28,7 +28,7 @@ Loader {
     source: "hud/Hud.qml"
     anchors.top: parent != undefined ? parent.top : undefined
     x: {
-        if (launcher2dConfiguration.hideMode == 0) {
+        if (parent != undefined && parent.launcherAlwaysVisible) {
             return Utils.isLeftToRight() ? launcherLoader.width : (parent != undefined ? parent.width - width - launcherLoader.width : 0)
         } else {
             return Utils.isLeftToRight() ? 0 : (parent != undefined ? parent.width - width : 0)

@@ -43,6 +43,14 @@ Renderer {
 
     property bool centered: true
 
+    function focusFirstElement() {
+        focusPath.reset()
+    }
+
+    function focusLastRow() {
+        focusPath.focusLastRow()
+    }
+
     FocusPath {
         id: focusPath
 

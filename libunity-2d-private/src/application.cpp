@@ -220,6 +220,10 @@ Application::name() const
 QString
 Application::icon() const
 {
+    if (!m_overrideIconPath.isEmpty()) {
+        return m_overrideIconPath;
+    }
+
     if (sticky() && (m_appInfo != NULL)) {
         GCharPointer ptr(g_icon_to_string(g_app_info_get_icon(m_appInfo.data())));
         return QString::fromUtf8(ptr.data());
@@ -512,6 +516,13 @@ Application::setSnStartupSequence(SnStartupSequence* sequence)
     iconChanged(icon());
     executableChanged(executable());
     launchingChanged(launching());
+}
+
+void
+Application::setIcon(const QString& iconPath)
+{
+    m_overrideIconPath = iconPath;
+    Q_EMIT iconChanged(m_overrideIconPath);
 }
 
 void

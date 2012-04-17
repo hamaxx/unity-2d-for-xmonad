@@ -25,6 +25,26 @@ FocusScope {
     property alias bodyDelegate: list.bodyDelegate
     property alias headerDelegate: list.headerDelegate
 
+    function focusFirstHeader() {
+        list.focusFirstHeader()
+    }
+
+    function focusLastHeader() {
+        list.focusLastHeader()
+    }
+
+    function focusNextHeader() {
+        return list.focusNextHeader()
+    }
+
+    function focusPreviousHeader() {
+        return list.focusPreviousHeader()
+    }
+
+    function isListEmpty() {
+        return list.isListEmpty()
+    }
+
     ListViewWithHeaders {
         id: list
 

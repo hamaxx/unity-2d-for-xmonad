@@ -125,3 +125,8 @@ Verify that the launcher hides correctly
 
 Verify that the tooltip appears and does not enter an infinite flickering loop
 ----
+
+ * Use hide-mode 0. Open the software-center. Start (just until the passowrd is asked, no need to continue) installing an app (I tried Kalzium)
+
+Verify that the tile that appears in the launcher has the app icon and not the questionmark icon
+----
