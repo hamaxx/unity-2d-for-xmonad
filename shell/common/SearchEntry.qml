@@ -27,7 +27,7 @@ AbstractButton {
     property string placeHolderText: ""
     property bool active: false
 
-    signal activateFirstResult
+    signal returnPressed
 
     Accessible.name: "Search Entry"
 
@@ -111,7 +111,7 @@ AbstractButton {
 
             Keys.onPressed: {
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
-                    activateFirstResult()
+                    returnPressed()
                     event.accepted = true;
                 }
                 if (event.key == Qt.Key_Escape) {
