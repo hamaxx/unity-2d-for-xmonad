@@ -47,6 +47,8 @@ libunity_2d_tests(
 target_link_libraries(pointerbarriertest ${X11_XTest_LIB})
 
 target_link_libraries(hotkeytest ${X11_XTest_LIB})
+
+target_link_libraries(keyboardmodifiersmonitortest ${X11_XTest_LIB})
     
 # unity2dtrtest - FIXME
 #add_test(NAME unity2dtrtest_check
