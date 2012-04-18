@@ -22,7 +22,7 @@
 // Local
 #include <unitytestmacro.h>
 #include <debug_p.h>
-#include <keyboardmodifiersmonitor.h>
+#include <keymonitor.h>
 
 // Qt
 #include <QSignalSpy>
@@ -70,18 +70,18 @@ private Q_SLOTS:
     {
         QFETCH(int, x11Mask);
         QFETCH(Qt::KeyboardModifiers, qtModifiers);
-        KeyboardModifiersMonitor monitor;
-        QSignalSpy spy(&monitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)));
+        KeyMonitor *monitor = KeyMonitor::instance();
+        QSignalSpy spy(monitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)));
 
         setModifierState(x11Mask, true);
         QTest::qWait(200);
-        QCOMPARE(monitor.keyboardModifiers(), qtModifiers);
+        QCOMPARE(monitor->keyboardModifiers(), qtModifiers);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).value<Qt::KeyboardModifiers>(), qtModifiers);
 
         setModifierState(x11Mask, false);
         QTest::qWait(200);
-        QCOMPARE(monitor.keyboardModifiers(), 0);
+        QCOMPARE(monitor->keyboardModifiers(), 0);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).value<Qt::KeyboardModifiers>(), 0);
     }

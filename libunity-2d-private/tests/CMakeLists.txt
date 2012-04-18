@@ -33,7 +33,7 @@ endmacro(libunity_2d_tests)
 
 libunity_2d_tests(
     gconnectortest
-    keyboardmodifiersmonitortest
+    keymonitortest
     launchermenutest
     listaggregatormodeltest
     qsortfilterproxymodeltest

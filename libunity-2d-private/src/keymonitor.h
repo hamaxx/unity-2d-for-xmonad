@@ -28,6 +28,8 @@
 // X11
 #include <X11/extensions/XInput.h>
 
+class HotModifier;
+
 /**
  * This class monitors global keypresses. Whenever a non-modifier is pressed,
  * keyPressed() is emitted.
@@ -40,8 +42,16 @@ public:
     static KeyMonitor* instance();
     ~KeyMonitor();
 
+    Qt::KeyboardModifiers keyboardModifiers() const;
+
+    HotModifier* getHotModifierFor(Qt::KeyboardModifiers modifiers);
+
+    void disableModifiers(Qt::KeyboardModifiers modifiers);
+    void enableModifiers(Qt::KeyboardModifiers modifiers);
+
 Q_SIGNALS:
     void keyPressed();
+    void keyboardModifiersChanged(Qt::KeyboardModifiers);
 
 private:
     KeyMonitor(QObject* parent=0);
@@ -56,6 +66,9 @@ private:
     Display *m_display;
     QVector<XEventClass> m_eventList;
     QVector<KeyCode> m_modList;
+    Qt::KeyboardModifiers m_modifiers;
+    QList<HotModifier*> m_hotModifiers;
+    Qt::KeyboardModifiers m_disabledModifiers;
 };
 
 #endif // KEYMONITOR_H
