@@ -79,9 +79,11 @@ FocusScope {
         if (event.key == Qt.Key_Escape) toggleHud()
         else if (event.key == Qt.Key_Down) {
             resultList.incrementCurrentIndex()
+            resultList.forceActiveFocus();
         }
         else if (event.key == Qt.Key_Up) {
             resultList.decrementCurrentIndex()
+            resultList.forceActiveFocus();
         }
     }
 

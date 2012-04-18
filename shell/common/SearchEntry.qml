@@ -110,6 +110,7 @@ AbstractButton {
             }
 
             Keys.onPressed: {
+                forceActiveFocus();
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;
