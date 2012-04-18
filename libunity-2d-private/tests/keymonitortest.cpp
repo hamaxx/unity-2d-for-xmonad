@@ -22,7 +22,11 @@
 // Local
 #include <unitytestmacro.h>
 #include <debug_p.h>
+<<<<<<< TREE
 #include <keymonitor.h>
+=======
+#include <keyboardmodifiersmonitor.h>
+>>>>>>> MERGE-SOURCE
 #include <hotmodifier.h>
 
 // Qt
