@@ -31,9 +31,6 @@
 /**
  * This class monitors global keypresses. Whenever a non-modifier is pressed,
  * keyPressed() is emitted.
- *
- * In most case you don't need your own instance: use the one returned by
- * instance() instead.
  */
 class KeyMonitor : public QObject
 {
