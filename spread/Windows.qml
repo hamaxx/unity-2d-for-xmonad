@@ -101,6 +101,7 @@ GridView {
     delegate:
         Item {
             id: cell
+            property alias windowItem: spreadWindow
 
             ScaledItem {
                 id: scaledCell
