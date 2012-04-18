@@ -89,4 +89,4 @@ private Q_SLOTS:
 
 UAPP_TEST_MAIN(KeyboardModifiersMonitorTest)
 
-#include "keyboardmodifiersmonitortest.moc"
+#include "keymonitortest.moc"
