@@ -22,7 +22,8 @@
 // Local
 #include <unitytestmacro.h>
 #include <debug_p.h>
-#include <keyboardmodifiersmonitor.h>
+#include <keymonitor.h>
+#include <hotmodifier.h>
 
 // Qt
 #include <QSignalSpy>
@@ -33,6 +34,8 @@
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
+#include <X11/extensions/XTest.h>
+#include <X11/keysym.h>
 
 Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
 
@@ -70,23 +73,45 @@ private Q_SLOTS:
     {
         QFETCH(int, x11Mask);
         QFETCH(Qt::KeyboardModifiers, qtModifiers);
-        KeyboardModifiersMonitor monitor;
-        QSignalSpy spy(&monitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)));
+        KeyMonitor *monitor = KeyMonitor::instance();
+        QSignalSpy spy(monitor, SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)));
 
         setModifierState(x11Mask, true);
         QTest::qWait(200);
-        QCOMPARE(monitor.keyboardModifiers(), qtModifiers);
+        QCOMPARE(monitor->keyboardModifiers(), qtModifiers);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).value<Qt::KeyboardModifiers>(), qtModifiers);
 
         setModifierState(x11Mask, false);
         QTest::qWait(200);
-        QCOMPARE(monitor.keyboardModifiers(), 0);
+        QCOMPARE(monitor->keyboardModifiers(), 0);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).value<Qt::KeyboardModifiers>(), 0);
+    }
+
+    void testFastModifierKeyPress()
+    {
+        Display *display = XOpenDisplay(0);
+
+        HotModifier* hm = KeyMonitor::instance()->getHotModifierFor(Qt::AltModifier);
+        QSignalSpy spy(hm, SIGNAL(tapped()));
+
+        XTestGrabControl(display, 1);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, XK_Alt_L), 1 /* PRESS */, CurrentTime);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, XK_Left), 1 /* PRESS */, CurrentTime);
+        XFlush(display);
+
+        XTestGrabControl(display, 1);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, XK_Alt_L), 0 /* RELEASE */, CurrentTime);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, XK_Left), 0 /* RELEASE */, CurrentTime);
+        XFlush(display);
+
+        QTest::qWait(200);
+
+        QCOMPARE(spy.count(), 0);
     }
 };
 
 UAPP_TEST_MAIN(KeyboardModifiersMonitorTest)
 
-#include "keyboardmodifiersmonitortest.moc"
+#include "keymonitortest.moc"

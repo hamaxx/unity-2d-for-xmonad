@@ -27,20 +27,23 @@
 // X11
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 
 // Local
 #include <debug_p.h>
+#include <hotmodifier.h>
 
 #define INVALID_EVENT_TYPE -1
 
 static int key_press_type = INVALID_EVENT_TYPE;
 static int notify_type = INVALID_EVENT_TYPE;
-
+static int sXkbBaseEventType = 0;
 
 KeyMonitor::KeyMonitor(QObject* parent)
-: QObject(parent)
+: QObject(parent),
+  m_modifiers(Qt::NoModifier)
 {
-    if (this->registerEvents()) {
+    if (registerEvents()) {
         getModifiers();
     }
 }
@@ -57,6 +60,45 @@ KeyMonitor* KeyMonitor::instance()
     return monitor;
 }
 
+Qt::KeyboardModifiers KeyMonitor::keyboardModifiers() const
+{
+    return m_modifiers;
+}
+
+HotModifier *KeyMonitor::getHotModifierFor(Qt::KeyboardModifiers modifiers)
+{
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() == modifiers) {
+            return hotModifier;
+        }
+    }
+
+    HotModifier *hotModifier = new HotModifier(modifiers, this);
+    m_hotModifiers.append(hotModifier);
+    return hotModifier;
+}
+
+void KeyMonitor::disableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    m_disabledModifiers |= modifiers;
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() & m_disabledModifiers) {
+            hotModifier->disable();
+        }
+    }
+}
+
+void KeyMonitor::enableModifiers(Qt::KeyboardModifiers modifiers)
+{
+    Qt::KeyboardModifiers previouslyDisabled = m_disabledModifiers;
+    m_disabledModifiers &= ~modifiers;
+    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+        if (hotModifier->modifiers() & previouslyDisabled
+            && !hotModifier->modifiers() & m_disabledModifiers) {
+            hotModifier->onModifiersChanged(keyboardModifiers());
+        }
+    }
+}
 
 void KeyMonitor::getModifiers()
 {
@@ -134,6 +176,10 @@ bool KeyMonitor::registerEvents()
         return false;
     }
 
+    int opcode, error;
+    XkbQueryExtension(m_display, &opcode, &sXkbBaseEventType,  &error, NULL, NULL);
+    XkbSelectEvents(m_display, XkbUseCoreKbd, XkbStateNotifyMask, XkbStateNotifyMask);
+
     /* Dispatch XEvents when there is activity on the X11 file descriptor */
     x11FileDescriptor = ConnectionNumber(m_display);
     QSocketNotifier* socketNotifier = new QSocketNotifier(x11FileDescriptor, QSocketNotifier::Read, this);
@@ -142,6 +188,23 @@ bool KeyMonitor::registerEvents()
     return true;
 }
 
+static Qt::KeyboardModifiers qtModifiersFromXcbMods(int xcbModifiers)
+{
+    Qt::KeyboardModifiers value = Qt::NoModifier;
+    if (xcbModifiers & ShiftMask) {
+        value |= Qt::ShiftModifier;
+    }
+    if (xcbModifiers & ControlMask) {
+        value |= Qt::ControlModifier;
+    }
+    if (xcbModifiers & Mod1Mask) {
+        value |= Qt::AltModifier;
+    }
+    if (xcbModifiers & Mod4Mask) {
+        value |= Qt::MetaModifier;
+    }
+    return value;
+}
 
 void KeyMonitor::x11EventDispatch()
 {
@@ -158,6 +221,23 @@ void KeyMonitor::x11EventDispatch()
         }
         else if (event.type == notify_type) {
             getModifiers();
+        } else if (event.type == sXkbBaseEventType + XkbEventCode) {
+            XkbEvent *xkbEvent = (XkbEvent*)&event;
+            if (xkbEvent->any.xkb_type == XkbStateNotify) {
+                const Qt::KeyboardModifiers prevMods = m_modifiers;
+                m_modifiers = qtModifiersFromXcbMods(xkbEvent->state.mods);
+                if (prevMods != m_modifiers) {
+                    Q_EMIT keyboardModifiersChanged(m_modifiers);
+                    Q_FOREACH(HotModifier* hotModifier, m_hotModifiers) {
+                        if (hotModifier->modifiers() & m_disabledModifiers) {
+                            /* If any of the modifiers have been disabled, the
+                            * hotModifier cannot be triggered */
+                            continue;
+                        }
+                        hotModifier->onModifiersChanged(m_modifiers);
+                    }
+                }
+            }
         }
     }
 }

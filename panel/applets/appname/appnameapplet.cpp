@@ -34,7 +34,7 @@
 
 // Unity-2d
 #include <debug_p.h>
-#include <keyboardmodifiersmonitor.h>
+#include <keymonitor.h>
 #include <launcherclient.h>
 #include <hotkey.h>
 #include <hotkeymonitor.h>
@@ -271,7 +271,7 @@ struct AppNameAppletPrivate
 
     void setupKeyboardModifiersMonitor()
     {
-        QObject::connect(KeyboardModifiersMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
+        QObject::connect(KeyMonitor::instance(), SIGNAL(keyboardModifiersChanged(Qt::KeyboardModifiers)),
             q, SLOT(updateWidgets()));
     }
 };
@@ -321,7 +321,7 @@ void AppNameApplet::updateWidgets()
     bool isUnderMouse = rect().contains(mapFromGlobal(QCursor::pos()));
     bool isOpened = isOnSameScreen &&
         (isUnderMouse
-        || KeyboardModifiersMonitor::instance()->keyboardModifiers() == Qt::AltModifier
+        || KeyMonitor::instance()->keyboardModifiers() == Qt::AltModifier
         || d->m_menuBarWidget->isOpened()
         );
     bool showDesktopLabel = !app;
