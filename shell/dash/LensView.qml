@@ -28,6 +28,18 @@ FocusScope {
     property variant model
     property string firstNonEmptyCategory
 
+    function focusFirstHeader() {
+        results.focusFirstHeader()
+    }
+
+    function focusLastHeader() {
+        results.focusLastHeader()
+    }
+
+    function isListEmpty() {
+        return results.isListEmpty()
+    }
+
     function updateFirstCategory() {
         if (lensView.model.results.count == 0)
             return
@@ -105,6 +117,18 @@ FocusScope {
             PropertyAction { target: noResultsText; property: "opacity"; value: 1.0 }
             PauseAnimation { duration: 150 }
             NumberAnimation { target: noResultsText; property: "opacity"; from: 1.0; to: 0; duration: 150; easing.type: Easing.InOutQuad }
+        }
+    }
+
+    Keys.onPressed: {
+        if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
+            if (results.focusNextHeader()) {
+                event.accepted = true
+            }
+        } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+            if (results.focusPreviousHeader()) {
+                event.accepted = true
+            }
         }
     }
 

@@ -27,6 +27,12 @@ FocusScope {
     property variant lens
     property variant filterModel
     property bool isFirst
+    property alias header: header
+
+    function focusHeader() {
+        header.focus = true
+        filterView.item.focusFirstItem()
+    }
 
     height: childrenRect.height
 

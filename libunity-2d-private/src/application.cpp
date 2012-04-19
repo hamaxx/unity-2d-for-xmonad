@@ -220,6 +220,10 @@ Application::name() const
 QString
 Application::icon() const
 {
+    if (!m_overrideIconPath.isEmpty()) {
+        return m_overrideIconPath;
+    }
+
     if (sticky() && (m_appInfo != NULL)) {
         GCharPointer ptr(g_icon_to_string(g_app_info_get_icon(m_appInfo.data())));
         return QString::fromUtf8(ptr.data());
@@ -434,8 +438,9 @@ Application::setBamfApplication(BamfApplication *application)
     QObject::connect(application, SIGNAL(ActiveChanged(bool)), this, SIGNAL(activeChanged(bool)));
 
     QObject::connect(application, SIGNAL(RunningChanged(bool)), this, SLOT(updateCounterVisible()));
-    /* FIXME: a bug somewhere makes connecting to the Closed() signal not work even though
-              the emit Closed() in bamf-view.cpp is reached. */
+    /* FIXME: Signal-slot mappings below were based on the assumption that BamfWindow - Closed() was broken.
+       This was fixed in bamf-qt (see https://bugs.launchpad.net/bamf-qt/+bug/968046), so this code may be
+       revisited as we can now rely on Closed(). */
     /* Connect first the onBamfApplicationClosed slot, then the runningChanged
        signal, to avoid a race condition when an application is closed.
        See https://launchpad.net/bugs/634057 */
@@ -512,6 +517,13 @@ Application::setSnStartupSequence(SnStartupSequence* sequence)
     iconChanged(icon());
     executableChanged(executable());
     launchingChanged(launching());
+}
+
+void
+Application::setIcon(const QString& iconPath)
+{
+    m_overrideIconPath = iconPath;
+    Q_EMIT iconChanged(m_overrideIconPath);
 }
 
 void

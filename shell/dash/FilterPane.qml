@@ -30,6 +30,20 @@ FocusScope {
     /* Give the focus to header when folded */
     onFoldedChanged: if (folded) header.focus = true
 
+    function focusFirstHeader() {
+        header.forceActiveFocus()
+        options.currentIndex = 0
+    }
+
+    function focusLastHeader() {
+        if (folded) {
+            focusFirstHeader()
+        } else {
+            options.currentIndex = options.count - 1
+            options.forceActiveFocus()
+        }
+    }
+
     AbstractButton {
         id: header
         objectName: "filterResults"
@@ -85,6 +99,36 @@ FocusScope {
             anchors.verticalCenter: title.verticalCenter
             anchors.verticalCenterOffset: 1
             anchors.right: parent.right
+        }
+    }
+
+    Keys.onPressed: {
+        if (event.key == Qt.Key_Tab && event.modifiers == Qt.NoModifier) {
+            if (!folded) {
+                if (header.focus) {
+                    options.forceActiveFocus()
+                    options.currentIndex = 0
+                    event.accepted = true
+                } else if (options.currentIndex + 1 < options.count) {
+                    options.currentItem.focusHeader()
+                    options.currentIndex++
+                    event.accepted = true
+                }
+            }
+        } else if (event.key == Qt.Key_Backtab && event.modifiers == Qt.ShiftModifier) {
+            if (!folded && !header.focus) {
+                if (options.currentItem.header.activeFocus) {
+                    if (options.currentIndex > 0) {
+                        options.currentIndex--
+                        options.currentItem.focusHeader()
+                    } else {
+                        header.forceActiveFocus()
+                    }
+                } else {
+                    options.currentItem.focusHeader()
+                }
+                event.accepted = true
+            }
         }
     }
 

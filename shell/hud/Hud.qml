@@ -141,8 +141,8 @@ FocusScope {
 
             anchors.left: parent.left
             anchors.top: parent.top
-            width: (launcher2dConfiguration.hideMode == 0) ? 0 : launcherLoader.width
-            visible: (launcher2dConfiguration.hideMode != 0)
+            width: visible ? launcherLoader.width : 0
+            visible: !shellManager.hudShell.rootObject.launcherAlwaysVisible
 
             IconTile {
                 id: iconTile
@@ -215,7 +215,7 @@ FocusScope {
                     hudModel.searchQuery = searchQuery
                     resultList.currentIndex = 0
                 }
-                onActivateFirstResult: executeResult(0)
+                onActivateFirstResult: executeResult(resultList.currentIndex)
             }
 
             ListView {

@@ -31,7 +31,6 @@
 #include <hotmodifier.h>
 #include <hotkeymonitor.h>
 #include <hotkey.h>
-#include <keyboardmodifiersmonitor.h>
 #include <keymonitor.h>
 #include <screeninfo.h>
 
@@ -300,7 +299,7 @@ ShellManager::ShellManager(const QUrl &sourceFileUrl, QObject* parent) :
     updateSuperKeyMonitoring();
 
     /* Super tap shows the dash, super held shows the launcher hints */
-    d->m_superHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
+    d->m_superHotModifier = KeyMonitor::instance()->getHotModifierFor(Qt::MetaModifier);
     connect(d->m_superHotModifier, SIGNAL(tapped()), SLOT(toggleDashRequested()));
     connect(d->m_superHotModifier, SIGNAL(heldChanged(bool)), SIGNAL(superKeyHeldChanged(bool)));
 
@@ -514,7 +513,7 @@ void ShellManager::onHudActivationShortcutChanged()
             d->m_hudHotKey = HotkeyMonitor::instance().getHotkeyFor(x11KeyCode, modifiers);
             connect(d->m_hudHotKey, SIGNAL(pressed()), SLOT(toggleHudRequested()));
         } else if (modifiers != Qt::NoModifier) {
-            d->m_hudHotModifier = KeyboardModifiersMonitor::instance()->getHotModifierFor(modifiers);
+            d->m_hudHotModifier = KeyMonitor::instance()->getHotModifierFor(modifiers);
             connect(d->m_hudHotModifier, SIGNAL(tapped()), SLOT(toggleHudRequested()));
         }
     } else {
@@ -527,7 +526,7 @@ void ShellManager::onHudActivationShortcutChanged()
 void
 ShellManager::updateSuperKeyMonitoring()
 {
-    KeyboardModifiersMonitor *modifiersMonitor = KeyboardModifiersMonitor::instance();
+    KeyMonitor *modifiersMonitor = KeyMonitor::instance();
     HotkeyMonitor& hotkeyMonitor = HotkeyMonitor::instance();
 
     QVariant value = launcher2dConfiguration().property("superKeyEnable");

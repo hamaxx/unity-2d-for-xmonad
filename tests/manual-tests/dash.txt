@@ -125,3 +125,114 @@
   #   * Verify the results have the cover of the song/album and not the ? icon
 
 -----
+
+  # Test case objectives:
+  #   * Check that Tab moves between headers on the dash
+  # Pre-conditions
+  #   * Have a files and folders lens with 3 categories
+  # Test steps
+  #   * Open dash
+  #   * Switch to the files and folders lens
+  #   * Verify focus is on the search entry
+  #   * Press Tab
+  #   * Verify focus is on the first category header
+  #   * Press Tab
+  #   * Verify focus is on the second category header
+  #   * Press Tab
+  #   * Verify focus is on the third category header
+  #   * Press Tab
+
+-----
+
+  # Test case objectives:
+  #   * Check that Tab moves between headers and Filters on the dash
+  # Pre-conditions
+  #   * Have a files and folders lens with 3 categories
+  #   * Have the focus on the third header of files and folders lens 
+  #   * Have the filters collapsed
+  # Test steps
+  #   * Verify focus is on the "Filter results" text
+  #   * Press Tab
+  #   * Verify focus is on the first category header
+
+-----
+
+  # Test case objectives:
+  #   * Check that Tab moves between Filters "All" buttons
+  # Pre-conditions
+  #   * Be on the files and folders lens
+  #   * Have the focus on the "Filter results" text
+  #   * Have the filters collapsed
+  # Test steps
+  #   * Verify focus is on the "Filter results" text
+  #   * Press Enter to expand the filters
+  #   * Press Tab
+  #   * Verify focus is on the "Last Modified" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the "Type" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the "Size" filter "All" button
+  #   * Press Tab
+  #   * Verify focus is on the first category header
+
+-----
+
+  # Test case objectives:
+  #   * Check that Tab goes to the next category header when not on the header
+  # Pre-conditions
+  #   * Be on the files and folders lens
+  #   * Have the focus on the first category header
+  # Test steps
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the first category
+  #   * Press Tab
+  #   * Verify focus is on the second category header
+
+-----
+
+  # Test case objectives:
+  #   * Check that Shift+Tab goes to the current category header
+  # Pre-conditions
+  #   * Be on the files and folders lens
+  #   * Have the focus on the first category header
+  # Test steps
+  #   * Press Down Arrow
+  #   * Verify focus is on the first element of the first category
+  #   * Press Shift+Tab
+  #   * Verify focus is on the first category header
+
+-----
+
+  # Test case objectives:
+  #   * Check that Shift+Tab cycles through category headers and filters
+  # Pre-conditions
+  #   * Be on the files and folders lens
+  #   * Have the filters uncollapsed
+  #   * Have the focus on the third category header
+  # Test steps
+  #   * Press Shift+Tab
+  #   * Verify focus is on the second category header
+  #   * Press Shift+Tab
+  #   * Verify focus is on the first category header
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Size" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Type" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Last Modified" filter "All" button
+  #   * Press Shift+Tab
+  #   * Verify focus is on the "Filter results" text
+  #   * Press Shift+Tab
+  #   * Verify focus is on the third category header
+
+-----
+
+# Test case objectives:
+  #   * Verify the 4 finger tap gesture toggles the dash
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Use the 4 finger tap gesture to open the dash
+  #   * Use the 4 finger tap gesture to close the dash
+
+-----

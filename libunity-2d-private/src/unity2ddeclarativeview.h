@@ -39,6 +39,7 @@ class Unity2DDeclarativeView : public QGraphicsView
     Q_PROPERTY(QPoint globalPosition READ globalPosition NOTIFY globalPositionChanged)
     Q_PROPERTY(ScreenInfo* screen READ screen NOTIFY screenChanged)
     Q_PROPERTY(bool visible READ isVisible NOTIFY visibleChanged)
+    Q_PROPERTY(QDeclarativeItem* rootObject READ rootObject NOTIFY rootObjectChanged)
 
 public:
     Unity2DDeclarativeView(QWidget *parent = 0);
@@ -69,6 +70,7 @@ Q_SIGNALS:
     void screenChanged(ScreenInfo*);
     void visibleChanged(bool);
     void sceneResized(QSize size);
+    void rootObjectChanged();
 
 protected:
     void setupViewport();
