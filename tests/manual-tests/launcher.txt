@@ -121,7 +121,26 @@ Verify that the shell starts without problems (does not segfault) (Do it multipl
 Verify that the launcher hides correctly
 ----
 
+ * Open the launcher. Put the mouse at the position of a tile where the right pip appears (to the right of the icon itself)
+
+Verify that the tooltip appears and does not enter an infinite flickering loop
+----
+
  * Use hide-mode 0. Open the software-center. Start (just until the passowrd is asked, no need to continue) installing an app (I tried Kalzium)
 
 Verify that the tile that appears in the launcher has the app icon and not the questionmark icon
+----
+
+ * Have a multimonitor setup
+ * Run unity-2d-shell in RTL
+ * Have launchers in both screens
+
+Verify that the tile tooltips appear in the correct screen
+----
+ * Alt+f1 to show launcher
+ * move down with arrow key
+ * press enter to start/focus a program (firefox works particulary well due to its red background)
+ * press Alt+f1 again
+
+Verify that the tile of the program you started (e.g. firefox) does not have the background highlighted
 ----

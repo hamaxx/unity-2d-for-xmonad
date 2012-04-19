@@ -11,3 +11,15 @@
     -> Pressing Esc closes spreads on all monitors
     -> Selecting a window in a spread closes the others
 ----
+
+ * Open a Nautilus window in Workspace 1
+ * Open a Firefox window in Workspace 1
+ * Make the Firefox window be on top of the Nautilus one
+ * Switch to Workspace 2
+ * Open a Nautilus window in Workspace 2
+ * Press the Nautilus tile in the launcher
+ * Verify the spread appears with just the two Nautilus windows
+ * Click on the first workspace in the spread chooser
+ * Verify the current workspace is Workspace 1
+ * Verify the Nautilus window is the one with the focus
+----

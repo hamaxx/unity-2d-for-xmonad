@@ -202,7 +202,7 @@ DropItem {
                 height: item.tileSize
                 anchors.centerIn: parent
 
-                activeFocus: item.activeFocus
+                activeFocus: declarativeView.focus && item.activeFocus
                 backgroundFromIcon: item.backgroundFromIcon
 
                 source: (beHudItem && hudLoader) ? hudLoader.item.appIcon : item.icon
