@@ -200,6 +200,7 @@ FocusScope {
                 id: searchEntry
                 focus: true
                 forceCursorVisible: true
+                anyKeypressGivesFocus: true
 
                 anchors.top: parent.top
                 anchors.left: parent.left

@@ -27,10 +27,7 @@ AbstractButton {
     property string placeHolderText: ""
     property bool active: false
     property alias forceCursorVisible: searchInput.forceCursorVisible
-
-    function forceTextInputFocus() {
-        searchInput.forceActiveFocus();
-    }
+    property alias anyKeypressGivesFocus: searchInput.anyKeypressGivesFocus
 
     signal activateFirstResult
 
@@ -90,6 +87,7 @@ AbstractButton {
         TextInput {
             id: searchInput
             property bool forceCursorVisible: false
+            property bool anyKeypressGivesFocus: false
 
             Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
@@ -116,7 +114,9 @@ AbstractButton {
             }
 
             Keys.onPressed: {
-                forceTextInputFocus();
+                if (anyKeypressGivesFocus) {
+                    forceActiveFocus();
+                }
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;
