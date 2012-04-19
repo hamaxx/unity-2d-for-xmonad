@@ -79,14 +79,9 @@ FocusScope {
         if (event.key == Qt.Key_Escape) toggleHud()
         else if (event.key == Qt.Key_Down) {
             resultList.incrementCurrentIndex()
-            resultList.forceActiveFocus();
         }
         else if (event.key == Qt.Key_Up) {
             resultList.decrementCurrentIndex()
-            resultList.forceActiveFocus();
-        }
-        else {
-            searchEntry.forceTextInputFocus();
         }
     }
 
@@ -257,6 +252,7 @@ FocusScope {
                 }
 
                 onCurrentItemChanged: {
+                    resultList.forceActiveFocus();
                     if (currentItem != null && count > 0) {
                         appIcon = "image://icons/" + (currentItem.icon ? currentItem.icon : "unknown")
                     } else {
