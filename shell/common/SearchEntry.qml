@@ -26,6 +26,7 @@ AbstractButton {
     property string searchQuery
     property string placeHolderText: ""
     property bool active: false
+    property alias forceCursorVisible: searchInput.forceCursorVisible
 
     signal activateFirstResult
 
@@ -84,6 +85,7 @@ AbstractButton {
 
         TextInput {
             id: searchInput
+            property bool forceCursorVisible: false
 
             Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
@@ -136,9 +138,9 @@ AbstractButton {
                     anchors.topMargin: 2
                     anchors.bottomMargin: 2
                     width: 1
-                    visible: parent.activeFocus && timerShowCursor
+                    visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
                     Timer {
-                        interval: 800; running: customCursor.parent.activeFocus; repeat: true
+                        interval: 800; running: (customCursor.parent.forceCursorVisible || customCursor.parent.activeFocus); repeat: true
                         onTriggered: {
                             interval = interval == 800 ? 400 : 800
                             customCursor.timerShowCursor = !customCursor.timerShowCursor
