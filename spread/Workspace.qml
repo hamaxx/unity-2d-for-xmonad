@@ -163,10 +163,18 @@ FocusScope {
     }
 
     function setFocusOnFirstWindow() {
+        if (windows.currentIndex == 0) {
+            // This way we make sure currentItem is updated
+            windows.currentIndex = -1
+        }
         windows.currentIndex = 0
     }
 
     function setFocusOnLastWindow() {
         windows.currentIndex = windows.count - 1
+    }
+
+    function currentWindow() {
+        return windows.currentItem.windowItem
     }
 }
