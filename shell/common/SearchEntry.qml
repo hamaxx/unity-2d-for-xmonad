@@ -28,6 +28,10 @@ AbstractButton {
     property bool active: false
     property alias forceCursorVisible: searchInput.forceCursorVisible
 
+    function forceTextInputFocus() {
+        searchInput.forceActiveFocus();
+    }
+
     signal activateFirstResult
 
     Accessible.name: "Search Entry"
@@ -112,7 +116,6 @@ AbstractButton {
             }
 
             Keys.onPressed: {
-                forceActiveFocus();
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;

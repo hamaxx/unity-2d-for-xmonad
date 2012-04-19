@@ -85,6 +85,9 @@ FocusScope {
             resultList.decrementCurrentIndex()
             resultList.forceActiveFocus();
         }
+        else {
+            searchEntry.forceTextInputFocus();
+        }
     }
 
     function toggleHud() {
