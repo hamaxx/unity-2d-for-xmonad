@@ -130,3 +130,10 @@ Verify that the tooltip appears and does not enter an infinite flickering loop
 
 Verify that the tile that appears in the launcher has the app icon and not the questionmark icon
 ----
+
+ * Have a multimonitor setup
+ * Run unity-2d-shell in RTL
+ * Have launchers in both screens
+
+Verify that the tile tooltips appear in the correct screen
+----
