@@ -175,7 +175,7 @@ LauncherContextualMenu::show(int x, int y)
     m_arrowY = 6;
 
     if (QApplication::isRightToLeft()) {
-        x = QApplication::desktop()->width() - x - sizeHint().width();
+        x -= sizeHint().width();
     }
 
     move(x, y - sizeHint().height() / 2 );

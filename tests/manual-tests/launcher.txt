@@ -131,6 +131,12 @@ Verify that the tooltip appears and does not enter an infinite flickering loop
 Verify that the tile that appears in the launcher has the app icon and not the questionmark icon
 ----
 
+ * Have a multimonitor setup
+ * Run unity-2d-shell in RTL
+ * Have launchers in both screens
+
+Verify that the tile tooltips appear in the correct screen
+----
  * Alt+f1 to show launcher
  * move down with arrow key
  * press enter to start/focus a program (firefox works particulary well due to its red background)
