@@ -236,3 +236,16 @@
   #   * Use the 4 finger tap gesture to close the dash
 
 -----
+
+# Test case objectives:
+  #  * Ensure all video lens entries open correctly
+  # Pre-conditions
+  #   * None
+  # Test steps
+  #   * Open Dash
+  #   * Select the video lens
+  #   * Expand the 'Online' scope  
+  #   * Click on videos supplied by all providers, especially Youtube and Amazon
+  #   * Verify video opens correctly in web browser
+
+-----
