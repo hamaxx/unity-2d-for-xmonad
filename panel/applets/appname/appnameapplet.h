@@ -49,9 +49,6 @@ protected:
 private Q_SLOTS:
     void updateWidgets();
 
-Q_SIGNALS:
-    void titleBarDblClicked();
-
 private:
     Q_DISABLE_COPY(AppNameApplet)
     AppNameAppletPrivate* const d;
