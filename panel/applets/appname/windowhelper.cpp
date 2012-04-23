@@ -132,8 +132,8 @@ void WindowHelper::update()
         d->m_connector.connect(G_OBJECT(d->m_window), "name-changed", G_CALLBACK(nameChangedCB), this);
         d->m_connector.connect(G_OBJECT(d->m_window), "state-changed", G_CALLBACK(stateChangedCB), this);
     }
-    stateChanged();
-    nameChanged();
+    Q_EMIT stateChanged();
+    Q_EMIT nameChanged();
 }
 
 bool WindowHelper::isMaximized() const
