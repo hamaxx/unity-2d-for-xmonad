@@ -35,7 +35,7 @@
  * Click on the desktop.
  * Verify that desktop menu is available again when mouse is over it.
 ----
- * Have two monitors of exact resolution side by side
+ * Have two monitors of exact same resolution side by side
  * Have launcher set in autohide mode
  * Get a firefox window to occupy the total width of the two screens
  * Open a menu item in the first screen
