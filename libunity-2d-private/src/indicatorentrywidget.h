@@ -61,6 +61,8 @@ public:
      */
     void showMenu(Qt::MouseButton button);
 
+    bool activatedByThisEntry() const;
+
 Q_SIGNALS:
     void isEmptyChanged();
 
