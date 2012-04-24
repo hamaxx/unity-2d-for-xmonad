@@ -145,6 +145,7 @@ Verify that the tile tooltips appear in the correct screen
 Verify that the tile of the program you started (e.g. firefox) does not have the background highlighted
 ----
  * Do a big file copy in nautilus
+
 Verify that the progress bar appears and that the filler looks correctly centered inside the bar
 ----
  * Launch an application whose icon uses 24 bit per pixel instead of 32 (e.g. kmag in precise)
