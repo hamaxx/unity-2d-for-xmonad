@@ -39,7 +39,8 @@ namespace GImageUtils
 
 QImage imageForIconString(const QString& name, int size, struct _GtkIconTheme* theme = 0);
 
-QImage imageForPixbuf(const struct _GdkPixbuf* pixbuf);
+/// The @param name is only used for debugging purposes
+QImage imageForPixbuf(const struct _GdkPixbuf* pixbuf, const QString& name);
 
 } // namespace
 
