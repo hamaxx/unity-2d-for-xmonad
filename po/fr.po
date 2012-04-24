@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 "Language: \n"
 
 #: shell/launcher/LauncherList.qml:90
@@ -36,7 +36,7 @@ msgstr "Tapez votre commande"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Erreur : service affichage tête haute (HUD) non connecté"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -138,7 +138,7 @@ msgstr "Vider la corbeille"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Désolé, aucun résultat ne correspond à votre recherche."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
