@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-12 05:21+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -35,7 +35,7 @@ msgstr "Skriv din kommando"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Fejl: HUD-tjeneste er ikke tilsluttet"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -137,7 +137,7 @@ msgstr "Tøm papirkurv"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Desværre var der intet der matchede din søgning."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"

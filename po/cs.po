@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -36,7 +36,7 @@ msgstr "Napište příkaz"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Chyba: služba HUD není připojena"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -140,7 +140,7 @@ msgstr "Vyprázdnit koš"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Omlouváme se, ale není zde nic, co by odpovídalo vyhledávání"
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
