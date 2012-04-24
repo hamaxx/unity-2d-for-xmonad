@@ -353,6 +353,11 @@ void IndicatorEntryWidget::showMenu(Qt::MouseButton qtButton)
     m_activatedByThisEntry = true;
 }
 
+bool IndicatorEntryWidget::activatedByThisEntry() const
+{
+    return m_activatedByThisEntry;
+}
+
 void IndicatorEntryWidget::setPadding(int padding)
 {
     if (m_padding != padding) {
