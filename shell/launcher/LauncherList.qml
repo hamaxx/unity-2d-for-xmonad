@@ -199,7 +199,7 @@ AutoScrollingListView {
 
         /* Display the tooltip when hovering the item only when the list
            is not moving */
-        onEntered: if (!list.moving && !list.autoScrolling && list.showMenus) showMenu()
+        onEntered: if (!list.moving && !list.autoScrolling && list.showMenus && index != -1) showMenu()
         onExited: {
             /* When unfolded, leave enough time for the user to reach the
                menu. Necessary because there is some void between the item
@@ -255,7 +255,7 @@ AutoScrollingListView {
         Connections {
             target: list
             onMovementStarted: item.menu.hide()
-            onAutoScrollingChanged: if (list.autoScrolling) item.menu.hide()
+            onAutoScrollingChanged: if (list.autoScrolling && index != -1) item.menu.hide()
         }
 
         Connections {
