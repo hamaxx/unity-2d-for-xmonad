@@ -199,6 +199,7 @@ AutoScrollingListView {
 
         /* Display the tooltip when hovering the item only when the list
            is not moving */
+        // FIXME index checking should not be needed but otherwise we hit https://bugs.launchpad.net/unity-2d/+bug/988239
         onEntered: if (!list.moving && !list.autoScrolling && list.showMenus && index != -1) showMenu()
         onExited: {
             /* When unfolded, leave enough time for the user to reach the
@@ -255,6 +256,7 @@ AutoScrollingListView {
         Connections {
             target: list
             onMovementStarted: item.menu.hide()
+            // FIXME index checking should not be needed but otherwise we hit https://bugs.launchpad.net/unity-2d/+bug/988239
             onAutoScrollingChanged: if (list.autoScrolling && index != -1) item.menu.hide()
         }
 
