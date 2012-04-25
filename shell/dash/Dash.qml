@@ -203,7 +203,7 @@ FocusScope {
 
     function activateUriWithLens(lens, uri, mimetype) {
         dash.active = false
-        lens.activate(decodeURIComponent(uri))
+        lens.activate(uri)
     }
 
     function activateApplication(application) {

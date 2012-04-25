@@ -9,7 +9,6 @@ include_directories(
     ${GLIB_INCLUDE_DIRS}
     ${QT_QTTEST_INCLUDE_DIR}
     ${X11_XTest_INCLUDE_PATH}
-    ${GTK_INCLUDE_DIRS}
     )
 
 set(LIBUNITY_2D_TEST_DIR ${libunity-2d-private_BINARY_DIR}/tests)
@@ -43,7 +42,6 @@ libunity_2d_tests(
     pointerbarriertest
     hotkeytest
     gkeysequenceparser
-    gimageutilstest
     )
 
 target_link_libraries(pointerbarriertest ${X11_XTest_LIB})

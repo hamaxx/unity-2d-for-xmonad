@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "輸入您的指令"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "錯誤：HUD 服務尚未連接"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -92,11 +92,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "鎖定至啟動器"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "從啟動器解除鎖定"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
@@ -114,11 +114,11 @@ msgstr ""
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "主目錄"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "主目錄畫面"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -136,7 +136,7 @@ msgstr "清理回收筒"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "很抱歉，沒有符合您搜尋的結果。"
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -144,7 +144,7 @@ msgstr "工作區"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "Ubuntu 桌面"
 
 #~ msgid "Listen to Music"
 #~ msgstr "聆聽音樂"

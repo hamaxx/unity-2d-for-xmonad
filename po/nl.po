@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr "Tik uw opdracht in"
+msgstr "Voer uw opdracht in"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Fout: HUD-dienst is niet verbonden"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -110,7 +110,7 @@ msgstr ""
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "LTR"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
@@ -128,8 +128,8 @@ msgstr "Prullenbak"
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
-msgstr[0] "%n ding in prullenbak"
-msgstr[1] "%n dingen in prullenbak"
+msgstr[0] "%n item in de prullenbak"
+msgstr[1] "%n items in de prullenbak"
 
 #: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
@@ -137,7 +137,7 @@ msgstr "Prullenbak legen"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Er is niets dat met uw zoekopdracht overeenkomt."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,7 +145,7 @@ msgstr "Werkbladen"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr "Ubuntu-werkomgeving"
+msgstr "Bureaublad"
 
 #~ msgid "Find Files"
 #~ msgstr "Bestanden zoeken"

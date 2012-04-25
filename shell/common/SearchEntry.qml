@@ -26,6 +26,8 @@ AbstractButton {
     property string searchQuery
     property string placeHolderText: ""
     property bool active: false
+    property alias forceCursorVisible: searchInput.forceCursorVisible
+    property alias anyKeypressGivesFocus: searchInput.anyKeypressGivesFocus
 
     signal activateFirstResult
 
@@ -84,6 +86,8 @@ AbstractButton {
 
         TextInput {
             id: searchInput
+            property bool forceCursorVisible: false
+            property bool anyKeypressGivesFocus: false
 
             Accessible.name: searchInstructions.text
             Accessible.role: Accessible.EditableText
@@ -110,6 +114,9 @@ AbstractButton {
             }
 
             Keys.onPressed: {
+                if (anyKeypressGivesFocus) {
+                    forceActiveFocus();
+                }
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
                     activateFirstResult()
                     event.accepted = true;
@@ -135,9 +142,9 @@ AbstractButton {
                     anchors.topMargin: 2
                     anchors.bottomMargin: 2
                     width: 1
-                    visible: parent.activeFocus && timerShowCursor
+                    visible: (customCursor.parent.forceCursorVisible || parent.activeFocus) && timerShowCursor
                     Timer {
-                        interval: 800; running: customCursor.parent.activeFocus; repeat: true
+                        interval: 800; running: (customCursor.parent.forceCursorVisible || customCursor.parent.activeFocus); repeat: true
                         onTriggered: {
                             interval = interval == 800 ? 400 : 800
                             customCursor.timerShowCursor = !customCursor.timerShowCursor
