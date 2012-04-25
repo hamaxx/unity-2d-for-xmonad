@@ -152,3 +152,12 @@ Verify that the progress bar appears and that the filler looks correctly centere
 
 Verify that the icon shows correctly in the launcher
 ----
+ * Have the launcher in always shown mode
+ * Have the launcher with more items that it can hold in screen (i.e. it is scrollable)
+ * Put the mouse in the area of the launcher that makes it autoscroll down (and don't move it for the rest of the test)
+ * Open a program that is not in the launcher (so it creates a new tile in the launcher)
+ * Verify launcher autoscrolls down
+ * Quit the program you just started
+
+Verify that the launcher autoscrolls up (and does not crash)
+----
