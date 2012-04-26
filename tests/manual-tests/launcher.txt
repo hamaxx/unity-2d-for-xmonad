@@ -161,3 +161,9 @@ Verify that the icon shows correctly in the launcher
 
 Verify that the launcher autoscrolls up (and does not crash)
 ----
+ * Have a multimonitor setup
+ * On primary screen, open dash
+ * Drab an application icon and drop it onto the launcher beside it
+
+Verify Application tile created for that application in all launchers
+----
