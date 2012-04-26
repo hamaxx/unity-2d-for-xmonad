@@ -188,7 +188,7 @@ void PointerBarrierWrapper::createBarrier()
                     0,
                     NULL);
     if (m_barrier == 0) {
-        UQ_WARNING << "Barrier creation failed. This can happen when using a non standard X server, autohiding launcher and sticky edges won't be available.";
+        UQ_WARNING << "Pointer barrier creation failed. This can happen when using a non standard X server, autohiding launcher and sticky edges won't be available.";
         launcher2dConfiguration().setProperty("hideMode", 0);
     }
 }
