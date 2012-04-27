@@ -1,3 +1,45 @@
+unity-2d (5.12.0-0ubuntu1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - unity-2d-shell crashed with SIGSEGV in ref() (LP: #968046)
+    - [hud] First entry always activated with keyboard navigation
+      (LP: #980899)
+    - unity-2d-shell crashes on autoscrolling on launcher tile removal
+      (LP: #988239)
+    - unity-2d-shell crashes when using with a NX server (LP: #983942)
+    - Dash - update Dash keyboard shortcuts so the 'CTRL + TAB' switches
+      between Lenses and 'TAB' by itself moves the focus between categories
+      (LP: #891648)
+    - [spread] When multiple windows of an app are open, clicking on one
+      doesn't bring it to the foreground (LP: #917334)
+    - [HUD][multi-monitor] HUD should be expanded to the left if used on a
+      screen without launcher (LP: #979927)
+    - unity-2d scope un-url-escapes values from its model (LP: #986175)
+    - [places] tab key does nothing (LP: #891565)
+    - HUD is silent to screen readers (LP: #949445)
+    - launcher background coloring does not get reset when using enter to
+      activate/start a program (LP: #965079)
+    - [multi-monitor] [launcher] Drag & drop application to launcher on
+      primary screen, other launchers not updated (LP: #966239)
+    - HUD gets activated by Thinkpad USB Keyboard's back and forward buttons
+      (LP: #968840)
+    - Unity 2D doesn't load 24 bit icons (LP: #977262)
+    - Four finger tap does not open the Dash (LP: #978659)
+    - No icon in launcher entry, after installing software (LP: #980640)
+    - Menu items displayed incorrectly when window streched over multiples
+      monitors (LP: #987215)
+    - [unity-2d-panel] The close button (potentially the others too) can
+      toggled even when they are not visible anymore (LP: #924264)
+    - When closing the Dash with the [x] panel button the last windows is not
+      focused and doesn't allow to use window controls. (LP: #945459)
+    - [launcher] item hint flickers when hovering between launcher edge and
+      item (LP: #948383)
+    - Missaligned progress bar (LP: #980609)
+    - Launcher tile tooltip appears in wrong screen in RTL multimonitor setups
+      (LP: #984080)
+
+ -- Didier Roche <didrocks@ubuntu.com>  Fri, 27 Apr 2012 09:32:40 +0200
+
 unity-2d (5.10.0-0ubuntu1) precise-proposed; urgency=low
 
   * New upstream release:
