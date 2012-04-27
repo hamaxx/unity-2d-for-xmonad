@@ -1,4 +1,4 @@
-unity-2d (5.12.0-0ubuntu1) UNRELEASED; urgency=low
+unity-2d (5.12.0-0ubuntu1) precise-proposed; urgency=low
 
   * New upstream release:
     - unity-2d-shell crashed with SIGSEGV in ref() (LP: #968046)
