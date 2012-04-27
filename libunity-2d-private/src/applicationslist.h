@@ -70,6 +70,7 @@ private:
 
     void insertApplication(Application* application);
     void removeApplication(Application* application);
+    void removeApplication(const QString& desktop_file);
 
     QString favoriteFromDesktopFilePath(const QString& desktop_file) const;
 

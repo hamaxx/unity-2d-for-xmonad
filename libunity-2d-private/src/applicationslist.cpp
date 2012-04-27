@@ -201,6 +201,17 @@ ApplicationsList::removeApplication(Application* application)
 }
 
 void
+ApplicationsList::removeApplication(const QString& desktop_file)
+{
+    Q_FOREACH(Application *app, m_applications) {
+        if (app->desktop_file() == desktop_file) {
+            removeApplication(app);
+            break;
+        }
+    }
+}
+
+void
 ApplicationsList::onApplicationUserVisibleChanged(bool user_visible)
 {
     BamfApplication* bamf_application = qobject_cast<BamfApplication*>(sender());
@@ -399,6 +410,11 @@ ApplicationsList::onApplicationStickyChanged(bool sticky)
 
     if (!sticky && !application->running()) {
         removeApplication(application);
+        Q_FOREACH(ApplicationsList *other, ApplicationsListManager::instance()->m_lists) {
+            if (other != this) {
+                other->removeApplication(application->desktop_file());
+            }
+        }
     }
 }
 
