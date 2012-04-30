@@ -16,68 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:58+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 pencere açıldı"
 
 #: shell/launcher/LauncherList.qml:93
 msgid "not running"
-msgstr ""
+msgstr "çapmay"
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "Emriñizni Tuşlañız"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Hata: Baş-Üstü Kösterim (BÜK; HUD) hizmeti bağlanğan degil"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "Neticelerni süzgüçle"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
-msgstr ""
+msgstr "%1 süzgüçi faal"
 
 #: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
-msgstr ""
+msgstr "%1 süzgüçi ğayrıfaal"
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "Hepsi"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
-msgstr ""
+msgstr "Qıdır"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "kenişletilmegen"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "kenişletilgen"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 netice daha kör"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
-msgstr "Daa az netice kör"
+msgstr "Daha az netice kör"
 
 #: shell/dash/Home.qml:82
 msgid "Shortcuts"
@@ -89,37 +87,38 @@ msgstr "Çıqart"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "Emin olaraq çetleştir"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "Fırlatıcığa Kilitle"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "Fırlatıcıdan Kilitsizle"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
 msgstr "Terk Et"
 
+# tüklü
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Hızlı menü"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "LTR"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "Ev"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "Ev ekranı"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -137,7 +136,7 @@ msgstr "Çöpni Boşat"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Afu etiñiz, qıdırmañız ile eşleşken hiç bir şey yoq."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,16 +144,13 @@ msgstr "Çalışma-Fezaları"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "Ubuntu Masaüstü"
 
 #~ msgid "Media Apps"
 #~ msgstr "Vasat Uyğulamaları"
 
 #~ msgid "Internet Apps"
 #~ msgstr "İnternet Uyğulamaları"
-
-#~ msgid "More Apps"
-#~ msgstr "Daa Çoq Uyğulama"
 
 #~ msgid "Find Files"
 #~ msgstr "Dosyelerni Tap"
@@ -171,8 +167,11 @@ msgstr ""
 #~ msgid "Listen to Music"
 #~ msgstr "Musıqi Diñle"
 
+#~ msgid "More Apps"
+#~ msgstr "Daha Çoq Uyğulama"
+
 #~ msgid "Keep in launcher"
-#~ msgstr "Fırlatıcıda Tut"
+#~ msgstr "Başlatıcıda Tut"
 
 #~ msgid "Remove from launcher"
-#~ msgstr "Fırlatıcıdan Çetleştir"
+#~ msgstr "Başlatıcıdan Kaldır"

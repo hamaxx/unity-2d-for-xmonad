@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -35,7 +35,7 @@ msgstr "بۇيرۇق كىرگۈزۈڭ"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "خاتالىق: HUD مۇلازىمىتى باغلانمىدى"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -104,7 +104,7 @@ msgstr "ئاخىرلاشتۇر"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "باش تاختا ماكانى"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -136,7 +136,7 @@ msgstr "ئەخلەتخانىنى تازىلا"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "كەچۈرۈڭ، ئىزدىگىنىڭىزگە ماس نەتىجە تېپىلمىدى."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"

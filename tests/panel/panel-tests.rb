@@ -24,6 +24,7 @@
 
 require '../run-tests.rb' unless $INIT_COMPLETED
 require 'xdo/keyboard'
+require 'tmpwindow'
 
 ############################# Test Suite #############################
 context "Panel visual verification tests" do
@@ -38,6 +39,7 @@ context "Panel visual verification tests" do
 
   # Run once at the end of this test suite
   teardown do
+    TmpWindow.close_all_windows
     $SUT.execute_shell_command 'killall unity-2d-panel'
     $SUT.execute_shell_command 'killall unity-2d-shell'
   end
@@ -128,4 +130,77 @@ context "Panel visual verification tests" do
         @panel.Unity2dPanel(:name=>'0').AppNameApplet().CroppedLabel()['x_absolute'].to_i
     }
   end
+
+  # Test case objectives:
+  #  * Check that closing the dash using the panel resets focus
+  # Pre-conditions
+  #  * Desktop with no running apps
+  # Test steps
+  #   * Open window
+  #   * Verify window has focus
+  #   * Open dash
+  #   * Verify window does not have focus
+  #   * Close dash from the panel [x] button
+  #   * Verify window gets focus back
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/953168
+  test "Focus returns to window on dash [x] press" do
+    xid = TmpWindow.open_window_at(100,100)
+    verify_true(TIMEOUT, 'terminal should have focus after starting it') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    XDo::Keyboard.simulate('{SUPER}')
+    verify_false(TIMEOUT, 'terminal has focus when it should be in the dash') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    @panel.QAbstractButton( :name => 'AppNameApplet::CloseButton' ).move_mouse
+    @panel.QAbstractButton( :name => 'AppNameApplet::CloseButton' ).tap
+
+    verify_true(TIMEOUT, 'terminal does not have focus when it should') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    xid.close!
+  end
+
+  # Test case objectives:
+  #  * Check that closing the hud using the panel resets focus
+  # Pre-conditions
+  #  * Desktop with no running apps
+  # Test steps
+  #   * Open window
+  #   * Verify window has focus
+  #   * Open hud
+  #   * Verify window does not have focus
+  #   * Close hud from the panel [x] button
+  #   * Verify window gets focus back
+  # Post-conditions
+  #   * None
+  # References
+  #   * https://bugs.launchpad.net/unity-2d/+bug/953168
+  test "Focus returns to window on hud [x] press" do
+    xid = TmpWindow.open_window_at(100,100)
+    verify_true(TIMEOUT, 'terminal should have focus after starting it') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    XDo::Keyboard.simulate('{ALT}')
+    verify_false(TIMEOUT, 'terminal has focus when it should be in the hud') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    @panel.QAbstractButton( :name => 'AppNameApplet::CloseButton' ).move_mouse
+    @panel.QAbstractButton( :name => 'AppNameApplet::CloseButton' ).tap
+
+    verify_true(TIMEOUT, 'terminal does not have focus when it should') {
+      xid.id == XDo::XWindow.active_window
+    }
+
+    xid.close!
+  end
+
 end

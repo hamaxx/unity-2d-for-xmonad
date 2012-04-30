@@ -26,6 +26,7 @@
 #include <QX11Info>
 
 // libunity-2d-private
+#include <applicationslistmanager.h>
 #include <debug_p.h>
 #include <gkeysequenceparser.h>
 #include <hotmodifier.h>
@@ -126,6 +127,7 @@ ShellManagerPrivate::initShell(int screen)
     view->engine()->setBaseUrl(QUrl::fromLocalFile(unity2dDirectory() + "/shell/"));
 
     view->rootContext()->setContextProperty("shellManager", q);
+    view->rootContext()->setContextProperty("applicationsManager", ApplicationsListManager::instance());
 
     view->show();
 

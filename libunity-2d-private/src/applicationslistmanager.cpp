@@ -77,6 +77,20 @@ void ApplicationsListManager::removeList(ApplicationsList *list)
     m_lists -= list;
 }
 
+void ApplicationsListManager::insertFavoriteApplication(const QString& desktop_file)
+{
+    Q_FOREACH(ApplicationsList *list, m_lists) {
+        list->insertFavoriteApplication(desktop_file);
+    }
+}
+
+void ApplicationsListManager::insertWebFavorite(const QUrl& url)
+{
+    Q_FOREACH(ApplicationsList *list, m_lists) {
+        list->insertWebFavorite(url);
+    }
+}
+
 void
 ApplicationsListManager::onRemoteEntryUpdated(QString applicationURI, QMap<QString, QVariant> properties)
 {

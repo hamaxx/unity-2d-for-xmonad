@@ -103,8 +103,8 @@ LauncherDropItem {
         opacity: 0.15
     }
 
-    onDesktopFileDropped: applications.insertFavoriteApplication(path)
-    onWebpageUrlDropped: applications.insertWebFavorite(url)
+    onDesktopFileDropped: applicationsManager.insertFavoriteApplication(path)
+    onWebpageUrlDropped: applicationsManager.insertWebFavorite(url)
 
     FocusScope {
         Accessible.name: "content"

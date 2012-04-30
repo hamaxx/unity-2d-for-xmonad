@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
 "== 0) && (n != 0))) ? 2: 1));\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -36,7 +36,7 @@ msgstr "Tastați comanda"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Eroare: serviciul HUD nu este conectat"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -139,7 +139,7 @@ msgstr "Golește coșul de gunoi"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Nu există nimic care să se potrivească criteriilor de căutare"
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"

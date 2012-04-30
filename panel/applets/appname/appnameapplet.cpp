@@ -333,6 +333,7 @@ void AppNameApplet::updateWidgets()
     bool showAppLabel = !(isMaximized && showMenu) && isUserVisibleApp && isOnSameScreen;
 
     d->m_windowButtonWidget->setVisible(showWindowButtons);
+    d->m_windowButtonWidget->setEnabled(showWindowButtons);
     d->m_maximizeButton->setIsDashButton(dashIsVisible);
     d->m_maximizeButton->setButtonType(isMaximized ?
                                        PanelStyle::UnmaximizeWindowButton :

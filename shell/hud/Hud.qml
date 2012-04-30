@@ -199,6 +199,8 @@ FocusScope {
             SearchEntry {
                 id: searchEntry
                 focus: true
+                forceCursorVisible: true
+                anyKeypressGivesFocus: true
 
                 anchors.top: parent.top
                 anchors.left: parent.left
@@ -251,6 +253,7 @@ FocusScope {
                 }
 
                 onCurrentItemChanged: {
+                    resultList.forceActiveFocus();
                     if (currentItem != null && count > 0) {
                         appIcon = "image://icons/" + (currentItem.icon ? currentItem.icon : "unknown")
                     } else {

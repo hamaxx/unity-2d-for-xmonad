@@ -51,9 +51,6 @@ public:
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
 
-    Q_INVOKABLE void insertFavoriteApplication(const QString& desktop_file);
-    Q_INVOKABLE void insertWebFavorite(const QUrl& url);
-
 public Q_SLOTS:
     void move(int from, int to);
     void moveFinished(int from, int to);
@@ -68,6 +65,8 @@ private:
     void load();
     void insertBamfApplication(BamfApplication* bamf_application);
     void insertSnStartupSequence(SnStartupSequence* sequence);
+    void insertFavoriteApplication(const QString& desktop_file);
+    void insertWebFavorite(const QUrl& url);
 
     void insertApplication(Application* application);
     void removeApplication(Application* application);
