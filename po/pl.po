@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 "Language: pl\n"
 
 #: shell/launcher/LauncherList.qml:90
@@ -37,7 +37,7 @@ msgstr "Wprowadzanie polecenia"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Błąd: nie połączono z usługą HUD"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -116,11 +116,11 @@ msgstr "LTR"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "Katalog domowy"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "Ekran główny"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -141,6 +141,8 @@ msgstr "Opróżnij kosz"
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
 msgstr ""
+"Przepraszamy, nie odnaleziono żadnego elementu pasującego do wyszukiwanego "
+"wyrażenia."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"

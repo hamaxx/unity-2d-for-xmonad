@@ -21,6 +21,7 @@
 #include "dashadaptor.h"
 
 // Local
+#include <shelldeclarativeview.h>
 #include <shellmanager.h>
 
 // Qt
@@ -62,6 +63,9 @@ void
 DashDBus::setActive(bool active)
 {
     m_manager->setDashActive(active);
+    if (!active) {
+        m_manager->forceDeactivateShell(static_cast<ShellDeclarativeView*>(m_manager->dashShell()));
+    }
 }
 
 bool

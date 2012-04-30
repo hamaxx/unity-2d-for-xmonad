@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "Skriv inn ein kommando"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Feil: HUD-tenesta er ikkje kopla til"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -92,11 +92,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "Lås til oppstartaren"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "Løys frå oppstartaren"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
@@ -104,7 +104,7 @@ msgstr "Avslutt"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Dashbord"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -114,11 +114,11 @@ msgstr ""
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "Heim"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "Heimeskjerm"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -137,7 +137,7 @@ msgstr "Tøm papirkorga"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Søket gav ingen treff."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,7 +145,7 @@ msgstr "Arbeidsområde"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "Skrivebord"
 
 #~ msgid "Listen to Music"
 #~ msgstr "Lytt til musikk"
