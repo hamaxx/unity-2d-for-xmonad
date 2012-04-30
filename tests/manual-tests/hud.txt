@@ -12,9 +12,11 @@
  * Enable Accessibility and Orca speech output
  * Tap Alt key
  * Enter a few characters
- * Use arrow keys to navigate up/down through the options returned
-
---> Check Orca speaks the contents of the results
+--> Check that Orca speaks the contents of the first highlighted item
+ * Use Up/Down keys to navigate through the options returned and Left/Right to move over search query
+--> Check that Orca speaks the contents of the results as they are browsed with Up/Down
+--> Check that cursor keeps blinking in the search entry.
+--> Check that Orca speaks search query letters as you move the caret Left/Right
 
 ----
  * Go into ccsm

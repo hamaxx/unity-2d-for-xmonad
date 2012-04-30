@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "अपने आदेश टाइप करें"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "त्रुटि: हुड सेवा नहीं जुड़े"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -92,11 +92,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "लांचर के लिए लॉक"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "लॉन्चर से अनलॉक"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
@@ -114,11 +114,11 @@ msgstr ""
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "मुख्य पृष्ठ"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "घर स्क्रीन"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -137,7 +137,7 @@ msgstr "रद्दी खाली करें"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "क्षमा करें, वहाँ कुछ भी नहीं है कि आपकी खोज से मेल खाता है."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,7 +145,7 @@ msgstr "कार्यस्थान"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "ऊबुन्टू डेस्कटॉप"
 
 #~ msgid "Listen to Music"
 #~ msgstr "संगीत सुने"

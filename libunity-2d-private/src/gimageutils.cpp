@@ -66,16 +66,29 @@ QImage imageForIconString(const QString& name, int size, GtkIconTheme* theme)
         return QImage();
     }
 
-    return imageForPixbuf(pixbuf.data());
+    return imageForPixbuf(pixbuf.data(), name);
 }
 
-QImage imageForPixbuf(const GdkPixbuf* pixbuf)
+QImage imageForPixbuf(const GdkPixbuf* pixbuf, const QString &name)
 {
-    QImage image(gdk_pixbuf_get_pixels(pixbuf),
+    QImage image;
+    if (gdk_pixbuf_get_n_channels(pixbuf) == 3 && gdk_pixbuf_get_bits_per_sample(pixbuf) == 8 && !gdk_pixbuf_get_has_alpha(pixbuf)) {
+        image = QImage(gdk_pixbuf_get_pixels(pixbuf),
+                       gdk_pixbuf_get_width(pixbuf),
+                       gdk_pixbuf_get_height(pixbuf),
+                       gdk_pixbuf_get_rowstride(pixbuf),
+                       QImage::QImage::Format_RGB888);
+        image = image.convertToFormat(QImage::Format_ARGB32);
+    } else {
+        if (gdk_pixbuf_get_n_channels(pixbuf) != 4 || gdk_pixbuf_get_bits_per_sample(pixbuf) != 8 || !gdk_pixbuf_get_has_alpha(pixbuf)) {
+            UQ_WARNING << "Pixbuf is not in the expected format. Trying to load it anyway, will most likely fail" << name;
+        }
+        image = QImage(gdk_pixbuf_get_pixels(pixbuf),
                    gdk_pixbuf_get_width(pixbuf),
                    gdk_pixbuf_get_height(pixbuf),
                    gdk_pixbuf_get_rowstride(pixbuf),
                    QImage::Format_ARGB32);
+    }
 
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
     /* ABGR → ARGB */
