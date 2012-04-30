@@ -165,7 +165,7 @@ void MenuBarWidget::onEntryActivated(const std::string& id, const nux::Rect& men
     if (!id.empty()) {
         // We only cares about menubar entries
         Q_FOREACH(IndicatorEntryWidget* widget, m_widgetList) {
-            if (widget->entry()->id() == id) {
+            if (widget->entry()->id() == id && widget->activatedByThisEntry()) {
                 isOpened = true;
                 break;
             }

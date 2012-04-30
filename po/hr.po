@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2012-04-11 04:59+0000\n"
-"X-Generator: Launchpad (build 15070)\n"
+"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
+"X-Generator: Launchpad (build 15135)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -36,7 +36,7 @@ msgstr "Upišite svoju naredbu"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Greška: HUD servis nije spojen"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -139,7 +139,7 @@ msgstr "Isprazni smeće"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Žao mi je, ne postoji ništa što odgovara vašoj pretrazi."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"

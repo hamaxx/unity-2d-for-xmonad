@@ -14,3 +14,8 @@
  * Disable sticky edges
 
 -> Verify that there is no mouse barrier between the two screens
+----
+ * Log in into a machine that uses NX (or any X server that does not support PointerBarriers)
+ * Set the launcher to autohide
+
+-> Verify that there is no crash and the launcher is set back always shown
