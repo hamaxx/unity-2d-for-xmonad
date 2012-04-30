@@ -148,3 +148,18 @@ Verify that the tile of the program you started (e.g. firefox) does not have the
 
 Verify that the progress bar appears and that the filler looks correctly centered inside the bar
 ----
+ * Have the launcher in always shown mode
+ * Have the launcher with more items that it can hold in screen (i.e. it is scrollable)
+ * Put the mouse in the area of the launcher that makes it autoscroll down (and don't move it for the rest of the test)
+ * Open a program that is not in the launcher (so it creates a new tile in the launcher)
+ * Verify launcher autoscrolls down
+ * Quit the program you just started
+
+Verify that the launcher autoscrolls up (and does not crash)
+----
+ * Have a multimonitor setup
+ * On primary screen, open dash
+ * Drab an application icon and drop it onto the launcher beside it
+
+Verify Application tile created for that application in all launchers
+----

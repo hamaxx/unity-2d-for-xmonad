@@ -41,3 +41,11 @@
  * Open a menu item in the first screen
  * Verify the menu shows in the first screen and not in the second
 ----
+ * Open a window fullscreen (e.g. firefox)
+ * Go to the panel and press and hold the [x] button and be sure not to move the mouse
+ * Press the Print Screen key on the keyboard
+ * See how the "Save Screenshot" app appears
+ * See how the [x] button in the panel disappears
+ * Release the mouse button
+ * Verify the "Save Screenshot" app does not close
+----

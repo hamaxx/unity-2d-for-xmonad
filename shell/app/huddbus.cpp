@@ -21,6 +21,7 @@
 #include "hudadaptor.h"
 
 // Local
+#include <shelldeclarativeview.h>
 #include <shellmanager.h>
 
 // Qt
@@ -55,6 +56,9 @@ HUDDBus::setActive(bool hudActive)
     if (hudActive != active()) {
         m_manager->setHudActive(hudActive);
         Q_EMIT activeChanged(hudActive);
+        if (!hudActive) {
+            m_manager->forceDeactivateShell(static_cast<ShellDeclarativeView*>(m_manager->hudShell()));
+        }
     }
 }
 

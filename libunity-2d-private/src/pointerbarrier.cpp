@@ -21,6 +21,8 @@
 
 // libunity-2d
 #include "pointerbarriermanager.h"
+#include "config.h"
+#include "debug_p.h"
 
 // Self
 #include "pointerbarrier.h"
@@ -185,7 +187,10 @@ void PointerBarrierWrapper::createBarrier()
                     m_threshold,
                     0,
                     NULL);
-    Q_ASSERT(m_barrier != 0);
+    if (m_barrier == 0) {
+        UQ_WARNING << "Pointer barrier creation failed. This can happen when using a non standard X server, autohiding launcher and sticky edges won't be available.";
+        launcher2dConfiguration().setProperty("hideMode", 0);
+    }
 }
 
 void PointerBarrierWrapper::destroyBarrier()

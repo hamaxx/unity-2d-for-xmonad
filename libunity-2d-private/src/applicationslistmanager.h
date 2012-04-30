@@ -36,6 +36,9 @@ public:
     void addList(ApplicationsList *list);
     void removeList(ApplicationsList *list);
 
+    Q_INVOKABLE void insertFavoriteApplication(const QString& desktop_file);
+    Q_INVOKABLE void insertWebFavorite(const QUrl& url);
+
 private Q_SLOTS:
     void onRemoteEntryUpdated(QString applicationURI,
                               QMap<QString, QVariant> properties);
