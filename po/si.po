@@ -15,23 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-05-02 05:57+0000\n"
+"X-Generator: Launchpad (build 15177)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
 msgid "%1 window opened"
 msgid_plural "%1 windows opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "කවුළු %1 ක් විවෘත වී ඇත"
+msgstr[1] "කවුළු %1 ක් විවෘත වී ඇත"
 
 #: shell/launcher/LauncherList.qml:93
 msgid "not running"
-msgstr ""
+msgstr "ධාවනය නොවේ"
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "ඔබේ විධානය යතුරු ලියනය කරන්න"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
@@ -53,7 +53,7 @@ msgstr ""
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "සියල්ල"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"

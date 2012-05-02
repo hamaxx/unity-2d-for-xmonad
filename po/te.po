@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-05-02 05:57+0000\n"
+"X-Generator: Launchpad (build 15177)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -104,7 +104,7 @@ msgstr "నిష్క్రమించు"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "అనువర్తనాల ఇల్లు"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -114,11 +114,11 @@ msgstr ""
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "నివాసము"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "నివాస తెర"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -145,7 +145,7 @@ msgstr "కార్యక్షేత్రాలు"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "ఉబుంటు డెస్క్‍టాప్"
 
 #~ msgid "Listen to Music"
 #~ msgstr "సంగీతం విను"

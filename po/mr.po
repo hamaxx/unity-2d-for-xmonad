@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-04-24 05:26+0000\n"
-"X-Generator: Launchpad (build 15135)\n"
+"X-Launchpad-Export-Date: 2012-05-02 05:56+0000\n"
+"X-Generator: Launchpad (build 15177)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -27,7 +27,7 @@ msgstr[1] ""
 
 #: shell/launcher/LauncherList.qml:93
 msgid "not running"
-msgstr ""
+msgstr "कार्यरत नाही"
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
@@ -53,42 +53,41 @@ msgstr ""
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
-msgstr ""
+msgstr "सर्व"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
-msgstr ""
+msgstr "शोधा"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "अविस्तारित"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "विस्तारित"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "आणखीन %1 उत्तरा भघा"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
-msgstr ""
+msgstr "कमी उत्तरा भघा"
 
 #: shell/dash/Home.qml:82
 msgid "Shortcuts"
-msgstr ""
+msgstr "शॉर्टकटस्"
 
 #: libunity-2d-private/src/launcherdevice.cpp:279
 msgid "Eject"
-msgstr ""
+msgstr "बाहेर काढा"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "सुरक्षित बाहेर काढा"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
@@ -100,11 +99,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
-msgstr ""
+msgstr "बाहेर पडा"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "डेअश मुख्यपृष्ठ"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -114,15 +113,15 @@ msgstr ""
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "मुख्यपृष्ठ"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "मुख्यपृष्ठ"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
-msgstr ""
+msgstr "कचरा पेटी"
 
 #: libunity-2d-private/src/trash.cpp:214
 #, c-format, qt-plural-format
@@ -133,7 +132,7 @@ msgstr[1] ""
 
 #: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
-msgstr ""
+msgstr "कचरा पेटी रिकामी करा"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
@@ -141,8 +140,8 @@ msgstr ""
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
-msgstr ""
+msgstr "कार्यस्थळे"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "उबुंटु मुख्यपृष्ठ"
