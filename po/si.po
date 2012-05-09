@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: unity-2d\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-04-10 10:59+0100\n"
-"PO-Revision-Date: 2012-03-08 16:51+0000\n"
-"Last-Translator: Thambaru Wijesekara <Unknown>\n"
+"PO-Revision-Date: 2012-05-09 05:11+0000\n"
+"Last-Translator: පසිඳු කාවින්ද <Unknown>\n"
 "Language-Team: Sinhalese <si@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-05-02 05:57+0000\n"
-"X-Generator: Launchpad (build 15177)\n"
+"X-Launchpad-Export-Date: 2012-05-09 05:25+0000\n"
+"X-Generator: Launchpad (build 15213)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -35,21 +35,21 @@ msgstr "ඔබේ විධානය යතුරු ලියනය කරන�
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "දෝෂය: HUD සේවාව සම්බන්ධ කර නොමැත"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
-msgstr ""
+msgstr "පෙරහන් ප්‍රතිඑල"
 
 #: shell/dash/FilterLoader.qml:38
 #, qt-format
 msgid "Filter %1 active"
-msgstr ""
+msgstr "%1 පෙරහන සක්‍රීයයි"
 
 #: shell/dash/FilterLoader.qml:40
 #, qt-format
 msgid "Filter %1 inactive"
-msgstr ""
+msgstr "%1 පෙරහන අක්‍රීයයි"
 
 #: shell/dash/FilterLoader.qml:86 shell/dash/FilterLoader.qml:92
 msgid "All"
@@ -57,22 +57,22 @@ msgstr "සියල්ල"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
-msgstr ""
+msgstr "සොයන්න"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr ""
+msgstr "නොවිහිදුනු"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
-msgstr ""
+msgstr "විහිදුනු"
 
 #: shell/dash/CategoryHeader.qml:93
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "තව ප්‍රතිඑල %1 ක් නරඹන්න"
+msgstr[1] "තව ප්‍රතිඑල %1 ක් නරඹන්න"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
@@ -88,15 +88,15 @@ msgstr "බැහැර කරන්න"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr ""
+msgstr "ආරක්ෂාකාරීව ඉවතලෑම"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "දියත්කරණය වෙත අගුළුලන්න"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "දියත්කරණයෙන් අගුළු අරින්න"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
@@ -104,21 +104,21 @@ msgstr "ඉවත් වීම"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "තේජස් නිවස"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "QT_LAYOUT_DIRECTION"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "නිවස"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "නිවෙස් තිරය"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -137,7 +137,7 @@ msgstr "ඉවතලන බහලුම හිස් කරන්න"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "කණගාටුයි, ඔබේ සෙවුමට ගැලපෙන කිසිවක් නොමැත."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,7 +145,7 @@ msgstr "කර්යාවකාශ"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "උබුන්ටු වැඩතලය"
 
 #~ msgid "Find Files"
 #~ msgstr "ගොනු සොයන්න"
