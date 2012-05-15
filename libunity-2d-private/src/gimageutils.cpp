@@ -78,7 +78,7 @@ QImage imageForPixbuf(const GdkPixbuf* pixbuf, const QString &name)
                        gdk_pixbuf_get_height(pixbuf),
                        gdk_pixbuf_get_rowstride(pixbuf),
                        QImage::QImage::Format_RGB888);
-        image = image.convertToFormat(QImage::Format_ARGB32);
+        return image.convertToFormat(QImage::Format_ARGB32);
     } else {
         if (gdk_pixbuf_get_n_channels(pixbuf) != 4 || gdk_pixbuf_get_bits_per_sample(pixbuf) != 8 || !gdk_pixbuf_get_has_alpha(pixbuf)) {
             UQ_WARNING << "Pixbuf is not in the expected format. Trying to load it anyway, will most likely fail" << name;

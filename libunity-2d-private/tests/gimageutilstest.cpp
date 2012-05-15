@@ -38,6 +38,22 @@ private Q_SLOTS:
         QCOMPARE(image.width(), 32);
         QCOMPARE(image.height(), 32);
         QVERIFY(!image.isNull());
+        QCOMPARE(image.pixel(0, 0), qRgb(255, 0, 0));
+        QCOMPARE(image.pixel(1, 0), qRgb(0, 255, 0));
+        QCOMPARE(image.pixel(2, 0), qRgb(0, 0, 255));
+    }
+
+    void test24bit_2()
+    {
+        GError *err = NULL;
+        const QString path = unity2dDirectory() + "/libunity-2d-private/tests/verification/24bit_2.png";
+        const GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(path.toLocal8Bit().constData(), &err);
+        QVERIFY(!err);
+        const QImage image = GImageUtils::imageForPixbuf(pixbuf, path);
+        QCOMPARE(image.width(), 100);
+        QCOMPARE(image.height(), 100);
+        QVERIFY(!image.isNull());
+        QCOMPARE(image.pixel(3, 3), qRgb(250, 244, 216));
     }
 };
 
