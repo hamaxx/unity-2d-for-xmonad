@@ -370,7 +370,7 @@ FocusScope {
                     return u2d.tr("Search")
             }
 
-            onActivateFirstResult: if (dash.currentPage != undefined) dash.currentPage.activateFirstResult()
+            onReturnPressed: if (dash.currentPage != undefined) dash.currentPage.activateFirstResult()
         }
 
         Binding {

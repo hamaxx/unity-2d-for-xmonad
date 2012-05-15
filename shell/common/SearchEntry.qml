@@ -29,7 +29,7 @@ AbstractButton {
     property alias forceCursorVisible: searchInput.forceCursorVisible
     property alias anyKeypressGivesFocus: searchInput.anyKeypressGivesFocus
 
-    signal activateFirstResult
+    signal returnPressed
 
     Accessible.name: "Search Entry"
 
@@ -118,7 +118,7 @@ AbstractButton {
                     forceActiveFocus();
                 }
                 if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
-                    activateFirstResult()
+                    returnPressed()
                     event.accepted = true;
                 }
                 if (event.key == Qt.Key_Escape) {
