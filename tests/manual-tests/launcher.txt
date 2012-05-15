@@ -148,10 +148,6 @@ Verify that the tile of the program you started (e.g. firefox) does not have the
 
 Verify that the progress bar appears and that the filler looks correctly centered inside the bar
 ----
- * Launch an application whose icon uses 24 bit per pixel instead of 32 (e.g. kmag in precise)
-
-Verify that the icon shows correctly in the launcher
-----
  * Have the launcher in always shown mode
  * Have the launcher with more items that it can hold in screen (i.e. it is scrollable)
  * Put the mouse in the area of the launcher that makes it autoscroll down (and don't move it for the rest of the test)
