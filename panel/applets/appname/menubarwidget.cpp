@@ -76,7 +76,7 @@ void MenuBarWidget::setOpened(bool opened)
 {
     if (m_isOpened != opened) {
         m_isOpened = opened;
-        isOpenedChanged();
+        Q_EMIT isOpenedChanged();
     }
 }
 
@@ -155,7 +155,7 @@ void MenuBarWidget::updateIsEmpty()
     }
     if (m_isEmpty != empty) {
         m_isEmpty = empty;
-        isEmptyChanged();
+        Q_EMIT isEmptyChanged();
     }
 }
 
