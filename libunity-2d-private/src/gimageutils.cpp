@@ -71,45 +71,45 @@ QImage imageForIconString(const QString& name, int size, GtkIconTheme* theme)
 
 QImage imageForPixbuf(const GdkPixbuf* pixbuf, const QString &name)
 {
-    QImage image;
+    QImage result;
     if (gdk_pixbuf_get_n_channels(pixbuf) == 3 && gdk_pixbuf_get_bits_per_sample(pixbuf) == 8 && !gdk_pixbuf_get_has_alpha(pixbuf)) {
-        image = QImage(gdk_pixbuf_get_pixels(pixbuf),
-                       gdk_pixbuf_get_width(pixbuf),
-                       gdk_pixbuf_get_height(pixbuf),
-                       gdk_pixbuf_get_rowstride(pixbuf),
-                       QImage::QImage::Format_RGB888);
-        return image.convertToFormat(QImage::Format_ARGB32);
+        const QImage image = QImage(gdk_pixbuf_get_pixels(pixbuf),
+                             gdk_pixbuf_get_width(pixbuf),
+                             gdk_pixbuf_get_height(pixbuf),
+                             gdk_pixbuf_get_rowstride(pixbuf),
+                             QImage::QImage::Format_RGB888);
+        result = image.convertToFormat(QImage::Format_ARGB32);
     } else {
         if (gdk_pixbuf_get_n_channels(pixbuf) != 4 || gdk_pixbuf_get_bits_per_sample(pixbuf) != 8 || !gdk_pixbuf_get_has_alpha(pixbuf)) {
             UQ_WARNING << "Pixbuf is not in the expected format. Trying to load it anyway, will most likely fail" << name;
         }
-        image = QImage(gdk_pixbuf_get_pixels(pixbuf),
-                   gdk_pixbuf_get_width(pixbuf),
-                   gdk_pixbuf_get_height(pixbuf),
-                   gdk_pixbuf_get_rowstride(pixbuf),
-                   QImage::Format_ARGB32);
-    }
+        const QImage image = QImage(gdk_pixbuf_get_pixels(pixbuf),
+                             gdk_pixbuf_get_width(pixbuf),
+                             gdk_pixbuf_get_height(pixbuf),
+                             gdk_pixbuf_get_rowstride(pixbuf),
+                             QImage::Format_ARGB32);
 
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-    /* ABGR → ARGB */
-    QImage swappedImage = image.rgbSwapped();
+        /* ABGR → ARGB */
+        result = image.rgbSwapped();
 #else
-    /* ABGR → BGRA */
-    /* Reference: https://bugs.launchpad.net/unity-2d/+bug/758782 */
-    QImage swappedImage(image.size(), image.format());
-    for (int i = 0; i < swappedImage.height(); ++i) {
-        QRgb* p = (QRgb*) image.constScanLine(i);
-        QRgb* q = (QRgb*) swappedImage.scanLine(i);
-        QRgb* end = p + image.width();
-        while (p < end) {
-            *q = qRgba(qAlpha(*p), qRed(*p), qGreen(*p), qBlue(*p));
-            p++;
-            q++;
+        /* ABGR → BGRA */
+        /* Reference: https://bugs.launchpad.net/unity-2d/+bug/758782 */
+        result = QImage(image.size(), image.format());
+        for (int i = 0; i < swappedImage.height(); ++i) {
+            QRgb* p = (QRgb*) image.constScanLine(i);
+            QRgb* q = (QRgb*) swappedImage.scanLine(i);
+            QRgb* end = p + image.width();
+            while (p < end) {
+                *q = qRgba(qAlpha(*p), qRed(*p), qGreen(*p), qBlue(*p));
+                p++;
+                q++;
+            }
         }
-    }
 #endif
+    }
 
-    return swappedImage;
+    return result;
 }
 
 } // namespace
