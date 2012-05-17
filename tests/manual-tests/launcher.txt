@@ -159,7 +159,13 @@ Verify that the launcher autoscrolls up (and does not crash)
 ----
  * Have a multimonitor setup
  * On primary screen, open dash
- * Drab an application icon and drop it onto the launcher beside it
+ * Drag an application icon and drop it onto the launcher beside it
 
 Verify Application tile created for that application in all launchers
+----
+ * Have a multimonitor setup
+ * Have launchers in all monitors
+ * Make an application that is not running not sticky (i.e. remove it from the launcher)
+
+Verify Application tile is removed from all launchers
 ----
