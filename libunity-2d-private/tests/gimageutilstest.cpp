@@ -28,6 +28,12 @@ class GImageUtilsTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+    void init()
+    {
+        //before using any GObject functions, need to initialize the type system
+        g_type_init();
+    }
+
     void test24bit()
     {
         GError *err = NULL;
