@@ -392,8 +392,10 @@ void AppNameApplet::leaveEvent(QEvent*) {
     updateWidgets();
 }
 
-void AppNameApplet::mouseDoubleClickEvent(QMouseEvent*) {
-    d->m_windowHelper->unmaximize();
+void AppNameApplet::mouseDoubleClickEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        d->m_windowHelper->unmaximize();
+    }
 }
 
 void AppNameApplet::mousePressEvent(QMouseEvent* event) {
