@@ -205,6 +205,16 @@ ShellDeclarativeView::leaveEvent(QEvent *event)
     }
 }
 
+void ShellDeclarativeView::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    Unity2DDeclarativeView::dragLeaveEvent(event);
+
+    if (m_monitoredAreaContainsMouse) {
+        m_monitoredAreaContainsMouse = false;
+        Q_EMIT monitoredAreaContainsMouseChanged();
+    }
+}
+
 /* When another window calls XGrabPointer we receive a LeaveNotify event
    but QT doesn't emit a corresponding leaveEvent. Therefore we have to intercept it
    ourselves from X11 and act accordingly.

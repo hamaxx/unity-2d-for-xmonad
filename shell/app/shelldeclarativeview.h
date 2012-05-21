@@ -77,6 +77,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
+    virtual void dragLeaveEvent(QDragLeaveEvent *event);
 
 private Q_SLOTS:
     void updateShellPosition();
