@@ -49,3 +49,7 @@
  * Release the mouse button
  * Verify the "Save Screenshot" app does not close
 ----
+ * Open a window fullscreen (e.g. firefox)
+ * Go to the panel and double click the middle mouse button
+ * Verify the fullscreen window stays maximized
+----
