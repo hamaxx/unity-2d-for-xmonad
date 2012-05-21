@@ -169,3 +169,10 @@ Verify Application tile created for that application in all launchers
 
 Verify Application tile is removed from all launchers
 ----
+ * Have launcher set to autohide
+ * Open nautilus
+ * Drag a file to the left so the launcher is shown
+ * Without finishing the drag move the mouse out of the launcher
+
+Verify the launcher hides
+----
