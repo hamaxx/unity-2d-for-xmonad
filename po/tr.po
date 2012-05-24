@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2012-05-02 05:57+0000\n"
-"X-Generator: Launchpad (build 15177)\n"
+"X-Launchpad-Export-Date: 2012-05-24 21:32+0000\n"
+"X-Generator: Launchpad (build 15288)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -34,7 +34,7 @@ msgstr "Komutunuzu yazın"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr "Hata: Başüstü Göstergesi hizmeti bağlı değil"
+msgstr "Hatâ: Akıllı Seçke hizmeti bağlı değil"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -102,7 +102,7 @@ msgstr "Çık"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Ana Seçke"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
