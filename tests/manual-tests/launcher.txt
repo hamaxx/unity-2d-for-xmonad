@@ -176,3 +176,10 @@ Verify Application tile is removed from all launchers
 
 Verify the launcher hides
 ----
+ * Plug an external device
+ * Make it busy (e.g. go to it in a terminal)
+ * Try to safe eject the device
+ * Verify the volume is busy dialog appears
+
+Verify there is no "Unity 2d Shell" tile in the launcher
+----
