@@ -293,7 +293,7 @@ Item {
         // This enableSticky logic has a 'bug' int RTL where the right most screen will still have enableSticky
         // set to true, but it won't cause any issue other than consuming a few bytes of mememory and calculating the 
         // rightmost x is probably more expensive and error prone than just enabling the extra barrier
-        property bool enableSticky: unity2dConfiguration.stickyEdges && declarativeView.screen.geometry.x > 0
+        property bool enableSticky: unity2dConfiguration.stickyEdges && (declarativeView.screen.geometry.x > 0 || Utils.isRightToLeft())
 
         id: leftBarrier
         triggerDirection: Utils.isLeftToRight() ? PointerBarrier.TriggerFromRight : PointerBarrier.TriggerFromLeft
