@@ -30,6 +30,7 @@
 #include <hudclient.h>
 #include <debug_p.h>
 #include <gconnector.h>
+#include <unity2dpanel.h>
 
 // Bamf
 #include <bamf-matcher.h>
@@ -57,15 +58,20 @@ struct WindowHelperPrivate
 {
     WnckWindow* m_window;
     GConnector m_connector;
-    int m_screen;
+    Unity2dPanel *m_panel;
+
+    int screen() const
+    {
+        return m_panel->screen();
+    }
 };
 
-WindowHelper::WindowHelper(int screen, QObject* parent)
+WindowHelper::WindowHelper(Unity2dPanel *panel, QObject* parent)
 : QObject(parent)
 , d(new WindowHelperPrivate)
 {
     d->m_window = 0;
-    d->m_screen = screen;
+    d->m_panel = panel;
 
     wnck_screen_force_update(wnck_screen_get_default());
 
@@ -138,7 +144,7 @@ void WindowHelper::update()
 
 bool WindowHelper::isMaximized() const
 {
-    if (DashClient::instance()->activeInScreen(d->m_screen)) {
+    if (DashClient::instance()->activeInScreen(d->screen())) {
         return dash2dConfiguration().property("fullScreen").toBool();
     } else {
         if (d->m_window) {
@@ -174,9 +180,9 @@ bool WindowHelper::isMostlyOnScreen(int screen) const
 
 void WindowHelper::close()
 {
-    if (DashClient::instance()->activeInScreen(d->m_screen)) {
+    if (DashClient::instance()->activeInScreen(d->screen())) {
         DashClient::instance()->setActive(false);
-    } else if (HUDClient::instance()->activeInScreen(d->m_screen)) {
+    } else if (HUDClient::instance()->activeInScreen(d->screen())) {
         HUDClient::instance()->setActive(false);
     } else {
         guint32 timestamp = QDateTime::currentDateTime().toTime_t();
@@ -186,14 +192,14 @@ void WindowHelper::close()
 
 void WindowHelper::minimize()
 {
-    if (!DashClient::instance()->activeInScreen(d->m_screen)) {
+    if (!DashClient::instance()->activeInScreen(d->screen())) {
         wnck_window_minimize(d->m_window);
     }
 }
 
 void WindowHelper::maximize()
 {
-    if (DashClient::instance()->activeInScreen(d->m_screen)) {
+    if (DashClient::instance()->activeInScreen(d->screen())) {
         dash2dConfiguration().setProperty("fullScreen", QVariant(true));
     } else {
         /* This currently cannot happen, because the window buttons are not
@@ -205,7 +211,7 @@ void WindowHelper::maximize()
 
 void WindowHelper::unmaximize()
 {
-    if (DashClient::instance()->activeInScreen(d->m_screen)) {
+    if (DashClient::instance()->activeInScreen(d->screen())) {
         dash2dConfiguration().setProperty("fullScreen", QVariant(false));
     } else {
         wnck_window_unmaximize(d->m_window);
