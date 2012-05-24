@@ -19,3 +19,9 @@
  * Set the launcher to autohide
 
 -> Verify that there is no crash and the launcher is set back always shown
+----
+ * Have 2 screens stacked horizontally
+ * Run unity-2d-shell in RTL mode (use -reverse)
+ * Enable sticky edges
+
+-> Verify that there is a mouse barrier between the two screens
