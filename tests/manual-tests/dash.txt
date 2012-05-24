@@ -249,3 +249,15 @@
   #   * Verify video opens correctly in web browser
 
 -----
+
+# Test case objectives:
+  #  * Ensure dash can be maximized in a multimonitor scenario
+  # Pre-conditions
+  #   * Have two monitors
+  #   * Have the second monitor be the the primary monitor when you connect it
+  # Test steps
+  #   * Have one monitor attached
+  #   * Connect the second monitor
+  #   * Verify dash can be maximized in the first monitor (that is not the primary anymore)
+
+-----
