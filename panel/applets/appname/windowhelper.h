@@ -29,12 +29,14 @@
 
 class QPoint;
 
+class Unity2dPanel;
+
 struct WindowHelperPrivate;
 class WindowHelper : public QObject
 {
 Q_OBJECT
 public:
-    WindowHelper(int screen, QObject* parent);
+    WindowHelper(Unity2dPanel *panel, QObject* parent);
     ~WindowHelper();
 
     void setXid(uint);

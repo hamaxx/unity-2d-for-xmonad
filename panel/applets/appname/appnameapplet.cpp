@@ -253,7 +253,7 @@ struct AppNameAppletPrivate
 
     void setupWindowHelper()
     {
-        m_windowHelper = new WindowHelper(q->panel()->screen(), q);
+        m_windowHelper = new WindowHelper(q->panel(), q);
         QObject::connect(m_windowHelper, SIGNAL(stateChanged()),
             q, SLOT(updateWidgets()));
         QObject::connect(m_windowHelper, SIGNAL(nameChanged()),
