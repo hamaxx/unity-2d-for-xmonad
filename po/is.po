@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-05-02 05:56+0000\n"
-"X-Generator: Launchpad (build 15177)\n"
+"X-Launchpad-Export-Date: 2012-05-24 21:31+0000\n"
+"X-Generator: Launchpad (build 15288)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -31,11 +31,11 @@ msgstr ""
 
 #: shell/hud/Hud.qml:211
 msgid "Type your Command"
-msgstr ""
+msgstr "Sláðu inn skipunina þína"
 
 #: shell/hud/Hud.qml:212
 msgid "Error: HUD service not connected"
-msgstr ""
+msgstr "Villa: HUD þjónusta fannst ekki"
 
 #: shell/dash/FilterPane.qml:71
 msgid "Filter results"
@@ -71,8 +71,8 @@ msgstr ""
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Skoða %1 niðurstöðu í viðbót"
+msgstr[1] "Skoða %1 niðurstöður í viðbót"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
@@ -92,11 +92,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
-msgstr ""
+msgstr "Læsa í ræsara"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Unlock from Launcher"
-msgstr ""
+msgstr "Aflæsa úr ræsara"
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
@@ -104,21 +104,21 @@ msgstr "Hætta"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr ""
+msgstr "Flýtival"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
 #: libunity-2d-private/src/unity2dapplication.cpp:173
 msgid "QT_LAYOUT_DIRECTION"
-msgstr ""
+msgstr "LTR"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home"
-msgstr ""
+msgstr "Heimamappa"
 
 #: libunity-2d-private/src/lenses.cpp:45
 msgid "Home screen"
-msgstr ""
+msgstr "Heimaskjár"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
@@ -137,7 +137,7 @@ msgstr "Tæma rusl"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "Því miður finnst ekkert sem passar við það sem þú leitar að."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
@@ -145,7 +145,7 @@ msgstr "Vinnusvæði"
 
 #: panel/applets/appname/appnameapplet.cpp:368
 msgid "Ubuntu Desktop"
-msgstr ""
+msgstr "Ubuntu skjáborð"
 
 #~ msgid "Media Apps"
 #~ msgstr "Margmiðlunarforrit"

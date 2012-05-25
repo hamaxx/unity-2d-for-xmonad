@@ -260,6 +260,12 @@ FocusScope {
                         appIcon = getActiveWindowIcon()
                     }
                 }
+
+                onCountChanged: {
+                    if (count == 0) {
+                        appIcon = getActiveWindowIcon()
+                    }
+                }
             }
         }
     }

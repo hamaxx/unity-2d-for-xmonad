@@ -236,6 +236,9 @@ void ApplicationsList::insertBamfApplication(BamfApplication* bamf_application)
     if (!bamf_application->user_visible()) {
         return;
     }
+    if (bamf_application->desktop_file().endsWith("/unity-2d-shell.desktop")) {
+        return;
+    }
 
     Application* matchingApplication = NULL;
     Application* newApplication = new Application;

@@ -182,3 +182,11 @@ Verify the launcher hides
  * Plug in the second monitor (which will become screen 0)
 
 Verify the launcher of that second monitor does not show if the program we started (and still is) on the first monitor was in that screen
+=======
+ * Plug an external device
+ * Make it busy (e.g. go to it in a terminal)
+ * Try to safe eject the device
+ * Verify the volume is busy dialog appears
+
+Verify there is no "Unity 2d Shell" tile in the launcher
+----

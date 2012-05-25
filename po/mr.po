@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-05-02 05:56+0000\n"
-"X-Generator: Launchpad (build 15177)\n"
+"X-Launchpad-Export-Date: 2012-05-24 21:31+0000\n"
+"X-Generator: Launchpad (build 15288)\n"
 
 #: shell/launcher/LauncherList.qml:90
 #, qt-format
@@ -57,11 +57,11 @@ msgstr "सर्व"
 
 #: shell/dash/Dash.qml:338 libunity-2d-private/src/lenses.cpp:45
 msgid "Search"
-msgstr "शोधा"
+msgstr "शोध"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "not expanded"
-msgstr "अविस्तारित"
+msgstr "संकुचित"
 
 #: shell/dash/CategoryHeader.qml:37
 msgid "expanded"
@@ -71,11 +71,11 @@ msgstr "विस्तारित"
 #, qt-format
 msgid "See %1 more result"
 msgid_plural "See %1 more results"
-msgstr[0] "आणखीन %1 उत्तरा भघा"
+msgstr[0] "आणखी %1 निकाल पाहा"
 
 #: shell/dash/CategoryHeader.qml:95
 msgid "See fewer results"
-msgstr "कमी उत्तरा भघा"
+msgstr "इतके नको"
 
 #: shell/dash/Home.qml:82
 msgid "Shortcuts"
@@ -87,7 +87,7 @@ msgstr "बाहेर काढा"
 
 #: libunity-2d-private/src/launcherdevice.cpp:287
 msgid "Safely remove"
-msgstr "सुरक्षित बाहेर काढा"
+msgstr "सुरक्षित रित्या हटवा"
 
 #: libunity-2d-private/src/application.cpp:1000
 msgid "Lock to Launcher"
@@ -99,11 +99,11 @@ msgstr ""
 
 #: libunity-2d-private/src/application.cpp:1007
 msgid "Quit"
-msgstr "बाहेर पडा"
+msgstr "बाहेर"
 
 #: libunity-2d-private/src/bfb.cpp:69
 msgid "Dash home"
-msgstr "डेअश मुख्यपृष्ठ"
+msgstr "डॅश मुखपृष्ठ"
 
 #. TRANSLATORS: This refers to the direction of text
 #. (left-to-right or right-to-left): possible values are LTR or RTL
@@ -121,22 +121,22 @@ msgstr "मुख्यपृष्ठ"
 
 #: libunity-2d-private/src/trash.cpp:134
 msgid "Trash"
-msgstr "कचरा पेटी"
+msgstr "केरटोपली"
 
 #: libunity-2d-private/src/trash.cpp:214
 #, c-format, qt-plural-format
 msgid "%n item in trash"
 msgid_plural "%n items in trash"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%n गोष्ट केरटोपलीत"
+msgstr[1] "%n गोष्टी केरटोपलीत"
 
 #: libunity-2d-private/src/trash.cpp:221
 msgid "Empty Trash"
-msgstr "कचरा पेटी रिकामी करा"
+msgstr "केरटोपली रिकामी करा"
 
 #: libunity-2d-private/src/lens.cpp:348
 msgid "Sorry, there is nothing that matches your search."
-msgstr ""
+msgstr "क्षमस्व, तुमच्या शोधाशी मिळते जुळते काहिच नाहीये."
 
 #: libunity-2d-private/src/workspaces.cpp:79
 msgid "Workspaces"
