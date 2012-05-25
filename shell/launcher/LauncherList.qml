@@ -391,6 +391,10 @@ AutoScrollingListView {
             target: shellManager
             onActiveWorkspaceChanged: updatePips()
         }
+        Connections {
+            target: declarativeView.screen
+            onGeometryChanged: updatePips()
+        }
         Component.onCompleted: updatePips()
     }
 }
