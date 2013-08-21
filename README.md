@@ -48,8 +48,8 @@ Start with [this tutorial](http://markhansen.co.nz/xmonad-ubuntu-oneiric/)
 
 ## What it looks like
 
-![Screen shot 1](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss2.png)
-![Screen shot 2](/hamaxx/unity-2d-for-xmonad/raw/master/docs/ss3.png)
+![Screen shot 1](/docs/ss2.png)
+![Screen shot 2](/docs/ss3.png)
 
 ### If you experience problems with Xmonad not redrawing windows while switching workspaces, try disabling desktop icons
 
