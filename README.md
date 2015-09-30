@@ -5,7 +5,7 @@
 * Move launcher under panel so it doesn't cover it
 * Load panel only on the primary screen
 * Don't filter apps in lagacy tray
-* Changed spread(aplication and workspace switcher) behaviour so it's useful in xmonad.
+* Changed spread(application and workspace switcher) behaviour so it's useful in xmonad.
 * Simplified spred layout and animations so it works much faster
 
 ## Setup Xmonad on Ubuntu
